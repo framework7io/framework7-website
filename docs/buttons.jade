@@ -1,0 +1,138 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Buttons | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content.with-device
+      h1(data-device-preview="../docs-demos/buttons.html") Buttons
+      p Framework7 comes with a bunch of ready to use buttons. All you need is to just add appropriate classes to your links or submit/button inputs:
+      h3 Usual Buttons
+      p Just add <code>button</code> class to any link or button input:
+      pre
+        code
+          | &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 1&lt;/a&gt;&lt;/p&gt;
+          | &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 2&lt;/a&gt;&lt;/p&gt;
+          | &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 3&lt;/a&gt;&lt;/p&gt;          
+      .important-note
+        p Note that, by default, each button in Framework7 is "display:block" and will take 100% of its parent width. 
+      h3 Active State
+      p Just add additional <code>active</code> class to button:
+      pre
+        code
+          | &lt;a href="#" class="button active"&gt;Active Button&lt;/a&gt;
+
+      h3 Round Buttons
+      p Add additional <code>button-round</code> class to button:
+      pre
+        code
+          | &lt;p&gt;&lt;a href="#" class="button button-round"&gt;Round Button 1&lt;/a&gt;&lt;/p&gt;
+          | &lt;p&gt;&lt;a href="#" class="button button-round"&gt;Round Button 2&lt;/a&gt;&lt;/p&gt;
+          | &lt;p&gt;&lt;a href="#" class="button button-round active"&gt;Round Button Active&lt;/a&gt;&lt;/p&gt;          
+      h3 Big Buttons
+      p Add additional <code>button-big</code> class to button:
+      pre
+        code
+          | &lt;a href="#" class="button button-big"&gt;Big Button &lt;/a&gt;
+          | &lt;a href="#" class="button button-big button-round"&gt;Big Round Button &lt;/a&gt;
+          | &lt;a href="#" class="button button-big button-round active"&gt;Big Round Active Button &lt;/a&gt;          
+      h3 Buttons Row / Segmented Control
+      .important-note
+        p <strong>Note that each button has equal width when in "buttons-row"</strong>
+      p Just wrap buttons with element with <code>buttons-row</code> class:
+        pre
+          code
+            | &lt;p class="buttons-row"&gt;
+            |   &lt;a href="#" class="button"&gt;Button 1&lt;/a&gt;
+            |   &lt;a href="#" class="button"&gt;Button 2&lt;/a&gt;
+            |   &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
+            | &lt;/p&gt;
+            | &lt;p class="buttons-row"&gt;
+            |   &lt;a href="#" class="button active"&gt;Button 1&lt;/a&gt;
+            |   &lt;a href="#" class="button"&gt;Button 2&lt;/a&gt;
+            |   &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
+            | &lt;/p&gt;
+            | &lt;p class="buttons-row"&gt;
+            |   &lt;a href="#" class="button button-round"&gt;Button 1&lt;/a&gt;
+            |   &lt;a href="#" class="button button-round"&gt;Button 2&lt;/a&gt;
+            | &lt;/p&gt;
+            | &lt;p class="buttons-row"&gt;
+            |   &lt;a href="#" class="button button-round"&gt;Button 1&lt;/a&gt;
+            |   &lt;a href="#" class="button button-round active"&gt;Button 2&lt;/a&gt;
+            | &lt;/p&gt;            
+      h3 Fill Buttons
+      p Fill Buttons looks almost the same as active but indended to be used as single buttons which also have a bit different effect on click/tap:
+      pre
+        code
+          | &lt;a href="#" class="button button-fill"&gt;Fill Button &lt;/a&gt;
+          | &lt;a href="#" class="button button-round button-fill"&gt;Round Fill Button&lt;/a&gt;
+          | &lt;a href="#" class="button button-big button-fill"&gt;Big Fill Button &lt;/a&gt;
+      h3 Color Buttons
+      p You can use 10 default <a href="color-themes.html">color themes</a> to colorize buttons
+      pre
+        code
+          | &lt;p class="buttons-row theme-pink"&gt;
+          |     &lt;a href="#" class="button active"&gt;Button 1&lt;/a&gt;
+          |     &lt;a href="#" class="button"&gt;Button 2&lt;/a&gt;
+          |     &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
+          | &lt;/p&gt;
+          | &lt;p class="buttons-row theme-orange"&gt;
+          |     &lt;a href="#" class="button"&gt;Button 1&lt;/a&gt;
+          |     &lt;a href="#" class="button active"&gt;Button 2&lt;/a&gt;
+          |     &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
+          | &lt;/p&gt;
+          | &lt;p&gt;&lt;a href="#" class="button button-fill color-green"&gt;Green&lt;/a&gt;&lt;/p&gt;
+          | &lt;p&gt;&lt;a href="#" class="button button-fill color-red button-round"&gt;Round Red&lt;/a&gt;&lt;/p&gt;
+          | &lt;p&gt;&lt;a href="#" class="button button-big button-fill color-gray"&gt;Big Gray&lt;/a&gt;&lt;/p&gt;
+          | &lt;p&gt;&lt;a href="#" class="button button-fill button-big color-yellow"&gt;Big Yellow&lt;/a&gt;&lt;/p&gt;          
+      h3 List Block Buttons
+      p We can use buttons with our favourite <a href="list-view.html">List Views</a>:
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;List block buttons&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link list-button"&gt;List Button 1&lt;/a&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link list-button"&gt;List Button 2&lt;/a&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link list-button"&gt;List Button 3&lt;/a&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+          | &lt;div class="content-block-title"&gt;Inset list block buttons&lt;/div&gt;
+          | &lt;div class="list-block inset"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link list-button"&gt;List Button 1&lt;/a&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link list-button"&gt;List Button 2&lt;/a&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link list-button"&gt;List Button 3&lt;/a&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;          
+      h3 Using Grid
+      p And of course, you can place buttons anywhere where you want and need. Here is example using <a href="grid.html">Grid</a>:
+      pre
+        code
+          | &lt;div class="row"&gt;
+          |   &lt;div class="col-50"&gt;
+          |     &lt;a href="#" class="button button-big button-red"&gt;Cancel&lt;/a&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="col-50"&gt;
+          |     &lt;a href="#" class="button button-big button-green"&gt;Submit&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;          

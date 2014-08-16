@@ -1,0 +1,60 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Message Bar | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content
+      h1 Message Bar
+      p Framework7 comes with special resizealbe toolbar for usage with <a href="messages.html">Messages</a>
+      h2 Message Bar Layout
+      p Message Bar layour is pretty simple:
+      pre
+        code
+          | &lt;div class="toolbar messagebar" data-max-height="200"&gt;
+          |   &lt;div class="toolbar-inner"&gt;
+          |     &lt;textarea placeholder="Message"&gt;&lt;/textarea&gt;&lt;a href="#" class="link"&gt;Send&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;   
+      p Where
+        ul
+          li <code>data-max-height</code> - message bar max height limit when it grows depending on its content
+      p But its place is very important, it should be inside of "page" and right before "messages-content":
+      pre
+        code
+          | &lt;div class="page toolbar-fixed"&gt;
+          |   &lt;!-- messagebar --&gt;
+          |   &lt;div class="toolbar messagebar"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |       &lt;textarea placeholder="Message"&gt;&lt;/textarea&gt;&lt;a href="#" class="link"&gt;Send&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- messages-content --&gt;
+          |   &lt;div class="page-content messages-content"&gt;
+          |     &lt;div class="messages"&gt;
+          |       ... messages
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      h2 Related App Methods
+      .method-wrap
+        p
+          span.method myApp.destroyMessagebar(<span>container</span>) 
+          span - detach all message bar events and actions
+        ul.method-parameters
+          li
+            span.parameter container
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - of message bar element (&lt;div class="messagebar"&gt;) or of page that contains message bar
+      .method-wrap
+        p
+          span.method myApp.initMessagebar(<span>container</span>) 
+          span - attach all message bar events and actions again after destroy
+        ul.method-parameters
+          li
+            span.parameter container
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - of message bar element (&lt;div class="messagebar"&gt;) or of page that contains message bar
+      

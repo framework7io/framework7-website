@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>List View (Table View) | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-demo-device">
+        <iframe width="320" height="548" frameborder="0" scrolling="on"></iframe>
+        <div class="fade-overlay"></div>
+      </div>
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content with-device">
+          <div class="full-width">
+            <h1>List View (Table View)</h1>
+            <p>List views are versatile and powerful user interface compontents frequently found in iOS apps. A list view presents data in a scrollable list of multiple rows that may be divided into sections/groups.</p>
+            <p>List views have many purposes:</p>
+            <ul>
+              <li>To let users navigate through hierarchically structured data</li>
+              <li>To present an indexed list of items</li>
+              <li>To display detail information and controls in visually distinct groupings</li>
+              <li>To present a selectable list of options</li>
+            </ul>
+            <h2>List View layout</h2>
+            <p>Now let's look at the common layout of list view.</p>
+            <h3>List block</h3>
+            <p>List block is your list view elements wrapper, almost the same as <a href="content-block.html">content block</a> but for list elements.</p>
+            <p>So first of all, all your list view elements should be wrapped with list-block element:</p>
+            <pre><code>&lt;div class="list-block"&gt;
+    &lt;ul&gt;
+        ... list elements here ...
+    &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+            <div class="important-note">
+              <p>Don't put "list-block" inside of "<a href="content-block.html">content-block</a>"!</p>
+            </div>
+            <h3>List block label</h3>
+            <p>You can also add add list block label at the end of list block:</p>
+            <pre><code>&lt;div class="list-block"&gt;
+    &lt;ul&gt;
+        ... list elements here ...
+    &lt;/ul&gt;
+    &lt;div class="list-block-label"&gt;List block label text&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            <h3>List item/element    </h3>
+            <p>Single list element has pretty complex but flexible layout:</p>
+            <pre><code>&lt;li&gt;
+    &lt;div class="item-content"&gt;
+        &lt;div class="item-media"&gt;
+            &lt;i class="icon my-icon"&gt;&lt;/i&gt;
+        &lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;
+                List element title
+            &lt;/div&gt;
+            &lt;div class="item-after"&gt;
+                List element label
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/li&gt;</code></pre>
+            <p>Where:</p>
+            <ul>
+              <li>
+                <p><code>item-content</code> - main flex wrapper for <code>item-media</code> and <code>item-inner</code>. <strong>Requred</strong> element.</p>
+              </li>
+              <ul>
+                <li>
+                  <p><code>item-media</code> - container for your media element like icon, image, etc. <strong>Optional</strong> element.</p>
+                </li>
+                <li>
+                  <p><code>item-inner</code> - main flex wrapper for <code>item-title</code> and <code>item-after</code>. <strong>Requred</strong> element.</p>
+                </li>
+                <ul>
+                  <li>
+                    <p><code>item-title</code> - single-line list item title. <strong>Required</strong> element.</p>
+                  </li>
+                  <li>
+                    <p><code>item-after</code> - list item label. Could countain any additional HTML elements, like label text, or badge, or switch/toggle or button, etc. <strong>Optional</strong> element.</p>
+                  </li>
+                </ul>
+              </ul>
+            </ul>
+            <div class="important-note">
+              <ul>
+                <li>
+                  <p>Because .item-content is actually CSS flex-box element, note that <strong>"item-media" and "item-inner" should be direct children of "item-content"</strong>!</p>
+                </li>
+                <li>
+                  <p>For the same reason <strong>"item-title" and "item-after" should be direct children of "item-inner"</strong>!</p>
+                </li>
+              </ul>
+            </div>
+            <p>Also note that if your list item have nothing additional, you can user "item-content" class in <code>&lt;li&gt;</code> element:</p>
+            <pre><code>&lt;li class="item-content"&gt;
+    &lt;div class="item-media"&gt;
+        &lt;i class="icon my-icon"&gt;&lt;/i&gt;
+    &lt;/div&gt;
+    &lt;div class="item-inner"&gt;
+        &lt;div class="item-title"&gt;
+            List element title
+        &lt;/div&gt;
+        &lt;div class="item-after"&gt;
+            List element label
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/li&gt;</code></pre>
+          </div>
+          <h4 data-device-preview="../docs-demos/list-view.html">Example</h4>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="page-content"&gt;
+    &lt;div class="content-block-title"&gt;Full Layout&lt;/div&gt;
+    &lt;div class="list-block"&gt;
+      &lt;ul&gt;
+        &lt;li class="item-content"&gt;
+          &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;Item title&lt;/div&gt;
+            &lt;div class="item-after"&gt;Label&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class="item-content"&gt;
+          &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;Item with badge&lt;/div&gt;
+            &lt;div class="item-after"&gt;&lt;span class="badge"&gt;5&lt;/span&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class="item-content"&gt;
+          &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+          &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;Another item&lt;/div&gt;
+            &lt;div class="item-after"&gt;Another label&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;div class="list-block-label"&gt;List block label text goes here&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="content-block-title"&gt;Only titles&lt;/div&gt;
+    &lt;div class="list-block"&gt;
+      &lt;ul&gt;
+        &lt;li class="item-content"&gt;
+          &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;Item title&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class="item-content"&gt;
+          &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;Item with badge&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/li&gt;
+        &lt;li class="item-content"&gt;
+          &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;Another item&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+          <h3 data-device-preview="../docs-demos/list-view-links.html">Link Elements</h3>
+          <p>Of course in most cases we need to use list view elements as links (&lt;a&gt;) to other pages or data. In this case we need to wrap "item-content" with &lt;a class="item-link"&gt; element:</p>
+          <pre><code>&lt;a href="#" class="item-link"&gt;
+  &lt;div class="item-content"&gt;
+    &lt;div class="item-media"&gt;...&lt;/div&gt;
+    &lt;div class="item-inner"&gt;...&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/a&gt;          </code></pre>
+          <p>If your links contains nothing except "item-content" then we can just use link as "item-content":</p>
+          <pre><code>&lt;a href="#" class="item-link item-content"&gt;
+  &lt;div class="item-media"&gt;...&lt;/div&gt;
+  &lt;div class="item-inner"&gt;...&lt;/div&gt;
+&lt;/a&gt; </code></pre>
+          <p><strong>Note that "item-inner" has additional right padding and chevron icon when it is in "item-link"</strong></p>
+          <h4>Example</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="#" class="item-link item-content"&gt;
+        &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item title&lt;/div&gt;
+          &lt;div class="item-after"&gt;Label&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;a href="#" class="item-link item-content"&gt;
+        &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item with badge&lt;/div&gt;
+          &lt;div class="item-after"&gt;&lt;span class="badge"&gt;5&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;a href="#" class="item-link item-content"&gt;
+        &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Another item&lt;/div&gt;
+          &lt;div class="item-after"&gt;Another label&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="list-block-label"&gt;List block label text goes here&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          <h3 data-device-preview="../docs-demos/list-view-divider.html">List Divider</h3>
+          <p>List divider is a simple list element with title to visually divide one list items from another:</p>
+          <pre><code>&lt;li class="item-divider"&gt;Divider title here&lt;/li&gt;</code></pre>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;div class="item-inner"&gt;
+        &lt;div class="item-title"&gt;Item title&lt;/div&gt;
+        &lt;div class="item-after"&gt;Label&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;div class="item-inner"&gt;
+        &lt;div class="item-title"&gt;Title&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+    
+    &lt;!-- Divider --&gt;
+    &lt;li class="item-divider"&gt;Divider title here&lt;/li&gt;
+    
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;div class="item-inner"&gt;
+        &lt;div class="item-title"&gt;Item with badge&lt;/div&gt;
+        &lt;div class="item-after"&gt;&lt;span class="badge"&gt;5&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;div class="item-inner"&gt;
+        &lt;div class="item-title"&gt;Another item&lt;/div&gt;
+        &lt;div class="item-after"&gt;Another label&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="list-block-label"&gt;List block label text goes here&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          <h3 data-device-preview="../docs-demos/list-view-grouped.html">Grouped Lists</h3>
+          <p>Sometimes we need to group list view elements inside of single list block. In this case we need to additional group elements:</p>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;!-- First group--&gt;
+  &lt;div class="list-group"&gt;
+    &lt;ul&gt;
+      &lt;li class="list-group-title"&gt;First group&lt;/li&gt;
+      &lt;li class="item-content"&gt;
+        &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item title&lt;/div&gt;
+          &lt;div class="item-after"&gt;Label&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+      &lt;li class="item-content"&gt;
+        &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item with badge&lt;/div&gt;
+          &lt;div class="item-after"&gt;&lt;span class="badge"&gt;5&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+      ...
+    &lt;/ul&gt;
+  &lt;/div&gt;
+ 
+  &lt;!-- Second group--&gt;
+  &lt;div class="list-group"&gt;
+    &lt;ul&gt;
+      &lt;li class="list-group-title"&gt;Second Group&lt;/li&gt;
+      &lt;li class="item-content"&gt;
+        &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item title&lt;/div&gt;
+          &lt;div class="item-after"&gt;Label&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+      &lt;li class="item-content"&gt;
+        &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item with badge&lt;/div&gt;
+          &lt;div class="item-after"&gt;&lt;span class="badge"&gt;5&lt;/span&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+      ...
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;                  </code></pre>
+          <p>You may ask what is the difference from simple dividers? With list groups, group titles have sticky position during scroll within single group.</p>
+          <h3 data-device-preview="../docs-demos/list-view-inset.html">Inset List Block</h3>
+          <p>List blocks also could have inset (not fullwidth) styling. To make inset lost block just add "inset" class to "list-block":</p>
+          <pre><code>&lt;div class="list-block inset"&gt;
+  &lt;ul&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/div&gt;          </code></pre>
+          <p>It is also possible to make list inset only on iPad and keep it usual on iPhone. We need to use "tablet-inset" class for that:</p>
+          <pre><code>&lt;div class="list-block tablet-inset"&gt;
+  &lt;ul&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/div&gt;          </code></pre>
+          <div class="device-spacer"></div>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

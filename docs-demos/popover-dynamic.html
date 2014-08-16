@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages">
+          <div data-page="home" class="page navbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"><a href="#" class="link create-about">About</a></div>
+                <div class="center">Popover</div>
+                <div class="right"><a href="#" class="link create-links">Links</a></div>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="content-block">
+                <p><a href="#" class="create-about">Create About Popover</a></p>
+                <p><a href="#" class="create-links">Create Links Popover</a></p>
+                <p>Praesent urna mi, sodales ac dolor vitae, dictum mattis sem. Mauris a dui faucibus, condimentum arcu quis, porta felis. Sed at metus arcu. Maecenas sodales tellus risus, id <a href="#" class="create-about">About</a> nibh iaculis quis. Suspendisse dignissim ante lobortis, molestie nibh id, pharetra risus. Proin blandit neque nec nibh scelerisque, eu vulputate ipsum malesuada. Phasellus sapien diam, fermentum eget ornare in, <a href="#" class="create-links">Links</a> rutrum vel justo. Integer accumsan posuere quam.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <style>
+      .popover {
+        width:200px;
+      }
+    </style>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <script>
+      var myApp = new Framework7();
+      
+      var $$ = Dom7;
+      
+      $$('.create-about').on('click', function () {
+        var clickedLink = this;
+        var popoverHTML = '<div class="popover">'+
+                            '<div class="popover-inner">'+
+                              '<div class="content-block">'+
+                                '<p>About Popover created dynamically.</p>'+
+                                '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>'+
+                              '</div>'+
+                            '</div>'+
+        '</div>'
+        myApp.popover(popoverHTML, clickedLink);
+      });
+      
+      $$('.create-links').on('click', function () {
+        var clickedLink = this;
+        var popoverHTML = '<div class="popover">'+
+                            '<div class="popover-inner">'+
+                              '<div class="list-block">'+
+                                '<ul>'+
+                                '<li><a href="#" class="item-link list-button">Link 1</li>'+
+                                '<li><a href="#" class="item-link list-button">Link 2</li>'+
+                                '<li><a href="#" class="item-link list-button">Link 3</li>'+
+                                '</ul>'+
+                              '</div>'+
+                            '</div>'+
+        '</div>'
+        myApp.popover(popoverHTML, clickedLink);
+      });
+    </script>
+  </body>
+</html>

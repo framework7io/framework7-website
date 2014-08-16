@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Navbars &amp; Toolbars Layout | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-demo-device">
+        <iframe width="320" height="548" frameborder="0" scrolling="on"></iframe>
+        <div class="fade-overlay"></div>
+      </div>
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content with-device">
+          <h1>Navbars & Toolbars Layout</h1>
+          <p>Before we add Navbars and Toolbar to our App we need to decide which type of their layout we will use.</p>
+          <p>Framework7 allows you to be very flexible with it and there are 3 different types of Navbar/Toolbar layout which defines where to put them on your page/view</p>
+          <h2 data-device-preview="../docs-demos/bars-static-index.html">"Static" Layout</h2>
+          <p>Static layout is the probably most rarely used layout type. In this case Navbar and Toolbar are just parts of the scrollable page content and each page has its own Navbar and Toolbar:</p>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="views"&gt;
+    &lt;div class="view view-main"&gt;
+      &lt;div class="pages"&gt;
+        &lt;div data-page="index" class="page"&gt;
+          &lt;div class="page-content"&gt;
+            
+            &lt;!-- Top Navbar--&gt;
+            &lt;div class="navbar"&gt;
+              &lt;div class="navbar-inner"&gt;
+                &lt;div class="center"&gt;Awesome App&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;!-- /End of Top Navbar--&gt;
+            
+            &lt;p&gt;Other content goes here&lt;/p&gt;
+            ...
+            
+            &lt;!-- Bottom Toolbar--&gt;
+            &lt;div class="toolbar"&gt;
+              &lt;div class="toolbar-inner"&gt;
+                Hello
+              &lt;/div&gt;
+            &lt;/div&gt;          
+            &lt;!-- /End of Bottom Toolbar--&gt;
+            
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <h2 data-device-preview="../docs-demos/bars-fixed-index.html">"Fixed" Layout</h2>
+          <p>In Fixed layout each page also has its own navbar and toolbar but they are always visible on screen, so they not depend on page scroll:</p>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="views"&gt;
+    &lt;div class="view view-main"&gt;
+      &lt;div class="pages"&gt;
+        &lt;!-- Now we need additional "navbar-fixed" and "toolbar-fixed" classes on Page --&gt;
+        &lt;div data-page="index" class="page navbar-fixed toolbar-fixed"&gt;
+            
+          &lt;!-- Top Navbar--&gt;
+          &lt;div class="navbar"&gt;
+            &lt;div class="navbar-inner"&gt;
+              &lt;div class="center"&gt;Awesome App&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;!-- /End of Top Navbar--&gt;
+ 
+          &lt;div class="page-content"&gt;
+            &lt;p&gt;Other content goes here&lt;/p&gt;
+            ...
+          &lt;/div&gt;
+            
+          &lt;!-- Bottom Toolbar--&gt;
+          &lt;div class="toolbar"&gt;
+            &lt;div class="toolbar-inner"&gt;
+              Hello
+            &lt;/div&gt;
+          &lt;/div&gt;          
+          &lt;!-- /End of Bottom Toolbar--&gt;
+            
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <p>As you may see the difference from Static layout is that:</p>
+          <ul>
+            <li>
+              <p>Navbar and Toolbar are now child elements of Page (<code>&lt;div class="page"&gt;</code>)</p>
+            </li>
+            <li>
+              <p>Each page has additional "navbar-fixed" (for fixed Navbar) and "toolbar-fixed" (for fixed Toolbar) classes.</p>
+            </li>
+          </ul>
+          <p><strong>Note, that if you want to use Fixed layout for every page within single View, you can just add "navbar-fixed" and "toolbar-fixed" to parent Pages (<code>&lt;div class="pages"&gt;</code>) instead of adding them to every single page.</strong></p>
+          <h2 data-device-preview="../docs-demos/bars-through-index.html">"Through" Layout</h2>
+          <p>This one is the most interesting and widely used layout type - when Navbar and Toolbar stay the same through all pages within single View. With such layout you can use cool <strong>Dynamic Navbar</strong> (don't forget to enable it on <a href="views.html">View initialization</a>)</p>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="views"&gt;
+    &lt;div class="view view-main"&gt;
+            
+      &lt;!-- Top Navbar--&gt;
+      &lt;div class="navbar"&gt;
+        &lt;div class="navbar-inner"&gt;
+          &lt;div class="center"&gt;Awesome App&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!-- /End of Top Navbar--&gt;          
+            
+      &lt;!-- Now we need additional "navbar-through" and "toolbar-through" classes on Pages --&gt;
+      &lt;div class="pages navbar-through toolbar-through"&gt;
+        &lt;div data-page="index" class="page"&gt;
+          &lt;div class="page-content"&gt;
+            &lt;p&gt;Other content goes here&lt;/p&gt;
+            ...
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+            
+      &lt;!-- Bottom Toolbar--&gt;
+      &lt;div class="toolbar"&gt;
+        &lt;div class="toolbar-inner"&gt;
+          Hello
+        &lt;/div&gt;
+      &lt;/div&gt;          
+      &lt;!-- /End of Bottom Toolbar--&gt;
+            
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <p>As you may see the difference from Static and Fixed layout are:</p>
+          <ul>
+            <li>
+              <p>Navbar and Toolbar are now child elements of View (<code>&lt;div class="view"&gt;</code>)</p>
+            </li>
+            <li>
+              <p>View with "through" Navbar and Toolbar has additional "navbar-through" (for through-type Navbar) and "toolbar-through" (for through-type Toolbar) classes.</p>
+            </li>
+          </ul>
+          <h2 data-device-preview="../docs-demos/bars-mixed-index.html">Mixed Layouts</h2>
+          <p>As you guess you can different layout types for different Views, like "Fixed" layout in one View and "Through" in other one. But you can also mix these layouts within single View. For example, you may have "Through" Navbar and Fixed Toolbar:</p>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="views"&gt;
+    &lt;div class="view view-main"&gt;
+            
+      &lt;!-- Top Navbar--&gt;
+      &lt;div class="navbar"&gt;
+        &lt;div class="navbar-inner"&gt;
+          &lt;div class="center"&gt;Awesome App&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!-- /End of Top Navbar--&gt;          
+            
+      &lt;!-- Now we need additional "navbar-through" and "toolbar-fixed" classes on Pages --&gt;
+      &lt;div class="pages navbar-through fixed-through"&gt;
+        &lt;div data-page="index" class="page"&gt;
+          &lt;div class="page-content"&gt;
+            &lt;p&gt;Other content goes here&lt;/p&gt;
+            ...
+          &lt;/div&gt;
+ 
+          &lt;!-- Bottom Toolbar--&gt;
+          &lt;div class="toolbar"&gt;
+            &lt;div class="toolbar-inner"&gt;
+              Hello
+            &lt;/div&gt;
+          &lt;/div&gt;          
+          &lt;!-- /End of Bottom Toolbar--&gt;
+ 
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <h2 class="stop-scroll-device">No Navbar/Toolbar</h2>
+          <p>And of course if you don't need Navbar or Toolbar or both you may just not include them, and don't add appropriate classes ("navbar-fixed", "navbar-through", "toolbar-fixed", "toolbar-through") to page/pages/view.</p>
+          <h2>Cheat sheet</h2>
+          <p>So as you may see all these layout types are pretty easy to understand, all their difference is in additional classes on parent elements and different nesting level. Here is cheat sheet</p>
+          <h4>Static</h4>
+          <pre><code>.view   
+  .pages    
+    .page   
+      .page-content   
+        .navbar   
+        // other page content
+        .toolbar    </code></pre>
+          <h4>Fixed</h4>
+          <pre><code>.view
+  .pages.navbar-fixed.navbar-through
+    .page
+      .navbar
+      .page-content
+      .toolbar</code></pre>
+          <h4>Through</h4>
+          <pre><code>.view
+  .navbar
+  .pages.navbar-through.toolbar-through
+    .page
+      .page-content
+  .toolbar</code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

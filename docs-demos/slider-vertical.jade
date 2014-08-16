@@ -1,0 +1,38 @@
+extends _layout
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Vertical Slider
+              .right 
+          .page-content
+            .slider-container
+              .slider-wrapper
+                .slider-slide <span>Slide 1</span>
+                .slider-slide <span>Slide 2</span>
+                .slider-slide <span>Slide 3</span>
+                .slider-slide <span>Slide 4</span>
+              .slider-pagination
+
+block scripts
+  style.
+    .slider-slide {
+      background:#fff;
+    }
+    .slider-slide span {
+      text-align:center;
+      display:block;
+      margin:20px;
+      font-size:21px;
+    }
+  script.
+    var myApp = new Framework7(); 
+
+    var mySlider = myApp.slider('.slider-container', {
+      pagination:'.slider-pagination',
+      direction:'vertical',
+    });

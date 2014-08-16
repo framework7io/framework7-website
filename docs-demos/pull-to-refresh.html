@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages">
+          <div data-page="home" class="page navbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"></div>
+                <div class="center">Pull To Refresh</div>
+                <div class="right"></div>
+              </div>
+            </div>
+            <div class="page-content pull-to-refresh-content">
+              <div class="pull-to-refresh-layer">
+                <div class="preloader"></div>
+                <div class="pull-to-refresh-arrow"></div>
+              </div>
+              <div class="list-block media-list">
+                <ul>
+                  <li class="item-content">
+                    <div class="item-media"><img src="http://hhhhold.com/88/d/jpg?1" width="44"></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Yellow Submarine</div>
+                      </div>
+                      <div class="item-subtitle">Beatles</div>
+                    </div>
+                  </li>
+                  <li class="item-content">
+                    <div class="item-media"><img src="http://hhhhold.com/88/d/jpg?2" width="44"></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Don't Stop Me Now</div>
+                      </div>
+                      <div class="item-subtitle">Queen</div>
+                    </div>
+                  </li>
+                  <li class="item-content">
+                    <div class="item-media"><img src="http://hhhhold.com/88/d/jpg?3" width="44"></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Billie Jean</div>
+                      </div>
+                      <div class="item-subtitle">Michael Jackson</div>
+                    </div>
+                  </li>
+                </ul>
+                <div class="list-block-label">
+                  <p>Just pull page down to let the magic happen.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <script>
+      var myApp = new Framework7();
+      
+      var $$ = Dom7;
+      
+      // Dummy Content
+      var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
+      var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
+      // Pull to refresh content
+      var ptrContent = $$('.pull-to-refresh-content');
+      // Add 'refresh' listener on it
+      ptrContent.on('refresh', function (e) {
+          // Emulate 2s loading
+          setTimeout(function () {
+              var picURL = 'http://hhhhold.com/88/d/jpg?' + Math.round(Math.random() * 100);
+              var song = songs[Math.floor(Math.random() * songs.length)];
+              var author = authors[Math.floor(Math.random() * authors.length)];
+              var itemHTML = '<li class="item-content">' +
+                                '<div class="item-media"><img src="' + picURL + '" width="44"/></div>' +
+                                '<div class="item-inner">' +
+                                  '<div class="item-title-row">' +
+                                    '<div class="item-title">' + song + '</div>' +
+                                  '</div>' +
+                                  '<div class="item-subtitle">' + author + '</div>' +
+                                '</div>' +
+              '</li>';
+              // Prepend new list element
+              ptrContent.find('ul').prepend(itemHTML);
+              // When loading done, we need to reset it
+              myApp.pullToRefreshDone();
+          }, 2000);
+      });
+    </script>
+  </body>
+</html>

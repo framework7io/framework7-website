@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages">
+          <div data-page="home" class="page navbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"></div>
+                <div class="center">Preloader</div>
+                <div class="right"></div>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="content-block row">
+                <div class="col-25">Default<br><span class="preloader"></span></div>
+                <div class="col-25 col-dark">White<br><span class="preloader preloader-white"></span></div>
+                <div class="col-25">Big<br><span style="width:42px; height:42px" class="preloader"></span></div>
+                <div class="col-25 col-dark">White<br><span style="width:42px; height:42px" class="preloader preloader-white"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <style>
+      .col-25 {
+        padding:5px;
+        text-align:center;
+      }
+      .col-dark {
+        background:#222;
+      }
+    </style>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <script>var myApp = new Framework7();</script>
+  </body>
+</html>

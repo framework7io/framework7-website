@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /dist/
+Disallow: /kitchen-sink/
+Disallow: /apps/weather7/
+Disallow: /apps/todo7/
+Disallow: /docs-demos/
+Disallow: /dist/
+Disallow: /examples/split-view/
+Disallow: /examples/split-view-panel/
+Disallow: /examples/tab-bar/

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Views | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content">
+          <h1>Views</h1>
+          <p><strong>View</strong> (&lt;div class="view"&gt;) - is a separate visual part of app with its own settings, navigation and history. Each view also may have different navbar and toolbar layouts, different styles. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app. </p>
+          <p><strong>Views</strong> (&lt;div class="views"&gt;) - is the wrapper container for all visual views that stays visible most of time (not in modals, panels). Let's say that <strong>views</strong> is a main wrapper for body of your app. <strong>Only one "Views" element is allowed</strong></p>
+          <p>Let's look at views' HTML structure:</p>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="panel panel-left panel-cover"&gt;
+    &lt;div class="view panel-view"&gt; ... &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- Views --&gt;
+  &lt;div class="views"&gt;
+    &lt;!-- Your main view --&gt;
+    &lt;div class="view view-main"&gt;
+      &lt;!-- Navbar--&gt;
+      &lt;!-- Pages --&gt;
+      &lt;!-- Toolbar--&gt;
+    &lt;/div&gt;
+    &lt;!-- Another view --&gt;
+    &lt;div class="view another-view"&gt;
+      &lt;!-- Navbar--&gt;
+      &lt;!-- Pages --&gt;
+      &lt;!-- Toolbar--&gt;
+    &lt;/div&gt;          
+  &lt;/div&gt;
+  &lt;div class="popup"&gt;
+    &lt;div class="view popup-view"&gt; ... &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <p>As you see <strong>View</strong> may be almost in any part of your app, except one important rule - all visible views should within <strong>Views</strong> (&lt;div class="views"&gt;). This required for some animations when we need to move whole app (like when you open panel).</p>
+          <h2>Main View</h2>
+          <p>Your main view should have additional <strong>view-main</strong> class. Why we need main view? By default all links (which is not in any initialized view) will load pages in main view. Also if you use pushState hash navigation then it works only for main view's navigation.</p>
+          <h2>Initialize View</h2>
+          <p>We already have required views in HTML and our app is already <a href="init-app.html">initialized</a>, now we need to initialize our views in JavaScript. </p>
+          <p><strong>Note that not all views should be initialized, intialize only those where you need navigation.</strong> Other views (like in popup) may stay not initialized, we use them just for correct layout of navbars, pages and toolbars.</p>
+          <p>As you remember from previous article we have app's initialized instance in <b>myApp</b> variable:</p>
+          <pre><code>var myApp = new Framework7({
+  // ...
+});   </code></pre>
+          <p>This instance has a lot of methods to work with different parts of our app. And there is one method to initialize view:</p>
+          <p><span class="method">myApp.addView(<span>selector, parameters</span>)</span></span> - initialize View.</p>
+          <ul class="method-parameters">
+            <li><span class="parameter">container</span> - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. If string - CSS selector of View element</li>
+            <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span>. Object with View parameters</li>
+            <li class="method-returns">This method returns object with View instance.</li>
+          </ul>
+          <h3>View initialization parameters</h3>
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>dynamicNavbar</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true to enable Dynamic Navbar in this View</td>
+              </tr>
+              <tr>
+                <td>url</td>
+                <td>string</td>
+                <td>undefined</td>
+                <td>Default (inital) View's url. If not specified, then it is equal to document url</td>
+              </tr>
+              <tr>
+                <td>domCache</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>If enabled then all previous pages in navigation chain will not removed from DOM when you navigate deeper and deeper. It could be useful, for example, if you have some Form from 5 steps (5 pages) and when you are on last 5th page you need access to form that was on 1st page.</td>
+              </tr>
+              <tr>
+                <td>linksView</td>
+                <td>string / HTMLElement</td>
+                <td>undefined</td>
+                <td>CSS Selector of another view or HTMLElement of other view. By defaul all links in initialized (only) view will load pages in this view. You can change this logic on the fly by changing this paremeter. This tell links to load pages in other view.</td>
+              </tr>
+              <tr>
+                <td>animatePages</td>
+                <td>boolean</td>
+                <td></td>
+                <td>Enable/disable animated transitions between pages for the current View. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View.</td>
+              </tr>
+              <tr>
+                <th colspan="4">Swipe back</th>
+              </tr>
+              <tr>
+                <td>swipeBackPage</td>
+                <td>boolean</td>
+                <td></td>
+                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+              </tr>
+              <tr>
+                <td>swipeBackPageThreshold</td>
+                <td>number</td>
+                <td></td>
+                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+              </tr>
+              <tr>
+                <td>swipeBackPageActiveArea</td>
+                <td>number</td>
+                <td></td>
+                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+              </tr>
+              <tr>
+                <td>swipeBackPageBoxShadow</td>
+                <td>boolean</td>
+                <td></td>
+                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+              </tr>
+              <tr>
+                <th colspan="4">Callbacks</th>
+              </tr>
+              <tr>
+                <td>onSwipeBackMove(callbackData)</td>
+                <td>function</td>
+                <td></td>
+                <td>Callback function that will be executed during swipe back move. <code>callbackData</code> contains object with the following properties:
+                  <ul>
+                    <li><code>percentage</code> - number, swipe back percentage</li>
+                    <li><code>activePage</code> - HTMLElement with currently active page</li>
+                    <li><code>previousPage</code> - HTMLElement with previous (left) page</li>
+                    <li><code>activeNavbar</code> - HTMLElement with currently active navbar (only for Dynamic Navbar)</li>
+                    <li><code>previousNavbar</code> - HTMLElement with previous (left) navbar (only for Dynamic Navbar)</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Now when we know all required parameters we can initialize our views according to HTML example above:</p>
+          <pre><code>var myApp = new Framework7({
+  // ...
+});   
+ 
+/* Initialize views */
+var mainView = myApp.addView('.view-main', {
+  dynamicNavbar: true
+})
+var anotherView = myApp.addView('.another-view');</code></pre>
+          <p>That is all, it was pretty simple. In this example we don't init views that inside of panel and popup, because we don't use them for navigation, only for visual styling and correct layout. But if you need navigaion in those views you should also initialize them.</p>
+          <h2>View Methods & Properties</h2>
+          <p>As you may see in example above we initialize our views and store their instances in <code>mainView</code> and <code>anotherView</code> variables. View instance is an Object with useful methods and parameters that allows to manipulate views. Let's lool at list of these methods and parameters on example of <code>mainView</code>:</p>
+          <table class="methods-table">
+            <tbody>
+              <tr>
+                <th colspan="2">Properties</th>
+              </tr>
+              <tr>
+                <td>mainView.params</td>
+                <td>Returns object with intialized parameters. You can access and rewrite some parameters like <code>mainView.params.linksView = '.another-view'</code></td>
+              </tr>
+              <tr>
+                <td>mainView.history</td>
+                <td>Returns array with View's history. Each array element contains URL of loaded page</code></td>
+              </tr>
+              <tr>
+                <td>mainView.contentCache</td>
+                <td>Returns object with cached pages. It is available only if you use dynamically generated content</td>
+              </tr>
+              <tr>
+                <td>mainView.url</td>
+                <td>Returns string with url of currently active (loaded) page</td>
+              </tr>
+              <tr>
+                <td>mainView.pagesContainer</td>
+                <td>Returns HTMLElement link to pages element</td>
+              </tr>
+              <tr>
+                <td>mainView.activePage</td>
+                <td>Contains object with <a href="pages.html#page-data">Page Data</a> of currently active page</td>
+              </tr>
+              <tr>
+                <td>mainView.main</td>
+                <td>Returns true if this view is main view</td>
+              </tr>
+              <tr>
+                <th colspan="2">Methods</th>
+              </tr>
+              <tr>
+                <td rowspan="2" class="method">mainView.loadPage(<span>url</span>, <span>animatePages</span>)</td>
+                <td>
+                  <ul class="method-parameters">
+                    <li><span class="parameter">url</span> - <span class="parameter-type">string</span>. URL of page to load</li>
+                    <li><span class="parameter">animatePages</span> - <span class="parameter-type">boolean</span>. Oprional. Set to false/true to disable/enable animated page transitions for this page</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>This method will load required page to view. In other word will do the same if you click on some link with this URL</td>
+              </tr>
+              <tr>
+                <td rowspan="2" class="method">mainView.loadContent(<span>content</span>, <span>animatePages</span>)</td>
+                <td>
+                  <ul class="method-parameters">
+                    <li><span class="parameter">content</span> - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">[jQuery/Zepto/DOM7 collection]</span> or <span class="parameter-type">[array of HTMLElement]</span>. </li>
+                    <li><span class="parameter">animatePages</span> - <span class="parameter-type">boolean</span>. Oprional. Set to false/true to disable/enable animated page transitions for this page</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>This method allows to load dynamically generated content as a new usual page.</td>
+              </tr>
+              <tr>
+                <td rowspan="2" class="method">mainView.goBack(<span>url</span>, <span>animatePages</span>)</td>
+                <td>
+                  <ul class="method-parameters">
+                    <li><span class="parameter">url</span> - <span class="parameter-type">string</span>. URL of page to get back. URL will be ignored if there are pages in navigation history.</li>
+                    <li><span class="parameter">animatePages</span> - <span class="parameter-type">boolean</span>. Oprional. Set to false/true to disable/enable animated page transitions for this page</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>This method will trigger reverse animation to the previous page. In other word will do the same if you click on "back"</td>
+              </tr>
+              <tr>
+                <td>mainView.hideNavbar()</td>
+                <td>Hide navbar in this View</td>
+              </tr>
+              <tr>
+                <td>mainView.showNavbar()</td>
+                <td>Show navbar in this View</td>
+              </tr>
+              <tr>
+                <td>mainView.hideToolbar()</td>
+                <td>Hide toolbar in this View</td>
+              </tr>
+              <tr>
+                <td>mainView.showToolbar()</td>
+                <td>Show toolbar in this View</td>
+              </tr>
+              <tr>
+                <td>mainView.destroy()</td>
+                <td>Destroy initialized View, detach swipe events, and disable navigation</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>View Events</h2>
+          <table class="events-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Target</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>swipebackmove</td>
+                <td>View Element<span>&lt;div class="view"&gt;</span></td>
+                <td>Event will be triggered during swipe back move</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Default View URL </h3>
+          <p>If you think that for some reason Framework7 detects wrong default View URL (which is used for navigation history), or if you want to have different default View URL, you can specify it using <code>data-url</code> attribute on View element or using <code>url</code> parameter when you initialze View:</p>
+          <pre><code>&lt;div class="view" data-url="index2.html"&gt;</code></pre>
+          <h3>Access to View's instance with other ways</h3>
+          <p>Sometimes it could be useful to know or to get View's instance from HTML element. It is easy, right after we iniitalize view, Framework7 adds special property-link to our <code>&lt;div class="view"&gt;</code> element so we can access it any time in our JavaScript:</p>
+          <pre><code>var viewsElement = $$('.view-main')[0];
+var viewInstance = viewsElement.f7View;</code></pre>
+          <p>Also, all view instances are stored in special App property - <code>views</code> (array of View instances). If we need to find main view we can do like that:</p>
+          <pre><code>for (var i = 0; i < myApp.views.length; i ++) {
+  var view = myApp.views[i];
+  if (view.main) myApp.alert('I found main View!')
+}</code></pre>
+          <h2>What's next</h2>
+          <p>Let's look now on <a href="pages.html">Pages</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

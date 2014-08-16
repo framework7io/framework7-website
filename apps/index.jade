@@ -1,0 +1,79 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'apps';
+  - var title = 'Ready To Use Demo Apps';
+
+block content
+  h1 Ready To Use Demo Apps
+  p On this page you may find ready to use open source apps made with Framework7.
+  
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="http://dearb.me/hi/build/")
+    .info
+      h2 hiApp
+      .example-author by <a href="http://dearb.me/" target="_blank">Belin Chung</a>
+      p HiApp is a demo app to show how to use Framework 7 to build a hybrid app. HiApp is also a part of <a href="http://m.hiliaox.com" target="_blank">Hiliao</a>, which is a real working web app.
+      h4 hiApp Features:
+      ul.app-features
+        li <a href="http://requirejs.org/" target="_blank">RequireJS</a> - for file-separated MVC structure 
+        li <a href="https://github.com/janl/mustache.js" target="_blank">Mustache.js</a> as a client side template engine
+      p Open hiApp in new window and pin it to your home screen:
+      p.buttons 
+        a(href="http://dearb.me/hi/build/", target="_blank").button Open app in new window
+        a(href="https://github.com/BelinChung/HiApp", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Framework7-Contacts7-MVC/")
+    .info
+      h2 Contacts7-MVC
+      .example-author by <a href="https://github.com/philipshurpik" target="_blank">Philip Shurpik</a>
+      p Contacts7 shows you example of using beautiful Framework7 in MVC way for building data-driven contacts application. With PhoneGap you can easily convert it to native iOS 7 app.
+      h4 Contacts7 Features:
+      ul.app-features
+        li App uses <a href="http://requirejs.org/" target="_blank">RequireJS</a> to bring handy file-separated MVC structure 
+        li <a href="http://handlebarsjs.com/" target="_blank">Handlebars.js</a> as a client side template engine
+        li Contacts list is sorted by name and by groups dynamically using <a href="http://lodash.com/" target="_blank">Lo-Dash</a>
+        li Local Storage - all contacts data is stored in Local Storage.
+        li Full Screen. Contacts7 is a full screen app (on iOS 7)
+      p Open Contacts7 in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./Framework7-Contacts7-MVC/", target="_blank").button Open app in new window
+        a(href="https://github.com/philipshurpik/Framework7-Contacts7-MVC", target="_blank").button Source code
+    .clearfix
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./weather7/")
+    .info
+      h2 Weather7
+      p Weather7 is the simple weather webapp that demonstrates how easy to create fully functioning iOS 7 app with Framework7. With PhoneGap you can easily convert it to native iOS 7 app.
+      h4 Weather7 Features:
+      ul.app-features
+        li <strong>Local Storage</strong>. All your personal weather data is stored in Local Storage, so you don't need to add weather locations each time you launch app.
+        li <strong>Manifest Cache</strong>. Due to Manifest Cache you can still access app without internet connection. You need internet connection only when you need to update weather data.
+        li <strong>YQL</strong> - fast and easy way to get the required data. Here we use YQL to search locations and get weather data for selected ones.
+        li <strong>Full Screen</strong>. Weather7 is a full screen app (on iOS 7). Just add it to your home screen to make sure. And the fun part is that with Framework7 you can easily control background color of status bar - click on "+" icon to open search popup and look at status bar.
+      p So Weather7 is a real fully functioning iOS 7 app. Just open it in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./weather7/", target="_blank").button Open app in new window
+        a(href="https://github.com/nolimits4web/Framework7/tree/master/apps/weather7", target="_blank").button Source code
+    .clearfix
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./todo7/")
+    .info
+      h2 ToDo7
+      p ToDo7 is the incredibly simple "to do" webapp with simple tasks management. ToDo7 demonstrates that you can create fully functioning iOS app with minimal efforts in a few hours. Using PhoneGap you can convert it to native iOS app.
+      h4 ToDo7 Features:
+      ul.app-features
+        li <strong>Local Storage</strong>. All your "to do" tasks are stored in Local Storage, so you don't need to add them each time you launch app.
+        li <strong>Manifest Cache</strong>. Due to Manifest Cache you can still access app without internet connection. 
+        li <strong>Full Screen</strong>. ToDo7 is also a full screen app (on iOS 7). 
+      p So just open it in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./todo7/", target="_blank").button Open app in new window
+        a(href="https://github.com/nolimits4web/Framework7/tree/master/apps/todo7", target="_blank").button Source code
+    .clearfix

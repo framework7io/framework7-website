@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages">
+          <div data-page="home" class="page navbar-fixed toolbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"><a href="#" class="link"><i class="icon icon-back"></i><span>Back</span></a></div>
+                <div class="center">Layout Themes</div>
+                <div class="right"><a href="#" class="link icon-only"><i class="icon icon-bars"></i></a></div>
+              </div>
+            </div>
+            <div class="toolbar">
+              <div class="toolbar-inner"><a href="#" class="link">Left</a><a href="#" class="link">Right</a></div>
+            </div>
+            <div class="page-content">
+              <div class="content-block">Praesent varius justo odio. Duis in <a href="#">cursus</a> lorem. Suspendisse convallis porta ornare. Vivamus consectetur varius ligula convallis posuere. Proin quis neque eget nisi tempus <a href="#">faucibus</a> at volutpat leo. Suspendisse id erat aliquet, vulputate sem ac, iaculis metus. Interdum et malesuada fames ac ante ipsum primis in faucibus.</div>
+              <div class="content-block">
+                <p class="buttons-row"><a href="#" class="button active">Button 1</a><a href="#" class="button">Button 2</a><a href="#" class="button">Button 3</a></p>
+                <p><a href="#" class="button button-big button-fill">Fill Button</a></p>
+              </div>
+              <div class="content-block-title">Choose Layout Theme</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <label class="label-radio item-content">
+                      <input type="radio" name="color-radio" value="" checked>
+                      <div class="item-inner">
+                        <div class="item-title">Default</div>
+                      </div>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="label-radio item-content">
+                      <input type="radio" name="color-radio" value="layout-dark">
+                      <div class="item-inner">
+                        <div class="item-title">Dark</div>
+                      </div>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="label-radio item-content">
+                      <input type="radio" name="color-radio" value="layout-white">
+                      <div class="item-inner">
+                        <div class="item-title">White</div>
+                      </div>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <link href="../dist/css/framework7.themes.css" rel="stylesheet">
+    <script>
+      var myApp = new Framework7();
+      var $$ = Dom7;
+      $$('input[name="color-radio"]').on('change', function () {
+        if (this.checked) {
+          $$('.view').removeClass('layout-dark layout-white');
+          $$('.view').addClass(this.value);
+        }
+      });
+    </script>
+  </body>
+</html>

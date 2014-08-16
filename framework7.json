@@ -1,0 +1,48 @@
+{
+  "framework": "Framework7",
+  "url": "http://idangero.us/framework7/",
+  "framework_current_version" : "0.9.2",
+  "comparison_data_last_update" : "08.14.2014",
+
+  "tutorial_url": "http://idangero.us/framework7/tutorials/",
+  "license": "mit-license",
+  "documentation_url": "http://idangero.us/framework7/docs/",
+
+  "ios": "true",
+  "android": "partially",
+  "blackberry": "partially",
+
+  "mobilewebsite": "true",
+  "webapp": "true",
+  "nativeapp": "via",
+  "hybridapp": "true",
+
+  "html": "true",
+  "css": "true",
+  "js": "true",
+
+  "accelerometer": "via",
+  "camera": "via",
+  "capture": "via",
+  "compass": "via",
+  "connection": "via",
+  "contacts": "via",
+  "device": "via",
+  "nativeevents": "via",
+  "file": "via",
+  "geolocation": "via",
+  "notification": "via",
+  "storage": "via",
+  "gestures_multitouch": "true",
+  "messages_telephone": "via",
+  "bluetooth": "via",
+  "nfc": "via",
+  "vibration": "via",
+
+  "cd": "true",
+  "widgets": "true",
+  "accessibility": "true",
+
+  "free": "true",
+  "opensource": "true"
+}

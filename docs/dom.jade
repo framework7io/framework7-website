@@ -1,0 +1,367 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Dom7 - Custom DOM Library | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content
+      h1 Dom7 - Custom DOM Library
+      p Framework7 doesn't use any third party library, even for DOM manipulation. It has its own custom DOM7 - DOM library that utilizes most edge and high-performance methods for DOM manipulation. You don’t need to learn something new, its usage is very simple because it has the same syntax as well known jQuery library with support of the most popular and widely used methods and jQuery-like chaining.
+      p To start use it there is a <code>Dom7</code> global window function, but we recommend to assign it to some local variable with more handy name, like <code>$$</code>, but not to "$" to prevent confilicts with other libraries like jQuery or Zepto:
+      pre
+        code
+          | //Export DOM7 to local variable to make it easy accessable
+          | var $$ = Dom7;
+      h2 Usage Example
+      p Just everything you already know:
+      pre
+        code
+          | $$('.something').on('click', function (e) {
+          |     $$(this).addClass('hello').attr('title', 'world').insertAfter('.something-else');
+          | });
+      h2 Available Methods
+      p All these methods works almost in the same way and with the same arguments as in jQuery or Zepto:
+      table.methods-table
+        tr
+          td .addClass(<span>className</span>) 
+          td
+        tr
+          td .removeClass(<span>className</span>) 
+          td
+        tr
+          td .hasClass(<span>className</span>) 
+          td
+        tr
+          td .toggleClass(<span>className</span>) 
+          td
+        tr
+          td .prop(<span>propName</span>) 
+          td
+        tr
+          td .prop(<span>propName</span>, <span>propValue</span>) 
+          td
+        tr
+          td .attr(<span>attrName</span>) 
+          td
+        tr
+          td .attr(<span>attrName</span>, <span>attrValue</span>) 
+          td
+        tr
+          td .removeAttr(<span>attrName</span>) 
+          td
+        tr
+          td .data(<span>key</span>) 
+          td
+        tr
+          td .data(<span>key</span>, <span>value</span>) 
+          td
+        tr
+          td .val() 
+          td
+        tr
+          td .val(<span>newValue</span>) 
+          td
+        tr
+          td .transform(<span>CSSTransformString</span>) 
+          td Adds prefixed CSS transform property: <code>$$('a').transform('rotate(90deg)')</code>
+        tr
+          td .transition(<span>transitionDuration</span>) 
+          td Set CSS transition-duration property to collection: <code>$$('p').transition(300)</code>
+        tr
+          td .on(<span>eventName</span>, <span>handler</span>) 
+          td
+        tr
+          td .on(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>) 
+          td Live/delegated event listener
+        tr
+          td .off(<span>eventName</span>, <span>handler</span>) 
+          td
+        tr
+          td .off(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>) 
+          td Remove live/delegated event listener
+        tr
+          td .trigger(<span>eventName</span>, <span>eventData</span>) 
+          td
+        tr
+          td .transitionEnd(<span>callback</span>, <span>permanent</span>) 
+          td Adds prefixed transitionEnd event listener to collection:
+            pre
+              code
+                $$('a').transitionEnd(function(){ /* do something */ })
+        tr
+          td .animationEnd(<span>callback</span>) 
+          td Adds prefixed animationEnd event listener to collection:
+            pre
+              code
+                $$('a').animationEnd(function(){ /* do something */ })
+        tr
+          td .width() 
+          td
+        tr
+          td .outerWidth() 
+          td
+        tr
+          td .height() 
+          td
+        tr
+          td .outerHeight()
+          td
+        tr
+          td .offset() 
+          td
+        tr
+          td .hide() 
+          td
+        tr
+          td .show() 
+          td
+        tr
+          td .css(<span>property</span>) 
+          td
+        tr
+          td .css(<span>property</span>, <span>value</span>) 
+          td
+        tr
+          td .css(<span>propertiesObject</span>) 
+          td
+        
+        tr
+          td .each(<span>callback</span>) 
+          td
+        tr
+          td .html() 
+          td
+        tr
+          td .html(<span>newInnerHTML</span>) 
+          td
+        tr
+          td .text() 
+          td
+        tr
+          td .text(<span>newTextContent</span>) 
+          td
+        tr
+          td .is(<span>CSSSelector</span>) 
+          td
+        tr
+          td .is(<span>HTMLElement</span>) 
+          td
+        tr
+          td .index() 
+          td
+        tr
+          td .eq(<span>index</span>) 
+          td
+        tr
+          td .append(<span>newHTML</span>) 
+          td
+        tr
+          td .append(<span>HTMLElement</span>) 
+          td
+        tr
+          td .prepend(<span>newHTML</span>) 
+          td
+        tr
+          td .prepend(<span>HTMLElement</span>) 
+          td    
+        tr
+          td .insertBefore(<span>CSSSelector</span>) 
+          td
+        tr
+          td .insertBefore(<span>HTMLElement</span>) 
+          td
+        tr
+          td .insertAfter(<span>CSSSelector</span>) 
+          td
+        tr
+          td .insertAfter(<span>HTMLElement</span>) 
+          td
+        tr
+          td .next(selector) 
+          td
+        tr
+          td .nextAll(selector) 
+          td
+        tr
+          td .prev(selector) 
+          td
+        tr
+          td .prevAll(selector) 
+          td
+        tr
+          td .parent(<span>CSSSelector</span>) 
+          td
+        tr
+          td .parents(<span>CSSSelector</span>) 
+          td
+        tr
+          td .find(<span>CSSSelector</span>) 
+          td
+        tr
+          td .children(<span>CSSSelector</span>) 
+          td
+        tr
+          td .remove() 
+          td
+        tr
+          td .scrollTop() 
+          td Get scrollTop position of element
+        tr
+          td .scrollTop(position, duration) 
+          td Set scrollTop "position" with animation during "duration" (in ms). Scroll top position will be set immediately if duration is not specified
+        tr
+          td .scrollLeft() 
+          td Get scrollLeft position of element
+        tr
+          td .scrollLeft(position, duration) 
+          td Set scrollLeft "position" with animation during "duration" (in ms). Scroll left postion will be set immediately if duration is not specified
+        tr
+          td .scrollTo(left, top, duration) 
+          td Set scroll left and scroll top with animation during "duration" (in ms). Scroll postion will be set immediately if duration is not specified
+        
+        th(colspan="2") Shortcuts
+        tr
+          td .click()
+          td
+        tr
+          td .click(<span>handler</span>) 
+          td
+        tr
+          td .blur()
+          td
+        tr
+          td .blur(<span>handler</span>) 
+          td
+        tr
+          td .focus()
+          td
+        tr
+          td .focus(<span>handler</span>) 
+          td
+        tr
+          td .focusin()
+          td
+        tr
+          td .focusin(<span>handler</span>) 
+          td
+        tr 
+          td .focusout()
+          td
+        tr 
+          td .focusout(<span>handler</span>) 
+          td
+
+        tr 
+          td .keyup()
+          td
+        tr 
+          td .keyup(<span>handler</span>) 
+          td
+
+        tr
+          td .keydown()
+          td
+        tr
+          td .keydown(<span>handler</span>) 
+          td
+        tr
+          td .keypress()
+          td
+        tr
+          td .keypress(<span>handler</span>) 
+          td
+
+        tr
+          td .submit()
+          td
+        tr
+          td .submit(<span>handler</span>) 
+          td
+        tr
+          td .change()
+          td
+        tr
+          td .change(<span>handler</span>) 
+          td
+
+        tr
+          td .mousedown()
+          td
+        tr
+          td .mousedown(<span>handler</span>) 
+          td
+
+        tr
+          td .mousemove()
+          td
+        tr
+          td .mousemove(<span>handler</span>) 
+          td
+
+        tr
+          td .mouseup()
+          td
+        tr
+          td .mouseup(<span>handler</span>) 
+          td
+
+        tr
+          td .mouseenter()
+          td
+        tr
+          td .mouseenter(<span>handler</span>) 
+          td
+
+        tr
+          td .mouseleave()
+          td
+        tr
+          td .mouseleave(<span>handler</span>) 
+          td
+
+        tr
+          td .mouseout()
+          td
+        tr
+          td .mouseout(<span>handler</span>) 
+          td
+
+        tr
+          td .mouseover()
+          td
+        tr
+          td .mouseover(<span>handler</span>) 
+          td
+
+        tr
+          td .touchstart()
+          td
+        tr
+          td .touchstart(<span>handler</span>) 
+          td
+
+        tr
+          td .touchend()
+          td
+        tr
+          td .touchend(<span>handler</span>) 
+          td
+
+        tr
+          td .touchmove()
+          td
+        tr
+          td .touchmove(<span>handler</span>) 
+          td
+
+        tr
+          td .resize(<span>handler</span>) 
+          td
+
+        tr
+          td .scroll(<span>handler</span>) 
+          td

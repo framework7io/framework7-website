@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Login Screen | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-demo-device">
+        <iframe width="320" height="548" frameborder="0" scrolling="on"></iframe>
+        <div class="fade-overlay"></div>
+      </div>
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content with-device">
+          <div class="full-width">
+            <h1>Login Screen</h1>
+            <p>Framework7 comes with ready to use Login Screen layout. It could be used inside of page or popup (embedded) or as a standalone overlay.</p>
+            <h2>Login Screen Layout</h2>
+            <p>First of all, let's look at the standalone Login Screen layout. It behaves almost in the same way as Popup:</p>
+            <pre><code>&lt;body&gt;
+  ...
+  &lt;!-- Should be a direct child of BODY --&gt;
+  &lt;div class="login-screen"&gt;
+      &lt;!-- Default view-page layout --&gt;
+      &lt;div class="view"&gt;
+        &lt;div class="page"&gt;
+          &lt;!-- page-content has additional login-screen content --&gt;
+          &lt;div class="page-content login-screen-content"&gt;
+            &lt;div class="login-screen-title"&gt;My App&lt;/div&gt;
+            &lt;!-- Login form --&gt;
+            &lt;form&gt;
+              &lt;div class="list-block"&gt;
+                &lt;ul&gt;
+                  &lt;li class="item-content"&gt;
+                    &lt;div class="item-inner"&gt;
+                      &lt;div class="item-title label"&gt;Username&lt;/div&gt;
+                      &lt;div class="item-input"&gt;
+                        &lt;input type="text" name="username" placeholder="Username"&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/li&gt;
+                  &lt;li class="item-content"&gt;
+                    &lt;div class="item-inner"&gt;
+                      &lt;div class="item-title label"&gt;Password&lt;/div&gt;
+                      &lt;div class="item-input"&gt;
+                        &lt;input type="password" name="password" placeholder="Password"&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/div&gt;
+              &lt;div class="list-block"&gt;
+                &lt;ul&gt;
+                  &lt;li&gt;
+                    &lt;a href="#" class="item-link list-button"&gt;Sign In&lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+                &lt;div class="list-block-labe"&gt;Some text with login information.&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/form&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+            <div class="important-note">
+              <p>Note that all elements you see inside of &lt;div class="login-screen"&gt; are optional, but you can use them as boilerplate layout for your Login form</p>
+            </div>
+            <h2>Open and close Login Screen</h2>
+          </div>
+          <h3 data-device-preview="../docs-demos/login-screen.html">From HTML</h3>
+          <p>It is possible to open and close Login Screen using special classes on links:</p>
+          <div class="important-note">
+            <ul>
+              <li>
+                <p>To open login screen we need to add <strong>"open-login-screen"</strong> class to any HTML element (prefered to link)</p>
+              </li>
+              <li>
+                <p>To close login screen we need to add <strong>"close-login-screen"</strong> class to any HTML element (prefered to link)</p>
+              </li>
+            </ul>
+          </div>
+          <p>According to above note:</p>
+          <pre><code>&lt;body&gt;
+  ...
+    &lt;div class="page-content"&gt;
+      &lt;div class="content-block"&gt;
+        &lt;p&gt;&lt;a href="#" class="open-login-screen"&gt;Open Login Screen&lt;/a&gt;&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  ...
+  &lt;div class="login-screen"&gt;
+    &lt;div class="view"&gt;
+      &lt;div class="page"&gt;
+        &lt;div class="page-content login-screen-content"&gt;
+          &lt;div class="login-screen-title"&gt;My App&lt;/div&gt;
+          &lt;form&gt;
+            &lt;div class="list-block"&gt;
+              &lt;ul&gt;
+                &lt;li class="item-content"&gt;
+                  &lt;div class="item-inner"&gt;
+                    &lt;div class="item-title label"&gt;Username&lt;/div&gt;
+                    &lt;div class="item-input"&gt;
+                      &lt;input type="text" name="username" placeholder="Your username"&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li class="item-content"&gt;
+                  &lt;div class="item-inner"&gt;
+                    &lt;div class="item-title label"&gt;Password&lt;/div&gt;
+                    &lt;div class="item-input"&gt;
+                      &lt;input type="password" name="password" placeholder="Your password"&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/div&gt;
+            &lt;div class="list-block"&gt;
+              &lt;ul&gt;
+                &lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Sign In&lt;/a&gt;&lt;/li&gt;
+              &lt;/ul&gt;
+              &lt;div class="list-block-label"&gt;
+                &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
+                &lt;p&gt;&lt;a href="#" class="close-login-screen"&gt;Close Login Screen&lt;/a&gt;&lt;/p&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/form&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <h3 data-device-preview="../docs-demos/login-screen-js.html">Using JavaScript</h3>
+          <p>We can also open and close Login Screen with JavaScript, we need to look at related App methods:</p>
+          <p><span class="method">myApp.loginScreen()</span> - open Login Screen</span></p>
+          <p><span class="method">myApp.closeModal(<span>loginScreen</span>)</span> - close Login Screen</span></p>
+          <ul class="method-parameters">
+            <li><span class="parameter">loginScreen</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Login Screen/Popup/Modal will be closed</li>
+          </ul>
+          <pre><code>&lt;body&gt;
+  ...
+    &lt;div class="page-content"&gt;
+      &lt;div class="content-block"&gt;
+        &lt;p&gt;&lt;a href="#" class="open-login"&gt;Open Login Screen&lt;/a&gt;&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  ...
+  &lt;div class="login-screen"&gt;
+    ... login screen content ...
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <pre><code>var myApp = new Framework7();
+ 
+var $$ = Dom7;
+ 
+$$('.open-login').on('click', function () {
+  myApp.loginScreen();
+});</code></pre>
+          <h2>Login Screen Events</h2>
+          <p>Login Screen has the same events as Modals, they could be useful when you need to do something in JavaScript when Login Screen opened/closed</p>
+          <table class="events-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Target</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>open</td>
+                <td>Login Screen Element<span>&lt;div class="login-screen"&gt;</span></td>
+                <td>Event will be triggered when Login Screen starts its opening animation</td>
+              </tr>
+              <tr>
+                <td>opened</td>
+                <td>Login Screen Element<span>&lt;div class="login-screen"&gt;</span></td>
+                <td>Event will be triggered after Login Screen completes its opening animation</td>
+              </tr>
+              <tr>
+                <td>close</td>
+                <td>Login Screen Element<span>&lt;div class="login-screen"&gt;</span></td>
+                <td>Event will be triggered when Login Screen starts its closing animation</td>
+              </tr>
+              <tr>
+                <td>closed</td>
+                <td>Login Screen Element<span>&lt;div class="login-screen"&gt;</span></td>
+                <td>Event will be triggered after Login Screen completes its closing animation</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2 data-device-preview="../docs-demos/login-screen-start.html">Start App With Login Screen</h2>
+          <p>In many cases we need to see Login Screen opened as App's first screen. To make it visible on load, we just need to add "modal-in" class to Login Screen overlay:</p>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="login-screen modal-in"&gt;
+    ... login screen content ...
+  &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+          <div style="height:400px"></div>
+          <h2 data-device-preview="../docs-demos/login-screen-embedded.html">Embedded Login Screen</h2>
+          <p>It is also possible to embed Login Screen into the page or popup. Let's look on the example of Login Screen inside of page:</p>
+          <p><em>index page:</em></p>
+          <pre><code>&lt;div data-page="home" class="page navbar-fixed"&gt;
+  &lt;div class="navbar"&gt;
+    &lt;div class="navbar-inner"&gt;
+      &lt;div class="left"&gt;&lt;/div&gt;
+      &lt;div class="center"&gt;Embedded Login Screen&lt;/div&gt;
+      &lt;div class="right"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="page-content"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;p&gt;&lt;a href="login-screen-page.html" class="open-login-screen"&gt;Open page with Login Screen&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          <p><em>login-screen-page.html:</em></p>
+          <pre><code>&lt;div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback"&gt;
+  &lt;div class="page-content login-screen-content"&gt;
+    &lt;div class="login-screen-title"&gt;My App&lt;/div&gt;
+    &lt;form&gt;
+      &lt;div class="list-block"&gt;
+        &lt;ul&gt;
+          &lt;li class="item-content"&gt;
+            &lt;div class="item-inner"&gt;
+              &lt;div class="item-title label"&gt;Username&lt;/div&gt;
+              &lt;div class="item-input"&gt;
+                &lt;input type="text" name="username" placeholder="Your username"/&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/li&gt;
+          &lt;li class="item-content"&gt;
+            &lt;div class="item-inner"&gt;
+              &lt;div class="item-title label"&gt;Password&lt;/div&gt;
+              &lt;div class="item-input"&gt;
+                &lt;input type="password" name="password" placeholder="Your password"/&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class="list-block"&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Sign In&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;div class="list-block-label"&gt;
+          &lt;p&gt;Click Sign In to close Login Screen&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  &lt;/div&gt;
+&lt;/div&gt;   </code></pre>
+          <p><em>my-app.js       </em></p>
+          <pre><code>var myApp = new Framework7();
+var $$ = Dom7;
+ 
+var mainView = myApp.addView('.view-main');
+ 
+myApp.onPageInit('login-screen', function (page) {
+  var pageContainer = $$(page.container);
+  pageContainer.find('.list-button').on('click', function () {
+    var username = pageContainer.find('input[name="username"]').val();
+    var password = pageContainer.find('input[name="password"]').val();
+    // Handle username and password
+    myApp.alert('Username: ' + username + ', Password: ' + password, function () {
+      mainView.goBack();
+    });
+  });
+});     </code></pre>
+          <div class="important-note">
+            <p>Note that on login screen page we have additional "no-navbar", "no-toolbar" and "no-swipeback" classes to hide navigation element from user</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages">
+          <div data-page="home" class="page navbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"></div>
+                <div class="center">Swipeout</div>
+                <div class="right"></div>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="list-block">
+                <ul>
+                  <li class="swipeout">
+                    <div class="swipeout-content item-content">
+                      <div class="item-media"><i class="icon icon-f7"></i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Item title</div>
+                        <div class="item-after">Label</div>
+                      </div>
+                    </div>
+                    <div class="swipeout-actions">
+                      <div class="swipeout-actions-inner"><a href="#" class="action1">Action 1</a></div>
+                    </div>
+                  </li>
+                  <li class="swipeout">
+                    <div class="swipeout-content item-content">
+                      <div class="item-media"><i class="icon icon-f7"></i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Item with badge</div>
+                        <div class="item-after"><span class="badge">5</span></div>
+                      </div>
+                    </div>
+                    <div class="swipeout-actions">
+                      <div class="swipeout-actions-inner"><a href="#" class="action1">Action 1</a><a href="#" class="action2">Action 2</a></div>
+                    </div>
+                  </li>
+                  <li class="swipeout">
+                    <div class="swipeout-content item-content">
+                      <div class="item-media"><i class="icon icon-f7"></i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Another item</div>
+                        <div class="item-after">Another label</div>
+                      </div>
+                    </div>
+                    <div class="swipeout-actions">
+                      <div class="swipeout-actions-inner"><a href="#" class="action1">Action 1</a><a href="#" class="action2">Action 2</a></div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <script>
+      var myApp = new Framework7();
+      
+      var $$ = Dom7;
+      
+      $$('.action1').on('click', function () {
+        myApp.alert('Action 1');
+      });
+      $$('.action2').on('click', function () {
+        myApp.alert('Action 2');
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left"></div>
+            <div class="center sliding">Smart Select Multiple</div>
+            <div class="right"></div>
+          </div>
+        </div>
+        <div class="pages navbar-through">
+          <div data-page="home" class="page">
+            <div class="page-content">
+              <div class="list-block">
+                <ul>
+                  <li><a href="#" class="item-link smart-select">
+                      <!-- "multiple" attribute for multiple select-->
+                      <select name="car" multiple>
+                        <!-- options grouped within "optgroup" tag-->
+                        <optgroup label="Japanese">
+                          <option value="honda" selected>Honda</option>
+                          <option value="lexus">Lexus</option>
+                          <option value="mazda">Mazda</option>
+                          <option value="nissan">Nissan</option>
+                          <option value="toyota">Toyota</option>
+                        </optgroup>
+                        <optgroup label="German">
+                          <option value="audi" selected>Audi</option>
+                          <option value="bmw">BMW</option>
+                          <option value="mercedes">Mercedes</option>
+                          <option value="vw">Volkswagen</option>
+                          <option value="volvo">Volvo</option>
+                        </optgroup>
+                        <optgroup label="American">
+                          <option value="cadillac">Cadillac</option>
+                          <option value="chrysler">Chrysler</option>
+                          <option value="dodge">Dodge</option>
+                          <option value="ford" selected>Ford</option>
+                        </optgroup>
+                      </select>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Car</div>
+                        </div>
+                      </div></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <script>
+      var myApp = new Framework7({
+        animateNavBackIcon:true
+      }); 
+      var mainView = myApp.addView('.view-main', {
+        dynamicNavbar: true,
+      });
+    </script>
+  </body>
+</html>

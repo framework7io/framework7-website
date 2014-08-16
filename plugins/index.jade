@@ -1,0 +1,21 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'plugins';
+  - var title = 'Framework7 Plugins';
+
+block content
+  h1 Framework7 Plugins
+
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./3dpanels/demo/")
+    .info
+      h2 3D Panels
+      .example-author by <a href="http://www.idangero.us" target="_blank">iDangero.us</a>
+      p 3D Panels plugin converts "reveal"-effect panels to great looking 3D panels which are also available as a swipe-panels 
+      p.buttons 
+        a(href="https://github.com/nolimits4web/Framework7-3D-Panels", target="_blank").button Plugin Page
+    .clearfix
+
+  

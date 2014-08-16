@@ -1,0 +1,245 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Messages | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Messages
+        p Messages component will help you with visualisation of comments and messaging system in your App.
+        h2 Messages Layout
+        pre
+          code
+            | ...   
+            | &lt;div class="page"&gt;
+            |   &lt;div class="page-content messages-content"&gt;
+            |     &lt;div class="messages"&gt;
+            |       &lt;!-- Date stamp --&gt;
+            |       &lt;div class="messages-date"&gt;Sunday, Feb 9 &lt;span&gt;12:58&lt;/span&gt;&lt;/div&gt;
+            | 
+            |       &lt;!-- Sent message (by default - green and on right side) --&gt;
+            |       &lt;div class="message message-sent"&gt;
+            |         &lt;!-- Bubble with text --&gt;
+            |         &lt;div class="message-text"&gt;Hello&lt;/div&gt;
+            |       &lt;/div&gt;
+            | 
+            |       &lt;!-- Another sent message --&gt;
+            |       &lt;div class="message message-sent"&gt;
+            |         &lt;!-- Bubble with text --&gt;
+            |         &lt;div class="message-text"&gt;How are you?&lt;/div&gt;
+            |       &lt;/div&gt;
+            | 
+            |       &lt;!-- Received message (by default - grey on left side) --&gt;
+            |       &lt;div class="message message-received"&gt;
+            |         &lt;!-- Sender name --&gt;
+            |         &lt;div class="message-name"&gt;Kate&lt;/div&gt;
+            | 
+            |         &lt;!-- Bubble with text --&gt;
+            |         &lt;div class="message-text"&gt;I am fine, thanks&lt;/div&gt;
+            | 
+            |         &lt;!-- Sender avatar --&gt;
+            |         &lt;div style="background-image:url(http://lorempixel.com/output/people-q-c-100-100-9.jpg)" class="message-avatar"&gt;&lt;/div&gt;
+            |       &lt;/div&gt;
+            | 
+            |       &lt;!-- Another date stamp --&gt;
+            |       &lt;div class="messages-date"&gt;Sunday, Feb 3 &lt;span&gt;11:58&lt;/span&gt;&lt;/div&gt;
+            | 
+            |       &lt;!-- Sent message with image --&gt;
+            |       &lt;div class="message message-sent"&gt;
+            |         &lt;!-- Bubble with image --&gt;
+            |         &lt;div class="message-text"&gt;&lt;img src="http://lorempixel.com/300/300/"&gt;&lt;/div&gt;
+            |       &lt;/div&gt;
+            |     &lt;/div&gt;
+            |   &lt;/div&gt;
+            | &lt;/div&gt;        
+            | ...   
+        p Where:
+        ul
+          li
+            p <code>"messages-content"</code> - required additional class for messages wrapper. Should be added to "page-content"
+          li
+            p <code>"messages"</code> - required additional wrapper for messages bubbles. Required element.
+          li
+            p <code>"messages-date"</code> - single date stamp container. Contains coversation date and time (in &lt;span&gt;)
+          li
+            p <code>"message"</code> - single message
+          li
+            p <code>"message-name"</code> - sender name
+          li
+            p <code>"message-text"</code> - text bubble
+          li
+            p <code>"message-avatar"</code> - sender avatar
+          li
+            p <code>"message-sent"</code> - additional class for single message which indicates that this message was sent by user. It stays on right side with green background color.
+          li
+            p <code>"message-received"</code> - additional class for single message which indicates that this message was received by user. It stays on left side with grey background color.
+          
+          
+        p Additional classes that will be added by JavaScript automatically:
+        ul
+          li
+            p <code>"message-pic"</code> - additional class for single message (received or sent) with &lt;img&gt; Such message shouldn't contain anything except image.
+          li
+            p <code>"message-last"</code> - additional class for single message (received or sent) to indicate last received or last sent message in current conversation by one sender. Such message' bubble will have "tail", avatar and larger bottom offset. 
+          li
+            p <code>"message-first"</code> - additional class for single message (received or sent) to indicate first received or first sent message in current conversation by one sender. Such message' bubble will have also have visible sender name. 
+          li
+            p <code>"message-with-avatar"</code> - additional class for single message (received or sent) that contains avatar
+          
+        .important-note
+          p In such default layout - new messages will appear on bottom of the page. If you need to have new messages on top of the page you need to add additional "<b>new-messages-first</b>" class to &lt;div class="messages"&gt;
+        h2 Messages JavaScript API
+        p There are few App's methods that we can use with Messages:
+        .method-wrap
+          p
+            span.method myApp.addMessage(<span>parameters</span>) 
+            span - add message
+          ul.method-parameters
+            li
+              span.parameter parameters
+              |  - <span class="parameter-type">object</span> message parameters. Required.
+
+        .method-wrap
+          p
+            span.method myApp.updateMessagesAngles(<span>messagesContainer</span>) 
+            span - set "message-last" class along all messages bubbles in messagesContainer to add "tail" on required messages
+          ul.method-parameters
+            li
+              span.parameter messagesContainer
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - messages container (&lt;div class="messages"&gt;). Required
+
+        .method-wrap
+          p
+            span.method myApp.scrollMessagesContainer(<span>messagesContent</span>) 
+            span - animated scroll "messages-content" to the last message
+          ul.method-parameters
+            li
+              span.parameter messagesContent
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - messages content (&lt;div class="page-content messages-content"&gt;). Optional
+        p Let's look on single message parameters object that we should pass to myApp.addMessage method:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              td text
+              td string
+              td
+              td Message text. Also could be HTML string. So if you want to add message with picture, you should pass here image's HTML: <code>&lt;img src="..."&gt;</code>. <b>Required</b>
+            tr
+              td name
+              td string
+              td
+              td Sender name. <b>Optional</b>
+            tr
+              td avatar
+              td string
+              td
+              td Sender avatar URL string. <b>Optional</b>
+            tr
+              td type
+              td string
+              td 'sent'
+              td Message type - 'sent' or 'received'. <b>Optional</b>
+            tr
+              td day
+              td string
+              td 
+              td Day string, for example - 'Today', 'Monday', 'Yesterday', 'Fri', '22.05.2014'. <b>Optional</b>
+            tr
+              td time
+              td string
+              td
+              td Time string, for example - '22:45', '10:30 AM'. <b>Optional</b>
+      h2(data-device-preview="../docs-demos/messages.html") Example
+      pre
+        code
+          | &lt;div class="page toolbar-fixed"&gt;
+          |   &lt;div class="page-content messages-content"&gt;
+          |     &lt;div class="messages"&gt;
+          |       &lt;div class="messages-date"&gt;Sunday, Feb 9 &lt;span&gt;12:58&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="message message-sent"&gt;
+          |         &lt;div class="message-text"&gt;Hello&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="message message-sent"&gt;
+          |         &lt;div class="message-text"&gt;How are you?&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="message message-received"&gt;
+          |         &lt;div class="message-name"&gt;Kate&lt;/div&gt;
+          |         &lt;div class="message-text"&gt;I am fine, thanks&lt;/div&gt;
+          |         &lt;div style="background-image:url(http://lorempixel.com/output/people-q-c-100-100-9.jpg)" class="message-avatar"&gt;&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="messages-date"&gt;Sunday, Feb 3 &lt;span&gt;11:58&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="message message-sent"&gt;
+          |         &lt;div class="message-text"&gt;Nice photo?&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="message message-sent message-pic"&gt;
+          |         &lt;div class="message-text"&gt;&lt;img src="http://lorempixel.com/300/300/"&gt;&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="message message-received"&gt;
+          |         &lt;div class="message-name"&gt;Kate&lt;/div&gt;
+          |         &lt;div class="message-text"&gt;Wow, awesome!&lt;/div&gt;
+          |         &lt;div style="background-image:url(http://lorempixel.com/output/people-q-c-100-100-9.jpg)" class="message-avatar"&gt;&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | // Conversation flag
+          | var conversationStarted = false;
+          | 
+          | // Handle message
+          | $$('.messagebar .link').on('click', function () {
+          |   var textarea = $$('.messagebar textarea');
+          |   // Message text
+          |   var messageText = textarea.val().trim();
+          |   // Exit if empy message
+          |   if (messageText.length === 0) return;
+          | 
+          |   // Empty textarea
+          |   textarea.val('').trigger('change');
+          | 
+          |   // Random message type
+          |   var messageType = (['sent', 'received'])[Math.round(Math.random())];
+          | 
+          |   // Avatar and name for received message
+          |   var avatar, name;
+          |   if(messageType === 'received') {
+          |     avatar = 'http://lorempixel.com/output/people-q-c-100-100-9.jpg';
+          |     name = 'Kate';
+          |   }
+          |   // Add message
+          |   myApp.addMessage({
+          |     // Message text
+          |     text: messageText,
+          |     // Random message type
+          |     type: messageType,
+          |     // Avatar and name:
+          |     avatar: avatar,
+          |     name: name,
+          |     // Day
+          |     day: !conversationStarted ? 'Today' : false,
+          |     time: !conversationStarted ? (new Date()).getHours() + ':' + (new Date()).getMinutes() : false
+          |   })
+          | 
+          |   // Update conversation flag
+          |   conversationStarted = true;
+          | });             

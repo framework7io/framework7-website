@@ -1,0 +1,651 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Slider | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Slider
+        p Framework7 comes with powerful slider component with hardware accelerated transitions and great native behavior. It is built in a way similar to our well known <a href="http://www.idangero.us/sliders/swiper/">Swiper</a>.
+        h2 Slider HTML Layout
+        p Slider HTML layout is pretty simple:
+        pre
+          code
+            | &lt;!-- Slider container --&gt;
+            | &lt;div class="slider-container"&gt;
+            |     &lt;!-- Slides wrapper --&gt;
+            |     &lt;div class="slider-wrapper"&gt;
+            |         &lt;!-- Slides --&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 1&lt;/div&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 2&lt;/div&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 3&lt;/div&gt;
+            |         ... other slides ...
+            |     &lt;/div&gt;
+            |     &lt;!-- Pagination, if required --&gt;
+            |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+            | &lt;/div&gt;
+        p Where:
+        ul
+          li
+            p <code>slider-container</code> - main slider container with slides and paginations. Required element
+            ul
+              li
+                p <code>slider-wrapper</code> - additional wrapper for slides. Required element
+                ul
+                  li
+                    p <code>slider-slide</code> - single slide element. Could contain any HTML inside
+              li
+                p <code>slider-pagination</code> - container with pagination bullets. Note, that pagination bullets will be created automatically. Optional element
+                    
+
+
+        h2 Initialize Slider with JavaScript
+        p Now, when we have Slider' HTML, we need to initialize it. We need to use related App's method:
+        .method-wrap
+          p
+            span.method myApp.slider(<span>sliderContainer</span>, <span>parameters</span>) 
+            span - initialize slider with options
+          ul.method-parameters
+            li
+              span.parameter sliderContainer
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of slider container HTML element. Required.
+            li
+              span.parameter parameters
+              |  - <span class="parameter-type">object</span> - object with Slider parameters. Optional.
+            
+            li.method-returns <strong>Method returns initialized Slider instance</strong>
+        p For example:
+        pre
+          code
+            | var mySlider = app.slider('.slider-container', {
+            |     speed: 400,
+            |     spaceBetween: 100
+            | });   
+        .important-note Note that Slider container should be in DOM on a moment of initialization. So if you use slider not on home page, you need to initialize it within <a href="pages.html#page-events">pageInit</a> event
+        h2 Slider Parameters
+        p Let's look on list of all available parameters:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            
+            tr
+              td initialSlide
+              td number
+              td 0
+              td Index number of initial slide.
+            tr
+              td spaceBetween
+              td number
+              td 0
+              td Distance between slides in px.
+            tr
+              td slidesPerView
+              td number
+              td 1
+              td Number of slides per view (slides visible at the same time on slider's container).
+            tr
+              td direction
+              td string
+              td 'horizontal'
+              td Could be 'horizontal' or 'vertical' (for vertical slider).
+            tr
+              td speed
+              td number
+              td 300
+              td Duration of transition between slides (in ms)
+            tr
+              td preventClicks
+              td boolean
+              td true
+              td Set to "true" to prevent accidental unwanted clicks on links during swiping
+            tr
+              td preventClicksPropagation
+              td boolean
+              td true
+              td Set to "true" to prevent clicks event propagation on links during swiping
+            tr
+              th(colspan="4") Pagination
+            tr
+              td pagination
+              td string / HTMLElement
+              td undefined
+              td String with CSS selector or HTML element of the container with pagination. 
+            tr
+              td paginationHide
+              td boolean
+              td true
+              td Toggle (hide/true) pagination container visibility when click on Slider's container.
+            tr
+              th(colspan="4") Autoplay
+            tr
+              td autoplay
+              td number
+              td -
+              td delay between transitions (in ms). If this parameter is not specified, auto play will be disabled
+            tr
+              td autoplayDisableOnInteraction
+              td boolean
+              td true
+              td Set to false and autoplay will not be disabled after user interactions (swipes), it will be restarted every time after interaction
+            tr
+              th(colspan="4") Navigation Buttons
+            tr
+              td nextButton
+              td string / HTMLElement
+              td undefined
+              td String with CSS selector or HTML element of the element that will work like "next" button after click on it
+            tr
+              td prevButton
+              td string / HTMLElement
+              td undefined
+              td String with CSS selector or HTML element of the element that will work like "previous" button after click on it
+            tr
+              td indexButton
+              td string / HTMLElement
+              td undefined
+              td String with CSS selector or HTML element of the element that will work like "index" button after click on it. For example if you use pagination and pass here ".slider-pagination-bullet", then click on each bullet will produce transition to the slide with same index number as the index number of clicked bullet.
+            tr
+              th(colspan="4") Callbacks
+            tr
+              td onSlideChangeStart(slider)
+              td function
+              td 
+              td Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives slider instance as an argument.
+            tr
+              td onSlideChangeEnd(slider)
+              td function
+              td 
+              td Callback function, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.
+            tr
+              td onTouchStart(slider, event)
+              td function
+              td 
+              td Callback function, will be executed when user touch Slider. Receives slider instance and 'touchstart' event as an arguments.
+            tr
+              td onTouchMove(slider, event)
+              td function
+              td 
+              td Callback function, will be executed when user touch and move finger over Slider. Receives slider instance and 'touchmove' event as an arguments.
+            tr
+              td onOppositeTouchMove(slider, event)
+              td function
+              td 
+              td Callback function, will be executed when user touch and move finger over Slider in direction opposite to specified in "direction" parameter. Receives slider instance and 'touchmove' event as an arguments.
+            tr
+              td onSliderMove(slider, event)
+              td function
+              td 
+              td Callback function, will be executed when user touch and move finger over Slider and move it. Receives slider instance and 'touchmove' event as an arguments.
+            tr
+              td onTouchEnd(slider, event)
+              td function
+              td 
+              td Callback function, will be executed when user release Slider. Receives slider instance and 'touchend' event as an arguments.
+            tr
+              td onClick(slider, event)
+              td function
+              td 
+              td Callback function, will be executed when user click/tap on Slider after 300ms delay. Receives slider instance and 'touchend' event as an arguments.
+            tr
+              td onTap(slider, event)
+              td function
+              td 
+              td Callback function, will be executed when user click/tap on Slider. Receives slider instance and 'touchend' event as an arguments.
+            tr
+              td onDoubleTap(slider, event)
+              td function
+              td 
+              td Callback function, will be executed when user double tap on Slider's container. Receives slider instance and 'touchend' event as an arguments.
+            tr
+              th(colspan="4") Namespace
+            tr
+              td slideClass
+              td string
+              td 'slider-slide'
+              td CSS class name of slide
+            tr
+              td slideActiveClass
+              td string
+              td 'slider-slide-active'
+              td CSS class name of currently active slide
+            tr
+              td slideNextClass
+              td string
+              td 'slider-slide-next'
+              td CSS class name of slide which is right after currently active slide
+            tr
+              td slidePrevClass
+              td string
+              td 'slider-slide-prev'
+              td CSS class name of slide which is right before currently active slide
+            tr
+              td wrapperClass
+              td string
+              td 'slider-wrapper'
+              td CSS class name of slides' wrapper
+            tr
+              td bulletClass
+              td string
+              td 'slider-pagination-bullet'
+              td CSS class name of single pagination bullet
+            tr
+              td bulletActiveClass
+              td string
+              td 'slider-pagination-active'
+              td CSS class name of currently active pagination bullet
+        h2 Slider Methods & Properties
+        p After we initialize Slider we have its initialized instance in variable (like <code>mySlider</code> variable in example above) with helpful methods and properties:
+        table.methods-table
+          tbody
+            tr
+              th(colspan="2") Properties
+            tr
+              td mySlider.params
+              td Object with passed initialization parameters
+            tr
+              td mySlider.container
+              td <a href="dom.html">Dom7</a> element with slider container HTML element
+            tr
+              td mySlider.slides
+              td <a href="dom.html">Dom7</a> collection of slides HTML elements
+            tr
+              td mySlider.activeSlideIndex
+              td Index number of currently active slide
+            tr
+              td mySlider.previousSlideIndex
+              td Index number of previously active slide
+            tr
+              td mySlider.isFirst
+              td <b>true</b> if slider on most "left"/"top" position
+            tr
+              td mySlider.isLast
+              td <b>true</b> if slider on most "right"/"bottom" position
+            tr
+              th(colspan="2") Methods
+            tr
+              td mySlider.slideNext();
+              td Run transition to next slide
+            tr
+              td mySlider.slidePrev();
+              td Run transition to previous slide
+            tr
+              td(rowspan="2") mySlider.slideTo(<span>index</span>, <span>speed</span>);
+              td 
+                ul.method-parameters
+                  li
+                    span.parameter index
+                    |  - <span class="parameter-type">number</span> - index number of slide
+                  li
+                    span.parameter speed
+                    |  - <span class="parameter-type">number</span> - transition duration (in ms)
+
+            tr
+              td run transition to the slide with index number equal to 'index' parameter for the duration equal to 'speed' parameter.
+            tr
+              td mySlider.updateSlides();
+              td This method will recalculate number of slides and their offsets. Useful after you add/remove slides with JavaScript
+            tr
+              td mySlider.updateSize();
+              td Recalculate slider and slides sizes. Useful after you change slider size with JavaScript
+            tr
+              td mySlider.detachEvents();
+              td Detach all events listeners
+            tr
+              td mySlider.attachEvents();
+              td Atach all events listeners again
+            tr
+              td mySlider.destroy();
+              td Destroy slider instance and detach all events listeners
+        h2 Initialize Slider with HTML
+        p If you don't need Slider callback you can initialize slider using HTML without JavaScript. You can do that just by adding additional "slider-init" class to <code>slider-container</code>
+        pre
+          code
+            | &lt;!-- slider-init to initialize slider automatically --&gt;
+            | &lt;div class="slider-container slider-init"&gt;
+            |     &lt;div class="slider-wrapper"&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 1&lt;/div&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 2&lt;/div&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 3&lt;/div&gt;
+            |         ... other slides ...
+            |     &lt;/div&gt;
+            | &lt;/div&gt;  
+        p But what about Slider parameters. In this case we need to pass them in <b>data-</b> attributes:
+        pre
+          code
+            | &lt;!-- slider properties in data- attributes --&gt;
+            | &lt;div class="slider-container slider-init" data-speed="400" data-spaceBetween="40" data-pagination=".slider-pagination"&gt;
+            |     &lt;div class="slider-wrapper"&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 1&lt;/div&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 2&lt;/div&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 3&lt;/div&gt;
+            |         ... other slides ...
+            |     &lt;/div&gt;
+            |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+            | &lt;/div&gt;        
+        p Or we can pass all slider parameters in <strong>valid JSON format</strong> in data-slider attribute:
+        pre
+          code
+            | &lt;!-- slider properties in JSON format in data-slider attribute --&gt;
+            | &lt;div class="slider-container slider-init" data-slider="{'speed':'400', 'spaceBetween':'40', 'pagination': '.slider-pagination'}"&gt;
+            |     &lt;div class="slider-wrapper"&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 1&lt;/div&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 2&lt;/div&gt;
+            |         &lt;div class="slider-slide"&gt;Slide 3&lt;/div&gt;
+            |         ... other slides ...
+            |     &lt;/div&gt;
+            |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+            | &lt;/div&gt;
+        h2 Access to Slider's Instance
+        p If you initialize Slider using HTML it is still possible to access to Slider's instance. It is "f7Slider" property of slider's container HTML element:
+        pre
+          code
+            | var mySlider = $$('.slider-container')[0].f7Slider;
+            | 
+            | // Now you can use all slider methods like
+            | mySlider.slideNext();
+
+      h2 Examples
+      h3(data-device-preview="../docs-demos/slider-default.html") Default slider with pagination          
+      pre
+        code
+          | /* A bit of demo styles */;
+          | .slider-slide {
+          |   background:#fff;
+          | }
+          | .slider-slide span {
+          |   text-align:center;
+          |   display:block;
+          |   margin:20px;
+          |   font-size:21px;
+          | }
+      pre
+        code
+          | ...
+          | &lt;div class="page-content"&gt;
+          |   &lt;!-- Slider --&gt;
+          |   &lt;div class="slider-container"&gt;
+          |     &lt;div class="slider-wrapper"&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 3&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 4&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | ...
+      pre
+        code
+          |   var myApp = new Framework7(); 
+          | 
+          |   // Init slider and store its instance in mySlider variable
+          |   var mySlider = myApp.slider('.slider-container', {
+          |     pagination:'.slider-pagination'
+          |   });
+            
+      h3(data-device-preview="../docs-demos/slider-vertical.html") Vertical Slider
+      p Styles and HTML layout are the same as in previous example
+      pre
+        code
+          |   var myApp = new Framework7(); 
+          | 
+          |   // Init slider and store its instance in mySlider variable
+          |   var mySlider = myApp.slider('.slider-container', {
+          |     pagination:'.slider-pagination',
+          |     direction: 'vertical'
+          |   });
+      div(style="height:200px")
+      h3(data-device-preview="../docs-demos/slider-space.html") With space between slides
+      p Styles and HTML layout are the same as in previous examples
+      pre
+        code
+          |   var myApp = new Framework7(); 
+          | 
+          |   // Init slider and store its instance in mySlider variable
+          |   var mySlider = myApp.slider('.slider-container', {
+          |     pagination:'.slider-pagination',
+          |     spaceBetween: 100 // 100px between slides
+          |   });
+      div(style="height:200px")
+      h3(data-device-preview="../docs-demos/slider-multiple.html") Multiple Sliders
+      pre
+        code
+          | .slider-slide {
+          |   background: #fff;
+          |   box-sizing: border-box;
+          |   border: 1px solid #ccc;
+          | }
+          | .slider-slide span {
+          |   text-align:center;
+          |   display:block;
+          |   margin: 20px;
+          |   font-size:21px;
+          | }
+          | .slider-container {
+          |   height: 120px;
+          |   margin: 35px 0;
+          | }
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;1 Slide Per View, 50px Between&lt;/div&gt;
+          |   &lt;div class="slider-container slider-1"&gt;
+          |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="slider-wrapper"&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;2 Slides Per View, 20px Between&lt;/div&gt;
+          |   &lt;div class="slider-container slider-2"&gt;
+          |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="slider-wrapper"&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;3 Slides Per View, 10px Between&lt;/div&gt;
+          |   &lt;div class="slider-container slider-3"&gt;
+          |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="slider-wrapper"&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;Vertical, 0px Between&lt;/div&gt;
+          |   &lt;div class="slider-container slider-vertical"&gt;
+          |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="slider-wrapper"&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 5&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;Slow speed&lt;/div&gt;
+          |   &lt;div class="slider-container slider-slow"&gt;
+          |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="slider-wrapper"&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          | &lt;/div&gt;  
+      pre
+        code
+          | var myApp = new Framework7(); 
+          | 
+          | // 1 Slide Per View, 50px Between
+          | var mySlider1 = myApp.slider('.slider-1', {
+          |   pagination:'.slider-1 .slider-pagination',
+          |   spaceBetween: 50
+          | });
+          | 
+          | // 2 Slides Per View, 20px Between
+          | var mySlider2 = myApp.slider('.slider-2', {
+          |   pagination:'.slider-2 .slider-pagination',
+          |   spaceBetween: 20,
+          |   slidesPerView: 2
+          | });
+          | 
+          | // 3 Slides Per View, 10px Between
+          | var mySlider3 = myApp.slider('.slider-3', {
+          |   pagination:'.slider-3 .slider-pagination',
+          |   spaceBetween: 10,
+          |   slidesPerView: 2
+          | });
+          | 
+          | // Vertical, 0px Between
+          | var mySliderVertical = myApp.slider('.slider-vertical', {
+          |   pagination:'.slider-vertical .slider-pagination',
+          |   direction: 'vertical'
+          | });
+          | 
+          | // Slow speed
+          | var mySliderSlow = myApp.slider('.slider-slow', {
+          |   pagination:'.slider-slow .slider-pagination',
+          |   speed: 600
+          | });                  
+      h3(data-device-preview="../docs-demos/slider-nested.html") Nested Sliders
+      p Let's initialize slider in this example using just HTML:
+      pre
+        code
+          | .slider-slide {
+          |   background:#fff;
+          | }
+          | .slider-slide span {
+          |   text-align:center;
+          |   display:block;
+          |   margin:20px;
+          |   font-size:21px;
+          | }
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;!-- Horizontal parent slider --&gt;
+          |   &lt;div data-pagination=".slider-pagination-h" data-paginationHide="false" class="slider-container slider-init"&gt;
+          |     &lt;div class="slider-pagination slider-pagination-h"&gt;&lt;/div&gt;
+          |     &lt;div class="slider-wrapper"&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Horizontal Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;
+          | 
+          |         &lt;!-- Vertical nested child slider --&gt;
+          |         &lt;div class="slider-container slider-init" data-pagination=".slider-pagination-v" data-direction="vertical" data-paginationHide="false"&gt;
+          |           &lt;div class="slider-pagination slider-pagination-v"&gt;&lt;/div&gt;
+          |           &lt;div class="slider-wrapper"&gt;
+          |             &lt;div class="slider-slide"&gt;&lt;span&gt;Vertical Slide 1&lt;/span&gt;&lt;/div&gt;
+          |             &lt;div class="slider-slide"&gt;&lt;span&gt;Vertical Slide 2&lt;/span&gt;&lt;/div&gt;
+          |             &lt;div class="slider-slide"&gt;&lt;span&gt;Vertical Slide 3&lt;/span&gt;&lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          | 
+          |       &lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Horizontal Slide 3&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="slider-slide"&gt;&lt;span&gt;Horizontal Slide 4&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          | &lt;/div&gt; 
+      h3(data-device-preview="../docs-demos/slider-custom.html") Custom Controls
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="slider-custom"&gt;
+          |     &lt;div class="slider-container"&gt;
+          |       &lt;div class="slider-pagination"&gt;&lt;/div&gt;
+          |       &lt;div class="slider-wrapper"&gt;
+          |         &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 3&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 4&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 5&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 6&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="slider-slide"&gt;&lt;span&gt;Slide 7&lt;/span&gt;&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;a href="#" class="slider-prev-button"&gt;&lt;i class="icon icon-prev-blue"&gt;&lt;/i&gt;&lt;/a&gt;
+          |     &lt;a href="#" class="slider-next-button"&gt;&lt;i class="icon icon-next-blue"&gt;&lt;/i&gt;&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | .slider-custom {
+          |   position:relative;
+          |   height:100%;
+          | }
+          | .slider-slide {
+          |   background: #fff;
+          | }
+          | .slider-slide span {
+          |   text-align:center;
+          |   display:block;
+          |   margin: 20px;
+          |   font-size:21px;
+          | }
+          | .slider-prev-button, .slider-next-button {
+          |   position: absolute;
+          |   width:44px;
+          |   background: rgba(0,0,0,0.7);
+          |   top: 50%;
+          |   margin-top: -22px;
+          |   line-height: 44px;
+          |   text-align:center;
+          | }
+          | .slider-prev-button {
+          |   left:0;
+          | }
+          | .slider-next-button {
+          |   right:0;
+          | }
+          | .slider-pagination-bullet {
+          |   width: 10px;
+          |   height: 10px;
+          |   background: none;
+          |   border:1px solid #aaa;
+          |   border-radius: 0 0 0 0;
+          |   opacity:1;
+          |   cursor: pointer;
+          | }
+          | .slider-pagination-active {
+          |   background: #007aff;
+          |   border-color: #007aff;
+          | }   
+      pre
+        code
+          | var myApp = new Framework7(); 
+          | 
+          | var mySlider = myApp.slider('.slider-container', {
+          |   pagination: '.slider-pagination',
+          |   paginationHide: false,
+          |   nextButton: '.slider-next-button',
+          |   prevButton: '.slider-prev-button',
+          |   indexButton: '.slider-pagination-bullet'
+          | });                         
+      

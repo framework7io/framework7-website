@@ -1,0 +1,264 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Action Sheet | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Action Sheet
+        p Action Sheet is a slide-up pane for presenting the user with a set of alternatives for how to proceed with a given task
+        p You can also use action sheets to prompt the user to confirm a potentially dangerous action. 
+        p The action sheet contains an optional title and one or more buttons, each of which corresponds to an action to take.
+        .important-note
+          p Note that is not recommended to use Action Sheet on large screens (iPad). On large screens you should use <a href="popover.html">Popover</a> instead.
+        h2 Create and open Action Sheet
+        p Action sheet is the dynamic element, it could be created and opened only using JavaScript. Let's look at the related App's method to create Action Sheet:
+        p
+          span.method myApp.actions(<span>groups</span>)</span> - create and open Action Sheet with specified amount of buttons groups
+          br
+          | or 
+          br
+          span.method myApp.actions(<span>buttons</span>)</span> - create and open Action Sheet with one group and specified buttons
+
+        ul.method-parameters
+          li
+            span.parameter groups
+            |  - <span class="parameter-type">array</span>. Array of groups, each group contains array of buttons
+          li
+            span.parameter buttons
+            |  - <span class="parameter-type">array</span>. Array of buttons. In this case there will be one group
+          li.method-returns This method returns dynamically created Action Sheet's HTMLElement
+
+        p Each Button in <em>buttons</em> should be presented as Object with button parameters:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              td text
+              td string
+              td 
+              td String with Button's text (could be HTML string)
+            tr
+              td bold
+              td boolean
+              td false
+              td Optional. Set to true for bold button text
+            tr
+              td color
+              td string
+              td 
+              td Optional. Button color, one of 10 default colors
+            tr
+              td label
+              td boolean
+              td true
+              td Optional. If "true" then it will be title instead of button
+            tr
+              td onClick
+              td function
+              td 
+              td Optional. Callback function that will be executed when user click this button
+        p Let's look at examples
+
+      pre(data-device-preview="../docs-demos/action-sheet.html")
+        code 
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="ac-1"&gt;One group, three buttons&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="ac-2"&gt;One group, title, three buttons&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="ac-3"&gt;Two groups&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="ac-4"&gt;Three groups&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="ac-5"&gt;With callbacks on click&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      pre
+        code
+          | var myApp = new Framework7();
+          |  
+          | var $$ = Dom7;
+          | 
+          | //- One group, three buttons
+          | $$('.ac-1').on('click', function () {
+          |     var buttons = [
+          |         {
+          |             text: 'Button1',
+          |             bold: true
+          |         },
+          |         {
+          |             text: 'Button2'
+          |         },
+          |         {
+          |             text: 'Cancel',
+          |             color: 'red'
+          |         },
+          |     ];
+          |     myApp.actions(buttons);
+          | });
+          | 
+          | //- One group, title, three buttons
+          | $$('.ac-2').on('click', function () {
+          |     var buttons = [
+          |         {
+          |             text: 'Do something',
+          |             label: true
+          |         },
+          |         {
+          |             text: 'Button1',
+          |             bold: true
+          |         },
+          |         {
+          |             text: 'Button2',
+          |         },
+          |         {
+          |             text: 'Cancel',
+          |             color: 'red'
+          |         },
+          |     ];
+          |     myApp.actions(buttons);
+          | });
+          | 
+          | //- Two groups
+          | $$('.ac-3').on('click', function () {
+          |     var buttons1 = [
+          |         {
+          |             text: 'Do something',
+          |             label: true
+          |         },
+          |         {
+          |             text: 'Button1',
+          |             bold: true
+          |         },
+          |         {
+          |             text: 'Button2',
+          |         }
+          |     ];
+          |     var buttons2 = [
+          |         {
+          |             text: 'Cancel',
+          |             color: 'red'
+          |         }
+          |     ];
+          |     var groups = [buttons1, buttons2];
+          |     myApp.actions(groups);
+          | });
+          | 
+          | //- Three groups
+          | $$('.ac-4').on('click', function () {
+          |     var buttons1 = [
+          |         {
+          |             text: 'Share',
+          |             label: true
+          |         },
+          |         {
+          |             text: 'Mail',
+          |         },
+          |         {
+          |             text: 'Messages',
+          |         }
+          |     ];
+          |     var buttons2 = [
+          |         {
+          |             text: 'Social share',
+          |             label: true
+          |         },
+          |         {
+          |             text: 'Facebook',
+          |         },
+          |         {
+          |             text: 'Twitter',
+          |         }
+          |     ];
+          |     var buttons3 = [
+          |         {
+          |             text: 'Cancel',
+          |             color: 'red'
+          |         }
+          |     ];
+          |     var groups = [buttons1, buttons2, buttons3];
+          |     myApp.actions(groups);
+          | });
+          | 
+          | //- With callbacks on click
+          | $$('.ac-5').on('click', function () {
+          |     var buttons = [
+          |         {
+          |             text: 'Button1',
+          |             onClick: function () {
+          |                 myApp.alert('Button1 clicked');
+          |             }
+          |         },
+          |         {
+          |             text: 'Button2',
+          |             onClick: function () {
+          |                 myApp.alert('Button2 clicked');
+          |             }
+          |         },
+          |         {
+          |             text: 'Cancel',
+          |             color: 'red',
+          |             onClick: function () {
+          |                 myApp.alert('Cancel clicked');
+          |             }
+          |         },
+          |     ];
+          |     myApp.actions(buttons);
+          | });   
+      .full-width.stop-scroll-device 
+        h2 Close Action Sheet
+        p By default, Action sheet will be automatically closed when:
+        ul
+          li you click one of its buttons
+          li you click outside its window on overlay (configurable via <code>modalActionsCloseByOutside</code> <a href="init-app.html">App initialization</a> parameter)
+        p To close Action sheet manually we can use appropriate App's method:
+        p
+          span.method myApp.closeModal(<span>actionSheet</span>)</span> - close Popup
+        ul.method-parameters
+          li
+            span.parameter actionSheet
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Action sheet to be closed. Optional. If not specified, any opened Action sheet will be closed
+
+        h2 Action Sheet Events
+        p Action Sheet has the same events as any <a href="modal.html">Modal</a>
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td open
+              td Action Sheet Element<span>&lt;div class="actions-modal"&gt;</span>
+              td Event will be triggered when Action Sheet starts its opening animation
+            tr
+              td opened
+              td Action Sheet Element<span>&lt;div class="actions-modal"&gt;</span>
+              td Event will be triggered after Action Sheet completes its opening animation
+            tr
+              td close
+              td Action Sheet Element<span>&lt;div class="actions-modal"&gt;</span>
+              td Event will be triggered when Action Sheet starts its closing animation
+            tr
+              td closed
+              td Action Sheet Element<span>&lt;div class="actions-modal"&gt;</span>
+              td Event will be triggered after Action Sheet completes its closing animation      
+
+
+          

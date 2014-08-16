@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Initialize App | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content">
+          <h1>Initialize App</h1>
+          <p>Now you can see our HTML layout with linked required CSS and JavaScript files. Now we should initialize our app (for example in <code>my-app.js</code>):</p>
+          <pre><code>var myApp = new Framework7();</code></pre>
+          <p>In the example above we use <code>myApp</code> variable where we store Framework7 initialized instance for easy access in future. It is not necessary to name it "myApp", it could be any name you like.</p>
+          <p>It was pretty simple. But Framework7 also provides more customization on initialization by passing object with parameters:</p>
+          <pre><code>var myApp = new Framework7({
+    pushState: true,
+    swipePanel: 'left',
+    // ... other parameters
+});</code></pre>
+          <p>Let's look at the list of all available parameters:</p>
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th colspan="4">Caching</th>
+              </tr>
+              <tr>
+                <td>cache</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>As Framework7 uses Ajax to load HTML content for pages it is good to use caching, especially if your content in those pages updates not very often.</td>
+              </tr>
+              <tr>
+                <td>cacheDuration</td>
+                <td>number</td>
+                <td>1000*60*10</td>
+                <td>Duration in ms (milliseconds) while app will use cache instead of loading page with another Ajax request. By default it takes 10 minutes.</td>
+              </tr>
+              <tr>
+                <td>cacheIgnore</td>
+                <td>array</td>
+                <td>[]</td>
+                <td>Array of URLs (string) that should not be cached by Framework7</td>
+              </tr>
+              <tr>
+                <td>cacheIgnoreGetParameters</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>If "true" then URLs like "about.html?id=2" and "about.html?id=3" will be treated and cached like single "about.html" page</td>
+              </tr>
+              <tr>
+                <th colspan="4">Fast clicks library</th>
+              </tr>
+              <tr>
+                <td>fastClicks</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script.</td>
+              </tr>
+              <tr>
+                <th colspan="4">Navigation</th>
+              </tr>
+              <tr>
+                <td>ajaxLinks</td>
+                <td>string</td>
+                <td>undefined</td>
+                <td>By default (when this parameter is not specified) Framework7 will load all links (&lt;a&gt;) using Ajax. You can change this behavior by passing here CSS selector string for links that should be loaded with Ajax, like <code>"a.ajax"</code> - only all links with "ajax" class</td>
+              </tr>
+              <tr>
+                <td>externalLinks</td>
+                <td>array</td>
+                <td>['external']</td>
+                <td>Array of class names and "rel" attributes for links that should be treated as external and shouldn't be handled by Framework7. For example such ['external'] value will match to links like &lt;a href="somepage.html" class="external"&gt; and &lt;a href="somepage.html" rel="external"&gt;</td>
+              </tr>
+              <tr>
+                <td>animateNavBackIcon</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding".</td>
+              </tr>
+              <tr>
+                <td>animatePages</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Set to false if you want to disable animated transitions between pages</td>
+              </tr>
+              <tr>
+                <td>preloadPreviousPage</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Enable/disable preloading of previous page when you go deep in navigation. Should be enabled for correct work of "swipe back page" feature.</td>
+              </tr>
+              <tr>
+                <th colspan="4">Push State</th>
+              </tr>
+              <tr>
+                <td>pushState</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>If you develop web app (not PhoneGap or Home Screen web app) it is useful to enable hash navigation (browser url will look like "http://my-webapp.com/#/about.html"). User as well will be able to navigate through app's history by using browser's default back and forward buttons. </td>
+              </tr>
+              <tr>
+                <td>pushStateSeparator</td>
+                <td>string</td>
+                <td>'#!/'</td>
+                <td>Push state URL separator, can be changed for something like '#page/' and then your push state urls will look like "http://myapp.com/#page/about.html"</td>
+              </tr>
+              <tr>
+                <td>pushStateRoot</td>
+                <td>string</td>
+                <td>undefined</td>
+                <td>Push state root URL separator, for example "http://my-app.com/". It is useful only in case when you use empty ("") pushStateSeparator </td>
+              </tr>
+              <tr>
+                <td>pushStateNoAnimation</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>If false then it will inherit View's animatePages parameter. If true, then push state navigation will happen without animation (page transitions)</td>
+              </tr>
+              <tr>
+                <th colspan="4">Swipe back</th>
+              </tr>
+              <tr>
+                <td>swipeBackPage</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Enable/disable ability to swipe back from left edge of screen to get to the previous page.</td>
+              </tr>
+              <tr>
+                <td>swipeBackPageThreshold</td>
+                <td>number</td>
+                <td>0</td>
+                <td>Value in px. Swipe back action will start if "touch distance" will be more than this value.</td>
+              </tr>
+              <tr>
+                <td>swipeBackPageActiveArea</td>
+                <td>number</td>
+                <td>30</td>
+                <td>Value in px. Width of invisible left edge of the screen that triggers swipe back action</td>
+              </tr>
+              <tr>
+                <td>swipeBackPageBoxShadow</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance</td>
+              </tr>
+              <tr>
+                <th colspan="4">Sortable Lists</th>
+              </tr>
+              <tr>
+                <td>sortable</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>If you don't use sortable lists you can disable it for potentially better performance.</td>
+              </tr>
+              <tr>
+                <th colspan="4">Swipeout</th>
+              </tr>
+              <tr>
+                <td>swipeout</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>If you don't use swipeouts you can disable this feature for potentially better performance.</td>
+              </tr>
+              <tr>
+                <td>swipeoutNoFollow</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Fallback option for potentially better performance on old/slow devices. If you enable it, then swipeout item will not follow your finger during touch, it will be automatically opened/closed on swipe left/right. </td>
+              </tr>
+              <tr>
+                <th colspan="4">Side Panels</th>
+              </tr>
+              <tr>
+                <td>swipePanel</td>
+                <td>string</td>
+                <td>false</td>
+                <td>Disabled by default. If you want to enable ability to open side panels with swipe you can pass here "left" (for left panel) or "right" (for right panel).</td>
+              </tr>
+              <tr>
+                <td>swipePanelCloseOpposite</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>This parameter gives ability to close opposite panel by swipe. For example, if your swipePanel is "left", then you could close "right" panel also with swipe.</td>
+              </tr>
+              <tr>
+                <td>swipePanelActiveArea</td>
+                <td>number</td>
+                <td>false</td>
+                <td>Value in px. Width of invisible edge from the screen that triggers swipe panel</td>
+              </tr>
+              <tr>
+                <td>swipePanelNoFollow</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Fallback option for potentially better performance on old/slow devices. If you enable it, then side panel will not follow your finger during touch, it will be automatically opened/closed on swipe left/right.</td>
+              </tr>
+              <tr>
+                <td>swipePanelThreshold</td>
+                <td>number</td>
+                <td>0</td>
+                <td>Value in px. Panel will not move with swipe if "touch distance" will be less than this value.</td>
+              </tr>
+              <tr>
+                <td>panelsCloseByOutside</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Enable/disable ability to close panel by clicking outside of panel (on panel's  overlay)</td>
+              </tr>
+              <tr>
+                <td>panelsVisibleZIndex</td>
+                <td>number</td>
+                <td>6000</td>
+                <td>CSS z-index property for panel</td>
+              </tr>
+              <tr>
+                <th colspan="4">Modals</th>
+              </tr>
+              <tr>
+                <td>modalTitle</td>
+                <td>string</td>
+                <td>'Framework7'</td>
+                <td>Default title for modals (Alert, Confirm, Prompt)</td>
+              </tr>
+              <tr>
+                <td>modalButtonOk</td>
+                <td>string</td>
+                <td>'OK'</td>
+                <td>Default text for modal's "OK" button</td>
+              </tr>
+              <tr>
+                <td>modalButtonCancel</td>
+                <td>string</td>
+                <td>'Cancel'</td>
+                <td>Default text for modal's "Cancel" button</td>
+              </tr>
+              <tr>
+                <td>modalPreloaderTitle</td>
+                <td>string</td>
+                <td>'Loading... '</td>
+                <td>Default text for preloader modal</td>
+              </tr>
+              <tr>
+                <td>modalCloseByOutside</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Enable/disable ability to close modal (Alert, Confirm, Prompt) by clicking outside of modal (on modal's  overlay)</td>
+              </tr>
+              <tr>
+                <td>actionsCloseByOutside</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>The same as previous but for Action Sheet modal</td>
+              </tr>
+              <tr>
+                <td>popupCloseByOutside</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>The same as previous but for Popup modal</td>
+              </tr>
+              <tr>
+                <td>modalTemplate</td>
+                <td>string</td>
+                <td>Look below*</td>
+                <td>Full HTML template for modals (like alert, confirm and prompt)</td>
+              </tr>
+              <tr>
+                <td>modalActionsTemplate</td>
+                <td>string</td>
+                <td>'&lt;div class="actions-modal"&gt;{{buttons}}&lt;/div&gt;'</td>
+                <td>HTML template for Action Sheet. Could be useful if you want to add some custom elements to Action Sheet layout.</td>
+              </tr>
+              <tr>
+                <td>modalUsernamePlaceholder</td>
+                <td>string</td>
+                <td>'Username'</td>
+                <td>Place holder text for username input in Login Modal</td>
+              </tr>
+              <tr>
+                <td>modalPasswordPlaceholder</td>
+                <td>string</td>
+                <td>'Password'</td>
+                <td>Place holder text for password input in Login and Password Modals</td>
+              </tr>
+              <tr>
+                <th colspan="4">Smart Select</th>
+              </tr>
+              <tr>
+                <td>smartSelectBackTemplate</td>
+                <td>string</td>
+                <td>'&lt;div class="left sliding"&gt;&lt;a href="#" class="back link"&gt;&lt;i class="icon icon-back"&gt;&lt;/i&gt;&lt;span&gt;{{backText}}&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;'</td>
+                <td>Smart select page navbar back link HTML template</td>
+              </tr>
+              <tr>
+                <td>smartSelectBackText</td>
+                <td>string</td>
+                <td>'Back'</td>
+                <td>Default back link text for Smart Select's page navbar</td>
+              </tr>
+              <tr>
+                <td>smartSelectSearchbar</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true if you want to enable Search Bar for all Smart Selects</td>
+              </tr>
+              <tr>
+                <td>smartSelectBackOnSelect</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>If enabled then smart select page will be automatically closed after user picks any option</td>
+              </tr>
+              <tr>
+                <th colspan="4">Search Bar</th>
+              </tr>
+              <tr>
+                <td>searchbarHideDividers</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them</td>
+              </tr>
+              <tr>
+                <td>searchbarHideGroups</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>If enabled, then search will consider list view groups hide them if there are no found items inside of these groups</td>
+              </tr>
+              <tr>
+                <th colspan="4">Notifications</th>
+              </tr>
+              <tr>
+                <td>notificationTitle</td>
+                <td>string</td>
+                <td>undefined</td>
+                <td>Default title for all notifications</td>
+              </tr>
+              <tr>
+                <td>notificationSubtitle</td>
+                <td>string</td>
+                <td>undefined</td>
+                <td>Default subtitle for all notifications</td>
+              </tr>
+              <tr>
+                <td>notificationMedia</td>
+                <td>string</td>
+                <td>undefined</td>
+                <td>Default media (icon or image) for all notifications</td>
+              </tr>
+              <tr>
+                <td>notificationHold</td>
+                <td>number</td>
+                <td>undefined</td>
+                <td>Default hold duration (in ms) for all notifications</td>
+              </tr>
+              <tr>
+                <td>notificationCloseOnClick</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true if you want to close notification on click by default</td>
+              </tr>
+              <tr>
+                <td>notificationCloseIcon</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Set to true if you want to display close icon (button) for notifications by default</td>
+              </tr>
+              <tr>
+                <th colspan="4">Status Bar</th>
+              </tr>
+              <tr>
+                <td>statusbarOverlay</td>
+                <td>boolean</td>
+                <td>undefined</td>
+                <td>With this option you can overwrite automatic <a href="status-bar.html">status bar detection</a></td>
+              </tr>
+              <tr>
+                <th colspan="4">Page Callbacks</th>
+              </tr>
+              <tr>
+                <td>onPageBeforeInit</td>
+                <td>function(app, page)</td>
+                <td>-</td>
+                <td>Callback function that will be executed when Framework7 just inserts new page to DOM. Do the same as "pageBeforeInit" <a href="pages.html#page-events">page event</a></td>
+              </tr>
+              <tr>
+                <td>onPageInit</td>
+                <td>function(app, page)</td>
+                <td>-</td>
+                <td>Callback function that will be executed when Framework7 initialize required page's components and navbar. Do the same as "pageInit" <a href="pages.html#page-events">page event</a></td>
+              </tr>
+              <tr>
+                <td>onPageBeforeAnimation</td>
+                <td>function(app, page)</td>
+                <td>-</td>
+                <td>Callback function that will be executed when everything initialized and page (and navbar) is ready to be animated. Do the same as "pageBeforeAnimation" <a href="pages.html#page-events">page event</a></td>
+              </tr>
+              <tr>
+                <td>onPageAfterAnimation</td>
+                <td>function(app, page)</td>
+                <td>-</td>
+                <td>Callback function that will be executed after page (and navbar) animation. Do the same as "pageAfterAnimation" <a href="pages.html#page-events">page event</a></td>
+              </tr>
+              <tr>
+                <td>onPageBeforeRemove</td>
+                <td>function(app, page)</td>
+                <td>-</td>
+                <td>Callback function that will be executed right before page will be removed from DOM. Do the same as "pageBeforeRemove" <a href="pages.html#page-events">page event</a></td>
+              </tr>
+              <tr>
+                <th colspan="4">Ajax Callbacks</th>
+              </tr>
+              <tr>
+                <td>onAjaxStart</td>
+                <td>function(xhr)</td>
+                <td>-</td>
+                <td>Callback function that will be executed in the beginning of Ajax request. This function accepts xhr data as an argument.</td>
+              </tr>
+              <tr>
+                <td>onAjaxComplete</td>
+                <td>function(xhr)</td>
+                <td>-</td>
+                <td>Callback function that will be executed after Ajax request. This function accepts xhr data as an argument.</td>
+              </tr>
+              <tr>
+                <td>preprocess</td>
+                <td>function(content, url, next)</td>
+                <td>-</td>
+                <td>This callback function allows you to modify loaded Ajax content right before it will be injected to DOM. As arguments this function receive "content" and "url" of the loaded page and "next" callback function. This option will be very useful if you are going to use some client-side template engine like "Handlebars", "Mustache", etc. After you modify content within this function you should return it: <code>return content</code></td>
+              </tr>
+              <tr>
+                <th colspan="4">Namespace
+                  <p><strong>Attention! If you change following class names you will also need to change them in CSS!</strong></p>
+                </th>
+              </tr>
+              <tr>
+                <td>viewClass</td>
+                <td>string</td>
+                <td>'view'</td>
+                <td>Class name for your View element</td>
+              </tr>
+              <tr>
+                <td>viewMainClass</td>
+                <td>string</td>
+                <td>'view-main'</td>
+                <td>Class name for your Main View element</td>
+              </tr>
+              <tr>
+                <td>viewsClass</td>
+                <td>string</td>
+                <td>'views'</td>
+                <td>Class name for your Views element</td>
+              </tr>
+              <tr>
+                <th colspan="4">Init</th>
+              </tr>
+              <tr>
+                <td>init</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>By default Framework7 will be initialized automatically when you call <code>new Framework7()</code>. If you want to prevent this behavior you can disable it with this option and then initialize it manually with <code>myApp.init()</code> when you need it.</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>* <strong>modalTemplate</strong> parameter contains full HTML layout for modals (like alert, confirm and prompt):</p>
+          <pre><code>'&lt;div class="modal {{noButtons}}"&gt;' +
+    '&lt;div class="modal-inner"&gt;' +
+        '{{if title}}&lt;div class="modal-title"&gt;{{title}}&lt;/div&gt;{{/if title}}' +
+        '&lt;div class="modal-text"&gt;{{text}}&lt;/div&gt;' +
+        '{{afterText}}' +
+    '&lt;/div&gt;' +
+    '&lt;div class="modal-buttons"&gt;{{buttons}}&lt;/div&gt;' +
+'&lt;/div&gt;'</code></pre>
+          <p>So your final initialization code in <code>my-app.js</code> could look like:</p>
+          <pre><code>var myApp = new Framework7({
+    // Default title for modals
+    modalTitle: 'My App',
+ 
+    // If it is webapp, we can enable hash navigation:
+    pushState: true,
+ 
+    // Hide and show indicator during ajax requests
+    onAjaxStart: function (xhr) {
+        myApp.showIndicator();
+    },
+    onAjaxComplete: function (xhr) {
+        myApp.hideIndicator();
+    }
+});   </code></pre>
+          <h2>Example with "preprocess" content</h2>
+          <p>Framework7 allows you to use your favorite client-side template engine (like Handlebars or Mustache). </p>
+          <p>Let's look on how to init app with usage of Handlebars as our client-side template engine (Handlebars library should be also included in your HTML)</p>
+          <p>Init app in <code>my-app.js</code>:</p>
+          <pre><code>var myApp = new Framework7({
+    preprocess: function (content, url, next) {
+        if (url === 'people.html') {
+            var template = Handlebars.compile(content);
+            var resultContent = template({
+                title: 'People',
+                people: ['John', 'Ivan', 'Mary']
+            })
+            return resultContent;
+        }
+    }
+});</code></pre>
+          <p>And the <code>people.html</code> page:</p>
+          <pre><code>&lt;div class="navbar"&gt;
+  &lt;div class="navbar-inner"&gt;
+    &lt;div class="center"&gt;{{title}}&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="pages"&gt;
+  &lt;div data-page="people" class="page"&gt;
+    &lt;div class="page-content"&gt;
+      &lt;ul&gt;
+        {{#each people}}
+        &lt;li&gt;{{this}}&lt;/li&gt;
+        {{/each}}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;   </code></pre>
+          <p>But sometimes you may have asynchronous thread inside of your preprocess functon, for example if you need to do one more Ajax request and only after that to continue page loading. For this case we have "next" callback function where we need to pass our genereated/modified content:</p>
+          <pre><code>var myApp = new Framework7({
+    preprocess: function (content, url, next) {
+        if (url === 'people.html') {
+            // For example, we will retreive template JSON data using Ajax and only after that we will continue page loading process
+            $$.get('sometemplate.html', function(data) {
+                // Template
+                var template = Handlebars.compile(content);
+ 
+                // Compile content template with received JSON data
+                var resultContent = template(data);
+ 
+                // Now we call "next" callback function with result content
+                next(resultContent);
+            });
+            // Now we shouldn't return anything
+        }
+    }
+});          </code></pre>
+          <h2>What's next</h2>
+          <p>Ok, right after we initialize our App we need to add and initialize <a href="views.html">Views</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

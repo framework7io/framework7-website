@@ -1,0 +1,97 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Tab bar | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Tab bar
+        p Tab bar is a particular case of Toolbar, but it contains icons (or icons with labels) instead of plain links and inteded to be used with <a href="tabs.html">Tabs</a>.
+      h2(data-device-preview="../docs-demos/tabbar-layout.html") Tab bar layout
+      p Tab bar layout is almost the same as for Toolbar, but Tab bar has additional <b>"tabbar"</b> class:
+      pre
+        code
+          | &lt;div class="toolbar tabbar"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |         &lt;a href="#tab1" class="tab-link active"&gt;
+          |             &lt;i class="icon demo-icon-1"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab2" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-2"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab3" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-3"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab4" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-4"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      p By default, all Tab bar elements (links) equally spaced along toolbar - they have equal space between each other. But here is important note about links size
+      .important-note
+        ul
+          li
+            p On iPhone all links will have the same size equal to [screen width] / [number of links]
+          li
+            p On iPad all links will be centered with minimal width equal to 105px
+
+      h3(data-device-preview="../docs-demos/tabbar-badges.html") Add badges to icons
+      p If you need to add badges to Tab bar icons, just put <code>&lt;span class="badge"&gt;</code> inside of icon:
+      pre
+        code
+          | &lt;div class="toolbar tabbar"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |         &lt;a href="#tab1" class="tab-link active"&gt;
+          |             &lt;i class="icon demo-icon-1"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab2" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-2"&gt;
+          |                 &lt;span class="badge badge-red"&gt;5&lt;/span&gt;
+          |             &lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab3" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-3"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab4" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-4"&gt;
+          |                 &lt;span class="badge badge-green"&gt;15&lt;/span&gt;
+          |             &lt;/i&gt;
+          |         &lt;/a&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      h3(data-device-preview="../docs-demos/tabbar-labels.html") Tab bar with labels
+      p If you need to use Tab bar icons with labels we need one more <strong>"tabbar-labels"</strong> class on Tab bar, and to put <code>&lt;span class="tabbar-label"&gt;</code> inside of link:
+      pre
+        code
+          | &lt;div class="toolbar tabbar tabbar-labels"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |         &lt;a href="#tab1" class="tab-link active"&gt;
+          |             &lt;i class="icon demo-icon-1"&gt;&lt;/i&gt;
+          |             &lt;span class="tabbar-label"&gt;Label 1&lt;/span&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab2" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-2"&gt;
+          |                 &lt;span class="badge badge-red"&gt;5&lt;/span&gt;
+          |             &lt;/i&gt;
+          |             &lt;span class="tabbar-label"&gt;Label 2&lt;/span&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab3" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-3"&gt;&lt;/i&gt;
+          |             &lt;span class="tabbar-label"&gt;Label 3&lt;/span&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab4" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-4"&gt;&lt;/i&gt;
+          |             &lt;span class="tabbar-label"&gt;Label 4&lt;/span&gt;
+          |         &lt;/a&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      .important-note
+        p Note that Tab bar with labels will have more height on iPad - 55px instead of usual 44px

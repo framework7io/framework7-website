@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Infinite Scroll | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-demo-device">
+        <iframe width="320" height="548" frameborder="0" scrolling="on"></iframe>
+        <div class="fade-overlay"></div>
+      </div>
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content with-device">
+          <div class="full-width">
+            <h1>Infinite Scroll</h1>
+            <p>Infinite Scroll allows to load additional content or do any other required action when page scroll is near to the bottom.</p>
+            <h2>Infinite Scroll Layout</h2>
+            <p>All you need to make it work is to add additional "infinite-scroll" class to any scrollable container, particularly to our page scrolling area - <code>&lt;div class="page-content"&gt;</code>:</p>
+            <pre><code>&lt;div class="page"&gt;
+    &lt;div class="page-content infinite-scroll" data-distance="100"&gt;
+        ... 
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            <p>Where:</p>
+            <ul>
+              <li>
+                <p><code>div class="page-content infinite-scroll"</code> our infinite scroll container</p>
+              </li>
+              <li>
+                <p><code>data-distance</code> attribute allows to configure distance from the bottom of page (in px) to trigger infinite scroll event. By default, if note specified, it is <b>50</b> (px)</p>
+              </li>
+            </ul>
+            <h2>Infinite Scroll Events</h2>
+            <table class="events-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Target</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>infinite</td>
+                  <td>Infinite Scroll container<span>&lt;div class="page-content infinite-scroll"&gt;</span></td>
+                  <td>Event will be triggered when page scroll reaches specified (in data-distance attribute) distance to the bottom.</td>
+                </tr>
+              </tbody>
+            </table>
+            <h2>Infinite Scroll API</h2>
+            <p>There are two App's methods that can be used with infinite scroll container:</p>
+            <div class="method-wrap">
+              <p><span class="method">myApp.attachInfiniteScroll(<span>container</span>) </span><span>- add infinite scroll event listener to the specified HTML container</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">parameters</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - infinite scroll container. Required.</li>
+              </ul>
+            </div>
+            <div class="method-wrap">
+              <p><span class="method">myApp.detachInfiniteScroll(<span>container</span>) </span><span>- remove infinite scroll event listener from the specified HTML container</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">parameters</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - infinite scroll container. Required.</li>
+              </ul>
+            </div>
+            <div class="important-note">
+              <p>Use myApp.attachInfiniteScroll method only if you detached infinite scroll events using myApp.detachInfiniteScroll because infinite scroll event listener will be attached automatically within 'pageInit'</p>
+            </div>
+          </div>
+          <h2 data-device-preview="../docs-demos/infinite-scroll.html">Example</h2>
+          <pre><code>&lt;div class="page-content infinite-scroll"&gt;
+  &lt;div class="list-block"&gt;
+    &lt;ul&gt;
+      &lt;li class="item-content"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item 1&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+      &lt;li class="item-content"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item 2&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+      ...
+      &lt;li class="item-content"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Item 20&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  &lt;!-- Preloader --&gt;
+  &lt;div class="infinite-scroll-preloader"&gt;
+    &lt;div class="preloader"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt; </code></pre>
+          <pre><code>.infinite-scroll-preloader {
+  margin-top:-20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.infinite-scroll-preloader .preloader {
+  width:34px;
+  height:34px;
+}        </code></pre>
+          <pre><code>var myApp = new Framework7(); 
+ 
+var $$ = Dom7;
+ 
+// Loading flag
+var loading = false;
+ 
+// Last loaded index
+var lastIndex = $$('.list-block li').length;
+ 
+// Max items to load
+var maxItems = 60;
+ 
+// Append items per load
+var itemsPerLoad = 20;
+ 
+// Attach 'infinite' event handler
+$$('.infinite-scroll').on('infinite', function () {
+ 
+  // Exit, if loading in progress
+  if (loading) return;
+ 
+  // Set loading flag
+  loading = true;
+ 
+  // Emulate 1s loading
+  setTimeout(function () {
+    // Reset loading flag
+    loading = false;
+ 
+    if (lastIndex &gt;= maxItems) {
+      // Nothing more to load, detach infinite scroll events to prevent unnecessary loadings
+      myApp.detachInfiniteScroll($$('.infinite-scroll'));
+      // Remove preloader
+      $$('.infinite-scroll-preloader').remove();
+      return;
+    }
+ 
+    // Generate new items HTML
+    var html = '';
+    for (var i = lastIndex + 1; i &lt;= lastIndex + itemsPerLoad; i++) {
+      html += '&lt;li class="item-content"&gt;&lt;div class="item-inner"&gt;&lt;div class="item-title"&gt;Item ' + i + '&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;';
+    }
+ 
+    // Append new items
+    $$('.list-block ul').append(html);
+ 
+    // Update last loaded index
+    lastIndex = $$('.list-block li').length;
+  }, 1000);
+});          </code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

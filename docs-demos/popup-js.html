@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages">
+          <div data-page="home" class="page navbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"></div>
+                <div class="center">Popup With JavaScript</div>
+                <div class="right"></div>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="content-block">
+                <p><a href="#" class="open-about">Open About Popup </a></p>
+                <p><a href="#" class="open-services">Open Services Popup </a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="popup popup-about">
+      <div class="content-block">
+        <p>About</p>
+        <p><a href="#" class="close-popup">Close popup</a></p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque, pellentesque nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem. Aliquam et elementum neque. Vestibulum sed egestas ipsum.</p>
+      </div>
+    </div>
+    <div class="popup popup-services">
+      <div class="content-block">
+        <p>Services</p>
+        <p><a href="#" class="close-popup">Close popup</a></p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque, pellentesque nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem. Aliquam et elementum neque. Vestibulum sed egestas ipsum.</p>
+      </div>
+    </div>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <script>
+      var myApp = new Framework7();
+      
+      var $$ = Dom7;
+      
+      $$('.open-about').on('click', function () {
+        myApp.popup('.popup-about');
+      });
+      
+      $$('.open-services').on('click', function () {
+        myApp.popup('.popup-services');
+      });
+    </script>
+  </body>
+</html>

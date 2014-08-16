@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages">
+          <div data-page="home" class="page navbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"></div>
+                <div class="center">Form To JSON</div>
+                <div class="right"></div>
+              </div>
+            </div>
+            <div class="page-content">
+              <form id="my-form" class="list-block">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label">Name</div>
+                        <div class="item-input">
+                          <input type="text" name="name" placeholder="Your name">
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label">E-mail</div>
+                        <div class="item-input">
+                          <input type="email" name="email" placeholder="E-mail">
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label">Gender</div>
+                        <div class="item-input">
+                          <select name="gender">
+                            <option value="male" selected>Male</option>
+                            <option value="female">Female</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label">Switch</div>
+                        <div class="item-input">
+                          <label class="label-switch">
+                            <input type="checkbox" name="switch" value="yes">
+                            <div class="checkbox"></div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label">Slider</div>
+                        <div class="item-input">
+                          <div class="range-slider">
+                            <input type="range" min="0" max="100" value="50" step="0.1" name="slider">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </form>
+              <div class="content-block"><a href="#" class="button form-to-json">Get Form Data</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <script>
+      var myApp = new Framework7();  
+      
+      var $$ = Dom7;
+      
+      $$('.form-to-json').on('click', function(){
+        var formData = myApp.formToJSON('#my-form');
+        alert(JSON.stringify(formData));
+      });
+    </script>
+  </body>
+</html>

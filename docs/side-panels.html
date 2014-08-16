@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Side Panels | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-demo-device">
+        <iframe width="320" height="548" frameborder="0" scrolling="on"></iframe>
+        <div class="fade-overlay"></div>
+      </div>
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content with-device">
+          <div class="full-width">
+            <h1>Side Panels</h1>
+            <p>Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of <code>body</code>:</p>
+            <pre><code>&lt;body&gt;
+    &lt;!-- First, we need to add Panel's overlay that will overlays app while panel is opened --&gt;
+    &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+ 
+    &lt;!-- Left panel --&gt;
+    &lt;div class="panel panel-left"&gt;
+        ... panel content goes here ...
+    &lt;/div&gt;
+ 
+    &lt;!-- Right panel --&gt;
+    &lt;div class="panel panel-right"&gt;
+        ... panel content goes here ...
+    &lt;/div&gt;
+ 
+    ...
+&lt;/body&gt;   </code></pre>
+            <p>After we add panels we need to choose opening effect for each panel. There could be one of two effects: "Reveal" (when panel moves out whole app's content) or "Cover" (when panel overlays app's content). If you want to use "Reveal" effect you should to add additional <strong>"panel-reveal"</strong> class to Panel, or <strong>"panel-cover"</strong> for cover effect:</p>
+            <pre><code>&lt;body&gt;
+    &lt;!-- First, we need to add Panel's overlay that will overlays app while panel is opened --&gt;
+    &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+ 
+    &lt;!-- Left panel, let it be with reveal effect --&gt;
+    &lt;div class="panel panel-left panel-reveal"&gt;
+        ... panel content goes here ...
+    &lt;/div&gt;
+ 
+    &lt;!-- Right panel, with cover effect --&gt;
+    &lt;div class="panel panel-right panel-cover"&gt;
+        ... panel content goes here ...
+    &lt;/div&gt;
+ 
+    ...
+&lt;/body&gt; </code></pre>
+          </div>
+          <h2>Open and Close Panels</h2>
+          <h3 data-device-preview="../docs-demos/panels.html">From HTML</h3>
+          <p>Ok, now when we have panels in our App, we need to know how to open/close them:</p>
+          <div class="important-note">
+            <ul>
+              <li>
+                <p>To open panel we need to add <strong>"open-panel"</strong> class to any HTML element (prefered to link)</p>
+              </li>
+              <li>
+                <p>To close panel we need to add <strong>"close-panel"</strong> class to any HTML element (prefered to link)</p>
+              </li>
+              <li>
+                <p>If you have two panels in app, such link will open/close Left panel by default</p>
+              </li>
+              <li>
+                <p>If you want to specify which panel should opened/closed, then it could be done via additional <strong>data-panel="left"</strong> attribute on this HTML element</p>
+              </li>
+            </ul>
+          </div>
+          <p>According to above note:</p>
+          <pre><code>&lt;body&gt;
+  &lt;!-- Panels Overlay --&gt;
+  &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+ 
+  &lt;!-- Left Panel with Reveal effect --&gt;
+  &lt;div class="panel panel-left panel-reveal"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;p&gt;Left Panel content here&lt;/p&gt;
+      &lt;!-- Click on link with "close-panel" class will close panel --&gt;
+      &lt;p&gt;&lt;a href="#" class="close-panel"&gt;Close me&lt;/a&gt;&lt;/p&gt;
+      &lt;!-- Click on link with "open-panel" and data-panel="right" attribute will open Right panel --&gt;
+      &lt;p&gt;&lt;a href="#" data-panel="right" class="open-panel"&gt;Open Right Panel&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+  &lt;!-- Right Panel with Cover effect --&gt;
+  &lt;div class="panel panel-right panel-cover"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;p&gt;Right Panel content here&lt;/p&gt;
+      &lt;!-- Click on link with "close-panel" class will close panel --&gt;
+      &lt;p&gt;&lt;a href="#" class="close-panel"&gt;Close me&lt;/a&gt;&lt;/p&gt;
+      &lt;!-- Click on link with "open-panel" and data-panel="left" attribute will open Left panel --&gt;
+      &lt;p&gt;&lt;a href="#" data-panel="left" class="open-panel"&gt;Open Left Panel&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+  ...
+  &lt;div class="page-content"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;!-- If no data-panel attribute, Left panel will be opened by default --&gt;
+      &lt;p&gt;&lt;a href="#" class="open-panel"&gt;Open Left Panel&lt;/a&gt;&lt;/p&gt;
+      &lt;!-- Click on link with "open-panel" and data-panel="right" attribute will open Right panel --&gt;
+      &lt;p&gt;&lt;a href="#" data-panel="right" class="open-panel"&gt;Open Right Panel&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <h3 data-device-preview="../docs-demos/panels-js.html">Using JavaScript</h3>
+          <p>We can also open and close Panels with JavaScript, for this we need to look at related App methods:</p>
+          <p><span class="method">myApp.openPanel(<span>position</span>)</span></span> - open Panel.</p>
+          <ul class="method-parameters">
+            <li><span class="parameter">position</span> - <span class="parameter-type">string</span> - Position of panel to open: <strong>"left"</strong> or <strong>"right"</strong>. Required. </li>
+          </ul>
+          <p><span class="method">myApp.closePanel()</span></span> - close currently opened Panel.</p>
+          <pre><code>&lt;body&gt;
+  &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+  &lt;div class="panel panel-left panel-reveal"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;p&gt;Left Panel content here&lt;/p&gt;
+      &lt;p&gt;&lt;a href="#" class="panel-close"&gt;Close me&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;a href="#" class="open-right-panel"&gt;Open Right Panel&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="panel panel-right panel-cover"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;p&gt;Right Panel content here&lt;/p&gt;
+      &lt;p&gt;&lt;a href="#" class="panel-close"&gt;Close me&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;a href="#" class="open-left-panel"&gt;Open Left Panel&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+    &lt;div class="page-content"&gt;
+      &lt;div class="content-block"&gt;
+        &lt;p&gt;&lt;a href="#" class="open-left-panel"&gt;Open Left Panel&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;a href="#" class="open-right-panel"&gt;Open Right Panel&lt;/a&gt;&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  ...
+  &lt;script&gt;
+    var myApp = new Framework7();
+ 
+    var $$ = Dom7;
+ 
+    $$('.open-left-panel').on('click', function (e) {
+        // 'left' position to open Left panel
+        myApp.openPanel('left');
+    });
+ 
+    $$('.open-right-panel').on('click', function (e) {
+        // 'right' position to open Right panel
+        myApp.openPanel('right');
+    });
+ 
+    $$('.panel-close').on('click', function (e) {
+        myApp.closePanel();
+    });
+ 
+  &lt;/script&gt;
+&lt;/body&gt;    </code></pre>
+          <h2 data-device-preview="../docs-demos/panels-events.html">Panel Events</h2>
+          <p>Panel events could be very useful to detect how user interact with your panels, or to do something in JavaScript when Panel opened/closed</p>
+          <table class="events-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Target</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>open</td>
+                <td>Panel Element<span>&lt;div class="panel"&gt;</span></td>
+                <td>Event will be triggered when Panel starts its opening animation</td>
+              </tr>
+              <tr>
+                <td>opened</td>
+                <td>Panel Element<span>&lt;div class="panel"&gt;</span></td>
+                <td>Event will be triggered after Panel completes its opening animation</td>
+              </tr>
+              <tr>
+                <td>close</td>
+                <td>Panel Element<span>&lt;div class="panel"&gt;</span></td>
+                <td>Event will be triggered when Panel starts its closing animation</td>
+              </tr>
+              <tr>
+                <td>closed</td>
+                <td>Panel Element<span>&lt;div class="panel"&gt;</span></td>
+                <td>Event will be triggered after Panel completes its closing animation</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>Here is an example:</p>
+          <pre><code>var myApp = new Framework7();
+ 
+var $$ = Dom7;
+ 
+$$('.panel-left').on('opened', function () {
+    myApp.alert('Left panel opened!');
+});
+$$('.panel-left').on('close', function () {
+    myApp.alert('Left panel is closing!');
+});
+$$('.panel-right').on('open', function () {
+    myApp.alert('Right panel is opening!');
+});
+$$('.panel-right').on('closed', function () {
+    myApp.alert('Right panel closed!');
+}); </code></pre>
+          <h2 data-device-preview="../docs-demos/panels-swipe.html">Open Panels With Swipe</h2>
+          <p>Framework7 has feature to open panel with Swipe gesture. <strong>But there is a restriction - only one panel could be set to open with Swipe</strong> (Left or Right).</p>
+          <p>To make this feature works we need to enable it on <a href="init-app.html">App initialization</a> by passing related parameter:</p>
+          <pre><code>var myApp = new Framework7({
+    swipePanel: 'left'
+});</code></pre>
+          <div style="height:200px"></div>
+          <div class="full-width stop-scroll-device">
+            <h2>Panel is Opened?</h2>
+            <p>Sometimes it could be useful to detect do we have some Panel opened or not? It is easy, when some panel is opened <code>&lt;body&gt;</code> will have addition class generated by the following rule: <strong>with-panel-[position]-[effect]</strong>:</p>
+            <ul>
+              <li>
+                <p>If you have Left panel opened with Cover effect, body will have the "with-panel-left-cover" class <code>&lt;body class="with-panel-left-cover"&gt;</code></p>
+              </li>
+              <li>
+                <p>If you have Left panel opened with Reveal effect, body will have the "with-panel-left-reveal" class <code>&lt;body class="with-panel-left-reveal"&gt;</code></p>
+              </li>
+              <li>
+                <p>If you have Right panel opened with Cover effect, body will have the "with-panel-right-cover" class <code>&lt;body class="with-panel-right-cover"&gt;</code></p>
+              </li>
+              <li>
+                <p>If you have Right panel opened with Reveal effect, body will have the "with-panel-right-reveal" class <code>&lt;body class="with-panel-right-reveal"&gt;</code></p>
+              </li>
+            </ul>
+            <p>You can use it in JavaScript to detect opened panel:</p>
+            <pre><code class="js">if ($$('body').hasClass('with-panel-left-cover')) {
+    console.log('Left Panel is opened')
+}</code></pre>
+            <p>Or in CSS for additional styling:</p>
+            <pre><code>/* Change Status Bar background when panel is opened */        
+body.with-panel-left-cover .statusbar-overlay{
+    background-color: #333;
+}        </code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

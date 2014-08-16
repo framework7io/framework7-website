@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Popover | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-demo-device">
+        <iframe width="320" height="548" frameborder="0" scrolling="on"></iframe>
+        <div class="fade-overlay"></div>
+      </div>
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content with-device">
+          <div class="full-width">
+            <h1>Popover</h1>
+            <p>Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.</p>
+            <div class="important-note">
+              <p>Note that is not recommended to use Popover on small screens (iPhone). On small screens you should use <a href="action-sheet.html">Action Sheet</a> instead.</p>
+            </div>
+            <h2>Popover Layout</h2>
+            <p>First of all let's look on Popover layout, it is pretty simple, just add somewhere in the end of the <code>&lt;body&gt;</code>:</p>
+            <pre><code>&lt;body&gt;
+    ...
+    &lt;div class="popover"&gt;
+        &lt;!-- Popover's angle arrow --&gt;
+        &lt;div class="popover-angle"&gt;&lt;/div&gt;
+ 
+        &lt;!-- Popover content --&gt;
+        &lt;div class="popover-inner"&gt;
+            &lt;!-- Any HTML content here --&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;  </code></pre>
+            <p>Popover is highly customizable element and you can put anything inside, event another view with navigation.    </p>
+          </div>
+          <h2 data-device-preview="../docs-demos/popover.html">Open and close Popover</h2>
+          <h3>From HTML</h3>
+          <p>It is possible to open and close required Popover using special classes and data attributes on links:</p>
+          <div class="important-note">
+            <ul>
+              <li>
+                <p>To open popover we need to add <strong>"open-popover"</strong> class to any HTML element (prefered to link)</p>
+              </li>
+              <li>
+                <p>To close popover we may add <strong>"close-popover"</strong> class to any HTML element (prefered to link)</p>
+              </li>
+              <li>
+                <p>If you have more than one popover in app, you need to specify appropriate popover via additional <strong>data-popover=".my-popover"</strong> attribute on this HTML element</p>
+              </li>
+            </ul>
+          </div>
+          <h4>Popover position</h4>
+          <div class="important-note">
+            <p>When we open Popover with such method (from HTML), it will be automatically positioned around element that we clicked to call this Popover.</p>
+          </div>
+          <pre><code>&lt;body&gt;
+  ...  
+  &lt;div class="navbar"&gt;
+    &lt;div class="navbar-inner"&gt;
+      &lt;!-- In data-popover attribute we specify CSS selector of popover we need to open --&gt;
+      &lt;div class="left"&gt;&lt;a href="#" data-popover=".popover-about" class="link open-popover"&gt;About&lt;/a&gt;&lt;/div&gt;
+      &lt;div class="center"&gt;Popover&lt;/div&gt;
+      &lt;div class="right"&gt;&lt;a href="#" data-popover=".popover-links" class="link open-popover"&gt;Links&lt;/a&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="page-content"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;!-- In data-popover attribute we specify CSS selector of popover we need to open --&gt;
+      &lt;p&gt;&lt;a href="#" data-popover=".popover-about" class="open-popover"&gt;Open About Popover&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;a href="#" data-popover=".popover-links" class="open-popover"&gt;Open Links Popover&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+ 
+  &lt;!-- By default popover has 320px width, let's make it a bit narrow --&gt;
+  &lt;style&gt;
+    .popover {
+      width: 200px;
+    }
+  &lt;/style&gt;
+ 
+  &lt;!-- About popover --&gt;
+  &lt;div class="popover popover-about"&gt;
+    &lt;div class="popover-angle"&gt;&lt;/div&gt;
+    &lt;div class="popover-inner"&gt;
+      &lt;div class="content-block"&gt;
+        &lt;p&gt;About&lt;/p&gt;
+        &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+  &lt;!-- Links popover --&gt;
+  &lt;div class="popover popover-links"&gt;
+    &lt;div class="popover-angle"&gt;&lt;/div&gt;
+    &lt;div class="popover-inner"&gt;
+      &lt;div class="list-block"&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href="#" class="list-button item-link"&gt;Link 1&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="#" class="list-button item-link"&gt;Link 2&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="#" class="list-button item-link"&gt;Link 3&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="#" class="list-button item-link"&gt;Link 4&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+          <h3 data-device-preview="../docs-demos/popover-js.html">Using JavaScript</h3>
+          <p>We can also open and close Popover with JavaScript, for this we need to look at related App methods:</p>
+          <p><span class="method">myApp.popover(<span>popover</span>, <span>target</span>)</span> - open Popover around <strong>target</strong> element</span></p>
+          <ul class="method-parameters">
+            <li><span class="parameter">popover</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Popover to open. Requred</li>
+            <li><span class="parameter">target</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of target element to set popover position around this element. Requred</li>
+            <li class="method-returns">This method returns Popover's HTMLElement</li>
+          </ul>
+          <p><span class="method">myApp.closeModal(<span>popover</span>)</span> - close Popover</span></p>
+          <ul class="method-parameters">
+            <li><span class="parameter">popover</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Popover will be closed</li>
+          </ul>
+          <h4>Popover position</h4>
+          <div class="important-note">
+            <p>When we open popover using JavaScript we need to pass <strong>target</strong> element to set popover around this target element.</p>
+          </div>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="navbar"&gt;
+    &lt;div class="navbar-inner"&gt;
+      &lt;div class="left"&gt;&lt;a href="#" class="link open-about"&gt;About&lt;/a&gt;&lt;/div&gt;
+      &lt;div class="center"&gt;Popover&lt;/div&gt;
+      &lt;div class="right"&gt;&lt;a href="#" class="link open-about"&gt;Links&lt;/a&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="page-content"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;p&gt;&lt;a href="#" class="open-about"&gt;Open About Popover&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;a href="#" class="open-links"&gt;Open Links Popover&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Praesent urna mi, sodales ac dolor vitae, dictum mattis sem. Mauris a dui faucibus, condimentum arcu quis, porta felis. Sed at metus arcu. Maecenas sodales tellus risus, id &lt;a href="#" class="open-about"&gt;About&lt;/a&gt; nibh iaculis quis. Suspendisse dignissim ante lobortis, molestie nibh id, pharetra risus. Proin blandit neque nec nibh scelerisque, eu vulputate ipsum malesuada. Phasellus sapien diam, fermentum eget ornare in, &lt;a href="#" class="open-links"&gt;Links&lt;/a&gt; rutrum vel justo. Integer accumsan posuere quam.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+  &lt;div class="popover popover-about"&gt;
+    ...
+  &lt;/div&gt;
+  &lt;div class="popover popover-links"&gt;
+    ...
+  &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+          <pre><code>var myApp = new Framework7();
+ 
+var $$ = Dom7;
+ 
+// Open About popover
+$$('.open-about').on('click', function () {
+    var clickedLink = this;
+    myApp.popover('.popover-about', clickedLink);
+});
+ 
+// Open Links popover
+$$('.open-links').on('click', function () {
+    var clickedLink = this;
+    myApp.popover('.popover-links', clickedLink);
+});          </code></pre>
+          <h2 data-device-preview="../docs-demos/popover-dynamic.html">Dynamic Popover</h2>
+          <p>Framework7 allows you to create Popover dynamically by passing its HTML to related App methods:</p>
+          <p><span class="method">myApp.popover(<span>popoverHTML</span>, <span>target</span>, <span>removeOnClose</span>)</span> - open Popover with <strong>popoverHTML</strong> content around <strong>target</strong> element</span></p>
+          <ul class="method-parameters">
+            <li><span class="parameter">popoverHTML</span> - <span class="parameter-type">string</span>. HTML string of popover </li>
+            <li><span class="parameter">target</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of target element to set popover position around this element. Requred</li>
+            <li><span class="parameter">removeOnClose</span> - <span class="parameter-type">boolean</span>. Optional, by default - true. If true then Popover will be removed from DOM when closed</li>
+            <li class="method-returns">This method returns dynamically created Popover's HTMLElement</li>
+          </ul>
+          <pre><code>&lt;body&gt;
+  ...
+  &lt;div class="navbar"&gt;
+    &lt;div class="navbar-inner"&gt;
+      &lt;div class="left"&gt;&lt;a href="#" class="link create-about"&gt;About&lt;/a&gt;&lt;/div&gt;
+      &lt;div class="center"&gt;Popover&lt;/div&gt;
+      &lt;div class="right"&gt;&lt;a href="#" class="link create-links"&gt;Links&lt;/a&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="page-content"&gt;
+    &lt;div class="content-block"&gt;
+      &lt;p&gt;&lt;a href="#" class="create-about"&gt;Create About Popover&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;a href="#" class="create-links"&gt;Create Links Popover&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;Praesent urna mi, sodales ac dolor vitae, dictum mattis sem. Mauris a dui faucibus, condimentum arcu quis, porta felis. Sed at metus arcu. Maecenas sodales tellus risus, id &lt;a href="#" class="create-about"&gt;About&lt;/a&gt; nibh iaculis quis. Suspendisse dignissim ante lobortis, molestie nibh id, pharetra risus. Proin blandit neque nec nibh scelerisque, eu vulputate ipsum malesuada. Phasellus sapien diam, fermentum eget ornare in, &lt;a href="#" class="create-links"&gt;Links&lt;/a&gt; rutrum vel justo. Integer accumsan posuere quam.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  ...
+&lt;/body&gt;</code></pre>
+          <pre><code>var myApp = new Framework7();
+ 
+var $$ = Dom7;
+ 
+$$('.create-about').on('click', function () {
+  var clickedLink = this;
+  var popoverHTML = '&lt;div class="popover"&gt;'+
+                      '&lt;div class="popover-inner"&gt;'+
+                        '&lt;div class="content-block"&gt;'+
+                          '&lt;p&gt;About Popover created dynamically.&lt;/p&gt;'+
+                          '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.&lt;/p&gt;'+
+                        '&lt;/div&gt;'+
+                      '&lt;/div&gt;'+
+                    '&lt;/div&gt;'
+  myApp.popover(popoverHTML, clickedLink);
+});
+ 
+$$('.create-links').on('click', function () {
+  var clickedLink = this;
+  var popoverHTML = '&lt;div class="popover"&gt;'+
+                      '&lt;div class="popover-inner"&gt;'+
+                        '&lt;div class="list-block"&gt;'+
+                          '&lt;ul&gt;'+
+                          '&lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Link 1&lt;/li&gt;'+
+                          '&lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Link 2&lt;/li&gt;'+
+                          '&lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Link 3&lt;/li&gt;'+
+                          '&lt;/ul&gt;'+
+                        '&lt;/div&gt;'+
+                      '&lt;/div&gt;'+
+                    '&lt;/div&gt;'
+  myApp.popover(popoverHTML, clickedLink);
+});</code></pre>
+          <div class="full-width stop-scroll-device">
+            <h2>Popover Events</h2>
+            <p>Popover has the same events as any <a href="modal.html">Modal</a></p>
+            <table class="events-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Target</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>open</td>
+                  <td>Popover Element<span>&lt;div class="popover"&gt;</span></td>
+                  <td>Event will be triggered when Popover starts its opening animation</td>
+                </tr>
+                <tr>
+                  <td>opened</td>
+                  <td>Popover Element<span>&lt;div class="popover"&gt;</span></td>
+                  <td>Event will be triggered after Popover completes its opening animation</td>
+                </tr>
+                <tr>
+                  <td>close</td>
+                  <td>Popover Element<span>&lt;div class="popover"&gt;</span></td>
+                  <td>Event will be triggered when Popover starts its closing animation</td>
+                </tr>
+                <tr>
+                  <td>closed</td>
+                  <td>Popover Element<span>&lt;div class="popover"&gt;</span></td>
+                  <td>Event will be triggered after Popover completes its closing animation      </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

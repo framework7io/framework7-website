@@ -1,0 +1,40 @@
+extends _layout
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Nested Sliders
+              .right 
+          .page-content
+            .slider-container.slider-init(data-pagination=".slider-pagination-h", data-paginationHide="false")
+              .slider-pagination.slider-pagination-h
+              .slider-wrapper
+                  .slider-slide <span>Horizontal Slide 1</span>
+                  .slider-slide 
+                    .slider-container.slider-init(data-pagination=".slider-pagination-v", data-direction="vertical", data-paginationHide="false")
+                      .slider-pagination.slider-pagination-v
+                      .slider-wrapper
+                        .slider-slide <span>Vertical Slide 1</span>
+                        .slider-slide <span>Vertical Slide 2</span>
+                        .slider-slide <span>Vertical Slide 3</span>
+                  .slider-slide <span>Horizontal Slide 3</span>
+                  .slider-slide <span>Horizontal Slide 4</span>
+
+
+block scripts
+  style.
+    .slider-slide {
+      background: #fff;
+    }
+    .slider-slide span {
+      text-align:center;
+      display:block;
+      margin: 20px;
+      font-size:21px;
+    }
+  script.
+    var myApp = new Framework7(); 

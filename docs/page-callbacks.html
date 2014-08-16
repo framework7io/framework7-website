@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Page Callbacks | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content">
+          <h1>Page Callbacks</h1>
+          <p>Page Callbacks become very handy when you need to execute specific code for specific pages. Page Callbacks have a great advantages over the <a href="pages.html#page-events">Page Events</a>:</p>
+          <ul>
+            <li>Page Callbacks are not events, and this means less memory usage and less memory leaks.</li>
+            <li>Because they are not events, you should not worry about detaching them</li>
+            <li>They are more convenient in sense of code structure</li>
+          </ul>
+          <h2>Callbacks Methods</h2>
+          <p>To use Page Callbacks we need to use appropriate App's methods:</p>
+          <div class="method-wrap">
+            <p><span class="method">myApp.onPageBeforeInit(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed when Framework7 just inserts new page <em>(with "pageName" data-page attribute)</em> to DOM</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
+              <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
+            </ul>
+          </div>
+          <div class="method-wrap">
+            <p><span class="method">myApp.onPageInit(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed after Framework7 initialize required page's <em>(with "pageName" data-page attribute)</em> components and navbar</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
+              <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
+            </ul>
+          </div>
+          <div class="method-wrap">
+            <p><span class="method">myApp.onPageBeforeAnimation(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed when everything initialized and page <em>(with "pageName" data-page attribute)</em> is ready to be animated</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
+              <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
+            </ul>
+          </div>
+          <div class="method-wrap">
+            <p><span class="method">myApp.onPageAfterAnimation(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed after page <em>(with "pageName" data-page attribute)</em> animation</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
+              <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
+            </ul>
+          </div>
+          <div class="method-wrap">
+            <p><span class="method">myApp.onPageBeforeRemove(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed right before page <em>(with "pageName" data-page attribute)</em> will be removed from DOM</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
+              <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
+            </ul>
+          </div>
+          <h2>Callback Object</h2>
+          <p>Each of above methods returns sepcial Callback Object with two methods, that you can use to trigger Page Callback manually or to remove it later:</p>
+          <div class="method-wrap">
+            <p><span class="method">callbackObject.trigger() </span><span>- trigger callback function</span></p>
+          </div>
+          <div class="method-wrap">
+            <p><span class="method">callbackObject.remove() </span><span>- remove callback function</span></p>
+          </div>
+          <h3>Examples</h3>
+          <p>Let's look at some examples of Page Callbacks usage</p>
+          <pre><code>var myApp = new Framework7();
+ 
+//Add callback function that will be executed when Page with data-page="about" attribute will be initialized
+myApp.onPageInit('about', function (page) {
+  console.log('About page initialized');
+  console.log(page);
+});
+ 
+//The same but for Services page
+myApp.onPageInit('services', function (page) {
+  console.log('Services page initialized');
+  console.log(page);
+});
+ 
+//We can add one more callback for About page, and previously added callback for this page will not be overwritten
+myApp.onPageInit('about', function (page) {
+  console.log('One more callback for About page');
+  console.log(page);
+});
+ 
+//Sometimes we may need the same callback for few pages. We may separate page names with space:
+myApp.onPageInit('about services', function (page) {
+  console.log(page.name + ' initialized'); 
+  //In console we will see 'about page initialized' for About page and 'services page initialized' for Services page
+});
+ 
+//We can also add callback for all pages:
+myApp.onPageInit('*', function (page) {
+  console.log(page.name + ' initialized'); 
+});
+ 
+//Let's create callback for Contacts page (with data-page="contacts" attribute) that we can control later:
+var contactsCallback = myApp.onPageInit('contacts', function (page) {
+  console.log('Contacts page initialized');
+  console.log(page);
+});
+// Later we can cancel/remove this callback:
+contactsCallback.remove();
+// Or we can trigger it manually:
+contactsCallback.trigger();          </code></pre>
+          <h3>Callbacks for Inital Pages</h3>
+          <p>Sometimes we may need such Page Callbacks for initialy loaded pages (that are already in index.html file on app load), for example for home page. But there could be a problem because when we add our .onPage callbacks the App is already initialized and our callback will not be triggered. It could be solved in a few ways:</p>
+          <h4>1. Init App Manually</h4>
+          <p>In this case we need to init App manually after we add our callbacks for initial pages:</p>
+          <pre><code>var myApp = new Framework7({
+  init: false //Disable App's automatica initialization
+});          
+ 
+//Now we add our callback for initial page
+myApp.onPageInit('home', function (page) {
+  //Do something here with home page
+});
+ 
+//And now we initialize app
+myApp.init();</code></pre>
+          <h4>2. Use App's Parameter Callback</h4>
+          <p>This way is not very convenient but we can do it in App parameters:</p>
+          <pre><code>var myApp = new Framework7({
+  onPageInit: function (app, page) {
+    if (page.name === 'home') {
+      //Do something here with home page
+    }
+  }
+});</code></pre>
+          <h4>3. Trigger Callback Manually</h4>
+          <pre><code>var myApp = new Framework7();          
+ 
+//Now we add our callback for initial page
+myApp.onPageInit('home', function (page) {
+  //Do something here with home page
+}).trigger(); //And trigger it right away</code></pre>
+          <div class="important-note">
+            <p>Note that in this case such manually triggered callback will not receive Page Data object as argument</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

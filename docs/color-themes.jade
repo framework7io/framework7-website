@@ -1,0 +1,171 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Color Themes | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Color Themes
+        p Framework7 comes with 10 ready to use default iOS color themes:
+        table
+          tr
+            td
+              b gray
+            td
+              span(style="background-color:#8e8e93").color-example
+            td 
+              em #8e8e93
+          tr
+            td
+              b white
+            td
+              span(style="background-color:#ffffff").color-example
+            td 
+              em #ffffff
+          tr
+            td
+              b black
+            td
+              span(style="background-color:#000000").color-example
+            td 
+              em #000000
+          tr
+            td
+              b lightblue
+            td
+              span(style="background-color:#5ac8fa").color-example
+            td 
+              em #5ac8fa
+          tr
+            td
+              b yellow
+            td
+              span(style="background-color:#ffcc00").color-example
+            td 
+              em #ffcc00
+          tr
+            td
+              b orange
+            td
+              span(style="background-color:#ff9500").color-example
+            td 
+              em #ff9500
+          tr
+            td
+              b pink
+            td
+              span(style="background-color:#ff2d55").color-example
+            td 
+              em #ff2d55
+          tr
+            td
+              b blue
+              |  (default)
+            td
+              span(style="background-color:#007aff").color-example
+            td 
+              em #007aff
+          tr
+            td
+              b green
+            td
+              span(style="background-color:#4cd964").color-example
+            td 
+              em #4cd964
+          tr
+            td
+              b red
+            td
+              span(style="background-color:#ff3b30").color-example
+            td 
+              em #ff3b30
+      h2(data-device-preview="../docs-demos/color-themes.html") Apply Color Themes
+      p It is easy to apply color themes. All you need is just to add <code>color-[theme]</code> class to the required parent element. It could be body, view, page, navbar, toolbar, list-block, etc. For example:
+      pre
+        code
+          | &lt;body class="theme-red"&gt;
+          |     ...
+          | &lt;/body&gt;
+          | 
+          | &lt;div class="page theme-green"&gt;
+          |     ...
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="list-block theme-pink"&gt;
+          |     ...
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="navbar theme-orange"&gt;
+          |     ...
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="buttons-row theme-yellow"&gt;
+          |     ...
+          | &lt;/div&gt;          
+      .important-note
+        p Note, that applied color theme affects only interractive elements such as links, buttons, form elements, icons. It doesn't change basic text color or background colors on other blocks.
+      h3 Helper Classes
+      p There are also additional helper classes that could be used without/outside themes:
+      ul
+        li 
+          p <b>color-[color]</b> - if you want to change text color of required block, or change color of separate button, link or icon, for example:
+          pre
+            code
+              | &lt;a class="button color-red"&gt;Red button&lt;/a&gt;
+              | &lt;i class="icon icon-back color-red"&gt; 
+        li 
+          p <b>bg-[color]</b> - if you want quickly to set predefined background color on some block or element:
+          pre
+            code
+              | &lt;span class="badge bg-pink"&gt;14&lt;/span&gt; - pink badge
+        li 
+          p <b>border-[color]</b> - if you want to set predefined border color:
+          pre
+            code
+              | &lt;div class="navbar border-white"&gt;...&lt;/div&gt;
+      p And of course, you can mix these helper classes:
+      pre
+        code
+          | &lt;div class="navbar bg-lightblue color-white border-gray"&gt;...&lt;/div&gt;
+      .important-note
+        p Note, that you can't use helper classes inside of container with theme classes. For example, this will have no effect:
+        pre
+          code
+            | &lt;div class="theme-red"&gt;
+            |     &lt;a href="#" class="color-blue"&gt;Link will be red, not blue&lt;/a&gt;
+            | &lt;/div&gt;        
+      h2(data-device-preview="../docs-demos/layout-themes.html") Layout Themes
+      p Framework7 also has 2 new whole layout color themes. We need to include additional CSS files with these themes to use them:
+      pre
+        code
+          | &lt;head&gt;
+          |     ...
+          |     &lt;link rel="stylesheet" href="path/to/framework7.min.css"&gt;
+          |     &lt;!-- It should be included After main Framework7 styles --&gt;
+          |     &lt;link rel="stylesheet" href="path/to/framework7.themes.css"&gt;
+          | &lt;/head&gt;
+      p There are 2 available layout themes: "white" and "dark". To apply layout theme we need to add <code>layout-[theme]</code> class to the required parent element. It could be body, view, page, navbar, toolbar, list-block, etc. For example:
+      pre
+        code
+          | &lt;body class="layout-dark"&gt;
+          |     ...
+          | &lt;/body&gt;
+          | 
+          | &lt;div class="page layout-white"&gt;
+          |     ...
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="list-block layout-dark"&gt;
+          |     ...
+          | &lt;/div&gt;
+          | 
+      .device-spacer(style="height:400px")
+
