@@ -14,12 +14,25 @@ module.exports = function (grunt) {
             dest: 'docs/',
             ext: '.html'
           }]
+        },
+        getStarted: {
+          files: [{
+            expand: true,
+            cwd: 'get-started/',
+            src: ['*.jade'],
+            dest: 'get-started/',
+            ext: '.html'
+          }]
         }
       },
       watch: {
         docs: {
           files: ['docs/*.jade'],
           tasks: ['newer:jade:docs']
+        },
+        getStarted: {
+          files: ['get-started/*.jade'],
+          tasks: ['newer:jade:getStarted']
         }
       }
     });
