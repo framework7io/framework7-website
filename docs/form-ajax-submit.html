@@ -131,63 +131,60 @@
           </ul>
         </div>
         <div class="docs-content">
-          <h1>Ajax Form Submit</h1>
-          <p>Framework7 allows automatically send form data using Ajax. </p>
-          <p>It could be done in two ways</p>
+          <h1>Ajax 表单提交</h1>
+          <p>Framework7 可以通过ajax自动提交</p>
+          <p>有两种自动提交方式:</p>
           <ul>
-            <li>when user submits it (when he clicks on "submit" button) or when "submit" event triggered on form programmatically</li>
-            <li>when user change any form field or when "change" event triggered on form (or form field) programmatically</li>
+            <li>当用户提交了表单 (点击了提交按钮) 或者当通过代码触发了 "submit" 事件</li>
+            <li>当用户更改了表单的内容，或者当通过代码触发了 "change" 事件</li>
           </ul>
-          <h2>Send form data on submit</h2>
-          <p>To enable Ajax form and send data automatically on submit, we just need to add "ajax-submit" class to form:</p>
-          <pre>     <code>&lt;form action="send-here.html" method="GET" class="ajax-submit"&gt;
+          <h2>submit时提交表单数据</h2>
+          <p>只需要添加 "ajax-submit" class 在form上，当submit时就会自动通过ajax发送表单数据</p>
+          <pre><code>&lt;form action="send-here.html" method="GET" class="ajax-submit"&gt;
     ...
-&lt;/form&gt; </code></pre>
-          <p>And when user will submit this form, it automatically will be sended using Ajax with the following rules:</p>
+&lt;/form&gt;</code></pre>
+          <p>当我们提交这个表单时，会自动使用Ajax发送表单的数据，这个过程有一下规则：</p>
           <div class="important-note">
             <ul>
               <li>
-                <p>Form data will be sended to the file/url specified in form's <b>"action" attribute</b></p>
+                <p>表单的数据会发送到 <b>"action"</b> 属性 指定的url</p>
               </li>
               <li>
-                <p>Request method will be the same as specified in form's <b>"method" attribute</b></p>
+                <p>request method 通过表单的 <b>"method"</b> 属性来指定</p>
               </li>
               <li>
-                <p>Content type will be the same as specified in form's <b>"enctype" attribute</b>. By default (if not specified), it is <b>application/x-www-form-urlencoded</b></p>
+                <p>Content-Type 通过表单的 <b>enctype</b> 属性来指定，默认值是 <b>application/x-www-form-urlencoded</b></p>
               </li>
             </ul>
           </div>
-          <h2>Send form data on input change</h2>
-          <p>Mostly we don't use "submit" buttons in apps, so in this cases we need to submit form data when user changes any form fields. For this case we need to use "ajax-submit-onchange" class:</p>
-          <pre>     <code>&lt;form action="send-here.html" method="GET" class="ajax-submit-onchange"&gt;
-    ...
-&lt;/form&gt; </code></pre>
-          <p>And when user will change any form filed, form data automatically will be sended using Ajax with the same rules as in previous case.</p>
-          <h2>Ajax submit event</h2>
-          <p>Sometimes we need to get actual XHR repsonse from the file/url where we send form data with Ajax. We can use special event for that:</p>
+          <h2>当表单数据改变时提交数据</h2>
+          <p>很多时候我们在表单中没有使用 "submit" 按钮，这种情况下我们需要当表单有任何数据改变的时候就提交数据。这种情况我们需要使用 "ajax-submit-onchange" class:</p>
+          <pre><code>&lt;form action="send-here.html" method="GET" class="ajax-submit-onchange"&gt;
+...
+&lt;/form&gt;</code></pre>
+          <p>当用户改变了任何表单输入数据时，表单的数据就会自动通过ajax发送。</p>
+          <h2>Ajax 提交事件</h2>
+          <p>有时候我们需要用到Ajax的 XHR 对象，可以通过特定的事件来获取：</p>
           <table class="events-table">
             <thead>
               <tr>
-                <th>Event</th>
-                <th>Target</th>
-                <th>Description</th>
+                <th>事件</th>
+                <th>目标</th>
+                <th>描述</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>submitted</td>
                 <td>Form Element<span>&lt;form class="ajax-submit"&gt;</span></td>
-                <td>Event will be triggered after successful Ajax request </td>
+                <td>Ajax 提交成功后会触发此事件</td>
               </tr>
             </tbody>
           </table>
           <pre><code>var myApp = new Framework7();
- 
-var $$ = Dom7;
- 
+var $$ = Framework7.$;
 $$('form.ajax-submit').on('submitted', function (e) {
   var xhr = e.detail.xhr; // actual XHR object
- 
   var data = e.detail.data; // Ajax repsonse from action file
   // do something with response data
 });</code></pre>

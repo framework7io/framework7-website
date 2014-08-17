@@ -131,9 +131,9 @@
           </ul>
         </div>
         <div class="docs-content">
-          <h1>Pages</h1>
-          <p><strong>Pages</strong> - have the same meaning as when you think about web pages.</p>
-          <p>Let's look at page' HTML structure:</p>
+          <h1>页面(Pages)</h1>
+          <p><strong>Pages</strong> - 和你在网页中打开的页面是同样的意思.</p></p>
+          <p>Page 的页面结构如下:</p>
           <pre><code>&lt;body&gt;
   ...
   &lt;!-- Views --&gt;
@@ -163,21 +163,21 @@
   &lt;/div&gt;
   ...
 &lt;/body&gt;</code></pre>
-          <p><strong>Pages</strong> is a wrapper container for pages within single View. It is required because all pages transitions happen here.</p>
-          <p>Few important notes</p>
+          <p><strong>Pages</strong> 是page在同一个View中的容器. Pages 是必须的，因为所有的页面切换都在这里。</p>
+          <p>几个重要的提示</p>
           <ul>
             <li>
-              <p>In main layout (index.html) each <strong>Page</strong> should be inside of <strong>Pages</strong> container (<code>&lt;div class="pages"&gt;</code>), which always should be a child of <strong>View</strong> (<code>&lt;div class="view"&gt;</code>).</p>
-              <p>There could be only one Page within each View and Pages in main layout (index.html)  </p>
+              <p>在 main layout(index.html) 中，每一个 <strong>Page</strong> 都应该放在 <strong>Pages</strong> 容器中(<code>&lt;div class="pages"&gt;</code>)，而 <strong>Pages</strong> 必须是 <strong>View</strong> 的子元素(<code>&lt;div class="view"&gt;</code>)。</p>
+              <p>在 main layout(index.html) 中，每一个 View 和 Pages 中只能有一个 <strong>Page</strong></p>
             </li>
           </ul>
           <h3>data-page</h3>
-          <p>As you may note each page has <code>data-page</code> attribute with unique page name. It is not required but very recommended to use it. </p>
-          <p>This attribute's value is very useful within "page events" or  with "<a href="page-callbacks.html">page callbacks</a>" and help us to define which page is loaded to make required manipulations.</p>
-          <h3>Page Content</h3>
-          <p>All visual content (like list views, forms, etc.) we should put inside of <code>&lt;div class="page-content"&gt;</code> that should be a child of <code>&lt;div class="page"&gt;</code>! This is required for correct styling, layout and scrolling</p>
-          <h2>Page Events</h2>
-          <p>Now, let's look at one of the most important part of page navigation - page events. These events allow us to manipulate just loaded pages by executing JavaScript for specific pages:</p>
+          <p>你会发现每一个 page 都有一个 <code>data-page</code> 属性，存储了一个唯一的page名。这个属性不是必须的，但是强烈推荐使用。</p>
+          <p>这个属性在 page 事件中或者在<a href="page-callbacks.html">page 回调函数</a>中会非常有用，可以用来帮助我们确定加载的是哪一个页面。</p>
+          <h3>Page 内容</h3>
+          <p>所有的可见的内容，比如列表和表单等，都应该放在 <code>&lt;div class="page-content"&gt;</code> 中，她是 <code>&lt;div class="page"&gt;</code> 的子元素。这样才能保证正确的样式，布局和滚动。</p>
+          <h2>Page 事件</h2>
+          <p>现在我们看看页面浏览的时候最重要的一部分 - Page 事件。这些事件可以让我们通过JS来操作加载好的Page。</p>
           <table class="events-table">
             <thead>
               <tr>
@@ -214,31 +214,26 @@
               </tr>
             </tbody>
           </table>
-          <p>Let's see how we can use these events. There are two ways to add page events handler:</p>
+          <p>有两种方式来使用Page事件:</p>
           <pre><code>// Option 1. Using one 'pageInit' handler for all pages (recommended way):
 $$(document).on('pageInit', function (e) {
   // Do something here when page loaded and initialized
   
 })
- 
+
 // Option 2. Using live 'pageInit' event handlers for each page (not recommended)
 $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
   // Do something here when page with data-page="about" attribute loaded and initialized
-})          </code></pre>
-          <p>As you may see it is pretty easy, but hey, how to determine which page is loaded in first option when we use only one handler? For this case we have cool Page Dage in event details:</p>
-          <h3>Page Data</h3>
-          <p>One of the most convenient parts in "page events" and "page callbacks" is that they contains so called Page Data:</p>
-          <pre><code>// In page callbacks:
-myApp.onPageInit('about', function (page) {
-  // "page" variable contains all required information about loaded and initialized page 
-})
- 
-// In page events:
+})</code></pre>
+          <p>但是如果我们只用一个handler，如果确定我们加载到的页面到底是哪一个呢？为了解决这个问题，我们在事件中提供了一个详细的数据:</p>
+          <h3>Page 数据</h3>
+          <p>在 Page 事件中，event实例中包含了关于当前Page非常详细的数据：</p>
+          <pre><code>// Option 1. Using one 'pageInit' handler for all pages (recommended way):
 $$(document).on('pageInit', function (e) {
   // Page Data contains all required information about loaded and initialized page 
   var page = e.detail.page;
 })</code></pre>
-          <p>Now, in the example above we have Page Data in <code>page</code> variable. It is an object with the following properties:</p>
+          <p>在上面的例子中，我们有一个 <code>page</code> 变量存储了页面数据。这个变量是一个对象，有如下属性：</p>
           <table class="methods-table">
             <tbody>
               <tr>
@@ -284,7 +279,7 @@ $$(document).on('pageInit', function (e) {
               </tr>
             </tbody>
           </table>
-          <p>Ok, let's look again how we can using one event handler write code for different pages</p>
+          <p>我们就可以在一个handler中处理不同的页面了:</p>
           <pre><code>$$(document).on('pageInit', function (e) {
     var page = e.detail.page;
     // Code for About page
@@ -305,8 +300,8 @@ $$(document).on('pageInit', function (e) {
         myApp.alert('Here comes our services!');
     }
 });</code></pre>
-          <h2>What's next</h2>
-          <p>Now we need to understand linking <a href="linking-pages.html">between pages</a> and <a href="linking-views.html">between views</a>. Also look at <a href="page-callbacks.html">Page Callbacks</a> to know how to use specific code for different pages without Page Events.</p>
+          <h2>下一步</h2>
+          <p>下面我们必须理解 <a href="linking-pages.html">不同Page间链接</a> 和 <a href="linking-views.html">不同View间链接</a>。还可以看 <a href="page-callbacks.html">Page 回调函数</a> 来处理不同的页面而不用依赖Page事件。</p>
         </div>
       </div>
     </div>

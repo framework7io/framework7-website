@@ -131,18 +131,17 @@
           </ul>
         </div>
         <div class="docs-content">
-          <h1>Dom7 - Custom DOM Library</h1>
-          <p>Framework7 doesn't use any third party library, even for DOM manipulation. It has its own custom DOM7 - DOM library that utilizes most edge and high-performance methods for DOM manipulation. You don’t need to learn something new, its usage is very simple because it has the same syntax as well known jQuery library with support of the most popular and widely used methods and jQuery-like chaining.</p>
-          <p>To start use it there is a <code>Dom7</code> global window function, but we recommend to assign it to some local variable with more handy name, like <code>$$</code>, but not to "$" to prevent confilicts with other libraries like jQuery or Zepto:</p>
+          <h1>DOM7 - 自定义的DOM库</h1>
+          <p>Framework7 不需要任何第三方的库，包括DOM操作。她有自己的 DOM7 - 一个集成了大部分常用DOM操作的高性能库。你不需要学习任何新的东西，因为她的用法和大名鼎鼎的jQuery几乎是一样的，包括大部分常用的方法和jquery风格的链式调用。</p>
+          <p>开始使用的时候最好把DOM7存储到一个局部变量中，为了防止和其他库冲突，我们推荐使用 <strong>$$</strong> 来代替 $。</p>
           <pre><code>//Export DOM7 to local variable to make it easy accessable
-var $$ = Dom7;</code></pre>
-          <h2>Usage Example</h2>
-          <p>Just everything you already know:</p>
+var $$ = Framework7.$;</code></pre>
+          <h2>用法示例</h2>
           <pre><code>$$('.something').on('click', function (e) {
-    $$(this).addClass('hello').attr('title', 'world').insertAfter('.something-else');
+  $$(this).addClass('hello').attr('title', 'world').insertAfter('.something-else');
 });</code></pre>
-          <h2>Available Methods</h2>
-          <p>All these methods works almost in the same way and with the same arguments as in jQuery or Zepto:</p>
+          <h2>可用的方法</h2>
+          <p>所有这些方法都几乎和jQuery是一样的 </p>
           <table class="methods-table">
             <tr>
               <td>.addClass(<span>className</span>) </td>

@@ -131,15 +131,15 @@
           </ul>
         </div>
         <div class="docs-content">
-          <h1>Page Callbacks</h1>
-          <p>Page Callbacks become very handy when you need to execute specific code for specific pages. Page Callbacks have a great advantages over the <a href="pages.html#page-events">Page Events</a>:</p>
+          <h1>Page 回调函数</h1>
+          <p>Page 回调函数可以用来为特定的页面执行特定的代码。Page 回调函数会被 <a href="pages.html#page-events">Page 事件</a>有很多优点。</p>
           <ul>
-            <li>Page Callbacks are not events, and this means less memory usage and less memory leaks.</li>
-            <li>Because they are not events, you should not worry about detaching them</li>
-            <li>They are more convenient in sense of code structure</li>
+            <li>Page 回调函数不是事件，所以会有更少的的内存占用和更少的内存泄露。</li>
+            <li>因为不是事件，所以不用担心如何监听。</li>
+            <li>有时候会在代码结构上比使用事件更方便。</li>
           </ul>
-          <h2>Callbacks Methods</h2>
-          <p>To use Page Callbacks we need to use appropriate App's methods:</p>
+          <h2>回调方法</h2>
+          <p>使用 Page 回调函数我们必须使用正确的App方法</p>
           <div class="method-wrap">
             <p><span class="method">myApp.onPageBeforeInit(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed when Framework7 just inserts new page <em>(with "pageName" data-page attribute)</em> to DOM</span></p>
             <ul class="method-parameters">
@@ -175,47 +175,47 @@
               <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
             </ul>
           </div>
-          <h2>Callback Object</h2>
-          <p>Each of above methods returns sepcial Callback Object with two methods, that you can use to trigger Page Callback manually or to remove it later:</p>
+          <h2>回调对象</h2>
+          <p>上面的每一个方法都会返回一个回调对象，这个对象有两个方法，你可以用来手动触发或者移除这个回调。</p>
           <div class="method-wrap">
             <p><span class="method">callbackObject.trigger() </span><span>- trigger callback function</span></p>
           </div>
           <div class="method-wrap">
             <p><span class="method">callbackObject.remove() </span><span>- remove callback function</span></p>
           </div>
-          <h3>Examples</h3>
-          <p>Let's look at some examples of Page Callbacks usage</p>
+          <h3>例子</h3>
+          <p>下面是一些Page回调函数的用法例子</p>
           <pre><code>var myApp = new Framework7();
- 
+
 //Add callback function that will be executed when Page with data-page="about" attribute will be initialized
 myApp.onPageInit('about', function (page) {
   console.log('About page initialized');
   console.log(page);
 });
- 
+
 //The same but for Services page
 myApp.onPageInit('services', function (page) {
   console.log('Services page initialized');
   console.log(page);
 });
- 
+
 //We can add one more callback for About page, and previously added callback for this page will not be overwritten
 myApp.onPageInit('about', function (page) {
   console.log('One more callback for About page');
   console.log(page);
 });
- 
+
 //Sometimes we may need the same callback for few pages. We may separate page names with space:
 myApp.onPageInit('about services', function (page) {
   console.log(page.name + ' initialized'); 
   //In console we will see 'about page initialized' for About page and 'services page initialized' for Services page
 });
- 
+
 //We can also add callback for all pages:
 myApp.onPageInit('*', function (page) {
   console.log(page.name + ' initialized'); 
 });
- 
+
 //Let's create callback for Contacts page (with data-page="contacts" attribute) that we can control later:
 var contactsCallback = myApp.onPageInit('contacts', function (page) {
   console.log('Contacts page initialized');
@@ -224,24 +224,24 @@ var contactsCallback = myApp.onPageInit('contacts', function (page) {
 // Later we can cancel/remove this callback:
 contactsCallback.remove();
 // Or we can trigger it manually:
-contactsCallback.trigger();          </code></pre>
-          <h3>Callbacks for Inital Pages</h3>
-          <p>Sometimes we may need such Page Callbacks for initialy loaded pages (that are already in index.html file on app load), for example for home page. But there could be a problem because when we add our .onPage callbacks the App is already initialized and our callback will not be triggered. It could be solved in a few ways:</p>
-          <h4>1. Init App Manually</h4>
-          <p>In this case we need to init App manually after we add our callbacks for initial pages:</p>
+contactsCallback.trigger();</code></pre>
+          <h3>初始化页面的回调</h3>
+          <p>有时候我们需要页面初始化的回调函数，比如在首页中。但是有一个问题，当我们添加 <code>.onPage</code> 回调的时候，应用已经初始化完成了，我们添加的回调函数不会被触发。有如下几个方法可以解决这个问题:</p>
+          <h4>1. 手动初始化</h4>
+          <p>这种情况下我们需要在添加回调函数之后再手动初始化</p>
           <pre><code>var myApp = new Framework7({
   init: false //Disable App's automatica initialization
 });          
- 
+
 //Now we add our callback for initial page
 myApp.onPageInit('home', function (page) {
   //Do something here with home page
 });
- 
+
 //And now we initialize app
 myApp.init();</code></pre>
-          <h4>2. Use App's Parameter Callback</h4>
-          <p>This way is not very convenient but we can do it in App parameters:</p>
+          <h4>2. 使用APP带参数的回调</h4>
+          <p>这样不是很方便，但是我们可以通过参数来做:</p>
           <pre><code>var myApp = new Framework7({
   onPageInit: function (app, page) {
     if (page.name === 'home') {
@@ -249,15 +249,15 @@ myApp.init();</code></pre>
     }
   }
 });</code></pre>
-          <h4>3. Trigger Callback Manually</h4>
+          <h4>3. 手动触发</h4>
           <pre><code>var myApp = new Framework7();          
- 
+
 //Now we add our callback for initial page
 myApp.onPageInit('home', function (page) {
   //Do something here with home page
 }).trigger(); //And trigger it right away</code></pre>
           <div class="important-note">
-            <p>Note that in this case such manually triggered callback will not receive Page Data object as argument</p>
+            <p>注意这种情况下手动触发回调，回调函数不会接受到一个 Page Data 作为参数。</p>
           </div>
         </div>
       </div>

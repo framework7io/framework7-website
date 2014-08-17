@@ -136,17 +136,17 @@
         </div>
         <div class="docs-content with-device">
           <div class="full-width">
-            <h1>Form Storage</h1>
-            <p>With form storage it is easy to store and parse forms data automatically, especially on Ajax loaded pages. And the most interesting part is that when you load this page again Framework7 will parse this data and fill up all form fields automatically! </p>
+            <h1>表单存储(form storage)</h1>
+            <p>Framework7 可以很方便存储和解析表单的数据，特别是在 Ajax 加载的页面。并且，当你再次加载相同的页面之后，Framework7 可以自动帮你填充上次的内容!</p>
           </div>
-          <h2 data-device-preview="../docs-demos/form-storage.html">Enable from storage</h2>
-          <p>To enable form storage for specific form, all you need is:</p>
+          <h2 data-device-preview="../docs-demos/form-storage.html">启用表单自动存储</h2>
+          <p>要启用表单自动存储功能，只需要：</p>
           <ul>
-            <li>add "store-data" class to form</li>
-            <li>add "id" attribute to from. It will not work if form doesn't have "id" attribute</li>
-            <li>make sure that all you inputs have "name" attributes, otherwise they will be ignored</li>
+            <li>在表单上增加一个 "store-data" class</li>
+            <li>在表单上增加一个 id 属性。如果没有 id, 无法正常工作的。</li>
+            <li>确保你的input都有 "name" 属性，没有name属性的input将会被忽略</li>
           </ul>
-          <p><strong>JavaScript is not required</strong></p>
+          <p><strong>不需要任何JS代码就可以实现表单自动存储</strong></p>
           <pre><code>&lt;!-- Form has additional "store-data" class to enable form storage on this form --&gt;
 &lt;form id="my-form" class="list-block store-data"&gt;
   &lt;ul&gt;
@@ -175,28 +175,29 @@
     ... other form fields ...
   &lt;/ul&gt;
 &lt;/form&gt;</code></pre>
-          <h2 data-device-preview="../docs-demos/form-storage-api.html">Form storage JavaScript API</h2>
-          <p>So how this works. Everything is simple, actually Framework7 just calls <a href="form-data.html#form-to-json">formToJSON</a> on any input change and <a href="form-data.html#form-from-json">formFromJSON</a> on 'pageInit' event</p>
-          <p>All forms data stored in Local Storage and each form has its own Local Storage key which is named by the following rule: <code>localStorage.f7form-[formID]</code> where [formId] is related form's "id" attribute. Each such Local Storage key contains stringified JSON with form data.</p>
-          <p>So let's look at App's methods that could be helpful to manage these Local Storage keys with form data</p>
+          <h2 data-device-preview="../docs-demos/form-storage-api.html">JS API</h2>
+          <p>这是怎么实现的？其实非常简单，Framework7 会在表单有任何改动的时候调用 <a href="form-data.html#form-to-json">formToJSON</a>，然后在"pageInit" 事件触发时调用 <a href="form-data.html#form-from-json">formFromJSON</a>。</p>
+          <p>所有的表单数据都存储在 localStorage 中，每一个表单都有一个自己的key，key的规则是：<code>localStorage.f7form-[formID]</code>，其中 [formId] 就是表单的 id 属性。每一个这样的key都包含了一个表单的所有数据。</p>
+          <p>下面是一些管理表单数据的可用的方法</p>
           <div class="method-wrap">
-            <p><span class="method">myApp.formGetData(<span>formId</span>) </span><span>- get stored data for form with <b>formId</b> "id" attribute</span></p>
+            <p><span class="method">myApp.formGetData(<span>formId</span>) </span><span>- 获取id对应的表单的数据</span></p>
             <ul class="method-parameters">
-              <li><span class="parameter">formId</span> - <span class="parameter-type">string</span> - "id" attribute of required form. Required.</li>
-              <li class="method-returns">Method returns JSON data</li>
+              <li><span class="parameter">formId</span> - <span class="parameter-type">字符串</span> - form 的id</li>
+              <li class="method-returns">返回一个JSON数据</li>
             </ul>
           </div>
           <div class="method-wrap">
-            <p><span class="method">myApp.formDeleteData(<span>formId</span>) </span><span>- delete stored data for form with <b>formId</b> "id" attribute</span></p>
+            <p><span class="method">myApp.formDeleteData(<span>formId</span>) </span><span>- 删除id对应的表单数据</span></p>
             <ul class="method-parameters">
-              <li><span class="parameter">formId</span> - <span class="parameter-type">string</span> - "id" attribute of required form. Required.</li>
+              <li><span class="parameter">formId</span> - <span class="parameter-type">字符串</span> - form 对应的id</li>
             </ul>
           </div>
           <div class="method-wrap">
-            <p><span class="method">myApp.formStoreData(<span>formId</span>, <span>formJSON</span>)</span><span>- store <b>formJSON</b> data for form with <b>formId</b> "id" attribute</span></p>
+            <p><span class="method">myApp.formStoreData(<span>formId</span>, <span>formJSON</span>)</span><span> - store <b>formJSON</b> data for form with <b>formId</b> "id" attribute</span></p>
+            <p><span class="method">myApp.formStoreData(<span>formId</span>, <span>formJSON</span>)</span><span> - 把一个JSON数据存储到一个表单对应的localStorage中</span></p>
             <ul class="method-parameters">
-              <li><span class="parameter">formId</span> - <span class="parameter-type">string</span> - "id" attribute of required form. Required.</li>
-              <li><span class="parameter">formJSON</span> - <span class="parameter-type">object</span> - JSON data to store</li>
+              <li><span class="parameter">formId</span> - <span class="parameter-type">字符串</span> - 表单的id属性</li></li>
+              <li><span class="parameter">formJSON</span> - <span class="parameter-type">对象</span> - 要存储的JSON对象</li></li>
             </ul>
           </div>
           <pre><code>&lt;form id="my-form2" class="list-block store-data"&gt;
@@ -208,9 +209,9 @@
   &lt;p&gt;&lt;a href="#" class="button save-storage-data"&gt;Save Data&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;</code></pre>
           <pre><code>var myApp = new Framework7();  
- 
-var $$ = Dom7;
- 
+
+var $$ = Framework7.$;
+
 $$('.get-storage-data').on('click', function() {
   var storedData = myApp.formGetData('my-form2');
   if(storedData) {
@@ -220,12 +221,12 @@ $$('.get-storage-data').on('click', function() {
     alert('There is no stored data for this form yet. Try to change any field')
   }
 });
- 
+
 $$('.delete-storage-data').on('click', function() {
   var storedData = myApp.formDeleteData('my-form2');
   alert('Form data deleted')
 });
- 
+
 $$('.save-storage-data').on('click', function() {
   var storedData = myApp.formStoreData('my-form2', {
     'name': 'John',
@@ -235,7 +236,7 @@ $$('.save-storage-data').on('click', function() {
     'slider': 10
   });
   alert('Form data replaced, refresh browser to see changes')
-});                  </code></pre>
+});</code></pre>
         </div>
       </div>
     </div>

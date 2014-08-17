@@ -131,17 +131,17 @@
           </ul>
         </div>
         <div class="docs-content">
-          <h1>Initialize App</h1>
-          <p>Now you can see our HTML layout with linked required CSS and JavaScript files. Now we should initialize our app (for example in <code>my-app.js</code>):</p>
+          <h1>初始化应用</h1>
+          <p>你已经有了基本的页面布局和需要用的CSS以及JS文件。现在我们需要初始化我们的应用，比如在 <code>my-app.js</code>中</p>
           <pre><code>var myApp = new Framework7();</code></pre>
-          <p>In the example above we use <code>myApp</code> variable where we store Framework7 initialized instance for easy access in future. It is not necessary to name it "myApp", it could be any name you like.</p>
-          <p>It was pretty simple. But Framework7 also provides more customization on initialization by passing object with parameters:</p>
+          <p>上面这个例子中我们使用了 <code>myApp</code> 作为变量名存储 Framework7 初始化之后的实例。</p>
+          <p>这样初始化非常简单，但是Framework7 也提供了更多个性化的定制，只需要在初始化的时候传入一个配置对象即可。</p>
           <pre><code>var myApp = new Framework7({
     pushState: true,
     swipePanel: 'left',
     // ... other parameters
 });</code></pre>
-          <p>Let's look at the list of all available parameters:</p>
+          <p>下面是这个变量的列表：</p>
           <table class="params-table">
             <thead>
               <tr>
@@ -591,23 +591,22 @@
               </tr>
             </tbody>
           </table>
-          <p>* <strong>modalTemplate</strong> parameter contains full HTML layout for modals (like alert, confirm and prompt):</p>
+          <p>* <strong>modalTemplate</strong> parameter contains full HTML layout for modals (like alert, confirm and prompt):</p></p>
           <pre><code>'&lt;div class="modal {{noButtons}}"&gt;' +
-    '&lt;div class="modal-inner"&gt;' +
-        '{{if title}}&lt;div class="modal-title"&gt;{{title}}&lt;/div&gt;{{/if title}}' +
-        '&lt;div class="modal-text"&gt;{{text}}&lt;/div&gt;' +
-        '{{afterText}}' +
-    '&lt;/div&gt;' +
-    '&lt;div class="modal-buttons"&gt;{{buttons}}&lt;/div&gt;' +
-'&lt;/div&gt;'</code></pre>
-          <p>So your final initialization code in <code>my-app.js</code> could look like:</p>
+  '&lt;div class="modal-inner"&gt;' +
+      '{{if title}}&lt;div class="modal-title"&gt;{{title}}&lt;/div&gt;{{/if title}}' +
+      '&lt;div class="modal-text"&gt;{{text}}&lt;/div&gt;' +
+      '{{afterText}}' +
+  '&lt;/div&gt;' +
+  '&lt;div class="modal-buttons"&gt;{{buttons}}&lt;/div&gt;' +</code>'&lt;/div&gt;'</pre>
+          <p>最终你写在 <code>my-app.js</code> 中的代码可能会是这样的：</p>
           <pre><code>var myApp = new Framework7({
     // Default title for modals
     modalTitle: 'My App',
- 
+    
     // If it is webapp, we can enable hash navigation:
     pushState: true,
- 
+    
     // Hide and show indicator during ajax requests
     onAjaxStart: function (xhr) {
         myApp.showIndicator();
@@ -615,11 +614,10 @@
     onAjaxComplete: function (xhr) {
         myApp.hideIndicator();
     }
-});   </code></pre>
-          <h2>Example with "preprocess" content</h2>
-          <p>Framework7 allows you to use your favorite client-side template engine (like Handlebars or Mustache). </p>
-          <p>Let's look on how to init app with usage of Handlebars as our client-side template engine (Handlebars library should be also included in your HTML)</p>
-          <p>Init app in <code>my-app.js</code>:</p>
+});</code></pre>
+          <h2>预处理内容</h2>
+          <p>Framework 可以让你用自己喜欢的客户端模板引擎，比如Handlebars 或者 mustache 等。</p>
+          <p>下面看看如何在初始化应用的时候就使用 Handlebars 作为我们的客户端模板引擎。（你需要先在页面中引入 Handlerbars）</p>
           <pre><code>var myApp = new Framework7({
     preprocess: function (content, url, next) {
         if (url === 'people.html') {
@@ -632,7 +630,7 @@
         }
     }
 });</code></pre>
-          <p>And the <code>people.html</code> page:</p>
+          <p><code>people.html</code> 内容如下:</p>
           <pre><code>&lt;div class="navbar"&gt;
   &lt;div class="navbar-inner"&gt;
     &lt;div class="center"&gt;{{title}}&lt;/div&gt;
@@ -648,8 +646,8 @@
       &lt;/ul&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-&lt;/div&gt;   </code></pre>
-          <p>But sometimes you may have asynchronous thread inside of your preprocess functon, for example if you need to do one more Ajax request and only after that to continue page loading. For this case we have "next" callback function where we need to pass our genereated/modified content:</p>
+&lt;/div&gt;</code></pre>
+          <p>有时候你会在预处理方法中有一些异步的逻辑，比如你用ajax来加载页面。这种情况下，我们提供了 "next" 回调函数，用来传入我们编译或者修改后的内容：</p>
           <pre><code>var myApp = new Framework7({
     preprocess: function (content, url, next) {
         if (url === 'people.html') {
@@ -657,19 +655,19 @@
             $$.get('sometemplate.html', function(data) {
                 // Template
                 var template = Handlebars.compile(content);
- 
+                
                 // Compile content template with received JSON data
                 var resultContent = template(data);
- 
+                
                 // Now we call "next" callback function with result content
                 next(resultContent);
             });
             // Now we shouldn't return anything
         }
     }
-});          </code></pre>
-          <h2>What's next</h2>
-          <p>Ok, right after we initialize our App we need to add and initialize <a href="views.html">Views</a></p>
+});</code></pre>
+          <h2>下一步</h2>
+          <p>完成应用初始化之后，我们下一步需要做的是完成视图（Views）的初始化。</p>
         </div>
       </div>
     </div>

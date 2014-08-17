@@ -9,3 +9,6 @@ examples/split-view-panel
 examples/tab-bar
 plugins/3dpanels
 node_modules/
+
+# tmp file
+*.swp

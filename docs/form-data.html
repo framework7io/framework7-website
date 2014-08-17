@@ -136,15 +136,15 @@
         </div>
         <div class="docs-content with-device">
           <div class="full-width">
-            <h1>Form Data</h1>
-            <p>Framework7 comes with few very useful methods which make work with forms as simple as possibles:</p>
+            <h1>表单数据</h1>
+            <p>Framework7 有一些方法可以让读取和填写表单数据变得非常方便：</p>
           </div>
-          <h2 data-device-preview="../docs-demos/form-data-formtojson.html">Form to JSON</h2>
-          <p>Using this App's method we can easily convert all form fields values to JSON:</p>
-          <p><span class="method">myApp.formToJSON(<span>form</span>) - convert form fields valus to JSON</span></p>
+          <h2 data-device-preview="../docs-demos/form-data-formtojson.html">Form 转化成 JSON</h2>
+          <p>使用 app 对应的方法可以非常方便把所有的表单元素转化成一个 JSON 对象:</p>
+          <p><span class="method">myApp.formToJSON(<span>form</span>) - 把表单转换成JSON对象</span></p>
           <ul class="method-parameters">
-            <li><span class="parameter">form</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to JSON. Required.</li>
-            <li class="method-returns">Method returns JSON data</li>
+            <li><span class="parameter">form</span> - <span class="parameter-type">HTML元素</span> or <span class="parameter-type">字符串</span> (CSS选择器)</li>
+            <li class="method-returns">返回一个JSON对象</li>
           </ul>
           <pre><code>&lt;form id="my-form" class="list-block"&gt;
   &lt;ul&gt;
@@ -161,34 +161,34 @@
     ... other form fields
   &lt;/ul&gt;
 &lt;/form&gt;
- 
+
 &lt;div class="content-block"&gt;
   &lt;a href="#" class="button form-to-json"&gt;Get Form Data&lt;/a&gt;
 &lt;/div&gt;</code></pre>
           <pre><code>var myApp = new Framework7();  
- 
-var $$ = Dom7;
- 
+
+var $$ = Framework7.$;
+
 $$('.form-to-json').on('click', function(){
   var formData = myApp.formToJSON('#my-form');
   alert(JSON.stringify(formData));
-}); </code></pre>
+});</code></pre>
           <div class="important-note">
             <ul>
               <li>
-                <p>Note that each input should have "name" attribute, otherwise its value will not be presented in JSON</p>
+                <p>每一个输入框都应该有 name 属性，否则不会被转换到JSON中去</p>
               </li>
               <li>
-                <p>Checkboxes and "multiple" selects will be presented as Arrays in JSON</p>
+                <p>Checkbox 和 多选的 select 都会被转化成数组</p>
               </li>
             </ul>
           </div>
-          <h2 data-device-preview="../docs-demos/form-data-formfromjson.html">Form from JSON</h2>
-          <p>Using this App's method we can easily fill up form according to JSON data:</p>
-          <p><span class="method">myApp.formFromJSON(<span>form</span>, <span>formData</span>) - fill up form according to JSON formData</span></p>
+          <h2 data-device-preview="../docs-demos/form-data-formfromjson.html">JSON 填充到 Form</h2>
+          <p>使用 app 对应的方法我们很容易把一个JSON对象填充到 form 中去：</p>
+          <p><span class="method">myApp.formFromJSON(<span>form</span>, <span>formData</span>) - 把一个JSON对象填充到Form中</span></p>
           <ul class="method-parameters">
-            <li><span class="parameter">form</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to JSON. Required.</li>
-            <li><span class="parameter">formData</span> - <span class="parameter-type">object</span> with from data in JSON format. Required.</li>
+            <li><span class="parameter">form</span> - <span class="parameter-type">HTML元素</span> 或者 <span class="parameter-type">字符串</span> (CSS选择器)</li>
+            <li><span class="parameter">formData</span> - <span class="parameter-type">对象</span> 需要填充进表单的JSON对象</li>
           </ul>
           <pre><code>&lt;form id="my-form" class="list-block"&gt;
   &lt;ul&gt;
@@ -205,25 +205,29 @@ $$('.form-to-json').on('click', function(){
     ... other form fields
   &lt;/ul&gt;
 &lt;/form&gt;
- 
+
 &lt;div class="content-block"&gt;
   &lt;a href="#" class="button form-from-json"&gt;Fill Up Form&lt;/a&gt;
 &lt;/div&gt;</code></pre>
           <pre><code>var myApp = new Framework7();  
- 
-var $$ = Dom7;
- 
+
+var $$ = Framework7.$;
+
 $$('.form-from-json').on('click', function(){
- 
+
   var formData = {
     'name': 'John',
-    'email': 'john@doe.com',
+    'email': '<a class="__cf_email__" href="http://www.cloudflare.com/email-protection" data-cfemail="aec4c1c6c0eecac1cb80cdc1c3">[email&nbsp;protected]</a><script type="text/javascript">
+/* <![CDATA[ */
+(function(){try{var s,a,i,j,r,c,l,b=document.getElementsByTagName("script");l=b[b.length-1].previousSibling;a=l.getAttribute('data-cfemail');if(a){s='';r=parseInt(a.substr(0,2),16);for(j=2;a.length-j;j+=2){c=parseInt(a.substr(j,2),16)^r;s+=String.fromCharCode(c);}s=document.createTextNode(s);l.parentNode.replaceChild(s,l);}}catch(e){}})();
+/* ]]> */
+</script>',
     'gender': 'female',
     'switch': ['yes'],
     'slider': 10
-  }
+}
   myApp.formFromJSON('#my-form', formData);
-});                  </code></pre>
+});</code></pre>
         </div>
       </div>
     </div>
