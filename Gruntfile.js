@@ -6,6 +6,15 @@ module.exports = function (grunt) {
         options: {
           pretty: true,
         },
+        index: {
+          files: [{
+            expand: true,
+            cwd: './',
+            src: ['*.jade'],
+            dest: './',
+            ext: '.html'
+          }]
+        },
         docs: {
           files: [{
             expand: true,
@@ -26,6 +35,10 @@ module.exports = function (grunt) {
         }
       },
       watch: {
+        index: {
+          files: ['./*.jade'],
+          tasks: ['newer:jade:index']
+        },
         docs: {
           files: ['docs/*.jade'],
           tasks: ['newer:jade:docs']
