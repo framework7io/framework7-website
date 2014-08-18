@@ -136,8 +136,8 @@
         </div>
         <div class="docs-content with-device">
           <div class="full-width">
-            <h1>Color Themes</h1>
-            <p>Framework7 comes with 10 ready to use default iOS color themes:</p>
+            <h1>颜色主题(Color Themes)</h1>
+            <p>Framework7 默认有十种颜色的主题：</p>
             <table>
               <tr>
                 <td><b>gray</b></td>
@@ -191,8 +191,8 @@
               </tr>
             </table>
           </div>
-          <h2 data-device-preview="../docs-demos/color-themes.html">Apply Color Themes</h2>
-          <p>It is easy to apply color themes. All you need is just to add <code>color-[theme]</code> class to the required parent element. It could be body, view, page, navbar, toolbar, list-block, etc. For example:</p>
+          <h2 data-device-preview="../docs-demos/color-themes.html">如何使用不同颜色的主题</h2>
+          <p>你只需要在需要使用的组件的父容器上加上 <code>theme-[color]</code> class即可。可以加在 body, view, page, navbar, toolbar 等上面，比如：</p>
           <pre><code>&lt;body class="theme-red"&gt;
     ...
 &lt;/body&gt;
@@ -213,34 +213,35 @@
     ...
 &lt;/div&gt;          </code></pre>
           <div class="important-note">
-            <p>Note, that applied color theme affects only interractive elements such as links, buttons, form elements, icons. It doesn't change basic text color or background colors on other blocks.</p>
+            <p>注意，颜色主题只会影响交互组件，比如链接、按钮、表单、图表等，并不会改变其他组件的文本颜色或者背景色。</p>
           </div>
-          <h3>Helper Classes</h3>
-          <p>There are also additional helper classes that could be used without/outside themes:</p>
+          <h3>工具类(Helper Classes)</h3>
+          <p>每个颜色主题都有一个对应的工具类可以在主题之外使用：</p>
           <ul>
             <li>
-              <p><b>color-[color]</b> - if you want to change text color of required block, or change color of separate button, link or icon, for example:</p>
+              <p><b>color-[color]</b> - 可以直接改变一个组件的颜色，比如:</p>
               <pre><code>&lt;a class="button color-red"&gt;Red button&lt;/a&gt;
 &lt;i class="icon icon-back color-red"&gt; </code></pre>
             </li>
             <li>
-              <p><b>bg-[color]</b> - if you want quickly to set predefined background color on some block or element:</p>
+              <p><b>bg-[color]</b> - 可以直接改变一些组件的背景颜色（并不是所有组件的背景色都可以改）:</p>
               <pre><code>&lt;span class="badge bg-pink"&gt;14&lt;/span&gt; - pink badge</code></pre>
             </li>
             <li>
-              <p><b>border-[color]</b> - if you want to set predefined border color:</p>
+              <p><b>border-[color]</b> - 直接改变border的颜色:</p>
               <pre><code>&lt;div class="navbar border-white"&gt;...&lt;/div&gt;</code></pre>
             </li>
           </ul>
-          <p>And of course, you can mix these helper classes:</p>
+          <p>当然，你也可以混合着用:</p>
           <pre><code>&lt;div class="navbar bg-lightblue color-white border-gray"&gt;...&lt;/div&gt;</code></pre>
           <div class="important-note">
-            <p>Note, that you can't use helper classes inside of container with theme classes. For example, this will have no effect:</p>
+            <p>不过，在容器已经指定了颜色主题的情况下，你不能在里面再使用 helper class，比如这样就无效：</p>
             <pre><code>&lt;div class="theme-red"&gt;
     &lt;a href="#" class="color-blue"&gt;Link will be red, not blue&lt;/a&gt;
 &lt;/div&gt;        </code></pre>
           </div>
-          <h2 data-device-preview="../docs-demos/layout-themes.html">Layout Themes</h2>
+          <h2 data-device-preview="../docs-demos/layout-themes.html">布局主题(Layout Themes)</h2>
+          <p>Framework7 现在多了两个新的 layout themes。在使用layout-themes之前我们需要先引入css文件:</p>
           <p>Framework7 also has 2 new whole layout color themes. We need to include additional CSS files with these themes to use them:</p>
           <pre><code>&lt;head&gt;
     ...
@@ -248,7 +249,7 @@
     &lt;!-- It should be included After main Framework7 styles --&gt;
     &lt;link rel="stylesheet" href="path/to/framework7.themes.css"&gt;
 &lt;/head&gt;</code></pre>
-          <p>There are 2 available layout themes: "white" and "dark". To apply layout theme we need to add <code>layout-[theme]</code> class to the required parent element. It could be body, view, page, navbar, toolbar, list-block, etc. For example:</p>
+          <p>有两个可选的 layout themes: "white" 和 "dark"。和使用color themes 一样，我们只需要在对应组件的容器上加上 <code>layout-[theme]</code> class即可。这个容器可以是 body, view,page, navbar, toolbar, list-block 等，比如：</p>
           <pre><code>&lt;body class="layout-dark"&gt;
     ...
 &lt;/body&gt;
@@ -287,7 +288,7 @@
     </div>
     <footer>
       <div class="center">
-        <div class="links"><a href="./">Framework7</a><a href="./contribute/">贡献者</a><a href="./get-started/">开始使用</a><a href="./docs/">文档</a><a href="./tutorials/">教程</a><a href="./forum/">论坛</a><a href="./examples/">案例</a><a href="./apps/">示例</a><a href="./showcase/">演示</a></div>
+        <div class="links"><a href="./">Framework7</a><a href="./contribute/">贡献者</a><a href="./get-started/">开始使用</a><a href="./docs/">文档</a><a href="./tutorials/">教程</a><a href="./forum/">论坛</a><a href="./examples/">案例</a><a href="./apps/">示例</a><a href="./showcase/">应用</a></div>
         <div class="copy">2014 © Framework7 by iDangero.us</div>
       </div>
     </footer>

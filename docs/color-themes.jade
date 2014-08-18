@@ -13,8 +13,8 @@ block content
       include ../jade/_docs-menu
     .docs-content.with-device
       .full-width
-        h1 Color Themes
-        p Framework7 comes with 10 ready to use default iOS color themes:
+        h1 颜色主题(Color Themes)
+        p Framework7 默认有十种颜色的主题：
         table
           tr
             td
@@ -87,8 +87,8 @@ block content
               span(style="background-color:#ff3b30").color-example
             td 
               em #ff3b30
-      h2(data-device-preview="../docs-demos/color-themes.html") Apply Color Themes
-      p It is easy to apply color themes. All you need is just to add <code>color-[theme]</code> class to the required parent element. It could be body, view, page, navbar, toolbar, list-block, etc. For example:
+      h2(data-device-preview="../docs-demos/color-themes.html") 如何使用不同颜色的主题
+      p 你只需要在需要使用的组件的父容器上加上 <code>theme-[color]</code> class即可。可以加在 body, view, page, navbar, toolbar 等上面，比如：
       pre
         code
           | &lt;body class="theme-red"&gt;
@@ -111,38 +111,39 @@ block content
           |     ...
           | &lt;/div&gt;          
       .important-note
-        p Note, that applied color theme affects only interractive elements such as links, buttons, form elements, icons. It doesn't change basic text color or background colors on other blocks.
-      h3 Helper Classes
-      p There are also additional helper classes that could be used without/outside themes:
+        p 注意，颜色主题只会影响交互组件，比如链接、按钮、表单、图表等，并不会改变其他组件的文本颜色或者背景色。
+      h3 工具类(Helper Classes)
+      p 每个颜色主题都有一个对应的工具类可以在主题之外使用：
       ul
         li 
-          p <b>color-[color]</b> - if you want to change text color of required block, or change color of separate button, link or icon, for example:
+          p <b>color-[color]</b> - 可以直接改变一个组件的颜色，比如:
           pre
             code
               | &lt;a class="button color-red"&gt;Red button&lt;/a&gt;
               | &lt;i class="icon icon-back color-red"&gt; 
         li 
-          p <b>bg-[color]</b> - if you want quickly to set predefined background color on some block or element:
+          p <b>bg-[color]</b> - 可以直接改变一些组件的背景颜色（并不是所有组件的背景色都可以改）:
           pre
             code
               | &lt;span class="badge bg-pink"&gt;14&lt;/span&gt; - pink badge
         li 
-          p <b>border-[color]</b> - if you want to set predefined border color:
+          p <b>border-[color]</b> - 直接改变border的颜色:
           pre
             code
               | &lt;div class="navbar border-white"&gt;...&lt;/div&gt;
-      p And of course, you can mix these helper classes:
+      p 当然，你也可以混合着用:
       pre
         code
           | &lt;div class="navbar bg-lightblue color-white border-gray"&gt;...&lt;/div&gt;
       .important-note
-        p Note, that you can't use helper classes inside of container with theme classes. For example, this will have no effect:
+        p 不过，在容器已经指定了颜色主题的情况下，你不能在里面再使用 helper class，比如这样就无效：
         pre
           code
             | &lt;div class="theme-red"&gt;
             |     &lt;a href="#" class="color-blue"&gt;Link will be red, not blue&lt;/a&gt;
             | &lt;/div&gt;        
-      h2(data-device-preview="../docs-demos/layout-themes.html") Layout Themes
+      h2(data-device-preview="../docs-demos/layout-themes.html") 布局主题(Layout Themes)
+      p Framework7 现在多了两个新的 layout themes。在使用layout-themes之前我们需要先引入css文件:
       p Framework7 also has 2 new whole layout color themes. We need to include additional CSS files with these themes to use them:
       pre
         code
@@ -152,7 +153,7 @@ block content
           |     &lt;!-- It should be included After main Framework7 styles --&gt;
           |     &lt;link rel="stylesheet" href="path/to/framework7.themes.css"&gt;
           | &lt;/head&gt;
-      p There are 2 available layout themes: "white" and "dark". To apply layout theme we need to add <code>layout-[theme]</code> class to the required parent element. It could be body, view, page, navbar, toolbar, list-block, etc. For example:
+      p 有两个可选的 layout themes: "white" 和 "dark"。和使用color themes 一样，我们只需要在对应组件的容器上加上 <code>layout-[theme]</code> class即可。这个容器可以是 body, view,page, navbar, toolbar, list-block 等，比如：
       pre
         code
           | &lt;body class="layout-dark"&gt;
@@ -168,4 +169,3 @@ block content
           | &lt;/div&gt;
           | 
       .device-spacer(style="height:400px")
-
