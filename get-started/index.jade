@@ -5,190 +5,185 @@ block vars
   - var title = 'Getting Started With Framework7';
 
 block content
-  h1 Getting Started With Framework7
-  p It is really easy to build your app with Framework7. There are two ways to start. 
-  p You can start building your app from changing one of <a href="../examples/">example</a> apps or one of open source <a href="../apps/">demo apps</a> or start from scratch. 
-  p Let's create our first app from scratch:
-  h3 Download and install Framework7
-  p First of all we need to download required Framework7 files: 
+  h1 开始使用Framework7
+  p 使用Framework7可以很方便创建你的web应用，有两种快速上手的办法：
+  p 你可以从<a href="../examples/">example</a>或者<a href="../apps/">demo apps</a>中选择一个应用并做修改成为自己的应用。也可以从头开始创建应用。
+  p 让我们看看如何从头开始创建一个应用:
+  h3 下载安装Framework7
+  p 首先，我们需要下载Framework7需要的所有文件：
   ul
-    li We can download them from <a href="https://github.com/nolimits4web/Framework7/" target="_blank">Framework7 GitHub repository</a> 
-    li Or we can install them via Bower, enter in terminal:
-      pre
-        code
-          | $ bower install framework7
-  p In the downloaded/installed package we need files from the <code>dist/</code> folder.
-  h3 Basic App layout
-  p Now we need to create our <code>index.html</code> file with our app layout.<br>This will be an app with single view, left panel and dynamic through navbar and through toolbar:
+    li 可以从 <a href="https://github.com/sdc-alibaba/Framework7" target="_blank">Framework7 GitHub 仓库</a>下载
+    li 或者可以通过bower来安装:
+    pre
+      code.
+        $ bower install framework7
+  p 安装完成之后，我们可以在根目录下找到一个build目录。
+  h3 基本HTML结构
+  p 我们需要创建一个 <code>index.html</code> 文件，包含基本的HTML结构。我们将会创建一个有一个View，一个left panel ,一个dynamic through navbar 和 一个 through toolbar 的web应用。
   pre
-    code
-      | &lt;!DOCTYPE html&gt;
-      | &lt;html&gt;
-      |   &lt;head&gt;
-      |     &lt;!-- Required meta tags--&gt;
-      |     &lt;meta charset="utf-8"&gt;
-      |     &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"&gt;
-      |     &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
-      |     &lt;meta name="apple-mobile-web-app-status-bar-style" content="black"&gt;
-      |     &lt;!-- Your app title --&gt;
-      |     &lt;title&gt;My App&lt;/title&gt;
-      |     &lt;!-- Path to Framework7 Library CSS--&gt;
-      |     &lt;link rel="stylesheet" href="path/to/framework7.min.css"&gt;
-      |     &lt;!-- Path to your custom app styles--&gt;
-      |     &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
-      |   &lt;/head&gt;
-      |   &lt;body&gt;
-      |     &lt;!-- Status bar overlay for full screen mode (PhoneGap) --&gt;
-      |     &lt;div class="statusbar-overlay"&gt;&lt;/div&gt;
-      |     &lt;!-- Panels overlay--&gt;
-      |     &lt;div class="panel-overlay"&gt;&lt;/div&gt;
-      |     &lt;!-- Left panel with reveal effect--&gt;
-      |     &lt;div class="panel panel-left panel-reveal"&gt;
-      |       &lt;div class="content-block"&gt;
-      |         &lt;p&gt;Left panel content goes here&lt;/p&gt;
-      |       &lt;/div&gt;
-      |     &lt;/div&gt;
-      |     &lt;!-- Views --&gt;
-      |     &lt;div class="views"&gt;
-      |       &lt;!-- Your main view, should have "view-main" class --&gt;
-      |       &lt;div class="view view-main"&gt;
-      |         &lt;!-- Top Navbar--&gt;
-      |         &lt;div class="navbar"&gt;
-      |           &lt;div class="navbar-inner"&gt;
-      |             &lt;!-- We need cool sliding animation on title element, so we have additional "sliding" class --&gt;
-      |             &lt;div class="center sliding"&gt;Awesome App&lt;/div&gt;
-      |             &lt;div class="right"&gt;
-      |               &lt;!-- 
-      |                 Right link contains only icon - additional "icon-only" class
-      |                 Additional "open-panel" class tells app to open panel when we click on this link
-      |               --&gt;
-      |               &lt;a href="#" class="link icon-only open-panel"&gt;&lt;i class="icon icon-bars-blue"&gt;&lt;/i&gt;&lt;/a&gt;
-      |             &lt;/div&gt;
-      |           &lt;/div&gt;
-      |         &lt;/div&gt;
-      |         &lt;!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes--&gt;
-      |         &lt;div class="pages navbar-through toolbar-through"&gt;
-      |           &lt;!-- Page, "data-page" contains page name --&gt;
-      |           &lt;div data-page="index" class="page"&gt;
-      |             &lt;!-- Scrollable page content --&gt;
-      |             &lt;div class="page-content"&gt;
-      |               &lt;p&gt;Page content goes here&lt;/p&gt;
-      |               &lt;!-- Link to another page --&gt;
-      |               &lt;a href="about.html"&gt;About app&lt;/a&gt;
-      |             &lt;/div&gt;
-      |           &lt;/div&gt;
-      |         &lt;/div&gt;
-      |         &lt;!-- Bottom Toolbar--&gt;
-      |         &lt;div class="toolbar"&gt;
-      |           &lt;div class="toolbar-inner"&gt;
-      |             &lt;!-- Toolbar links --&gt;
-      |             &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
-      |             &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
-      |           &lt;/div&gt;
-      |         &lt;/div&gt;
-      |       &lt;/div&gt;
-      |     &lt;/div&gt;
-      |     &lt;!-- Path to Framework7 Library JS--&gt;
-      |     &lt;script type="text/javascript" src="path/to/framework7.min.js"&gt;&lt;/script&gt;
-      |     &lt;!-- Path to your app js--&gt;
-      |     &lt;script type="text/javascript" src="path/to/my-app.js"&gt;&lt;/script&gt;
-      |   &lt;/body&gt;
-      | &lt;/html&gt;              
-  
-  h3 Initialize App
-  p After we have our app layout with attached Framework7 JS and CSS files we need to initialize app and views.<br>In our custom <code>my-app.js</code> file:
+    code.
+      &lt;!DOCTYPE html&gt;
+      &lt;html&gt;
+        &lt;head&gt;
+          &lt;!-- Required meta tags--&gt;
+          &lt;meta charset="utf-8"&gt;
+          &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"&gt;
+          &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
+          &lt;meta name="apple-mobile-web-app-status-bar-style" content="black"&gt;
+          &lt;!-- Your app title --&gt;
+          &lt;title&gt;My App&lt;/title&gt;
+          &lt;!-- Path to Framework7 Library CSS--&gt;
+          &lt;link rel="stylesheet" href="path/to/framework7.min.css"&gt;
+          &lt;!-- Path to your custom app styles--&gt;
+          &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
+        &lt;/head&gt;
+        &lt;body&gt;
+          &lt;!-- Status bar overlay for full screen mode (PhoneGap) --&gt;
+          &lt;div class="statusbar-overlay"&gt;&lt;/div&gt;
+          &lt;!-- Panels overlay--&gt;
+          &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+          &lt;!-- Left panel with reveal effect--&gt;
+          &lt;div class="panel panel-left panel-reveal"&gt;
+            &lt;div class="content-block"&gt;
+              &lt;p&gt;Left panel content goes here&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;!-- Views --&gt;
+          &lt;div class="views"&gt;
+            &lt;!-- Your main view, should have "view-main" class --&gt;
+            &lt;div class="view view-main"&gt;
+              &lt;!-- Top Navbar--&gt;
+              &lt;div class="navbar"&gt;
+                &lt;div class="navbar-inner"&gt;
+                  &lt;!-- We need cool sliding animation on title element, so we have additional "sliding" class --&gt;
+                  &lt;div class="center sliding"&gt;Awesome App&lt;/div&gt;
+                  &lt;div class="right"&gt;
+                    &lt;!-- 
+                      Right link contains only icon - additional "icon-only" class
+                      Additional "open-panel" class tells app to open panel when we click on this link
+                    --&gt;
+                    &lt;a href="#" class="link icon-only open-panel"&gt;&lt;i class="icon icon-bars-blue"&gt;&lt;/i&gt;&lt;/a&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes--&gt;
+              &lt;div class="pages navbar-through toolbar-through"&gt;
+                &lt;!-- Page, "data-page" contains page name --&gt;
+                &lt;div data-page="index" class="page"&gt;
+                  &lt;!-- Scrollable page content --&gt;
+                  &lt;div class="page-content"&gt;
+                    &lt;p&gt;Page content goes here&lt;/p&gt;
+                    &lt;!-- Link to another page --&gt;
+                    &lt;a href="about.html"&gt;About app&lt;/a&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;!-- Bottom Toolbar--&gt;
+              &lt;div class="toolbar"&gt;
+                &lt;div class="toolbar-inner"&gt;
+                  &lt;!-- Toolbar links --&gt;
+                  &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+                  &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;!-- Path to Framework7 Library JS--&gt;
+          &lt;script type="text/javascript" src="path/to/framework7.min.js"&gt;&lt;/script&gt;
+          &lt;!-- Path to your app js--&gt;
+          &lt;script type="text/javascript" src="path/to/my-app.js"&gt;&lt;/script&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+  h3 初始化应用
+  p 我们创建好HTML之后并引入了Framework7的JS和CSS文件之后，就需要初始化 app 和 view。
+    br
+    | 这些代码 <code>my-app.js</code> 文件中
   pre
-    code
-      | // Initialize app
-      | var myApp = new Framework7();
-      | 
-      | // If we need to use custom DOM library, let's save it to $$ variable:
-      | var $$ = Dom7;
-      | 
-      | // Add view
-      | var mainView = myApp.addView('.view-main', {
-      |   // Because we want to use dynamic navbar, we need to enable it for this view:
-      |   dynamicNavbar: true
-      | });
-  h3 Another page
-  p Now let's add our "About app" page, it will be in <code>about.html</code> file:
-  pre
-    code
-      | &lt;!-- We don't need full layout in this file because this page will be parsed with Ajax. It is just enough to put here .navbar and .page--&gt;
-      | 
-      | &lt;!-- Top Navbar--&gt;
-      | &lt;div class="navbar"&gt;
-      |   &lt;div class="navbar-inner"&gt;
-      |     &lt;div class="left"&gt;
-      |       &lt;a href="#" class="back link"&gt;
-      |         &lt;i class="icon icon-back-blue"&gt;&lt;/i&gt;
-      |         &lt;span&gt;Back&lt;/span&gt;
-      |        &lt;/a&gt;
-      |     &lt;/div&gt;
-      |     &lt;div class="center sliding"&gt;About&lt;/div&gt;
-      |     &lt;div class="right"&gt;
-      |       &lt;a href="#" class="link icon-only open-panel"&gt;&lt;i class="icon icon-bars-blue"&gt;&lt;/i&gt;&lt;/a&gt;
-      |     &lt;/div&gt;
-      |   &lt;/div&gt;
-      | &lt;/div&gt;
-      | &lt;div class="pages"&gt;
-      |   &lt;div data-page="about" class="page"&gt;
-      |     &lt;div class="page-content"&gt;
-      |       &lt;div class="content-block"&gt;
-      |         &lt;p&gt;Here is About page!&lt;/p&gt;
-      |         &lt;p&gt;Fusce eros lectus, accumsan eget mi vel, iaculis tincidunt felis. Nulla tincidunt pharetra sagittis. Fusce in felis eros. Nulla sit amet aliquam lorem, et gravida ipsum. Mauris consectetur nisl non sollicitudin tristique. Praesent vitae metus ac quam rhoncus mattis vel et nisi. Aenean aliquet, felis quis dignissim iaculis, lectus quam tincidunt ligula, et venenatis turpis risus sed lorem. Morbi eu metus elit. Ut vel diam dolor.&lt;/p&gt;
-      |       &lt;/div&gt;
-      |     &lt;/div&gt;
-      |   &lt;/div&gt;
-      | &lt;/div&gt;          
-  h3 Scripts for specific page
-  p Let's say that we need JavaScript code that should be executed only for "About" page. Because <code>about.html</code> file will be loaded using Ajax, we can't put there JavaScript in &lt;script&gt; tags, it just will be ignored. So for this case Framework7 provides simple callbacks that we can use in our <code>my-app.js</code> file. Now we need to extend my-app.js file with script for About page:
-  pre
-    code
-      | // Initialize app and store it to myApp variable for futher access to its methods
-      | var myApp = new Framework7();
-      | 
-      | // We need to use custom DOM library, let's save it to $$ variable:
-      | var $$ = Dom7;
-      | 
-      | // Add view
-      | var mainView = myApp.addView('.view-main', {
-      |   // Because we want to use dynamic navbar, we need to enable it for this view:
-      |   dynamicNavbar: true
-      | });
-      | 
-      | // Now we need to run the code that will be executed only for About page.
-      | 
-      | // Option 1. Using page callback for page (for "about" page in this case) (recommended way):
-      | myApp.onPageInit('about', function (page) {
-      |   // Do something here for "about" page
-      |   
-      | })
-      | 
-      | // Option 2. Using one 'pageInit' event handler for all pages:
-      | $$(document).on('pageInit', function (e) {
-      |   // Get page data from event data
-      |   var page = e.detail.page;
-      |   
-      |   if (page.name === 'about') {
-      |     // Following code will be executed for page with data-page attribute equal to "about"
-      |     myApp.alert('Here comes About page');
-      |   }
-      | })
-      | 
-      | // Option 2. Using live 'pageInit' event handlers for each page
-      | $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
-      |   // Following code will be executed for page with data-page attribute equal to "about"
-      |   myApp.alert('Here comes About page');
-      | })
+    code.
+      // Initialize app
+      var myApp = new Framework7();
 
-  h3 Launch App 
-  p To launch our App we just need to enter path to <code>index.html</code> file in browser.<br>Because Framework7 uses Ajax for navigation between pages make sure that you have http server running (not required for PhoneGap)!
-  h3 What next?
-  p As you see it is really easy to create basic iOS 7 app with Framework7. But hey, this app is pretty simple and you want to learn more? So here are your next steps:
+      // If we need to use custom DOM library, let's save it to $$ variable:
+      var $$ = Framework7.$;
+
+      // Add view
+      var mainView = myApp.addView('.view-main', {
+        // Because we want to use dynamic navbar, we need to enable it for this view:
+        dynamicNavbar: true
+      });
+  h3 再添加一个Page
+  p 我们添加一个 "about app"页面，放在 <code>about.html</code> 文件中
+  pre
+    code.
+      &lt;!-- We don't need full layout in this file because this page will be parsed with Ajax. It is just enough to put here .navbar and .page--&gt;
+
+      &lt;!-- Top Navbar--&gt;
+      &lt;div class="navbar"&gt;
+        &lt;div class="navbar-inner"&gt;
+          &lt;div class="left"&gt;
+            &lt;a href="#" class="back link"&gt;
+              &lt;i class="icon icon-back-blue"&gt;&lt;/i&gt;
+              &lt;span&gt;Back&lt;/span&gt;
+             &lt;/a&gt;
+          &lt;/div&gt;
+          &lt;div class="center sliding"&gt;About&lt;/div&gt;
+          &lt;div class="right"&gt;
+            &lt;a href="#" class="link icon-only open-panel"&gt;&lt;i class="icon icon-bars-blue"&gt;&lt;/i&gt;&lt;/a&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="pages"&gt;
+        &lt;div data-page="about" class="page"&gt;
+          &lt;div class="page-content"&gt;
+            &lt;div class="content-block"&gt;
+              &lt;p&gt;Here is About page!&lt;/p&gt;
+              &lt;p&gt;Fusce eros lectus, accumsan eget mi vel, iaculis tincidunt felis. Nulla tincidunt pharetra sagittis. Fusce in felis eros. Nulla sit amet aliquam lorem, et gravida ipsum. Mauris consectetur nisl non sollicitudin tristique. Praesent vitae metus ac quam rhoncus mattis vel et nisi. Aenean aliquet, felis quis dignissim iaculis, lectus quam tincidunt ligula, et venenatis turpis risus sed lorem. Morbi eu metus elit. Ut vel diam dolor.&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+  h3 给about页面添加JS代码
+  p 假设我们需要在 about 页面中执行JS代码。因为 <code>about.html</code> 页面是通过JS加载的，我们不能通过在 <code>about.html</code> 中添加 &lt;script&gt; 标签的方式来添加JS代码，因为script标签会直接被忽略。所说，Framework7 提供了简单的回调函数，我们可以在 <code>my-app.js</code>中使用：
+  pre
+    code.
+      // Initialize app and store it to myApp variable for futher access to its methods
+      var myApp = new Framework7();
+
+      // We need to use custom DOM library, let's save it to $$ variable:
+      var $$ = Framework7.$;
+
+      // Add view
+      var mainView = myApp.addView('.view-main', {
+        // Because we want to use dynamic navbar, we need to enable it for this view:
+        dynamicNavbar: true
+      });
+
+      // Now we need to run the code that will be executed only for About page.
+      // For this case we need to add event listener for "pageInit" event
+
+      // Option 1. Using one 'pageInit' event handler for all pages (recommended way):
+      $$(document).on('pageInit', function (e) {
+        // Get page data from event data
+        var page = e.detail.page;
+
+        if (page.name === 'about') {
+          // Following code will be executed for page with data-page attribute equal to "about"
+          myApp.alert('Here comes About page');
+        }
+      })
+
+      // Option 2. Using live 'pageInit' event handlers for each page
+      $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
+        // Following code will be executed for page with data-page attribute equal to "about"
+        myApp.alert('Here comes About page');
+      })
+  h3 打开页面
+  p 我们只需要在浏览器中输入 <code>index.html</code> 的地址即可。 
+    br
+    |因为Framework7是通过Ajax在不同页面间跳转的，所以你需要启动一个 http 服务器才可以（不要直接打开本地文件)
   ul
-    li Go to <a href="../docs/">Documentation</a> to more learn about all Framework7 components, layouts, API and how to control every part of your app.
-    li Look at available <a href="../tutorials/" target="_blank">Tutorials</a>. Some of them could be very helpful.
+    li 查看 <a href="../docs/">文档</a>，这里有非常关于Framework7所有组件、布局、API等的详细文档。
+    li 查看 <a href="../tutorials/" target="_blank">教程</a>. 有些教程会很有用.
     li Visit <a href="../examples/">Examples</a>, <a href="../apps/">Demo Apps</a> and <a href="../showcase/">Showcase</a> sections for inspiration or use them as your starter app layout.
-    li If you have questions about Framework7 don't hesitate to ask them in our <a href="../forum/">Forum</a>. If you prefer <a href="http://stackoverflow.com" target="_blank">StackOverflow</a> then don't forget to tag your question with <a href="http://stackoverflow.com/questions/tagged/framework7" target="_blank"><code>framework7</code></a> tag.
-    li If you found bug create issue on <a href="https://github.com/nolimits4web/framework7/" target="_blank">GitHub</a>.
+    li 查看 <a href="../examples/">Examples</a>, <a href="../apps/">Demo Apps</a> 和 <a href="../showcase/">Showcase</a> ，可能会对你开始写自己的应用有很大的帮助.
+    li 如果你发现任何bug，可以在 <a href="https://github.com/sdc-alibaba/Framework7-Website" target="_blank">GitHub</a> 给我们提issue。

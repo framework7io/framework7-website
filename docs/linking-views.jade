@@ -9,48 +9,46 @@ block content
     .docs-nav
       include ../jade/_docs-menu
     .docs-content
-      h1 Linking between views in Framework7
-      p Now let's look on more complex situation. 
-      p So we have two initialized Views (Left view and Right view) with separated navigation. In this case all links in Left view will load pages in Left view, and all links in Right view will load pages in Right view. 
-      p But now we need that some of links in Left view load pages in Right view. It is called <strong>linking between views</strong>. We already know how to do that with JavaScript - using .loadPage and .goBack View's methods.
-      p Framework7 allows to achieve this without JavaScript, all we need in this case is to add <code>data-view</code> attribute to link. This <code>data-view</code> attribute should contain CSS selector of required View:
+      h1 View 间链接
+      p 让我们看一种更复杂一点的情况
+      p 我们有两个已经初始化完成的View（left view 和 right view)。这种情况下，所有在left view 中的链接加载的页面都会放在 left view 中，所有在right view中的链接加载的页面都会放在 right view中。
+      p 但是我们现在需要一些在 left view 中的链接加载的页面放进 right view中。这叫 <strong>View间链接</strong>。我们已经知道可以通过JS来实现，通过 .loadPage 和 .goBack 方法。
+      p Framework7 可以让我们不使用JS来实现，所有需要做的只是在连接上增加一个 <code>data-view</code> 属性，这个属性包含一个CSS选择器指向需要放入的那个View即可。
       pre
-        code
-          | &lt;body&gt;
-          |   ...
-          |   &lt;!-- Views --&gt;
-          |   &lt;div class="views"&gt;
-          |     &lt;!-- Left view --&gt;
-          |     &lt;div class="view view-main left-view"&gt;
-          |       &lt;!-- Pages --&gt;
-          |         
-          |         &lt;!-- These links will load pages to this Left view --&gt;
-          |         &lt;a href="about.html"&gt; About &lt;/a&gt;
-          |         &lt;a href="services.html"&gt; Services &lt;/a&gt;
-          |         
-          |         &lt;!-- This link will load pages to Right view --&gt;
-          |         &lt;a href="products.html" data-view=".right-view"&gt; Products &lt;/a&gt;
-          |     &lt;/div&gt;
-          |     &lt;!-- Right view --&gt;
-          |     &lt;div class="view right-view"&gt;
-          |       &lt;!-- Pages --&gt;
-          |         
-          |         &lt;!-- These links will load pages to this Right view --&gt;
-          |         &lt;a href="products.html"&gt; Products &lt;/a&gt;
-          |         &lt;a href="contacts.html"&gt; Contacts &lt;/a&gt;
-          |         
-          |         &lt;!-- This link will load pages to Left view --&gt;
-          |         &lt;a href="about.html" data-view=".left-view"&gt; About &lt;/a&gt;
-          |         &lt;a href="services.html" data-view=".left-view"&gt; Services &lt;/a&gt;
-          |         
-          |         &lt;!-- This link will trigger Go Back in Left view --&gt;
-          |         &lt;a href="#" class="back" data-view=".left-view"&gt; About &lt;/a&gt;
-          |     &lt;/div&gt;          
-          |   &lt;/div&gt;
-          |   ...
-          | &lt;/body&gt;
-      p That was easy, right? So just add <code>data-view</code> attribute with CSS selector of another View to any link, or even "back" link, to make linking between Views.
-      p As an real example you can look at <a href="../examples/">"Split View Application" example</a> when links from bottom of Left view control Main view.
+        code.
+          &lt;body&gt;
+            ...
+            &lt;!-- Views --&gt;
+            &lt;div class="views"&gt;
+              &lt;!-- Left view --&gt;
+              &lt;div class="view view-main left-view"&gt;
+                &lt;!-- Pages --&gt;
 
-      h2 What's next
-      p Now when we know everything about main App structure and linking/loading pages, we need to fill our App with components. Let's start from one of the most important - <a href="navbar-toolbar-layouts.html">Navbars & Toolbars</a>
+                  &lt;!-- These links will load pages to this Left view --&gt;
+                  &lt;a href="about.html"&gt; About &lt;/a&gt;
+                  &lt;a href="services.html"&gt; Services &lt;/a&gt;
+
+                  &lt;!-- This link will load pages to Right view --&gt;
+                  &lt;a href="products.html" data-view=".right-view"&gt; Products &lt;/a&gt;
+              &lt;/div&gt;
+              &lt;!-- Right view --&gt;
+              &lt;div class="view right-view"&gt;
+                &lt;!-- Pages --&gt;
+
+                  &lt;!-- These links will load pages to this Right view --&gt;
+                  &lt;a href="products.html"&gt; Products &lt;/a&gt;
+                  &lt;a href="contacts.html"&gt; Contacts &lt;/a&gt;
+
+                  &lt;!-- This link will load pages to Left view --&gt;
+                  &lt;a href="about.html" data-view=".left-view"&gt; About &lt;/a&gt;
+                  &lt;a href="services.html" data-view=".left-view"&gt; Services &lt;/a&gt;
+
+                  &lt;!-- This link will trigger Go Back in Left view --&gt;
+                  &lt;a href="#" class="back" data-view=".left-view"&gt; About &lt;/a&gt;
+              &lt;/div&gt;          
+            &lt;/div&gt;
+            ...
+          &lt;/body&gt;
+      p 你可以参考这个例子 <a href="../examples/">"Split View Application" example</a>
+      h2 下一步
+      p 我们已经有了完整的页面结构，下一步就是使用组件。首先从最重要的组件开始，<a href="navbar-toolbar-layouts.html">导航栏和工具栏</a></p>

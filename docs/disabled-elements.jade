@@ -9,45 +9,45 @@ block content
     .docs-nav
       include ../jade/_docs-menu
     .docs-content
-        h1 Disabled elements
-        p Framework7 supports styles for disabled elements. To make any element disabled all you need is to add "disabled" class to this element or "disabled" attributes for form element:
-        pre
-          code
-            | &lt;div class="list-block"&gt;
-            |     &lt;ul&gt;
-            |         &lt;li class="item-content"&gt;
-            |             &lt;div class="item-inner"&gt;
-            |                 &lt;div class="item-title"&gt;Element 1&lt;/div&gt;
-            |             &lt;/div&gt;
-            |         &lt;/li&gt;
-            |         &lt;!-- This element will be disabled --&gt;
-            |         &lt;li class="item-content disabled"&gt;
-            |             &lt;div class="item-inner"&gt;
-            |                 &lt;div class="item-title"&gt;Element 2&lt;/div&gt;
-            |             &lt;/div&gt;
-            |         &lt;/li&gt;
-            |         &lt;li class="item-content"&gt;
-            |             &lt;div class="item-inner"&gt;
-            |                 &lt;div class="item-title"&gt;Element 3&lt;/div&gt;
-            |             &lt;/div&gt;
-            |         &lt;/li&gt;
-            |         &lt;!-- Element with disabled input --&gt;
-            |         &lt;li class="item-content"&gt;
-            |             &lt;div class="item-inner"&gt;
-            |                 &lt;div class="item-title label"&gt;Your name&lt;/div&gt;
-            |                 &lt;div class="item-input"&gt;
-            |                     &lt;!-- Disabled input --&gt;
-            |                     &lt;input type="text" name="name" disabled&gt;
-            |                 &lt;/div&gt;
-            |             &lt;/div&gt;
-            |         &lt;/li&gt;
-            |     &lt;/ul&gt;
-            | &lt;/div&gt;     
-        .important-note
-          ul
-            li
-              p Note that "disabled" attribute can be applied only for form elements like input, textarea and select
-            li
-              p "disabled" class can be applied to any HTML element
-            li
-              p Disabled element has lower opacity and doesn't receive any touch/click events
+      h1 禁用的元素
+      p 只需要给元素加上 "disabled" class 或者 "disabled" 属性就可以了。
+      pre
+        code.
+          &lt;div class="list-block"&gt;
+              &lt;ul&gt;
+                  &lt;li class="item-content"&gt;
+                      &lt;div class="item-inner"&gt;
+                          &lt;div class="item-title"&gt;Element 1&lt;/div&gt;
+                      &lt;/div&gt;
+                  &lt;/li&gt;
+                  &lt;!-- This element will be disabled --&gt;
+                  &lt;li class="item-content disabled"&gt;
+                      &lt;div class="item-inner"&gt;
+                          &lt;div class="item-title"&gt;Element 2&lt;/div&gt;
+                      &lt;/div&gt;
+                  &lt;/li&gt;
+                  &lt;li class="item-content"&gt;
+                      &lt;div class="item-inner"&gt;
+                          &lt;div class="item-title"&gt;Element 3&lt;/div&gt;
+                      &lt;/div&gt;
+                  &lt;/li&gt;
+                  &lt;!-- Element with disabled input --&gt;
+                  &lt;li class="item-content"&gt;
+                      &lt;div class="item-inner"&gt;
+                          &lt;div class="item-title label"&gt;Your name&lt;/div&gt;
+                          &lt;div class="item-input"&gt;
+                              &lt;!-- Disabled input --&gt;
+                              &lt;input type="text" name="name" disabled&gt;
+                          &lt;/div&gt;
+                      &lt;/div&gt;
+                  &lt;/li&gt;
+              &lt;/ul&gt;
+          &lt;/div&gt;
+      div.important-note
+        ul
+          li
+            p "disabled" 属性只有在表单元素上才可以使用，比如 input, textarea, select
+          li
+            p "disabled" class 可以用在任何HTML元素上
+          li
+            p Disabled 元素有更低的透明度，并且不会相应任何事件

@@ -2,7 +2,7 @@ extends ../jade/_internal-template
 
 block vars
   - var activeLink = 'docs';
-  - var title = 'Tabs | Framework7 Documentation';
+  - var title = '标签页(Tabs) | Framework7 文档';
 
 block content
   .docs-demo-device
@@ -13,91 +13,87 @@ block content
       include ../jade/_docs-menu
     .docs-content.with-device
       .full-width
-        h1 Tabs
-        p Tabs allow to simply switch between different content.
-        h2 Tabs Layout
-        p Let's look at Tabs layout:
+        h1 标签页(Tabs)
+        p 标签用于控制不同内容区块间的切换显示
+        h2 Tabs标签布局
+        p 下方是标签组件的内容区HTML结构
         pre
           code
-            | &lt;!-- Tabs wrapper, shoud have "tabs" class. Required element --&gt;
+            | &lt;!-- Tabs 容器, 需要带有"tabs" class --&gt;
             | &lt;div class="tabs"&gt;
-            |   &lt;!-- First tab, should have "tab" class and unique id attribute --&gt;
-            |   &lt;!-- First tab is active by default - additional "active" class --&gt;
+            |   &lt;!-- 第一个tab, 需要带有"tab" class 和唯一的id --&gt;
+            |   &lt;!-- 第一个tab是激活显示状态，通过添加"active" class实现 --&gt;
             |   &lt;div class="tab active" id="tab1"&gt;
-            |     ... Tab 1 content goes here ...
+            |     ... Tab 1 内容 ...
             |   &lt;/div&gt;
-            |   &lt;!-- Second tab, should have "tab" class and unique id attribute --&gt;
+            |   &lt;!-- 第二个tab, 需要带有"tab" class 和唯一的id --&gt;
             |   &lt;div class="tab" id="tab2"&gt;
-            |     ... Tab 2 content goes here ...
+            |     ... Tab 2 内容
             |   &lt;/div&gt;
-            |   &lt;!-- Third tab, should have "tab" class and unique id attribute --&gt;
+            |   &lt;!-- 第三个tab, 需要带有"tab" class 和唯一的id --&gt;
             |   &lt;div class="tab" id="tab3"&gt;
-            |     ... Tab 3 content goes here ...
+            |     ... Tab 3 内容 ...
             |   &lt;/div&gt;
-            | &lt;/div&gt;  
-        p Where:
+            | &lt;/div&gt;
+        p 几点说明:
         ul
-          li <code>div class="tabs"</code> - required wrapper for all tabs. If you miss this elements, tabs will now work
-          li <code>div class="tab"</code> - single tab. Should have <strong>unique</strong> <code>id</code> attribute
-          li <code>div class="tab active"</code> - single active tab. Tab which is active (visible) by default, should have additional "<strong>active</strong>" class
-        h2 Switching between tabs
-        p After we have our tabs layout we need some contoller so user can switch between them. 
-        p To make it work we need to create links (<code>&lt;a&gt;</code> tags) with "<strong>tab-link</strong>" class and <code>href</code> attribute equal to the <code>id</code> attribute of target tab:
+          li <code>div class="tabs"</code> - 所有tab外层共享一个容器. 没有他标签组件将无法工作
+          li <code>div class="tab"</code> - 单独的tab，需要有 <strong>唯一的</strong> <code>id</code>
+          li <code>div class="tab active"</code> - 当前激活的 tab，即当前显示的tab，需要"<strong>active</strong>" class
+        h2 各标签间切换
+        p 完成标签组件HTML布局后，我们需要一些控制面板以便用户可以在各标签间切换。
+        p 需要做的就是创建一个<code>&lt;a&gt;</code>，拥有名为"<strong>tab-link</strong>"的class，并且<code>href</code> 属性值和之前对应tab的<code>id</code>相同：
         pre
           code
-            | &lt;!-- Link that activates first tab, has the same href attribute (#tab1) as the id attribute of first tab (tab1)  --&gt;
+            | &lt;!-- 关联到第一个标签, 需要设置和第一个标签id名相同的href属性(#tab1) --&gt;
             | &lt;a href="#tab1" class="tab-link active"&gt;Tab 1&lt;/a&gt;
-            | 
-            | &lt;!-- Link that activates 2nd tab, has the same href attribute (#tab2) as the id attribute of 2nd tab (tab2)  --&gt;
+            | &lt;!-- 关联到第二个标签, 需要设置和第二个标签id名相同的href属性(#tab1) --&gt;
             | &lt;a href="#tab2" class="tab-link"&gt;Tab 2&lt;/a&gt;
-            | 
-            | &lt;!-- Link that activates 3rd tab, has the same href attribute (#tab2) as the id attribute of 3rd tab (tab3)  --&gt;
-            | &lt;a href="#tab3" class="tab-link"&gt;Tab 3&lt;/a&gt; 
+            | &lt;!-- 关联到第三个标签, 需要设置和第三个标签id名相同的href属性(#tab1) --&gt;
+            | &lt;a href="#tab3" class="tab-link"&gt;Tab 3&lt;/a&gt;
         .important-note
-          p As you may see, first link also has "<strong>active</strong>" class. It is not required, but if all this links will be on the same DOM tree level (the same-level children of mutual parent), then script will also change this "active" class on link related to active tab. It is useful when your "active" link has different visual style (like buttons <a href="buttons.html#buttons-row---segmented-control">Buttons Row / Segmented Control</a> or links in <a href="tabbar.html">Tab bar</a>)
-        h2 Switch multiple tabs
-        p Such notation as above uses ID attributes to specify tabs we need to switch to. But sometimes we may have situation when we need to switch few tabs using one tab-link, for this case we may use classes instead of IDs and "data-tab" attribute for tab-link. For example:
+          p 如你所见，第一个标签也有 "<strong>active</strong>" class。不是必需的，但如果所有这些a元素在相同的DOM树层级，内部脚本也会将“active”class添加到处于激活态的tab上。当你的“active”元素有不同的视觉样式时（比如<a href="buttons.html#buttons-row---segmented-control">Buttons Row / Segmented Control</a> or links in <a href="tabbar.html">Tab bar</a>），这会很有用。
+        h2 切换多重标签
+        p 上文描述的标记通过ID指定需要切换去的标签。但有时一个视图里会出现多块内容区响应同一个标签面板，这时我们可以用class代替id。标签面板里的a元素使用“data-tab”属性指向需要切换显示内容区的class（一般对应多块div）.比如 :
         pre
           code
-            | &lt;!-- Top Tabs --&gt;
+            | &lt;!-- 顶部 Tabs --&gt;
             | &lt;div class="tabs tabs-top"&gt;
             |   &lt;div class="tab tab1 active"&gt;...&lt;/div&gt;
             |   &lt;div class="tab tab2"&gt;...&lt;/div&gt;
             |   &lt;div class="tab tab3"&gt;...&lt;/div&gt;
             | &lt;/div&gt;
-            | &lt;!-- Bottom Tabs --&gt;
+            | &lt;!-- 底部 Tabs --&gt;
             | &lt;div class="tabs tabs-bottom"&gt;
             |   &lt;div class="tab tab1 active"&gt;...&lt;/div&gt;
             |   &lt;div class="tab tab2"&gt;...&lt;/div&gt;
             |   &lt;div class="tab tab3"&gt;...&lt;/div&gt;
-            | &lt;/div&gt;            
-            | &lt;!-- Tabs links --&gt;
+            | &lt;/div&gt;
+            | &lt;!-- Tabs 控制面板 --&gt;
             | &lt;div class="tab-links"&gt;
-            |   &lt;!-- This links will switch top and bottom tabs to .tab1 --&gt;
+            |   &lt;!-- 将同时切换标签内容区到 .tab1 区块--&gt;
             |   &lt;a href="#" class="tab-link" data-tab=".tab1"&gt;Tab 1&lt;/a&gt;
-            |   &lt;!-- This links will switch top and bottom tabs to .tab2 --&gt;
+            |   &lt;!-- 将同时切换标签内容区到 .tab2 区块--&gt;
             |   &lt;a href="#" class="tab-link" data-tab=".tab2"&gt;Tab 2&lt;/a&gt;
-            |   &lt;!-- This links will switch top and bottom tabs to .tab3 --&gt;
+            |   &lt;!-- 将同时切换标签内容区到 .tab3 区块--&gt;
             |   &lt;a href="#" class="tab-link" data-tab=".tab3"&gt;Tab 3&lt;/a&gt;
             | &lt;/div&gt;
-        p Where <code>data-tab</code> attribute of tab-link contains CSS selector of target tab/tabs
+        p 注意<code>data-tab</code> 属性是包括tab/tabs的CSS选择器的字符串
 
       h3(data-device-preview="../docs-demos/tabs-inline.html") Inline Tabs example
       pre
         code
           | &lt;div class="page-content"&gt;
           |   &lt;div class="content-block"&gt;
-          |     &lt;!-- Buttons row as tabs controller --&gt;
+          |     &lt;!-- tabs控制面板 --&gt;
           |     &lt;div class="buttons-row"&gt;
-          |       &lt;!-- Link to 1st tab, active --&gt;
+          |       &lt;!-- 关联到第一个tab, 默认active --&gt;
           |       &lt;a href="#tab1" class="tab-link active button"&gt;Tab 1&lt;/a&gt;
-          |       &lt;!-- Link to 2nd tab --&gt;
           |       &lt;a href="#tab2" class="tab-link button"&gt;Tab 2&lt;/a&gt;
-          |       &lt;!-- Link to 3rd tab --&gt;
           |       &lt;a href="#tab3" class="tab-link button"&gt;Tab 3&lt;/a&gt;
           |     &lt;/div&gt;
           |   &lt;/div&gt;
-          |   &lt;!-- Tabs, tabs wrapper --&gt;
+          |   &lt;!-- Tabs, 标签内容区容器 --&gt;
           |   &lt;div class="tabs"&gt;
           |     &lt;!-- Tab 1, active by default --&gt;
           |     &lt;div id="tab1" class="tab active"&gt;
@@ -122,7 +118,7 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/div&gt;
-      h3(data-device-preview="../docs-demos/tabs-navbar.html") Switch tabs from Navbar example
+      h3(data-device-preview="../docs-demos/tabs-navbar.html") 导航条标签页例子
       pre
         code
           | &lt;div class="navbar"&gt;
@@ -167,14 +163,14 @@ block content
           |       &lt;/div&gt;
           |     &lt;/div&gt;
           |   &lt;/div&gt;
-          | &lt;/div&gt;              
-      h3(data-device-preview="../docs-demos/tabs-tabbar.html") Switch views from Tab bar example
-      p Why single Tab could not be a seprate View with its own navigation and layout? It can, so you can just switch Views as tabs:
+          | &lt;/div&gt;
+      h3(data-device-preview="../docs-demos/tabs-tabbar.html") 通过底部标签条切换视图的例子：
+      p 可以通过tabs切换视图:
       pre
         code
-          | &lt;!-- Tabs, now tabs wrapper is "views" --&gt;
+          | &lt;!-- Tabs, 现在容器也是"views" --&gt;
           | &lt;div class="views tabs toolbar-fixed"&gt;
-          |   &lt;!-- Tab 1 - View 1, active by default --&gt;
+          |   &lt;!-- Tab 1 同时也是 View 1, 默认active --&gt;
           |   &lt;div id="tab1" class="view tab active"&gt;
           |     &lt;div class="navbar"&gt;
           |       &lt;div class="navbar-inner"&gt;
@@ -234,8 +230,8 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/div&gt;
-      h2(data-device-preview="../docs-demos/tabs-animated.html") Animated Tabs
-      p It is also possible to switch tabs with simple transition. This requires additional <code>div class="tabs-animated-wrap"</code> wrapper for <code>div class="tabs"</code>:
+      h2(data-device-preview="../docs-demos/tabs-animated.html") 动画过渡的标签
+      p 我们也可以使用transition动画过渡tab切换效果，只需要额外的class <code>div class="tabs-animated-wrap"</code>包裹在 <code>div class="tabs"</code>父级:
       pre
         code
           | &lt;div class="navbar"&gt;
@@ -258,33 +254,29 @@ block content
           |     &lt;div class="page-content"&gt;
           |       &lt;!-- Tabs animated wrapper, required to switch tabs with transition --&gt;
           |       &lt;div class="tabs-animated-wrap"&gt;
-          |         
           |         &lt;!-- Tabs, tabs wrapper --&gt;
           |         &lt;div class="tabs"&gt;
           |           &lt;!-- Tab 1, active by default --&gt;
           |           &lt;div id="tab1" class="tab active"&gt;
           |             ... Tab 1 content ...
           |           &lt;/div&gt;
-          | 
           |           &lt;!-- Tab 2 --&gt;
           |           &lt;div id="tab2" class="tab"&gt;
           |             ... Tab 2 content ...
           |           &lt;/div&gt;
-          | 
           |           &lt;!-- Tab 3 --&gt;
           |           &lt;div id="tab3" class="tab"&gt;
           |             ... Tab 3 content ...
-          |           &lt;/div&gt;       
+          |           &lt;/div&gt;
           |         &lt;/div&gt;
-          |         
-          |       &lt;/div&gt; 
+          |       &lt;/div&gt;
           |     &lt;/div&gt;
           |   &lt;/div&gt;
-          | &lt;/div&gt; 
+          | &lt;/div&gt;
       .important-note
-        p Note that animted tabs wrapper (div class="tabs-animated-wrap") should be a fixed height. By default, it is 100% height of its parent
-      h2(data-device-preview="../docs-demos/tabs-events.html") Tabs JavaScript events
-      p Tabs events could be very useful when you need to do something in JavaScript when some Tabs becomes active:
+        p 注意最外层容器div.tabs-animated-wrap需要一个指定的高度，默认是其父亲节点100%的高度
+      h2(data-device-preview="../docs-demos/tabs-events.html") 标签的JS事件
+      p 当你需要在标签切换到active后做一些事情时，标签事件是很有用的:
         table.events-table
           thead
             tr
@@ -294,33 +286,30 @@ block content
           tbody
             tr
               td show
-              td Tab Element<span>&lt;div class="tab"&gt;</span>
-              td Event will be triggered when Tab becomes visible
+              td 标签内容区块<span>&lt;div class="tab"&gt;</span>
+              td 该事件在目标内容区块被切换到可见状态时触发
       pre
         code
-          | var myApp = new Framework7();   
+          | var myApp = new Framework7();
           | var $$ = Dom7;
-          | 
           | $$('#tab1').on('show', function () {
           |     myApp.alert('Tab 1 is visible');
           | });
-          | 
           | $$('#tab2').on('show', function () {
           |     myApp.alert('Tab 2 is visible');
           | });
-          | 
           | $$('#tab3').on('show', function () {
           |     myApp.alert('Tab 3 is visible');
-          | });          
-      h2(data-device-preview="../docs-demos/tabs-javascript.html") Show Tab using JavaScript
-      p It is also possible to show tab (switch tabs) using JavaScript. We should call the following App method:
+          | });
+      h2(data-device-preview="../docs-demos/tabs-javascript.html") 使用JS切换标签
+      p 也可以通过JS切换标签，我们需要调用以下的应用方法:
       p
         span.method myApp.showTab(<span>tab</span>)</span>
       ul.method-parameters
         li
           span.parameter tab
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Tab to open. Requred
-        li.method-returns This method returns <strong>true</strong> if tab has been changed, otherwise it returns <strong>false</strong>
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> 标签标记（完整CSS选择器。必需
+        li.method-returns 当标签切换成功后方法会返回 <strong>true</strong>,否则会返回<strong>false</strong>
       pre
         code
           | &lt;a href="#" class="show-tab-1"&gt;Show Tab 1&lt;/a&gt;
@@ -328,9 +317,8 @@ block content
           | &lt;a href="#" class="show-tab-3"&gt;Show Tab 3&lt;/a&gt;
       pre
         code
-          | var myApp = new Framework7();   
+          | var myApp = new Framework7();
           | var $$ = Dom7;
-          | 
           | $$('.show-tab-1').on('click', function () {
           |     myApp.showTab('#tab1');
           | });
@@ -339,6 +327,6 @@ block content
           | });
           | $$('.show-tab-3').on('click', function () {
           |     myApp.showTab('#tab3');
-          | });          
-      
+          | });
+
       .device-spacer
