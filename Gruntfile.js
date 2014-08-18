@@ -68,7 +68,25 @@ module.exports = function (grunt) {
             dest: 'tutorials/',
             ext: '.html'
           }]
-        }
+        },
+        contribute: {
+          files: [{
+            expand: true,
+            cwd: 'contribute/',
+            src: ['*.jade'],
+            dest: 'contribute/',
+            ext: '.html'
+          }]
+        },
+        donate: {
+          files: [{
+            expand: true,
+            cwd: 'donate/',
+            src: ['*.jade'],
+            dest: 'donate/',
+            ext: '.html'
+          }]
+        },
       },
       watch: {
         index: {
@@ -98,6 +116,14 @@ module.exports = function (grunt) {
         tutorials: {
           files: ['tutorials/*.jade'],
           tasks: ['newer:jade:tutorials']
+        },
+        contribute: {
+          files: ['contribute/*.jade'],
+          tasks: ['newer:jade:contribute']
+        },
+        donate: {
+          files: ['donate/*.jade'],
+          tasks: ['newer:jade:donate']
         }
       }
     });
