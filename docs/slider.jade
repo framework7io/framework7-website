@@ -2,7 +2,7 @@ extends ../jade/_internal-template
 
 block vars
   - var activeLink = 'docs';
-  - var title = 'Slider | Framework7 Documentation';
+  - var title = '幻灯片(Slider) | Framework7 文档';
 
 block content
   .docs-demo-device
@@ -13,10 +13,10 @@ block content
       include ../jade/_docs-menu
     .docs-content.with-device
       .full-width
-        h1 Slider
-        p Framework7 comes with powerful slider component with hardware accelerated transitions and great native behavior. It is built in a way similar to our well known <a href="http://www.idangero.us/sliders/swiper/">Swiper</a>.
-        h2 Slider HTML Layout
-        p Slider HTML layout is pretty simple:
+        h1 幻灯片(Slider)
+        p Framework7自带一个强力的幻灯片组件,集成了启用硬件加速的过渡动画效果和完美的仿native应用行为。他以著名的<a href="http://www.idangero.us/sliders/swiper/">Swiper</a>的方式内置在Framework7中。
+        h2 幻灯片HTML布局结构
+        p HTML结构相当简单:
         pre
           code
             | &lt;!-- Slider container --&gt;
@@ -32,46 +32,44 @@ block content
             |     &lt;!-- Pagination, if required --&gt;
             |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
             | &lt;/div&gt;
-        p Where:
+        p 其中:
         ul
           li
-            p <code>slider-container</code> - main slider container with slides and paginations. Required element
+            p <code>slider-container</code> - 幻灯片和分页条的总容器。必需。
             ul
               li
-                p <code>slider-wrapper</code> - additional wrapper for slides. Required element
+                p <code>slider-wrapper</code> - 附加的幻灯片容器（不包括分页条）。必需。
                 ul
                   li
-                    p <code>slider-slide</code> - single slide element. Could contain any HTML inside
+                    p <code>slider-slide</code> - 单个幻灯片元素，可包含任何HTML结构。
               li
-                p <code>slider-pagination</code> - container with pagination bullets. Note, that pagination bullets will be created automatically. Optional element
-                    
+                p <code>slider-pagination</code> - 分页条容器。注意，分页条里每一项是自动生成的。可选。
 
-
-        h2 Initialize Slider with JavaScript
-        p Now, when we have Slider' HTML, we need to initialize it. We need to use related App's method:
+        h2 通过JS初始化幻灯片
+        p 现在我们有了幻灯片的HTML结构，还需要通过相关的App方法初始化它:
         .method-wrap
           p
             span.method myApp.slider(<span>sliderContainer</span>, <span>parameters</span>) 
-            span - initialize slider with options
+            span - 传入参数初始化幻灯片
           ul.method-parameters
             li
               span.parameter sliderContainer
-              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of slider container HTML element. Required.
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) HTML容器。 必需。
             li
               span.parameter parameters
-              |  - <span class="parameter-type">object</span> - object with Slider parameters. Optional.
+              |  - <span class="parameter-type">object</span> - 幻灯片的对象参数。可选。
             
-            li.method-returns <strong>Method returns initialized Slider instance</strong>
-        p For example:
+            li.method-returns <strong>方法返回初始化后的幻灯片实例</strong>
+        p 举个栗子:
         pre
           code
             | var mySlider = app.slider('.slider-container', {
             |     speed: 400,
             |     spaceBetween: 100
             | });   
-        .important-note Note that Slider container should be in DOM on a moment of initialization. So if you use slider not on home page, you need to initialize it within <a href="pages.html#page-events">pageInit</a> event
-        h2 Slider Parameters
-        p Let's look on list of all available parameters:
+        .important-note 注意幻灯片容器在初始化时应该已经在DOM里存在了。所以如果你不是在首页使用幻灯片，应该在<a href="pages.html#page-events">pageInit</a>事件回调里执行初始化操作。
+        h2 幻灯片参数
+        p 下方是所有可用的参数:
         table.params-table
           thead
             tr
@@ -85,232 +83,233 @@ block content
               td initialSlide
               td number
               td 0
-              td Index number of initial slide.
+              td 初始展示的幻灯片是几页.
             tr
               td spaceBetween
               td number
               td 0
-              td Distance between slides in px.
+              td 相邻幻灯片间距，单位像素（px）
             tr
               td slidesPerView
               td number
               td 1
-              td Number of slides per view (slides visible at the same time on slider's container).
+              td 每个视图可显示几张幻灯片。（在幻灯片容器里同一时间可容纳展示的幻灯片数量）
             tr
               td direction
               td string
               td 'horizontal'
-              td Could be 'horizontal' or 'vertical' (for vertical slider).
+              td 水平还是垂直滑动。可选值是'horizontal' 或 'vertical' 
             tr
               td speed
               td number
               td 300
-              td Duration of transition between slides (in ms)
+              td 2张幻灯片间滑动过渡动画的持续时间，单位毫秒（ms）
             tr
               td preventClicks
               td boolean
               td true
-              td Set to "true" to prevent accidental unwanted clicks on links during swiping
+              td 设置为"true"可在滑动过程中阻止页码链接点击事件
             tr
               td preventClicksPropagation
               td boolean
               td true
-              td Set to "true" to prevent clicks event propagation on links during swiping
+              td 设置为"true"可在滑动过程中阻止点击事件冒泡
             tr
-              th(colspan="4") Pagination
+              th(colspan="4") 分页条相关
             tr
               td pagination
               td string / HTMLElement
               td undefined
-              td String with CSS selector or HTML element of the container with pagination. 
+              td 指定分页条的DOM节点或HTML字符串 
             tr
               td paginationHide
               td boolean
               td true
-              td Toggle (hide/true) pagination container visibility when click on Slider's container.
+              td 当点击幻灯片容器时，切换分页条容器是否可视
             tr
-              th(colspan="4") Autoplay
+              th(colspan="4") 自动播放
             tr
               td autoplay
               td number
               td -
-              td delay between transitions (in ms). If this parameter is not specified, auto play will be disabled
+              td 自动播放模式下，2次滑动切换幻灯片动画间的时间间隙(ms)。如果这个参数没有指定，表示禁用自动播放
             tr
               td autoplayDisableOnInteraction
               td boolean
               td true
-              td Set to false and autoplay will not be disabled after user interactions (swipes), it will be restarted every time after interaction
+              td 设置为false后，自动播放将不会因用户交互（比如手指拨弄滑动）而被停止，他会在每次用户交互后重新开始自动播放
             tr
-              th(colspan="4") Navigation Buttons
+              th(colspan="4") 导航按钮
             tr
               td nextButton
               td string / HTMLElement
               td undefined
-              td String with CSS selector or HTML element of the element that will work like "next" button after click on it
+              td 传入HTML字符串或DOM节点，顾名思义，点一下往后翻一页
             tr
               td prevButton
               td string / HTMLElement
               td undefined
-              td String with CSS selector or HTML element of the element that will work like "previous" button after click on it
+              td 传入HTML字符串或DOM节点，顾名思义，点一下往前翻一页
             tr
               td indexButton
               td string / HTMLElement
               td undefined
-              td String with CSS selector or HTML element of the element that will work like "index" button after click on it. For example if you use pagination and pass here ".slider-pagination-bullet", then click on each bullet will produce transition to the slide with same index number as the index number of clicked bullet.
+              td 传入HTML字符串或DOM节点，使分页条的每一项成为可点击的链接，点击哪一项则幻灯片滑动至对应页码的幻灯片显示
             tr
-              th(colspan="4") Callbacks
+              th(colspan="4") 回调函数
             tr
               td onSlideChangeStart(slider)
               td function
               td 
-              td Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives slider instance as an argument.
+              td 当幻灯片开始滑动动画（向前或后均可）时执行。接受一个幻灯片实例对象作为参数
             tr
               td onSlideChangeEnd(slider)
               td function
               td 
-              td Callback function, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.
+              td 当幻灯片结束滑动动画（向前或后均可）时执行。接受一个幻灯片实例对象作为参数
             tr
               td onTouchStart(slider, event)
               td function
               td 
-              td Callback function, will be executed when user touch Slider. Receives slider instance and 'touchstart' event as an arguments.
+              td 当用户开始触摸幻灯片范围时执行。接受一个幻灯片实例对象和'touchstart'事件作为参数
             tr
               td onTouchMove(slider, event)
               td function
               td 
-              td Callback function, will be executed when user touch and move finger over Slider. Receives slider instance and 'touchmove' event as an arguments.
+              td 当用户按住幻灯片范围并移动手指时执行。接受一个幻灯片实例对象和'touchmove'事件作为参数
             tr
               td onOppositeTouchMove(slider, event)
               td function
               td 
-              td Callback function, will be executed when user touch and move finger over Slider in direction opposite to specified in "direction" parameter. Receives slider instance and 'touchmove' event as an arguments.
+              td 当用户按住幻灯片范围并以与"direction"参数值相反的方式移动手指时执行。接受一个幻灯片实例对象和'touchmove'事件作为参数
             tr
               td onSliderMove(slider, event)
               td function
               td 
-              td Callback function, will be executed when user touch and move finger over Slider and move it. Receives slider instance and 'touchmove' event as an arguments.
+              td 当幻灯片开始移动时执行，在onTouchMove之后触发。接受一个幻灯片实例对象和'touchmove'事件作为参数
             tr
               td onTouchEnd(slider, event)
               td function
               td 
-              td Callback function, will be executed when user release Slider. Receives slider instance and 'touchend' event as an arguments.
+              td 当用户结束触摸并释放手指时执行。接受一个幻灯片实例对象和'touchend'事件作为参数
             tr
               td onClick(slider, event)
               td function
               td 
-              td Callback function, will be executed when user click/tap on Slider after 300ms delay. Receives slider instance and 'touchend' event as an arguments.
+              td 当用户点击/轻敲幻灯片区域300ms后执行。接受一个幻灯片实例对象和'touchend'事件作为参数
             tr
               td onTap(slider, event)
               td function
               td 
-              td Callback function, will be executed when user click/tap on Slider. Receives slider instance and 'touchend' event as an arguments.
+              td 当用户轻敲幻灯片区域时执行。接受一个幻灯片实例对象和'touchend'事件作为参数
             tr
               td onDoubleTap(slider, event)
               td function
               td 
-              td Callback function, will be executed when user double tap on Slider's container. Receives slider instance and 'touchend' event as an arguments.
+              td 当用户连续2次轻敲幻灯片区域时执行。接受一个幻灯片实例对象和'touchend'事件作为参数
             tr
-              th(colspan="4") Namespace
+              th(colspan="4") 命名空间
             tr
               td slideClass
               td string
               td 'slider-slide'
-              td CSS class name of slide
+              td 幻灯片组件的css命名空间
             tr
               td slideActiveClass
               td string
               td 'slider-slide-active'
-              td CSS class name of currently active slide
+              td 当前显示的幻灯片元素的class命名空间
             tr
               td slideNextClass
               td string
               td 'slider-slide-next'
-              td CSS class name of slide which is right after currently active slide
+              td 紧邻当前显示的幻灯片下一张的class命名空间
             tr
               td slidePrevClass
               td string
               td 'slider-slide-prev'
-              td CSS class name of slide which is right before currently active slide
+              td 紧邻当前显示的幻灯片上一张的class命名空间
             tr
               td wrapperClass
               td string
               td 'slider-wrapper'
-              td CSS class name of slides' wrapper
+              td 幻灯片容器的class命名空间
             tr
               td bulletClass
               td string
               td 'slider-pagination-bullet'
-              td CSS class name of single pagination bullet
+              td 分页条中每一项(表示每一页的那个点)的class命名空间
             tr
               td bulletActiveClass
               td string
               td 'slider-pagination-active'
-              td CSS class name of currently active pagination bullet
-        h2 Slider Methods & Properties
-        p After we initialize Slider we have its initialized instance in variable (like <code>mySlider</code> variable in example above) with helpful methods and properties:
+              td 分页条中当前显示项的class命名空间
+        h2 幻灯片方法和属性
+        p 在我们初始化幻灯片后，我们拥有他的实例化对象(上面的例子里类似<code>mySlider</code>变量),他本身带有一些方法和属性:
         table.methods-table
           tbody
             tr
-              th(colspan="2") Properties
+              th(colspan="2") 属性
             tr
               td mySlider.params
-              td Object with passed initialization parameters
+              td 初始化时传入的参数
             tr
               td mySlider.container
-              td <a href="dom.html">Dom7</a> element with slider container HTML element
+              td <a href="dom.html">Dom7</a>对象：幻灯片外层容器的HTML元素
             tr
               td mySlider.slides
-              td <a href="dom.html">Dom7</a> collection of slides HTML elements
+              td <a href="dom.html">Dom7</a>对象：每一张幻灯片的HTML元素集合
             tr
               td mySlider.activeSlideIndex
-              td Index number of currently active slide
+              td 当前显示的幻灯片的序号
             tr
               td mySlider.previousSlideIndex
-              td Index number of previously active slide
+              td 上一次显示的幻灯片的序号
             tr
               td mySlider.isFirst
-              td <b>true</b> if slider on most "left"/"top" position
+              td 当前幻灯片是否是在最左（或最上）的位置
             tr
               td mySlider.isLast
-              td <b>true</b> if slider on most "right"/"bottom" position
+              td 当前幻灯片是否是在最右（或最下）的位置
             tr
-              th(colspan="2") Methods
+              th(colspan="2") 方法
             tr
               td mySlider.slideNext();
-              td Run transition to next slide
+              td 滑动到下一张
             tr
               td mySlider.slidePrev();
-              td Run transition to previous slide
+              td 滑动到上一张
             tr
               td(rowspan="2") mySlider.slideTo(<span>index</span>, <span>speed</span>);
               td 
                 ul.method-parameters
                   li
                     span.parameter index
-                    |  - <span class="parameter-type">number</span> - index number of slide
+                    |  - <span class="parameter-type">number</span> - 目标页的页码序号
                   li
                     span.parameter speed
-                    |  - <span class="parameter-type">number</span> - transition duration (in ms)
+                    |  - <span class="parameter-type">number</span> - 滑动动画持续时间
 
             tr
-              td run transition to the slide with index number equal to 'index' parameter for the duration equal to 'speed' parameter.
+              td 执行滑动动画到某张特定页码序号的幻灯片等效于'index'参数，持续时间等效于'speed'参数
             tr
               td mySlider.updateSlides();
-              td This method will recalculate number of slides and their offsets. Useful after you add/remove slides with JavaScript
+              td 该方法会重新计算幻灯片数量和他们的位置。当你通过JS动态添加了一些幻灯片时会有用
             tr
               td mySlider.updateSize();
-              td Recalculate slider and slides sizes. Useful after you change slider size with JavaScript
+              td 重新计算幻灯片大小，在你通过JS动态修改幻灯片大小后会有用
             tr
               td mySlider.detachEvents();
-              td Detach all events listeners
+              td 取消所有的事件监听器
             tr
               td mySlider.attachEvents();
-              td Atach all events listeners again
+              td 重新添加所有的事件监听器
             tr
               td mySlider.destroy();
-              td Destroy slider instance and detach all events listeners
-        h2 Initialize Slider with HTML
+              td 销毁幻灯片实例并解除所有事件监听器
+        h2 通过HTML、无JS方式初始化
         p If you don't need Slider callback you can initialize slider using HTML without JavaScript. You can do that just by adding additional "slider-init" class to <code>slider-container</code>
+        p 如果你不需要幻灯片组件的回调函数，那你可以通过HTML、无JS方式初始化。只需添加"slider-init"这个class到<code>slider-container</code>上
         pre
           code
             | &lt;!-- slider-init to initialize slider automatically --&gt;
@@ -322,7 +321,7 @@ block content
             |         ... other slides ...
             |     &lt;/div&gt;
             | &lt;/div&gt;  
-        p But what about Slider parameters. In this case we need to pass them in <b>data-</b> attributes:
+        p 各种配置参数通过<b>data-</b>属性传入:
         pre
           code
             | &lt;!-- slider properties in data- attributes --&gt;
@@ -335,7 +334,7 @@ block content
             |     &lt;/div&gt;
             |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
             | &lt;/div&gt;        
-        p Or we can pass all slider parameters in <strong>valid JSON format</strong> in data-slider attribute:
+        p 或者将所有参数以<strong>合法的JSON格式</strong>放在 data-slider属性里:
         pre
           code
             | &lt;!-- slider properties in JSON format in data-slider attribute --&gt;
@@ -348,8 +347,8 @@ block content
             |     &lt;/div&gt;
             |     &lt;div class="slider-pagination"&gt;&lt;/div&gt;
             | &lt;/div&gt;
-        h2 Access to Slider's Instance
-        p If you initialize Slider using HTML it is still possible to access to Slider's instance. It is "f7Slider" property of slider's container HTML element:
+        h2 得到幻灯片组件实例对象
+        p 即使你通过纯HTML方式初始化组件，仍然有场景需要获取实例对象，他被挂载在幻灯片容器元素的'f7Slider'属性上：
         pre
           code
             | var mySlider = $$('.slider-container')[0].f7Slider;
@@ -357,8 +356,8 @@ block content
             | // Now you can use all slider methods like
             | mySlider.slideNext();
 
-      h2 Examples
-      h3(data-device-preview="../docs-demos/slider-default.html") Default slider with pagination          
+      h2 一堆栗子
+      h3(data-device-preview="../docs-demos/slider-default.html") 有分页条的默认幻灯片形式 
       pre
         code
           | /* A bit of demo styles */;
@@ -396,8 +395,8 @@ block content
           |     pagination:'.slider-pagination'
           |   });
             
-      h3(data-device-preview="../docs-demos/slider-vertical.html") Vertical Slider
-      p Styles and HTML layout are the same as in previous example
+      h3(data-device-preview="../docs-demos/slider-vertical.html") 垂直幻灯片
+      p 除了滑动方向，其余均和默认形式相同
       pre
         code
           |   var myApp = new Framework7(); 
@@ -408,8 +407,7 @@ block content
           |     direction: 'vertical'
           |   });
       div(style="height:200px")
-      h3(data-device-preview="../docs-demos/slider-space.html") With space between slides
-      p Styles and HTML layout are the same as in previous examples
+      h3(data-device-preview="../docs-demos/slider-space.html") 2张幻灯片间留有空白区域
       pre
         code
           |   var myApp = new Framework7(); 
@@ -420,7 +418,7 @@ block content
           |     spaceBetween: 100 // 100px between slides
           |   });
       div(style="height:200px")
-      h3(data-device-preview="../docs-demos/slider-multiple.html") Multiple Sliders
+      h3(data-device-preview="../docs-demos/slider-multiple.html") 多重幻灯片
       pre
         code
           | .slider-slide {
@@ -533,8 +531,8 @@ block content
           |   pagination:'.slider-slow .slider-pagination',
           |   speed: 600
           | });                  
-      h3(data-device-preview="../docs-demos/slider-nested.html") Nested Sliders
-      p Let's initialize slider in this example using just HTML:
+      h3(data-device-preview="../docs-demos/slider-nested.html") 混合模式的幻灯片
+      p 我们依然可以使用纯HTML初始化:
       pre
         code
           | .slider-slide {
@@ -573,7 +571,7 @@ block content
           |   &lt;/div&gt;
           | 
           | &lt;/div&gt; 
-      h3(data-device-preview="../docs-demos/slider-custom.html") Custom Controls
+      h3(data-device-preview="../docs-demos/slider-custom.html") 自定义控制元素
       pre
         code
           | &lt;div class="page-content"&gt;

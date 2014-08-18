@@ -9,67 +9,67 @@ block content
     .docs-nav
       include ../jade/_docs-menu
     .docs-content
-      h1 App HTML Layout
-      p First thing we should do for our App is to create <code>index.html</code> file with app's skeleton. Let's look on the most basic layout:
+      h1 基本布局
+      p 我们开始创建一个应用的第一步是 创建一个首页 <code>index.html</code> 文件，页面的基本结构如下：
       pre
-        code
-          | &lt;!DOCTYPE html&gt;
-          | &lt;html&gt;
-          |   &lt;head&gt;
-          |     &lt;!-- Required meta tags--&gt;
-          |     &lt;meta charset="utf-8"&gt;
-          |     &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"&gt;
-          |     &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
-          |     &lt;meta name="apple-mobile-web-app-status-bar-style" content="black"&gt;
-          |     &lt;!-- Your app title --&gt;
-          |     &lt;title&gt;My App&lt;/title&gt;
-          |     &lt;!-- Path to Framework7 Library CSS--&gt;
-          |     &lt;link rel="stylesheet" href="path/to/framework7.min.css"&gt;
-          |     &lt;!-- Path to your custom app styles--&gt;
-          |     &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
-          |   &lt;/head&gt;
-          |   &lt;body&gt;
-          |     &lt;!-- Status bar overlay for full screen mode (PhoneGap) --&gt;
-          |     &lt;div class="statusbar-overlay"&gt;&lt;/div&gt;
-          |     &lt;!-- Views --&gt;
-          |     &lt;div class="views"&gt;
-          |       &lt;!-- Your main view, should have "view-main" class --&gt;
-          |       &lt;div class="view view-main"&gt;
-          |         &lt;!-- Top Navbar--&gt;
-          |         &lt;div class="navbar"&gt;
-          |           &lt;div class="navbar-inner"&gt;
-          |             &lt;!-- We need cool sliding animation on title element, so we have additional "sliding" class --&gt;
-          |             &lt;div class="center sliding"&gt;Awesome App&lt;/div&gt;
-          |           &lt;/div&gt;
-          |         &lt;/div&gt;
-          |         &lt;!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes--&gt;
-          |         &lt;div class="pages navbar-through toolbar-through"&gt;
-          |           &lt;!-- Page, "data-page" contains page name --&gt;
-          |           &lt;div data-page="index" class="page"&gt;
-          |             &lt;!-- Scrollable page content --&gt;
-          |             &lt;div class="page-content"&gt;
-          |               &lt;p&gt;Page content goes here&lt;/p&gt;
-          |               &lt;!-- Link to another page --&gt;
-          |               &lt;a href="about.html"&gt;About app&lt;/a&gt;
-          |             &lt;/div&gt;
-          |           &lt;/div&gt;
-          |         &lt;/div&gt;
-          |         &lt;!-- Bottom Toolbar--&gt;
-          |         &lt;div class="toolbar"&gt;
-          |           &lt;div class="toolbar-inner"&gt;
-          |             &lt;!-- Toolbar links --&gt;
-          |             &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
-          |             &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
-          |           &lt;/div&gt;
-          |         &lt;/div&gt;
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |     &lt;!-- Path to Framework7 Library JS--&gt;
-          |     &lt;script type="text/javascript" src="path/to/framework7.min.js"&gt;&lt;/script&gt;
-          |     &lt;!-- Path to your app js--&gt;
-          |     &lt;script type="text/javascript" src="path/to/my-app.js"&gt;&lt;/script&gt;
-          |   &lt;/body&gt;
-          | &lt;/html&gt; 
-      p As you may see the layout is pretty simple. The main point is that you should link Framework7's CSS in the <code>&lt;head&gt;</code> and JS files in the end of <code>&lt;body&gt;</code>.
-      p You can read more about statusbar overlay, views, navbar, toolbar, pages, panels and other components in appropriate sections.
-      p Now when we have basic template, we need to <a href="init-app.html">initialize our app</a> in <code>my-app.js</code>.
+        code.
+          &lt;!DOCTYPE html&gt;
+            &lt;html&gt;
+              &lt;head&gt;
+                &lt;!-- Required meta tags--&gt;
+                &lt;meta charset="utf-8"&gt;
+                &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"&gt;
+                &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
+                &lt;meta name="apple-mobile-web-app-status-bar-style" content="black"&gt;
+                &lt;!-- Your app title --&gt;
+                &lt;title&gt;My App&lt;/title&gt;
+                &lt;!-- Path to Framework7 Library CSS--&gt;
+                &lt;link rel="stylesheet" href="path/to/framework7.min.css"&gt;
+                &lt;!-- Path to your custom app styles--&gt;
+                &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
+              &lt;/head&gt;
+              &lt;body&gt;
+                &lt;!-- Status bar overlay for full screen mode (PhoneGap) --&gt;
+                &lt;div class="statusbar-overlay"&gt;&lt;/div&gt;
+                &lt;!-- Views --&gt;
+                &lt;div class="views"&gt;
+                  &lt;!-- Your main view, should have "view-main" class --&gt;
+                  &lt;div class="view view-main"&gt;
+                    &lt;!-- Top Navbar--&gt;
+                    &lt;div class="navbar"&gt;
+                      &lt;div class="navbar-inner"&gt;
+                        &lt;!-- We need cool sliding animation on title element, so we have additional "sliding" class --&gt;
+                        &lt;div class="center sliding"&gt;Awesome App&lt;/div&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes--&gt;
+                    &lt;div class="pages navbar-through toolbar-through"&gt;
+                      &lt;!-- Page, "data-page" contains page name --&gt;
+                      &lt;div data-page="index" class="page"&gt;
+                        &lt;!-- Scrollable page content --&gt;
+                        &lt;div class="page-content"&gt;
+                          &lt;p&gt;Page content goes here&lt;/p&gt;
+                          &lt;!-- Link to another page --&gt;
+                          &lt;a href="about.html"&gt;About app&lt;/a&gt;
+                        &lt;/div&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;!-- Bottom Toolbar--&gt;
+                    &lt;div class="toolbar"&gt;
+                      &lt;div class="toolbar-inner"&gt;
+                        &lt;!-- Toolbar links --&gt;
+                        &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+                        &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+                      &lt;/div&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;!-- Path to Framework7 Library JS--&gt;
+                &lt;script type="text/javascript" src="path/to/framework7.min.js"&gt;&lt;/script&gt;
+                &lt;!-- Path to your app js--&gt;
+                &lt;script type="text/javascript" src="path/to/my-app.js"&gt;&lt;/script&gt;
+              &lt;/body&gt;
+            &lt;/html&gt;
+      p 就像上面的例子一样，页面布局非常简单。最关键的地方是你要在 <code>&lt;head&gt;</code> 中引入 Framework7 的CSS文件，并且在 <code>&lt;body&gt;</code> 结束之前引入 JS文件。
+      p 你可以在后面的章节中找到 工具栏(toolbar)，状态栏(status bar)，视图(views)，页面(pages)等相关的文档。
+      p 在我们创建了一个基本模板之后，下一步是在 <code>my-app.js</code>中 <a href="init-app.html">初始化应用</a>。
