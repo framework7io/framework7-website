@@ -19,7 +19,7 @@ block content
         p 下方是标签组件的内容区HTML结构
         pre
           code
-            | &lt;!-- Tabs 包裹容器, 需要带有"tabs" class --&gt;
+            | &lt;!-- Tabs 容器, 需要带有"tabs" class --&gt;
             | &lt;div class="tabs"&gt;
             |   &lt;!-- 第一个tab, 需要带有"tab" class 和唯一的id --&gt;
             |   &lt;!-- 第一个tab是激活显示状态，通过添加"active" class实现 --&gt;
@@ -37,7 +37,7 @@ block content
             | &lt;/div&gt;
         p 几点说明:
         ul
-          li <code>div class="tabs"</code> - 所有tab外层共享一个包裹元素. 没有他标签组件将无法工作
+          li <code>div class="tabs"</code> - 所有tab外层共享一个容器. 没有他标签组件将无法工作
           li <code>div class="tab"</code> - 单独的tab，需要有 <strong>唯一的</strong> <code>id</code>
           li <code>div class="tab active"</code> - 当前激活的 tab，即当前显示的tab，需要"<strong>active</strong>" class
         h2 各标签间切换
@@ -93,7 +93,7 @@ block content
           |       &lt;a href="#tab3" class="tab-link button"&gt;Tab 3&lt;/a&gt;
           |     &lt;/div&gt;
           |   &lt;/div&gt;
-          |   &lt;!-- Tabs, 标签内容区包裹元素 --&gt;
+          |   &lt;!-- Tabs, 标签内容区容器 --&gt;
           |   &lt;div class="tabs"&gt;
           |     &lt;!-- Tab 1, active by default --&gt;
           |     &lt;div id="tab1" class="tab active"&gt;
@@ -168,7 +168,7 @@ block content
       p 可以通过tabs切换视图:
       pre
         code
-          | &lt;!-- Tabs, 现在包裹元素也是"views" --&gt;
+          | &lt;!-- Tabs, 现在容器也是"views" --&gt;
           | &lt;div class="views tabs toolbar-fixed"&gt;
           |   &lt;!-- Tab 1 同时也是 View 1, 默认active --&gt;
           |   &lt;div id="tab1" class="view tab active"&gt;
@@ -274,7 +274,7 @@ block content
           |   &lt;/div&gt;
           | &lt;/div&gt;
       .important-note
-        p 注意最外层包裹元素div.tabs-animated-wrap需要一个指定的高度，默认是其父亲节点100%的高度
+        p 注意最外层容器div.tabs-animated-wrap需要一个指定的高度，默认是其父亲节点100%的高度
       h2(data-device-preview="../docs-demos/tabs-events.html") 标签的JS事件
       p 当你需要在标签切换到active后做一些事情时，标签事件是很有用的:
         table.events-table
