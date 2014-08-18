@@ -136,9 +136,9 @@
         </div>
         <div class="docs-content with-device">
           <div class="full-width">
-            <h1>Media List View</h1>
-            <p>Media list view is extended case of <a href="list-view.html">list view</a> indended to display more complex data like products, services, users, etc.</p>
-            <p>And of course it has a bit more complex layout:</p>
+            <h1>媒体列表视图（Media List View）</h1>
+            <p>媒体列表视图是<a href="list-view.html">列表视图（list view）</a>的拓展，它是为了展示更复杂的数据比如产品，服务，用户等等.</p>
+            <p>当然，它的布局更为复杂:</p>
             <pre><code>&lt;!-- Media list block has additional "media-list" class --&gt;
 &lt;div class="list-block media-list"&gt;
     &lt;ul&gt;
@@ -158,42 +158,42 @@
             &lt;/div&gt;
         &lt;/li&gt;
     &lt;/ul&gt;
-&lt;/div&gt;  </code></pre>
-            <p>Where:</p>
+&lt;/div&gt;</code></pre>
+            <p>上面的代码:</p>
             <ul>
               <li>
-                <p><code>item-content</code> - main flex wrapper for <code>item-media</code> and <code>item-inner</code>. <strong>Requred</strong> element.</p>
+                <p><code>item-media</code> 和 <code>item-inner</code>的主要弹性包裹元素（flex wrapper）. <strong>必选</strong>元素.</p>
               </li>
               <ul>
                 <li>
-                  <p><code>item-media</code> - container for your media element like icon, image, etc. <strong>Optional</strong> element.</p>
+                  <p><code>item-media</code> - 媒体元素（如图标，图片等）的容器. <strong>可选</strong>元素.</p>
                 </li>
                 <li>
-                  <p><code>item-inner</code> - <strong>Requred</strong> element.</p>
+                  <p><code>item-inner</code> - <code>item-title</code> 和 <code>item-after</code>的主要弹性包裹元素（flex wrapper）. <strong>必选</strong>元素.</p>
                 </li>
                 <ul>
                   <li>
-                    <p><code>item-title-row</code> - main flex wrapper for <code>item-title</code> and <code>item-after</code>. <strong>Optional</strong> element.</p>
+                    <p><code>item-title-row</code> - <code>item-title</code> 和 <code>item-after</code>的主要弹性包裹元素（flex wrapper）. <strong>可选</strong>元素.</p>
                   </li>
                   <ul>
                     <li>
-                      <p><code>item-title</code> - single-line list item title. <strong>Optional</strong> element.</p>
+                      <p><code>item-title</code> - 单行列表项目标题. <strong>可选</strong>元素.</p>
                     </li>
                     <li>
-                      <p><code>item-after</code> - list item label. Could countain any additional HTML elements, like label text, or badge, or switch/toggle or button, etc. <strong>Optional</strong> element.            </p>
+                      <p><code>item-after</code> - 列表项目标签. 可以包含其他额外的html标签（如label text, or badge, or switch/toggle or button等）. <strong>可选</strong>元素.</p>
                     </li>
                   </ul>
                   <li>
-                    <p><code>item-subtitle</code> - additional single-line title. <strong>Optional</strong> element.</p>
+                    <p><code>item-subtitle</code> - 额外的单行标题. <strong>可选</strong>元素.</p>
                   </li>
                   <li>
-                    <p><code>item-text</code> - additional two-lines container for detailed description. <strong>Optional</strong> element.</p>
+                    <p><code>item-text</code> - 额外的，两行布局的，细节描述区域的容器. <strong>可选</strong>元素.</p>
                   </li>
                 </ul>
               </ul>
             </ul>
           </div>
-          <h4 data-device-preview="../docs-demos/media-list.html">Example</h4>
+          <h4 data-device-preview="../docs-demos/media-list.html">示例</h4>
           <pre><code>&lt;div class="content-block-title"&gt;Songs&lt;/div&gt;
 &lt;div class="list-block media-list"&gt;
   &lt;ul&gt;
@@ -213,7 +213,6 @@
     ...
   &lt;/ul&gt;
 &lt;/div&gt;
- 
 &lt;div class="content-block-title"&gt;Mail App&lt;/div&gt;
 &lt;div class="list-block media-list"&gt;
   &lt;ul&gt;
@@ -230,10 +229,8 @@
       &lt;/a&gt;
     &lt;/li&gt;
     ...
- 
   &lt;/ul&gt;
 &lt;/div&gt;
- 
 &lt;div class="content-block-title"&gt;Something more simple&lt;/div&gt;
 &lt;div class="list-block media-list"&gt;
   &lt;ul&gt;
@@ -251,7 +248,6 @@
     ...
   &lt;/ul&gt;
 &lt;/div&gt;
- 
 &lt;div class="content-block-title"&gt;Inset&lt;/div&gt;
 &lt;div class="list-block media-list inset"&gt;
   &lt;ul&gt;
@@ -268,7 +264,7 @@
     &lt;/li&gt;
     ...
   &lt;/ul&gt;
-&lt;/div&gt;          </code></pre>
+&lt;/div&gt;</code></pre>
         </div>
       </div>
     </div>

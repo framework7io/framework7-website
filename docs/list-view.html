@@ -136,38 +136,38 @@
         </div>
         <div class="docs-content with-device">
           <div class="full-width">
-            <h1>List View (Table View)</h1>
-            <p>List views are versatile and powerful user interface compontents frequently found in iOS apps. A list view presents data in a scrollable list of multiple rows that may be divided into sections/groups.</p>
-            <p>List views have many purposes:</p>
+            <h1>列表视图（表格视图）List View (Table View)</h1>
+            <p>常在ios应用中看到的列表视图，是种多功能且强大的交互组件。列表视图将数据展现在一个可滚动的多行的列表中，可以将数据划分成不同的片段／组（sections/groups）.</p>
+            <p>试图列表有以下用途:</p>
             <ul>
-              <li>To let users navigate through hierarchically structured data</li>
-              <li>To present an indexed list of items</li>
-              <li>To display detail information and controls in visually distinct groupings</li>
-              <li>To present a selectable list of options</li>
+              <li>让用户可以分级浏览结构化的数据</li>
+              <li>展现一个索引列表</li>
+              <li>按视觉不同，来控制分组显示细节信息</li>
+              <li>展现一个可以选择的列表</li>
             </ul>
-            <h2>List View layout</h2>
-            <p>Now let's look at the common layout of list view.</p>
-            <h3>List block</h3>
-            <p>List block is your list view elements wrapper, almost the same as <a href="content-block.html">content block</a> but for list elements.</p>
-            <p>So first of all, all your list view elements should be wrapped with list-block element:</p>
+            <h2>列表视图布局（List View Layout）</h2>
+            <p>现在让我们看看一些常见的列表视图布局</p>
+            <h3>列表区域（List block）</h3>
+            <p>列表区域（List block）是你的列表视图元素的包裹元素，就类似内容去(Content Block)但是是list elements的内容区.</p>
+            <p>首先, 所有的列表视图元素要被包裹在含有list-block样式类的元素中:</p>
             <pre><code>&lt;div class="list-block"&gt;
     &lt;ul&gt;
         ... list elements here ...
     &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
             <div class="important-note">
-              <p>Don't put "list-block" inside of "<a href="content-block.html">content-block</a>"!</p>
+              <p>不要将带有list-block样式类的元素放置在<a href="content-block.html">"content-block"</a>中!</p>
             </div>
-            <h3>List block label</h3>
-            <p>You can also add add list block label at the end of list block:</p>
+            <h3>列表区域标签（List block label）</h3>
+            <p>你可以将列表区域标签（List block label）加在列表区域（List block）的结尾:</p>
             <pre><code>&lt;div class="list-block"&gt;
     &lt;ul&gt;
         ... list elements here ...
     &lt;/ul&gt;
     &lt;div class="list-block-label"&gt;List block label text&lt;/div&gt;
 &lt;/div&gt;</code></pre>
-            <h3>List item/element    </h3>
-            <p>Single list element has pretty complex but flexible layout:</p>
+            <h3>列表项目（List item/element）</h3>
+            <p>单个列表项目有复杂但是灵活的布局:</p>
             <pre><code>&lt;li&gt;
     &lt;div class="item-content"&gt;
         &lt;div class="item-media"&gt;
@@ -183,24 +183,24 @@
         &lt;/div&gt;
     &lt;/div&gt;
 &lt;/li&gt;</code></pre>
-            <p>Where:</p>
+            <p>上面的代码:</p>
             <ul>
               <li>
-                <p><code>item-content</code> - main flex wrapper for <code>item-media</code> and <code>item-inner</code>. <strong>Requred</strong> element.</p>
+                <p><code>item-content</code> - <code>item-media</code> 和 <code>item-inner</code>的主要弹性包裹元素（flex wrapper）. <strong>必选</strong> 元素.</p>
               </li>
               <ul>
                 <li>
-                  <p><code>item-media</code> - container for your media element like icon, image, etc. <strong>Optional</strong> element.</p>
+                  <p><code>item-media</code> - 媒体元素（如图标，图片等）的容器. <strong>可选</strong> 元素.</p>
                 </li>
                 <li>
-                  <p><code>item-inner</code> - main flex wrapper for <code>item-title</code> and <code>item-after</code>. <strong>Requred</strong> element.</p>
+                  <p><code>item-inner</code> - <code>item-title</code> 和 <code>item-after</code>的主要弹性包裹元素（flex wrapper）. <strong>必选</strong> 元素.</p>
                 </li>
                 <ul>
                   <li>
-                    <p><code>item-title</code> - single-line list item title. <strong>Required</strong> element.</p>
+                    <p><code>item-title</code> - 单行列表项目标题. <strong>必选</strong> 元素.</p>
                   </li>
                   <li>
-                    <p><code>item-after</code> - list item label. Could countain any additional HTML elements, like label text, or badge, or switch/toggle or button, etc. <strong>Optional</strong> element.</p>
+                    <p><code>item-after</code> - 列表项目标签. 可以包含任意额外的html元素。（例如label text, or badge, or switch/toggle or button, etc.）<strong>可选</strong> 元素.</p>
                   </li>
                 </ul>
               </ul>
@@ -208,14 +208,14 @@
             <div class="important-note">
               <ul>
                 <li>
-                  <p>Because .item-content is actually CSS flex-box element, note that <strong>"item-media" and "item-inner" should be direct children of "item-content"</strong>!</p>
+                  <p>因为<code>.item-content</code>元素的是display属性是<code>flex-box</code>, 需要注意<strong>"item-media" 和 "item-inner" 应该是"item-content"的直接子元素</strong>!</p>
                 </li>
                 <li>
-                  <p>For the same reason <strong>"item-title" and "item-after" should be direct children of "item-inner"</strong>!</p>
+                  <p>同样的， <strong>"item-title" 和 "item-after" 应该是 "item-inner" 的直接子元素</strong>!</p>
                 </li>
               </ul>
             </div>
-            <p>Also note that if your list item have nothing additional, you can user "item-content" class in <code>&lt;li&gt;</code> element:</p>
+            <p>同时需要注意，如果你的列表项目没有额外的元素, 你可以使用 "item-content" 样式类在 <code>&lt;li&gt;</code> 元素中:</p>
             <pre><code>&lt;li class="item-content"&gt;
     &lt;div class="item-media"&gt;
         &lt;i class="icon my-icon"&gt;&lt;/i&gt;
@@ -230,7 +230,7 @@
     &lt;/div&gt;
 &lt;/li&gt;</code></pre>
           </div>
-          <h4 data-device-preview="../docs-demos/list-view.html">Example</h4>
+          <h4 data-device-preview="../docs-demos/list-view.html">示例</h4>
           <pre><code>&lt;body&gt;
   ...
   &lt;div class="page-content"&gt;
@@ -283,21 +283,21 @@
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/body&gt;</code></pre>
-          <h3 data-device-preview="../docs-demos/list-view-links.html">Link Elements</h3>
-          <p>Of course in most cases we need to use list view elements as links (&lt;a&gt;) to other pages or data. In this case we need to wrap "item-content" with &lt;a class="item-link"&gt; element:</p>
+          <h3 data-device-preview="../docs-demos/list-view-links.html">链接元素（ Link Elements）</h3>
+          <p>当然，多数情况下我们需要将列表视图中的元素当作链接使用(&lt;a&gt;)，来指向其他页面或者其他数据. 在这种情况下，我们需要将"item-content"包裹在&lt;a class="item-link"&gt;元素中:</p>
           <pre><code>&lt;a href="#" class="item-link"&gt;
   &lt;div class="item-content"&gt;
     &lt;div class="item-media"&gt;...&lt;/div&gt;
     &lt;div class="item-inner"&gt;...&lt;/div&gt;
   &lt;/div&gt;
-&lt;/a&gt;          </code></pre>
-          <p>If your links contains nothing except "item-content" then we can just use link as "item-content":</p>
+&lt;/a&gt;</code></pre>
+          <p>如果你的链接只包含"item-content"，那我们可以直接将链接作为"item-content":</p>
           <pre><code>&lt;a href="#" class="item-link item-content"&gt;
   &lt;div class="item-media"&gt;...&lt;/div&gt;
   &lt;div class="item-inner"&gt;...&lt;/div&gt;
-&lt;/a&gt; </code></pre>
-          <p><strong>Note that "item-inner" has additional right padding and chevron icon when it is in "item-link"</strong></p>
-          <h4>Example</h4>
+&lt;/a&gt;</code></pre>
+          <p><strong>注意当"item-inner"在"item-link"中时，会有额外的右内边距（right padding）和chevron icon</strong></p>
+          <h4>示例</h4>
           <pre><code>&lt;div class="list-block"&gt;
   &lt;ul&gt;
     &lt;li&gt;
@@ -330,8 +330,8 @@
   &lt;/ul&gt;
   &lt;div class="list-block-label"&gt;List block label text goes here&lt;/div&gt;
 &lt;/div&gt;</code></pre>
-          <h3 data-device-preview="../docs-demos/list-view-divider.html">List Divider</h3>
-          <p>List divider is a simple list element with title to visually divide one list items from another:</p>
+          <h3 data-device-preview="../docs-demos/list-view-divider.html">列表分割元素（List Divider）</h3>
+          <p>列表分隔元素是一个简单的列表元素并包含文字，它在视觉上分隔两个元素:</p>
           <pre><code>&lt;li class="item-divider"&gt;Divider title here&lt;/li&gt;</code></pre>
           <pre><code>&lt;div class="list-block"&gt;
   &lt;ul&gt;
@@ -348,10 +348,8 @@
         &lt;div class="item-title"&gt;Title&lt;/div&gt;
       &lt;/div&gt;
     &lt;/li&gt;
-    
     &lt;!-- Divider --&gt;
     &lt;li class="item-divider"&gt;Divider title here&lt;/li&gt;
-    
     &lt;li class="item-content"&gt;
       &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
       &lt;div class="item-inner"&gt;
@@ -369,8 +367,8 @@
   &lt;/ul&gt;
   &lt;div class="list-block-label"&gt;List block label text goes here&lt;/div&gt;
 &lt;/div&gt;</code></pre>
-          <h3 data-device-preview="../docs-demos/list-view-grouped.html">Grouped Lists</h3>
-          <p>Sometimes we need to group list view elements inside of single list block. In this case we need to additional group elements:</p>
+          <h3 data-device-preview="../docs-demos/list-view-grouped.html">分组列表（Grouped Lists）</h3>
+          <p>有时我们需要将列表里的元素分组，在这种情况下，我们需要用额外的分组元素:</p>
           <pre><code>&lt;div class="list-block"&gt;
   &lt;!-- First group--&gt;
   &lt;div class="list-group"&gt;
@@ -393,7 +391,6 @@
       ...
     &lt;/ul&gt;
   &lt;/div&gt;
- 
   &lt;!-- Second group--&gt;
   &lt;div class="list-group"&gt;
     &lt;ul&gt;
@@ -415,21 +412,21 @@
       ...
     &lt;/ul&gt;
   &lt;/div&gt;
-&lt;/div&gt;                  </code></pre>
-          <p>You may ask what is the difference from simple dividers? With list groups, group titles have sticky position during scroll within single group.</p>
-          <h3 data-device-preview="../docs-demos/list-view-inset.html">Inset List Block</h3>
-          <p>List blocks also could have inset (not fullwidth) styling. To make inset lost block just add "inset" class to "list-block":</p>
+&lt;/div&gt;</code></pre>
+          <p>也许你会问分组元素和分隔元素有什么区别？当使用了分组元素，当滑轮滚动时，分组元素的标题会保持在这组元素的固定位置.</p>
+          <h3 data-device-preview="../docs-demos/list-view-inset.html">内嵌列表区域（Inset List Block）</h3>
+          <p> 列表区域还有内嵌（非全屏）样式，只需要给列表区域元素加上"inset"样式类:</p>
           <pre><code>&lt;div class="list-block inset"&gt;
   &lt;ul&gt;
     ...
   &lt;/ul&gt;
-&lt;/div&gt;          </code></pre>
-          <p>It is also possible to make list inset only on iPad and keep it usual on iPhone. We need to use "tablet-inset" class for that:</p>
+&lt;/div&gt;</code></pre>
+          <p>使用"tablet-inset"样式类可以使列表区域在iPad下以内嵌的方式显示，而在iPhone中以普通样式显示:</p>
           <pre><code>&lt;div class="list-block tablet-inset"&gt;
   &lt;ul&gt;
     ...
   &lt;/ul&gt;
-&lt;/div&gt;          </code></pre>
+&lt;/div&gt;</code></pre>
           <div class="device-spacer"></div>
         </div>
       </div>
