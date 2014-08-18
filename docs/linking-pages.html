@@ -220,16 +220,22 @@
           <pre><code>&lt;div class="page no-swipeback"&gt;
     ...
 &lt;/div&gt;</code></pre>
-          <h2>
-            取消页面切换动画
-            有时候你在加载页面或者后退的时候需要立刻执行，不想要一个切换的动画效果，可以通过增加一个 "no-animation" class 在链接上即可。
-          </h2>
+          <h2>取消/增加页面切换动画</h2>
+          <p>有时候你在加载页面或者后退的时候需要立刻执行，不想要一个切换的动画效果，可以通过增加一个 "no-animation" class 在链接上即可。</p>
           <pre><code>&lt;div class="page" data-page="about"&gt;
   &lt;-- Add additional "no-anmation" class to link to diable animated page transition --&gt;
   &lt;a href="about.html" class="no-animation"&gt; Load About page immediately &lt;/a&gt;
   
   &lt;-- The same rule for back link --&gt;
   &lt;a href="index.html" class="back no-animation"&gt; Go back immediately &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+          <p>And if we disabled animation globally and need to enable it for particular case, we may enable it by adding "with-animation" class to link (or back link)</p></p>
+          <p>如果我们已经全局禁用了动画，但是在某些链接上希望启用这些动画，那么我们可以给链接加上 "with-animation" class。</p>
+          <pre><code>&lt;div class="page" data-page="about"&gt;
+  &lt;-- Add additional "with-anmation" class to link to enable animated page transition --&gt;
+  &lt;a href="about.html" class="with-animation"&gt; Load About page with animation &lt;/a&gt;
+  &lt;-- The same rule for back link --&gt;
+  &lt;a href="index.html" class="back with-animation"&gt; Go back with animation &lt;/a&gt;
 &lt;/div&gt;</code></pre>
           <h2>通过JS加载页面</h2>
           <p>可以直接通过JS加载页面而不一定需要 <code>&lt;a&gt;</code> 标签。比如我们可以通过使用 <code>.loadPage(url)</code> 来加载：</p>
@@ -296,7 +302,7 @@ mainView.goBack();</code></pre>
     </div>
     <footer>
       <div class="center">
-        <div class="links"><a href="./">Framework7</a><a href="./contribute/">贡献者</a><a href="./get-started/">开始使用</a><a href="./docs/">文档</a><a href="./tutorials/">教程</a><a href="./forum/">论坛</a><a href="./examples/">案例</a><a href="./apps/">示例</a><a href="./showcase/">演示</a></div>
+        <div class="links"><a href="./">Framework7</a><a href="./contribute/">贡献者</a><a href="./get-started/">开始使用</a><a href="./docs/">文档</a><a href="./tutorials/">教程</a><a href="./forum/">论坛</a><a href="./examples/">案例</a><a href="./apps/">示例</a><a href="./showcase/">应用</a></div>
         <div class="copy">2014 © Framework7 by iDangero.us</div>
       </div>
     </footer>

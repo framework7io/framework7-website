@@ -74,19 +74,19 @@ block content
           li <code>data-searchbar-cancel</code> - 取消按钮的文案，可选。 默认是 "cancel"
       h2(data-device-preview="../docs-demos/smart-select-custom.html") 自定义页面的title和返回按钮的文案
       p 默认情况下，Smart Select 页面的标题总是和被点击条目的 "item-title" 文案一直，返回按钮的文案总是和 "smartSelectBackText" 中设置的文案一直。
-      p 有时候你需要自定义文案，可以通过在 Smart Select 链接上使用 "data-pagetitle" 和 "data-backtext" 来设置
+      p 有时候你需要自定义文案，可以通过在 Smart Select 链接上使用 "data-page-title" 和 "data-back-text" 来设置
       pre
         code.
           &lt;div class="list-block"&gt;
             &lt;ul&gt;
               &lt;!-- Smart select item --&gt;
               &lt;li&gt;
-                &lt;a href="#" class="item-link smart-select" data-pagetitle="Awesome Fruits" data-backtext="Go back"&gt;
+                &lt;a href="#" class="item-link smart-select" data-page-title="Awesome Fruits" data-back-text="Go back"&gt;
                   ... same Smart select Fruits structure as in previous example ...
                 &lt;/a&gt;
               &lt;/li&gt;
               &lt;li&gt;
-                &lt;a href="#" class="item-link smart-select" data-pagetitle="Super Cars" data-backtext="Go back"&gt;
+                &lt;a href="#" class="item-link smart-select" data-page-title="Super Cars" data-back-text="Go back"&gt;
                   ... same Smart select Cars structure as in previous example ...
                 &lt;/a&gt;
               &lt;/li&gt;
@@ -131,14 +131,14 @@ block content
           &lt;/div&gt;
       p 我们可以通过 &lt;optgroup&gt; 来使用分组，可以通过在 select 上设置 "multiple" 属性来使用多选（页面会自动换成checkbox)。
       h2.stop-scroll-device 选择之后自动关闭
-      p 可以设置用户选择之后自动关闭页面。只需要设置 <b>data-backonselect</b> 属性即可：
+      p 可以设置用户选择之后自动关闭页面。只需要设置 <b>data-back-onselect</b> 属性即可：
       pre
         code.
           &lt;div class="list-block"&gt;
             &lt;ul&gt;
               &lt;li&gt;&lt;a href="#" class="item-link smart-select"&gt;
-                  &lt;!-- data-backonselect="true" to close page automatically --&gt;
-                  &lt;select data-backonselect="true" name="car" multiple&gt;
+                  &lt;!-- data-back-onselect="true" to close page automatically --&gt;
+                  &lt;select data-back-onselect="true" name="car" multiple&gt;
                     ...
                   &lt;/select&gt;
                   &lt;div class="item-content"&gt;

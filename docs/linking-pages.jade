@@ -105,8 +105,8 @@ block content
           &lt;div class="page no-swipeback"&gt;
               ...
           &lt;/div&gt;
-      h2 取消页面切换动画
-       有时候你在加载页面或者后退的时候需要立刻执行，不想要一个切换的动画效果，可以通过增加一个 "no-animation" class 在链接上即可。
+      h2 取消/增加页面切换动画
+      p 有时候你在加载页面或者后退的时候需要立刻执行，不想要一个切换的动画效果，可以通过增加一个 "no-animation" class 在链接上即可。
       pre
         code.
           &lt;div class="page" data-page="about"&gt;
@@ -115,6 +115,16 @@ block content
 
             &lt;-- The same rule for back link --&gt;
             &lt;a href="index.html" class="back no-animation"&gt; Go back immediately &lt;/a&gt;
+          &lt;/div&gt;
+      p And if we disabled animation globally and need to enable it for particular case, we may enable it by adding "with-animation" class to link (or back link)</p>
+      p 如果我们已经全局禁用了动画，但是在某些链接上希望启用这些动画，那么我们可以给链接加上 "with-animation" class。
+      pre
+        code.
+          &lt;div class="page" data-page="about"&gt;
+            &lt;-- Add additional "with-anmation" class to link to enable animated page transition --&gt;
+            &lt;a href="about.html" class="with-animation"&gt; Load About page with animation &lt;/a&gt;
+            &lt;-- The same rule for back link --&gt;
+            &lt;a href="index.html" class="back with-animation"&gt; Go back with animation &lt;/a&gt;
           &lt;/div&gt;
       h2 通过JS加载页面
       p 可以直接通过JS加载页面而不一定需要 <code>&lt;a&gt;</code> 标签。比如我们可以通过使用 <code>.loadPage(url)</code> 来加载：
