@@ -13,8 +13,8 @@ block content
       include ../jade/_docs-menu
     .docs-content.with-device
       .full-width
-        h1 Layout Grid
-        p Framework7 comes with flexible layout grid that allows you place your content as you need:
+        h1 栅格
+        p Framework7 有灵活的布局网格,允许你按需求放置内容：
         pre
           code
             | &lt;!-- Each "cells" row should be wrapped with div class="row" --&gt;
@@ -29,7 +29,7 @@ block content
             |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
             |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
             | &lt;/div&gt;
-        p By defaul all "cells" has 15px gutter between each other. If you want "cells" without gutter, you should add additional "no-gutter" class to "row":
+        p 默认所有的“单元格”之间有15px的间距，如果你希望“单元格”之间没有间距，你应该在"row"后添加 "no-gutter" 类 :
         pre
           code
             | &lt;!-- Additional "no-gutter" class on row to remove space between cells --&gt;
@@ -44,7 +44,7 @@ block content
             |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
             |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
             | &lt;/div&gt;
-        p The following columns size are available:
+        p 以下尺寸是可供选择的：
         //- 5, 10, 15, 20, 25, 100/3, 40, 50, 60, 100*(2/3), 75, 80, 85, 90, 95, 100;
         - var cols = [5, 10, 15, 20, 25, 100/3, 40, 50, 60, 100*(2/3), 75, 80, 85, 90, 95, 100];
         table
@@ -61,8 +61,8 @@ block content
                 td tablet-#{className}
                 td #{cols[i]}%
             
-      h2(data-device-preview="../docs-demos/grid.html") Usage example
-      p By default grid columns (cells) has no any visual styles, we'll add them for this demo:
+      h2(data-device-preview="../docs-demos/grid.html") 用法示例
+      p 默认情况下表格列(单元)没有任何视觉样式,我们将他们添加到这个demo里：
       pre
         code
           | div[class*="col-"] {
