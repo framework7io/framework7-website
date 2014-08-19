@@ -13,8 +13,8 @@ block content
       include ../jade/_docs-menu
     .docs-content.with-device
       .full-width
-        h1 Side Panels
-        p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of <code>body</code>:
+        h1 侧栏
+        p 让我们看看如何添加侧栏。我们的APP可能包含两种侧栏,一个在左边,另一个在右边。我们应该在body的开始处添加侧栏的html<code>body</code>:
         pre
           code
             | &lt;body&gt;
@@ -33,7 +33,7 @@ block content
             | 
             |     ...
             | &lt;/body&gt;   
-        p After we add panels we need to choose opening effect for each panel. There could be one of two effects: "Reveal" (when panel moves out whole app's content) or "Cover" (when panel overlays app's content). If you want to use "Reveal" effect you should to add additional <strong>"panel-reveal"</strong> class to Panel, or <strong>"panel-cover"</strong> for cover effect:
+        p 在我们添加侧栏后,我们需要为每个侧栏选择打开效果。可能有两种效果:"Reveal"(侧栏从整个App的内容中移出)和"Cover"(侧栏覆盖App的内容)。如果您想要使用"Reveal"效果应该向侧栏添加 <strong>"panel-reveal"</strong> 类, 如果要使用"Cover"效果则添加 <strong>"panel-cover"</strong> 类:
         pre
           code
             | &lt;body&gt;
@@ -52,20 +52,19 @@ block content
             | 
             |     ...
             | &lt;/body&gt; 
-      h2 Open and Close Panels
-      h3(data-device-preview="../docs-demos/panels.html") From HTML
-      p Ok, now when we have panels in our App, we need to know how to open/close them:
+      h2 打开和关闭侧栏
+      h3(data-device-preview="../docs-demos/panels.html") 从 HTML
+      p Ok, 现在当我们的App里有侧栏,我们需要知道如何打开/关闭它们:
       .important-note
         ul
           li
-            p To open panel we need to add <strong>"open-panel"</strong> class to any HTML element (prefered to link)
+            p 为了打开侧栏，我们需要添加<strong>"open-panel"</strong> 类到任意HTML元素上(最好加到链接节点上)
+            p 为了关闭侧栏，我们需要添加<strong>"close-panel"</strong> 类到任意HTML元素上(最好加到链接节点上)
           li
-            p To close panel we need to add <strong>"close-panel"</strong> class to any HTML element (prefered to link)
+            p 如果你的App里有两个侧栏，链接默认将打开/关闭左侧栏
           li
-            p If you have two panels in app, such link will open/close Left panel by default
-          li
-            p If you want to specify which panel should opened/closed, then it could be done via additional <strong>data-panel="left"</strong> attribute on this HTML element
-      p According to above note:
+            p 如果你想要指定哪个侧栏被开启/关闭,那么它可以通过HTML元素上额外的属性<strong>data-panel="left"</strong>完成。
+      p 根据以上注意点：
       pre
         code
           | &lt;body&gt;
@@ -105,18 +104,18 @@ block content
           |   &lt;/div&gt;
           |   ...
           | &lt;/body&gt;
-      h3(data-device-preview="../docs-demos/panels-js.html") Using JavaScript
-      p We can also open and close Panels with JavaScript, for this we need to look at related App methods:
+      h3(data-device-preview="../docs-demos/panels-js.html") 使用 JavaScript
+      p 我们也可以通过使用JavaScript打开和关闭侧栏,为此我们需要查看相关的App方法：
       p
         span.method myApp.openPanel(<span>position</span>)</span>
-        |  - open Panel.
+        |  - 打开侧栏.
       ul.method-parameters
         li
           span.parameter position
-          |  - <span class="parameter-type">string</span> - Position of panel to open: <strong>"left"</strong> or <strong>"right"</strong>. Required. 
+          |  - <span class="parameter-type">string</span> - 侧栏打开的位置: <strong>"left"</strong> 或 <strong>"right"</strong>. 必需. 
       p
         span.method myApp.closePanel()</span>
-        |  - close currently opened Panel.
+        |  - 关闭最近打开的侧栏.
       pre
         code
           | &lt;body&gt;
@@ -164,32 +163,32 @@ block content
           | 
           |   &lt;/script&gt;
           | &lt;/body&gt;    
-      h2(data-device-preview="../docs-demos/panels-events.html") Panel Events
-      p Panel events could be very useful to detect how user interact with your panels, or to do something in JavaScript when Panel opened/closed
+      h2(data-device-preview="../docs-demos/panels-events.html") Panel 事件
+      p Panel事件对检测用户如何与你的侧栏交互，或者在侧栏打开/关闭时做一些JavaScript操作非常有用。
       table.events-table
         thead
           tr
-            th Event
-            th Target
-            th Description
+            th Event（事件）
+            th Target（目标）
+            th Description（描述）
         tbody
           tr
             td open
             td Panel Element<span>&lt;div class="panel"&gt;</span>
-            td Event will be triggered when Panel starts its opening animation
+            td 当侧栏的打开动画开始时，事件将被触发
           tr
             td opened
             td Panel Element<span>&lt;div class="panel"&gt;</span>
-            td Event will be triggered after Panel completes its opening animation
+            td 当侧栏的打开动画结束时，事件将被触发
           tr
             td close
             td Panel Element<span>&lt;div class="panel"&gt;</span>
-            td Event will be triggered when Panel starts its closing animation
+            td 当侧栏的关闭动画开始时，事件将被触发
           tr
             td closed
             td Panel Element<span>&lt;div class="panel"&gt;</span>
-            td Event will be triggered after Panel completes its closing animation
-      p Here is an example:
+            td 当侧栏的关闭动画完成时，事件将被触发
+      p 这里有一个例子：
       pre
         code
           | var myApp = new Framework7();
@@ -208,9 +207,9 @@ block content
           | $$('.panel-right').on('closed', function () {
           |     myApp.alert('Right panel closed!');
           | }); 
-      h2(data-device-preview="../docs-demos/panels-swipe.html") Open Panels With Swipe
-      p Framework7 has feature to open panel with Swipe gesture. <strong>But there is a restriction - only one panel could be set to open with Swipe</strong> (Left or Right).
-      p To make this feature works we need to enable it on <a href="init-app.html">App initialization</a> by passing related parameter:
+      h2(data-device-preview="../docs-demos/panels-swipe.html") 滑动屏幕打开侧栏
+      p Framework7支持通过滑动手势打开侧栏。<strong>但有一个限制 —— 只有一个菜单能被设置成允许滑动屏幕打开</strong> (左或右)。 
+      p 要使用这个功能，我们需要在<a href="init-app.html">App初始化</a>时设置相关参数：
       pre
         code
           | var myApp = new Framework7({
@@ -218,24 +217,24 @@ block content
           | });
       div(style="height:200px")
       .full-width.stop-scroll-device
-        h2 Panel is Opened?
-        p Sometimes it could be useful to detect do we have some Panel opened or not? It is easy, when some panel is opened <code>&lt;body&gt;</code> will have addition class generated by the following rule: <strong>with-panel-[position]-[effect]</strong>:
+        h2 侧栏已经被打开？
+        p 有时候检测我们的一些侧栏是否是打开的是很有用的。这很容易,当一些菜单被打开时<code>&lt;body&gt;</code>将由以下规则生成被添加的类：<strong>with-panel-[position]-[effect]</strong>:
         ul
           li
-            p If you have Left panel opened with Cover effect, body will have the "with-panel-left-cover" class <code>&lt;body class="with-panel-left-cover"&gt;</code>
+            p 如果你有带Cover效果的左侧栏打开着，body会有“with-panel-left-cover”类 <code>&lt;body class="with-panel-left-cover"&gt;</code>
           li
-            p If you have Left panel opened with Reveal effect, body will have the "with-panel-left-reveal" class <code>&lt;body class="with-panel-left-reveal"&gt;</code>
+            p 如果你有带Reveal效果的左侧栏打开着, body 会有“with-panel-left-reveal”类 <code>&lt;body class="with-panel-left-reveal"&gt;</code>
           li
-            p If you have Right panel opened with Cover effect, body will have the "with-panel-right-cover" class <code>&lt;body class="with-panel-right-cover"&gt;</code>
+            p 如果你有带Cover效果的右侧栏打开着，body会有"with-panel-right-cover" 类  <code>&lt;body class="with-panel-right-cover"&gt;</code>
           li
-            p If you have Right panel opened with Reveal effect, body will have the "with-panel-right-reveal" class <code>&lt;body class="with-panel-right-reveal"&gt;</code>
+            p 如果你有带Reveal效果的右侧栏打开着, body 会有"with-panel-right-reveal" 类 <code>&lt;body class="with-panel-right-reveal"&gt;</code>
         p You can use it in JavaScript to detect opened panel:
         pre
           code.js
             | if ($$('body').hasClass('with-panel-left-cover')) {
             |     console.log('Left Panel is opened')
             | }
-        p Or in CSS for additional styling:
+        p 或者在 CSS 定义额外的样式:
         pre
           code
             | /* Change Status Bar background when panel is opened */        

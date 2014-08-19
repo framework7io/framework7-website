@@ -13,9 +13,9 @@ block content
       include ../jade/_docs-menu
     .docs-content.with-device
       .full-width
-        h1 Swipeout (Swipeable List)
-        p Swipeout is an extension of <a href="list-view.html">list view</a> that allows you to swipe over list elements to reveal hidden menu with  available actions, like swipe-to-delete.
-        p Let's look on layout structure of swipeout element in your list views:
+        h1 滑动操作列表Swipeout (Swipeable List)
+        p 可滑动列表(Swipeout)是<a href="list-view.html">列表视图list view</a>的拓展，它额外提供滑动操作的功能，滑动列表元素可以展现隐藏的功能菜单，如滑动删除这样的操作.
+        p 让我们来看一下滑动列表元素的布局结构:
         pre
           code
             | &lt;div class="list-block"&gt;
@@ -42,14 +42,14 @@ block content
             |     ...
             |   &lt;/ul&gt;
             | &lt;/div&gt;
-        p Where:
+        p 上面的代码:
         ul
-          li <code>swipeout-content</code> - wrapper for your list element. This container will move during swipe over the list item
-          li <code>swipeout-actions</code> - required additional wrapper for your swipeout action buttons/links
-          li <code>swipeout-actions-inner</code> - container where you need to put buttons/links that will reveal during swipe over the list element
+          li <code>swipeout-content</code> - 列表里的元素的包裹元素. 这个容器会随着滑动操作移动
+          li <code>swipeout-actions</code> - 当你有滑动操作菜单（swipeout action buttons/links）时，需要将操作菜单包含在这个包裹元素中
+          li <code>swipeout-actions-inner</code> - 滑动操作菜单的容器，这个容器会在滑动的过程中显示
         .important-note
-          p Note that <strong>swipeout-content</strong> and <strong>swipeout-actions</strong> should be direct children of <strong>&lt;li&gt;</strong>
-        p If you have only "item-content" you can simplify layout by adding "item-content" class to "swipeout-content":
+          p 注意<strong>swipeout-content</strong>和<strong>swipeout-actions</strong>应该是<strong>&lt;li&gt;</strong>的直接子节点
+        p 如果只有"item-content"样式类的子节点，可以将"item-content"样式类加到"swipeout-content"元素上，以获取布局，简化结构:
         pre
           code
             | &lt;li class="swipeout"&gt;
@@ -64,7 +64,7 @@ block content
             |     &lt;/div&gt;
             |   &lt;/div&gt;
             | &lt;/li&gt;
-        p If you use <a href="list-view.html#link-elements">link elements</a> you can use all these classes on link:
+        p 如果使用的是<a href="list-view.html#link-elements">链接元素（link elements）</a>，你可以将上述的样式类都加到链接元素上:
         pre
           code
             | &lt;li class="swipeout"&gt;
@@ -79,7 +79,7 @@ block content
             |     &lt;/div&gt;
             |   &lt;/div&gt;
             | &lt;/li&gt;
-      h4(data-device-preview="../docs-demos/swipeout.html") Example
+      h4(data-device-preview="../docs-demos/swipeout.html") 示例
       pre
         code
           | &lt;div class="list-block"&gt;
@@ -141,9 +141,9 @@ block content
           | });
           | $$('.action2').on('click', function () {
           |   myApp.alert('Action 2');
-          | });  
-      h2(data-device-preview="../docs-demos/swipe-delete.html") Swipe To Delete
-      p Framework7 supports this frequently used feature from the box without single line of JavaScript. All you need is to add &lt;a class="swipeout-delete"&gt; link to swipeout actions buttons:
+          | });
+      h2(data-device-preview="../docs-demos/swipe-delete.html") 滑动删除（Swipe To Delete）
+      p 在Framework7中使用滑动删除不需要写Javascript代码，只需要将&lt;a class="swipeout-delete"&gt;链接加入到滑动菜单区中:
       pre
         code
           | &lt;li class="swipeout"&gt;
@@ -158,7 +158,7 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/li&gt;
-      p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add addition "data-confirm" and "data-confirm-title" (optional) attributes to Delete link:
+      p 可以在点击删除按钮的时候调用确认询问模态窗口（Confirm modal），只有在确认后才会将需要删除的元素从列表中移除. 使用确认功能只需要把"data-confirm"和"data-confirm-title" (可选)属性加到删除菜单链接（&lt;a class="swipeout-delete"&gt;）上:
       pre
         code
           | &lt;li class="swipeout"&gt;
@@ -173,68 +173,68 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/li&gt;
-      h2(data-device-preview="../docs-demos/swipeout-api.html") Swipeout JavaScript API
-      p Swipeouts also has rich JavaScript API that allows you to control swipeout elements. Let's look on appropriate App's properties and methods:
+      h2(data-device-preview="../docs-demos/swipeout-api.html") 滑动列表（Swipeout） JavaScript API
+      p 滑动操作列表提供丰富的JavaScript API来控制滑动列表元素。下面是提供的属性及方法:
       p
-        span.method myApp.swipeoutOpen(<span>el</span>)</span> - reveal swipeout actions on specified element
+        span.method myApp.swipeoutOpen(<span>el</span>)</span> - 在指定的元素中显示滑动菜单
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. 必选的
       p
-        span.method myApp.swipeoutClose(<span>el</span>)</span> - close swipeout actions on specified element
+        span.method myApp.swipeoutClose(<span>el</span>)</span> - 在指定的元素中隐藏滑动菜单
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. 必选的
       p
-        span.method myApp.swipeoutDelete(<span>el</span>)</span> - delete specified swipeout element
+        span.method myApp.swipeoutDelete(<span>el</span>)</span> - 删除指定的滑动列表中的元素
       ul.method-parameters
         li
           span.parameter el
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. 必选的
 
       p
-        span.method myApp.swipeoutOpenedEl</span> - property. Contains link to currently opened swipeout HTMLElement. Or equal to 'undefined' if none of elements are currently opened
-      
+        span.method myApp.swipeoutOpenedEl</span> - 属性（property）. 已打开的滑动列表元素；当没有滑动列表中的元素被打开，返回undefined（Contains link to currently opened swipeout HTMLElement. Or equal to 'undefined' if none of elements are currently opened）
 
-      h2(data-device-preview="../docs-demos/swipeout-events.html") Swipeout events
-      p Swipeout elements have the following events:
+
+      h2(data-device-preview="../docs-demos/swipeout-events.html") 滑动列表事件（Swipeout events）
+      p 滑动列表元素会触发以下事件:
       table.events-table
         thead
           tr
-            th Event
-            th Target
-            th Description
+            th 事件（Event）
+            th 目标（Target）
+            th 说明（Description）
         tbody
           tr
             td swipeout
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
-            td Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage
+            td 当滑动列表元素被移动时触发，event.detail.progress表示当前正在打开的菜单的开启进度（Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage）
           tr
             td open
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
-            td Event will be triggered when swipeout element starts its opening animation
+            td 当滑动列表元素开始显示时触发（Event will be triggered when swipeout element starts its opening animation）
           tr
             td opened
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
-            td Event will be triggered after swipeout element completes its opening animation
+            td 当滑动列表元素完成显示时触发（Event will be triggered after swipeout element completes its opening animation）
           tr
             td close
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
-            td Event will be triggered when swipeout element starts its closing animation
+            td 当滑动列表元素开始隐藏时触发（Event will be triggered when swipeout element starts its closing animation）
           tr
             td closed
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
-            td Event will be triggered after swipeout element completes its closing animation 
+            td 当滑动列表元素完成隐藏时触发（Event will be triggered after swipeout element completes its closing animation）
           tr
             td delete
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
-            td Event will be triggered after swipeout element starts its delete animation 
+            td 当滑动列表元素开始删除操作时触发（Event will be triggered after swipeout element starts its delete animation）
           tr
             td deleted
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
-            td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+            td 当滑动列表元素被删除后触发（Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM）
       pre
         code
           | var myApp = new Framework7();
@@ -243,10 +243,10 @@ block content
           | 
           | $$('.swipeout').on('deleted', function () {
           |   myApp.alert('Item removed');
-          | }); 
+          | });
           | 
           | $$('.swipeout').on('swipeout', function (e) {
           |   console.log('Item opened on: ' + e.detail.progress + '%');
-          | });                   
+          | });
 
       .device-spacer

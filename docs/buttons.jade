@@ -12,127 +12,109 @@ block content
     .docs-nav
       include ../jade/_docs-menu
     .docs-content.with-device
-      h1(data-device-preview="../docs-demos/buttons.html") Buttons
-      p Framework7 comes with a bunch of ready to use buttons. All you need is to just add appropriate classes to your links or submit/button inputs:
-      h3 Usual Buttons
-      p Just add <code>button</code> class to any link or button input:
+      h1(data-device-preview="../docs-demos/buttons.html") 按钮(buttons)
+      p Framework7 有一大坨可用的按钮。你需要做的只是把正确的class加到链接或者按钮上即可
+      h3 普通按钮(Usual Buttons)
+      p 只需要增加一个 <code>buttong</code> class 在任何链接或者按钮上：
       pre
-        code
-          | &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 1&lt;/a&gt;&lt;/p&gt;
-          | &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 2&lt;/a&gt;&lt;/p&gt;
-          | &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 3&lt;/a&gt;&lt;/p&gt;          
-      .important-note
-        p Note that, by default, each button in Framework7 is "display:block" and will take 100% of its parent width. 
-      h3 Active State
-      p Just add additional <code>active</code> class to button:
+        code.
+          &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 1&lt;/a&gt;&lt;/p&gt;
+          &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 2&lt;/a&gt;&lt;/p&gt;
+          &lt;p&gt;&lt;a href="#" class="button"&gt;Usual Button 3&lt;/a&gt;&lt;/p&gt;
+      div.important-note
+        p 注意，因为在Framework7中，每个按钮默认是 "display: block" 的，所以会占据父元素 100% 的宽度
+      h3 激活状态(Active State)
+      p 只需要给按钮加上 <code>active</code> class即可
       pre
-        code
-          | &lt;a href="#" class="button active"&gt;Active Button&lt;/a&gt;
-
-      h3 Round Buttons
-      p Add additional <code>button-round</code> class to button:
+        code.
+          &lt;a href="#" class="button active"&gt;Active Button&lt;/a&gt;
+      h3 圆形按钮(Round Buttons)
+      p 按钮上增加一个 <code>button-round</code> 即可:
       pre
-        code
-          | &lt;p&gt;&lt;a href="#" class="button button-round"&gt;Round Button 1&lt;/a&gt;&lt;/p&gt;
-          | &lt;p&gt;&lt;a href="#" class="button button-round"&gt;Round Button 2&lt;/a&gt;&lt;/p&gt;
-          | &lt;p&gt;&lt;a href="#" class="button button-round active"&gt;Round Button Active&lt;/a&gt;&lt;/p&gt;          
-      h3 Big Buttons
-      p Add additional <code>button-big</code> class to button:
+        code.
+          &lt;p&gt;&lt;a href="#" class="button button-round"&gt;Round Button 1&lt;/a&gt;&lt;/p&gt;
+          &lt;p&gt;&lt;a href="#" class="button button-round"&gt;Round Button 2&lt;/a&gt;&lt;/p&gt;
+          &lt;p&gt;&lt;a href="#" class="button button-round active"&gt;Round Button Active&lt;/a&gt;&lt;/p&gt;
+      h3 大尺寸的按钮(Big Buttons)
+      p 在按钮上加上 <code>button-big</code> class
       pre
-        code
-          | &lt;a href="#" class="button button-big"&gt;Big Button &lt;/a&gt;
-          | &lt;a href="#" class="button button-big button-round"&gt;Big Round Button &lt;/a&gt;
-          | &lt;a href="#" class="button button-big button-round active"&gt;Big Round Active Button &lt;/a&gt;          
+        code.
+          &lt;a href="#" class="button button-big"&gt;Big Button &lt;/a&gt;
+          &lt;a href="#" class="button button-big button-round"&gt;Big Round Button &lt;/a&gt;
+          &lt;a href="#" class="button button-big button-round active"&gt;Big Round Active Button &lt;/a&gt;
       h3 Buttons Row / Segmented Control
-      .important-note
-        p <strong>Note that each button has equal width when in "buttons-row"</strong>
-      p Just wrap buttons with element with <code>buttons-row</code> class:
-        pre
-          code
-            | &lt;p class="buttons-row"&gt;
-            |   &lt;a href="#" class="button"&gt;Button 1&lt;/a&gt;
-            |   &lt;a href="#" class="button"&gt;Button 2&lt;/a&gt;
-            |   &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
-            | &lt;/p&gt;
-            | &lt;p class="buttons-row"&gt;
-            |   &lt;a href="#" class="button active"&gt;Button 1&lt;/a&gt;
-            |   &lt;a href="#" class="button"&gt;Button 2&lt;/a&gt;
-            |   &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
-            | &lt;/p&gt;
-            | &lt;p class="buttons-row"&gt;
-            |   &lt;a href="#" class="button button-round"&gt;Button 1&lt;/a&gt;
-            |   &lt;a href="#" class="button button-round"&gt;Button 2&lt;/a&gt;
-            | &lt;/p&gt;
-            | &lt;p class="buttons-row"&gt;
-            |   &lt;a href="#" class="button button-round"&gt;Button 1&lt;/a&gt;
-            |   &lt;a href="#" class="button button-round active"&gt;Button 2&lt;/a&gt;
-            | &lt;/p&gt;            
-      h3 Fill Buttons
-      p Fill Buttons looks almost the same as active but indended to be used as single buttons which also have a bit different effect on click/tap:
+      div.important-note
+        p <strong>在"buttons-row"中每个button的宽度是相同的</strong>
+      p 只需要给 button 外面加上一个 有 <code>buttons-row</code> class 的元素即可
       pre
-        code
-          | &lt;a href="#" class="button button-fill"&gt;Fill Button &lt;/a&gt;
-          | &lt;a href="#" class="button button-round button-fill"&gt;Round Fill Button&lt;/a&gt;
-          | &lt;a href="#" class="button button-big button-fill"&gt;Big Fill Button &lt;/a&gt;
-      h3 Color Buttons
-      p You can use 10 default <a href="color-themes.html">color themes</a> to colorize buttons
+        code.
+          &lt;p class="buttons-row"&gt;
+            &lt;a href="#" class="button"&gt;Button 1&lt;/a&gt;
+            &lt;a href="#" class="button"&gt;Button 2&lt;/a&gt;
+            &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
+          &lt;/p&gt;
+          &lt;p class="buttons-row"&gt;
+            &lt;a href="#" class="button active"&gt;Button 1&lt;/a&gt;
+            &lt;a href="#" class="button"&gt;Button 2&lt;/a&gt;
+            &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
+          &lt;/p&gt;
+          &lt;p class="buttons-row"&gt;
+            &lt;a href="#" class="button button-round"&gt;Button 1&lt;/a&gt;
+            &lt;a href="#" class="button button-round"&gt;Button 2&lt;/a&gt;
+          &lt;/p&gt;
+          &lt;p class="buttons-row"&gt;
+            &lt;a href="#" class="button button-round"&gt;Button 1&lt;/a&gt;
+            &lt;a href="#" class="button button-round active"&gt;Button 2&lt;/a&gt;
+          &lt;/p&gt;
+      h3 不同颜色的按钮(Color Buttons)
+      p 给按钮加上 <code>button-submit</code> 会变成绿色, 加上 <code>button-cancel</code> 会变成红色
       pre
-        code
-          | &lt;p class="buttons-row theme-pink"&gt;
-          |     &lt;a href="#" class="button active"&gt;Button 1&lt;/a&gt;
-          |     &lt;a href="#" class="button"&gt;Button 2&lt;/a&gt;
-          |     &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
-          | &lt;/p&gt;
-          | &lt;p class="buttons-row theme-orange"&gt;
-          |     &lt;a href="#" class="button"&gt;Button 1&lt;/a&gt;
-          |     &lt;a href="#" class="button active"&gt;Button 2&lt;/a&gt;
-          |     &lt;a href="#" class="button"&gt;Button 3&lt;/a&gt;
-          | &lt;/p&gt;
-          | &lt;p&gt;&lt;a href="#" class="button button-fill color-green"&gt;Green&lt;/a&gt;&lt;/p&gt;
-          | &lt;p&gt;&lt;a href="#" class="button button-fill color-red button-round"&gt;Round Red&lt;/a&gt;&lt;/p&gt;
-          | &lt;p&gt;&lt;a href="#" class="button button-big button-fill color-gray"&gt;Big Gray&lt;/a&gt;&lt;/p&gt;
-          | &lt;p&gt;&lt;a href="#" class="button button-fill button-big color-yellow"&gt;Big Yellow&lt;/a&gt;&lt;/p&gt;          
-      h3 List Block Buttons
-      p We can use buttons with our favourite <a href="list-view.html">List Views</a>:
+        code.
+          &lt;a href="#" class="button button-submit"&gt;Submit&lt;/a&gt;
+          &lt;a href="#" class="button button-cancel button-round"&gt;Round Cancel&lt;/a&gt;
+          &lt;a href="#" class="button button-big button-submit"&gt;Big Submit&lt;/a&gt;
+          &lt;a href="#" class="button button-big button-cancel"&gt;Big Cancel&lt;/a&gt;
+      h3 列表按钮(List Block Buttons)
+      p 我们可以在 <a href="list-view.html">列表</a> 中使用按钮
       pre
-        code
-          | &lt;div class="content-block-title"&gt;List block buttons&lt;/div&gt;
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link list-button"&gt;List Button 1&lt;/a&gt;
-          |     &lt;/li&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link list-button"&gt;List Button 2&lt;/a&gt;
-          |     &lt;/li&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link list-button"&gt;List Button 3&lt;/a&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
-          | &lt;div class="content-block-title"&gt;Inset list block buttons&lt;/div&gt;
-          | &lt;div class="list-block inset"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link list-button"&gt;List Button 1&lt;/a&gt;
-          |     &lt;/li&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link list-button"&gt;List Button 2&lt;/a&gt;
-          |     &lt;/li&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link list-button"&gt;List Button 3&lt;/a&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;          
-      h3 Using Grid
-      p And of course, you can place buttons anywhere where you want and need. Here is example using <a href="grid.html">Grid</a>:
+        code.
+          &lt;div class="content-block-title"&gt;List block buttons&lt;/div&gt;
+          &lt;div class="list-block"&gt;
+            &lt;ul&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link list-button"&gt;List Button 1&lt;/a&gt;
+              &lt;/li&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link list-button"&gt;List Button 2&lt;/a&gt;
+              &lt;/li&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link list-button"&gt;List Button 3&lt;/a&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/div&gt;
+          &lt;div class="content-block-title"&gt;Inset list block buttons&lt;/div&gt;
+          &lt;div class="list-block inset"&gt;
+            &lt;ul&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link list-button"&gt;List Button 1&lt;/a&gt;
+              &lt;/li&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link list-button"&gt;List Button 2&lt;/a&gt;
+              &lt;/li&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link list-button"&gt;List Button 3&lt;/a&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/div&gt;
+      h3 使用栅格(Using Grid)
+      p 当然，你可以把按钮放在任何你想放的位置。比如放在 <a href="grid.html">栅格</a> 中:
       pre
-        code
-          | &lt;div class="row"&gt;
-          |   &lt;div class="col-50"&gt;
-          |     &lt;a href="#" class="button button-big button-red"&gt;Cancel&lt;/a&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="col-50"&gt;
-          |     &lt;a href="#" class="button button-big button-green"&gt;Submit&lt;/a&gt;
-          |   &lt;/div&gt;
-          | &lt;/div&gt;          
+        code.
+          &lt;div class="row"&gt;
+            &lt;div class="col-50"&gt;
+              &lt;a href="#" class="button button-big button-cancel"&gt;Cancel&lt;/a&gt;
+            &lt;/div&gt;
+            &lt;div class="col-50"&gt;
+              &lt;a href="#" class="button button-big button-submit"&gt;Submit&lt;/a&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;

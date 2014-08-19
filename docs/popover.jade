@@ -14,11 +14,11 @@ block content
     .docs-content.with-device
       .full-width
         h1 Popover
-        p Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
+        p Popover 组件是用来管理popover里的内容展示。你可以用 popovers 去呈现临时的信息. popover 保持可见直到用户点击popover窗口外面或者你明确地移除它。
         .important-note
-          p Note that is not recommended to use Popover on small screens (iPhone). On small screens you should use <a href="action-sheet.html">Action Sheet</a> instead.
-        h2 Popover Layout
-        p First of all let's look on Popover layout, it is pretty simple, just add somewhere in the end of the <code>&lt;body&gt;</code>:
+          p 注意，不推荐在小屏幕(iPhone)上使用 Popover 。 在小屏幕上你应该使用 <a href="action-sheet.html">Action Sheet</a> 来代替。
+        h2 Popover 布局
+        p 首先让我们来看看 Popover 布局, 它非常简单, 只需要添加在 <code>&lt;body&gt;</code>的结尾处:
         pre
           code
             | &lt;body&gt;
@@ -33,21 +33,21 @@ block content
             |         &lt;/div&gt;
             |     &lt;/div&gt;
             | &lt;/body&gt;  
-        p Popover is highly customizable element and you can put anything inside, event another view with navigation.    
-      h2(data-device-preview="../docs-demos/popover.html") Open and close Popover
+        p Popover 是高度可定制元素，你可以往里面放任何东西，是通知事件的另一种视图导航。
+      h2(data-device-preview="../docs-demos/popover.html") 打开和关闭 Popover
       h3 From HTML
-      p It is possible to open and close required Popover using special classes and data attributes on links:
+      p 可以通过在链接里使用特定的类名和data属性，打开和关闭所需的 Popover :
       .important-note
         ul
           li
-            p To open popover we need to add <strong>"open-popover"</strong> class to any HTML element (prefered to link)
+            p 为了打开 popover ，我们需要添加 <strong>"open-popover"</strong> 类到任意 HTML 元素中 (最好是链接)
           li
-            p To close popover we may add <strong>"close-popover"</strong> class to any HTML element (prefered to link)
+            p 为了关闭 popover ，我们需要添加 <strong>"close-popover"</strong> 类到任意 HTML 元素中 (最好是链接)
           li
-            p If you have more than one popover in app, you need to specify appropriate popover via additional <strong>data-popover=".my-popover"</strong> attribute on this HTML element
-      h4 Popover position
+            p 如果你的App里有超过一个 popover, 你需要指定适当 popover，则需添加额外的属性<strong>data-popover=".my-popover"</strong> 到这个 HTML 元素上
+      h4 Popover 定位
       .important-note
-        p When we open Popover with such method (from HTML), it will be automatically positioned around element that we clicked to call this Popover.
+        p 当我们通过这样的方法（从HTML）打开 Popover , 它可能被这样自动定位：在我们点击调用这个Popover的元素附近。
       pre
         code
           | &lt;body&gt;
@@ -103,27 +103,27 @@ block content
           |   &lt;/div&gt;
           | &lt;/body&gt;
 
-      h3(data-device-preview="../docs-demos/popover-js.html") Using JavaScript
-      p We can also open and close Popover with JavaScript, for this we need to look at related App methods:
+      h3(data-device-preview="../docs-demos/popover-js.html") 使用 JavaScript
+      p 我们也可以用使用JavaScript来打开和关闭 Popover ，因此我们需要看一下相关的App方法：
       p
-        span.method myApp.popover(<span>popover</span>, <span>target</span>)</span> - open Popover around <strong>target</strong> element
+        span.method myApp.popover(<span>popover</span>, <span>target</span>)</span> -  在 <strong>目标</strong> 元素附近打开 Popover
       ul.method-parameters
         li
           span.parameter popover
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Popover to open. Requred
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> ( CSS 选择器) 打开 Popover. 必需
         li
           span.parameter target
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of target element to set popover position around this element. Requred
-        li.method-returns This method returns Popover's HTMLElement
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> ( CSS 选择器) 设置 popover 围绕的目标元素. 必需
+        li.method-returns 这个方法返回 Popover的 HTML元素
       p
-        span.method myApp.closeModal(<span>popover</span>)</span> - close Popover
+        span.method myApp.closeModal(<span>popover</span>)</span> - 关闭 Popover
       ul.method-parameters
         li
           span.parameter popover
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Popover will be closed
-      h4 Popover position
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). 可选. 如果你没有指定，则任意被打开的 都将被关闭
+      h4 Popover 位置
       .important-note
-        p When we open popover using JavaScript we need to pass <strong>target</strong> element to set popover around this target element.
+        p 当我们使用 JavaScript 打开popover ，我们需要通过 <strong>target</strong> 元素去设定 popover 所围绕的目标元素.
       pre
         code
           | &lt;body&gt;
@@ -168,21 +168,21 @@ block content
           |     myApp.popover('.popover-links', clickedLink);
           | });          
 
-      h2(data-device-preview="../docs-demos/popover-dynamic.html") Dynamic Popover
-      p Framework7 allows you to create Popover dynamically by passing its HTML to related App methods:
+      h2(data-device-preview="../docs-demos/popover-dynamic.html") 动态的 Popover
+      p Framework7允许你通过HTML使用相关的App方法，动态地创建 Popover:
       p
         span.method myApp.popover(<span>popoverHTML</span>, <span>target</span>, <span>removeOnClose</span>)</span> - open Popover with <strong>popoverHTML</strong> content around <strong>target</strong> element
       ul.method-parameters
         li
           span.parameter popoverHTML
-          |  - <span class="parameter-type">string</span>. HTML string of popover 
+          |  - <span class="parameter-type">string</span>. popover 的HTML 字符串
         li
           span.parameter target
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of target element to set popover position around this element. Requred
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> ( CSS 选择器) 设置 popover 位置所围绕的目标元素. 必需
         li
           span.parameter removeOnClose
-          |  - <span class="parameter-type">boolean</span>. Optional, by default - true. If true then Popover will be removed from DOM when closed
-        li.method-returns This method returns dynamically created Popover's HTMLElement
+          |  - <span class="parameter-type">boolean</span>. 可选, 默认值 - true. 如果是 true， 那么 Popover 在关闭时将从DOM中移除
+        li.method-returns 该方法返回动态创建的 Popover的 HTML结构
       pre
         code
           | &lt;body&gt;
@@ -238,31 +238,31 @@ block content
           |   myApp.popover(popoverHTML, clickedLink);
           | });
       .full-width.stop-scroll-device 
-        h2 Popover Events
-        p Popover has the same events as any <a href="modal.html">Modal</a>
+        h2 Popover 事件
+        p Popover 和任意 <a href="modal.html">Modal</a>拥有一样的事件
         table.events-table
           thead
             tr
-              th Event
-              th Target
-              th Description
+              th Event（事件）
+              th Target（目标）
+              th Description（描述）
           tbody
             tr
               td open
               td Popover Element<span>&lt;div class="popover"&gt;</span>
-              td Event will be triggered when Popover starts its opening animation
+              td 当 Popover 开始打开动画时，事件将被触发。
             tr
               td opened
               td Popover Element<span>&lt;div class="popover"&gt;</span>
-              td Event will be triggered after Popover completes its opening animation
+              td 当 Popover 完成打开动画时，事件将被触发。
             tr
               td close
               td Popover Element<span>&lt;div class="popover"&gt;</span>
-              td Event will be triggered when Popover starts its closing animation
+              td 当 Popover 开始结束动画时，事件将被触发。
             tr
               td closed
               td Popover Element<span>&lt;div class="popover"&gt;</span>
-              td Event will be triggered after Popover completes its closing animation      
+              td 当 Popover 完成结束动画后，事件将被触发。   
 
 
           

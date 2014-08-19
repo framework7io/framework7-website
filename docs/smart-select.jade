@@ -12,167 +12,145 @@ block content
     .docs-nav
       include ../jade/_docs-menu
     .docs-content.with-device
-      .full-width
+      div.full-width
         h1 Smart Select
-        p Smart select allows you to easily convert your usual form selects to dynamic pages with <a href="checkboxes-radios.html">grouped radio inputs</a>. You can see such feature in many native iOS apps
-      h2(data-device-preview="../docs-demos/smart-select.html") Smart Select Layout
-      p Smart select layout is pretty easy. It is a well known <a href="list-view.html">List View</a> with <code>&lt;select&gt;</code> inside and additional "smart-select" class on "item-link":
+        p Smart Select 可以自动帮你把原生的select变成一个由 <a href="checkboxes-radios.html">分组单选按钮</a> 构成的动态页面。在很多iOs native应用中你可以看到这种特性。
+      h2(data-device-preview="../docs-demos/smart-select.html") Smart Select 布局
+      p Smart Select 布局非常简单，只需要在 <a href="list-view.html">列表</a> 中插入 <code>&lt;select&gt;</code>，并且给 item-link 加上 "smart-select" class即可。
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;!-- Smart select item --&gt;
-          |     &lt;li&gt;
-          |       &lt;!-- Additional "smart-select" class --&gt;
-          |       &lt;a href="#" class="item-link smart-select"&gt;
-          |         &lt;!-- select --&gt;
-          |         &lt;select name="fruits"&gt;
-          |           &lt;option value="apple" selected&gt;Apple&lt;/option&gt;
-          |           &lt;option value="pineapple"&gt;Pineapple&lt;/option&gt;
-          |           ...
-          |         &lt;/select&gt;
-          |         &lt;div class="item-content"&gt;
-          |           &lt;div class="item-inner"&gt;
-          |             &lt;!-- Select label --&gt;
-          |             &lt;div class="item-title"&gt;Fruit&lt;/div&gt;
-          |             &lt;!-- Selected value, not required --&gt;
-          |             &lt;div class="item-after"&gt;Apple&lt;/div&gt;
-          |           &lt;/div&gt;
-          |         &lt;/div&gt;
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |     &lt;!-- Another smart selects or list view elements --&gt;
-          |     ...
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;   
-      .important-note
-        p Note that smart select works only in <a href="views.html">initialized Views</a>!
-
-      h2(data-device-preview="../docs-demos/smart-select-searchbar.html") Smart Select with Search Bar
-      p It is possible to use Smart selects with <a href="searchbar.html">search bars</a>. If you want to use all Smart selects with search bars you may just enable it by passing <code>smartSelectSearchbar:true</code> parameter on <a href="init-app.html">App initialization</a>.
-      p Otherwise it can be configured via "data-" attributes:
+        code.
+          &lt;div class="list-block"&gt;
+            &lt;ul&gt;
+              &lt;!-- Smart select item --&gt;
+              &lt;li&gt;
+                &lt;!-- Additional "smart-select" class --&gt;
+                &lt;a href="#" class="item-link smart-select"&gt;
+                  &lt;!-- select --&gt;
+                  &lt;select name="fruits"&gt;
+                    &lt;option value="apple" selected&gt;Apple&lt;/option&gt;
+                    &lt;option value="pineapple"&gt;Pineapple&lt;/option&gt;
+                    ...
+                  &lt;/select&gt;
+                  &lt;div class="item-content"&gt;
+                    &lt;div class="item-inner"&gt;
+                      &lt;!-- Select label --&gt;
+                      &lt;div class="item-title"&gt;Fruit&lt;/div&gt;
+                      &lt;!-- Selected value, not required --&gt;
+                      &lt;div class="item-after"&gt;Apple&lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/a&gt;
+              &lt;/li&gt;
+              &lt;!-- Another smart selects or list view elements --&gt;
+              ...
+            &lt;/ul&gt;
+          &lt;/div&gt;
+      div.important-note
+        p 注意，smart select 只有在 <a href="views.html">初始化</a> 之后的View中才可用。
+      h2(data-device-preview="../docs-demos/smart-select-searchbar.html") 带有搜索栏的Smart Select
+      p Smart select 可以结合 <a href="searchbar.html">搜索栏</a> 使用。如果你希望所有的 Smart Select 都带有搜索栏，你可以在<a href="init-app.html">初始化</a> 的时候传入一个 <code>smartSelectSearchbar: true</code> 参数。
+      p 也可以通过 "data-" 属性来启用搜索栏:
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;!-- Smart select item --&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link smart-select" data-searchbar="true" data-searchbar-placeholder="Search fruits"&gt;
-          |         ... same Smart select Fruits structure as in previous example ...
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link smart-select" data-searchbar="true" data-searchbar-placeholder="Search cars"&gt;
-          |         ... same Smart select Cars structure as in previous example ...
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
-      p Where
+        code.
+          &lt;div class="list-block"&gt;
+            &lt;ul&gt;
+              &lt;!-- Smart select item --&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link smart-select" data-searchbar="true" data-searchbar-placeholder="Search fruits"&gt;
+                  ... same Smart select Fruits structure as in previous example ...
+                &lt;/a&gt;
+              &lt;/li&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link smart-select" data-searchbar="true" data-searchbar-placeholder="Search cars"&gt;
+                  ... same Smart select Cars structure as in previous example ...
+                &lt;/a&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/div&gt;</code></pre>
+      p 其中
         ul
-          li <code>data-searchbar</code> - enable (or overwrite global App's smartSelectSearchbar parameter) search bar for this Smart select
-          li <code>data-searchbar-placeholder</code> - search field placeholder. Optional. By default equal to "Search"
-          li <code>data-searchbar-cancel</code> - text for search bar Cancel button. Optional. By default equal to "Cancel"
-      h2(data-device-preview="../docs-demos/smart-select-custom.html") Custom page title and back link text
-      p By default, Smart Select's page title is the same as in clicked item's "item-title" text and back-link text is equal to the one specified in "smartSelectBackText" App's paramter. 
-      p But sometimes we may need to have custom page title and back-link for specific Smart Selects. We may use "data-page-title" and "data-back-text" attributes on Smart Select link:
+          li <code>data-searchbar</code> - 对当前的Smart Select启用搜索栏（或者可以通过全局的 smartSelectSearchbar 参数来启用
+          li <code>data-searchbar-placeholder</code> - 搜索栏输入框的占位符，可选。默认是 "Search"
+          li <code>data-searchbar-cancel</code> - 取消按钮的文案，可选。 默认是 "cancel"
+      h2(data-device-preview="../docs-demos/smart-select-custom.html") 自定义页面的title和返回按钮的文案
+      p 默认情况下，Smart Select 页面的标题总是和被点击条目的 "item-title" 文案一直，返回按钮的文案总是和 "smartSelectBackText" 中设置的文案一直。
+      p 有时候你需要自定义文案，可以通过在 Smart Select 链接上使用 "data-page-title" 和 "data-back-text" 来设置
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;!-- Smart select item --&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link smart-select" data-page-title="Awesome Fruits" data-back-text="Go back"&gt;
-          |         ... same Smart select Fruits structure as in previous example ...
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" class="item-link smart-select" data-page-title="Super Cars" data-back-text="Go back"&gt;
-          |         ... same Smart select Cars structure as in previous example ...
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
-      h2(data-device-preview="../docs-demos/smart-select-images.html") Custom icons and images
-      p You can also specify Smart Select page' list view element custom icon or image. We need to use additional "data-option-icon" or "data-option-image" attributes on smart select <code>&lt;select&gt;</code> (to set default image for all options) or on <code>&lt;option&gt;</code> to set image or icon on single option
+        code.
+          &lt;div class="list-block"&gt;
+            &lt;ul&gt;
+              &lt;!-- Smart select item --&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link smart-select" data-page-title="Awesome Fruits" data-back-text="Go back"&gt;
+                  ... same Smart select Fruits structure as in previous example ...
+                &lt;/a&gt;
+              &lt;/li&gt;
+              &lt;li&gt;
+                &lt;a href="#" class="item-link smart-select" data-page-title="Super Cars" data-back-text="Go back"&gt;
+                  ... same Smart select Cars structure as in previous example ...
+                &lt;/a&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/div&gt;
+      h2(data-device-preview="../docs-demos/smart-select-multiple.html") 多选和分组
       pre
-        code
-          | &lt;a href="#" class="item-link smart-select"&gt;
-          |   &lt;select name="fruits"&gt;
-          |     &lt;option value="apple" selected data-option-image="http://lorempixel.com/29/29/"&gt;Apple&lt;/option&gt;
-          |     &lt;option value="pineapple" data-option-image="http://lorempixel.com/29/29/?2"&gt;Pineapple&lt;/option&gt;
-          |     ...
-          |   &lt;/select&gt;
-          |   &lt;div class="item-content"&gt;
-          |     &lt;div class="item-inner"&gt;
-          |       &lt;div class="item-title"&gt;Fruit&lt;/div&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/a&gt;          
-      h2(data-device-preview="../docs-demos/smart-select-multiple.html") Multiple Select And optgroup
+        code.
+          &lt;div class="list-block"&gt;
+            &lt;ul&gt;
+              &lt;li&gt;&lt;a href="#" class="item-link smart-select"&gt;
+                  &lt;!-- "multiple" attribute for multiple select--&gt;
+                  &lt;select name="car" multiple&gt;
+                    &lt;!-- options grouped within "optgroup" tag--&gt;
+                    &lt;optgroup label="Japanese"&gt;
+                      &lt;option value="honda" selected&gt;Honda&lt;/option&gt;
+                      &lt;option value="lexus"&gt;Lexus&lt;/option&gt;
+                      &lt;option value="mazda"&gt;Mazda&lt;/option&gt;
+                      &lt;option value="nissan"&gt;Nissan&lt;/option&gt;
+                      &lt;option value="toyota"&gt;Toyota&lt;/option&gt;
+                    &lt;/optgroup&gt;
+                    &lt;optgroup label="German"&gt;
+                      &lt;option value="audi" selected&gt;Audi&lt;/option&gt;
+                      &lt;option value="bmw"&gt;BMW&lt;/option&gt;
+                      &lt;option value="mercedes"&gt;Mercedes&lt;/option&gt;
+                      &lt;option value="vw"&gt;Volkswagen&lt;/option&gt;
+                      &lt;option value="volvo"&gt;Volvo&lt;/option&gt;
+                    &lt;/optgroup&gt;
+                    &lt;optgroup label="American"&gt;
+                      &lt;option value="cadillac"&gt;Cadillac&lt;/option&gt;
+                      &lt;option value="chrysler"&gt;Chrysler&lt;/option&gt;
+                      &lt;option value="dodge"&gt;Dodge&lt;/option&gt;
+                      &lt;option value="ford" selected&gt;Ford&lt;/option&gt;
+                    &lt;/optgroup&gt;
+                  &lt;/select&gt;
+                  &lt;div class="item-content"&gt;
+                    &lt;div class="item-inner"&gt;
+                      &lt;div class="item-title"&gt;Car&lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/div&gt;
+      p 我们可以通过 &lt;optgroup&gt; 来使用分组，可以通过在 select 上设置 "multiple" 属性来使用多选（页面会自动换成checkbox)。
+      h2.stop-scroll-device 选择之后自动关闭
+      p 可以设置用户选择之后自动关闭页面。只需要设置 <b>data-back-onselect</b> 属性即可：
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li&gt;&lt;a href="#" class="item-link smart-select"&gt;
-          |         &lt;!-- "multiple" attribute for multiple select--&gt;
-          |         &lt;select name="car" multiple&gt;
-          |           &lt;!-- options grouped within "optgroup" tag--&gt;
-          |           &lt;optgroup label="Japanese"&gt;
-          |             &lt;option value="honda" selected&gt;Honda&lt;/option&gt;
-          |             &lt;option value="lexus"&gt;Lexus&lt;/option&gt;
-          |             &lt;option value="mazda"&gt;Mazda&lt;/option&gt;
-          |             &lt;option value="nissan"&gt;Nissan&lt;/option&gt;
-          |             &lt;option value="toyota"&gt;Toyota&lt;/option&gt;
-          |           &lt;/optgroup&gt;
-          |           &lt;optgroup label="German"&gt;
-          |             &lt;option value="audi" selected&gt;Audi&lt;/option&gt;
-          |             &lt;option value="bmw"&gt;BMW&lt;/option&gt;
-          |             &lt;option value="mercedes"&gt;Mercedes&lt;/option&gt;
-          |             &lt;option value="vw"&gt;Volkswagen&lt;/option&gt;
-          |             &lt;option value="volvo"&gt;Volvo&lt;/option&gt;
-          |           &lt;/optgroup&gt;
-          |           &lt;optgroup label="American"&gt;
-          |             &lt;option value="cadillac"&gt;Cadillac&lt;/option&gt;
-          |             &lt;option value="chrysler"&gt;Chrysler&lt;/option&gt;
-          |             &lt;option value="dodge"&gt;Dodge&lt;/option&gt;
-          |             &lt;option value="ford" selected&gt;Ford&lt;/option&gt;
-          |           &lt;/optgroup&gt;
-          |         &lt;/select&gt;
-          |         &lt;div class="item-content"&gt;
-          |           &lt;div class="item-inner"&gt;
-          |             &lt;div class="item-title"&gt;Car&lt;/div&gt;
-          |           &lt;/div&gt;
-          |         &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;          
-      p We can also use multiple select and group options using &lt;optgroup&gt;. So if we add "multiple" attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
-
-      h2.stop-scroll-device Close Smart Select on user pick
-      p It is possible to close Smart Select page automatically after user selects any option. We need to add special <b>data-back-onselect</b> attribute to make it work:
-      pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;!-- data-back-onselect="true" to close page automatically --&gt;
-          |     &lt;li&gt;&lt;a href="#" class="item-link smart-select" data-back-onselect="true"&gt;
-          |         &lt;select name="car" multiple&gt;
-          |           ...
-          |         &lt;/select&gt;
-          |         &lt;div class="item-content"&gt;
-          |           &lt;div class="item-inner"&gt;
-          |             &lt;div class="item-title"&gt;Car&lt;/div&gt;
-          |           &lt;/div&gt;
-          |         &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt; 
-      p If you want to add such behavior for all of your smart selects you may use <b>smartSelectBackOnSelect</b> <a href="init-app.html">App parameter</a>
-      h2 Open smart select using JavaScript
-      p It is also possible to "open" smart select with JavaScript. We need to use related App method:
-      p
-        span.method myApp.smartSelectOpen(<span>smartSelect</span>) - open specified smart select
+        code.
+          &lt;div class="list-block"&gt;
+            &lt;ul&gt;
+              &lt;li&gt;&lt;a href="#" class="item-link smart-select"&gt;
+                  &lt;!-- data-back-onselect="true" to close page automatically --&gt;
+                  &lt;select data-back-onselect="true" name="car" multiple&gt;
+                    ...
+                  &lt;/select&gt;
+                  &lt;div class="item-content"&gt;
+                    &lt;div class="item-inner"&gt;
+                      &lt;div class="item-title"&gt;Car&lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/div&gt;
+      p 你可以在 <a href="init-app.html">初始化</a> 的时候设置 <b>smartSelectBackOnSelect</b> 来使所有的Smart Select 都能点击之后自动关闭。
+      h2 使用JS打开Smart Select
+      p 我们可以使用app相关的方法来打开Smart Select：
+      p <span class="method">myApp.smartSelectOpen(<span>smartSelect</span>) - open specified smart select</span>
       ul.method-parameters
-        li
-          span.parameter smartSelect
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required ".smart-select". Required.
-        
+        li <span class="parameter">smartSelect</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required ".smart-select". Required.
