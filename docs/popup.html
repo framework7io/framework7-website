@@ -137,17 +137,17 @@
         <div class="docs-content with-device">
           <div class="full-width">
             <h1>Popup</h1>
-            <p>Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".</p>
-            <h2>Popup Layout</h2>
-            <p>Popup layout is pretty simple. All you need to do is to put <code>&lt;div class="popup"&gt; Any popup content here &lt;/div&gt;</code> right in the body:</p>
+            <p>Popup 是一种可以包含任何Html内容的弹出窗口，从App的主内容区域上弹出。 Popup 和其他所有的遮罩图层一样，是所谓的“临时视图”的一部分。</p>
+            <h2>Popup 布局</h2>
+            <p>Popup 布局相当简单. 你所需要做的就是将 <code>&lt;div class="popup"&gt; Any popup content here &lt;/div&gt;</code> 放到 body 里正确的位置上:</p>
             <pre><code>&lt;body&gt;
   ...
   &lt;div class="popup"&gt;
     Any HTML content goes here
   &lt;/div&gt;
 &lt;/body&gt;            </code></pre>
-            <h2>Popup Size</h2>
-            <p>By default Popup has a bit different size on phones and tablets (iPad). On phones it is fullscreen while on tablets it is 630px width and height. If you want to make it fullscreen size on tablets, you should add additional "tablet-fullscreen" class to the required popup:</p>
+            <h2>Popup 尺寸</h2>
+            <p>默认的 Popup 在手机和平板(iPad)上尺寸有一些不同。在手机上是全屏的时候，在平板上是630px的宽和高 。如果你想使它在平板上也是全屏的，你应该添加额外的"tablet-fullscreen"类到需要的popup中：</p>
             <pre><code>&lt;body&gt;
   ...
   &lt;!-- This popup has fullscreen size on tablets --&gt;
@@ -155,24 +155,24 @@
     Any HTML content goes here
   &lt;/div&gt;
 &lt;/body&gt;            </code></pre>
-            <h2>Open and close Popup</h2>
+            <h2>打开和关闭 Popup</h2>
           </div>
-          <h3 data-device-preview="../docs-demos/popup.html">From HTML</h3>
-          <p>It is possible to open and close required popups using special classes and data attributes on links:</p>
+          <h3 data-device-preview="../docs-demos/popup.html">从 HTML</h3>
+          <p>可以通过在链接上使用特定的类和data属性打开和关闭所需的popups：</p>
           <div class="important-note">
             <ul>
               <li>
-                <p>To open popup we need to add <strong>"open-popup"</strong> class to any HTML element (prefered to link)</p>
+                <p>为了打开popup，我们需要添加 <strong>"open-popup"</strong> 类到任意 HTML 元素中 (最好是链接)</p>
               </li>
               <li>
-                <p>To close popup we need to add <strong>"close-popup"</strong> class to any HTML element (prefered to link)</p>
+                <p>为了关闭popup，我们需要添加 <strong>"close-popup"</strong> 类到任意 HTML 元素中 (最好是链接)</p>
               </li>
               <li>
-                <p>If you have more than one popups in app, you need to specify appropriate popup via additional <strong>data-popup=".my-popup"</strong> attribute on this HTML element</p>
+                <p>如果你的App里有超过一个popups, 你需要指定适当popup，则需添加额外的属性 <strong>data-popup=".my-popup"</strong> 到这个 HTML 元素上</p>
               </li>
             </ul>
           </div>
-          <p>According to above note:</p>
+          <p>根据上面的注意点：</p>
           <pre><code>&lt;body&gt;
   ...
     &lt;div class="page-content"&gt;
@@ -200,15 +200,15 @@
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/body&gt;                    </code></pre>
-          <h3 data-device-preview="../docs-demos/popup-js.html">Using JavaScript</h3>
-          <p>We can also open and close Popups with JavaScript, for this we need to look at related App methods:</p>
-          <p><span class="method">myApp.popup(<span>popup</span>)</span> - open Popup</span></p>
+          <h3 data-device-preview="../docs-demos/popup-js.html">使用 JavaScript</h3>
+          <p>我们也可以用使用JavaScript来打开和关闭Popups ，因此我们需要看一下相关的App方法： </p>
+          <p><span class="method">myApp.popup(<span>popup</span>)</span> - 打开 Popup</span></p>
           <ul class="method-parameters">
-            <li><span class="parameter">popup</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Popup to open. Requred</li>
+            <li><span class="parameter">popup</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> ( CSS 选择器) 打开Popup . 必需</li>
           </ul>
-          <p><span class="method">myApp.closeModal(<span>popup</span>)</span> - close Popup</span></p>
+          <p><span class="method">myApp.closeModal(<span>popup</span>)</span> - 关闭 Popup</span></p>
           <ul class="method-parameters">
-            <li><span class="parameter">popup</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Popup/Modal will be closed</li>
+            <li><span class="parameter">popup</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> ( CSS 选择器). 可选. 如果没有特别指定，任何打开着的Popup/Modal 都将被关闭</li>
           </ul>
           <pre><code>&lt;body&gt;
   ...
@@ -247,36 +247,36 @@ $$('.open-about').on('click', function () {
 $$('.open-services').on('click', function () {
   myApp.popup('.popup-services');
 });          </code></pre>
-          <h2 data-device-preview="../docs-demos/popup-events.html">Popup Events</h2>
-          <p>Popup has the same events as Modals, they could be useful when you need to do something in JavaScript when Popup opened/closed</p>
+          <h2 data-device-preview="../docs-demos/popup-events.html">Popup 事件</h2>
+          <p>Popup 和 Modals有一样的事件, 他们在你打开/关闭Popup时，需要使用JavaScript做一些事情的时候，很有用。</p>
           <table class="events-table">
             <thead>
               <tr>
-                <th>Event</th>
-                <th>Target</th>
-                <th>Description</th>
+                <th>Event（事件）</th>
+                <th>Target（目标）</th>
+                <th>Description（描述）</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>open</td>
                 <td>Popup Element<span>&lt;div class="popup"&gt;</span></td>
-                <td>Event will be triggered when Popup starts its opening animation</td>
+                <td>当 Popup 开始打开动画时，事件将被触发。</td>
               </tr>
               <tr>
                 <td>opened</td>
                 <td>Popup Element<span>&lt;div class="popup"&gt;</span></td>
-                <td>Event will be triggered after Popup completes its opening animation</td>
+                <td>当 Popup 完成打开动画时，事件将被触发。</td>
               </tr>
               <tr>
                 <td>close</td>
                 <td>Popup Element<span>&lt;div class="popup"&gt;</span></td>
-                <td>Event will be triggered when Popup starts its closing animation</td>
+                <td>当 Popup 开始结束动画时，事件将被触发。</td>
               </tr>
               <tr>
                 <td>closed</td>
                 <td>Popup Element<span>&lt;div class="popup"&gt;</span></td>
-                <td>Event will be triggered after Popup completes its closing animation</td>
+                <td>当 Popup 完成结束动画后，事件将被触发。</td>
               </tr>
             </tbody>
           </table>
@@ -323,12 +323,12 @@ $$('.popup-services').on('open', function () {
 $$('.popup-services').on('closed', function () {
   console.log('Services Popup is closed')
 });          </code></pre>
-          <h2 data-device-preview="../docs-demos/popup-dynamic.html">Dynamic Popup</h2>
-          <p>Framework7 allows you to create Popup dynamically by passing its HTML to related App methods:</p>
-          <p><span class="method">myApp.popup(<span>popupHTML</span>, <span>removeOnClose</span>)</span> - open Popup</span></p>
+          <h2 data-device-preview="../docs-demos/popup-dynamic.html">动态的 Popup</h2>
+          <p>Framework7允许你通过HTML使用相关的App方法，动态地创建Popup:</p>
+          <p><span class="method">myApp.popup(<span>popupHTML</span>, <span>removeOnClose</span>)</span> - 打开 Popup</span></p>
           <ul class="method-parameters">
-            <li><span class="parameter">popupHTML</span> - <span class="parameter-type">string</span>. HTML string of popup content</li>
-            <li><span class="parameter">removeOnClose</span> - <span class="parameter-type">boolean</span>. Optional, by default - true. If true then Popup will be removed from DOM when closed</li>
+            <li><span class="parameter">popupHTML</span> - <span class="parameter-type">string</span>. popup的HTML字符串</li>
+            <li><span class="parameter">removeOnClose</span> - <span class="parameter-type">boolean</span>. 可选, 默认 - true. 如果是 true， 那么 Popup 在关闭时将从DOM中移除</li>
           </ul>
           <pre><code>&lt;body&gt;
   ...
