@@ -128,9 +128,11 @@
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
             <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
           </ul>
         </div>
@@ -141,7 +143,7 @@
             <p>You can also use action sheets to prompt the user to confirm a potentially dangerous action. </p>
             <p>The action sheet contains an optional title and one or more buttons, each of which corresponds to an action to take.</p>
             <div class="important-note">
-              <p>Note that is not recommended to use Action Sheet on large screens (iPad). On large screens you should use <a href="popover.html">Popover</a> instead.</p>
+              <p>Note that is not recommended to use Action Sheet on large screens (iPad). On large screens you should use <a href="popover.html">Popover</a> instead or <a href="#convert-action-sheet-to-popover">Action Sheet To Popover coversion</a>.</p>
             </div>
             <h2>Create and open Action Sheet</h2>
             <p>Action sheet is the dynamic element, it could be created and opened only using JavaScript. Let's look at the related App's method to create Action Sheet:</p>
@@ -340,6 +342,30 @@ $$('.ac-5').on('click', function () {
     myApp.actions(buttons);
 });   </code></pre>
           <div class="full-width stop-scroll-device">
+            <h2>Convert Action Sheet to Popover</h2>
+            <p>Because it is not recommended to use Popover on phones (iPhone) and not recommended to use Action Sheet on tablets (iPad) you can use extended Action Sheet syntax that will convert Action Sheet to Popover automatically on tablets:</p>
+            <p><span class="method">myApp.actions(<span>target</span>, <span>groups</span>)</span> - create and open Action Sheet (or Popover on tablets) with specified amount of buttons groups</span><br>or <br><span class="method">myApp.actions(<span>target</span>, <span>buttons</span>)</span> - create and open Action Sheet (or Popover on tablets) with one group and specified buttons</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">target</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of target element to set popover position around this element. Requred</li>
+              <li><span class="parameter">groups</span> - <span class="parameter-type">array</span>. Array of groups, each group contains array of buttons</li>
+              <li><span class="parameter">buttons</span> - <span class="parameter-type">array</span>. Array of buttons. In this case there will be one group</li>
+            </ul>
+            <pre><code>var myApp = new Framework7();
+ 
+var $$ = Dom7;
+ 
+$$('.something').on('click', function (e) {
+    var target = this;
+    var buttons = [
+        {
+            text: 'Button 1'
+        },
+        {
+            text: 'Button 2'
+        }
+    ];
+    myApp.actions(target, buttons);
+});</code></pre>
             <h2>Close Action Sheet</h2>
             <p>By default, Action sheet will be automatically closed when:</p>
             <ul>
@@ -384,6 +410,25 @@ $$('.ac-5').on('click', function () {
                 </tr>
               </tbody>
             </table>
+            <h2>Action Sheet Template</h2>
+            <p>If you want to customize Action Sheet template, you may customize it by passing <code>modalActionsTemplate</code> parameter on <a href="init-app.html">App initialization</a>. This parameter accepts <a href="template7.html">Template7</a> formatted HTML string that will be compiled by Template7 with passed <code>groups</code> context. </p>
+            <p>So the acceptable template could look like:</p>
+            <pre><code>&lt;!-- This template equalt to default layout --&gt;
+&lt;div class="actions-modal"&gt;
+  &lt;!-- this is a single group --&gt;
+  {{#each this}}
+    &lt;div class="actions-modal-group"&gt;
+      &lt;!-- now this represents a single button --&gt;
+      {{#each this}}
+          {{#if label}}
+            &lt;span class="actions-modal-label"&gt;{{text}}&lt;/span&gt;
+          {{else}}
+            &lt;div class="actions-modal-button {{#if color}}color-{{color}}{{/if}} {{#if bold}}actions-modal-button-bold{{/if}}"&gt;{{text}}&lt;/div&gt;
+          {{/if}}
+      {{/each}}
+    &lt;/div&gt;
+  {{/each}}
+&lt;/div&gt;            </code></pre>
           </div>
         </div>
       </div>

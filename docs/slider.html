@@ -128,9 +128,11 @@
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
             <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
           </ul>
         </div>
@@ -309,6 +311,18 @@
                   <td>Callback function, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.</td>
                 </tr>
                 <tr>
+                  <td>onTransitionStart(slider)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed in the beginning of transition. Receives slider instance as an argument.</td>
+                </tr>
+                <tr>
+                  <td>onTransitionEnd(slider)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed after transition. Receives slider instance as an argument.</td>
+                </tr>
+                <tr>
                   <td>onTouchStart(slider, event)</td>
                   <td>function</td>
                   <td></td>
@@ -466,8 +480,20 @@
                   <td>This method will recalculate number of slides and their offsets. Useful after you add/remove slides with JavaScript</td>
                 </tr>
                 <tr>
-                  <td>mySlider.updateSize();</td>
+                  <td>mySlider.updatePagination();</td>
                   <td>Recalculate slider and slides sizes. Useful after you change slider size with JavaScript</td>
+                </tr>
+                <tr>
+                  <td>mySlider.updateSize();</td>
+                  <td>Dynamically creates pagination bullets</td>
+                </tr>
+                <tr>
+                  <td>mySlider.updateClasses();</td>
+                  <td>Updates active/prev/next classes on slides and bullets</td>
+                </tr>
+                <tr>
+                  <td>mySlider.update();</td>
+                  <td>This method contains .updateSlides, .updatePagination, .updateSize, .updateClasses. Should be called after you add/remove slides dynamically</td>
                 </tr>
                 <tr>
                   <td>mySlider.detachEvents();</td>

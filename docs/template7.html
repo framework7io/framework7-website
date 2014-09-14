@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Template7 | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
+            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="template7.html">Template7</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+          </ul>
+        </div>
+        <div class="docs-content">
+          <h1>Template7</h1>
+          <p>Template7 is a mobile-first JavaScript template engine with <a href="http://handlebarsjs.com/" target="_blank">Handlebars</a>-like syntax. </p>
+          <p>It is ultra lightweight (around 1KB minified and gzipped) and blazing fast (up to 3 times faster than Handlebars in mobile Safari!) and it is already included in Framework7. So you don't need to include any additional scripts.</p>
+          <h2>Templates</h2>
+          <p>Template7 templates looks like Handlebars templates, it is like regular HTML but with embedded handlebars expressions:</p>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    {{#each items}}
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-inner"&gt;
+        &lt;div class="item-title"&gt;{{title}}&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+    {{/each}}
+  &lt;/ul&gt;
+&lt;/div&gt; </code></pre>
+          <h2>Expressions syntax</h2>
+          <p>Template7 support expressions with the following syntax:</p>
+          <h3>Variables:</h3>
+          <ul>
+            <li>
+              <p><code>{{title}}</code> - plain variable. Outputs "title" variable in current context</p>
+            </li>
+            <li>
+              <p><code>{{../title}}</code> - plain variable. Outputs "title" variable in parent context</p>
+            </li>
+            <li>
+              <p><code>{{../../title}}</code> - plain variable. Outputs "title" variable in parent context of parent context</p>
+            </li>
+            <li>
+              <p><code>{{this}}</code> - plain variable. Outputs variable equals to current context</p>
+            </li>
+            <li>
+              <p><code>{{person.name}}</code> - plain variable. Outputs variable equals to "name" property of "person" variable in current context</p>
+            </li>
+            <li>
+              <p><code>{{../person.name}}</code> - plain variable. The same but for parent context</p>
+            </li>
+          </ul>
+          <h3>Block expressions</h3>
+          <ul>
+            <li>
+              <p><code>{{#each}}</code> - begin of block expression</p>
+            </li>
+            <li>
+              <p><code>{{else}}</code> - begin of block inverse expression (where supported)</p>
+            </li>
+            <li>
+              <p><code>{{/each}}</code> - end of block expression</p>
+            </li>
+            <li>
+              <p><code>{{#each reverse="true"}}</code> - begin of block expression with passed <code>reverse:true</code> hash arguments</p>
+            </li>
+          </ul>
+          <h3>Helpers</h3>
+          <p>Helpers could be plain expressions and block expressions:</p>
+          <ul>
+            <li>
+              <p><code>{{join myArray delimeter=", "}}</code> - execute "join" helper and pass there "myArray" variable of current context and <code>delimeter:', '</code> hash argument</p>
+            </li>
+          </ul>
+          <h2>Compilation and Rendering</h2>
+          <p>Template7 is a globally available Window function.</p>
+          <p>First of all we need to deliver string template. For example, we can store in script tag:</p>
+          <pre><code class="html">&lt;script id="template" type="text/template"&gt;
+    &lt;p&gt;Hello, my name is {{firstName}} {{lastName}}&lt;/p&gt;
+&lt;/script&gt;</code></pre>
+          <p>Now we need to compile it in JavaScript. Template7 will convert our template string to plain JavaScript function:</p>
+          <pre><code>var template = $$('#template').html();
+ 
+// compile it with Template7
+var compiledTemplate = Template7.compile(template);
+ 
+// Now we may render our compiled template by passing required context
+var context = {
+    firstName: 'John',
+    lastName: 'Doe'
+};
+var html = compiledTemplate(context);</code></pre>
+          <p>Now, <code>html</code> variable will contain:</p>
+          <pre><code>&lt;p&gt;Hello, my name is John Doe&lt;/p&gt;</code></pre>
+          <h2>Built-In Helpers</h2>
+          <p>Helpers in Template7 are like predefined functions that do something with passed context.</p>
+          <h3>{{#each}}...{{else}}...{{/each}}</h3>
+          <p><code>{{#each}}</code> is a block expression, that iterates through items of passed Array or through properties of passed Object.</p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <td colspan="3">Iterate through Array items</td>
+              <tr>
+                <td>
+                  <pre><code>&lt;p&gt;Here are the list of people i know:&lt;/p&gt;
+&lt;ul&gt;
+  {{#each people}}
+  &lt;li&gt;{{firstName}} {{lastName}}&lt;/li&gt;
+  {{/each}}    
+&lt;/ul&gt;          </code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  people : [
+    {
+      firstName: 'John',
+      lastName: 'Doe'
+    },
+    {
+      firstName: 'Mark',
+      lastName: 'Johnson'
+    },
+  ]
+}      </code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Here are the list of people i know:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;John Doe&lt;/li&gt;
+  &lt;li&gt;Mark Johnson&lt;/li&gt;
+&lt;/ul&gt;    </code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code>&lt;p&gt;Here are the list of people i know:&lt;/p&gt;
+&lt;ul&gt;
+  {{#each people}}
+  &lt;li&gt;{{@index}}. {{this}}&lt;/li&gt;
+  {{/each}}    
+&lt;/ul&gt;          </code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  people : ['John Doe', 'Mark Johnson']
+}      </code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Here are the list of people i know:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;0. John Doe&lt;/li&gt;
+  &lt;li&gt;1. Mark Johnson&lt;/li&gt;
+&lt;/ul&gt;  </code></pre>
+                </td>
+              </tr>
+              <td colspan="3">Iterate through Object properties</td>
+              <tr>
+                <td>
+                  <pre><code>&lt;p&gt;Car properties:&lt;/p&gt;
+&lt;ul&gt;
+  {{#each props}}
+  &lt;li&gt;{{@key}}: {{this}}&lt;/li&gt;
+  {{/each}}
+&lt;/ul&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  props: {
+    power: '150 hp',
+    speed: '200 km/h',
+  }
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Car properties:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;power: 150 hp&lt;/li&gt;
+  &lt;li&gt;speed: 200 kn/h&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                </td>
+              </tr>
+              <td colspan="3">{{else}} expression.</td>
+              <tr>
+                <td>
+                  <pre><code>&lt;p&gt;Car properties:&lt;/p&gt;
+&lt;ul&gt;
+  {{#each props}}
+  &lt;li&gt;{{@key}}: {{this}}&lt;/li&gt;
+  {{else}}
+  &lt;li&gt;No properties&lt;/li&gt;
+  {{/each}}
+&lt;/ul&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  props: {
+    power: '150 hp',
+    speed: '200 km/h',
+  }
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Car properties:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;power: 150 hp&lt;/li&gt;
+  &lt;li&gt;speed: 200 kn/h&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code>&lt;p&gt;Car properties:&lt;/p&gt;
+&lt;ul&gt;
+  {{#each props}}
+  &lt;li&gt;{{@key}}: {{this}}&lt;/li&gt;
+  {{else}}
+  &lt;li&gt;No properties&lt;/li&gt;
+  {{/each}}
+&lt;/ul&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Car properties:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;No properties&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>{{#if}}...{{else}}...{{/if}}</h3>
+          <p>{{#if}} helper renders content if passed context is not "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper:</p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code>&lt;a href="#" {{#if active}}class="active"{{/if}}&gt;{{title}}&lt;/a&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  active: true,
+  title: 'Link',
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;a href="#" class="active"&gt;Link&lt;/a&gt;</code></pre>
+                </td>
+              </tr>
+              <td colspan="3">{{else}} expression.</td>
+              <tr>
+                <td>
+                  <pre><code>&lt;p&gt;Hello, my name is {{name}}.&lt;/p&gt;
+{{#if hobby}}
+&lt;p&gt;I have hobby&lt;/p&gt;
+{{else}}
+&lt;p&gt;I don't have hobby&lt;/p&gt;
+{{/if}}                  </code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  name: 'John Doen',
+  hobby: false
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Hello, my name is John Doe.&lt;/p&gt;
+&lt;p&gt;I don't have hobby&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>{{#unless}}...{{else}}...{{/unless}}</h3>
+          <p>{{#unless}} helper renders content if passed context is "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper:</p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code>&lt;a href="#" {{#unless active}}class="active"{{/unless}}&gt;{{title}}&lt;/a&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  active: true,
+  title: 'Link',
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;a href="#"&gt;Link&lt;/a&gt;</code></pre>
+                </td>
+              </tr>
+              <td colspan="3">{{else}} expression.</td>
+              <tr>
+                <td>
+                  <pre><code>&lt;p&gt;Hello, my name is {{name}}.&lt;/p&gt;
+{{#unless hobby}}
+&lt;p&gt;I have hobby&lt;/p&gt;
+{{else}}
+&lt;p&gt;I don't have hobby&lt;/p&gt;
+{{/unless}}                  </code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  name: 'John Doen',
+  hobby: false
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Hello, my name is John Doe.&lt;/p&gt;
+&lt;p&gt;I have hobby&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>{{#with}}...{{/with}}</h3>
+          <p>{{#with}} helper changes rendering context to the passed context:            </p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code>{{#with props}}
+&lt;p&gt;Car has {{power}} power and {{speed}} maximum speed&lt;/p&gt;
+{{/with}}</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  props: {
+    power: '150 hp',
+    speed: '200 km/h',
+  }
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Car has 150 hp power and 200 km/h maximum speed&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>{{#variableName}}...{{/variableName}}</h3>
+          <p>If you pass a block expression with helper name that is in the expression context, then it will work like {{#each}} helper for this context if it is an Array, and will work like {{#with}} helper if it is an Object:</p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code>&lt;ul&gt;
+  {{#people}}
+  &lt;li&gt;{{name}} - {{age}} years old&lt;/li&gt;
+  {{/people}}
+&lt;/ul&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  people: [
+    {
+      name: 'John Doe',
+      age: 18
+    },
+    {
+      name: 'Mark Johnson',
+      age: 21
+    }
+  ]  
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;ul&gt;
+  &lt;li&gt;John Doe - 18 years old&lt;/li&gt;
+  &lt;li&gt;Mark Johnson - 21 years old&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code>{{#props}}
+&lt;p&gt;Car has {{power}} power and {{speed}} maximum speed&lt;/p&gt;
+{{/props}}</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  props: {
+    power: '150 hp',
+    speed: '200 km/h',
+  }
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;Car has 150 hp power and 200 km/h maximum speed&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>{{join delimeter=""}}</h3>
+          <p>This plain helper will join Array items to single string with passed delimeter</p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code>&lt;h3&gt;"{{title}}" TV Show&lt;/h3&gt;
+&lt;p&gt;Was released in year {{year}}&lt;/p&gt;
+&lt;p&gt;Genres: {{join genres delimeter=", "}}&lt;/p&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  title: 'Friends',
+  year: 2001,
+  genres: ['comedy', 'drama']
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;h3&gt;"Friends" TV Show&lt;/h3&gt;
+&lt;p&gt;Was released in year 2001&lt;/p&gt;
+&lt;p&gt;Genres: comedy, drama&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Using Custom Helpers</h2>
+          <p>Template7 allows to register custom helpers with the following method:</p>
+          <div class="method-wrap">
+            <p><span class="method">Template7.registerHelper(<span>name</span>, <span>helper</span>) </span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">name - </span><span class="parameter-type">string</span> - helper name</li>
+              <li><span class="parameter">helper - </span><span class="parameter-type">function</span> - helper function to handle passed context</li>
+            </ul>
+          </div>
+          <p>Helper function could accepts as many arguments as required, arguments could be context, strings and hash data.</p>
+          <p>Let's look how to register helper on example of simple {{#if}} helper:</p>
+          <pre><code>Template7.registerHelper('if', function (condition, options) {
+  // "this" in function context is equal to the expression execution context
+  // "condition" argument contains passed context/condition
+  /*
+    @options contains object with the wollowing properties and methods:
+    "hash" - contains passed hash object with parameters
+    "fn" - method to pass helper block content further to compilier
+    "inverse" - method to pass helper block inverse ({{else}}) content further to compilier
+    "data" - contains additional expression data, like @index for arrays or @key for object
+  */
+ 
+  // First we need to check is the passed context is function
+  if (typeof condition === 'function') condition = condition.call(this);
+ 
+  // If context condition
+  if (condition) {
+    // We need to pass block content further to compilier with the same context and the same data:
+    options.fn(this, options.data);
+  }
+  else {
+    // We need to pass block inverse ({{else}}) content further to compilier with the same context and the same data:
+    options.inverse(this, options.data);
+  }
+}); </code></pre>
+          <p>Or on example of plain {{join}} helper:</p>
+          <pre><code>Template7.registerHelper('join', function (arr, options) {
+  // First we need to check is the passed arr argument is function
+  if (typeof arr === 'function') arr = arr.call(this);
+ 
+  /* 
+    Passed delimeter is in the options.hash object:
+    console.log(options.hash) -> {delimeter: ', '}
+  */
+ 
+  // And return joined array
+  return arr.join(options.hash.delimeter);
+});          </code></pre>
+          <p>Or we can create helper to create F7's list-block link to work with this syntax:</p>
+          <pre><code>{{link url title target="_blank"}}</code></pre>
+          <pre><code>Template7.registerHelper('link', function (url, title, options){
+  var ret = '&lt;li&gt;' +
+              '&lt;a href="' + url + '" class="item-content item-link" target="' + options.hash.target + '"&gt;' +
+                '&lt;div class="item-inner"&gt;' +
+                  '&lt;div class="item-title"&gt;' + title + '&lt;/div&gt;' +
+                '&lt;/div&gt;' +
+              '&lt;/a&gt;' +
+            '&lt;/li&gt;';
+  return ret;
+});</code></pre>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    {{#each links}}
+    {{link url title target="_blank"}}
+    {{/each}}    
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  links: [
+    {
+      url: 'http://google.com',
+      title: 'Google'
+    },
+    {
+      url: 'http://idangero.us',
+      title: 'iDangero.us'
+    },
+  ]
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="http://google.com" target="_blank" class="item-link item-content"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Google&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;a href="http://idangero.us" target="_blank" class="item-link item-content"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;iDangero.us&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table><br>
+          <div class="important-note">
+            <p>Note, that all custom helpers should be registered before you compile templates with these helpers!</p>
+          </div>
+          <h2>Performance Tips</h2>
+          <p>Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:</p>
+          <pre><code>// Initialize app
+var myApp = new Framework7();
+ 
+// Compile templates once on app load/init
+var searchTemplate = $('script#search-template').html();
+var compiledSearchTemplate = Template7.compile(searchTemplate);
+ 
+var listTemplate = $('script#list-template').html();
+var compiledListTemplate = Template7.compile(listTemplate);
+ 
+// That is all, now and further just execute compiled templates with required context
+myApp.onPageInit('search', function (page) {
+    // Just execute compiled search template with required content:
+    var html = compiledSearchTemplate({/*...some data...*/});
+ 
+    // Do something with html...
+});        </code></pre>
+          <h2>Using Template7 Outside</h2>
+          <p>Template7 could be used as a standalone library without Framework7. You will need to download it at <a href="https://github.com/nolimits4web/Template7" target="_blank">Template7 GitHub repo</a></p>
+          <p>Or install it using Bower:</p>
+          <pre><code>bower install template7</code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>

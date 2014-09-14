@@ -124,9 +124,11 @@
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
             <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
           </ul>
         </div>
@@ -225,22 +227,32 @@
           <p>Sometimes we may need to load new page or go back immediately, without animated page transition. For this case we may set "noAnimate" global View or App parameter. </p>
           <p>But if we need it in some particular case then we may just add addional "no-animation" class to link (or back link):</p>
           <pre><code>&lt;div class="page" data-page="about"&gt;
-  &lt;-- Add additional "no-anmation" class to link to disable animated page transition --&gt;
+  &lt;!-- Add additional "no-anmation" class to link to disable animated page transition --&gt;
   &lt;a href="about.html" class="no-animation"&gt; Load About page immediately &lt;/a&gt;
  
-  &lt;-- The same rule for back link --&gt;
+  &lt;!-- The same rule for back link --&gt;
   &lt;a href="index.html" class="back no-animation"&gt; Go back immediately &lt;/a&gt;
 &lt;/div&gt;</code></pre>
           <p>And if we disabled animation globally and need to enable it for particular case, we may enable it by adding "with-animation" class to link (or back link)</p>
           <pre><code>&lt;div class="page" data-page="about"&gt;
-  &lt;-- Add additional "with-anmation" class to link to enable animated page transition --&gt;
+  &lt;!-- Add additional "with-anmation" class to link to enable animated page transition --&gt;
   &lt;a href="about.html" class="with-animation"&gt; Load About page with animation &lt;/a&gt;
  
-  &lt;-- The same rule for back link --&gt;
+  &lt;!-- The same rule for back link --&gt;
   &lt;a href="index.html" class="back with-animation"&gt; Go back with animation &lt;/a&gt;
 &lt;/div&gt;</code></pre>
+          <h2>Load pages using additional navigation options</h2>
+          <p>And sometimes we may need to have more controls on navigation with links. We may use all available options from <a href="views.html#view-navigation-methods">View Navigation Methods</a> as <code>data-</code> attributes, for example:</p>
+          <pre><code>&lt;!-- Refresh currently active page (reload from server) --&gt;
+&lt;a href="about.html" data-reload="true" data-ignoreCache="true"&gt;Refresh page&lt;/a&gt;
+ 
+&lt;!-- Go back but to another page, not to page which is in history. Such method also allow to jump back in history: --&gt;
+&lt;a href="about.html" class="back" data-forceUrl="true"&gt;Back to About&lt;/a&gt;
+ 
+&lt;!-- Load new page without animation --&gt;
+&lt;a href="about.html" data-animatePages="false"&gt;&lt;/a&gt;          </code></pre>
           <h2>Load pages using JavaScript</h2>
-          <p>It is possible to load page from HTML files using JavaScript, not only using <code>&lt;a&gt;</code> tags. For this case we need to use <code>.loadPage(url)</code> <a href="views.html">View's</a> method:</p>
+          <p>It is possible to load page from HTML files using JavaScript, not only using <code>&lt;a&gt;</code> tags. For this case we need to use <code>.loadPage(url)</code> <a href="views.html#view-navigation-methods">View Navigation Methods</a>:</p>
           <pre><code>// Initialize App  
 var myApp = new Framework7();
         
@@ -251,7 +263,7 @@ var mainView = myApp.addView('.view-main')
 mainView.loadPage('about.html');</code></pre>
           <p>Note, that it is only possible for Views that were initialized</p>
           <h2>Going back using JavaScript</h2>
-          <p>You can also get the same as when you click "back" link but with JavaScript using <code>.goBack(url)</code> <a href="views.html">View's</a> method:</p>
+          <p>You can also get the same as when you click "back" link but with JavaScript using <code>.goBack(url)</code> <a href="views.html#view-navigation-methods">View Navigation Methods</a>:</p>
           <pre><code>// Initialize App  
 var myApp = new Framework7();
         

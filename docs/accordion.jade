@@ -164,7 +164,67 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           |   ...
-          | &lt;/div&gt;          
+          | &lt;/div&gt;  
+      
+      .full-width.stop-scroll-device
+        h2 Accordion JavaScript API
+        p Accordion also has JavaScript API that allows you to open and close them programmatically. Let's look on appropriate App's methods:
+        p
+          span.method myApp.accordionOpen(<span>item</span>)</span> - open specified accordion item
+        ul.method-parameters
+          li
+            span.parameter item
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of accordion-item (&lt;div class="accordion-item"&gt;). Required
 
+        p
+          span.method myApp.accordionClose(<span>item</span>)</span> - close specified accordion item
+        ul.method-parameters
+          li
+            span.parameter item
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of accordion-item (&lt;div class="accordion-item"&gt;). Required
 
-        
+        p
+          span.method myApp.accordionToggle(<span>item</span>)</span> - toggle specified accordion item
+        ul.method-parameters
+          li
+            span.parameter item
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of accordion-item (&lt;div class="accordion-item"&gt;). Required
+
+        h2 Accordion events
+        p Accordion list have the following events:
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td open
+              td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
+              td Event will be triggered when accordion content starts its opening animation
+            tr
+              td opened
+              td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
+              td Event will be triggered after accordion content completes its opening animation
+            tr
+              td close
+              td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
+              td Event will be triggered when accordion content starts its closing animation
+            tr
+              td closed
+              td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
+              td Event will be triggered after accordion content completes its closing animation 
+        pre
+          code
+            | var myApp = new Framework7();
+            | 
+            | var $$ = Dom7;
+            | 
+            | $$('.accordion-item').on('opened', function () {
+            |   myApp.alert('Accordion item opened');
+            | }); 
+            | 
+            | $$('.accordion-item').on('closed', function (e) {
+            |   myApp.alert('Accordion item closed');
+            | });                   

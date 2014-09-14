@@ -128,9 +128,11 @@
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
             <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
           </ul>
         </div>
@@ -622,6 +624,29 @@ $$('.open-tabs-modal').on('click', function () {
                 </tr>
               </tbody>
             </table>
+            <h2>Modal Template</h2>
+            <p>If you want to customize Modal template, you may customize it by passing <code>modalTemplate</code> parameter on <a href="init-app.html">App initialization</a>. This parameter accepts <a href="template7.html">Template7</a> formatted HTML string that will be compiled by Template7 with passed <code>groups</code> context. </p>
+            <p>So the acceptable template could look like:</p>
+            <pre><code>&lt;div class="modal {{#unless buttons}}modal-no-buttons{{/unless}}"&gt;
+  &lt;div class="modal-inner"&gt;
+    {{#if title}}
+      &lt;div class="modal-title"&gt;{{title}}&lt;/div&gt;
+    {{/if}}
+    {{#if text}}
+       &lt;div class="modal-text"&gt;{{text}}&lt;/div&gt;
+    {{/if}}
+    {{#if afterText}}
+      {{afterText}}
+    {{/if}}
+  &lt;/div&gt;
+  {{#if buttons}}
+    &lt;div class="modal-buttons"&gt;
+      {{#each buttons}}
+        &lt;span class="modal-button {{#if bold}}modal-button-bold{{/if}}"&gt;{{text}}&lt;/span&gt;
+      {{/each}}
+    &lt;/div&gt;
+  {{/if}}
+&lt;/div&gt;            </code></pre>
           </div>
         </div>
       </div>

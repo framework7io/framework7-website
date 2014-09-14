@@ -128,9 +128,11 @@
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
             <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
           </ul>
         </div>
@@ -285,7 +287,67 @@
     &lt;/div&gt;
   &lt;/div&gt;
   ...
-&lt;/div&gt;          </code></pre>
+&lt;/div&gt;  </code></pre>
+          <div class="full-width stop-scroll-device">
+            <h2>Accordion JavaScript API</h2>
+            <p>Accordion also has JavaScript API that allows you to open and close them programmatically. Let's look on appropriate App's methods:</p>
+            <p><span class="method">myApp.accordionOpen(<span>item</span>)</span> - open specified accordion item</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">item</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of accordion-item (&lt;div class="accordion-item"&gt;). Required</li>
+            </ul>
+            <p><span class="method">myApp.accordionClose(<span>item</span>)</span> - close specified accordion item</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">item</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of accordion-item (&lt;div class="accordion-item"&gt;). Required</li>
+            </ul>
+            <p><span class="method">myApp.accordionToggle(<span>item</span>)</span> - toggle specified accordion item</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">item</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of accordion-item (&lt;div class="accordion-item"&gt;). Required</li>
+            </ul>
+            <h2>Accordion events</h2>
+            <p>Accordion list have the following events:</p>
+            <table class="events-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Target</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>open</td>
+                  <td>Accordion item<span>&lt;div class="accordion-item"&gt;</span></td>
+                  <td>Event will be triggered when accordion content starts its opening animation</td>
+                </tr>
+                <tr>
+                  <td>opened</td>
+                  <td>Accordion item<span>&lt;div class="accordion-item"&gt;</span></td>
+                  <td>Event will be triggered after accordion content completes its opening animation</td>
+                </tr>
+                <tr>
+                  <td>close</td>
+                  <td>Accordion item<span>&lt;div class="accordion-item"&gt;</span></td>
+                  <td>Event will be triggered when accordion content starts its closing animation</td>
+                </tr>
+                <tr>
+                  <td>closed</td>
+                  <td>Accordion item<span>&lt;div class="accordion-item"&gt;</span></td>
+                  <td>Event will be triggered after accordion content completes its closing animation </td>
+                </tr>
+              </tbody>
+            </table>
+            <pre><code>var myApp = new Framework7();
+ 
+var $$ = Dom7;
+ 
+$$('.accordion-item').on('opened', function () {
+  myApp.alert('Accordion item opened');
+}); 
+ 
+$$('.accordion-item').on('closed', function (e) {
+  myApp.alert('Accordion item closed');
+});                   </code></pre>
+          </div>
         </div>
       </div>
     </div>

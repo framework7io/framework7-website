@@ -30,13 +30,17 @@ block content
             |           &lt;div class="item-inner"&gt;...&lt;/div&gt;
             |         &lt;/div&gt;
             |       &lt;/div&gt;
-            |       &lt;!-- Swipeout actions --&gt;
-            |       &lt;div class="swipeout-actions"&gt;
-            |         &lt;div class="swipeout-actions-inner"&gt;
-            |           &lt;!-- Swipeout actions links/buttons --&gt;
-            |           &lt;a href="#"&gt;Action 1&lt;/a&gt;
-            |           &lt;a href="#"&gt;Action 2&lt;/a&gt;
-            |         &lt;/div&gt;
+            |       &lt;!-- Swipeout actions left --&gt;
+            |       &lt;div class="swipeout-actions-left"&gt;
+            |         &lt;!-- Swipeout actions links/buttons --&gt;
+            |         &lt;a href="#"&gt;Action 1&lt;/a&gt;
+            |         &lt;a href="#"&gt;Action 2&lt;/a&gt;
+            |       &lt;/div&gt;
+            |       &lt;!-- Swipeout actions right --&gt;
+            |       &lt;div class="swipeout-actions-right"&gt;
+            |         &lt;!-- Swipeout actions links/buttons --&gt;
+            |         &lt;a href="#"&gt;Action 1&lt;/a&gt;
+            |         &lt;a href="#"&gt;Action 2&lt;/a&gt;
             |       &lt;/div&gt;
             |     &lt;/li&gt;
             |     ...
@@ -45,10 +49,10 @@ block content
         p Where:
         ul
           li <code>swipeout-content</code> - wrapper for your list element. This container will move during swipe over the list item
-          li <code>swipeout-actions</code> - required additional wrapper for your swipeout action buttons/links
-          li <code>swipeout-actions-inner</code> - container where you need to put buttons/links that will reveal during swipe over the list element
+          li <code>swipeout-actions-left</code> - container with left swipeout action buttons/links
+          li <code>swipeout-actions-inner</code> - container with right swipeout action buttons/links
         .important-note
-          p Note that <strong>swipeout-content</strong> and <strong>swipeout-actions</strong> should be direct children of <strong>&lt;li&gt;</strong>
+          p Note that <strong>swipeout-content</strong> and <strong>swipeout-actions-left/right</strong> should be direct children of <strong>&lt;li&gt;</strong>
         p If you have only "item-content" you can simplify layout by adding "item-content" class to "swipeout-content":
         pre
           code
@@ -57,11 +61,9 @@ block content
             |     &lt;div class="item-media"&gt;...&lt;/div&gt;
             |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
             |   &lt;/div&gt;
-            |   &lt;div class="swipeout-actions"&gt;
-            |     &lt;div class="swipeout-actions-inner"&gt;
-            |       &lt;a href="#"&gt;Action 1&lt;/a&gt;
-            |       &lt;a href="#"&gt;Action 2&lt;/a&gt;
-            |     &lt;/div&gt;
+            |   &lt;div class="swipeout-actions-right"&gt;
+            |     &lt;a href="#"&gt;Action 1&lt;/a&gt;
+            |     &lt;a href="#"&gt;Action 2&lt;/a&gt;
             |   &lt;/div&gt;
             | &lt;/li&gt;
         p If you use <a href="list-view.html#link-elements">link elements</a> you can use all these classes on link:
@@ -72,64 +74,99 @@ block content
             |     &lt;div class="item-media"&gt;...&lt;/div&gt;
             |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
             |   &lt;/a&gt;
-            |   &lt;div class="swipeout-actions"&gt;
-            |     &lt;div class="swipeout-actions-inner"&gt;
-            |       &lt;a href="#"&gt;Action 1&lt;/a&gt;
-            |       &lt;a href="#"&gt;Action 2&lt;/a&gt;
-            |     &lt;/div&gt;
+            |   &lt;div class="swipeout-actions-right"&gt;
+            |     &lt;a href="#"&gt;Action 1&lt;/a&gt;
+            |     &lt;a href="#"&gt;Action 2&lt;/a&gt;
             |   &lt;/div&gt;
             | &lt;/li&gt;
       h4(data-device-preview="../docs-demos/swipeout.html") Example
       pre
         code
+          | &lt;!-- On right side --&gt;
           | &lt;div class="list-block"&gt;
           |   &lt;ul&gt;
           |     &lt;li class="swipeout"&gt;
           |       &lt;div class="swipeout-content item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Item title&lt;/div&gt;
-          |           &lt;div class="item-after"&gt;Label&lt;/div&gt;
-          |         &lt;/div&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
           |       &lt;/div&gt;
-          |       &lt;div class="swipeout-actions"&gt;
-          |         &lt;div class="swipeout-actions-inner"&gt;
-          |           &lt;a href="#" class="action1"&gt;Action 1&lt;/a&gt;
-          |         &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-right"&gt;
+          |         &lt;a href="#" class="action1"&gt;Action 1&lt;/a&gt;
           |       &lt;/div&gt;
           |     &lt;/li&gt;
           |     &lt;li class="swipeout"&gt;
           |       &lt;div class="swipeout-content item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Item with badge&lt;/div&gt;
-          |           &lt;div class="item-after"&gt;&lt;span class="badge"&gt;5&lt;/span&gt;&lt;/div&gt;
-          |         &lt;/div&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
           |       &lt;/div&gt;
-          |       &lt;div class="swipeout-actions"&gt;
-          |         &lt;div class="swipeout-actions-inner"&gt;
-          |           &lt;a href="#" class="action1"&gt;Action 1&lt;/a&gt;
-          |           &lt;a href="#" class="action2"&gt;Action 2&lt;/a&gt;
-          |         &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-right"&gt;
+          |         &lt;a href="#" class="action1 bg-orange"&gt;Action 1&lt;/a&gt;
+          |         &lt;a href="#" class="action2"&gt;Action 2&lt;/a&gt;
           |       &lt;/div&gt;
           |     &lt;/li&gt;
-          |     &lt;li class="swipeout"&gt;
-          |       &lt;div class="swipeout-content item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Another item&lt;/div&gt;
-          |           &lt;div class="item-after"&gt;Another label&lt;/div&gt;
-          |         &lt;/div&gt;
-          |       &lt;/div&gt;
-          |       &lt;div class="swipeout-actions"&gt;
-          |         &lt;div class="swipeout-actions-inner"&gt;
-          |           &lt;a href="#" class="action1"&gt;Action 1&lt;/a&gt;
-          |           &lt;a href="#" class="action2"&gt;Action 2&lt;/a&gt;
-          |         &lt;/div&gt;
-          |       &lt;/div&gt;
-          |     &lt;/li&gt;
+          |     ...
           |   &lt;/ul&gt;
           | &lt;/div&gt;
+          | 
+          | &lt;!-- On left side --&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-left"&gt;
+          |         &lt;a href="#" class="action1"&gt;Action 1&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-left"&gt;
+          |         &lt;a href="#" class="action1 bg-orange"&gt;Action 1&lt;/a&gt;
+          |         &lt;a href="#" class="action2"&gt;Action 2&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+          | 
+          | &lt;!-- On both sides --&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-left"&gt;
+          |         &lt;a href="#" class="action1"&gt;Action L1&lt;/a&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-right"&gt;
+          |         &lt;a href="#" class="action1"&gt;Action R1&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-left"&gt;
+          |         &lt;a href="#" class="action1 bg-pink"&gt;Action L1&lt;/a&gt;
+          |         &lt;a href="#" class="action2 bg-lightblue"&gt;Action L2&lt;/a&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-right"&gt;
+          |         &lt;a href="#" class="action1 bg-orange"&gt;Action R1&lt;/a&gt;
+          |         &lt;a href="#" class="action2"&gt;Action R2&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+
       pre
         code
           | var myApp = new Framework7();
@@ -151,11 +188,9 @@ block content
           |     &lt;div class="item-media"&gt;...&lt;/div&gt;
           |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
           |   &lt;/div&gt;
-          |   &lt;div class="swipeout-actions"&gt;
-          |     &lt;div class="swipeout-actions-inner"&gt;
-          |       &lt;!-- Add this button and item will be deleted automatically --&gt;
-          |       &lt;a href="#" class="swipeout-delete"&gt;Delete&lt;/a&gt;
-          |     &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;!-- Add this button and item will be deleted automatically --&gt;
+          |     &lt;a href="#" class="swipeout-delete"&gt;Delete&lt;/a&gt;
           |   &lt;/div&gt;
           | &lt;/li&gt;
       p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add addition "data-confirm" and "data-confirm-title" (optional) attributes to Delete link:
@@ -166,13 +201,69 @@ block content
           |     &lt;div class="item-media"&gt;...&lt;/div&gt;
           |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
           |   &lt;/div&gt;
-          |   &lt;div class="swipeout-actions"&gt;
-          |     &lt;div class="swipeout-actions-inner"&gt;
-          |       &lt;!-- We add data-confirm and data-confirm-title attributes --&gt;
-          |       &lt;a href="#" class="swipeout-delete" data-confirm="Are you sure want to delete this item?" data-confirm-title="Delete?"&gt;Delete&lt;/a&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;!-- We add data-confirm and data-confirm-title attributes --&gt;
+          |     &lt;a href="#" class="swipeout-delete" data-confirm="Are you sure want to delete this item?" data-confirm-title="Delete?"&gt;Delete&lt;/a&gt;
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/li&gt;
+      h2(data-device-preview="../docs-demos/swipeout-overswipe.html") Overswipe
+      p Swipeouts also support "overswipe" actions that will be triggered automatically if you swipe actions too much. In this case we need to add <code>swipeout-overswipe</code> class to required actions button:
+      pre
+        code
+          | &lt;li class="swipeout"&gt;
+          |   &lt;div class="swipeout-content item-content"&gt;
+          |     &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;a href="#"&gt;More&lt;/a&gt;
+          |     &lt;a href="#" class="swipeout-delete swipeout-overswipe"&gt;Delete&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/li&gt;
+      .important-note
+        p <code>overswipe</code> could be used only on last button in right swipeout actions, and only on first button in left swipeout actions.
+        p With overswipe, script will automatically trigger "click" event on overswipe button, so you need to add appropriate event listener to this button
+      pre
+        code
+          | &lt;li class="swipeout"&gt;
+          |   &lt;div class="swipeout-content"&gt;
+          |     &lt;a href="#" class="item-content item-link"&gt;
+          |       &lt;div class="item-inner"&gt;
+          |         &lt;div class="item-title-row"&gt;
+          |           &lt;div class="item-title"&gt;Facebook&lt;/div&gt;
+          |           &lt;div class="item-after"&gt;17:14&lt;/div&gt;
+          |         &lt;/div&gt;
+          |         &lt;div class="item-subtitle"&gt;New messages from John Doe&lt;/div&gt;
+          |         &lt;div class="item-text"&gt;Lorem ipsum ...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/a&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-left"&gt;
+          |     &lt;a href="#" class="swipeout-overswipe bg-green reply"&gt;Reply&lt;/a&gt;
+          |     &lt;a href="#" class="bg-blue forward"&gt;Forward&lt;/a&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;a href="#" class="mark bg-orange"&gt;Mark&lt;/a&gt;
+          |     &lt;a href="#" class="swipeout-delete swipeout-overswipe"&gt;Delete&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/li&gt;
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.mark').on('click', function () {
+          |   myApp.alert('Mark');
+          | });
+          | $$('.reply').on('click', function () {
+          |   myApp.alert('Reply');
+          | });
+          | $$('.forward').on('click', function () {
+          |   myApp.alert('Forward');
+          | });          
       h2(data-device-preview="../docs-demos/swipeout-api.html") Swipeout JavaScript API
       p Swipeouts also has rich JavaScript API that allows you to control swipeout elements. Let's look on appropriate App's properties and methods:
       p

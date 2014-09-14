@@ -39,6 +39,7 @@ block content
             li <code>page-content</code> should have additional <code>pull-to-refresh-content</code> class. This is required to enable pull to refresh
             li <code>pull-to-refresh-layer</code> hidden layer with pull to refresh visual elements: preloader and arrow. 
         h2 Pull To Refresh sequence
+        p When user starts to pull <b>pull-to-refresh-content</b> down, then <b>pull-to-refresh-layer</b> will receive additional "<b>pull-down</b>" class.
         p When user pulls down <b>pull-to-refresh-content</b> on a distance more than 44px (when <b>pull-to-refresh-layer</b> will be fully visible), then <b>pull-to-refresh-layer</b> will receive additional "<b>pull-up</b>" class which changes arrow rotation to notify user about refresh action on release.
         p When user release pull to refresh content when it is in "pull-up" state, then <b>pull-to-refresh-layer</b> will receive additional "<b>refreshing</b>" class. In "refreshing" state arrow will be hidden and user will see preloader indicator. On this stage you probably need to do Ajax request and refresh page content.
         h2 Pull To Refresh event

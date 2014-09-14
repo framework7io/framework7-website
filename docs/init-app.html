@@ -124,9 +124,11 @@
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
             <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build</a></li>
+            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
           </ul>
         </div>
@@ -189,6 +191,24 @@
                 <td>Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script.</td>
               </tr>
               <tr>
+                <td>fastClicksDistanceThreshold</td>
+                <td>number</td>
+                <td>0</td>
+                <td>distance threshold (in px) to prevent short taps. So if tap/move distance is larget than this value then "click" will not be triggered</td>
+              </tr>
+              <tr>
+                <td>activeState</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>When enabled, app will add "active-state" class to currently touched (:active) element.</td>
+              </tr>
+              <tr>
+                <td>activeStateElemets</td>
+                <td>string</td>
+                <td>'a, button, label, span'</td>
+                <td>CSS selector of elements where <code>activeState</code> will add appropriate active class</td>
+              </tr>
+              <tr>
                 <th colspan="4">Navigation</th>
               </tr>
               <tr>
@@ -196,6 +216,12 @@
                 <td>string</td>
                 <td>undefined</td>
                 <td>By default (when this parameter is not specified) Framework7 will load all links (&lt;a&gt;) using Ajax. You can change this behavior by passing here CSS selector string for links that should be loaded with Ajax, like <code>"a.ajax"</code> - only all links with "ajax" class</td>
+              </tr>
+              <tr>
+                <td>uniqueHistory</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true and App will keep View's navigation history unique, it will also remove duplicated pages</td>
               </tr>
               <tr>
                 <td>externalLinks</td>
@@ -392,14 +418,14 @@
               <tr>
                 <td>modalTemplate</td>
                 <td>string</td>
-                <td>Look below*</td>
-                <td>Full HTML template for modals (like alert, confirm and prompt)</td>
+                <td>undefined</td>
+                <td>Full HTML <a href="template7.html">Template7</a> formatted HTML template for modals (like alert, confirm and prompt). Look at the example of <a href="modal.html#modal-template">Modal Template</a></td>
               </tr>
               <tr>
                 <td>modalActionsTemplate</td>
                 <td>string</td>
-                <td>'&lt;div class="actions-modal"&gt;{{buttons}}&lt;/div&gt;'</td>
-                <td>HTML template for Action Sheet. Could be useful if you want to add some custom elements to Action Sheet layout.</td>
+                <td>undefined</td>
+                <td><a href="template7.html">Template7</a> formatted HTML template for Action Sheet. Could be useful if you want to add some custom elements to Action Sheet layout. Look at the example of <a href="action-sheet.html#action-sheet-template">Action Sheet Template</a></td>
               </tr>
               <tr>
                 <td>modalUsernamePlaceholder</td>
@@ -591,15 +617,6 @@
               </tr>
             </tbody>
           </table>
-          <p>* <strong>modalTemplate</strong> parameter contains full HTML layout for modals (like alert, confirm and prompt):</p>
-          <pre><code>'&lt;div class="modal {{noButtons}}"&gt;' +
-    '&lt;div class="modal-inner"&gt;' +
-        '{{if title}}&lt;div class="modal-title"&gt;{{title}}&lt;/div&gt;{{/if title}}' +
-        '&lt;div class="modal-text"&gt;{{text}}&lt;/div&gt;' +
-        '{{afterText}}' +
-    '&lt;/div&gt;' +
-    '&lt;div class="modal-buttons"&gt;{{buttons}}&lt;/div&gt;' +
-'&lt;/div&gt;'</code></pre>
           <p>So your final initialization code in <code>my-app.js</code> could look like:</p>
           <pre><code>var myApp = new Framework7({
     // Default title for modals

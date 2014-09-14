@@ -10,7 +10,28 @@ block content
   
   .example
     .device.device-left.device-v
-      iframe(width="320", height="568", scrolling="no", frameborder="0", src="https://f7-chat.firebaseapp.com/")
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Framework7-Contacts7-MVC/")
+    .info
+      h2 React Base
+      .example-author by <a href="https://github.com/philipshurpik" target="_blank">Philip Shurpik</a>
+      p This app shows you example of using mobile Framework7 with React to build data-driven contacts application.
+      h4 App Features:
+      ul.app-features
+        li App uses <a href="http://requirejs.org/" target="_blank">RequireJS</a> to bring handy file-separated MVC structure 
+        li <a href="http://facebook.github.io/react/" target="_blank">React.js</a> to bring real-time data bindings.
+        li Contacts list is sorted by name and by groups dynamically.
+        li Local Storage - all contacts data is stored in Local Storage.
+      p.buttons 
+        a(href="./framework7-react-base/", target="_blank").button Open app in new window
+        a(href="https://github.com/philipshurpik/framework7-react-base", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      .device-inner
+        iframe(width="320", height="568", scrolling="no", frameborder="0", data-src="https://f7-chat.firebaseapp.com/")
+        .app-launcher
+          span Launch App
     .info
       h2 Chattr
       .example-author by <a href="https://github.com/kidGodzilla/" target="_blank">James Futhey</a>

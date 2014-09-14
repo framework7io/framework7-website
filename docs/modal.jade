@@ -577,5 +577,30 @@ block content
               td closed
               td Modal Element<span>&lt;div class="modal"&gt;</span>
               td Event will be triggered after Modal completes its closing animation
+        h2 Modal Template
+        p If you want to customize Modal template, you may customize it by passing <code>modalTemplate</code> parameter on <a href="init-app.html">App initialization</a>. This parameter accepts <a href="template7.html">Template7</a> formatted HTML string that will be compiled by Template7 with passed <code>groups</code> context. 
+        p So the acceptable template could look like:
+        pre
+          code
+            | &lt;div class="modal {{#unless buttons}}modal-no-buttons{{/unless}}"&gt;
+            |   &lt;div class="modal-inner"&gt;
+            |     {{#if title}}
+            |       &lt;div class="modal-title"&gt;{{title}}&lt;/div&gt;
+            |     {{/if}}
+            |     {{#if text}}
+            |        &lt;div class="modal-text"&gt;{{text}}&lt;/div&gt;
+            |     {{/if}}
+            |     {{#if afterText}}
+            |       {{afterText}}
+            |     {{/if}}
+            |   &lt;/div&gt;
+            |   {{#if buttons}}
+            |     &lt;div class="modal-buttons"&gt;
+            |       {{#each buttons}}
+            |         &lt;span class="modal-button {{#if bold}}modal-button-bold{{/if}}"&gt;{{text}}&lt;/span&gt;
+            |       {{/each}}
+            |     &lt;/div&gt;
+            |   {{/if}}
+            | &lt;/div&gt;            
 
 

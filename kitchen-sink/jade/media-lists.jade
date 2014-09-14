@@ -47,7 +47,7 @@
                   .item-after $16
                 .item-subtitle Michael Jackson
                 .item-text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.
-      .content-block-title Mail App (With "Swipe to delete")
+      .content-block-title Mail App (With Swipe to delete and overswipes)
       .list-block.media-list
         ul
           li.swipeout
@@ -59,10 +59,13 @@
                     .item-after 17:14
                   .item-subtitle New messages from John Doe
                   .item-text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.
-            .swipeout-actions
-              .swipeout-actions-inner
-                a(href="#").demo-actions More
-                a(href="#", data-confirm="Are you sure you want to delete this item?").swipeout-delete Delete
+            .swipeout-actions-left
+              a(href="#").bg-green.swipeout-overswipe.demo-reply Reply
+              a(href="#").demo-forward.bg-blue Forward
+            .swipeout-actions-right
+              a(href="#").demo-actions More
+              a(href="#").demo-mark.bg-orange Mark
+              a(href="#", data-confirm="Are you sure you want to delete this item?").swipeout-delete.swipeout-overswipe Delete
           li.swipeout
             .swipeout-content
               a(href="#").item-link.item-content
@@ -72,10 +75,13 @@
                     .item-after 17:11
                   .item-subtitle John Doe (@_johndoe) mentioned you on Twitter!
                   .item-text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.
-            .swipeout-actions
-              .swipeout-actions-inner
-                a(href="#").demo-actions More
-                a(href="#", data-confirm="Are you sure you want to delete this item?").swipeout-delete Delete
+            .swipeout-actions-left
+              a(href="#").bg-green.swipeout-overswipe.demo-reply Reply
+              a(href="#").demo-forward.bg-blue Forward
+            .swipeout-actions-right
+              a(href="#").demo-actions More
+              a(href="#").demo-mark.bg-orange Mark
+              a(href="#", data-confirm="Are you sure you want to delete this item?").swipeout-delete.swipeout-overswipe Delete
           li.swipeout
             .swipeout-content
               a(href="#").item-link.item-content
@@ -85,9 +91,13 @@
                     .item-after 16:48
                   .item-subtitle New messages from John Doe
                   .item-text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.
-            .swipeout-actions
-              .swipeout-actions-inner
-                a(href="#").demo-actions More
+            .swipeout-actions-left
+              a(href="#").bg-green.swipeout-overswipe.demo-reply Reply
+              a(href="#").demo-forward.bg-blue Forward
+            .swipeout-actions-right
+              a(href="#").demo-actions More
+              a(href="#").demo-mark.bg-orange Mark
+              a(href="#", data-confirm="Are you sure you want to delete this item?").swipeout-delete.swipeout-overswipe Delete
           li.swipeout
             .swipeout-content
               a(href="#").item-link.item-content
@@ -97,10 +107,13 @@
                     .item-after 15:32
                   .item-subtitle John Doe (@_johndoe) mentioned you on Twitter!
                   .item-text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.
-            .swipeout-actions
-              .swipeout-actions-inner
-                a(href="#").demo-actions More
-                a(href="#", data-confirm="Are you sure you want to delete this item?").swipeout-delete Delete
+            .swipeout-actions-left
+              a(href="#").bg-green.swipeout-overswipe.demo-reply Reply
+              a(href="#").demo-forward.bg-blue Forward
+            .swipeout-actions-right
+              a(href="#").demo-actions More
+              a(href="#").demo-mark.bg-orange Mark
+              a(href="#", data-confirm="Are you sure you want to delete this item?").swipeout-delete.swipeout-overswipe Delete
       .content-block-title Something more simple
       .list-block.media-list
         ul

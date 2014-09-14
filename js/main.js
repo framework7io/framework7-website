@@ -105,4 +105,10 @@
         e.preventDefault();
         $(this).parent().hide().parents('.app').find('.app-shots').show();
     });
+
+    $('.app-launcher span').click(function () {
+        var iframe = $(this).parents('.device').find('iframe');
+        iframe.attr('src', iframe.data('src'));
+        $(this).parents('.app-launcher').remove();
+    });
 })();

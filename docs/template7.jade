@@ -1,0 +1,608 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Template7 | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content
+      h1 Template7
+      p Template7 is a mobile-first JavaScript template engine with <a href="http://handlebarsjs.com/" target="_blank">Handlebars</a>-like syntax. 
+      p It is ultra lightweight (around 1KB minified and gzipped) and blazing fast (up to 3 times faster than Handlebars in mobile Safari!) and it is already included in Framework7. So you don't need to include any additional scripts.
+      h2 Templates
+      p Template7 templates looks like Handlebars templates, it is like regular HTML but with embedded handlebars expressions:
+      pre
+        code
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     {{#each items}}
+          |     &lt;li class="item-content"&gt;
+          |       &lt;div class="item-inner"&gt;
+          |         &lt;div class="item-title"&gt;{{title}}&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     {{/each}}
+          |   &lt;/ul&gt;
+          | &lt;/div&gt; 
+      h2 Expressions syntax
+      p Template7 support expressions with the following syntax:
+      h3 Variables:
+      ul
+        li 
+          p <code>{{title}}</code> - plain variable. Outputs "title" variable in current context
+        li 
+          p <code>{{../title}}</code> - plain variable. Outputs "title" variable in parent context
+        li 
+          p <code>{{../../title}}</code> - plain variable. Outputs "title" variable in parent context of parent context
+        li
+          p <code>{{this}}</code> - plain variable. Outputs variable equals to current context
+        li
+          p <code>{{person.name}}</code> - plain variable. Outputs variable equals to "name" property of "person" variable in current context
+        li
+          p <code>{{../person.name}}</code> - plain variable. The same but for parent context
+      h3 Block expressions
+      ul
+        li
+          p <code>{{#each}}</code> - begin of block expression
+        li
+          p <code>{{else}}</code> - begin of block inverse expression (where supported)
+        li
+          p <code>{{/each}}</code> - end of block expression
+        li
+          p <code>{{#each reverse="true"}}</code> - begin of block expression with passed <code>reverse:true</code> hash arguments
+
+      h3 Helpers
+      p Helpers could be plain expressions and block expressions:
+      ul
+        li
+          p <code>{{join myArray delimeter=", "}}</code> - execute "join" helper and pass there "myArray" variable of current context and <code>delimeter:', '</code> hash argument
+
+      h2 Compilation and Rendering
+      p Template7 is a globally available Window function.
+      p First of all we need to deliver string template. For example, we can store in script tag:
+      pre
+        code.html
+          | &lt;script id="template" type="text/template"&gt;
+          |     &lt;p&gt;Hello, my name is {{firstName}} {{lastName}}&lt;/p&gt;
+          | &lt;/script&gt;
+      p Now we need to compile it in JavaScript. Template7 will convert our template string to plain JavaScript function:
+      pre
+        code
+          | var template = $$('#template').html();
+          | 
+          | // compile it with Template7
+          | var compiledTemplate = Template7.compile(template);
+          | 
+          | // Now we may render our compiled template by passing required context
+          | var context = {
+          |     firstName: 'John',
+          |     lastName: 'Doe'
+          | };
+          | var html = compiledTemplate(context);
+      p Now, <code>html</code> variable will contain:
+      pre
+        code &lt;p&gt;Hello, my name is John Doe&lt;/p&gt;
+      
+      h2 Built-In Helpers
+      p Helpers in Template7 are like predefined functions that do something with passed context.
+      h3 {{#each}}...{{else}}...{{/each}}
+      p <code>{{#each}}</code> is a block expression, that iterates through items of passed Array or through properties of passed Object.
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          td(colspan="3") Iterate through Array items
+          tr
+            td
+              pre
+                code
+                  | &lt;p&gt;Here are the list of people i know:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   {{#each people}}
+                  |   &lt;li&gt;{{firstName}} {{lastName}}&lt;/li&gt;
+                  |   {{/each}}    
+                  | &lt;/ul&gt;          
+            td
+              pre
+                code
+                  | {
+                  |   people : [
+                  |     {
+                  |       firstName: 'John',
+                  |       lastName: 'Doe'
+                  |     },
+                  |     {
+                  |       firstName: 'Mark',
+                  |       lastName: 'Johnson'
+                  |     },
+                  |   ]
+                  | }      
+            td
+              pre
+                code
+                  | &lt;p&gt;Here are the list of people i know:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   &lt;li&gt;John Doe&lt;/li&gt;
+                  |   &lt;li&gt;Mark Johnson&lt;/li&gt;
+                  | &lt;/ul&gt;    
+          tr
+            td
+              pre
+                code
+                  | &lt;p&gt;Here are the list of people i know:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   {{#each people}}
+                  |   &lt;li&gt;{{@index}}. {{this}}&lt;/li&gt;
+                  |   {{/each}}    
+                  | &lt;/ul&gt;          
+            td
+              pre
+                code
+                  | {
+                  |   people : ['John Doe', 'Mark Johnson']
+                  | }      
+            td
+              pre
+                code
+                  | &lt;p&gt;Here are the list of people i know:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   &lt;li&gt;0. John Doe&lt;/li&gt;
+                  |   &lt;li&gt;1. Mark Johnson&lt;/li&gt;
+                  | &lt;/ul&gt;  
+          td(colspan="3") Iterate through Object properties
+          tr
+            td
+              pre
+                code
+                  | &lt;p&gt;Car properties:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   {{#each props}}
+                  |   &lt;li&gt;{{@key}}: {{this}}&lt;/li&gt;
+                  |   {{/each}}
+                  | &lt;/ul&gt;
+            td
+              pre
+                code
+                  | {
+                  |   props: {
+                  |     power: '150 hp',
+                  |     speed: '200 km/h',
+                  |   }
+                  | }
+            td
+              pre
+                code
+                  | &lt;p&gt;Car properties:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   &lt;li&gt;power: 150 hp&lt;/li&gt;
+                  |   &lt;li&gt;speed: 200 kn/h&lt;/li&gt;
+                  | &lt;/ul&gt;
+          td(colspan="3") {{else}} expression.
+          tr
+            td
+              pre
+                code
+                  | &lt;p&gt;Car properties:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   {{#each props}}
+                  |   &lt;li&gt;{{@key}}: {{this}}&lt;/li&gt;
+                  |   {{else}}
+                  |   &lt;li&gt;No properties&lt;/li&gt;
+                  |   {{/each}}
+                  | &lt;/ul&gt;
+            td
+              pre
+                code
+                  | {
+                  |   props: {
+                  |     power: '150 hp',
+                  |     speed: '200 km/h',
+                  |   }
+                  | }
+            td
+              pre
+                code
+                  | &lt;p&gt;Car properties:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   &lt;li&gt;power: 150 hp&lt;/li&gt;
+                  |   &lt;li&gt;speed: 200 kn/h&lt;/li&gt;
+                  | &lt;/ul&gt;
+          tr
+            td
+              pre
+                code
+                  | &lt;p&gt;Car properties:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   {{#each props}}
+                  |   &lt;li&gt;{{@key}}: {{this}}&lt;/li&gt;
+                  |   {{else}}
+                  |   &lt;li&gt;No properties&lt;/li&gt;
+                  |   {{/each}}
+                  | &lt;/ul&gt;
+            td
+              pre
+                code
+                  | {}
+            td
+              pre
+                code
+                  | &lt;p&gt;Car properties:&lt;/p&gt;
+                  | &lt;ul&gt;
+                  |   &lt;li&gt;No properties&lt;/li&gt;
+                  | &lt;/ul&gt;
+      h3 {{#if}}...{{else}}...{{/if}}
+      p {{#if}} helper renders content if passed context is not "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper:
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          tr
+            td
+              pre
+                code
+                  | &lt;a href="#" {{#if active}}class="active"{{/if}}&gt;{{title}}&lt;/a&gt;
+            td
+              pre
+                code
+                  | {
+                  |   active: true,
+                  |   title: 'Link',
+                  | }
+            td
+              pre
+                code
+                  | &lt;a href="#" class="active"&gt;Link&lt;/a&gt;
+          td(colspan="3") {{else}} expression.
+          tr
+            td
+              pre
+                code
+                  | &lt;p&gt;Hello, my name is {{name}}.&lt;/p&gt;
+                  | {{#if hobby}}
+                  | &lt;p&gt;I have hobby&lt;/p&gt;
+                  | {{else}}
+                  | &lt;p&gt;I don't have hobby&lt;/p&gt;
+                  | {{/if}}                  
+            td
+              pre
+                code
+                  | {
+                  |   name: 'John Doen',
+                  |   hobby: false
+                  | }
+            td
+              pre
+                code
+                  | &lt;p&gt;Hello, my name is John Doe.&lt;/p&gt;
+                  | &lt;p&gt;I don't have hobby&lt;/p&gt;
+      h3 {{#unless}}...{{else}}...{{/unless}}
+      p {{#unless}} helper renders content if passed context is "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper:
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          tr
+            td
+              pre
+                code
+                  | &lt;a href="#" {{#unless active}}class="active"{{/unless}}&gt;{{title}}&lt;/a&gt;
+            td
+              pre
+                code
+                  | {
+                  |   active: true,
+                  |   title: 'Link',
+                  | }
+            td
+              pre
+                code
+                  | &lt;a href="#"&gt;Link&lt;/a&gt;
+          td(colspan="3") {{else}} expression.
+          tr
+            td
+              pre
+                code
+                  | &lt;p&gt;Hello, my name is {{name}}.&lt;/p&gt;
+                  | {{#unless hobby}}
+                  | &lt;p&gt;I have hobby&lt;/p&gt;
+                  | {{else}}
+                  | &lt;p&gt;I don't have hobby&lt;/p&gt;
+                  | {{/unless}}                  
+            td
+              pre
+                code
+                  | {
+                  |   name: 'John Doen',
+                  |   hobby: false
+                  | }
+            td
+              pre
+                code
+                  | &lt;p&gt;Hello, my name is John Doe.&lt;/p&gt;
+                  | &lt;p&gt;I have hobby&lt;/p&gt;
+      h3 {{#with}}...{{/with}}
+      p {{#with}} helper changes rendering context to the passed context:            
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          tr
+            td
+              pre
+                code
+                  | {{#with props}}
+                  | &lt;p&gt;Car has {{power}} power and {{speed}} maximum speed&lt;/p&gt;
+                  | {{/with}}
+            td
+              pre
+                code
+                  | {
+                  |   props: {
+                  |     power: '150 hp',
+                  |     speed: '200 km/h',
+                  |   }
+                  | }
+            td
+              pre
+                code
+                  | &lt;p&gt;Car has 150 hp power and 200 km/h maximum speed&lt;/p&gt;
+      h3 {{#variableName}}...{{/variableName}}
+      p If you pass a block expression with helper name that is in the expression context, then it will work like {{#each}} helper for this context if it is an Array, and will work like {{#with}} helper if it is an Object:
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          tr
+            td
+              pre
+                code
+                  | &lt;ul&gt;
+                  |   {{#people}}
+                  |   &lt;li&gt;{{name}} - {{age}} years old&lt;/li&gt;
+                  |   {{/people}}
+                  | &lt;/ul&gt;
+            td
+              pre
+                code
+                  | {
+                  |   people: [
+                  |     {
+                  |       name: 'John Doe',
+                  |       age: 18
+                  |     },
+                  |     {
+                  |       name: 'Mark Johnson',
+                  |       age: 21
+                  |     }
+                  |   ]  
+                  | }
+            td
+              pre
+                code
+                  | &lt;ul&gt;
+                  |   &lt;li&gt;John Doe - 18 years old&lt;/li&gt;
+                  |   &lt;li&gt;Mark Johnson - 21 years old&lt;/li&gt;
+                  | &lt;/ul&gt;
+          tr
+            td
+              pre
+                code
+                  | {{#props}}
+                  | &lt;p&gt;Car has {{power}} power and {{speed}} maximum speed&lt;/p&gt;
+                  | {{/props}}
+            td
+              pre
+                code
+                  | {
+                  |   props: {
+                  |     power: '150 hp',
+                  |     speed: '200 km/h',
+                  |   }
+                  | }
+            td
+              pre
+                code
+                  | &lt;p&gt;Car has 150 hp power and 200 km/h maximum speed&lt;/p&gt;
+      h3 {{join delimeter=""}}
+      p This plain helper will join Array items to single string with passed delimeter
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          tr
+            td
+              pre
+                code
+                  | &lt;h3&gt;"{{title}}" TV Show&lt;/h3&gt;
+                  | &lt;p&gt;Was released in year {{year}}&lt;/p&gt;
+                  | &lt;p&gt;Genres: {{join genres delimeter=", "}}&lt;/p&gt;
+            td
+              pre
+                code
+                  | {
+                  |   title: 'Friends',
+                  |   year: 2001,
+                  |   genres: ['comedy', 'drama']
+                  | }
+            td
+              pre
+                code
+                  | &lt;h3&gt;"Friends" TV Show&lt;/h3&gt;
+                  | &lt;p&gt;Was released in year 2001&lt;/p&gt;
+                  | &lt;p&gt;Genres: comedy, drama&lt;/p&gt;
+      h2 Using Custom Helpers
+      p Template7 allows to register custom helpers with the following method:
+      .method-wrap
+        p
+          span.method Template7.registerHelper(<span>name</span>, <span>helper</span>) 
+        ul.method-parameters
+          li
+            span.parameter name - 
+            | <span class="parameter-type">string</span> - helper name
+          li
+            span.parameter helper - 
+            | <span class="parameter-type">function</span> - helper function to handle passed context
+      p Helper function could accepts as many arguments as required, arguments could be context, strings and hash data.
+      p Let's look how to register helper on example of simple {{#if}} helper:
+      pre
+        code
+          | Template7.registerHelper('if', function (condition, options) {
+          |   // "this" in function context is equal to the expression execution context
+          |   // "condition" argument contains passed context/condition
+          |   /*
+          |     @options contains object with the wollowing properties and methods:
+          |     "hash" - contains passed hash object with parameters
+          |     "fn" - method to pass helper block content further to compilier
+          |     "inverse" - method to pass helper block inverse ({{else}}) content further to compilier
+          |     "data" - contains additional expression data, like @index for arrays or @key for object
+          |   */
+          | 
+          |   // First we need to check is the passed context is function
+          |   if (typeof condition === 'function') condition = condition.call(this);
+          | 
+          |   // If context condition
+          |   if (condition) {
+          |     // We need to pass block content further to compilier with the same context and the same data:
+          |     options.fn(this, options.data);
+          |   }
+          |   else {
+          |     // We need to pass block inverse ({{else}}) content further to compilier with the same context and the same data:
+          |     options.inverse(this, options.data);
+          |   }
+          | }); 
+      p Or on example of plain {{join}} helper:
+      pre
+        code
+          | Template7.registerHelper('join', function (arr, options) {
+          |   // First we need to check is the passed arr argument is function
+          |   if (typeof arr === 'function') arr = arr.call(this);
+          | 
+          |   /* 
+          |     Passed delimeter is in the options.hash object:
+          |     console.log(options.hash) -> {delimeter: ', '}
+          |   */
+          | 
+          |   // And return joined array
+          |   return arr.join(options.hash.delimeter);
+          | });          
+      p Or we can create helper to create F7's list-block link to work with this syntax:
+      pre
+        code
+          | {{link url title target="_blank"}}
+      pre
+        code
+          | Template7.registerHelper('link', function (url, title, options){
+          |   var ret = '&lt;li&gt;' +
+          |               '&lt;a href="' + url + '" class="item-content item-link" target="' + options.hash.target + '"&gt;' +
+          |                 '&lt;div class="item-inner"&gt;' +
+          |                   '&lt;div class="item-title"&gt;' + title + '&lt;/div&gt;' +
+          |                 '&lt;/div&gt;' +
+          |               '&lt;/a&gt;' +
+          |             '&lt;/li&gt;';
+          |   return ret;
+          | });
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          tr
+            td
+              pre
+                code
+                  | &lt;div class="list-block"&gt;
+                  |   &lt;ul&gt;
+                  |     {{#each links}}
+                  |     {{link url title target="_blank"}}
+                  |     {{/each}}    
+                  |   &lt;/ul&gt;
+                  | &lt;/div&gt;
+            td
+              pre
+                code
+                  | {
+                  |   links: [
+                  |     {
+                  |       url: 'http://google.com',
+                  |       title: 'Google'
+                  |     },
+                  |     {
+                  |       url: 'http://idangero.us',
+                  |       title: 'iDangero.us'
+                  |     },
+                  |   ]
+                  | }
+            td
+              pre
+                code
+                  | &lt;div class="list-block"&gt;
+                  |   &lt;ul&gt;
+                  |     &lt;li&gt;
+                  |       &lt;a href="http://google.com" target="_blank" class="item-link item-content"&gt;
+                  |         &lt;div class="item-inner"&gt;
+                  |           &lt;div class="item-title"&gt;Google&lt;/div&gt;
+                  |         &lt;/div&gt;
+                  |       &lt;/a&gt;
+                  |     &lt;/li&gt;
+                  |     &lt;li&gt;
+                  |       &lt;a href="http://idangero.us" target="_blank" class="item-link item-content"&gt;
+                  |         &lt;div class="item-inner"&gt;
+                  |           &lt;div class="item-title"&gt;iDangero.us&lt;/div&gt;
+                  |         &lt;/div&gt;
+                  |       &lt;/a&gt;
+                  |     &lt;/li&gt;
+                  |   &lt;/ul&gt;
+                  | &lt;/div&gt;
+      br
+      .important-note
+        p Note, that all custom helpers should be registered before you compile templates with these helpers!
+      h2 Performance Tips
+      p Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:
+      pre
+        code
+          | // Initialize app
+          | var myApp = new Framework7();
+          | 
+          | // Compile templates once on app load/init
+          | var searchTemplate = $('script#search-template').html();
+          | var compiledSearchTemplate = Template7.compile(searchTemplate);
+          | 
+          | var listTemplate = $('script#list-template').html();
+          | var compiledListTemplate = Template7.compile(listTemplate);
+          | 
+          | // That is all, now and further just execute compiled templates with required context
+          | myApp.onPageInit('search', function (page) {
+          |     // Just execute compiled search template with required content:
+          |     var html = compiledSearchTemplate({/*...some data...*/});
+          | 
+          |     // Do something with html...
+          | });        
+      h2 Using Template7 Outside
+      p Template7 could be used as a standalone library without Framework7. You will need to download it at 
+        a(href="https://github.com/nolimits4web/Template7", target="_blank") Template7 GitHub repo
+      p Or install it using Bower:
+      pre
+        code bower install template7

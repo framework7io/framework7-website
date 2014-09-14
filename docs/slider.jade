@@ -170,6 +170,16 @@ block content
               td 
               td Callback function, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.
             tr
+              td onTransitionStart(slider)
+              td function
+              td 
+              td Callback function, will be executed in the beginning of transition. Receives slider instance as an argument.
+            tr
+              td onTransitionEnd(slider)
+              td function
+              td 
+              td Callback function, will be executed after transition. Receives slider instance as an argument.
+            tr
               td onTouchStart(slider, event)
               td function
               td 
@@ -298,8 +308,18 @@ block content
               td mySlider.updateSlides();
               td This method will recalculate number of slides and their offsets. Useful after you add/remove slides with JavaScript
             tr
-              td mySlider.updateSize();
+              td mySlider.updatePagination();
               td Recalculate slider and slides sizes. Useful after you change slider size with JavaScript
+            tr
+              td mySlider.updateSize();
+              td Dynamically creates pagination bullets
+            tr
+              td mySlider.updateClasses();
+              td Updates active/prev/next classes on slides and bullets
+
+            tr
+              td mySlider.update();
+              td This method contains .updateSlides, .updatePagination, .updateSize, .updateClasses. Should be called after you add/remove slides dynamically
             tr
               td mySlider.detachEvents();
               td Detach all events listeners

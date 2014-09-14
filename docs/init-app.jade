@@ -62,13 +62,32 @@ block content
             td true
             td Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script.
           tr
+            td fastClicksDistanceThreshold
+            td number
+            td 0
+            td distance threshold (in px) to prevent short taps. So if tap/move distance is larget than this value then "click" will not be triggered
+          tr
+            td activeState
+            td boolean
+            td true
+            td When enabled, app will add "active-state" class to currently touched (:active) element.
+          tr
+            td activeStateElemets
+            td string
+            td 'a, button, label, span'
+            td CSS selector of elements where <code>activeState</code> will add appropriate active class
+          tr
             th(colspan="4") Navigation
           tr
             td ajaxLinks
             td string
             td undefined
             td By default (when this parameter is not specified) Framework7 will load all links (&lt;a&gt;) using Ajax. You can change this behavior by passing here CSS selector string for links that should be loaded with Ajax, like <code>"a.ajax"</code> - only all links with "ajax" class
-          
+          tr
+            td uniqueHistory
+            td boolean
+            td false
+            td Set to true and App will keep View's navigation history unique, it will also remove duplicated pages
           tr
             td externalLinks
             td array
@@ -230,13 +249,13 @@ block content
           tr
             td modalTemplate
             td string
-            td Look below*
-            td Full HTML template for modals (like alert, confirm and prompt)
+            td undefined
+            td Full HTML <a href="template7.html">Template7</a> formatted HTML template for modals (like alert, confirm and prompt). Look at the example of <a href="modal.html#modal-template">Modal Template</a>
           tr
             td modalActionsTemplate
             td string
-            td '&lt;div class="actions-modal"&gt;{{buttons}}&lt;/div&gt;'
-            td HTML template for Action Sheet. Could be useful if you want to add some custom elements to Action Sheet layout.
+            td undefined
+            td <a href="template7.html">Template7</a> formatted HTML template for Action Sheet. Could be useful if you want to add some custom elements to Action Sheet layout. Look at the example of <a href="action-sheet.html#action-sheet-template">Action Sheet Template</a>
           tr
             td modalUsernamePlaceholder
             td string
@@ -392,20 +411,6 @@ block content
             td boolean
             td true
             td By default Framework7 will be initialized automatically when you call <code>new Framework7()</code>. If you want to prevent this behavior you can disable it with this option and then initialize it manually with <code>myApp.init()</code> when you need it.
-      p 
-        | * 
-        strong modalTemplate
-        |  parameter contains full HTML layout for modals (like alert, confirm and prompt):
-      pre
-        code
-          | '&lt;div class="modal {{noButtons}}"&gt;' +
-          |     '&lt;div class="modal-inner"&gt;' +
-          |         '{{if title}}&lt;div class="modal-title"&gt;{{title}}&lt;/div&gt;{{/if title}}' +
-          |         '&lt;div class="modal-text"&gt;{{text}}&lt;/div&gt;' +
-          |         '{{afterText}}' +
-          |     '&lt;/div&gt;' +
-          |     '&lt;div class="modal-buttons"&gt;{{buttons}}&lt;/div&gt;' +
-          | '&lt;/div&gt;'
       p So your final initialization code in <code>my-app.js</code> could look like:
       pre
         code
