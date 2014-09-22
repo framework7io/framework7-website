@@ -1,0 +1,39 @@
+{
+	"en": {
+		"updates": [
+			{
+				"version": "1.0.3",
+				"build": "1832",
+				"updateType": "production",
+				"description": "This update contains bug fixes and improvements.",
+				"content": "<ul style=\"padding-left: 26px\"> <li>Modern UI <ul style=\"padding-left: 25px\"> <li>Modern UI for an iOS 8-like look and feel</li> <li>Swipe To Delete Bugs</li> </ul> <li>Tips <ul style=\"padding-left: 25px\"> <li>iPad Support for Tips</li> <li>Various improvements</li> <li>NOTE: Content will be delivered in Version 1.0.3 Update 1</li> </ul> <li>Timed Theme <ul style=\"padding-left: 25px\"> <li>Schedule Options for Timed Theme</li> </ul> </li> <li>Settings <ul style=\"padding-left: 25px\"> <li>About Panel for detailed information about Bug Reporter⁷</li> </ul> </li> <li>Core <ul style=\"padding-left: 25px\"> <li>Update to Framework7 Release 0.9.5</li> <li>Completely rewritten JavaScript components</li> <li>Stylesheets are now built upon LESS architecture</li> </ul> </li> </ul>",
+				"instructions": "This update is recommended to all users of Bug Reporter⁷."
+			},
+			{
+				"version": "1.0.2",
+				"build": "1558",
+				"updateType": "production",
+				"description": "This update contains bug fixes and improvements.",
+				"content": "• Preparation for Localization Update (1.0.3)<br>• Preparation for Framework7 Update (0.9.5)<br>• Added OTA Software Update<br>• Added update progress screen<br>• Added section to view previously installed updates<br>• Added launch images for 3.5\" and 4\" devices<br>• Added schedule settings for Timed Theme<br>• Fixed the background image in Bugs view (image is temporary, will be replaced soon)<br>• Restructured HTML File layout and Settings menu",
+				"instructions": "This update is recommended to all users of Bug Reporter⁷."
+			},
+			{
+				"version": "1.0.1",
+				"build": "2341",
+				"updateType": "production",
+				"description": "This update contains bug fixes and improvements.",
+				"content": "• Fixed Deadlock after completing \"Tips\" section<br>• Restructured Bug information layout (Dates FTW!)<br>• Removed unnecessary code lines (still doesn't reduce size that much)<br>• Added option to remove all website data<br>• Background Image in Bug view (Open, Closed and Archived; only visible when no bugs are loaded",
+				"instructions": "This update is recommended to all users of Bug Reporter⁷."
+			},
+			{
+				"version": "1.0",
+				"build": "2213",
+				"updateType": "factory",
+				"description": "Initial Release of Bug Reporter⁷.",
+				"content": "This is the initial release of Bug Reporter⁷ that comes with every fresh installation.",
+				"instructions": "This update is recommended to all users of Bug Reporter⁷."
+			}
+		]
+	},
+	"de": {}
+}

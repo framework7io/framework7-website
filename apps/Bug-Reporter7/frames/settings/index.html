@@ -1,0 +1,107 @@
+<div class="navbar">
+	<div class="navbar-inner">
+		<div class="left sliding"><a href="#" class="back link"><i class="icon icon-back-blue icon-back"></i><span>Bug Reporter&#8311;</span></a></div>
+		<div class="center sliding">Settings</div>
+	</div>
+</div>
+<div class="pages navbar-through">
+	<div data-page="settings" class="page">
+		<div class="page-content">
+			<div class="content-block-title">General</div>
+			<div class="list-block tablet-inset">
+				<ul>
+					<li>
+						<a href="frames/settings/about/index.html" class="item-link">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title">About</div>
+								</div>
+							</div>
+						</a>
+					</li>
+					<li>
+						<a href="frames/settings/update/index.html" class="item-link">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title">Software Update</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="content-block-title">Design</div>
+			<div class="list-block tablet-inset">
+				<ul>
+					<li>
+						<a href="frames/settings/design/theme.html" class="item-link">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title">Theme</div>
+								</div>
+							</div>
+						</a>
+					</li>
+					<li>
+						<a href="frames/settings/design/tint.html" class="item-link">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title">Tint</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="list-block tablet-inset">
+				<form id="switch-ios8" class="store-data">
+					<ul>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" style="width: auto;">Modern UI</div>
+									<div class="item-input" style="width: auto;">
+										<label class="label-switch" data-colorable="yes" style="float: right;">
+											<input type="checkbox" name="switchiOS8" onchange="if($(this).is(':checked')){br7.params.modern.enabled=true;br7.applyModernMode();}else{br7.removeModernMode()}" />
+											<div class="checkbox"></div>
+										</label>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="disabled" id="switchSwipeout">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" style="width: auto;">Swipe To Delete</div>
+									<div class="item-input" style="width: auto;">
+										<label class="label-switch" data-colorable="yes" style="float: right;">
+											<input type="checkbox" name="switchSwipeout" onchange="if($(this).is(':checked')){br7.params.modern.swipeToDelete=true}else{br7.params.modern.swipeToDelete=false}" />
+											<div class="checkbox"></div>
+										</label>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</form>
+			</div>
+			<div class="content-block">
+				<p>Modern UI allows the user to apply certain UI aspects found in iOS 8, like Compose View and Swipe to Delete in Mail, to Bug Reporter&#8311;.</p>
+			</div>
+
+			<div class="list-block tablet-inset">
+				<ul class="center ">
+					<li>
+						<a href="#" class="reset-local-storage">
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title" style="width: 100%; color: #ff3b30;">Remove All Website Data</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

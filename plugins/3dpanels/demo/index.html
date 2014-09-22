@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>3D Panels</title>
+    <link rel="stylesheet" href="../../../dist/css/framework7.min.css">
+    <link rel="stylesheet" href="../dist/framework7.3dpanels.css">
+    <style>
+      body {
+        background: #074d55; 
+        background: -moz-radial-gradient(center, ellipse cover, #a7cfdf 0%, #23538a 100%); /* FF3.6+ */
+        background: -webkit-gradient(radial, right bottom, 0px, left top, 100%, color-stop(0%,#6967a5), color-stop(50%,#2075a1), color-stop(100%,#074d55));
+        background: -webkit-radial-gradient(right bottom, ellipse cover, #6967a5 0%, #2075a1 50%, #074d55 100%);
+        background: radial-gradient(ellipse at right bottom, #6967a5 0%, #2075a1 50%, #074d55 100%);
+        
+      }
+      .panel .page, .panel .pages, .panel {
+        background: none;
+      }
+      .panel .list-block ul {
+        background: none;
+        border:none;
+      }
+      .panel .list-block .item-link {
+        color:#fff;
+      }
+      .panel .list-block .item-link:active {
+        background: rgba(255,255,255,0.2);
+      }
+      .panel .list-block .item-inner {
+        border-bottom-color:rgba(255,255,255,0.2);
+      }
+      .panel .content-block, .panel .content-block-title {
+        color:#fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="statusbar-overlay"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel panel-left panel-reveal">
+      <div class="view">
+        <div class="pages">
+          <div class="page">
+            <div class="page-content">
+              <div class="list-block">
+                <ul>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 1</div>
+                      </div></a></li>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 2</div>
+                      </div></a></li>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 3</div>
+                      </div></a></li>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 4</div>
+                      </div></a></li>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 5</div>
+                      </div></a></li>
+                </ul>
+              </div>
+              <div class="content-block">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam neque tellus, dignissim quis turpis id, lacinia euismod ipsum. Pellentesque auctor laoreet velit, consectetur aliquam urna pharetra eget. Fusce hendrerit risus sit amet interdum mollis. Donec et consectetur arcu, non aliquet mauris.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-right panel-reveal">
+      <div class="view">
+        <div class="pages">
+          <div class="page">
+            <div class="page-content">
+              <div class="list-block">
+                <ul>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 1</div>
+                      </div></a></li>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 2</div>
+                      </div></a></li>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 3</div>
+                      </div></a></li>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 4</div>
+                      </div></a></li>
+                  <li><a href="#" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Link 5</div>
+                      </div></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="views">
+      <div class="view view-main">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="center sliding">3D Panels</div>
+            <div class="right"><a href="#" class="link icon-only open-panel"><i class="icon icon-bars-blue"></i></a></div>
+          </div>
+        </div>
+        <div class="pages navbar-through toolbar-through">
+          <div data-page="index" class="page">
+            <div class="page-content">
+              <div class="content-block-title">Framework7 3D Panels Plugins</div>
+              <div class="content-block">
+                <div class="content-block-inner">
+                  <p>This 3D Panels plugin convert your "reveal"-effect panels to great looking 3D panels which are also available as a swipe-panels (try left one).</p>
+                </div>
+              </div>
+              <div class="content-block">
+                <div class="row">
+                  <div class="col-50"><a href="#" data-panel="left" class="button open-panel">Left Panel</a></div>
+                  <div class="col-50"><a href="#" data-panel="right" class="button open-panel">Right Panel</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../../../dist/js/framework7.min.js"></script>
+    <script src="../dist/framework7.3dpanels.js"></script>
+    <script>
+      var myApp = new Framework7({swipePanel:'left'});
+      var mainView = myApp.addView('.view-main');
+    </script>
+  </body>
+</html>

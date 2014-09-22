@@ -1,0 +1,112 @@
+<div class="popup">
+	<div class="view view-popup navbar-fixed">
+		<div class="navbar">
+			<div class="navbar-inner">
+				<div class="left"><a href="#" class="link close-popup">Cancel</a></div>
+				<div class="center sliding">
+					{{#if state.isNew}}
+						New Contact
+					{{/if}}
+				</div>
+				<div class="right contact-save-link"><a href="#" class="link">Save</a></div>
+			</div>
+		</div>
+		<div class="page">
+			<div class="page-content contact-edit-form">
+				<div class="contact-header">
+					<div class="item-photo">
+						<img src="img/cats/{{model.picId}}.png">
+					</div>
+					<div class="list-block">
+						<ul>
+							<li>
+								<div class="item-content">
+									<div class="item-inner">
+										<div class="item-input">
+											<input id="firstName" type="text" placeholder="First" value="{{model.firstName}}">
+										</div>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="item-content">
+									<div class="item-inner">
+										<div class="item-input">
+											<input id="lastName" type="text" placeholder="Last" value="{{model.lastName}}">
+										</div>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="item-content">
+									<div class="item-inner">
+										<div class="item-input">
+											<input id="company" type="text" placeholder="Company" value="{{model.company}}">
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="contact-other list-block">
+					<ul>
+						<li>
+							<div class="item-content">
+								<div class="item-media"><i class="icon ion-ios7-telephone-outline"></i></div>
+								<div class="item-inner">
+									<div class="item-input">
+										<input id="phone" type="tel" placeholder="Phone" value="{{model.phone}}">
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content">
+								<div class="item-media"><i class="icon ion-ios7-email-outline"></i></div>
+								<div class="item-inner">
+									<div class="item-input">
+										<input id="email" type="email" placeholder="E-mail" value="{{model.email}}">
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content">
+								<div class="item-media"><i class="icon ion-ios7-world-outline"></i></div>
+								<div class="item-inner">
+									<div class="item-input">
+										<input id="city" type="text" placeholder="City" value="{{model.city}}">
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content">
+								<div class="item-media"><i class="icon ion-ios7-star-outline"></i></div>
+								<div class="item-inner">
+									<div class="item-title">Favorite</div>
+									<div class="item-after">
+										<label class="label-switch">
+											<input id="isFavorite" type="checkbox" {{#if model.isFavorite}}checked="on"{{/if}}">
+											<div class="checkbox"></div>
+										</label>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				{{#unless state.isNew}}
+					<div class="list-block">
+						<ul>
+							<li>
+								<a href="#" class="item-link list-button contact-delete-button">Delete contact</a>		
+							</li>
+						</ul>
+					</div>
+				{{/unless}}
+			</div>
+		</div>
+	</div>
+</div>

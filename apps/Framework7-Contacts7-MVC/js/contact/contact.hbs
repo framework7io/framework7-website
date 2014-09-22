@@ -1,0 +1,49 @@
+<div class="page-content">
+	<div class="contact-header">
+		<div class="item-photo">
+			<img src="img/cats/{{model.picId}}.png">
+		</div>
+		<div class="header-text">
+			{{#if model.isFavorite}}<i class="icon icon-favorite ion-ios7-star"></i>{{/if}}
+			<h3>{{model.firstName}} {{model.lastName}}</h3>
+			<p>{{model.company}}</p>
+		</div>
+	</div>
+	<div class="list-block">
+		<div class="list-group">
+			<ul>
+				{{#if model.phone}}
+					<li>
+						<a href="tel:{{model.phone}}" class="item-link item-content external">
+							<div class="item-media"><i class="icon ion-ios7-telephone-outline"></i></div>
+							<div class="item-inner">
+								<div class="item-title">{{model.phone}}</div>
+							</div>
+						</a>
+					</li>
+				{{/if}}
+				{{#if model.email}}
+					<li>
+						<a href="mailto:{{model.email}}" class="item-link item-content external">
+							<div class="item-media"><i class="icon ion-ios7-email-outline"></i></div>
+							<div class="item-inner">
+								<div class="item-title">{{model.email}}</div>
+							</div>
+						</a>
+					</li>
+				{{/if}}
+				{{#if model.city}}
+					<li class="item-content">
+						<div class="item-media"><i class="icon ion-ios7-world-outline"></i></div>
+						<div class="item-inner">
+							<div class="item-title">{{model.city}}</div>
+						</div>
+					</li>
+				{{/if}}
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+

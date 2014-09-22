@@ -173,6 +173,24 @@ header.inner-header .links-row .links {
   display: inline-block;
   margin: 0;
 }
+header.inner-header .langs {
+  position: absolute;
+  right: 40px;
+  top: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+}
+header.inner-header .langs a,
+header.inner-header .langs span {
+  margin: 0 2px;
+}
+header.inner-header .langs a {
+  color: #fff;
+  text-decoration: none;
+}
+header.inner-header .langs a:hover {
+  text-decoration: underline;
+}
 header .left {
   float: left;
   text-align: center;

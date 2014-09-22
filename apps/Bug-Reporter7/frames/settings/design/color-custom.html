@@ -1,0 +1,59 @@
+<div class="navbar">
+	<div class="navbar-inner">
+		<div class="left sliding"><a href="forms.html" class="back link"><i class="icon icon-back-blue"></i><span>Settings</span></a></div>
+		<div class="center sliding">Custom Tint Color</div>
+	</div>
+</div>
+<div class="pages navbar-through">
+	<div data-page="form-custom-tint" class="page">
+		<div class="page-content">
+			<div class="content-block tablet-inset">
+				<div class="content-block-inner">
+					<p id="tint-preview" class="center" style="color: #007aff">#007aff<br>rgb(0,122,255)</p>
+				</div>
+			</div>
+			<form id="tint-custom" class="store-data">
+				<div class="list-block tablet-inset">
+					<ul>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" id="label-tint-red" style="color: rgb(0,0,0)">Red</div>
+									<div class="item-input">
+										<div class="range-slider">
+											<input id="slider-tint-red" name="sliderTintRed" type="range" min="0" max="255" value="0" step="1" onchange="changeTintLabelColor('red',this.value)" oninput="changeTintLabelColor('red',this.value)">
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" id="label-tint-green" style="color: rgb(0,122,0)">Green</div>
+									<div class="item-input">
+										<div class="range-slider">
+											<input id="slider-tint-green" name="sliderTintGreen" type="range" min="0" max="255" value="122" step="1" onchange="changeTintLabelColor('green',this.value)" oninput="changeTintLabelColor('green',this.value)">
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" id="label-tint-blue" style="color: rgb(0,0,255)">Blue</div>
+									<div class="item-input">
+										<div class="range-slider">
+											<input id="slider-tint-blue" name="sliderTintBlue" type="range" min="0" max="255" value="255" step="1" onchange="changeTintLabelColor('blue',this.value)" oninput="changeTintLabelColor('blue',this.value)">
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,35 @@
+div.update-view {
+	z-index: 99999;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000;
+	
+	img {
+		position: absolute;
+		top: 50%; left: 50%;
+		width: 72px; height: 72px;
+		margin-top: -37px;
+		margin-left: -37px;
+	}
+	
+	div.progress-bar {
+		position: relative;
+		top: 50%;
+		margin: 0px auto;
+		margin-top: 85px;
+		width: 200px;
+		height: 5px;
+		background-color: #aeaeae;
+		border-radius: 5px;
+		
+		div.inner-progress {
+			height: 100%;
+			width: 0%;
+			background-color: #fff;
+			-webkit-transition: width .5s linear;
+			border-radius: 5px;
+		}
+	}
+}

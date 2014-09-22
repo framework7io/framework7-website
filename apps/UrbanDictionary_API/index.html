@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>UrbanDictionary</title>
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="css/framework7.min.css">
+	
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/my-app.css">
+	
+	<!-- Custom CSS -->  
+	<style>
+		.list-block .item-subtitle {
+			white-space: normal;
+		}
+		.list-block .item-text {
+			height: auto;
+		}
+		.item-example {
+			font-size: 15px;
+			white-space: normal;
+			border-left: 5px solid #eee;
+			padding: 0 0 0 15px;
+			margin-top: 10px;
+			margin: 10px 0 0 10px;
+		}
+	 </style>
+  </head>
+  <body>
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar-overlay"></div>
+    <!-- Views-->
+    <div class="views">
+      <!-- Your main view, should have "view-main" class-->
+      <div class="view view-main">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without left link-->
+            <div class="center sliding">Urban Dictionary API Demo</div>
+          </div>
+        </div>
+		  <a href="https://github.com/KLVN" class="external"><img style="position: absolute; top: 0; right: 0; border: 0;z-index:99999;width:100px" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+		  <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+		  <div class="pages navbar-through toolbar-through">
+			<!-- Page, data-page contains page name-->
+			<div data-page="index" class="page">
+				<!-- Scrollable page content-->
+				<div class="page-content pull-to-refresh-content">
+					<!-- Pull to Refresh -->
+					<div class="pull-to-refresh-layer">
+					  <div class="preloader"></div>
+					  <div class="pull-to-refresh-arrow"></div>
+					</div>
+				
+				<!-- Div for Result -->
+				<div id="content-wrap"></div>
+				
+				<!-- Template7 Template -->
+				<script id="random-template" type="text/template">
+					<div class="list-block media-list">
+						<ul>
+						{{#each list}}
+							<li>
+							  <a href="{{permalink}}" class="item-link item-content external" target="_blank">
+								<div class="item-inner">
+								  <div class="item-title-row">
+									<div class="item-title">"{{word}}"</div>
+									<div class="item-after">Up: {{thumbs_up}} | Down: {{thumbs_down}}</div>
+								  </div>
+								  <div class="item-text">by {{author}}</div>
+								  <div class="item-subtitle">{{definition}}</div>
+								  <div class="item-example">{{example}}</div>
+								</div>
+							  </a>
+							</li>
+						  {{/each}}
+						</ul>
+					</div>
+				  </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="js/framework7.min.js"></script>	  
+	<!-- Path to your app js-->
+    <script type="text/javascript" src="js/my-app.js"></script>
+  </body>
+</html>

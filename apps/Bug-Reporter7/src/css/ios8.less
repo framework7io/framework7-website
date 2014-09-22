@@ -1,0 +1,79 @@
+/* === iOS 8 specific section === */
+body.ios8 {
+	@media all and (max-width:767px) {
+		padding-top: 0 !important;
+		.views {
+			transition: transform: 400ms ease;
+			-webkit-transition: -webkit-transform 400ms ease;
+		}
+		.views.popup-compose {
+			transform: scale(0.90);
+			-webkit-transform: scale(0.90);
+		}
+		div.statusbar-overlay { display: none; }
+		.navbar { height: 64px; }
+		.navbar.fixed-size { height: 44px !important; }
+		.navbar .navbar-inner { padding-top: 20px; }
+		.navbar.fixed-size .navbar-inner { padding-top: 0; }
+		.navbar-through .page-content { padding-top: 64px; }
+		.popup.modal-in:not(.popup-getting-started) {
+			transform: translate3d(0,-20px,0);
+			-webkit-transform: translate3d(0,-20px,0);
+			height: 100%;
+		}
+		.popup.popup-submit.modal-in {
+			transform: translate3d(0,24px,0);
+			-webkit-transform: translate3d(0,24px,0);
+		}
+		.popup.popup-submit .page-content { padding-top: 44px; }
+		.popup:not(.popup-submit) .page { padding-top: 20px; }
+		.page[data-page="getting-started"], .page[data-page="getting-started-main"] {
+			background-color: #f9f9f9;
+		}
+	}
+	
+	.list-block {
+		.swipeout-actions { overflow: hidden; }
+		.swipeout-actions-inner {
+			a, a div {
+				min-width: 80px;
+				text-align: center;
+				padding: 0;
+				display: block;
+				box-align: stretch;
+				align-items: stretch;
+				-webkit-box-align: stretch;
+				-webkit-align-items: stretch;
+				-webkit-transition: -webkit-transform 300ms ease;
+			}
+			a div { -webkit-transition: -webkit-transform 300ms ease !important; }
+			a.no-transition {
+				transition: none;
+				-webkit-transition: none;
+			}
+			a.swipeout-open { -webkit-transform: translate3d(0,0,0) }
+			a::after, a div::after {
+				content: " ";
+				height: 100%;
+				width: 500%;
+				position: absolute;
+				top: 0;
+				left: 50%;
+				z-index: -1;
+			}
+			a.red::after, a.red div, a.red div::after { background-color: #ff3b30; }
+			a.orange::after, a.orange div, a.orange div::after { background-color: #ff8810; }
+			a.gray::after, a.gray div, a.gray div::after { background-color: #c0bfc5; }
+			a.blue::after, a.blue div, a.blue div::after { background-color: #007aff; }
+			a.transition-to-open {
+				-webkit-transition: -webkit-transform 300ms ease;
+				-webkit-transform: translate3d(0,0,0);
+			}
+		}
+	}
+	.login-screen, .popup.tablet-fullscreen {
+		height: 100%;
+		top: 0;
+	}
+}
+/* === iOS 8 specific section END === */

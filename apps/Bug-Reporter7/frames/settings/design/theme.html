@@ -1,0 +1,127 @@
+<div class="navbar">
+	<div class="navbar-inner">
+		<div class="left sliding"><a href="#" class="back link"><i class="icon icon-back-blue icon-back"></i><span>Settings</span></a></div>
+		<div class="center sliding">Theme</div>
+	</div>
+</div>
+<div class="pages navbar-through">
+	<div data-page="settings-theme" class="page">
+		<div class="page-content">
+			<form id="form-theme" class="store-data">
+				<div class="content-block-title">Theme</div>
+				<div class="list-block tablet-inset">
+					<ul id="themes">
+						<li style="background-color: #fff; color: #000; border: none !important;">
+							<label class="label-radio item-content">
+								<!-- Checked by default -->
+								<input type="radio" name="theme" value="white">
+								<div class="item-inner">
+									<div class="item-title">White</div>
+								</div>
+							</label>
+
+						<li style="background-color: #f7f7f8; color: #000; border: none !important;">
+							<label class="label-radio item-content">
+								<!-- Checked by default -->
+								<input type="radio" name="theme" value="default" checked>
+								<div class="item-inner">
+									<div class="item-title">Light</div>
+								</div>
+							</label>
+						</li>
+						<!--<li style="background-color: #338ad6; color: #fff; border: none !important;">
+							<label class="label-radio item-content">
+								<input type="radio" name="theme" value="Blue">
+								<div class="item-inner">
+									<div class="item-title">Blue</div>
+								</div>
+							</label>
+						</li>
+						<li style="background-color: #57585c; color: #fff; border: none !important;">
+							<label class="label-radio item-content">
+								<input type="radio" name="theme" value="Light Gray">
+								<div class="item-inner">
+									<div class="item-title">Light Gray</div>
+								</div>
+							</label>
+						</li>
+						<li style="background-color: #313235; color: #fff; border: none !important;">
+							<label class="label-radio item-content">
+								<input type="radio" name="theme" value="Dark Gray">
+								<div class="item-inner">
+									<div class="item-title">Dark Gray</div>
+								</div>
+							</label>
+						</li>-->
+						<li style="background-color: #1c1d1f; color: #fff; border: none !important;">
+							<label class="label-radio item-content">
+								<input type="radio" name="theme" value="dark">
+								<div class="item-inner">
+									<div class="item-title">Dark</div>
+								</div>
+							</label>
+						</li>
+					</ul>
+				</div>
+				<!--<div class="list-block tablet-inset">
+					<ul>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" style="width: auto;">Use Custom Theme</div>
+									<div class="item-input" style="width: auto;">
+										<label class="label-switch" style="float: right;">
+											<input type="checkbox" name="switch-custom-theme" />
+											<div class="checkbox"></div>
+										</label>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="frames/settings/theme-custom.html" class="item-link">
+								<div class="item-content">
+									<div class="item-inner">
+										<div class="item-title">Custom Theme</div>
+										<div class="item-after" id="theme-pre">#f7f7f8</div>
+									</div>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>-->
+				<div class="list-block tablet-inset">
+					<ul>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" style="width: auto;">Timed Theme</div>
+									<div class="item-input" style="width: auto;">
+										<label class="label-switch" data-colorable="yes" style="float: right;">
+											<input type="checkbox" name="switchTimedTheme" />
+											<div class="checkbox"></div>
+										</label>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li id="schedule" class="disabled">
+							<a href="#" class="item-link open-schedule">
+								<div class="item-content">
+									<div class="item-inner">
+										<div class="item-title label" style="font-size: 16px">From<br>To</div>
+										<div class="item-after color" style="font-size: 16px; max-height: none;">22:00<br>07:00</div>
+									</div>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+			<div class="content-block">
+				<p>Due to technical limitations, a theme change requires the app to be restarted so the changed status bar can be applied. Restarting is only required if the app is running in Standalone mode.</p>
+			</div>
+
+		</div>
+	</div>
+</div>

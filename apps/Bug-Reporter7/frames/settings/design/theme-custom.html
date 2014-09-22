@@ -1,0 +1,59 @@
+<div class="navbar">
+	<div class="navbar-inner">
+		<div class="left sliding"><a href="#" class="back link"><i class="icon icon-back-blue"></i><span>Settings</span></a></div>
+		<div class="center sliding">Custom theme</div>
+	</div>
+</div>
+<div class="pages navbar-through">
+	<div data-page="form-custom-theme" class="page">
+		<div class="page-content">
+			<div class="content-block tablet-inset">
+				<div class="content-block-inner" id="theme-preview" style="background-color: rgb(247,247,248)">
+					<p class="center">#f7f8f8<br>rgb(247,247,248)</p>
+				</div>
+			</div>
+			<form id="theme-custom" class="store-data">
+				<div class="list-block tablet-inset">
+					<ul>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" id="label-theme-red" style="color: rgb(0,0,0)">Red</div>
+									<div class="item-input">
+										<div class="range-slider">
+											<input id="slider-theme-red" name="sliderThemeRed" type="range" min="0" max="255" value="247" step="1" onchange="changeThemeLabelColor('red',this.value)" oninput="changeThemeLabelColor('red',this.value)">
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" id="label-theme-green" style="color: rgb(0,122,0)">Green</div>
+									<div class="item-input">
+										<div class="range-slider">
+											<input id="slider-theme-green" name="sliderThemeGreen" type="range" min="0" max="255" value="247" step="1" onchange="changeThemeLabelColor('green',this.value)" oninput="changeThemeLabelColor('green',this.value)">
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="item-content">
+								<div class="item-inner">
+									<div class="item-title label" id="label-theme-blue" style="color: rgb(0,0,255)">Blue</div>
+									<div class="item-input">
+										<div class="range-slider">
+											<input id="slider-theme-blue" name="sliderThemeBlue" type="range" min="0" max="255" value="248" step="1" onchange="changeThemeLabelColor('blue',this.value)" oninput="changeThemeLabelColor('blue',this.value)">
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
