@@ -25,7 +25,13 @@
         $('.docs-content').find('h2, h3').each(function () {
             var h = $(this);
             if (!h.attr('id')) {
-                var id = h.text().trim().replace(/\ /g, '-').replace(/\//g, '-').toLowerCase().replace(/\-&-/g,'-');
+                var id = h.text().trim()
+                .replace(/\ /g, '-')
+                .replace(/\//g, '-')
+                .replace(/"/g, '')
+                .replace(/'/g, '-')
+                .replace(/:/g, '')
+                .toLowerCase().replace(/\-&-/g,'-');
                 h.attr('id', id);
             }
             if (h.attr('id')) {

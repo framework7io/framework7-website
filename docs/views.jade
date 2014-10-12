@@ -87,7 +87,7 @@ block content
             td domCache
             td boolean
             td false
-            td If enabled then all previous pages in navigation chain will not removed from DOM when you navigate deeper and deeper. It could be useful, for example, if you have some Form from 5 steps (5 pages) and when you are on last 5th page you need access to form that was on 1st page.
+            td If enabled then all previous pages in navigation chain will not be removed from DOM when you navigate deeper and deeper. It could be useful, for example, if you have some Form from 5 steps (5 pages) and when you are on last 5th page you need access to form that was on 1st page.
           tr
             td linksView
             td string / HTMLElement
@@ -100,6 +100,11 @@ block content
             td boolean
             td 
             td Set to true and App will keep View's navigation history unique, it will also remove duplicated pages. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+          tr
+            td uniqueHistoryIgnoreGetParameters
+            td boolean
+            td false
+            td Use this parameter in addition to <code>uniqueHistory</code>. Set to true and App will ignore URL GET parameters when cheking its uniqueness. So the URLs like "page.html" and "page.html?id=3" will be treated as the same. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
           tr 
             td animatePages
             td boolean
@@ -186,15 +191,17 @@ block content
             td mainView.main
             td Returns true if this view is main view
           tr
+            td mainView.router
+            td Object with router methods
+          tr
             th(colspan="2") Methods
           tr
-            td.method mainView.loadPage(options)
-            td * Look "View Navigation Methods" below
+            td.method mainView.router.load(options)
+            td Read more about it in <a href="router-api.html">Router API</a>
 
           tr
-            td.method mainView.goBack(options)
-            td * Look "View Navigation Methods" below
-          
+            td.method mainView.router.back(options)
+            td Read more about it in <a href="router-api.html">Router API</a>
           tr
             td mainView.hideNavbar()
             td Hide navbar in this View
@@ -210,124 +217,7 @@ block content
           tr
             td mainView.destroy()
             td Destroy initialized View, detach swipe events, and disable navigation
-      h3 View Navigation Methods
-      .method-wrap
-        p
-          span.method mainView.loadPage(<span>options</span>) 
-          span - load required page to view.
-      .method-wrap
-        p
-          span.method mainView.goBack(<span>options</span>) 
-          span - This method will trigger reverse animation to the previous page, in other words - going back in View history
-      p Each of these methods accepts <code>options</code> object with the following properties:
-      table.params-table
-        thead
-          tr
-            th Parameter
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td url
-            td string
-            td 
-            td URL of the page to load
-          tr
-            td content
-            td string or HTMLElement or [jQuery/Zepto/DOM7 collection] or [array of HTMLElement]
-            td 
-            td Content of the page to load
-          tr
-            td forceUrl
-            td boolean
-            td 
-            td Optional. Only for <code>goBack</code> method. If set to <code>true</code> then it will ignore previos page in history and load specified one
-          tr
-            td ignoreCache
-            td boolean
-            td 
-            td Optional. If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
-          tr
-            td animatePages
-            td boolean
-            td 
-            td Optional. Allows to override the same View's parameter to enable/disable transition between pages for this case
-          tr
-            td reload
-            td boolean
-            td 
-            td Optional. If set to <code>true</code> then it will not load page as new page, and just replace currently active View's page with specified one. It will also modify View's history by replacing last history item
-          tr
-            td reloadPrevious
-            td boolean
-            td 
-            td Optional. Used in addition to <code>reload</code>. Will do the same as <code>reload</code> but for previous page.
-      .important-note
-        p Note, that you may use only <code>url</code> or <code>content</code> property, not both at the same time
-
-      h3 View Navigation Shortcuts Methods
-      h4 Methods to load new page:
-      .method-wrap
-        p
-          span.method mainView.loadPage(<span>url</span>) 
-          span - load required page to view. In other word will do the same if you click on some link with this URL
-        ul.method-parameters
-          li
-            span.parameter url
-            |  - URL of the page to load
-      .method-wrap
-        p
-          span.method mainView.loadContent(<span>content</span>) 
-          span - load dynamically generated content as a new usual page.
-        ul.method-parameters
-          li
-            span.parameter content
-            |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">[jQuery/Zepto/DOM7 collection]</span> or <span class="parameter-type">[array of HTMLElement]</span> - content to load as page
-      h4 Methods to reload currently active page:
-      .method-wrap
-        p
-          span.method mainView.reloadPage(<span>url</span>) 
-          span - reload required page to the currently active view's page. It will also modify View's history and replace last item in history with the specified url
-        ul.method-parameters
-          li
-            span.parameter url
-            |  - URL of the page to load
-      .method-wrap
-        p
-          span.method mainView.reloadContent(<span>content</span>) 
-          span - reload required content to the currently active view's page. It will also modify View's history and replace last item in history with the specified content
-        ul.method-parameters
-          li
-            span.parameter content
-            |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">[jQuery/Zepto/DOM7 collection]</span> or <span class="parameter-type">[array of HTMLElement]</span> - content to load as page
-      h4 Methods to reload previous View's page (if there are two pages in View's DOM):
-      .method-wrap
-        p
-          span.method mainView.reloadPreviousPage(<span>url</span>) 
-          span - reload required page to the previous view's page. It will also modify View's history and replace related item in history with the specified url
-        ul.method-parameters
-          li
-            span.parameter url
-            |  - URL of the page to load
-      .method-wrap
-        p
-          span.method mainView.reloadPreviousContent(<span>content</span>) 
-          span - reload required content to the previous view's page. It will also modify View's history and replace related item in history with the specified content
-        ul.method-parameters
-          li
-            span.parameter content
-            |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">[jQuery/Zepto/DOM7 collection]</span> or <span class="parameter-type">[array of HTMLElement]</span> - content to load as page
-      h4 Methods to refresh page:
-      .method-wrap
-        p
-          span.method mainView.refreshPage() 
-          span - refresh currently active view's page. In other words it is the same as .reloadPage with url parameter equal to currently active URL
-      .method-wrap
-        p
-          span.method mainView.refreshPreviousPage() 
-          span - refresh previous view's page. The same as .reloadPreviousPage with url parameter equal to previous View's URL
-
+      
       h2 View Events
       table.events-table
         thead

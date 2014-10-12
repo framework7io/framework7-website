@@ -10,7 +10,7 @@ block content
       include ../jade/_docs-menu
     .docs-content
       h1 Pages
-      p <strong>Pages</strong> - have the same meaning as when you think about web pages.
+      p Page in Framework7 has the same meaning as when you think about web pages.
       p Let's look at page' HTML structure:
       pre
         code
@@ -43,12 +43,11 @@ block content
           |   &lt;/div&gt;
           |   ...
           | &lt;/body&gt;
-      p <strong>Pages</strong> is a wrapper container for pages within single View. It is required because all pages transitions happen here.
+      p <code>&lt;div class="pages"&td;</code> is a wrapper container for pages within a single View. It is required because all page transitions happen here.
       p Few important notes
       ul
         li 
           p In main layout (index.html) each <strong>Page</strong> should be inside of <strong>Pages</strong> container (<code>&lt;div class="pages"&gt;</code>), which always should be a child of <strong>View</strong> (<code>&lt;div class="view"&gt;</code>).
-          p There could be only one Page within each View and Pages in main layout (index.html)  
 
       h3 data-page
       p As you may note each page has <code>data-page</code> attribute with unique page name. It is not required but very recommended to use it. 
@@ -75,6 +74,10 @@ block content
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered after Framework7 initialize required page's components and navbar
           tr
+            td pageReinit
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td This event will be triggered when cached page becomes visible. It is only applicaple for Inline Pages (DOM cached pages)
+          tr
             td pageBeforeAnimation
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered when everything initialized and page (and navbar) is ready to be animated
@@ -86,6 +89,15 @@ block content
             td pageBeforeRemove
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          tr
+            td pageBack
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered right before "back" transition. Difference with "pageBeforeAnimation" is that this event will be triggered for the "old" page - page that slides from center to right
+          tr
+            td pageAfterBack
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered right after "back" transition. Difference with "pageAfterAnimation" is that this event will be triggered for the "old" page - page that slides from center to right
+          
       p Let's see how we can use these events. There are two ways to add page events handler:
       pre
         code
@@ -101,7 +113,7 @@ block content
           | })          
       p As you may see it is pretty easy, but hey, how to determine which page is loaded in first option when we use only one handler? For this case we have cool Page Dage in event details:
       h3 Page Data
-      p One of the most convenient parts in "page events" and "page callbacks" is that they contains so called Page Data:
+      p One of the most convenient parts in "page events" and <a href="page-callbacks.html">page callbacks</a> is that they contains so called Page Data:
       pre
         code
           | // In page callbacks:
@@ -176,4 +188,4 @@ block content
           |     }
           | });
       h2 What's next
-      p Now we need to understand linking <a href="linking-pages.html">between pages</a> and <a href="linking-views.html">between views</a>. Also look at <a href="page-callbacks.html">Page Callbacks</a> to know how to use specific code for different pages without Page Events.
+      p Now we need to understand how the <a href="router-api.html">navigation between pages</a> works. Also look at <a href="page-callbacks.html">Page Callbacks</a> to know how to use specific code for different pages without Page Events.

@@ -9,7 +9,7 @@ var $$ = Dom7;
 // Add main view
 var mainView = myApp.addView('.view-main', {
     // Enable Dynamic Navbar for this view
-    dynamicNavbar: true
+    dynamicNavbar: true,
 });
 // Add another view, which is in right panel
 var rightView = myApp.addView('.view-right', {
@@ -281,6 +281,11 @@ var photoBrowserPopupDark = myApp.photoBrowser({
     theme: 'dark',
     type: 'popup'
 });
+var photoBrowserLazy = myApp.photoBrowser({
+    photos: photoBrowserPhotos,
+    lazyLoading: true,
+    theme: 'dark'
+});
 myApp.onPageInit('photo-browser', function (page) {
     $$('.ks-pb-standalone').on('click', function () {
         photoBrowserStandalone.open();
@@ -296,6 +301,9 @@ myApp.onPageInit('photo-browser', function (page) {
     });
     $$('.ks-pb-standalone-dark').on('click', function () {
         photoBrowserDark.open();
+    });
+    $$('.ks-pb-lazy').on('click', function () {
+        photoBrowserLazy.open();
     });
 });
 
@@ -414,7 +422,7 @@ $$('.panel-left, .panel-right').on('close', function () {
 /* ===== Generate Content Dynamically ===== */
 var dynamicPageIndex = 0;
 function createContentPage() {
-    mainView.loadContent(
+    mainView.router.loadContent(
         '<!-- Top Navbar-->' +
         '<div class="navbar">' +
         '  <div class="navbar-inner">' +

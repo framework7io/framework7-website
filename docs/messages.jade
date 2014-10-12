@@ -38,7 +38,7 @@ block content
             |       &lt;/div&gt;
             | 
             |       &lt;!-- Received message (by default - grey on left side) --&gt;
-            |       &lt;div class="message message-received"&gt;
+            |       &lt;div class="message message-with-avatar message-received"&gt;
             |         &lt;!-- Sender name --&gt;
             |         &lt;div class="message-name"&gt;Kate&lt;/div&gt;
             | 
@@ -53,15 +53,19 @@ block content
             |       &lt;div class="messages-date"&gt;Sunday, Feb 3 &lt;span&gt;11:58&lt;/span&gt;&lt;/div&gt;
             | 
             |       &lt;!-- Sent message with image --&gt;
-            |       &lt;div class="message message-sent"&gt;
+            |       &lt;div class="message message-pic message-sent"&gt;
             |         &lt;!-- Bubble with image --&gt;
             |         &lt;div class="message-text"&gt;&lt;img src="http://lorempixel.com/300/300/"&gt;&lt;/div&gt;
+            |         &lt;!-- Message label --&gt;
+            |         &lt;div class="message-label"&gt;Delivered 2 days ago&lt;/div&gt;
             |       &lt;/div&gt;
             |     &lt;/div&gt;
             |   &lt;/div&gt;
             | &lt;/div&gt;        
             | ...   
-        p Where:
+
+        p 
+          b Messages page layout:
         ul
           li
             p <code>"messages-content"</code> - required additional class for messages wrapper. Should be added to "page-content"
@@ -71,6 +75,9 @@ block content
             p <code>"messages-date"</code> - single date stamp container. Contains coversation date and time (in &lt;span&gt;)
           li
             p <code>"message"</code> - single message
+        p 
+          b Single message inner parts:
+        ul
           li
             p <code>"message-name"</code> - sender name
           li
@@ -78,24 +85,71 @@ block content
           li
             p <code>"message-avatar"</code> - sender avatar
           li
+            p <code>"message-label"</code> - text label below bubble
+        p 
+          b Additional classes for single message container:
+        ul
+          li
             p <code>"message-sent"</code> - additional class for single message which indicates that this message was sent by user. It stays on right side with green background color.
           li
             p <code>"message-received"</code> - additional class for single message which indicates that this message was received by user. It stays on left side with grey background color.
-          
-          
-        p Additional classes that will be added by JavaScript automatically:
-        ul
           li
             p <code>"message-pic"</code> - additional class for single message (received or sent) with &lt;img&gt; Such message shouldn't contain anything except image.
           li
+            p <code>"message-with-avatar"</code> - additional class for single message (received or sent) that contains avatar
+          li
+            p <code>"message-with-tail"</code> - additional class for single message (received or sent) to add bubble "tail"
+        p
+          b Additional available classes for single message
+        ul
+          li
+            p <code>"message-hide-name"</code> - additional class for single message (received or sent) to hide message name
+          li
+            p <code>"message-hide-avatar"</code> - additional class for single message (received or sent) to hide message avatar
+          li
+            p <code>"message-hide-label"</code> - additional class for single message (received or sent) to hide message label
+          li
             p <code>"message-last"</code> - additional class for single message (received or sent) to indicate last received or last sent message in current conversation by one sender. Such message' bubble will have "tail", avatar and larger bottom offset. 
           li
-            p <code>"message-first"</code> - additional class for single message (received or sent) to indicate first received or first sent message in current conversation by one sender. Such message' bubble will have also have visible sender name. 
-          li
-            p <code>"message-with-avatar"</code> - additional class for single message (received or sent) that contains avatar
+            p <code>"message-first"</code> - additional class for single message (received or sent) to indicate first received or first sent message in current conversation by one sender. Such message' bubble will also have visible sender name and hidden avatar. 
           
         .important-note
           p In such default layout - new messages will appear on bottom of the page. If you need to have new messages on top of the page you need to add additional "<b>new-messages-first</b>" class to &lt;div class="messages"&gt;
+
+        h2 Messages Auto Layout
+        p Framework7 may add all required additional classes (like "message-pic", "message-with-avatar", "message-with-tail", etc) to each message automatically. For this case we need to add <code>messages-auto-layout</code> class to <code>messages</code> container:
+        pre
+          code
+            | ...   
+            |   &lt;div class="page-content messages-content"&gt;
+            |     &lt;!-- Additional "messages-auto-layout" class--&gt;
+            |     &lt;div class="messages messages-auto-layout"&gt;
+            |       &lt;div class="messages-date"&gt;Sunday, Feb 9 &lt;span&gt;12:58&lt;/span&gt;&lt;/div&gt;
+            | 
+            |       &lt;div class="message message-sent"&gt;
+            |         &lt;div class="message-text"&gt;Hello&lt;/div&gt;
+            |       &lt;/div&gt;
+            | 
+            |       &lt;div class="message message-sent"&gt;
+            |         &lt;div class="message-text"&gt;How are you?&lt;/div&gt;
+            |       &lt;/div&gt;
+            | 
+            |       &lt;div class="message message-received"&gt;
+            |         &lt;div class="message-name"&gt;Kate&lt;/div&gt;
+            |         &lt;div class="message-text"&gt;I am fine, thanks&lt;/div&gt;
+            |         &lt;div style="background-image:url(http://lorempixel.com/output/people-q-c-100-100-9.jpg)" class="message-avatar"&gt;&lt;/div&gt;
+            |       &lt;/div&gt;
+            | 
+            |       &lt;div class="messages-date"&gt;Sunday, Feb 3 &lt;span&gt;11:58&lt;/span&gt;&lt;/div&gt;
+            | 
+            |       &lt;div class="message message-sent"&gt;
+            |         &lt;div class="message-text"&gt;&lt;img src="http://lorempixel.com/300/300/"&gt;&lt;/div&gt;
+            |         &lt;div class="message-label"&gt;Delivered 2 days ago&lt;/div&gt;
+            |       &lt;/div&gt;
+            |     &lt;/div&gt;
+            |   &lt;/div&gt;
+            | ...   
+        p That is all, Framework7 will add all required classes to these messages. You just need to keep "message-sent", "message-received" classes
         h2 Messages JavaScript API
         p There are few App's methods that we can use with Messages:
         .method-wrap
@@ -109,8 +163,8 @@ block content
 
         .method-wrap
           p
-            span.method myApp.updateMessagesAngles(<span>messagesContainer</span>) 
-            span - set "message-last" class along all messages bubbles in messagesContainer to add "tail" on required messages
+            span.method myApp.updateMessagesLayout(<span>messagesContainer</span>) 
+            span - does/updates "auto layout" which is set required classes to each message, like "message-last", "message-first", "message-with-tail", etc.
           ul.method-parameters
             li
               span.parameter messagesContainer
@@ -168,7 +222,7 @@ block content
         code
           | &lt;div class="page toolbar-fixed"&gt;
           |   &lt;div class="page-content messages-content"&gt;
-          |     &lt;div class="messages"&gt;
+          |     &lt;div class="messages messages-auto-layout"&gt;
           |       &lt;div class="messages-date"&gt;Sunday, Feb 9 &lt;span&gt;12:58&lt;/span&gt;&lt;/div&gt;
           |       &lt;div class="message message-sent"&gt;
           |         &lt;div class="message-text"&gt;Hello&lt;/div&gt;
@@ -187,6 +241,7 @@ block content
           |       &lt;/div&gt;
           |       &lt;div class="message message-sent message-pic"&gt;
           |         &lt;div class="message-text"&gt;&lt;img src="http://lorempixel.com/300/300/"&gt;&lt;/div&gt;
+          |         &lt;div class="message-label"&gt;Delivered&lt;/div&gt;
           |       &lt;/div&gt;
           |       &lt;div class="message message-received"&gt;
           |         &lt;div class="message-name"&gt;Kate&lt;/div&gt;

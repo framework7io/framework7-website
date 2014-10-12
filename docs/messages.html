@@ -70,8 +70,12 @@
             <li><a href="views.html">Views</a></li>
             <li><a href="pages.html">Pages</a></li>
             <li><a href="page-callbacks.html">Page Callbacks</a></li>
-            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
-            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
             <li class="title">Components</li>
             <li>Navbars & Toolbars
               <ul>
@@ -80,6 +84,7 @@
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
               </ul>
             </li>
             <li><a href="searchbar.html">Search Bar</a></li>
@@ -128,13 +133,16 @@
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Utilities</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build</a></li>
-            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
           </ul>
         </div>
         <div class="docs-content with-device">
@@ -162,7 +170,7 @@
       &lt;/div&gt;
  
       &lt;!-- Received message (by default - grey on left side) --&gt;
-      &lt;div class="message message-received"&gt;
+      &lt;div class="message message-with-avatar message-received"&gt;
         &lt;!-- Sender name --&gt;
         &lt;div class="message-name"&gt;Kate&lt;/div&gt;
  
@@ -177,15 +185,17 @@
       &lt;div class="messages-date"&gt;Sunday, Feb 3 &lt;span&gt;11:58&lt;/span&gt;&lt;/div&gt;
  
       &lt;!-- Sent message with image --&gt;
-      &lt;div class="message message-sent"&gt;
+      &lt;div class="message message-pic message-sent"&gt;
         &lt;!-- Bubble with image --&gt;
         &lt;div class="message-text"&gt;&lt;img src="http://lorempixel.com/300/300/"&gt;&lt;/div&gt;
+        &lt;!-- Message label --&gt;
+        &lt;div class="message-label"&gt;Delivered 2 days ago&lt;/div&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;        
 ...   </code></pre>
-            <p>Where:</p>
+            <p><b>Messages page layout:</b></p>
             <ul>
               <li>
                 <p><code>"messages-content"</code> - required additional class for messages wrapper. Should be added to "page-content"</p>
@@ -199,6 +209,9 @@
               <li>
                 <p><code>"message"</code> - single message</p>
               </li>
+            </ul>
+            <p><b>Single message inner parts:</b></p>
+            <ul>
               <li>
                 <p><code>"message-name"</code> - sender name</p>
               </li>
@@ -209,30 +222,80 @@
                 <p><code>"message-avatar"</code> - sender avatar</p>
               </li>
               <li>
+                <p><code>"message-label"</code> - text label below bubble</p>
+              </li>
+            </ul>
+            <p><b>Additional classes for single message container:</b></p>
+            <ul>
+              <li>
                 <p><code>"message-sent"</code> - additional class for single message which indicates that this message was sent by user. It stays on right side with green background color.</p>
               </li>
               <li>
                 <p><code>"message-received"</code> - additional class for single message which indicates that this message was received by user. It stays on left side with grey background color.</p>
               </li>
-            </ul>
-            <p>Additional classes that will be added by JavaScript automatically:</p>
-            <ul>
               <li>
                 <p><code>"message-pic"</code> - additional class for single message (received or sent) with &lt;img&gt; Such message shouldn't contain anything except image.</p>
+              </li>
+              <li>
+                <p><code>"message-with-avatar"</code> - additional class for single message (received or sent) that contains avatar</p>
+              </li>
+              <li>
+                <p><code>"message-with-tail"</code> - additional class for single message (received or sent) to add bubble "tail"</p>
+              </li>
+            </ul>
+            <p><b>Additional available classes for single message</b></p>
+            <ul>
+              <li>
+                <p><code>"message-hide-name"</code> - additional class for single message (received or sent) to hide message name</p>
+              </li>
+              <li>
+                <p><code>"message-hide-avatar"</code> - additional class for single message (received or sent) to hide message avatar</p>
+              </li>
+              <li>
+                <p><code>"message-hide-label"</code> - additional class for single message (received or sent) to hide message label</p>
               </li>
               <li>
                 <p><code>"message-last"</code> - additional class for single message (received or sent) to indicate last received or last sent message in current conversation by one sender. Such message' bubble will have "tail", avatar and larger bottom offset. </p>
               </li>
               <li>
-                <p><code>"message-first"</code> - additional class for single message (received or sent) to indicate first received or first sent message in current conversation by one sender. Such message' bubble will have also have visible sender name. </p>
-              </li>
-              <li>
-                <p><code>"message-with-avatar"</code> - additional class for single message (received or sent) that contains avatar</p>
+                <p><code>"message-first"</code> - additional class for single message (received or sent) to indicate first received or first sent message in current conversation by one sender. Such message' bubble will also have visible sender name and hidden avatar. </p>
               </li>
             </ul>
             <div class="important-note">
               <p>In such default layout - new messages will appear on bottom of the page. If you need to have new messages on top of the page you need to add additional "<b>new-messages-first</b>" class to &lt;div class="messages"&gt;</p>
             </div>
+            <h2>Messages Auto Layout</h2>
+            <p>Framework7 may add all required additional classes (like "message-pic", "message-with-avatar", "message-with-tail", etc) to each message automatically. For this case we need to add <code>messages-auto-layout</code> class to <code>messages</code> container:</p>
+            <pre><code>...   
+  &lt;div class="page-content messages-content"&gt;
+    &lt;!-- Additional "messages-auto-layout" class--&gt;
+    &lt;div class="messages messages-auto-layout"&gt;
+      &lt;div class="messages-date"&gt;Sunday, Feb 9 &lt;span&gt;12:58&lt;/span&gt;&lt;/div&gt;
+ 
+      &lt;div class="message message-sent"&gt;
+        &lt;div class="message-text"&gt;Hello&lt;/div&gt;
+      &lt;/div&gt;
+ 
+      &lt;div class="message message-sent"&gt;
+        &lt;div class="message-text"&gt;How are you?&lt;/div&gt;
+      &lt;/div&gt;
+ 
+      &lt;div class="message message-received"&gt;
+        &lt;div class="message-name"&gt;Kate&lt;/div&gt;
+        &lt;div class="message-text"&gt;I am fine, thanks&lt;/div&gt;
+        &lt;div style="background-image:url(http://lorempixel.com/output/people-q-c-100-100-9.jpg)" class="message-avatar"&gt;&lt;/div&gt;
+      &lt;/div&gt;
+ 
+      &lt;div class="messages-date"&gt;Sunday, Feb 3 &lt;span&gt;11:58&lt;/span&gt;&lt;/div&gt;
+ 
+      &lt;div class="message message-sent"&gt;
+        &lt;div class="message-text"&gt;&lt;img src="http://lorempixel.com/300/300/"&gt;&lt;/div&gt;
+        &lt;div class="message-label"&gt;Delivered 2 days ago&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+...   </code></pre>
+            <p>That is all, Framework7 will add all required classes to these messages. You just need to keep "message-sent", "message-received" classes</p>
             <h2>Messages JavaScript API</h2>
             <p>There are few App's methods that we can use with Messages:</p>
             <div class="method-wrap">
@@ -242,7 +305,7 @@
               </ul>
             </div>
             <div class="method-wrap">
-              <p><span class="method">myApp.updateMessagesAngles(<span>messagesContainer</span>) </span><span>- set "message-last" class along all messages bubbles in messagesContainer to add "tail" on required messages</span></p>
+              <p><span class="method">myApp.updateMessagesLayout(<span>messagesContainer</span>) </span><span>- does/updates "auto layout" which is set required classes to each message, like "message-last", "message-first", "message-with-tail", etc.</span></p>
               <ul class="method-parameters">
                 <li><span class="parameter">messagesContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - messages container (&lt;div class="messages"&gt;). Required</li>
               </ul>
@@ -306,7 +369,7 @@
           <h2 data-device-preview="../docs-demos/messages.html">Example</h2>
           <pre><code>&lt;div class="page toolbar-fixed"&gt;
   &lt;div class="page-content messages-content"&gt;
-    &lt;div class="messages"&gt;
+    &lt;div class="messages messages-auto-layout"&gt;
       &lt;div class="messages-date"&gt;Sunday, Feb 9 &lt;span&gt;12:58&lt;/span&gt;&lt;/div&gt;
       &lt;div class="message message-sent"&gt;
         &lt;div class="message-text"&gt;Hello&lt;/div&gt;
@@ -325,6 +388,7 @@
       &lt;/div&gt;
       &lt;div class="message message-sent message-pic"&gt;
         &lt;div class="message-text"&gt;&lt;img src="http://lorempixel.com/300/300/"&gt;&lt;/div&gt;
+        &lt;div class="message-label"&gt;Delivered&lt;/div&gt;
       &lt;/div&gt;
       &lt;div class="message message-received"&gt;
         &lt;div class="message-name"&gt;Kate&lt;/div&gt;

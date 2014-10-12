@@ -65,7 +65,7 @@ block content
       p First of all we need to deliver string template. For example, we can store in script tag:
       pre
         code.html
-          | &lt;script id="template" type="text/template"&gt;
+          | &lt;script id="template" type="text/template7"&gt;
           |     &lt;p&gt;Hello, my name is {{firstName}} {{lastName}}&lt;/p&gt;
           | &lt;/script&gt;
       p Now we need to compile it in JavaScript. Template7 will convert our template string to plain JavaScript function:
@@ -579,6 +579,15 @@ block content
       br
       .important-note
         p Note, that all custom helpers should be registered before you compile templates with these helpers!
+      h2 Remove Custom Helpers
+      p Template7 allows to remove custom helpers with the following method:
+      .method-wrap
+        p
+          span.method Template7.unregisterHelper(<span>name</span>) 
+        ul.method-parameters
+          li
+            span.parameter name - 
+            | <span class="parameter-type">string</span> - helper name
       h2 Performance Tips
       p Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:
       pre

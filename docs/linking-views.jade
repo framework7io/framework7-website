@@ -2,17 +2,17 @@ extends ../jade/_internal-template
 
 block vars
   - var activeLink = 'docs';
-  - var title = 'Linking between views in Framework7 | Framework7 Documentation';
+  - var title = 'Linking between views | Framework7 Documentation';
 
 block content
   .docs-wrap
     .docs-nav
       include ../jade/_docs-menu
     .docs-content
-      h1 Linking between views in Framework7
+      h1 Linking Between Views
       p Now let's look on more complex situation. 
       p So we have two initialized Views (Left view and Right view) with separated navigation. In this case all links in Left view will load pages in Left view, and all links in Right view will load pages in Right view. 
-      p But now we need that some of links in Left view load pages in Right view. It is called <strong>linking between views</strong>. We already know how to do that with JavaScript - using .loadPage and .goBack View's methods.
+      p But now we need that some of links in Left view load pages in Right view. It is called <strong>linking between views</strong>. We already know how to do that with JavaScript - using <code>.router.load()</code> and <code>.router.back()</code> View methods.
       p Framework7 allows to achieve this without JavaScript, all we need in this case is to add <code>data-view</code> attribute to link. This <code>data-view</code> attribute should contain CSS selector of required View:
       pre
         code

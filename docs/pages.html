@@ -66,8 +66,12 @@
             <li><a href="views.html">Views</a></li>
             <li><a href="pages.html">Pages</a></li>
             <li><a href="page-callbacks.html">Page Callbacks</a></li>
-            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
-            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
             <li class="title">Components</li>
             <li>Navbars & Toolbars
               <ul>
@@ -76,6 +80,7 @@
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
               </ul>
             </li>
             <li><a href="searchbar.html">Search Bar</a></li>
@@ -124,18 +129,21 @@
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Utilities</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build</a></li>
-            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
           </ul>
         </div>
         <div class="docs-content">
           <h1>Pages</h1>
-          <p><strong>Pages</strong> - have the same meaning as when you think about web pages.</p>
+          <p>Page in Framework7 has the same meaning as when you think about web pages.</p>
           <p>Let's look at page' HTML structure:</p>
           <pre><code>&lt;body&gt;
   ...
@@ -166,12 +174,11 @@
   &lt;/div&gt;
   ...
 &lt;/body&gt;</code></pre>
-          <p><strong>Pages</strong> is a wrapper container for pages within single View. It is required because all pages transitions happen here.</p>
+          <p><code>&lt;div class="pages"&td;</code> is a wrapper container for pages within a single View. It is required because all page transitions happen here.</p>
           <p>Few important notes</p>
           <ul>
             <li>
               <p>In main layout (index.html) each <strong>Page</strong> should be inside of <strong>Pages</strong> container (<code>&lt;div class="pages"&gt;</code>), which always should be a child of <strong>View</strong> (<code>&lt;div class="view"&gt;</code>).</p>
-              <p>There could be only one Page within each View and Pages in main layout (index.html)  </p>
             </li>
           </ul>
           <h3>data-page</h3>
@@ -201,6 +208,11 @@
                 <td>Event will be triggered after Framework7 initialize required page's components and navbar</td>
               </tr>
               <tr>
+                <td>pageReinit</td>
+                <td>Page Element<span>&lt;div class="page"&gt;</span></td>
+                <td>This event will be triggered when cached page becomes visible. It is only applicaple for Inline Pages (DOM cached pages)</td>
+              </tr>
+              <tr>
                 <td>pageBeforeAnimation</td>
                 <td>Page Element<span>&lt;div class="page"&gt;</span></td>
                 <td>Event will be triggered when everything initialized and page (and navbar) is ready to be animated</td>
@@ -214,6 +226,16 @@
                 <td>pageBeforeRemove</td>
                 <td>Page Element<span>&lt;div class="page"&gt;</span></td>
                 <td>Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory</td>
+              </tr>
+              <tr>
+                <td>pageBack</td>
+                <td>Page Element<span>&lt;div class="page"&gt;</span></td>
+                <td>Event will be triggered right before "back" transition. Difference with "pageBeforeAnimation" is that this event will be triggered for the "old" page - page that slides from center to right</td>
+              </tr>
+              <tr>
+                <td>pageAfterBack</td>
+                <td>Page Element<span>&lt;div class="page"&gt;</span></td>
+                <td>Event will be triggered right after "back" transition. Difference with "pageAfterAnimation" is that this event will be triggered for the "old" page - page that slides from center to right</td>
               </tr>
             </tbody>
           </table>
@@ -230,7 +252,7 @@ $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
 })          </code></pre>
           <p>As you may see it is pretty easy, but hey, how to determine which page is loaded in first option when we use only one handler? For this case we have cool Page Dage in event details:</p>
           <h3>Page Data</h3>
-          <p>One of the most convenient parts in "page events" and "page callbacks" is that they contains so called Page Data:</p>
+          <p>One of the most convenient parts in "page events" and <a href="page-callbacks.html">page callbacks</a> is that they contains so called Page Data:</p>
           <pre><code>// In page callbacks:
 myApp.onPageInit('about', function (page) {
   // "page" variable contains all required information about loaded and initialized page 
@@ -309,7 +331,7 @@ $$(document).on('pageInit', function (e) {
     }
 });</code></pre>
           <h2>What's next</h2>
-          <p>Now we need to understand linking <a href="linking-pages.html">between pages</a> and <a href="linking-views.html">between views</a>. Also look at <a href="page-callbacks.html">Page Callbacks</a> to know how to use specific code for different pages without Page Events.</p>
+          <p>Now we need to understand how the <a href="router-api.html">navigation between pages</a> works. Also look at <a href="page-callbacks.html">Page Callbacks</a> to know how to use specific code for different pages without Page Events.</p>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Navigation and linking between pages in Framework7 | Framework7 Documentation</title>
+    <title>Inline Pages | Framework7 Documentation</title>
     <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
     <link rel="stylesheet" href="../css/normalize.css">
     <link rel="stylesheet" href="../css/main.css">
@@ -66,8 +66,12 @@
             <li><a href="views.html">Views</a></li>
             <li><a href="pages.html">Pages</a></li>
             <li><a href="page-callbacks.html">Page Callbacks</a></li>
-            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
-            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
             <li class="title">Components</li>
             <li>Navbars & Toolbars
               <ul>
@@ -76,6 +80,7 @@
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
               </ul>
             </li>
             <li><a href="searchbar.html">Search Bar</a></li>
@@ -124,147 +129,160 @@
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Utilities</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build</a></li>
-            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
           </ul>
         </div>
         <div class="docs-content">
-          <h1>Navigation and linking between pages in Framework7</h1>
-          <p>Now, when we have our App structure with Views and Pages we need to understand how we can create new pages and how they should be loaded by Framework7.</p>
-          <p>Here is important rule that you should remember:</p>
-          <div class="important-note">
-            <p><b>By default Framework7 will load all links using Ajax</b>, except links with additional <b>external</b> class (<b>&lt;a href="somepage.html" class="external"></b>) and links with not correct <b>href</b> attribute (when it is <b>empty</b> or <b>#</b>).</p>
-            <p>This behavior could be changed by passing <b>ajaxLinks</b> parameter on <a href="init-app.html">App initialization</a></p>
-          </div>
-          <p>So it is seems to be simple and if we want to create link to page which is in <code>about.html</code> file we just need to write usual <code>&lt;a&gt;</code> tag:</p>
-          <pre><code>&lt;a href="about.html"&gt;Go to About page&lt;/a&gt;</code></pre>
-          <p>When we click on this link, Framework7 will send Ajax request to <code>about.html</code>, parse it, insert to DOM and run animated transition to this new page.</p>
-          <h2>Internal file structure with Page</h2>
-          <p>Because Framework7 has pretty smart parser we don't need full HTML layout (with HTML head, body, views, pages, etc.) in internal pages. Let's look on the structure of this internal <code>about.html</code> file:</p>
-          <pre><code>&lt;-- That is all we have in about.html file --&gt;
-&lt;div class="page" data-page="about"&gt;
-  ... About page content goes here
-&lt;/div&gt;</code></pre>
-          <p>The point is that Framework7's parser will try to find only <code>&lt;div class="page"&gt;</code> element in Ajax loaded page, so we don't need here full HTML layout, just the page. This is not restriction and of course, if you need here full HTML layout it will also work fine.</p>
-          <h2>Internal file structure with few Pages</h2>
-          <p>Here is a bit complex situation. For example, we have two (or more) <a href="views.html">initialized Views</a> with separate navigation. In our index file:</p>
-          <pre><code>&lt;body&gt;
-  ...
-  &lt;!-- Views --&gt;
-  &lt;div class="views"&gt;
-    &lt;!-- Left view --&gt;
-    &lt;div class="view view-main left-view"&gt;
-      &lt;!-- Navbar--&gt;
-      &lt;!-- Pages --&gt;
-        &lt;a href="about.html"&gt; About &lt;/a&gt;
-      &lt;!-- Toolbar--&gt;
-    &lt;/div&gt;
-    &lt;!-- Right view --&gt;
-    &lt;div class="view right-view"&gt;
-      &lt;!-- Navbar--&gt;
-      &lt;!-- Pages --&gt;
-        &lt;a href="about.html"&gt; About &lt;/a&gt;
-      &lt;!-- Toolbar--&gt;
-    &lt;/div&gt;          
-  &lt;/div&gt;
-  ...
-&lt;/body&gt;</code></pre>
-          <p>As you see we have two views here (Left view and Right view), and both views have link to <code>about.html</code> file. And of course, we need to have different content when we click in different views.</p>
-          <p>Let's look how <code>about.html</code> should look in this case:</p>
-          <pre><code>&lt;!-- Left view --&gt;
-&lt;div class="view view-main left-view"&gt;
-  &lt;div class="page" data-page="about-right"&gt;
-    ... This page will be loaded when you click about.html link from Left view ...
-  &lt;/div&gt;          
-&lt;/div&gt;
-&lt;!-- Right view --&gt;
-&lt;div class="view right-view"&gt;
-  &lt;div class="page" data-page="about-right"&gt;
-    ... This page will be loaded when you click about.html link from Right view ...
-  &lt;/div&gt;          
-&lt;/div&gt; </code></pre>
-          <p>The main point here is that page for speific View should be wrapped with <code>&lt;div class="view"&gt;</code> with the same classes as in main layout. It will help Framework7 to recognize which page is for which view.</p>
-          <h2>Internal file structure with Dynamic Navbar</h2>
-          <p>As you may see in <a href="navbar-toolbar-layouts.html">Nabvar & Toolbar layout types</a> dynamic navbar requires through-type layout. But in this layout type navbar is not inside of page. So here is where we need to put it in <code>about.html</code> file:</p>
-          <pre><code>&lt;div class="navbar"&gt;
-  ... Navbar content goes here
-&lt;/div&gt;
+          <h1>Inline Pages (DOM Cache)</h1>
+          <p>With this feature you may put all of your pages in DOM on app load, so you don't need to load any pages using Ajax or create them dynamically</p>
+          <h2>Enable Inline Pages</h2>
+          <p>By default, inline pages behavior is disabled. To enable it, we need to pass View's <code>domCache: true</code> parameter:</p>
+          <pre><code>var mainView = myApp.addView('.view-main', {
+    domCache: true //enable inline pages
+});</code></pre>
+          <h2>Inline Pages Structure</h2>
+          <p>As we said above, all of your pages could be already in DOM in index file on app load. So let's look at pages structure in index file:</p>
+          <pre><code>&lt;html&gt;
+  &lt;head&gt;...&lt;/head&gt;
+  &lt;body&gt;
+    ...
+    &lt;!-- Views --&gt;
+    &lt;div class="views"&gt;
+      &lt;!-- View --&gt;
+      &lt;div class="view view-main"&gt;
+        &lt;!-- Pages --&gt;
+        &lt;div class="pages"&gt;
+          &lt;!-- Home page --&gt;
+          &lt;div class="page" data-page="index"&gt;
+            &lt;div class="page-content"&gt;
+              &lt;p&gt;Home page&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
  
-&lt;div class="page" data-page="about"&gt;
-  ... About page content goes here
-&lt;/div&gt;</code></pre>
-          <p>The point is that we just need to put navbar with is content near with page. And if you need to have here fiew pages with different navbars, just wrap them both (page and navbar) with appropriate views like in previous example.</p>
-          <h2>Going back in navigation</h2>
-          <p>Ok, we already know how to load pages, but how can we get back to the previous page with reverse transition.</p>
-          <p>It is actually super easy, all we need is just to add <b>back</b> class to link. Here is the structure of <code>about.html</code> page with back link to home <code>index.html</code> page:</p>
-          <pre><code>&lt;div class="page" data-page="about"&gt;
-  &lt;-- Just add additional "back" class to link --&gt;
-  &lt;a href="index.html" class="back"&gt; Go back to home page &lt;/a&gt;
-&lt;/div&gt;</code></pre>
-          <p>Here are few important notes about <code>href</code> attribute in "back" links:</p>
+          &lt;!-- About page --&gt;
+          &lt;div class="page cached" data-page="about"&gt;
+            &lt;div class="page-content"&gt;
+              &lt;p&gt;About page&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+ 
+          &lt;!-- Services page --&gt;
+          &lt;div class="page cached" data-page="services"&gt;
+            &lt;div class="page-content"&gt;
+              &lt;p&gt;Services page&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+          <p>As you may see it is almost the same as in <a href="app-layout.html">usual app layout</a>, the only difference is that we already have all required pages and all additional pages have additional "cached" class</p>
+          <div class="important-note">
+            <p>All additional (not currently active) pages should have additional <b>cached</b> class</p>
+          </div>
+          <h2>Inline Pages Structure With Dynamic Navbar</h2>
+          <p>As you may see in <a href="navbar-toolbar-layouts.html">Nabvar & Toolbar layout</a> types dynamic navbar requires through-type layout. But in this layout type navbar is not inside of page. </p>
+          <p>So we also need put few navbar inners:</p>
+          <pre><code>&lt;html&gt;
+  &lt;head&gt;...&lt;/head&gt;
+  &lt;body&gt;
+    ...
+    &lt;!-- Views --&gt;
+    &lt;div class="views"&gt;
+      &lt;!-- View --&gt;
+      &lt;div class="view view-main"&gt;
+ 
+        &lt;!-- Navbar --&gt;
+        &lt;div class="navbar"&gt;
+          &lt;!-- Home page navbar --&gt;
+          &lt;div class="navbar-inner" data-page="index"&gt;
+            &lt;div class="center"&gt;Home&lt;/div&gt;
+          &lt;/div&gt;
+ 
+          &lt;!-- About page navbar --&gt;
+          &lt;div class="navbar-inner cached" data-page="about"&gt;
+            &lt;div class="center"&gt;About&lt;/div&gt;
+          &lt;/div&gt;
+ 
+          &lt;!-- Services page navbar --&gt;
+          &lt;div class="navbar-inner cached" data-page="services"&gt;
+            &lt;div class="center"&gt;Services&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+ 
+        &lt;!-- Pages --&gt;
+        &lt;div class="pages navbar-through"&gt;
+          &lt;!-- Home page --&gt;
+          &lt;div class="page" data-page="index"&gt;
+            &lt;div class="page-content"&gt;
+              &lt;p&gt;Home page&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+ 
+          &lt;!-- About page --&gt;
+          &lt;div class="page cached" data-page="about"&gt;
+            &lt;div class="page-content"&gt;
+              &lt;p&gt;About page&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+ 
+          &lt;!-- Services page --&gt;
+          &lt;div class="page cached" data-page="services"&gt;
+            &lt;div class="page-content"&gt;
+              &lt;p&gt;Services page&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;          </code></pre>
           <div class="important-note">
             <ul>
               <li>
-                <p>If there are pages in navigation history Framework7 will always <b>ignore url in "href"</b> attribute</p>
+                <p>All additional (not currently active) navbar-inner should have additional <b>cached</b> class</p>
               </li>
               <li>
-                <p>If there are no pages in navigation history (for example, when you have "back" link on first home page) Framework7 will load page from "href" attribute</p>
+                <p>When using Dynamic Navbar with Inline Pages, every related "navbar-inner" should have the same related <b>data-page</b> attribute</p>
               </li>
-              <p>This behavior can not be changed because user always expect to get previous page when he clicks on "back" link, not something else.</p>
             </ul>
           </div>
-          <p>As you see <code>href</code> attribute is not required for "back" link, but try to keep it there for fallback.</p>
-          <h2>Swipe back</h2>
-          <p>If you have enabled "swipeBackPage" <a href="init-app.html">App parameter</a> then you can also go to previous page by swiping from left to right from the left edge of the screen. But sometimes you may need to disable this behavior for some specific pages. In this case you may add additional <b>no-swipeback</b> class:</p>
-          <pre><code>&lt;div class="page no-swipeback"&gt;
-    ...
-&lt;/div&gt;             </code></pre>
-          <h2>Load pages / Go back with/out animation</h2>
-          <p>Sometimes we may need to load new page or go back immediately, without animated page transition. For this case we may set "noAnimate" global View or App parameter. </p>
-          <p>But if we need it in some particular case then we may just add addional "no-animation" class to link (or back link):</p>
+          <h2>Inline Page URL</h2>
+          <p>Now, when we have our App structure with Views and Inline Pages we need to understand how we can create links to load such inline pages.</p>
+          <p>Inline Page URL follows this rule: <code>&#35;{{pageName}}</code>, where {{pageName}} will be equal to loaded page name (data-page attribute)</p>
+          <p>So, if we want to load "about" page we may use the following link:</p>
+          <pre><code>&lt;a href="#about"&gt;Go to About page&lt;/a&gt;</code></pre>
+          <h2>Go back in navigation</h2>
+          <p>There are absolutely the same rules as for usual <a href="pages-ajax.html">Ajax Pages</a>, the only difference is the page URL. All we need is to add "back" class to link:</p>
           <pre><code>&lt;div class="page" data-page="about"&gt;
-  &lt;!-- Add additional "no-anmation" class to link to disable animated page transition --&gt;
-  &lt;a href="about.html" class="no-animation"&gt; Load About page immediately &lt;/a&gt;
- 
-  &lt;!-- The same rule for back link --&gt;
-  &lt;a href="index.html" class="back no-animation"&gt; Go back immediately &lt;/a&gt;
+  &lt;!-- Just add additional "back" class to link --&gt;
+  &lt;a href="#index" class="back"&gt; Go back to home page &lt;/a&gt;
 &lt;/div&gt;</code></pre>
-          <p>And if we disabled animation globally and need to enable it for particular case, we may enable it by adding "with-animation" class to link (or back link)</p>
-          <pre><code>&lt;div class="page" data-page="about"&gt;
-  &lt;!-- Add additional "with-anmation" class to link to enable animated page transition --&gt;
-  &lt;a href="about.html" class="with-animation"&gt; Load About page with animation &lt;/a&gt;
- 
-  &lt;!-- The same rule for back link --&gt;
-  &lt;a href="index.html" class="back with-animation"&gt; Go back with animation &lt;/a&gt;
-&lt;/div&gt;</code></pre>
-          <h2>Load pages using additional navigation options</h2>
-          <p>And sometimes we may need to have more controls on navigation with links. We may use all available options from <a href="views.html#view-navigation-methods">View Navigation Methods</a> as <code>data-</code> attributes, for example:</p>
-          <pre><code>&lt;!-- Refresh currently active page (reload from server) --&gt;
-&lt;a href="about.html" data-reload="true" data-ignoreCache="true"&gt;Refresh page&lt;/a&gt;
- 
-&lt;!-- Go back but to another page, not to page which is in history. Such method also allow to jump back in history: --&gt;
-&lt;a href="about.html" class="back" data-forceUrl="true"&gt;Back to About&lt;/a&gt;
- 
-&lt;!-- Load new page without animation --&gt;
-&lt;a href="about.html" data-animatePages="false"&gt;&lt;/a&gt;          </code></pre>
-          <h2>Load pages using JavaScript</h2>
-          <p>It is possible to load page from HTML files using JavaScript, not only using <code>&lt;a&gt;</code> tags. For this case we need to use <code>.loadPage(url)</code> <a href="views.html#view-navigation-methods">View Navigation Methods</a>:</p>
+          <h2>Load Inline Pages using JavaScript</h2>
+          <p>It is also possible to load inline page using JavaScript API, not only using <code>&lt;a&gt;</code> tags. For this case we may use <code>.router.load()</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:</p>
           <pre><code>// Initialize App  
 var myApp = new Framework7();
         
 // Initialize View          
 var mainView = myApp.addView('.view-main')          
         
-// Load page from about.html file to main View:
-mainView.loadPage('about.html');</code></pre>
+// Load about page:
+mainView.router.load({pageName: 'about'});</code></pre>
           <p>Note, that it is only possible for Views that were initialized</p>
           <h2>Going back using JavaScript</h2>
-          <p>You can also get the same as when you click "back" link but with JavaScript using <code>.goBack(url)</code> <a href="views.html#view-navigation-methods">View Navigation Methods</a>:</p>
+          <p>You can also get the same as when you click "back" link but with JavaScript using <code>.router.back()</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:</p>
           <pre><code>// Initialize App  
 var myApp = new Framework7();
         
@@ -272,26 +290,18 @@ var myApp = new Framework7();
 var mainView = myApp.addView('.view-main')          
         
 // Go back on main View
-mainView.goBack();</code></pre>
+mainView.router.back();</code></pre>
           <p>It is also possible only for Views that were initialized</p>
           <h2>Conclusion</h2>
-          <p>As you may see linking and navigation in Framework7 is pretty simple, all you should remember is that:</p>
+          <p>As you may see linking and navigation for inline pages is pretty simple, all you should remember is that:</p>
           <ul>
             <li>
-              <p>you need to use usual <code>&lt;a&gt;</code> tags with plain "href" attribute that contains url of required file with page</p>
+              <p>you may use usual <code>&lt;a&gt;</code> tags with plain "href" attribute that contains &#35;{{pageName}} of required page</p>
             </li>
             <li>
-              <p>it is not required to have full HTML layout in pages loaded with Ajax. Just put there <b>&lt;div class="page"&gt;</b> (and <b>&lt;div class="navbar"&gt;</b> in case of Dynamic Navbar)</p>
-            </li>
-            <li>
-              <p>if you need to have few pages in single file - wrap them with <b>&lt;div class="view"&gt;</b> with appropriate classes for each view</p>
-            </li>
-            <li>
-              <p>just add "back" class to any link (<b>&lt;a href="index.html" class="back"&gt;</b>) to make it work like "back" link</p>
+              <p>just add "back" class to any link (<b>&lt;a href="#index" class="back"&gt;</b>) to make it work like "back" link</p>
             </li>
           </ul>
-          <h2>What's next</h2>
-          <p>Let's look at how to make <a href="linking-views.html">linking between Views</a></p>
         </div>
       </div>
     </div>

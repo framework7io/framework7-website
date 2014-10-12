@@ -66,8 +66,12 @@
             <li><a href="views.html">Views</a></li>
             <li><a href="pages.html">Pages</a></li>
             <li><a href="page-callbacks.html">Page Callbacks</a></li>
-            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
-            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
             <li class="title">Components</li>
             <li>Navbars & Toolbars
               <ul>
@@ -76,6 +80,7 @@
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
               </ul>
             </li>
             <li><a href="searchbar.html">Search Bar</a></li>
@@ -124,13 +129,16 @@
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Utilities</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build</a></li>
-            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
           </ul>
         </div>
         <div class="docs-content">
@@ -158,6 +166,13 @@
             </ul>
           </div>
           <div class="method-wrap">
+            <p><span class="method">myApp.onPageReinit(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed for specified cached page <em>(with "pageName" data-page attribute)</em> that becomes visible. It is only applicaple for Inline Pages (DOM cached pages)</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
+              <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
+            </ul>
+          </div>
+          <div class="method-wrap">
             <p><span class="method">myApp.onPageBeforeAnimation(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed when everything initialized and page <em>(with "pageName" data-page attribute)</em> is ready to be animated</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
@@ -173,6 +188,20 @@
           </div>
           <div class="method-wrap">
             <p><span class="method">myApp.onPageBeforeRemove(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed right before page <em>(with "pageName" data-page attribute)</em> will be removed from DOM</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
+              <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
+            </ul>
+          </div>
+          <div class="method-wrap">
+            <p><span class="method">myApp.onPageBack(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed right before page <em>(with "pageName" data-page attribute)</em> "back" transition. Difference with "onPageBeforeAnimation" is that this callback will be triggered for the "old" page - page that slides from center to right</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
+              <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>
+            </ul>
+          </div>
+          <div class="method-wrap">
+            <p><span class="method">myApp.onPageAfterBack(<span>pageName</span>, <span>callback(page)</span>) </span><span>- "callback" function will be executed right after page <em>(with "pageName" data-page attribute)</em> "back" transition. Difference with "onPageAfterAnimation" is that this callback will be triggered for the "old" page - page that slides from center to right</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">pageName</span> - <span class="parameter-type">string</span> - expected page's "data-page" attribute</li>
               <li><span class="parameter">callback(page)</span> - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object</li>

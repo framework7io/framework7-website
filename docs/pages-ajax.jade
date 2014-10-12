@@ -2,15 +2,15 @@ extends ../jade/_internal-template
 
 block vars
   - var activeLink = 'docs';
-  - var title = 'Navigation and linking between pages in Framework7 | Framework7 Documentation';
+  - var title = 'Ajax Pages | Framework7 Documentation';
 
 block content
   .docs-wrap
     .docs-nav
       include ../jade/_docs-menu
     .docs-content
-      h1 Navigation and linking between pages in Framework7
-      p Now, when we have our App structure with Views and Pages we need to understand how we can create new pages and how they should be loaded by Framework7.
+      h1 Ajax Pages
+      p Now, when we have our App structure with Views and Pages we need to understand how we can create and load new pages using Ajax in Framework7.
       p Here is important rule that you should remember:
       .important-note
         p <b>By default Framework7 will load all links using Ajax</b>, except links with additional <b>external</b> class (<b>&lt;a href="somepage.html" class="external"></b>) and links with not correct <b>href</b> attribute (when it is <b>empty</b> or <b>#</b>).
@@ -24,11 +24,11 @@ block content
       p Because Framework7 has pretty smart parser we don't need full HTML layout (with HTML head, body, views, pages, etc.) in internal pages. Let's look on the structure of this internal <code>about.html</code> file:
       pre
         code
-          | &lt;-- That is all we have in about.html file --&gt;
+          | &lt;!-- That is all we have in about.html file --&gt;
           | &lt;div class="page" data-page="about"&gt;
           |   ... About page content goes here
           | &lt;/div&gt;
-      p The point is that Framework7's parser will try to find only <code>&lt;div class="page"&gt;</code> element in Ajax loaded page, so we don't need here full HTML layout, just the page. This is not restriction and of course, if you need here full HTML layout it will also work fine.
+      p The point is that Framework7's parser will try to find only <code>&lt;div class="page"&gt;</code> element in Ajax loaded page, so we don't need here full HTML layout, just the page. This is not restriction and, of course, if you need here full HTML layout it will also work fine.
       h2 Internal file structure with few Pages
       p Here is a bit complex situation. For example, we have two (or more) <a href="views.html">initialized Views</a> with separate navigation. In our index file:
       pre
@@ -89,7 +89,7 @@ block content
       pre
         code
           | &lt;div class="page" data-page="about"&gt;
-          |   &lt;-- Just add additional "back" class to link --&gt;
+          |   &lt;!-- Just add additional "back" class to link --&gt;
           |   &lt;a href="index.html" class="back"&gt; Go back to home page &lt;/a&gt;
           | &lt;/div&gt;
       p Here are few important notes about <code>href</code> attribute in "back" links:
@@ -131,19 +131,19 @@ block content
           |   &lt;a href="index.html" class="back with-animation"&gt; Go back with animation &lt;/a&gt;
           | &lt;/div&gt;
       h2 Load pages using additional navigation options
-      p And sometimes we may need to have more controls on navigation with links. We may use all available options from <a href="views.html#view-navigation-methods">View Navigation Methods</a> as <code>data-</code> attributes, for example:
+      p And sometimes we may need to have more controls on navigation with links. We may use all available options from <a href="router-api.html#view-navigation-methods">View Navigation Methods</a> as <code>data-</code> attributes, for example:
       pre
         code
           | &lt;!-- Refresh currently active page (reload from server) --&gt;
           | &lt;a href="about.html" data-reload="true" data-ignoreCache="true"&gt;Refresh page&lt;/a&gt;
           | 
-          | &lt;!-- Go back but to another page, not to page which is in history. Such method also allow to jump back in history: --&gt;
-          | &lt;a href="about.html" class="back" data-forceUrl="true"&gt;Back to About&lt;/a&gt;
+          | &lt;!-- Go back but to another page, not to actual previous page in history. Such method also allows to jump back in history: --&gt;
+          | &lt;a href="about.html" class="back" data-force="true"&gt;Back to About&lt;/a&gt;
           | 
           | &lt;!-- Load new page without animation --&gt;
           | &lt;a href="about.html" data-animatePages="false"&gt;&lt;/a&gt;          
       h2 Load pages using JavaScript
-      p It is possible to load page from HTML files using JavaScript, not only using <code>&lt;a&gt;</code> tags. For this case we need to use <code>.loadPage(url)</code> <a href="views.html#view-navigation-methods">View Navigation Methods</a>:
+      p It is possible to load page from HTML files using JavaScript API, not only using <code>&lt;a&gt;</code> tags. For this case we may use <code>.router.loadPage(url)</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:
       pre
         code
           | // Initialize App  
@@ -153,10 +153,10 @@ block content
           | var mainView = myApp.addView('.view-main')          
           |         
           | // Load page from about.html file to main View:
-          | mainView.loadPage('about.html');
+          | mainView.router.loadPage('about.html');
       p Note, that it is only possible for Views that were initialized
       h2 Going back using JavaScript
-      p You can also get the same as when you click "back" link but with JavaScript using <code>.goBack(url)</code> <a href="views.html#view-navigation-methods">View Navigation Methods</a>:
+      p You can also get the same as when you click "back" link but with JavaScript using <code>.router.back()</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:
       pre
         code
           | // Initialize App  
@@ -166,7 +166,7 @@ block content
           | var mainView = myApp.addView('.view-main')          
           |         
           | // Go back on main View
-          | mainView.goBack();
+          | mainView.router.back();
       p It is also possible only for Views that were initialized
       h2 Conclusion
       p As you may see linking and navigation in Framework7 is pretty simple, all you should remember is that:

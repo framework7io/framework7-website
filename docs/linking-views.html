@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Linking between views in Framework7 | Framework7 Documentation</title>
+    <title>Linking between views | Framework7 Documentation</title>
     <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
     <link rel="stylesheet" href="../css/normalize.css">
     <link rel="stylesheet" href="../css/main.css">
@@ -66,8 +66,12 @@
             <li><a href="views.html">Views</a></li>
             <li><a href="pages.html">Pages</a></li>
             <li><a href="page-callbacks.html">Page Callbacks</a></li>
-            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
-            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
             <li class="title">Components</li>
             <li>Navbars & Toolbars
               <ul>
@@ -76,6 +80,7 @@
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
               </ul>
             </li>
             <li><a href="searchbar.html">Search Bar</a></li>
@@ -124,20 +129,23 @@
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Utilities</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build</a></li>
-            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
           </ul>
         </div>
         <div class="docs-content">
-          <h1>Linking between views in Framework7</h1>
+          <h1>Linking Between Views</h1>
           <p>Now let's look on more complex situation. </p>
           <p>So we have two initialized Views (Left view and Right view) with separated navigation. In this case all links in Left view will load pages in Left view, and all links in Right view will load pages in Right view. </p>
-          <p>But now we need that some of links in Left view load pages in Right view. It is called <strong>linking between views</strong>. We already know how to do that with JavaScript - using .loadPage and .goBack View's methods.</p>
+          <p>But now we need that some of links in Left view load pages in Right view. It is called <strong>linking between views</strong>. We already know how to do that with JavaScript - using <code>.router.load()</code> and <code>.router.back()</code> View methods.</p>
           <p>Framework7 allows to achieve this without JavaScript, all we need in this case is to add <code>data-view</code> attribute to link. This <code>data-view</code> attribute should contain CSS selector of required View:</p>
           <pre><code>&lt;body&gt;
   ...

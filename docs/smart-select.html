@@ -70,8 +70,12 @@
             <li><a href="views.html">Views</a></li>
             <li><a href="pages.html">Pages</a></li>
             <li><a href="page-callbacks.html">Page Callbacks</a></li>
-            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
-            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
             <li class="title">Components</li>
             <li>Navbars & Toolbars
               <ul>
@@ -80,6 +84,7 @@
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
               </ul>
             </li>
             <li><a href="searchbar.html">Search Bar</a></li>
@@ -128,13 +133,16 @@
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Utilities</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build</a></li>
-            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
           </ul>
         </div>
         <div class="docs-content with-device">
@@ -216,6 +224,28 @@
     &lt;/li&gt;
   &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
+          <h2 data-device-preview="../docs-demos/smart-select-popup.html">Open in Popup</h2>
+          <p>It is possible to open Smart select as <a href="popup.html">popup</a>, not as page. If you want to open all Smart selects in popup you may just enable it by passing <code>smartSelectInPopup:true</code> parameter on <a href="init-app.html">App initialization</a>.</p>
+          <p>Otherwise it can be configured via "data-open-in" attribute:</p>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;!-- Smart select, will be opened in Popup --&gt;
+      &lt;a href="#" class="item-link smart-select" data-open-in="popup"&gt;
+        ... same Smart select Fruits structure as in previous example ...
+      &lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;!-- Smart select, will be opened in Popup with custom "Close" text --&gt;
+      &lt;a href="#" class="item-link smart-select" data-open-in="popup" data-popup-close-text="Close Cars"&gt;
+        ... same Smart select Cars structure as in previous example ...
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <div class="important-note">
+            <p>Note, if you set all Smart select as popups using App <b>smartSelectInPopup:true</b>, you may still open it as page using <b>data-open-in="page"</b> attribute</p>
+          </div>
           <h2 data-device-preview="../docs-demos/smart-select-images.html">Custom icons and images</h2>
           <p>You can also specify Smart Select page' list view element custom icon or image. We need to use additional "data-option-icon" or "data-option-image" attributes on smart select <code>&lt;select&gt;</code> (to set default image for all options) or on <code>&lt;option&gt;</code> to set image or icon on single option</p>
           <pre><code>&lt;a href="#" class="item-link smart-select"&gt;
@@ -229,7 +259,7 @@
       &lt;div class="item-title"&gt;Fruit&lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-&lt;/a&gt;          </code></pre>
+&lt;/a&gt;</code></pre>
           <h2 data-device-preview="../docs-demos/smart-select-multiple.html">Multiple Select And optgroup</h2>
           <pre><code>&lt;div class="list-block"&gt;
   &lt;ul&gt;

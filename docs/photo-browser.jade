@@ -108,6 +108,11 @@ block content
               td 'standalone'
               td Define how Photo Browser should be opened. Could be 'standalone' (will be opened as an overlay with custom transition effect), 'popup' (will be opened as <a href="popup.html">popup</a>), 'page' (will be injected to View and loaded as a new page).
             tr
+              td loop
+              td boolean
+              td false
+              td Set to "true" to enable continuous loop mode
+            tr
               td theme
               td string
               td 'light'
@@ -138,6 +143,23 @@ block content
               td 'of'
               td Text of "of" in photos counter: "3 of 5"
             tr
+              th(colspan="4") Lazy Loading
+            tr
+              td lazyLoading
+              td boolean
+              td false
+              td Set to "true" to enable images lazy loading
+            tr
+              td lazyLoadingInPrevNext
+              td boolean
+              td false
+              td Set to "true" to enable lazy loading for the closest photos (for previous and next photos)
+            tr
+              td lazyLoadingOnTransitionStart
+              td boolean
+              td false
+              td By default, Photo Browser will load lazy photos after transition to this photo, so you may enable this parameter if you need it to load new photo in the beginning of transition
+            tr
               th(colspan="4") Templates
             tr
               td template
@@ -159,6 +181,11 @@ block content
               td string
               td *Look below
               td Single photo element HTML template
+            tr
+              td photoLazyTemplate
+              td string
+              td *Look below
+              td Single lazy loading photo element HTML template
             tr
               td objectTemplate
               td string
@@ -191,6 +218,16 @@ block content
               td function
               td 
               td Callback function, will be executed when user close photo browser with swipe up/down.
+            tr
+              td onImageLoad(photobrowser, slide, image)
+              td function
+              td 
+              td Callback function, will be executed when Photo Browser begins to load lazy loading photo
+            tr
+              td onImageLoaded(photobrowser, slide, image)
+              td function
+              td 
+              td Callback function, will be executed after lazy loading photo will be loaded
             tr
               th(colspan="4") Slider Callbacks
             tr
@@ -255,10 +292,10 @@ block content
               td myPhotoBrowser.toggleExposition();
               td Toggle exposition mode
             tr
-              td myPhotoBrowser.expositionOn();
+              td myPhotoBrowser.enableExposition();
               td Enable exposition mode
             tr
-              td myPhotoBrowser.expositionOff();
+              td myPhotoBrowser.disableExposition();
               td Disable exposition mode
         h2 Photos Array
         p When we initialize Photo Browser we need to pass array with photos/videos in "photos" parameter. Let's look at different variations of this array:
@@ -521,6 +558,14 @@ block content
         pre
           code
             | &lt;div class="photo-browser-slide slider-slide"&gt;
+            |     &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
+            | &lt;/div&gt;            
+        h3 Lazy Photo Element Template
+        p Template example of single photo slide element that you can pass in <code>photoLazyTemplate</code> parameter:
+        pre
+          code
+            | &lt;div class="photo-browser-slide photo-browser-slide-lazy slider-slide"&gt;
+            |     &lt;div class="preloader"&gt;&lt;/div&gt;
             |     &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
             | &lt;/div&gt;            
         h3 Object Element Template

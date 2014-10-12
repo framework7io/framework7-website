@@ -41,6 +41,17 @@ block content
             |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
       .method-wrap
         p
+          span.method myApp.onPageReinit(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed for specified cached page <em>(with "pageName" data-page attribute)</em> that becomes visible. It is only applicaple for Inline Pages (DOM cached pages)
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
           span.method myApp.onPageBeforeAnimation(<span>pageName</span>, <span>callback(page)</span>) 
           span - "callback" function will be executed when everything initialized and page <em>(with "pageName" data-page attribute)</em> is ready to be animated
         ul.method-parameters
@@ -65,6 +76,28 @@ block content
         p
           span.method myApp.onPageBeforeRemove(<span>pageName</span>, <span>callback(page)</span>) 
           span - "callback" function will be executed right before page <em>(with "pageName" data-page attribute)</em> will be removed from DOM
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageBack(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed right before page <em>(with "pageName" data-page attribute)</em> "back" transition. Difference with "onPageBeforeAnimation" is that this callback will be triggered for the "old" page - page that slides from center to right
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageAfterBack(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed right after page <em>(with "pageName" data-page attribute)</em> "back" transition. Difference with "onPageAfterAnimation" is that this callback will be triggered for the "old" page - page that slides from center to right
         ul.method-parameters
           li
             span.parameter pageName

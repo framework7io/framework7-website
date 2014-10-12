@@ -66,8 +66,12 @@
             <li><a href="views.html">Views</a></li>
             <li><a href="pages.html">Pages</a></li>
             <li><a href="page-callbacks.html">Page Callbacks</a></li>
-            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
-            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
             <li class="title">Components</li>
             <li>Navbars & Toolbars
               <ul>
@@ -76,6 +80,7 @@
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
               </ul>
             </li>
             <li><a href="searchbar.html">Search Bar</a></li>
@@ -124,13 +129,16 @@
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Utilities</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build</a></li>
-            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
           </ul>
         </div>
         <div class="docs-content">
@@ -210,7 +218,13 @@
                 <td>CSS selector of elements where <code>activeState</code> will add appropriate active class</td>
               </tr>
               <tr>
-                <th colspan="4">Navigation</th>
+                <th colspan="4">Navigation / Router</th>
+              </tr>
+              <tr>
+                <td>router</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>With this option you may disable default navigation router if you want to implement yours own</td>
               </tr>
               <tr>
                 <td>ajaxLinks</td>
@@ -219,10 +233,22 @@
                 <td>By default (when this parameter is not specified) Framework7 will load all links (&lt;a&gt;) using Ajax. You can change this behavior by passing here CSS selector string for links that should be loaded with Ajax, like <code>"a.ajax"</code> - only all links with "ajax" class</td>
               </tr>
               <tr>
+                <td>dynamicPageUrl</td>
+                <td>string</td>
+                <td>'content-{{index}}'</td>
+                <td>URL rule for dynamically loaded pages. Available replaceable expressions: '{{index}}' (page index number in navigation history) and '{{name}}' (value of page "data-page" attribute)</td>
+              </tr>
+              <tr>
                 <td>uniqueHistory</td>
                 <td>boolean</td>
                 <td>false</td>
                 <td>Set to true and App will keep View's navigation history unique, it will also remove duplicated pages</td>
+              </tr>
+              <tr>
+                <td>uniqueHistoryIgnoreGetParameters</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Use this parameter in addition to <code>uniqueHistory</code>. Set to true and App will ignore URL GET parameters when cheking its uniqueness. So the URLs like "page.html" and "page.html?id=3" will be treated as the same.</td>
               </tr>
               <tr>
                 <td>externalLinks</td>
@@ -444,16 +470,34 @@
                 <th colspan="4">Smart Select</th>
               </tr>
               <tr>
+                <td>smartSelectInPopup</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true and all Smart Selects, by default, will be opened as popup</td>
+              </tr>
+              <tr>
                 <td>smartSelectBackTemplate</td>
                 <td>string</td>
                 <td>'&lt;div class="left sliding"&gt;&lt;a href="#" class="back link"&gt;&lt;i class="icon icon-back"&gt;&lt;/i&gt;&lt;span&gt;{{backText}}&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;'</td>
-                <td>Smart select page navbar back link HTML template</td>
+                <td>Smart Select page navbar back link HTML template</td>
+              </tr>
+              <tr>
+                <td>smartSelectPopupCloseTemplate</td>
+                <td>string</td>
+                <td>'&lt;div class="left"&gt;&lt;a href="#" class="link close-popup"&gt;&lt;i class="icon icon-back"&gt;&lt;/i&gt;&lt;span&gt;{{closeText}}&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;'</td>
+                <td>Smart Select popup close link HTML template</td>
               </tr>
               <tr>
                 <td>smartSelectBackText</td>
                 <td>string</td>
                 <td>'Back'</td>
                 <td>Default back link text for Smart Select's page navbar</td>
+              </tr>
+              <tr>
+                <td>smartSelectPopupCloseText</td>
+                <td>string</td>
+                <td>'Close'</td>
+                <td>Default close link text for Smart Select's popup navbar</td>
               </tr>
               <tr>
                 <td>smartSelectSearchbar</td>
@@ -466,6 +510,27 @@
                 <td>boolean</td>
                 <td>false</td>
                 <td>If enabled then smart select page will be automatically closed after user picks any option</td>
+              </tr>
+              <tr>
+                <th colspan="4">Navbars / Toolbars</th>
+              </tr>
+              <tr>
+                <td>hideNavbarOnPageScroll</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true and Navbar will be hidden automatically on page scroll down, and became visible on scroll up</td>
+              </tr>
+              <tr>
+                <td>hideToolbarOnPageScroll</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true and Toolbar will be hidden automatically on page scroll down, and became visible on scroll up</td>
+              </tr>
+              <tr>
+                <td>showBarsOnPageScrollEnd</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Set to true to show hidden Navbar and Toolbar when scrolling reaches end of the page</td>
               </tr>
               <tr>
                 <th colspan="4">Search Bar</th>
@@ -529,6 +594,33 @@
                 <td>boolean</td>
                 <td>undefined</td>
                 <td>With this option you can overwrite automatic <a href="status-bar.html">status bar detection</a></td>
+              </tr>
+              <tr>
+                <th colspan="4">Template7</th>
+              </tr>
+              <tr>
+                <td>template7Pages</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true to enable Template7 rendering for Ajax and Dynamic pages. Learn more about it in <a href="template7-pages.html">Template7 Pages</a> section</td>
+              </tr>
+              <tr>
+                <td>templatesData</td>
+                <td>object</td>
+                <td>{}</td>
+                <td>Parameter to store templates/pages data for Template7 rendering. Learn more about it in <a href="template7-pages.html">Template7 Pages</a> section</td>
+              </tr>
+              <tr>
+                <td>precompileTemplates</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>With this option you may framework will compile all Template7 templates automatically. Learn more about <a href="template7-auto-compilation.html">Templates Auto Compilation</a> section</td>
+              </tr>
+              <tr>
+                <td>templates</td>
+                <td>object</td>
+                <td>{}</td>
+                <td>Object with compiled Template7 templates. Learn more about it in <a href="template7-auto-compilation.html">Templates Auto Compilation</a> section</td>
               </tr>
               <tr>
                 <th colspan="4">Page Callbacks</th>

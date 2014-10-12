@@ -70,8 +70,12 @@
             <li><a href="views.html">Views</a></li>
             <li><a href="pages.html">Pages</a></li>
             <li><a href="page-callbacks.html">Page Callbacks</a></li>
-            <li><a href="linking-pages.html">Navigation / Linking between pages</a></li>
-            <li><a href="linking-views.html">Linking between views</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
             <li class="title">Components</li>
             <li>Navbars & Toolbars
               <ul>
@@ -80,6 +84,7 @@
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
               </ul>
             </li>
             <li><a href="searchbar.html">Search Bar</a></li>
@@ -128,13 +133,16 @@
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
             <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Utilities</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build</a></li>
-            <li class="title"><a href="template7.html">Template7</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
           </ul>
         </div>
         <div class="docs-content with-device">
@@ -242,6 +250,12 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>Define how Photo Browser should be opened. Could be 'standalone' (will be opened as an overlay with custom transition effect), 'popup' (will be opened as <a href="popup.html">popup</a>), 'page' (will be injected to View and loaded as a new page).</td>
                 </tr>
                 <tr>
+                  <td>loop</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to "true" to enable continuous loop mode</td>
+                </tr>
+                <tr>
                   <td>theme</td>
                   <td>string</td>
                   <td>'light'</td>
@@ -278,6 +292,27 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>Text of "of" in photos counter: "3 of 5"</td>
                 </tr>
                 <tr>
+                  <th colspan="4">Lazy Loading</th>
+                </tr>
+                <tr>
+                  <td>lazyLoading</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to "true" to enable images lazy loading</td>
+                </tr>
+                <tr>
+                  <td>lazyLoadingInPrevNext</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to "true" to enable lazy loading for the closest photos (for previous and next photos)</td>
+                </tr>
+                <tr>
+                  <td>lazyLoadingOnTransitionStart</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>By default, Photo Browser will load lazy photos after transition to this photo, so you may enable this parameter if you need it to load new photo in the beginning of transition</td>
+                </tr>
+                <tr>
                   <th colspan="4">Templates</th>
                 </tr>
                 <tr>
@@ -303,6 +338,12 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>string</td>
                   <td>*Look below</td>
                   <td>Single photo element HTML template</td>
+                </tr>
+                <tr>
+                  <td>photoLazyTemplate</td>
+                  <td>string</td>
+                  <td>*Look below</td>
+                  <td>Single lazy loading photo element HTML template</td>
                 </tr>
                 <tr>
                   <td>objectTemplate</td>
@@ -342,6 +383,18 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>function</td>
                   <td></td>
                   <td>Callback function, will be executed when user close photo browser with swipe up/down.</td>
+                </tr>
+                <tr>
+                  <td>onImageLoad(photobrowser, slide, image)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when Photo Browser begins to load lazy loading photo</td>
+                </tr>
+                <tr>
+                  <td>onImageLoaded(photobrowser, slide, image)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed after lazy loading photo will be loaded</td>
                 </tr>
                 <tr>
                   <th colspan="4">Slider Callbacks</th>
@@ -425,11 +478,11 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>Toggle exposition mode</td>
                 </tr>
                 <tr>
-                  <td>myPhotoBrowser.expositionOn();</td>
+                  <td>myPhotoBrowser.enableExposition();</td>
                   <td>Enable exposition mode</td>
                 </tr>
                 <tr>
-                  <td>myPhotoBrowser.expositionOff();</td>
+                  <td>myPhotoBrowser.disableExposition();</td>
                   <td>Disable exposition mode</td>
                 </tr>
               </tbody>
@@ -693,6 +746,12 @@ $$('.pb-standalone-video').on('click', function () {
             <h3>Photo Element Template</h3>
             <p>Template example of single photo slide element that you can pass in <code>photoTemplate</code> parameter:</p>
             <pre><code>&lt;div class="photo-browser-slide slider-slide"&gt;
+    &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
+&lt;/div&gt;            </code></pre>
+            <h3>Lazy Photo Element Template</h3>
+            <p>Template example of single photo slide element that you can pass in <code>photoLazyTemplate</code> parameter:</p>
+            <pre><code>&lt;div class="photo-browser-slide photo-browser-slide-lazy slider-slide"&gt;
+    &lt;div class="preloader"&gt;&lt;/div&gt;
     &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
 &lt;/div&gt;            </code></pre>
             <h3>Object Element Template</h3>

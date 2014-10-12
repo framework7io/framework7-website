@@ -77,17 +77,32 @@ block content
             td 'a, button, label, span'
             td CSS selector of elements where <code>activeState</code> will add appropriate active class
           tr
-            th(colspan="4") Navigation
+            th(colspan="4") Navigation / Router
+          tr
+            td router
+            td boolean
+            td true
+            td With this option you may disable default navigation router if you want to implement yours own
           tr
             td ajaxLinks
             td string
             td undefined
             td By default (when this parameter is not specified) Framework7 will load all links (&lt;a&gt;) using Ajax. You can change this behavior by passing here CSS selector string for links that should be loaded with Ajax, like <code>"a.ajax"</code> - only all links with "ajax" class
           tr
+            td dynamicPageUrl
+            td string
+            td 'content-{{index}}'
+            td URL rule for dynamically loaded pages. Available replaceable expressions: '{{index}}' (page index number in navigation history) and '{{name}}' (value of page "data-page" attribute)
+          tr
             td uniqueHistory
             td boolean
             td false
             td Set to true and App will keep View's navigation history unique, it will also remove duplicated pages
+          tr
+            td uniqueHistoryIgnoreGetParameters
+            td boolean
+            td false
+            td Use this parameter in addition to <code>uniqueHistory</code>. Set to true and App will ignore URL GET parameters when cheking its uniqueness. So the URLs like "page.html" and "page.html?id=3" will be treated as the same.
           tr
             td externalLinks
             td array
@@ -270,15 +285,32 @@ block content
           tr
             th(colspan="4") Smart Select
           tr
+            td smartSelectInPopup
+            td boolean
+            td false
+            td Set to true and all Smart Selects, by default, will be opened as popup
+
+          tr
             td smartSelectBackTemplate
             td string
             td '&lt;div class="left sliding"&gt;&lt;a href="#" class="back link"&gt;&lt;i class="icon icon-back"&gt;&lt;/i&gt;&lt;span&gt;{{backText}}&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;'
-            td Smart select page navbar back link HTML template
+            td Smart Select page navbar back link HTML template
+
+          tr
+            td smartSelectPopupCloseTemplate
+            td string
+            td '&lt;div class="left"&gt;&lt;a href="#" class="link close-popup"&gt;&lt;i class="icon icon-back"&gt;&lt;/i&gt;&lt;span&gt;{{closeText}}&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;'
+            td Smart Select popup close link HTML template
           tr
             td smartSelectBackText
             td string
             td 'Back'
             td Default back link text for Smart Select's page navbar
+          tr
+            td smartSelectPopupCloseText
+            td string
+            td 'Close'
+            td Default close link text for Smart Select's popup navbar
           tr
             td smartSelectSearchbar
             td boolean
@@ -289,6 +321,23 @@ block content
             td boolean
             td false
             td If enabled then smart select page will be automatically closed after user picks any option
+          tr
+            th(colspan="4") Navbars / Toolbars
+          tr
+            td hideNavbarOnPageScroll
+            td boolean
+            td false
+            td Set to true and Navbar will be hidden automatically on page scroll down, and became visible on scroll up
+          tr
+            td hideToolbarOnPageScroll
+            td boolean
+            td false
+            td Set to true and Toolbar will be hidden automatically on page scroll down, and became visible on scroll up
+          tr
+            td showBarsOnPageScrollEnd
+            td boolean
+            td true
+            td Set to true to show hidden Navbar and Toolbar when scrolling reaches end of the page
           tr
             th(colspan="4") Search Bar
           tr
@@ -340,6 +389,28 @@ block content
             td boolean
             td undefined
             td With this option you can overwrite automatic <a href="status-bar.html">status bar detection</a>
+          tr
+            th(colspan="4") Template7
+          tr
+            td template7Pages
+            td boolean
+            td false
+            td Set to true to enable Template7 rendering for Ajax and Dynamic pages. Learn more about it in <a href="template7-pages.html">Template7 Pages</a> section
+          tr
+            td templatesData
+            td object
+            td {}
+            td Parameter to store templates/pages data for Template7 rendering. Learn more about it in <a href="template7-pages.html">Template7 Pages</a> section
+          tr
+            td precompileTemplates
+            td boolean
+            td false
+            td With this option you may framework will compile all Template7 templates automatically. Learn more about <a href="template7-auto-compilation.html">Templates Auto Compilation</a> section
+          tr
+            td templates
+            td object
+            td {}
+            td Object with compiled Template7 templates. Learn more about it in <a href="template7-auto-compilation.html">Templates Auto Compilation</a> section
           tr
             th(colspan="4") Page Callbacks
           tr

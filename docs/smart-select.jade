@@ -93,6 +93,29 @@ block content
           |     &lt;/li&gt;
           |   &lt;/ul&gt;
           | &lt;/div&gt;
+      h2(data-device-preview="../docs-demos/smart-select-popup.html") Open in Popup
+      p It is possible to open Smart select as <a href="popup.html">popup</a>, not as page. If you want to open all Smart selects in popup you may just enable it by passing <code>smartSelectInPopup:true</code> parameter on <a href="init-app.html">App initialization</a>.
+      p Otherwise it can be configured via "data-open-in" attribute:
+      pre
+        code
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;!-- Smart select, will be opened in Popup --&gt;
+          |       &lt;a href="#" class="item-link smart-select" data-open-in="popup"&gt;
+          |         ... same Smart select Fruits structure as in previous example ...
+          |       &lt;/a&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;!-- Smart select, will be opened in Popup with custom "Close" text --&gt;
+          |       &lt;a href="#" class="item-link smart-select" data-open-in="popup" data-popup-close-text="Close Cars"&gt;
+          |         ... same Smart select Cars structure as in previous example ...
+          |       &lt;/a&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+      .important-note
+        p Note, if you set all Smart select as popups using App <b>smartSelectInPopup:true</b>, you may still open it as page using <b>data-open-in="page"</b> attribute
       h2(data-device-preview="../docs-demos/smart-select-images.html") Custom icons and images
       p You can also specify Smart Select page' list view element custom icon or image. We need to use additional "data-option-icon" or "data-option-image" attributes on smart select <code>&lt;select&gt;</code> (to set default image for all options) or on <code>&lt;option&gt;</code> to set image or icon on single option
       pre
@@ -108,7 +131,8 @@ block content
           |       &lt;div class="item-title"&gt;Fruit&lt;/div&gt;
           |     &lt;/div&gt;
           |   &lt;/div&gt;
-          | &lt;/a&gt;          
+          | &lt;/a&gt;
+             
       h2(data-device-preview="../docs-demos/smart-select-multiple.html") Multiple Select And optgroup
       pre
         code
