@@ -1023,8 +1023,10 @@ h1 + .tutorial-author {
 .showcase-apps .app-links .button:hover {
   background: rgba(183, 47, 32, 0.1);
 }
-.showcase-apps .appstore-button {
-  background: url(../i/appstore-button.png);
+.showcase-apps .appstore-button,
+.showcase-apps .firefox-button,
+.showcase-apps .google-button,
+.showcase-apps .amazon-button {
   width: 150px;
   height: 45px;
   display: inline-block;
@@ -1032,14 +1034,17 @@ h1 + .tutorial-author {
   -moz-background-size: 100% auto;
   background-size: 100% auto;
 }
+.showcase-apps .appstore-button {
+  background-image: url(../i/appstore-button.png);
+}
+.showcase-apps .firefox-button {
+  background-image: url(../i/firefox-button.png);
+}
+.showcase-apps .amazon-button {
+  background-image: url(../i/amazon-button.png);
+}
 .showcase-apps .google-button {
-  background: url(../i/google-button.png);
-  width: 150px;
-  height: 45px;
-  display: inline-block;
-  -webkit-background-size: 100% auto;
-  -moz-background-size: 100% auto;
-  background-size: 100% auto;
+  background-image: url(../i/google-button.png);
 }
 .showcase-apps .app-author {
   margin-bottom: 15px;

@@ -1112,8 +1112,7 @@ h1 + .tutorial-author {
             text-align: center;
         }
     }
-    .appstore-button {
-        background: url(../i/appstore-button.png);
+    .appstore-button, .firefox-button, .google-button, .amazon-button {
         width: 600px/4;
         height: 180px/4;
         display: inline-block;
@@ -1121,14 +1120,17 @@ h1 + .tutorial-author {
         -moz-background-size: 100% auto;
         background-size: 100% auto;
     }
+    .appstore-button {
+        background-image: url(../i/appstore-button.png);
+    }
+    .firefox-button {
+        background-image: url(../i/firefox-button.png);
+    }
+    .amazon-button {
+        background-image: url(../i/amazon-button.png);
+    }
     .google-button {
-        background: url(../i/google-button.png);
-        width: 600px/4;
-        height: 180px/4;
-        display: inline-block;
-        -webkit-background-size: 100% auto;
-        -moz-background-size: 100% auto;
-        background-size: 100% auto;
+        background-image: url(../i/google-button.png);
     }
     .app-author {
         margin-bottom: 15px;
