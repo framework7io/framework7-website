@@ -105,9 +105,9 @@ block content
             td Use this parameter in addition to <code>uniqueHistory</code>. Set to true and App will ignore URL GET parameters when cheking its uniqueness. So the URLs like "page.html" and "page.html?id=3" will be treated as the same.
           tr
             td externalLinks
-            td array
-            td ['external']
-            td Array of class names and "rel" attributes for links that should be treated as external and shouldn't be handled by Framework7. For example such ['external'] value will match to links like &lt;a href="somepage.html" class="external"&gt; and &lt;a href="somepage.html" rel="external"&gt;
+            td string
+            td '.external'
+            td CSS selector for links that should be treated as external and shouldn't be handled by Framework7. For example such '.external' value will match to links like &lt;a href="somepage.html" class="external"&gt; (with class "external")
           tr
             td animateNavBackIcon
             td boolean
@@ -164,10 +164,15 @@ block content
             td 30
             td Value in px. Width of invisible left edge of the screen that triggers swipe back action
           tr
-            td swipeBackPageBoxShadow
+            td swipeBackPageAnimateShadow
             td boolean
             td true
             td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance
+            tr
+            td swipeBackPageAnimateOpacity
+            td boolean
+            td true
+            td Enable/disable opacity animation during swipe back action. You can disable it to improve performance
           tr
             th(colspan="4") Sortable Lists
           tr
@@ -322,6 +327,17 @@ block content
             td false
             td If enabled then smart select page will be automatically closed after user picks any option
           tr
+            td smartSelectFormTheme
+            td string
+            td undefined
+            td One of 10 default <a href="color-themes.html">color themes</a> for form elements on smart select page/popup
+          tr
+            td smartSelectNavbarTheme
+            td string
+            td undefined
+            td One of 10 default <a href="color-themes.html">color themes</a> for navbar on smart select page/popup
+          
+          tr
             th(colspan="4") Navbars / Toolbars
           tr
             td hideNavbarOnPageScroll
@@ -333,6 +349,12 @@ block content
             td boolean
             td false
             td Set to true and Toolbar will be hidden automatically on page scroll down, and became visible on scroll up
+          tr
+            td hideTabbarOnPageScroll
+            td boolean
+            td false
+            td Set to true and Tab bar will be hidden automatically on page scroll down, and became visible on scroll up. Note that this is only for Tab Bar app layout, otherwise use <code>hideToolbarOnPageScroll</code>
+          
           tr
             td showBarsOnPageScrollEnd
             td boolean

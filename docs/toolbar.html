@@ -109,6 +109,7 @@
                 <li><a href="media-list-view.html">Media List View</a></li>
                 <li><a href="swipeout.html">Swipeout </a></li>
                 <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
               </ul>
             </li>
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
@@ -161,10 +162,18 @@
     &lt;/div&gt;
 &lt;/div&gt;</code></pre>
           <p>By default, all Toolbar elements (links) equally spaced along toolbar - they have equal space between each other.</p>
-          <h2 data-device-preview="../docs-demos/toolbar-hide.html">Related View methods</h2>
+          <h2 data-device-preview="../docs-demos/toolbar-hide.html">Related App and View methods</h2>
           <p>If we have <a href="views.html">initialized View</a> we can use following methods available for Toolbars:</p>
           <table class="methods-table">
             <tbody>
+              <tr>
+                <td>myApp.hideToolbar(<span>toolbar</span>)</td>
+                <td>Hide specified toolbar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.</td>
+              </tr>
+              <tr>
+                <td>myApp.showToolbar(<span>toolbar</span>)</td>
+                <td>Show specified toolbar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.</td>
+              </tr>
               <tr>
                 <td>view.hideToolbar()</td>
                 <td>Hide toolbar in this View</td>

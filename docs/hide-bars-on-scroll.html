@@ -109,6 +109,7 @@
                 <li><a href="media-list-view.html">Media List View</a></li>
                 <li><a href="swipeout.html">Swipeout </a></li>
                 <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
               </ul>
             </li>
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
@@ -149,7 +150,7 @@
           <div class="full-width">
             <h1>Hide Bars (Navbar and Toolbar) On Scroll</h1>
             <p>Framework7 allows you to enable this feature when Navbar and/or Toolbar can be automatically hidden while you scrolling page down.</p>
-            <p>To enable it globally for all pages you may use <code>hideNavbarOnPageScroll</code>, <code>hideToolbarOnPageScroll</code> and <code>showBarsOnPageScrollEnd</code> <a href="init-app.html">App initialization</a> parameters</p>
+            <p>To enable it globally for all pages you may use <code>hideNavbarOnPageScroll</code>, <code>hideToolbarOnPageScroll</code>, <code>hideTabbarOnPageScroll</code> and <code>showBarsOnPageScrollEnd</code> <a href="init-app.html">App initialization</a> parameters</p>
             <p>If you want to enable it on some specific page by using additional classes on <code>&lt;div class="page-content"&gt;</code>:</p>
             <ul>
               <li>
@@ -161,8 +162,12 @@
               <li>
                 <p><code>hide-toolbar-on-scroll</code> - to hide Toolbar on page scroll</p>
               </li>
+              <li>
+                <p><code>hide-tabbar-on-scroll</code> - to hide Tab bar on page scroll (only for Tab Bar app layout)</p>
+              </li>
             </ul>
           </div>
+          <div style="height:100px" class="device-spacer"></div>
           <h3 data-device-preview="../docs-demos/hide-bars.html">Demo</h3>
           <pre><code>...
 &lt;div class="page"&gt;

@@ -105,6 +105,7 @@
                 <li><a href="media-list-view.html">Media List View</a></li>
                 <li><a href="swipeout.html">Swipeout </a></li>
                 <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
               </ul>
             </li>
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
@@ -306,6 +307,10 @@ $$(document).on('pageInit', function (e) {
               <tr>
                 <td>page.swipeBack</td>
                 <td><span class="parameter-type">boolean</span>. Equals to <code>true</code> if page animation was initiated by swipe back. Available only within onPageBefore/AfterAnimation callbacks/events.</td>
+              </tr>
+              <tr>
+                <td>page.context</td>
+                <td><span class="parameter-type">object</span>. Template7 context that was passed for this page when using Template7 pages</td>
               </tr>
             </tbody>
           </table>

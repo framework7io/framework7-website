@@ -96,3 +96,14 @@ block content
       .important-note
         p Note that Tab bar with labels will have more height instead of usual 44px: 50px on iPhone and 55px on iPad
         p Because of more height, you should use "tabbar-labels-fixed" or "tabbar-labels-through" for <a href="navbar-toolbar-layouts.html">Fixed and Through layouts</a> with Tab bar 
+      .full-width
+        h2.stop-scroll-device Related App Methods
+        table.methods-table
+          tbody
+            tr
+              td myApp.hideToolbar(<span>toolbar</span>)
+              td Hide specified tab bar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required tab bar. Required.
+            tr
+              td myApp.showToolbar(<span>toolbar</span>)
+              td Show specified tab bar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required tab bar. Required.
+            

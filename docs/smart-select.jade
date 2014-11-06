@@ -171,32 +171,51 @@ block content
           |   &lt;/ul&gt;
           | &lt;/div&gt;          
       p We can also use multiple select and group options using &lt;optgroup&gt;. So if we add "multiple" attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
-
-      h2.stop-scroll-device Close Smart Select on user pick
-      p It is possible to close Smart Select page automatically after user selects any option. We need to add special <b>data-back-onselect</b> attribute to make it work:
-      pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;!-- data-back-onselect="true" to close page automatically --&gt;
-          |     &lt;li&gt;&lt;a href="#" class="item-link smart-select" data-back-onselect="true"&gt;
-          |         &lt;select name="car" multiple&gt;
-          |           ...
-          |         &lt;/select&gt;
-          |         &lt;div class="item-content"&gt;
-          |           &lt;div class="item-inner"&gt;
-          |             &lt;div class="item-title"&gt;Car&lt;/div&gt;
-          |           &lt;/div&gt;
-          |         &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt; 
-      p If you want to add such behavior for all of your smart selects you may use <b>smartSelectBackOnSelect</b> <a href="init-app.html">App parameter</a>
-      h2 Open smart select using JavaScript
-      p It is also possible to "open" smart select with JavaScript. We need to use related App method:
-      p
-        span.method myApp.smartSelectOpen(<span>smartSelect</span>) - open specified smart select
-      ul.method-parameters
-        li
-          span.parameter smartSelect
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required ".smart-select". Required.
-        
+      .full-width.stop-scroll-device
+        h2 Close Smart Select on user pick
+        p It is possible to close Smart Select page automatically after user selects any option. We need to add special <b>data-back-onselect</b> attribute to make it work:
+        pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     &lt;!-- data-back-onselect="true" to close page automatically --&gt;
+            |     &lt;li&gt;&lt;a href="#" class="item-link smart-select" data-back-onselect="true"&gt;
+            |         &lt;select name="car" multiple&gt;
+            |           ...
+            |         &lt;/select&gt;
+            |         &lt;div class="item-content"&gt;
+            |           &lt;div class="item-inner"&gt;
+            |             &lt;div class="item-title"&gt;Car&lt;/div&gt;
+            |           &lt;/div&gt;
+            |         &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
+            |   &lt;/ul&gt;
+            | &lt;/div&gt; 
+        p If you want to add such behavior for all of your smart selects you may use <b>smartSelectBackOnSelect</b> <a href="init-app.html">App parameter</a>
+        h2 Smart Select color themes
+        p You can also specify form and navbar color themes on smart select page or in smart select popup using <code>data-form-theme</code> and <code>data-navbar-theme</code> attributes:
+        pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     &lt;!-- data-navbar-theme="red" to set red color theme for navbar --&gt;
+            |     &lt;!-- data-form-theme="green" to set green color theme for form --&gt;
+            |     &lt;li&gt;&lt;a href="#" class="item-link smart-select" data-navbar-theme="red" data-form-theme="green"&gt;
+            |         &lt;select name="car" multiple&gt;
+            |           ...
+            |         &lt;/select&gt;
+            |         &lt;div class="item-content"&gt;
+            |           &lt;div class="item-inner"&gt;
+            |             &lt;div class="item-title"&gt;Car&lt;/div&gt;
+            |           &lt;/div&gt;
+            |         &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
+            |   &lt;/ul&gt;
+            | &lt;/div&gt; 
+        h2 Open smart select using JavaScript
+        p It is also possible to "open" smart select with JavaScript. We need to use related App method:
+        p
+          span.method myApp.smartSelectOpen(<span>smartSelect</span>) - open specified smart select
+        ul.method-parameters
+          li
+            span.parameter smartSelect
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required ".smart-select". Required.
+          

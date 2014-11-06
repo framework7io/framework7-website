@@ -177,6 +177,7 @@ myApp.onPageInit('messages', function (page) {
         if (messageText.length === 0) return;
         // Empty textarea
         textarea.val('').trigger('change');
+        textarea[0].focus();
         // Add Message
         myApp.addMessage({
             text: messageText,
@@ -211,7 +212,8 @@ myApp.onPageInit('pull-to-refresh', function (page) {
     ptrContent.on('refresh', function (e) {
         // Emulate 2s loading
         setTimeout(function () {
-            var picURL = 'http://hhhhold.com/88/d/jpg?' + Math.round(Math.random() * 100);
+            // var picURL = 'http://hhhhold.com/88/d/jpg?' + Math.round(Math.random() * 100);
+            var picURL = 'http://lorempixel.com/88/88/';
             var song = songs[Math.floor(Math.random() * songs.length)];
             var author = authors[Math.floor(Math.random() * authors.length)];
             var linkHTML = '<li class="item-content">' +
@@ -405,6 +407,45 @@ myApp.onPageInit('color-themes', function (page) {
     });
     $$(page.container).find('.ks-layout-theme').click(function () {
         $$('body').removeClass(layouts).addClass('layout-' + $$(this).attr('data-theme'));
+    });
+});
+
+/* ===== Virtual List ===== */
+myApp.onPageInit('virtual-list', function (page) {
+    // Generate array with 10000 demo items:
+    var items = [];
+    for (var i = 0; i < 10000; i++) {
+        items.push({
+            title: 'Item ' + i,
+            subtitle: 'Subtitle ' + i
+        });
+    }
+
+    // Create virtual list
+    var virtualList = myApp.virtualList($$(page.container).find('.virtual-list'), {
+        // Pass array with items
+        items: items,
+        // Custom search function for searchbar
+        searchAll: function (query, items) {
+            var found = [];
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].title.indexOf(query) >= 0 || query.trim() === '') found.push(i);
+            }
+            return found; //return array with mathced indexes
+        },
+        // List item Template7 template
+        template: '<li>' +
+                    '<a href="#" class="item-link item-content">' +
+                      '<div class="item-inner">' +
+                        '<div class="item-title-row">' +
+                          '<div class="item-title">{{title}}</div>' +
+                        '</div>' +
+                        '<div class="item-subtitle">{{subtitle}}</div>' +
+                      '</div>' +
+                    '</a>' +
+                  '</li>',
+        // Item height
+        height: 63,
     });
 });
 

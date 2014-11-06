@@ -28,14 +28,14 @@
     background: #000;
 }
 .statusbar-overlay.with-panel-left {
-    background: #222;
+    background: #222426;
 }
 .statusbar-overlay.with-panel-right {
-    background: #000;
+    background: #131313;
 }
 // Demo tab bars
-.page[data-page="tabbar"], .page[data-page="tabbar-labels"] {
-    .tabbar {
+.page[data-page="tabbar"], .page[data-page="tabbar-labels"], .page[data-page="messages"] {
+    .tabbar, .toolbar {
         -webkit-transform: none;
         -moz-transform: none;
         -ms-transform: none;
@@ -170,6 +170,10 @@ i.ks-tabbar-icon-4 {
     .slider-prev-button {
         left: 0;
     }
+}
+// Virtual List
+.virtual-list li {
+    height: 63px;
 }
 // Custom Accordion
 .custom-accordion {

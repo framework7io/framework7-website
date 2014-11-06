@@ -90,9 +90,9 @@ block content
             td If enabled then all previous pages in navigation chain will not be removed from DOM when you navigate deeper and deeper. It could be useful, for example, if you have some Form from 5 steps (5 pages) and when you are on last 5th page you need access to form that was on 1st page.
           tr
             td linksView
-            td string / HTMLElement
+            td string / View instance
             td undefined
-            td CSS Selector of another view or HTMLElement of other view. By defaul all links in initialized (only) view will load pages in this view. You can change this logic on the fly by changing this paremeter. This tell links to load pages in other view.
+            td CSS Selector of another view or initialized View instance. By defaul all links in initialized (only) view will load pages in this view. You can change this logic on the fly by changing this paremeter. This tell links to load pages in other view.
           tr
             th(colspan="4") Navigation
           tr
@@ -116,6 +116,12 @@ block content
             td 
             td Enable/disable preloading of previous page when you go deep in navigation. Should be enabled for correct work of "swipe back page" feature. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
           tr
+            td reloadPages
+            td boolean
+            td false
+            td When enabled, View will always reload currently active page without loading new one
+          
+          tr
             th(colspan="4") Swipe back
           tr
             td swipeBackPage
@@ -133,7 +139,12 @@ block content
             td 
             td By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
           tr
-            td swipeBackPageBoxShadow
+            td swipeBackPageAnimateShadow
+            td boolean
+            td 
+            td By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+          tr
+            td swipeBackPageAnimateOpacity
             td boolean
             td 
             td By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View

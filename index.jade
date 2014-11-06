@@ -16,9 +16,9 @@ html
           .title Framework7
           .slogan Full Featured HTML Framework<br>For Building iOS Apps
           .buttons
-            a(href="https://github.com/nolimits4web/Framework7/archive/v0.9.7.zip") Download
+            a(href="https://github.com/nolimits4web/Framework7/archive/v0.9.8.zip") Download
             a(href="./get-started/") Get Started
-          .release-info MIT Licensed, v0.9.7 released on October 7, 2014 | 
+          .release-info MIT Licensed, v0.9.8 released on November 4, 2014 | 
             a(href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md", target="_blank") Changelog
           .links
             a(href="./docs/") Docs
@@ -26,17 +26,13 @@ html
             a(href="./examples/") Examples
             a(href="./apps/") Demo Apps
             a(href="./showcase/") Showcase
-          //- .small-links
-            a(href="./tutorials/") Tutorials
-            a(href="./plugins/") Plugins
-            a(href="./contribute/") Contribute
           .github-buttons
             | <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
             | <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
         .phone
           iframe(src="kitchen-sink/", frameborder="0", scrolling="no")
-          .ios8-ready iOS 8 Ready
           a(href="kitchen-sink/", target="_blank").fullscreen Fullscreen preview
+          .statusbar
     .share-line
       .center 
         .share
@@ -57,127 +53,121 @@ html
             img(src="https://api.flattr.com/button/flattr-badge-large.png")
         .clearfix
     .content.center
-      h1 Framework7
-      .row
-        .col-80
-          p Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to.
-          p The main approach of the Framework7 is to give you an opportunity to create iOS apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!
-          p Framework7 is not compatible with all platforms. It is focused only on iOS to bring the best experience and simplicity.
-          p.hf-cite Framework7 is definitely for you if you decide to build iOS hybrid app (PhoneGap) or web app that looks like and feels as great native iOS apps.
-        .col-20
+      .home-block.home-intro
+        h1 Framework7
+        p Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to.
+        p The main approach of the Framework7 is to give you an opportunity to create iOS apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!
+        p Framework7 is not compatible with all platforms. It is focused only on iOS to bring the best experience and simplicity.
+        p <strong>Framework7 is definitely for you if you decide to build iOS hybrid app (PhoneGap) or web app that looks like and feels as great native iOS apps.</strong>
           
 
-      h2 Features
-
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left.no-border
-              img(src="i/feats/html.jpg", alt="", height="310")
-          .feat-text
-            h3 Ultra Easy To Use. Not Harder Than Website!
-            p To create iOS apps using Framework7 is so easy as website creation. Try to start and you will be surprised how easy is it. All you need to make it work is a simple HTML layout and attached framework's CSS and JS files! Framework7 doesn't force you to write some custom tags that will be converted by JavaScript to something else. It doesn't force you to write and describe all your content in JavaScript (or JSON). Just plain HTML and you always get exactly the same that you expect to get when you write this HTML.
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left.no-border
-              img(src="i/feats/ios.jpg", alt="", width="320")
-          .feat-text
-            h3 iOS Specific
-            p As said above Framework7 is iOS specific framework. From the very beginning it was carefully thought-out to give you easy ways to realize all incredible features  from all necessary UI elements visualization to complicated animation and touch interactions that characterize the platform. That is why Framework7 is the only solution to realize precisely pixel-perfect iOS native app's interface.
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left
-              img(data-src="i/feats/ui.jpg", alt="", width="480", height="420").lazy
-          .feat-text
-            h3 UI Components
-            p Framework7 comes with a bunch of ready to use UI elements and widgets like modals, popup, action sheet, popover, list views, media lists, tabs, side panels, layout grid, preloader (activity indicator), form elements, etc. The awesome point is that you don't need JavaScript at all for the most of mentioned widgets.
-        .col-40
-      .row.feat-row
-        .col-50
-          h3 Library Agnostic
-          p Framework7 doesn't use and does not depend on any third party libraries. That is why it is ultra lightweight, performance and flexible.
-      
-        .col-50
-          h3 Clear JS API
-          p No need to learn something new With Framework7. It has ultra clear and easy JavaScript API methods to control every part of your app. For example, if you need to call alert modal you just do <code>app.alert('Hello World!')</code>
-      .row.feat-row
-        .col-50
-          h3 High-performance Animation
-          p It is all about performance and Framework7 uses only high performance hardware accelerated css animations and transitions to achieve the best result.        
-        .col-50
-          h3 Pages Animation
-          p One of the main target of Framework7 is to have native look and feeling of iOS7 application. And Framework7 is the only framework that solves it and offers 1:1 page animation with smooth parallax effect, changing opacity and shadow when loading new page.
+      .home-block.home-easy-to-use
+        .pic
+            img(src="i/feats/html.jpg", alt="", height="310")
+        .text
+          h2 Ultra Easy To Use.<br>Not Harder Than Website!
+          p To create iOS apps using Framework7 is so easy as website creation. Try to start and you will be surprised how easy is it. All you need to make it work is a simple HTML layout and attached framework's CSS and JS files! Framework7 doesn't force you to write some custom tags that will be converted by JavaScript to something else. It doesn't force you to write and describe all your content in JavaScript (or JSON). Just plain HTML and you always get exactly the same that you expect to get when you write this HTML.
+        .clearfix
+      .home-block.home-ios
         
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left
-            img(data-src="i/feats/swipe-back.gif", alt="", width="320", height="524").lazy
-          .feat-text
-            h3 Swipe Back
-            p One of Framework7' killing feature is supporting of iOS well known swipe back gesture from left border of screen when you want to get to the previous page. It simply works, and works perfectly as you expect it to do. Just swipe from left (or drag with mouse) area of the page to see smooth transition to the previous page. It is not just A-B transition. It really follows your finger with parallax animation while touch!
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left
-            img(data-src="i/feats/navbar.gif", alt="", width="320", height="310").lazy
-          .feat-text
-            h3 Dynamic Navbar
-            p As was mentioned already Framework7 makes everything to give you a feel of native iOS app. And one of the significant feature that improves this feeling is the dynamic navigation bar (navbar). You can see how its elements sliding and fading during pages transition and when you swipe back.
-      .row.feat-row
-        .col-100
-          h3 Native Scrolling
-          p It can sound even curious but one of the most important Framework7 feature is that it uses only native scrolling. Moreover - it multiplies its advantages! So you can still have this awesome scrolling with momentum and resistance bounce without any scrolling issues!
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left
-            img(data-src="i/feats/ptr.gif", alt="", width="320", height="310").lazy
-          .feat-text
-            h3 Pull To Refresh
-            p Framework7 is probably the first and only framework that has this great feature realized on pure native scrolling! That is why pull to refresh behavior is perfect as possible and works totally equal in many native iOS apps!
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left
-            img(data-src="i/feats/swipe-delete.gif", alt="", width="320", height="310").lazy
-          .feat-text
-            h3 Swipe To Delete
-            p Do you remember how you swipe left on the message in the Mail app if you want to delete it? Yep, Framework7 has totally the same functionality for any list elements, with the same smooth animation and touch interaction!
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left
-            img(data-src="i/feats/messages.gif", alt="", width="320", height="568").lazy
-          .feat-text
-            h3 Messages
-            p Framework7 comes with great realized "messages" widget that you can easily customize and integrate into your app for messaging between users or devices using some realtime sync data service like 
-              a(href="http://framework.realtime.co/", target="_blank") Realtime Framework
-              |  or 
-              a(href="http://firebase.com/", target="_blank") Firebase
-              | .
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left
-              img(data-src="i/feats/split-view.jpg", alt="", height="320", width="568").lazy
-          .feat-text
+        .text
+          h2 iOS Specific
+          p As said above Framework7 is iOS specific framework. From the very beginning it was carefully thought-out to give you easy ways to realize all incredible features  from all necessary UI elements visualization to complicated animation and touch interactions that characterize the platform. That is why Framework7 is the only solution to realize precisely pixel-perfect iOS native app's interface.
+        .pic
+            img(src="i/feats/ios.jpg", alt="")
+        .clearfix
+      .home-block.home-ui
+        .text
+          h2 UI Components
+          p Framework7 comes with a bunch of ready to use UI elements and widgets like modals, popup, action sheet, popover, list views, media lists, tabs, side panels, layout grid, preloader (activity indicator), form elements, etc. The awesome point is that you don't need JavaScript at all for the most of mentioned widgets.
+        .pic
+          img(data-src="i/feats/ui.jpg", alt="").lazy
+        .clearfix
+      .home-block.home-killer
+        h2 Killer Features
+        .tab-links
+          a(href="#").active Swipe Back
+          a(href="#") Swipe Actions
+          a(href="#") Dynamic Navbar
+          a(href="#") Pull To Refresh
+          a(href="#") Messages
+        .tabs
+          .tab.active
+            .pic
+              video(src="i/feats/swipeback.mp4", loop, autoplay)
+            .text
+              h3 Swipe Back
+              p One of Framework7' killing feature is supporting of iOS well known swipe back gesture from left border of screen when you want to get to the previous page. It simply works, and works perfectly as you expect it to do. Just swipe from left (or drag with mouse) area of the page to see smooth transition to the previous page. It is not just A-B transition. It really follows your finger with parallax animation while touch!
+          .tab
+            .pic
+              video(src="i/feats/swipeout.mp4", loop)
+            .text
+              h3 Swipe Actions
+              p Do you remember how you swipe left on the message in the Mail app if you want to delete it or mark as read? Yep, Framework7 has totally the same functionality for any list elements, with the same smooth animation and touch interaction!
+          .tab
+            .pic
+              video(src="i/feats/navbar.mp4", loop)
+            .text
+              h3 Dynamic Navbar
+              p As was mentioned already Framework7 makes everything to give you a feel of native iOS app. And one of the significant feature that improves this feeling is the dynamic navigation bar (navbar). You can see how its elements sliding and fading during pages transition and when you swipe back.
+          .tab
+            .pic
+              video(src="i/feats/ptr.mp4", loop)
+            .text
+              h3 Pull To Refresh
+              p Framework7 is probably the first and only framework that has this great feature realized on pure native scrolling! That is why pull to refresh behavior is perfect as possible and works totally equal in many native iOS apps!
+          .tab
+            .pic
+              video(src="i/feats/messages.mp4", loop)
+            .text
+              h3 Messages
+              p Framework7 comes with great realized "messages" widget that you can easily customize and integrate into your app for messaging between users or devices using some realtime sync data service like 
+      .home-block.home-styles
+        .text
+          h2 Easy To Customize
+          p With Framework7 everything is simple, all styles are divided by parts into small <b>.less</b> files, so you can really easy bring your own custom styles to your app.
+          p Check out Framework7 iOS apps in <a href="showcase/">Showcase</a> section:
+        .pic
+          img(src="i/showcase/delights1.jpeg")
+          img(src="i/showcase/series72.png")
+          img(src="i/showcase/zebra1.jpeg")
+          img(src="i/showcase/aquasella1.jpeg")
+      .home-block.home-more
+        .text
+          h2 Many More Features...
+        .feats
+          .feat
+            h3 Native Scrolling
+            p It can sound even curious but one of the most important Framework7 feature is that it uses only native scrolling. Moreover - it multiplies its advantages! So you can still have this awesome scrolling with momentum and resistance bounce without any scrolling issues!
+          .feat
             h3 Multiple Views (Split View)
-            p Framework7 supports unlimited number of different isolated views. And the fun thing is that you can easily control each single view without any line of JavaScript just using "data-view" attribute on links.      
-      
-      .row.feat-row
-        .col-100
-          h3 XHR + Caching + History + Preloading
-          p This is an unbeatable combination to make your app routing as perfect as possible. Framework7 is ready to route your app pages using XHR (Ajax) with its own internal methods and internal HTML configurable caching that allow to load pages faster and save a lot of time and traffic for your users! It loads page via Ajax only ones per specified caching period (10 minutes by default), other times it just gets it from memory. It allows to make further requests immediately!
-          p Navigating deeper and deeper you may face a problem about how to get back in the same order? Framework7 solves this problem by collecting own navigation history. It is especially good if your users may come to the same page from different routes. And with Framework7 it is enough just to add "back" class to your link and it will recognize what page to load and will do other job for you.
-          p Framework7 automatically preloads previous page (when available) so your users can always do the nice swipe back gesture to get that page immediately.
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left.no-border
-            img(data-src="i/feats/colors.jpg", width="450", height="394").lazy
-          .feat-text
-            h3 Easy To Customize
-            p With Framework7 everything is simple, all styles are divided by parts into small <code>.less</code> files, so you can really easy bring your own custom styles to your app.
-      .row.feat-row
-        .col-100
-          .feat-pic.feat-pic-left.feat-pic-small.no-border
-              img(data-src="i/feats/dom.jpg", alt="", height="155", width="320").lazy
-          .feat-text
-            h3 Custom Dom Library
+            p Framework7 supports unlimited number of different isolated views. And the fun thing is that you can easily control each single view without any line of JavaScript just using "data-view" attribute on links.       
+          .feat
+            h3 Library Agnostic
+            p Framework7 doesn't use and does not depend on any third party libraries. That is why it is ultra lightweight, performance and flexible.
+          .feat
+            h3 Clear JS API
+            p No need to learn something new With Framework7. It has ultra clear and easy JavaScript API methods to control every part of your app.
+          .feat
+            h3 High-performance Animation
+            p It is all about performance and Framework7 uses only high performance hardware accelerated css animations and transitions to achieve the best result.        
+          .feat
+            h3 Pages Animation
+            p One of the main target of Framework7 is to have native look and feeling of iOS application. And Framework7 is the only framework that solves it and offers 1:1 page animation with smooth parallax effect, changing opacity and shadow when loading new page.
+          .feat
+            h3 XHR + Caching + History + Preloading
+            p This is an unbeatable combination to make your app routing as perfect as possible. Framework7 is ready to route your app pages using XHR (optional) with its own internal methods and internal HTML configurable caching that allow to load pages faster and save a lot of time and traffic for your users! It loads page via Ajax only ones per specified caching period (10 minutes by default), other times it just gets it from memory. It allows to make further requests immediately!
+          .feat
+            h3 Dom7 - Custom Dom Library
             p As said above Framework7 doesn't use any third party library, even for DOM operation, even jQuery. It has its own custom DOM library that utilizes most edge and high-performance methods for DOM manipulation. You can also use it and you don’t need to learn something new for that, it has the same syntax as well known jQuery library with support of the most popular and widely used methods and jQuery-like chaining.
+      .home-block.home-free
+        .text
+          h2 And It Is Free
+          p Framework7 is completely free and open-source (MIT Licensed)
+          p
+            a(href="https://github.com/nolimits4web/Framework7/archive/v0.9.8.zip") Download
+            a(href="./get-started/") Get Started With Framework7
+            a(href="./get-started/") Documentation
     .share-line
       .center 
         .share

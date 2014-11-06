@@ -105,6 +105,7 @@
                 <li><a href="media-list-view.html">Media List View</a></li>
                 <li><a href="swipeout.html">Swipeout </a></li>
                 <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
               </ul>
             </li>
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
@@ -219,9 +220,9 @@
               </tr>
               <tr>
                 <td>linksView</td>
-                <td>string / HTMLElement</td>
+                <td>string / View instance</td>
                 <td>undefined</td>
-                <td>CSS Selector of another view or HTMLElement of other view. By defaul all links in initialized (only) view will load pages in this view. You can change this logic on the fly by changing this paremeter. This tell links to load pages in other view.</td>
+                <td>CSS Selector of another view or initialized View instance. By defaul all links in initialized (only) view will load pages in this view. You can change this logic on the fly by changing this paremeter. This tell links to load pages in other view.</td>
               </tr>
               <tr>
                 <th colspan="4">Navigation</th>
@@ -251,6 +252,12 @@
                 <td>Enable/disable preloading of previous page when you go deep in navigation. Should be enabled for correct work of "swipe back page" feature. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
               </tr>
               <tr>
+                <td>reloadPages</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>When enabled, View will always reload currently active page without loading new one</td>
+              </tr>
+              <tr>
                 <th colspan="4">Swipe back</th>
               </tr>
               <tr>
@@ -272,7 +279,13 @@
                 <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
               </tr>
               <tr>
-                <td>swipeBackPageBoxShadow</td>
+                <td>swipeBackPageAnimateShadow</td>
+                <td>boolean</td>
+                <td></td>
+                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+              </tr>
+              <tr>
+                <td>swipeBackPageAnimateOpacity</td>
                 <td>boolean</td>
                 <td></td>
                 <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>

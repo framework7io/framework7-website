@@ -105,6 +105,7 @@
                 <li><a href="media-list-view.html">Media List View</a></li>
                 <li><a href="swipeout.html">Swipeout </a></li>
                 <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
               </ul>
             </li>
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
@@ -252,9 +253,9 @@
               </tr>
               <tr>
                 <td>externalLinks</td>
-                <td>array</td>
-                <td>['external']</td>
-                <td>Array of class names and "rel" attributes for links that should be treated as external and shouldn't be handled by Framework7. For example such ['external'] value will match to links like &lt;a href="somepage.html" class="external"&gt; and &lt;a href="somepage.html" rel="external"&gt;</td>
+                <td>string</td>
+                <td>'.external'</td>
+                <td>CSS selector for links that should be treated as external and shouldn't be handled by Framework7. For example such '.external' value will match to links like &lt;a href="somepage.html" class="external"&gt; (with class "external")</td>
               </tr>
               <tr>
                 <td>animateNavBackIcon</td>
@@ -323,10 +324,15 @@
                 <td>Value in px. Width of invisible left edge of the screen that triggers swipe back action</td>
               </tr>
               <tr>
-                <td>swipeBackPageBoxShadow</td>
+                <td>swipeBackPageAnimateShadow</td>
                 <td>boolean</td>
                 <td>true</td>
                 <td>Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance</td>
+                <tr></tr>
+                <td>swipeBackPageAnimateOpacity</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Enable/disable opacity animation during swipe back action. You can disable it to improve performance</td>
               </tr>
               <tr>
                 <th colspan="4">Sortable Lists</th>
@@ -512,6 +518,18 @@
                 <td>If enabled then smart select page will be automatically closed after user picks any option</td>
               </tr>
               <tr>
+                <td>smartSelectFormTheme</td>
+                <td>string</td>
+                <td>undefined</td>
+                <td>One of 10 default <a href="color-themes.html">color themes</a> for form elements on smart select page/popup</td>
+              </tr>
+              <tr>
+                <td>smartSelectNavbarTheme</td>
+                <td>string</td>
+                <td>undefined</td>
+                <td>One of 10 default <a href="color-themes.html">color themes</a> for navbar on smart select page/popup</td>
+              </tr>
+              <tr>
                 <th colspan="4">Navbars / Toolbars</th>
               </tr>
               <tr>
@@ -525,6 +543,12 @@
                 <td>boolean</td>
                 <td>false</td>
                 <td>Set to true and Toolbar will be hidden automatically on page scroll down, and became visible on scroll up</td>
+              </tr>
+              <tr>
+                <td>hideTabbarOnPageScroll</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to true and Tab bar will be hidden automatically on page scroll down, and became visible on scroll up. Note that this is only for Tab Bar app layout, otherwise use <code>hideToolbarOnPageScroll</code></td>
               </tr>
               <tr>
                 <td>showBarsOnPageScrollEnd</td>

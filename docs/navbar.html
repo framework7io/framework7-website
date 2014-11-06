@@ -109,6 +109,7 @@
                 <li><a href="media-list-view.html">Media List View</a></li>
                 <li><a href="swipeout.html">Swipeout </a></li>
                 <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
               </ul>
             </li>
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
@@ -239,10 +240,18 @@
         &lt;/div&gt;
     &lt;/div&gt;
 &lt;/div&gt;    </code></pre>
-          <h2 data-device-preview="../docs-demos/navbar-hide.html">Related View methods</h2>
+          <h2 data-device-preview="../docs-demos/navbar-hide.html">Related App and View methods</h2>
           <p>If we have <a href="views.html">initialized View</a> we can use following methods available for Navbar:</p>
           <table class="methods-table">
             <tbody>
+              <tr>
+                <td>myApp.hideNavbar(<span>navbar</span>)</td>
+                <td>Hide specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.</td>
+              </tr>
+              <tr>
+                <td>myApp.showNavbar(<span>navbar</span>)</td>
+                <td>Show specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.</td>
+              </tr>
               <tr>
                 <td>view.hideNavbar()</td>
                 <td>Hide navbar in this View</td>
@@ -250,6 +259,14 @@
               <tr>
                 <td>view.showNavbar()</td>
                 <td>Show navbar in this View</td>
+              </tr>
+              <tr>
+                <td>myApp.sizeNavbars(<span>viewContainer</span>)</td>
+                <td>
+                  <p><code>viewContainer</code> - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLEelement</span>. URL of page to load</p>
+                  <p>Call this method to recalculate positional styles for Navbar in selected View. For example: <b>myApp.sizeNavbars('.view-main')</b></p>
+                  <p>It could be useful after you change some of Navbar elements dynamically.</p>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -285,27 +302,7 @@ $('.show-navbar').on('click', function () {
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
-          <div class="full-width stop-scroll-device">
-            <h2>Related App methods</h2>
-            <table class="methods-table">
-              <tbody>
-                <tr>
-                  <td rowspan="2" class="method">myApp.sizeNavbars(<span>viewContainer</span>)</td>
-                  <td>
-                    <ul class="method-parameters">
-                      <li><span class="parameter">viewContainer</span> - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLEelement</span>. URL of page to load</li>
-                    </ul>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <p>Call this method to recalculate positional styles for Navbar in selected View. For example: <code>myApp.sizeNavbars('.view-main')</code></p>
-                    <p>It could be useful after you change some of Navbar elements dynamically.</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <div style="height:100px" class="device-spacer"></div>
         </div>
       </div>
     </div>

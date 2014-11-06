@@ -29,10 +29,16 @@ block content
           | &lt;/div&gt;
       p By default, all Toolbar elements (links) equally spaced along toolbar - they have equal space between each other.
          
-      h2(data-device-preview="../docs-demos/toolbar-hide.html") Related View methods
+      h2(data-device-preview="../docs-demos/toolbar-hide.html") Related App and View methods
       p If we have <a href="views.html">initialized View</a> we can use following methods available for Toolbars:
       table.methods-table
         tbody
+          tr
+            td myApp.hideToolbar(<span>toolbar</span>)
+            td Hide specified toolbar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.
+          tr
+            td myApp.showToolbar(<span>toolbar</span>)
+            td Show specified toolbar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.
           tr
             td view.hideToolbar()
             td Hide toolbar in this View

@@ -110,16 +110,30 @@ block content
           |         &lt;/div&gt;
           |     &lt;/div&gt;
           | &lt;/div&gt;    
-      h2(data-device-preview="../docs-demos/navbar-hide.html") Related View methods
+      h2(data-device-preview="../docs-demos/navbar-hide.html") Related App and View methods
       p If we have <a href="views.html">initialized View</a> we can use following methods available for Navbar:
       table.methods-table
         tbody
+          tr
+            td myApp.hideNavbar(<span>navbar</span>)
+            td Hide specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
+          tr
+            td myApp.showNavbar(<span>navbar</span>)
+            td Show specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
           tr
             td view.hideNavbar()
             td Hide navbar in this View
           tr
             td view.showNavbar()
             td Show navbar in this View
+          tr
+            td myApp.sizeNavbars(<span>viewContainer</span>)
+            td 
+              p 
+                code viewContainer
+                |  - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLEelement</span>. URL of page to load
+              p Call this method to recalculate positional styles for Navbar in selected View. For example: <b>myApp.sizeNavbars('.view-main')</b>
+              p It could be useful after you change some of Navbar elements dynamically.
       p And the following example:
       pre
         code
@@ -156,20 +170,5 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/div&gt;
-
-      .full-width.stop-scroll-device
-        h2 Related App methods
-        table.methods-table
-          tbody
-            tr
-              td(rowspan="2").method myApp.sizeNavbars(<span>viewContainer</span>)
-              td 
-                ul.method-parameters
-                  li
-                    span.parameter viewContainer
-                    |  - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLEelement</span>. URL of page to load
-            tr
-              td 
-                p Call this method to recalculate positional styles for Navbar in selected View. For example: <code>myApp.sizeNavbars('.view-main')</code>
-                p It could be useful after you change some of Navbar elements dynamically.
-
+      .device-spacer(style="height:100px")
+      

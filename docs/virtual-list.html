@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Virtual List | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="langs"><span>Language: </span><a href="http://www.idangero.us/framework7/">EN</a><a href="http://framework7.taobao.org">CN</a></div>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="slider.html">Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
+          </ul>
+        </div>
+        <div class="docs-content">
+          <h1>Virtual List</h1>
+          <p>Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 components which work with lists such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.</p>
+          <h2>Virtual List HTML Layout</h2>
+          <p>Virtual List HTML layout is pretty simple, it is almost the same as for usual <a href="list-view.html">List View</a> or <a href="media-list-view.html">Media List View</a> with only difference, you need to leave it empty:</p>
+          <pre><code>&lt;!-- Virtual List --&gt;
+&lt;div class="list-block virtual-list"&gt;
+  &lt;!-- keep it empty --&gt;
+&lt;/div&gt;</code></pre>
+          <p>Where:</p>
+          <ul>
+            <li>
+              <p><code>virtual-list</code> - required additional class on any list-block that uses Virtual List</p>
+            </li>
+          </ul>
+          <h2>Initialize Virtual List</h2>
+          <p>Now, when we have list's HTML, we need to initialize it. We need to use required App method:</p>
+          <div class="method-wrap">
+            <p><span class="method">myApp.virtualList(<span>listBlockContainer</span>, <span>parameters</span>) </span><span>- initialize virtual list with parameters</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">listBlockContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of "list-block" HTML element. Required.</li>
+              <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with virtual list parameters. Required.</li>
+              <li class="method-returns"><strong>Method returns initialized Virtual List instance</strong></li>
+            </ul>
+          </div>
+          <p>For example:</p>
+          <pre><code>var myList = app.virtualList('.list-block', {
+    items: [1,2,3,4],
+    height: 44
+});   </code></pre>
+          <div class="important-note">Note that Virtual List container (listBlockContainer) should be in DOM on a moment of initialization. So if you use virtual list not on home page, you need to initialize it within <a href="pages.html#page-events">pageInit</a> (or pageBeforeInit) event</div>
+          <h2>Virtual List Parameters</h2>
+          <p>Let's look on list of all available parameters:</p>
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>items</td>
+                <td>array</td>
+                <td></td>
+                <td>Array with list items</td>
+              </tr>
+              <tr>
+                <td>rowsBefore</td>
+                <td>number</td>
+                <td></td>
+                <td>Amount of rows (items) to be rendered before current screen scroll position. By default it is equal to double amount of rows (items) that fit to screen</td>
+              </tr>
+              <tr>
+                <td>rowsAfter</td>
+                <td>number</td>
+                <td></td>
+                <td>Amount of rows (items) to be rendered after current screen scroll position. By default it is equal to the amount of rows (items) that fit to screen</td>
+              </tr>
+              <tr>
+                <td>cols</td>
+                <td>number</td>
+                <td>1</td>
+                <td>Number of items per row. Doesn't compatible when using Virtual List with dynamic height</td>
+              </tr>
+              <tr>
+                <td>height</td>
+                <td>number or function(item)</td>
+                <td>44</td>
+                <td>If <b>number</b> - item height in px. If <b>function</b> then function should return item height</td>
+              </tr>
+              <tr>
+                <td>template</td>
+                <td>string or function</td>
+                <td></td>
+                <td>Template7 string template or Template7 compiled template that used to render single item. Template should contain full HTML layout for single item, including wrapping <code>&lt;li&gt;&lt;/li&gt;</code> tags</td>
+              </tr>
+              <tr>
+                <td>renderItem</td>
+                <td>function(index, item)</td>
+                <td></td>
+                <td>This optional function allows to use custom function to render item HTML. It could be used instead of <b>template</b> parameter</td>
+              </tr>
+              <tr>
+                <td>cache</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Disable or enable DOM cache for already rendered list items. In this case each item will be rendered only once and all futher manipulations will be with DOM element. It is useful if your list items have some user interaction elements (like form elements or swipe outs) or could be modified</td>
+              </tr>
+              <tr>
+                <td>updatableScroll</td>
+                <td>boolean</td>
+                <td></td>
+                <td>Is the current device updates and handles scroll events during scroll. By default (if not specified) it is "false" for all iOS devices with iOS version less than 8. </td>
+              </tr>
+              <tr>
+                <th colspan="4">Search</th>
+              </tr>
+              <tr>
+                <td>searchByItem</td>
+                <td>function(query, index, item)</td>
+                <td></td>
+                <td>Search function that will be used by Search Bar, it receives search query, item index and item itself. If item matches to search query you need to return <code>true</code>, otherwise this function should return <code>false</code></td>
+              </tr>
+              <tr>
+                <td>searchAll</td>
+                <td>function(query, items)</td>
+                <td></td>
+                <td>Search function that will be used by Search Bar, it receives search query and array with all items. You need to loop through items and return array with indexes of matched items</td>
+              </tr>
+              <tr>
+                <th colspan="4">Callbacks</th>
+              </tr>
+              <tr>
+                <td>onItemBeforeInsert </td>
+                <td>function(list, item)</td>
+                <td></td>
+                <td>Callback function, will be executed before item will be added to virtual document fragment</td>
+              </tr>
+              <tr>
+                <td>onBeforeClear</td>
+                <td>function(list, fragment)</td>
+                <td></td>
+                <td>Callback function, will be executed before current DOM list will be removed and replaced with new document fragment</td>
+              </tr>
+              <tr>
+                <td>onItemsBeforeInsert</td>
+                <td>function(list, fragment)</td>
+                <td></td>
+                <td>Callback function, will be executed after current DOM list will be removed and before new document will be inserted</td>
+              </tr>
+              <tr>
+                <td>onItemsAfterInsert</td>
+                <td>function(list, fragment)</td>
+                <td></td>
+                <td>Callback function, will be executed after new document fragment with items inserted</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Virtual List Methods & Properties</h2>
+          <p>After we initialize Virtual List we have its initialized instance in variable (like <code>myList</code> variable in example above) with helpful methods and properties:</p>
+          <table class="methods-table">
+            <tbody>
+              <tr>
+                <th colspan="2">Properties</th>
+              </tr>
+              <tr>
+                <td>myList.items</td>
+                <td>Array with items</td>
+              </tr>
+              <tr>
+                <td>myList.filteredItems</td>
+                <td>Array with filtered items (after using ".filterItems" method)</td>
+              </tr>
+              <tr>
+                <td>myList.domCache</td>
+                <td>Object with cached dom items</td>
+              </tr>
+              <tr>
+                <td>myList.params</td>
+                <td>Parameters passed on list initialization</td>
+              </tr>
+              <tr>
+                <td>myList.listBlock</td>
+                <td>Dom7 instance of virtual list "list-block" container</td>
+              </tr>
+              <tr>
+                <td>myList.pageContent</td>
+                <td>Dom7 instance of parent "page-content" container </td>
+              </tr>
+              <tr>
+                <td>myList.currentFromIndex</td>
+                <td>Index number of currently first rendered item</td>
+              </tr>
+              <tr>
+                <td>myList.currentToIndex</td>
+                <td>Index number of currently last rendered item</td>
+              </tr>
+              <tr>
+                <td>myList.reachEnd</td>
+                <td>Boolean property. Equals <code>true</code> if the currently last rendered item is the last item of all specified items</td>
+              </tr>
+              <tr>
+                <th colspan="2">Methods</th>
+              </tr>
+              <tr>
+                <td>myList.filterItems(indexes);</td>
+                <td>Filter virtual list by passing array with indexes of items to show</td>
+              </tr>
+              <tr>
+                <td>myList.resetFilter();</td>
+                <td>Disable filter and display all items again</td>
+              </tr>
+              <tr>
+                <td>myList.appendItem(item);</td>
+                <td>Append item to virtual list</td>
+              </tr>
+              <tr>
+                <td>myList.appendItems(items);</td>
+                <td>Append array with items to virtual list</td>
+              </tr>
+              <tr>
+                <td>myList.prependItem(item);</td>
+                <td>Prepend item to virtual list</td>
+              </tr>
+              <tr>
+                <td>myList.prependItems(items);</td>
+                <td>Prepend array with items to virtual list</td>
+              </tr>
+              <tr>
+                <td>myList.replaceItem(index, items);</td>
+                <td>Replace item at specified index with the new one</td>
+              </tr>
+              <tr>
+                <td>myList.replaceAllItems(items);</td>
+                <td>Replace all items with arrays of new items</td>
+              </tr>
+              <tr>
+                <td>myList.moveItem(oldIndex, newIndex);</td>
+                <td>Move virtual item from oldIndex to newIndex</td>
+              </tr>
+              <tr>
+                <td>myList.insertItemBefore(index, item);</td>
+                <td>Insert new item before item with specified index</td>
+              </tr>
+              <tr>
+                <td>myList.deleteItem(index);</td>
+                <td>Delete item at specified index</td>
+              </tr>
+              <tr>
+                <td>myList.deleteItems(indexes);</td>
+                <td>Delete items at specified array of indexes</td>
+              </tr>
+              <tr>
+                <td>myList.deleteAllItems();</td>
+                <td>Delete all items</td>
+              </tr>
+              <tr>
+                <td>myList.clearCache();</td>
+                <td>Clear virtual list cached DOM elements</td>
+              </tr>
+              <tr>
+                <td>myList.destroy();</td>
+                <td>Destory initialized virtual list and detach all events</td>
+              </tr>
+              <tr>
+                <td>myList.update();</td>
+                <td>Update virtual list, including recalculation of list sizes and re-rendering of virtual list</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Examples</h2>
+          <h3>Plain Items</h3>
+          <p>In the most simple case when we don't need to use templating for items (without <code>template</code> and <code>renderItem</code> parameters) and when we don't need much logic here, we may just pass items HTML layout in <code>items</code> parameter:</p>
+          <pre><code class="js">var myList = myApp.virtualList('.list-block.virtual-list', {
+    // Array with plain HTML items
+    items: [
+        '&lt;li class="item-content"&gt;&lt;div clas="item-inner"&gt;&lt;div class="item-title"&gt;Item 1&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;',
+        '&lt;li class="item-content"&gt;&lt;div clas="item-inner"&gt;&lt;div class="item-title"&gt;Item 2&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;',
+        '&lt;li class="item-content"&gt;&lt;div clas="item-inner"&gt;&lt;div class="item-title"&gt;Item 3&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;',
+        //...
+        '&lt;li class="item-content"&gt;&lt;div clas="item-inner"&gt;&lt;div class="item-title"&gt;Item 1000&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;'
+    ]
+});</code></pre>
+          <h3>Templating</h3>
+          <p>But in most cases we may need some logic that we can use for filtering and templating, or if we load items from some JSON data. In this case we may pass array with data objects in <code>items</code> parameter and use Template7 <code>template</code> parameter or custom render function using <code>renderItem</code> parameter:</p>
+          <p>With Template7 template:</p>
+          <pre><code class="js">var myList = myApp.virtualList('.list-block.virtual-list', {
+    // Array with items data
+    items: [
+        {
+            title: 'Item 1',
+            picture: 'path/to/picture1.jpg'
+        },
+        {
+            title: 'Item 2',
+            picture: 'path/to/picture2.jpg'
+        },
+        // ...
+        {
+            title: 'Item 1000',
+            picture: 'path/to/picture1000.jpg'
+        },
+    ],
+    // Template 7 template to render each item
+    template: '&lt;li class="item-content"&gt;' +
+                  '&lt;div class="item-media"&gt;&lt;img src="{{picture}}"&gt;&lt;/div&gt;' +
+                  '&lt;div class="item-inner"&gt;' +
+                      '&lt;div class="item-title"&gt;{{title}}&lt;/div&gt;' +
+                  '&lt;/div&gt;' +
+               '&lt;/li&gt;'
+});            </code></pre>
+          <p>With custom render function:</p>
+          <pre><code class="js">var myList = myApp.virtualList('.list-block.virtual-list', {
+    // Array with items data
+    items: [
+        {
+            title: 'Item 1',
+            picture: 'path/to/picture1.jpg'
+        },
+        {
+            title: 'Item 2',
+            picture: 'path/to/picture2.jpg'
+        },
+        // ...
+        {
+            title: 'Item 1000',
+            picture: 'path/to/picture1000.jpg'
+        },
+    ],
+    // Custom render function to render item's HTML
+    renderItem: function (index, item) {
+        return '&lt;li class="item-content"&gt;' +
+                  '&lt;div class="item-media"&gt;&lt;img src="' + item.picture + '"&gt;&lt;/div&gt;' +
+                  '&lt;div class="item-inner"&gt;' +
+                      '&lt;div class="item-title"&gt;' + item.title + '&lt;/div&gt;' +
+                  '&lt;/div&gt;' +
+               '&lt;/li&gt;';
+    }
+});            </code></pre>
+          <h3>Using With Search Bar</h3>
+          <p>If we use Virtual List with search bar we need to provide search function in parameters using <code>searchAll</code> or <code>searchByItem</code> parameters:</p>
+          <pre><code>var myList = myApp.virtualList('.list-block.virtual-list', {
+    // Array with items data
+    items: [
+        {
+            title: 'Item 1',
+            picture: 'path/to/picture1.jpg'
+        },
+        {
+            title: 'Item 2',
+            picture: 'path/to/picture2.jpg'
+        },
+        // ...
+        {
+            title: 'Item 1000',
+            picture: 'path/to/picture1000.jpg'
+        },
+    ],
+    // search all items, we need to return array with indexes of matched items
+    searchAll: function (query, items) {
+        var foundItems = [];
+        for (var i = 0; i < items.length; i++) {
+            // Check if title contains query string
+            if (items[i].title.indexOf(query.trim()) >= 0) foundItems.push(i);
+        }
+        // Return array with indexes of matched items
+        return foundItems; 
+    }
+});  </code></pre>
+          <p>The same but with <code>searchByItem</code> parameter:</p>
+          <pre><code>var myList = myApp.virtualList('.list-block.virtual-list', {
+    // Array with items data
+    items: [
+        {
+            title: 'Item 1',
+            picture: 'path/to/picture1.jpg'
+        },
+        {
+            title: 'Item 2',
+            picture: 'path/to/picture2.jpg'
+        },
+        // ...
+        {
+            title: 'Item 1000',
+            picture: 'path/to/picture1000.jpg'
+        },
+    ],
+    // search item by item
+    searchByItem: function (query, index, item) {
+        // Check if title contains query string
+        if (item.title.indexOf(query.trim()) >= 0) {
+            return true; //item matches query
+        }
+        else {
+            return false; //item doesn't match
+        }
+    }
+}); </code></pre>
+          <h3>Dynamic Height</h3>
+          <p>If not all of our items should be the same height we use dynamic height by specifying function in <code>height</code> parameter instead of number:</p>
+          <pre><code>var myList = myApp.virtualList('.list-block.virtual-list', {
+    // Array with items data
+    items: [
+        {
+            title: 'Item 1',
+            picture: 'path/to/picture1.jpg'
+        },
+        {
+            title: 'Item 2'
+        },
+        {
+            title: 'Item 3',
+            picture: 'path/to/picture3.jpg'
+        },
+        // ...
+        {
+            title: 'Item 1000'
+        },
+    ],
+    // Item template
+    template: '...',
+ 
+    // Height function
+    height: function (item) {
+        if (item.picture) return 100; //item with picture is 100px height
+        else return 44; //item without picture is 44px height
+    }
+});     </code></pre>
+          <div class="important-note">
+            <p>Note that script will not actually set height on your items, so make sure that your items are really have specified height. You may also need to set it in CSS or using "style" attribute in <code>template</code> or <code>renderItem</code> parameters</p>
+            <p>Also note that dynamic height currently is not compatible with <code>cols</code> parameter</p>
+          </div>
+          <h3>API Methods</h3>
+          <p>If we need to add, remove, replace or move items in list we need to use Virtual List methods:</p>
+          <pre><code>// Initialize List
+var myList = myApp.virtualList('.list-block.virtual-list', {
+    // Array with items data
+    items: [
+        {
+            title: 'Item 1'
+        },
+        {
+            title: 'Item 2'
+        },
+        // ...
+        {
+            title: 'Item 1000'
+        }
+    ],
+ 
+    // Item template
+    template: '...',
+});
+ 
+// Append Item
+myList.appendItem({
+    title: 'Item 1001'
+});
+ 
+// Append multiple items when clicking on some button
+$('.button.append-items').on('click', function () {
+    // Append multiple items by passing array with items
+    myList.appendItem([
+        {
+            title: 'Item 1002'
+        },
+        {
+            title: 'Item 1003'
+        },
+        {
+            title: 'Item 1004'
+        }
+    ]);    
+});
+ 
+// Replace First Item
+myList.replaceItem(0, {
+    title: 'New Item 1'
+});
+ 
+// Show only first 10 items when clicking on button
+$('.button.show-first-10').on('click', function () {
+    // We need to pass array with indexes of items to show
+    myList.filter([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+});
+ 
+// Reset filter
+$('.button.reset-filter').on('click', function () {
+    myList.resetFilter();
+});
+ 
+// Insert new item before 1st and 2nd:
+myList.insertItemBefore(1, {
+    title: 'Item 1.5'
+});    </code></pre>
+          <div class="important-note">
+            <p>Note that when you use methods to manipulate virtual list items you need to pass each item in the same format as you specify them in <b>items</b> parameter</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2014 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');      
+    </script>
+  </body>
+</html>
