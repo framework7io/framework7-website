@@ -206,7 +206,7 @@
             <h2>Trigger Pull To Refresh</h2>
             <p>We can also trigger Pull To Refresh manually by using the following method:</p>
             <div class="method-wrap">
-              <p><span class="method">myApp.pullToRefreshTrigger(<span>ptrContent</span>) </span><span>- trigger pull to refresh on specified content content</span></p>
+              <p><span class="method">myApp.pullToRefreshTrigger(<span>ptrContent</span>) </span><span>- trigger pull to refresh on specified pull to refresh content</span></p>
               <ul class="method-parameters">
                 <li><span class="parameter">ptrContent</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to trigger</li>
               </ul>
@@ -273,6 +273,23 @@ ptrContent.on('refresh', function (e) {
         myApp.pullToRefreshDone();
     }, 2000);
 });</code></pre>
+          <div class="full-width stop-scroll-device">
+            <h2>Destroy/Disable Pull To Refresh</h2>
+            <p>Sometimes you may need to disable Pull To Refresh on page. We can do that using the following method: </p>
+            <div class="method-wrap">
+              <p><span class="method">myApp.destroyPullToRefresh(<span>ptrContent</span>) </span><span>- destroy/disable pull to refresh on specified pull to refresh content</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">ptrContent</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to disable</li>
+              </ul>
+            </div>
+            <p>And if we need to initialize/enable it again:</p>
+            <div class="method-wrap">
+              <p><span class="method">myApp.initPullToRefresh(<span>ptrContent</span>) </span><span>- initialize/enable pull to refresh</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">ptrContent</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to enable</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -29,7 +29,7 @@ block content
           | &lt;/div&gt; 
       h2 Expressions syntax
       p Template7 support expressions with the following syntax:
-      h3 Variables:
+      h4 Variables:
       ul
         li 
           p <code>{{title}}</code> - plain variable. Outputs "title" variable in current context
@@ -43,7 +43,9 @@ block content
           p <code>{{person.name}}</code> - plain variable. Outputs variable equals to "name" property of "person" variable in current context
         li
           p <code>{{../person.name}}</code> - plain variable. The same but for parent context
-      h3 Block expressions
+        li
+          p <code>{{@index}}</code> - access to additional data variable. Such data variables could be used in helpers
+      h4 Block expressions
       ul
         li
           p <code>{{#each}}</code> - begin of block expression
@@ -54,7 +56,7 @@ block content
         li
           p <code>{{#each reverse="true"}}</code> - begin of block expression with passed <code>reverse:true</code> hash arguments
 
-      h3 Helpers
+      h4 Helpers
       p Helpers could be plain expressions and block expressions:
       ul
         li
@@ -88,7 +90,7 @@ block content
       
       h2 Built-In Helpers
       p Helpers in Template7 are like predefined functions that do something with passed context.
-      h3 {{#each}}...{{else}}...{{/each}}
+      h4 {{#each}}...{{else}}...{{/each}}
       p <code>{{#each}}</code> is a block expression, that iterates through items of passed Array or through properties of passed Object.
       table.template7-examples
         thead
@@ -236,7 +238,7 @@ block content
                   | &lt;ul&gt;
                   |   &lt;li&gt;No properties&lt;/li&gt;
                   | &lt;/ul&gt;
-      h3 {{#if}}...{{else}}...{{/if}}
+      h4 {{#if}}...{{else}}...{{/if}}
       p {{#if}} helper renders content if passed context is not "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper:
       table.template7-examples
         thead
@@ -284,7 +286,7 @@ block content
                 code
                   | &lt;p&gt;Hello, my name is John Doe.&lt;/p&gt;
                   | &lt;p&gt;I don't have hobby&lt;/p&gt;
-      h3 {{#unless}}...{{else}}...{{/unless}}
+      h4 {{#unless}}...{{else}}...{{/unless}}
       p {{#unless}} helper renders content if passed context is "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper:
       table.template7-examples
         thead
@@ -332,7 +334,7 @@ block content
                 code
                   | &lt;p&gt;Hello, my name is John Doe.&lt;/p&gt;
                   | &lt;p&gt;I have hobby&lt;/p&gt;
-      h3 {{#with}}...{{/with}}
+      h4 {{#with}}...{{/with}}
       p {{#with}} helper changes rendering context to the passed context:            
       table.template7-examples
         thead
@@ -361,7 +363,7 @@ block content
               pre
                 code
                   | &lt;p&gt;Car has 150 hp power and 200 km/h maximum speed&lt;/p&gt;
-      h3 {{#variableName}}...{{/variableName}}
+      h4 {{#variableName}}...{{/variableName}}
       p If you pass a block expression with helper name that is in the expression context, then it will work like {{#each}} helper for this context if it is an Array, and will work like {{#with}} helper if it is an Object:
       table.template7-examples
         thead
@@ -421,7 +423,7 @@ block content
               pre
                 code
                   | &lt;p&gt;Car has 150 hp power and 200 km/h maximum speed&lt;/p&gt;
-      h3 {{join delimeter=""}}
+      h4 {{join delimeter=""}}
       p This plain helper will join Array items to single string with passed delimeter
       table.template7-examples
         thead
@@ -588,6 +590,21 @@ block content
           li
             span.parameter name - 
             | <span class="parameter-type">string</span> - helper name
+      h2 Global Context
+      p Template7 also supports global context which is accessible from any context. 
+      p We can specify it in <code>Template7.global</code> property:
+      pre
+        code
+          | Template7.global = {
+          |     os: 'iOS',
+          |     browser: 'Chrome',
+          |     username: 'johndoe',
+          |     email: 'john@doe.com'
+          | };
+      p To access it in templates we need to use <code>{{@global}}</code> variable:
+      pre
+        code.html
+          | &lt;p&gt;Hello, {{@global.username}}. Your email is {{@global.email}}&lt;/p&gt;
       h2 Performance Tips
       p Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:
       pre

@@ -155,432 +155,582 @@ var $$ = Dom7;</code></pre>
 });</code></pre>
           <h2>Available Methods</h2>
           <p>All these methods works almost in the same way and with the same arguments as in jQuery or Zepto:</p>
-          <table class="methods-table">
-            <tr>
-              <td>.addClass(<span>className</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.removeClass(<span>className</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.hasClass(<span>className</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.toggleClass(<span>className</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.prop(<span>propName</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.prop(<span>propName</span>, <span>propValue</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.attr(<span>attrName</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.attr(<span>attrName</span>, <span>attrValue</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.removeAttr(<span>attrName</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.data(<span>key</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.data(<span>key</span>, <span>value</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.val() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.val(<span>newValue</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.transform(<span>CSSTransformString</span>) </td>
-              <td>Adds prefixed CSS transform property: <code>$$('a').transform('rotate(90deg)')</code></td>
-            </tr>
-            <tr>
-              <td>.transition(<span>transitionDuration</span>) </td>
-              <td>Set CSS transition-duration property to collection: <code>$$('p').transition(300)</code></td>
-            </tr>
-            <tr>
-              <td>.on(<span>eventName</span>, <span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.on(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>) </td>
-              <td>Live/delegated event listener</td>
-            </tr>
-            <tr>
-              <td>.off(<span>eventName</span>, <span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.off(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>) </td>
-              <td>Remove live/delegated event listener</td>
-            </tr>
-            <tr>
-              <td>.trigger(<span>eventName</span>, <span>eventData</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.transitionEnd(<span>callback</span>, <span>permanent</span>) </td>
-              <td>Adds prefixed transitionEnd event listener to collection:
-                <pre><code>$$('a').transitionEnd(function(){ /* do something */ })</code></pre>
-              </td>
-            </tr>
-            <tr>
-              <td>.animationEnd(<span>callback</span>) </td>
-              <td>Adds prefixed animationEnd event listener to collection:
-                <pre><code>$$('a').animationEnd(function(){ /* do something */ })</code></pre>
-              </td>
-            </tr>
-            <tr>
-              <td>.width() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.outerWidth() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.height() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.outerHeight()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.offset() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.hide() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.show() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.css(<span>property</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.css(<span>property</span>, <span>value</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.css(<span>propertiesObject</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.each(<span>callback</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.html() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.html(<span>newInnerHTML</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.text() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.text(<span>newTextContent</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.is(<span>CSSSelector</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.is(<span>HTMLElement</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.index() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.eq(<span>index</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.append(<span>newHTML</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.append(<span>HTMLElement</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.prepend(<span>newHTML</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.prepend(<span>HTMLElement</span>) </td>
-              <td>   </td>
-            </tr>
-            <tr>
-              <td>.insertBefore(<span>CSSSelector</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.insertBefore(<span>HTMLElement</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.insertAfter(<span>CSSSelector</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.insertAfter(<span>HTMLElement</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.next(selector) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.nextAll(selector) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.prev(selector) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.prevAll(selector) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.parent(<span>CSSSelector</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.parents(<span>CSSSelector</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.find(<span>CSSSelector</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.children(<span>CSSSelector</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.remove() </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.scrollTop() </td>
-              <td>Get scrollTop position of element</td>
-            </tr>
-            <tr>
-              <td>.scrollTop(position, duration) </td>
-              <td>Set scrollTop "position" with animation during "duration" (in ms). Scroll top position will be set immediately if duration is not specified</td>
-            </tr>
-            <tr>
-              <td>.scrollLeft() </td>
-              <td>Get scrollLeft position of element</td>
-            </tr>
-            <tr>
-              <td>.scrollLeft(position, duration) </td>
-              <td>Set scrollLeft "position" with animation during "duration" (in ms). Scroll left postion will be set immediately if duration is not specified</td>
-            </tr>
-            <tr>
-              <td>.scrollTo(left, top, duration) </td>
-              <td>Set scroll left and scroll top with animation during "duration" (in ms). Scroll postion will be set immediately if duration is not specified</td>
-            </tr>
-            <th colspan="2">Shortcuts</th>
-            <tr>
-              <td>.click()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.click(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.blur()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.blur(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.focus()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.focus(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.focusin()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.focusin(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.focusout()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.focusout(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.keyup()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.keyup(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.keydown()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.keydown(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.keypress()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.keypress(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.submit()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.submit(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.change()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.change(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mousedown()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mousedown(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mousemove()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mousemove(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseup()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseup(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseenter()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseenter(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseleave()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseleave(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseout()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseout(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseover()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.mouseover(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.touchstart()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.touchstart(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.touchend()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.touchend(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.touchmove()</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.touchmove(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.resize(<span>handler</span>) </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>.scroll(<span>handler</span>) </td>
-              <td></td>
-            </tr>
+          <table class="methods-table dom7-table">
+            <tbody>
+              <tr>
+                <th colspan="2">Classes</th>
+              </tr>
+              <tr>
+                <td>.addClass(<span>className</span>) </td>
+                <td>Add class to elements
+                  <pre><code class="js">//Add "intro" class to all paragraphs
+$$('p').addClass('intro');</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.removeClass(<span>className</span>) </td>
+                <td>Remove specified class
+                  <pre><code class="js">//Add "big" class from all links with "big" class
+$$('a.big').removeClass('big');</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.hasClass(<span>className</span>) </td>
+                <td>Determine whether any of the matched elements are assigned the given class:
+                  <pre><code class="html">&lt;p class="intro"&gt;Lorem ipsum...&lt;/p&gt;</code></pre>
+                  <pre><code class="js">$$('p').hasClass('intro'); //-> true</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.toggleClass(<span>className</span>) </td>
+                <td>Remove (if class is present) or add (if not) one or more classes from each element in the set of matched elements:
+                  <pre><code class="html">&lt;!-- Before --&gt;
+&lt;h1 class="small"&gt;This is first title&lt;/h1&gt;
+&lt;h2&gt;This is subtitle&lt;/h2&gt;                </code></pre>
+                  <pre><code class="js">$$('h1, h2').toggleClass('small');</code></pre>
+                  <pre><code>&lt;!-- After --&gt;
+&lt;h1&gt;This is first title&lt;/h1&gt;
+&lt;h2 class="small"&gt;This is subtitle&lt;/h2&gt;                </code></pre>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2">Attributes and properties</th>
+              </tr>
+              <tr>
+                <td>.prop(<span>propName</span>) </td>
+                <td>Get property value:
+                  <pre><code>var isChecked = $$('input').prop('checked');</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.prop(<span>propName</span>, <span>propValue</span>) </td>
+                <td>Set single property value:
+                  <pre><code>//Make all checkboxes checked
+$$('input[type="checkbox"]').prop('checked', true);</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.prop(<span>propertiesObject</span>) </td>
+                <td>Set multiple properties:
+                  <pre><code class="js">$$('input').prop({
+  checked: false,
+  disabled: true
+})                </code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.attr(<span>attrName</span>) </td>
+                <td>Get attribute value:
+                  <pre><code>&lt;a href="http://google.com"&gt;Google&lt;/a&gt;</code></pre>
+                  <pre><code class="js">var link = $$('a').attr('href'); //-&gt; http://google.com</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.attr(<span>attrName</span>, <span>attrValue</span>) </td>
+                <td>Set single attribute value:
+                  <pre><code>//Set all links to google
+$$('a').attr('href', 'http://google.com');</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.attr(<span>attributesObject</span>) </td>
+                <td>Set multiple attributes:
+                  <pre><code class="js">$$('a').attr({
+  id: 'new-id',
+  title: 'Link to Google',
+  href: 'http://google.com'
+}) </code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.removeAttr(<span>attrName</span>) </td>
+                <td>Remove specified attribute:
+                  <pre><code class="js">//Remove "src" attribute from all images
+$$('img').removeAttr('src');</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.val() </td>
+                <td>Get the current value of the first element in the set of matched elements
+                  <pre><code class="html">&lt;input id="myInput" type="text" value="Lorem ipsum"/&gt;</code></pre>
+                  <pre><code class="js">var inputVal = $$('#myInput').val(); //-> 'Lorem ipsum'</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.val(<span>newValue</span>) </td>
+                <td>Set the value of every matched element
+                  <pre><code>$$('input#myInput').val('New value here');</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2">Data storage</th>
+              </tr>
+              <tr>
+                <td>.data(<span>key</span>, <span>value</span>) </td>
+                <td>Store arbitrary data associated with the matched elements
+                  <pre><code class="js">$$('a').data('user', {
+    id: '123',
+    name: 'John',
+    email: 'john@doe.com'
+});  </code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.data(<span>key</span>) </td>
+                <td>Return the value at the named data store for the first element in the collection, as set by data(key, value) or by an HTML5 data-* attribute
+                  <pre><code class="js">var user = $$('a').data('user'); 
+//-> {id: '123', name: 'John', email: 'john@doe.com'}</code></pre>
+                  <p>or</p>
+                  <pre><code class="html">&lt;p data-id="123"&gt;Lorem ipsum...&lt;/p&gt;</code></pre>
+                  <pre><code class="js">var id = $$('p').data('id'); //-> 123</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2">CSS transform, transitions</th>
+              </tr>
+              <tr>
+                <td>.transform(<span>CSSTransformString</span>) </td>
+                <td>Adds prefixed CSS transform property: 
+                  <pre><code class="js">$$('a').transform('rotate(90deg)')</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.transition(<span>transitionDuration</span>) </td>
+                <td>Set CSS transition-duration property to collection: 
+                  <pre><code class="js">$$('p').transition(300)</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2">Events</th>
+              </tr>
+              <tr>
+                <td>.on(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) </td>
+                <td>Add event handler function to one or more events to the selected elements.
+                  <pre><code class="js">$$('a').on('click', function (e) { 
+  console.log('clicked'); 
+});</code></pre>
+                  <pre><code class="js">$$('input[type="text"]').on('keyup keydown change', function (e) { 
+  console.log('input value changed'); 
+});</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.on(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>, <span>useCapture</span>) </td>
+                <td>Live/delegated event handler
+                  <pre><code class="js">$$(document).on('click', 'a', function (e) { 
+  console.log('link clicked'); 
+});</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.off(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) </td>
+                <td>Remove event handler
+                  <pre><code class="js">function clickHandler(){
+    console.log('clicked');
+}
+// Add event listener
+$('a').on('click', clickHandler);
+// Remove event listener
+$('a').off('click', clickHandler);                  </code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.off(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>, <span>useCapture</span>) </td>
+                <td>Remove live/delegated event handler
+                  <pre><code class="js">function clickHandler(){
+    console.log('clicked');
+}
+// Add event listener
+$(document).on('click', 'a', clickHandler);
+// Remove event listener
+$(document).off('click', 'a', clickHandler);</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.trigger(<span>eventName</span>, <span>eventData</span>) </td>
+                <td>Execute all handlers added to the matched elements for the specified event</td>
+                <pre><code class="js">$$(window).trigger('resize');</code></pre>
+              </tr>
+              <tr>
+                <td>.transitionEnd(<span>callback</span>, <span>permanent</span>) </td>
+                <td>Adds prefixed transitionEnd event handler to collection:
+                  <pre><code class="js">$$('a').transitionEnd(function(){ /* do something */ })</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.animationEnd(<span>callback</span>) </td>
+                <td>Adds prefixed animationEnd event handler to collection:
+                  <pre><code class="js">$$('a').animationEnd(function(){ /* do something */ })</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2">Styles</th>
+              </tr>
+              <tr>
+                <td>.width() </td>
+                <td>Get the current computed width for the first element in the set of matched elements
+                  <pre><code class="js">var boxWidth = $$('div#box').width();</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.outerWidth(<span>[includeMargin]</span>) </td>
+                <td>Get the current computed width for the first element in the set of matched elements, including padding and border, and margin (if includeMargin is <b>true</b>)
+                  <pre><code class="js">var outerWidth = $$('div#box').outerWidth(true);</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.height() </td>
+                <td>Get the current computed height for the first element in the set of matched elements
+                  <pre><code class="js">var boxHeight = $$('div#box').height();</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.outerHeight(<span>[includeMargin]</span>)</td>
+                <td>Get the current computed height for the first element in the set of matched elements, including padding and border, and margin (if includeMargin is <b>true</b>)
+                  <pre><code class="js">var outerHeight = $$('div#box').outerHeight(true);</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.offset() </td>
+                <td>Get the current coordinates of the first element relative to the document
+                  <pre><code class="js">var coords = $$('.content').offset(); //-> {top: 100, left: 200}
+var top = coords.top; //-> 100
+var left = coords.left; //-> 200</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.hide() </td>
+                <td>Set "display:none" to the matched elements
+                  <pre><code class="js">//hide all paragraphs
+$$('p').hide();</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.show() </td>
+                <td>Set "display:block" to the matched elements
+                  <pre><code class="js">//show all paragraphs
+$$('p').show();</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.css(<span>property</span>) </td>
+                <td>Get value of specified CSS property for the first element:
+                  <pre><code>$$('.content').css('left'); //-> 200px</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.css(<span>property</span>, <span>value</span>) </td>
+                <td>Set specified CSS property to the matched elements:
+                  <pre><code>$$('.content').css('left', '100px');</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.css(<span>propertiesObject</span>) </td>
+                <td>Set multiple CSS properties to the matched elements:
+                  <pre><code>$('a').css({
+    left: '100px',
+    top: '200px',
+    color: 'red',
+    width: '300px',
+    marginLeft: '17px',
+    'padding-right': '20px'
+});</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2">Scroll</th>
+              </tr>
+              <tr>
+                <td>.scrollTop() </td>
+                <td>Get scrollTop position of element</td>
+              </tr>
+              <tr>
+                <td>.scrollTop(position, duration) </td>
+                <td>Set scrollTop "position" with animation during "duration" (in ms). Scroll top position will be set immediately if duration is not specified</td>
+              </tr>
+              <tr>
+                <td>.scrollLeft() </td>
+                <td>Get scrollLeft position of element</td>
+              </tr>
+              <tr>
+                <td>.scrollLeft(position, duration) </td>
+                <td>Set scrollLeft "position" with animation during "duration" (in ms). Scroll left postion will be set immediately if duration is not specified</td>
+              </tr>
+              <tr>
+                <td>.scrollTo(left, top, duration) </td>
+                <td>Set scroll left and scroll top with animation during "duration" (in ms). Scroll postion will be set immediately if duration is not specified</td>
+              </tr>
+              <tr>
+                <th colspan="2">Dom Manipulation</th>
+              </tr>
+              <tr>
+                <td>.each(<span>callback</span>) </td>
+                <td>Iterate over collection, executing a callback function for each matched element</td>
+              </tr>
+              <tr>
+                <td>.html() </td>
+                <td>Get the HTML contents of the first element in the set of matched elements</td>
+              </tr>
+              <tr>
+                <td>.html(<span>newInnerHTML</span>) </td>
+                <td>Set the HTML contents of every matched element</td>
+              </tr>
+              <tr>
+                <td>.text() </td>
+                <td>Get the text contents of the first element in the set of matched elements</td>
+              </tr>
+              <tr>
+                <td>.text(<span>newTextContent</span>) </td>
+                <td>Set the text contents of every matched element</td>
+              </tr>
+              <tr>
+                <td>.is(<span>CSSSelector</span>) </td>
+                <td>Check the current matched set of elements against CSS selector</td>
+              </tr>
+              <tr>
+                <td>.is(<span>HTMLElement</span>) </td>
+                <td>Check the current matched set of elements against HTML element or Dom7 collection</td>
+              </tr>
+              <tr>
+                <td>.index() </td>
+                <td>Return the position of the first element within the Dom7 collection relative to its sibling elements</td>
+              </tr>
+              <tr>
+                <td>.eq(<span>index</span>) </td>
+                <td>Reduce the set of matched elements to the one at the specified index</td>
+              </tr>
+              <tr>
+                <td>.append(<span>HTMLString</span>) </td>
+                <td>Insert content, specified by the parameter, to the end of each element in the set of matched elements</td>
+              </tr>
+              <tr>
+                <td>.append(<span>HTMLElement</span>) </td>
+                <td>Insert specified HTML element to the end of element in the set of matched elements</td>
+              </tr>
+              <tr>
+                <td>.prepend(<span>newHTML</span>) </td>
+                <td>Insert content, specified by the parameter, to the beginning of each element in the set of matched elements</td>
+              </tr>
+              <tr>
+                <td>.prepend(<span>HTMLElement</span>) </td>
+                <td>Insert specified HTML element to the beginning of element in the set of matched elements</td>
+              </tr>
+              <tr>
+                <td>.insertBefore(<span>target</span>) </td>
+                <td>Insert every element in the set of matched elements before the target. Target could be specified as CSS selector or HTML element or Dom7 collection</td>
+              </tr>
+              <tr>
+                <td>.insertAfter(<span>target</span>) </td>
+                <td>Insert every element in the set of matched elements after the target. Target could be specified as CSS selector or HTML element or Dom7 collection</td>
+              </tr>
+              <tr>
+                <td>.next(<span>[selector]</span>) </td>
+                <td>Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector</td>
+              </tr>
+              <tr>
+                <td>.nextAll(<span>[selector]</span>) </td>
+                <td>Get all following siblings of each element in the set of matched elements, optionally filtered by a selector</td>
+              </tr>
+              <tr>
+                <td>.prev(<span>[selector]</span>) </td>
+                <td>Get the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector</td>
+              </tr>
+              <tr>
+                <td>.prevAll(<span>[selector]</span>) </td>
+                <td>Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector</td>
+              </tr>
+              <tr>
+                <td>.parent(<span>[selector]</span>) </td>
+                <td>Get the first parent of each element in the current set of matched elements, optionally filtered by a selector</td>
+              </tr>
+              <tr>
+                <td>.parents(<span>[selector]</span>) </td>
+                <td>Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector</td>
+              </tr>
+              <tr>
+                <td>.find(<span>selector</span>) </td>
+                <td>Get the descendants of each element in the current set of matched elements, filtered by a selector</td>
+              </tr>
+              <tr>
+                <td>.children(<span>selector</span>) </td>
+                <td>Get the children of each element in the set of matched elements, optionally filtered by a selector</td>
+              </tr>
+              <tr>
+                <td>.remove() </td>
+                <td>Remove/detach matched elements from the Dom</td>
+              </tr>
+              <tr>
+                <th colspan="2">Shortcuts</th>
+              </tr>
+              <tr>
+                <td>.click()</td>
+                <td>Trigger "click" event on collection</td>
+              </tr>
+              <tr>
+                <td>.click(<span>handler</span>) </td>
+                <td>Add "click" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.blur()</td>
+                <td>Trigger "blur" event on collection</td>
+              </tr>
+              <tr>
+                <td>.blur(<span>handler</span>) </td>
+                <td>Add "blur" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.focus()</td>
+                <td>Trigger "focus" event on collection</td>
+              </tr>
+              <tr>
+                <td>.focus(<span>handler</span>) </td>
+                <td>Add "focus" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.focusin()</td>
+                <td>Trigger "focusin" event on collection</td>
+              </tr>
+              <tr>
+                <td>.focusin(<span>handler</span>) </td>
+                <td>Add "focusin" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.focusout()</td>
+                <td>Trigger "focusout" event on collection</td>
+              </tr>
+              <tr>
+                <td>.focusout(<span>handler</span>) </td>
+                <td>Add "focusout" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.keyup()</td>
+                <td>Trigger "keyup" event on collection</td>
+              </tr>
+              <tr>
+                <td>.keyup(<span>handler</span>) </td>
+                <td>Add "keyup" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.keydown()</td>
+                <td>Trigger "keydown" event on collection</td>
+              </tr>
+              <tr>
+                <td>.keydown(<span>handler</span>) </td>
+                <td>Add "keydown" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.keypress()</td>
+                <td>Trigger "keypress" event on collection</td>
+              </tr>
+              <tr>
+                <td>.keypress(<span>handler</span>) </td>
+                <td>Add "keypress" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.submit()</td>
+                <td>Trigger "submit" event on collection</td>
+              </tr>
+              <tr>
+                <td>.submit(<span>handler</span>) </td>
+                <td>Add "submit" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.change()</td>
+                <td>Trigger "change" event on collection</td>
+              </tr>
+              <tr>
+                <td>.change(<span>handler</span>) </td>
+                <td>Add "change" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.mousedown()</td>
+                <td>Trigger "mousedown" event on collection</td>
+              </tr>
+              <tr>
+                <td>.mousedown(<span>handler</span>) </td>
+                <td>Add "mousedown" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.mousemove()</td>
+                <td>Trigger "mousemove" event on collection</td>
+              </tr>
+              <tr>
+                <td>.mousemove(<span>handler</span>) </td>
+                <td>Add "mousemove" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.mouseup()</td>
+                <td>Trigger "mouseup" event on collection</td>
+              </tr>
+              <tr>
+                <td>.mouseup(<span>handler</span>) </td>
+                <td>Add "mouseup" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.mouseenter()</td>
+                <td>Trigger "mouseenter" event on collection</td>
+              </tr>
+              <tr>
+                <td>.mouseenter(<span>handler</span>) </td>
+                <td>Add "mouseenter" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.mouseleave()</td>
+                <td>Trigger "mouseleave" event on collection</td>
+              </tr>
+              <tr>
+                <td>.mouseleave(<span>handler</span>) </td>
+                <td>Add "mouseleave" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.mouseout()</td>
+                <td>Trigger "mouseout" event on collection</td>
+              </tr>
+              <tr>
+                <td>.mouseout(<span>handler</span>) </td>
+                <td>Add "mouseout" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.mouseover()</td>
+                <td>Trigger "mouseover" event on collection</td>
+              </tr>
+              <tr>
+                <td>.mouseover(<span>handler</span>) </td>
+                <td>Add "mouseover" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.touchstart()</td>
+                <td>Trigger "touchstart" event on collection</td>
+              </tr>
+              <tr>
+                <td>.touchstart(<span>handler</span>) </td>
+                <td>Add "touchstart" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.touchend()</td>
+                <td>Trigger "touchend" event on collection</td>
+              </tr>
+              <tr>
+                <td>.touchend(<span>handler</span>) </td>
+                <td>Add "touchend" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.touchmove()</td>
+                <td>Trigger "touchmove" event on collection</td>
+              </tr>
+              <tr>
+                <td>.touchmove(<span>handler</span>) </td>
+                <td>Add "touchmove" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.resize(<span>handler</span>) </td>
+                <td>Add "resize" event handler to collection</td>
+              </tr>
+              <tr>
+                <td>.scroll(<span>handler</span>) </td>
+                <td>Add "scroll" event handler to collection</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>

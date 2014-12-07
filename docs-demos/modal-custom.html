@@ -25,6 +25,7 @@
                 <p><a href="#" class="open-3-modal">Modal With 3 Buttons</a></p>
                 <p><a href="#" class="open-slider-modal">Modal With Slider</a></p>
                 <p><a href="#" class="open-tabs-modal">Modal With Tabs</a></p>
+                <p><a href="#" class="open-vertical-modal">Modal With Vertical Buttons</a></p>
               </div>
             </div>
           </div>
@@ -104,6 +105,34 @@
             {
               text: 'Ok, got it',
               bold: true
+            },
+          ]
+        })
+      });
+      
+      $$('.open-vertical-modal').on('click', function () {
+        myApp.modal({
+          title:  'Vertical Buttons Layout',
+          text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
+          verticalButtons: true,
+          buttons: [
+            {
+              text: 'Button 1',
+              onClick: function() {
+                myApp.alert('You clicked first button!')
+              }
+            },
+            {
+              text: 'Button 2',
+              onClick: function() {
+                myApp.alert('You clicked second button!')
+              }
+            },
+            {
+              text: 'Button 3',
+              onClick: function() {
+                myApp.alert('You clicked third button!')
+              }
             },
           ]
         })

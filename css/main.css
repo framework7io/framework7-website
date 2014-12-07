@@ -1259,6 +1259,18 @@ table.methods-table ul.method-parameters .parameter-type {
 table.methods-table th[colspan="2"] {
   background: #eee;
 }
+table.methods-table.dom7-table td {
+  vertical-align: top;
+}
+table.methods-table.dom7-table tbody td:first-child:not(:last-child) {
+  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  color: #000;
+  white-space: normal;
+  font-size: 12px;
+}
+table.methods-table.dom7-table tbody td:first-child:not(:last-child) span {
+  color: #8c2418;
+}
 table.events-table tbody td:nth-child(2) span {
   white-space: nowrap;
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;

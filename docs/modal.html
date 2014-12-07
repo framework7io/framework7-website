@@ -464,6 +464,12 @@ $$('.open-preloader-title').on('click', function () {
                   <td>Optional. Array of buttons. Each button should be presented as Object with button parameters (look below)</td>
                 </tr>
                 <tr>
+                  <td>verticalButtons</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Optional. Set to <code>true</code> to enable vertical buttons layout</td>
+                </tr>
+                <tr>
                   <td>onClick</td>
                   <td>function</td>
                   <td></td>
@@ -519,6 +525,7 @@ $$('.open-preloader-title').on('click', function () {
       &lt;p&gt;&lt;a href="#" class="open-3-modal"&gt;Modal With 3 Buttons&lt;/a&gt;&lt;/p&gt;
       &lt;p&gt;&lt;a href="#" class="open-slider-modal"&gt;Modal With Slider&lt;/a&gt;&lt;/p&gt;
       &lt;p&gt;&lt;a href="#" class="open-tabs-modal"&gt;Modal With Tabs&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;a href="#" class="open-vertical-modal"&gt;Modal With Vertical Buttons&lt;/a&gt;&lt;/p&gt;
     &lt;/div&gt;
   &lt;/div&gt;
   ...
@@ -594,7 +601,35 @@ $$('.open-tabs-modal').on('click', function () {
       },
     ]
   })
-});</code></pre>
+});
+ 
+$$('.open-vertical-modal').on('click', function () {
+  myApp.modal({
+    title:  'Vertical Buttons Layout',
+    text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
+    verticalButtons: true,
+    buttons: [
+      {
+        text: 'Button 1',
+        onClick: function() {
+          myApp.alert('You clicked first button!')
+        }
+      },
+      {
+        text: 'Button 2',
+        onClick: function() {
+          myApp.alert('You clicked second button!')
+        }
+      },
+      {
+        text: 'Button 3',
+        onClick: function() {
+          myApp.alert('You clicked third button!')
+        }
+      },
+    ]
+  })
+});            </code></pre>
             <h2>Close Modals With JavaScript</h2>
             <p>Any Modal can be closed with JavaScript, not only by clicking on its buttons. For this we need to look at relate App method:</p>
             <p><span class="method">myApp.closeModal(<span>modal</span>)</span> - close any modal</span></p>

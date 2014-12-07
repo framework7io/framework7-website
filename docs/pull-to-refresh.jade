@@ -70,7 +70,7 @@ block content
         .method-wrap
           p
             span.method myApp.pullToRefreshTrigger(<span>ptrContent</span>) 
-            span - trigger pull to refresh on specified content content
+            span - trigger pull to refresh on specified pull to refresh content
           ul.method-parameters
             li
               span.parameter ptrContent
@@ -140,3 +140,23 @@ block content
           |         myApp.pullToRefreshDone();
           |     }, 2000);
           | });
+      .full-width.stop-scroll-device
+        h2 Destroy/Disable Pull To Refresh
+        p Sometimes you may need to disable Pull To Refresh on page. We can do that using the following method: 
+        .method-wrap
+          p
+            span.method myApp.destroyPullToRefresh(<span>ptrContent</span>) 
+            span - destroy/disable pull to refresh on specified pull to refresh content
+          ul.method-parameters
+            li
+              span.parameter ptrContent
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to disable
+        p And if we need to initialize/enable it again:
+        .method-wrap
+          p
+            span.method myApp.initPullToRefresh(<span>ptrContent</span>) 
+            span - initialize/enable pull to refresh
+          ul.method-parameters
+            li
+              span.parameter ptrContent
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to enable

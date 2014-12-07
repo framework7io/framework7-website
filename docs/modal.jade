@@ -417,6 +417,11 @@ block content
               td 
               td Optional. Array of buttons. Each button should be presented as Object with button parameters (look below)
             tr
+              td verticalButtons
+              td boolean
+              td false
+              td Optional. Set to <code>true</code> to enable vertical buttons layout
+            tr
               td onClick
               td function
               td 
@@ -464,6 +469,7 @@ block content
             |       &lt;p&gt;&lt;a href="#" class="open-3-modal"&gt;Modal With 3 Buttons&lt;/a&gt;&lt;/p&gt;
             |       &lt;p&gt;&lt;a href="#" class="open-slider-modal"&gt;Modal With Slider&lt;/a&gt;&lt;/p&gt;
             |       &lt;p&gt;&lt;a href="#" class="open-tabs-modal"&gt;Modal With Tabs&lt;/a&gt;&lt;/p&gt;
+            |       &lt;p&gt;&lt;a href="#" class="open-vertical-modal"&gt;Modal With Vertical Buttons&lt;/a&gt;&lt;/p&gt;
             |     &lt;/div&gt;
             |   &lt;/div&gt;
             |   ...
@@ -542,6 +548,34 @@ block content
             |     ]
             |   })
             | });
+            | 
+            | $$('.open-vertical-modal').on('click', function () {
+            |   myApp.modal({
+            |     title:  'Vertical Buttons Layout',
+            |     text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
+            |     verticalButtons: true,
+            |     buttons: [
+            |       {
+            |         text: 'Button 1',
+            |         onClick: function() {
+            |           myApp.alert('You clicked first button!')
+            |         }
+            |       },
+            |       {
+            |         text: 'Button 2',
+            |         onClick: function() {
+            |           myApp.alert('You clicked second button!')
+            |         }
+            |       },
+            |       {
+            |         text: 'Button 3',
+            |         onClick: function() {
+            |           myApp.alert('You clicked third button!')
+            |         }
+            |       },
+            |     ]
+            |   })
+            | });            
 
 
         h2 Close Modals With JavaScript

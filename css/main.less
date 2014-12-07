@@ -1051,6 +1051,20 @@ table.methods-table {
     th[colspan="2"] {
         background: #eee;
     }
+    &.dom7-table {
+        td {
+            vertical-align: top;
+        }
+        tbody td:first-child:not(:last-child) {
+            .monospace();
+            color:#000;
+            white-space: normal;
+            font-size: 12px;
+            span {
+                color: darken(@dark,10%);
+            }
+        }
+    }
 }
 table.events-table {
 

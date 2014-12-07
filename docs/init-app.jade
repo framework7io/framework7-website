@@ -109,6 +109,11 @@ block content
             td '.external'
             td CSS selector for links that should be treated as external and shouldn't be handled by Framework7. For example such '.external' value will match to links like &lt;a href="somepage.html" class="external"&gt; (with class "external")
           tr
+            td allowDuplicateUrls
+            td boolean
+            td false
+            td You may enable this parameter to allow loading of new pages that have same url as currently "active" page in View.
+          tr
             td animateNavBackIcon
             td boolean
             td false
@@ -204,6 +209,11 @@ block content
             td boolean
             td true
             td This parameter gives ability to close opposite panel by swipe. For example, if your swipePanel is "left", then you could close "right" panel also with swipe.
+          tr
+            td swipePanelOnlyClose
+            td boolean
+            td false
+            td This parameter allows to close (but not open) panels with swipes
           tr
             td swipePanelActiveArea
             td number

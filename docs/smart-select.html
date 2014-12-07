@@ -315,23 +315,69 @@
   &lt;/ul&gt;
 &lt;/div&gt; </code></pre>
             <p>If you want to add such behavior for all of your smart selects you may use <b>smartSelectBackOnSelect</b> <a href="init-app.html">App parameter</a></p>
-            <h2>Smart Select color themes</h2>
+            <h2>Smart Select With Virtual List</h2>
+            <p>You may enable Virtual List for smart select if your select has a lot (hundreds, thousands) of options. In this case we just need to add <code>data-virtual-list</code> attribute to smart select:</p>
+            <pre><code>&lt;div class="list-block"&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;!-- data-virtual-list="true" attribute to enable virtual list  --&gt;
+            &lt;a href="#" class="item-link smart-select" data-virtual-list="true"&gt;
+                &lt;select name="numbers"&gt;
+                    &lt;option value="1"&gt;1&lt;/option&gt;
+                    &lt;option value="2"&gt;2&lt;/option&gt;
+                    ...
+                    &lt;option value="100000"&gt;100000&lt;/option&gt;
+                &lt;/select&gt;
+                &lt;div class="item-content"&gt;
+                    &lt;div class="item-inner"&gt;
+                        &lt;div class="item-title"&gt;Numbers&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/a&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+            <p>If you need to specify list item height in virtual list, you may add additional <code>data-virtual-list-height</code> attribute:</p>
+            <pre><code>&lt;div class="list-block"&gt;
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;!-- data-virtual-list-height="55" attribute to set virtual list single item height to 55px --&gt;
+            &lt;a href="#" class="item-link smart-select" data-virtual-list="true" data-virtual-list-height="55"&gt;
+                &lt;select name="numbers"&gt;
+                    &lt;option value="1"&gt;1&lt;/option&gt;
+                    &lt;option value="2"&gt;2&lt;/option&gt;
+                    ...
+                    &lt;option value="100000"&gt;100000&lt;/option&gt;
+                &lt;/select&gt;
+                &lt;div class="item-content"&gt;
+                    &lt;div class="item-inner"&gt;
+                        &lt;div class="item-title"&gt;Numbers&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/a&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+            <h2>Smart Select Color Themes</h2>
             <p>You can also specify form and navbar color themes on smart select page or in smart select popup using <code>data-form-theme</code> and <code>data-navbar-theme</code> attributes:</p>
             <pre><code>&lt;div class="list-block"&gt;
-  &lt;ul&gt;
-    &lt;!-- data-navbar-theme="red" to set red color theme for navbar --&gt;
-    &lt;!-- data-form-theme="green" to set green color theme for form --&gt;
-    &lt;li&gt;&lt;a href="#" class="item-link smart-select" data-navbar-theme="red" data-form-theme="green"&gt;
-        &lt;select name="car" multiple&gt;
-          ...
-        &lt;/select&gt;
-        &lt;div class="item-content"&gt;
-          &lt;div class="item-inner"&gt;
-            &lt;div class="item-title"&gt;Car&lt;/div&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt; </code></pre>
+    &lt;ul&gt;
+        &lt;li&gt;
+            &lt;!-- data-navbar-theme="red" to set red color theme for navbar --&gt;
+            &lt;!-- data-form-theme="green" to set green color theme for form --&gt;
+            &lt;a href="#" class="item-link smart-select" data-navbar-theme="red" data-form-theme="green"&gt;
+                &lt;select name="car"&gt;
+                    ...
+                &lt;/select&gt;
+                &lt;div class="item-content"&gt;
+                    &lt;div class="item-inner"&gt;
+                        &lt;div class="item-title"&gt;Car&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/a&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
             <h2>Open smart select using JavaScript</h2>
             <p>It is also possible to "open" smart select with JavaScript. We need to use related App method:</p>
             <p><span class="method">myApp.smartSelectOpen(<span>smartSelect</span>) - open specified smart select</span></p>

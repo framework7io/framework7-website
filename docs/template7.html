@@ -161,7 +161,7 @@
 &lt;/div&gt; </code></pre>
           <h2>Expressions syntax</h2>
           <p>Template7 support expressions with the following syntax:</p>
-          <h3>Variables:</h3>
+          <h4>Variables:</h4>
           <ul>
             <li>
               <p><code>{{title}}</code> - plain variable. Outputs "title" variable in current context</p>
@@ -181,8 +181,11 @@
             <li>
               <p><code>{{../person.name}}</code> - plain variable. The same but for parent context</p>
             </li>
+            <li>
+              <p><code>{{@index}}</code> - access to additional data variable. Such data variables could be used in helpers</p>
+            </li>
           </ul>
-          <h3>Block expressions</h3>
+          <h4>Block expressions</h4>
           <ul>
             <li>
               <p><code>{{#each}}</code> - begin of block expression</p>
@@ -197,7 +200,7 @@
               <p><code>{{#each reverse="true"}}</code> - begin of block expression with passed <code>reverse:true</code> hash arguments</p>
             </li>
           </ul>
-          <h3>Helpers</h3>
+          <h4>Helpers</h4>
           <p>Helpers could be plain expressions and block expressions:</p>
           <ul>
             <li>
@@ -226,7 +229,7 @@ var html = compiledTemplate(context);</code></pre>
           <pre><code>&lt;p&gt;Hello, my name is John Doe&lt;/p&gt;</code></pre>
           <h2>Built-In Helpers</h2>
           <p>Helpers in Template7 are like predefined functions that do something with passed context.</p>
-          <h3>{{#each}}...{{else}}...{{/each}}</h3>
+          <h4>{{#each}}...{{else}}...{{/each}}</h4>
           <p><code>{{#each}}</code> is a block expression, that iterates through items of passed Array or through properties of passed Object.</p>
           <table class="template7-examples">
             <thead>
@@ -368,7 +371,7 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
-          <h3>{{#if}}...{{else}}...{{/if}}</h3>
+          <h4>{{#if}}...{{else}}...{{/if}}</h4>
           <p>{{#if}} helper renders content if passed context is not "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper:</p>
           <table class="template7-examples">
             <thead>
@@ -416,7 +419,7 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
-          <h3>{{#unless}}...{{else}}...{{/unless}}</h3>
+          <h4>{{#unless}}...{{else}}...{{/unless}}</h4>
           <p>{{#unless}} helper renders content if passed context is "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper:</p>
           <table class="template7-examples">
             <thead>
@@ -464,7 +467,7 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
-          <h3>{{#with}}...{{/with}}</h3>
+          <h4>{{#with}}...{{/with}}</h4>
           <p>{{#with}} helper changes rendering context to the passed context:            </p>
           <table class="template7-examples">
             <thead>
@@ -495,7 +498,7 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
-          <h3>{{#variableName}}...{{/variableName}}</h3>
+          <h4>{{#variableName}}...{{/variableName}}</h4>
           <p>If you pass a block expression with helper name that is in the expression context, then it will work like {{#each}} helper for this context if it is an Array, and will work like {{#with}} helper if it is an Object:</p>
           <table class="template7-examples">
             <thead>
@@ -555,7 +558,7 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
-          <h3>{{join delimeter=""}}</h3>
+          <h4>{{join delimeter=""}}</h4>
           <p>This plain helper will join Array items to single string with passed delimeter</p>
           <table class="template7-examples">
             <thead>
@@ -714,6 +717,17 @@ var html = compiledTemplate(context);</code></pre>
               <li><span class="parameter">name - </span><span class="parameter-type">string</span> - helper name</li>
             </ul>
           </div>
+          <h2>Global Context</h2>
+          <p>Template7 also supports global context which is accessible from any context. </p>
+          <p>We can specify it in <code>Template7.global</code> property:</p>
+          <pre><code>Template7.global = {
+    os: 'iOS',
+    browser: 'Chrome',
+    username: 'johndoe',
+    email: 'john@doe.com'
+};</code></pre>
+          <p>To access it in templates we need to use <code>{{@global}}</code> variable:</p>
+          <pre><code class="html">&lt;p&gt;Hello, {{@global.username}}. Your email is {{@global.email}}&lt;/p&gt;</code></pre>
           <h2>Performance Tips</h2>
           <p>Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:</p>
           <pre><code>// Initialize app
