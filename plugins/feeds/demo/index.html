@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Framework7 Feeds</title>
+    <link rel="stylesheet" href="../../../dist/css/framework7.min.css">
+    <link rel="stylesheet" href="../../../dist/css/framework7.themes.min.css">
+    <link rel="stylesheet" href="../dist/framework7.feeds.css">
+  </head>
+  <body>
+    <div class="statusbar-overlay"></div>
+    <div class="views">
+      <div class="view view-main">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="center sliding">Feeds</div>
+            <div class="right"><a href="#" class="link icon-only open-panel"><i class="icon icon-bars-blue"></i></a></div>
+          </div>
+        </div>
+        <div class="pages navbar-through toolbar-through">
+          <div data-page="index" class="page">
+            <div class="page-content">
+              <div class="content-block-title">Framework7 Feeds Parser Plugin</div>
+              <div class="content-block">
+                <div class="content-block-inner">
+                  <p>Framework7 Feeds plugin brings easy RSS feeds integration into Framework7 app.</p>
+                  <p>Plugin comes with easy and powerful JS API to integrate and customize RSS feeds. But in most cases you will not need to use JavaScript at all, like in the following examples:</p>
+                </div>
+              </div>
+              <div class="content-block-title">News Feeds</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <a href="apple.html" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">Apple News</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="bbc.html" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">BBC News</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="techcrunch.html" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">TechCrunch News</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="ign.html" class="item-content item-link">
+                      <div class="item-inner">
+                        <div class="item-title">IGN Feed</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../../../dist/js/framework7.min.js"></script>
+    <script src="../dist/framework7.feeds.min.js"></script>
+    <script>
+      var myApp = new Framework7({
+        externalLinks: 'a.external, .feeds-page .content-block a',
+        animateNavBackIcon: true
+      });
+      var mainView = myApp.addView('.view-main', {
+        dynamicNavbar: true
+      });
+    </script>
+  </body>
+</html>
