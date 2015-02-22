@@ -179,12 +179,13 @@ h1:first-child {
     margin-top: 0;
 }
 h2 {
-    font-size: 37px;
+    font-size: 41px;
     line-height: 1.3;
 }
 h3 {
-    font-size: 33px;
+    font-size: 31px;
     line-height: 1.4;
+
 }
 h2,h3 {
     margin: 15px 0;
@@ -194,7 +195,7 @@ h4 {
     margin: 10px 0;
 }
 h3,h4 {
-    color:@dark;
+    // color: darken(@dark, 20%);
 }
 // Highlighting
 .monospace() {
@@ -580,13 +581,13 @@ header {
         width: 590px;
     }
     .addthis_button_google_plusone {
-        width: 78px;
+        width: 78px !important;
     }
     .addthis_button_twitter_follow_native {
-        width: 215px;
+        width: 215px !important;
     }
     .addthis_button_tweet {
-        width: 100px;
+        width: 100px !important;
     }
 }
 .inner-header + .share-line, .content + .share-line {
@@ -971,8 +972,11 @@ table {
     }
 }
 table.params-table {
+    th, td {
+        vertical-align: top;
+    }
     tbody {
-        td:first-child, td:nth-child(2), td:nth-child(3) {
+        td:first-child, td:nth-child(2), td:nth-child(3):not(:last-child) {
             font-size: 12px;
             color: darken(@dark,10%);
             .monospace();
@@ -983,6 +987,9 @@ table.params-table {
         th[colspan="4"] {
             background: #eee;
         }
+    }
+    td:last-child pre {
+        white-space: pre-wrap;
     }
 }
 .method-wrap {
@@ -1027,6 +1034,9 @@ ul.method-parameters {
     font-style: italic;
 }
 table.methods-table {
+    th, td {
+        vertical-align: top;
+    }
     tbody td:first-child:not(:last-child) {
         .monospace();
         color:#000;

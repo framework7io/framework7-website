@@ -15,7 +15,7 @@ block content
       .full-width
         h1 Photo Browser
         p Photo Browser is an iOS like photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional). 
-        p Photo Browser uses <a href="slider.html">Slider</a> component to slide between photos.
+        p Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.
 
         h2 Create Photo Browser Instance
         p Photo Browser can be created and initialized only using JavaScript. We need to use related App's method:
@@ -229,32 +229,32 @@ block content
               td 
               td Callback function, will be executed after lazy loading photo will be loaded
             tr
-              th(colspan="4") Slider Callbacks
+              th(colspan="4") Swiper Callbacks
             tr
-              td onSlideChangeStart(slider)
+              td onSlideChangeStart(swiper)
               td function
               td 
-              td Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives slider instance as an argument.
+              td Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives Swiper instance as an argument.
             tr
-              td onSlideChangeEnd(slider)
+              td onSlideChangeEnd(swiper)
               td function
               td 
-              td Callback function, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.
+              td Callback function, will be executed after animation to other slide (next or previous). Receives Swiper instance as an argument.
             tr
-              td onClick(slider, event)
+              td onClick(swiper, event)
               td function
               td 
-              td Callback function, will be executed when user click/tap on Slider after 300ms delay. Receives slider instance and 'touchend' event as an arguments.
+              td Callback function, will be executed when user click/tap on slider after 300ms delay. Receives Swiper instance and 'touchend' event as an arguments.
             tr
-              td onTap(slider, event)
+              td onTap(swiper, event)
               td function
               td 
-              td Callback function, will be executed when user click/tap on Slider. Receives slider instance and 'touchend' event as an arguments.
+              td Callback function, will be executed when user click/tap on slider. Receives Swiper instance and 'touchend' event as an arguments.
             tr
-              td onDoubleTap(slider, event)
+              td onDoubleTap(swiper, event)
               td function
               td 
-              td Callback function, will be executed when user double tap on Slider's container. Receives slider instance and 'touchend' event as an arguments.
+              td Callback function, will be executed when user double tap on slider's container. Receives Swiper instance and 'touchend' event as an arguments.
             
         h2 Photo Browser Methods & Properties
         p After we initialize Photo Browser we have its initialized instance in variable (like <code>myPhotoBrowser</code> variable in example above) with helpful methods and properties:
@@ -263,8 +263,8 @@ block content
             tr
               th(colspan="2") Properties
             tr
-              td myPhotoBrowser.slider
-              td Contains initialized <a href="slider.html">Slider</a> instance with all available Slider <a href="slider.html#slider-methods-properties">methods and properties</a>
+              td myPhotoBrowser.swiper
+              td Contains initialized <a href="slider.html">Swiper</a> instance with all available Swiper <a href="slider.html#swiper-methods-properties">methods and properties</a>
             tr
               td myPhotoBrowser.container
               td <a href="dom.html">Dom7</a> element with Photo Browser container HTML element
@@ -494,8 +494,8 @@ block content
             |     &lt;div class="view navbar-fixed toolbar-fixed"&gt;
             |         {{navbar}}
             |         &lt;div data-page="photo-browser-slides" class="page no-toolbar toolbar-fixed navbar-fixed"&gt;
-            |             &lt;div class="photo-browser-slider-container slider-container"&gt;
-            |                 &lt;div class="photo-browser-slider-wrapper slider-wrapper"&gt;
+            |             &lt;div class="photo-browser-swiper-container swiper-container"&gt;
+            |                 &lt;div class="photo-browser-swiper-wrapper swiper-wrapper"&gt;
             |                     {{photos}}
             |                 &lt;/div&gt;
             |             &lt;/div&gt;
@@ -557,14 +557,14 @@ block content
         p Template example of single photo slide element that you can pass in <code>photoTemplate</code> parameter:
         pre
           code
-            | &lt;div class="photo-browser-slide slider-slide"&gt;
+            | &lt;div class="photo-browser-slide swiper-slide"&gt;
             |     &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
             | &lt;/div&gt;            
         h3 Lazy Photo Element Template
         p Template example of single photo slide element that you can pass in <code>photoLazyTemplate</code> parameter:
         pre
           code
-            | &lt;div class="photo-browser-slide photo-browser-slide-lazy slider-slide"&gt;
+            | &lt;div class="photo-browser-slide photo-browser-slide-lazy swiper-slide"&gt;
             |     &lt;div class="preloader"&gt;&lt;/div&gt;
             |     &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
             | &lt;/div&gt;            
@@ -572,7 +572,7 @@ block content
         p Template example of single object slide element that you can pass in <code>objectTemplate</code> parameter:
         pre
           code
-            | &lt;div class="photo-browser-slide photo-browser-object-slide slider-slide"&gt;
+            | &lt;div class="photo-browser-slide photo-browser-object-slide swiper-slide"&gt;
             |     {{html}}
             | &lt;/div&gt;
         h3 Captions Container Template

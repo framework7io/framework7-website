@@ -78,6 +78,7 @@
                 <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
                 <li><a href="navbar.html">Navbar</a></li>
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="sub-navbar.html">Sub Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
                 <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
@@ -95,6 +96,7 @@
                 <li><a href="popover.html">Popover</a></li>
                 <li><a href="action-sheet.html">Action Sheet</a></li>
                 <li><a href="login-screen.html">Login Screen</a></li>
+                <li><a href="picker-modal.html">Picker Modal</a></li>
               </ul>
             </li>
             <li><a href="preloader.html">Preloader Indicator</a></li>
@@ -109,6 +111,7 @@
               </ul>
             </li>
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="cards.html">Cards</a></li>
             <li><a href="buttons.html">Buttons</a></li>
             <li>Forms
               <ul>
@@ -122,14 +125,19 @@
               </ul>
             </li>
             <li><a href="tabs.html">Tabs</a></li>
-            <li><a href="slider.html">Slider</a></li>
+            <li><a href="swiper.html">Swiper Slider</a></li>
             <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="picker.html">Picker</a></li>
+            <li><a href="calendar.html">Calendar / Datepicker</a></li>
             <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
             <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
             <li><a href="messages.html">Messages</a></li>
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
-            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li><a href="lazy-load.html">Lazy Load</a></li>
+            <li class="title">Styling</li>
+            <li><a href="color-themes.html">Color Themes</a></li>
+            <li><a href="hairlines.html">Hairlines</a></li>
             <li class="title">Template7</li>
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
@@ -144,7 +152,7 @@
         </div>
         <div class="docs-content">
           <h1>Framework7 Custom Build</h1>
-          <p>Since version 0.9.4 Framework7 comes with Grunt builder that allows to build custom library version where you may include only required components/modules. We need the following:</p>
+          <p>Since version 1.0.0 Framework7 comes with Gulp builder that allows to build custom library version where you may include only required components/modules. We need the following:</p>
           <ol>
             <li>
               <p>Download and unzip <a href="https://github.com/nolimits4web/Framework7" target="_blank">Framework7 GitHub repository</a> to local folder</p>
@@ -153,8 +161,8 @@
               <p>Install <a href="http://nodejs.org/" target="_blank">Node.js</a> (if not installed)</p>
             </li>
             <li>
-              <p>Install Grunt (if not installed) by executing the following command in terminal:</p>
-              <pre><code>$ npm install -g grunt-cli</code></pre>
+              <p>Install Gulp (if not installed) by executing the following command in terminal:</p>
+              <pre><code>$ npm install --global gulp</code></pre>
             </li>
             <li>
               <p>Now, we need to install required dependencies. Go to the folder with downloaded and unzipped Framework7 repository and execute in terminal:</p>
@@ -162,7 +170,7 @@
             </li>
             <li>
               <p>Now, we are ready to build custom version of Framework7. We need to execute <code>grunt custom</code> command and pass components/modules that we want to include as argument. For example, if we want to include just Accordion and Tabs:
-                <pre><code>$ grunt custom:accordion,tabs</code></pre>
+                <pre><code>$ gulp custom -accordion,tabs</code></pre>
                 <div class="important-note">Note, that there shouldn't be spaces between comma and components name</div>
               </p>
             </li>
@@ -198,8 +206,16 @@
               <td><a href="sortable-list.html">Sortable</a> component</td>
             </tr>
             <tr>
+              <td class="nowrap">cards</td>
+              <td><a href="cards.html">Cards</a> component</td>
+            </tr>
+            <tr>
               <td class="nowrap">smart-select</td>
               <td><a href="smart-select.html">Smart Select</a> component</td>
+            </tr>
+            <tr>
+              <td class="nowrap">virtual-list</td>
+              <td><a href="virtual-list.html">Virtual List</a> component</td>
             </tr>
             <tr>
               <td class="nowrap">pull-to-refresh</td>
@@ -210,7 +226,11 @@
               <td><a href="infinite-scroll.html">Pull To Refresh</a> component</td>
             </tr>
             <tr>
-              <td>tabs</td>
+              <td class="nowrap">scroll-toolbars</td>
+              <td><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a> component</td>
+            </tr>
+            <tr>
+              <td class="nowrap">tabs</td>
               <td><a href="tabs.html">Tabs</a> component</td>
             </tr>
             <tr>
@@ -226,8 +246,8 @@
               <td>Push State logic</td>
             </tr>
             <tr>
-              <td class="nowrap">slider</td>
-              <td><a href="slider.html">Slider</a> component</td>
+              <td class="nowrap">swiper</td>
+              <td><a href="swiper.html">Swiper Slider</a> component</td>
             </tr>
             <tr>
               <td class="nowrap">photo-browser</td>
@@ -237,10 +257,18 @@
               <td class="nowrap">notifications</td>
               <td><a href="notifications.html">Notifications</a> component</td>
             </tr>
+            <tr>
+              <td class="nowrap">picker</td>
+              <td><a href="picker.html">Picker</a> component</td>
+            </tr>
+            <tr>
+              <td class="nowrap">calendar</td>
+              <td><a href="calendar.html">Calendar / Datepicker</a> component</td>
+            </tr>
           </table>
           <h2>Only Core</h2>
-          <p>If you don't want to include any of this components, then just execute "grunt custom" without any arguments:</p>
-          <pre><code>$ grunt custom</code></pre>
+          <p>If you don't want to include any of this components, then just execute "gulp custom" without any arguments:</p>
+          <pre><code>$ gulp custom</code></pre>
         </div>
       </div>
     </div>
@@ -266,8 +294,8 @@
     </div>
     <footer>
       <div class="center">
-        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
-        <div class="copy">2014 © Framework7 by iDangero.us</div>
+        <div class="links"><a href="../">Framework7</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2015 © Framework7 by iDangero.us</div>
       </div>
     </footer>
     <script src="../js/vendor/jquery-1.11.0.min.js"></script>
@@ -282,7 +310,7 @@
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
       
       ga('create', 'UA-13289120-8', 'idangero.us');
-      ga('send', 'pageview');      
+      ga('send', 'pageview');     
     </script>
   </body>
 </html>

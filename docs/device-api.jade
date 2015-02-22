@@ -47,17 +47,22 @@ block content
       p So if you open app with iOS 7.1 device you may have the following classes:
       pre
         code
-          | &lt;html class="ios ios-7 ios-7-1 ios-gt-6"&gt;
+          | &lt;html class="ios ios-7 ios-7-1 ios-gt-6 pixel-ratio-1"&gt;
           | ...
       p If you open app with iOS 7.1 device with retina screen and your app running in full screen mode (myApp.device.statusBar = true):
       pre
         code
-          | &lt;html class="ios ios-7 ios-7-1 ios-gt-6 retina with-statusbar-overlay"&gt;
+          | &lt;html class="ios ios-7 ios-7-1 ios-gt-6 retina pixel-ratio-2 with-statusbar-overlay"&gt;
           | ...
       p If you open app with iOS 8.0 device and your app running in full screen mode (myApp.device.statusBar = true):
       pre
         code
           | &lt;html class="ios ios-8 ios-8-0 ios-gt-6 ios-gt-7 with-statusbar-overlay"&gt;
+          | ...
+      p If you open app on iPhone6 Plus and your app running in full screen mode (myApp.device.statusBar = true):
+      pre
+        code
+          | &lt;html class="ios ios-8 ios-8-0 ios-gt-6 ios-gt-7 retina pixel-ratio-3 with-statusbar-overlay"&gt;
           | ...
       p If you open app with Android 4.4 device you will have the following classes:
       pre
@@ -67,7 +72,7 @@ block content
       p In other words class calculated by the following rule: 
       pre
         code
-          | &lt;html class="[os] [os major version] [os full version] [retina] [with-statusbar-overlay]"&gt;
+          | &lt;html class="[os] [os major version] [os full version] [retina] pixel-ratio-[devicePixelRatio] [with-statusbar-overlay]"&gt;
           | ...
       .important-note
         p Note that "greater than" (ios-gt-6: for all iOS greater than iOS 6) classes available only for iOS

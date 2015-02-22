@@ -43,6 +43,8 @@
                 .replace(/"/g, '')
                 .replace(/'/g, '-')
                 .replace(/:/g, '')
+                .replace(/,/g, '')
+                .replace(/\./g, '')
                 .toLowerCase().replace(/\-&-/g,'-');
                 h.attr('id', id);
             }

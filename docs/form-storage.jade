@@ -127,4 +127,21 @@ block content
           |     'slider': 10
           |   });
           |   alert('Form data replaced, refresh browser to see changes')
-          | });                  
+          | });
+      .full-width.stop-scroll-device
+        h2 Form storage JavaScript Events
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td formFromJSON
+              td Form element
+              td Event will be triggered after <code>formFromJSON</code> method called on form to fill form fields
+            tr
+              td formToJSON
+              td Form element
+              td Event will be triggered after <code>formToJSON</code> method called on form to convert form fields to JSON

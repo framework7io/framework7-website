@@ -507,11 +507,11 @@ block content
             |   var modal = myApp.modal({
             |     title: 'Awesome Photos?',
             |     text: 'What do you think about my photos?',
-            |     afterText:  '&lt;div class="slider-container" style="width: auto; margin:5px -15px"&gt;'+
-            |                   '&lt;div class="slider-pagination"&gt;&lt;/div&gt;'+
-            |                   '&lt;div class="slider-wrapper"&gt;'+
-            |                     '&lt;div class="slider-slide"&gt;&lt;img src="http://hhhhold.com/270x150/jpg?1" height="150"&gt;&lt;/div&gt;' +
-            |                     '&lt;div class="slider-slide"&gt;&lt;img src="http://hhhhold.com/270x150/jpg?2"&gt;&lt;/div&gt;'+
+            |     afterText:  '&lt;div class="swiper-container" style="width: auto; margin:5px -15px -15px"&gt;'+
+            |                   '&lt;div class="swiper-pagination"&gt;&lt;/div&gt;'+
+            |                   '&lt;div class="swiper-wrapper"&gt;'+
+            |                     '&lt;div class="swiper-slide"&gt;&lt;img src="..." height="150" style="display:block"&gt;&lt;/div&gt;' +
+            |                     '&lt;div class="swiper-slide"&gt;&lt;img src="..." height="150" style="display:block"&gt;&lt;/div&gt;'+
             |                   '&lt;/div&gt;'+
             |                 '&lt;/div&gt;',
             |     buttons: [
@@ -527,7 +527,7 @@ block content
             |       },
             |     ]
             |   })
-            |   myApp.slider($$(modal).find('.slider-container'), {pagination: '.slider-pagination'});
+            |   myApp.swiper($$(modal).find('.swiper-container'), {pagination: '.swiper-pagination'});
             | });
             | 
             | $$('.open-tabs-modal').on('click', function () {

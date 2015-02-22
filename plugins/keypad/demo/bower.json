@@ -1,0 +1,9 @@
+{
+  "name": "Framework7 Numpad Demo",
+  "description": "Demo for Framework7 Numpad plugin",
+  "author": "Vladimir Kharlampidi",
+  "license": ["MIT"],
+  "dependencies": {
+    "framework7": "~0.10.0"
+  }
+}

@@ -106,4 +106,19 @@ block content
             tr
               td myApp.showToolbar(<span>toolbar</span>)
               td Show specified tab bar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required tab bar. Required.
-            
+      h2 Hide Tabbar Automatically
+      p Framework7 allows you to hide/show Tabbar automatically for some Ajax loaded pages where you may not need it. It is useful only when you use through-type layout.
+      p To make it work all you need is to add <srong>"no-tabbar"</srong> class to loaded page (<code>&lt;div class="page no-tabbar"&gt;</code>):
+      pre
+        code
+          | &lt;!-- Page has additional "no-tabbar" class --&gt;
+          | &lt;div data-page="about" class="page no-tabbar"&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="back button"&gt;Go Back&lt;/a&gt;&lt;/p&gt;
+          |       ...
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+
+      .device-spacer

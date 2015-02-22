@@ -97,6 +97,11 @@ block content
             td 
             td This optional function allows to use custom function to render item HTML. It could be used instead of <b>template</b> parameter
           tr
+            td dynamicHeightBufferSize
+            td number
+            td 1
+            td This parameter allows to control buffer size on Virtual Lists with dynamic height (when <code>height</code> parameter is function) as a buffer size multiplier
+          tr
             td cache
             td boolean
             td true
@@ -224,6 +229,9 @@ block content
           tr
             td myList.update();
             td Update virtual list, including recalculation of list sizes and re-rendering of virtual list
+          tr
+            td myList.scrollToItem(index);
+            td Scroll Virtual List to specified item by its index number
       h2 Examples
       h3 Plain Items
       p In the most simple case when we don't need to use templating for items (without <code>template</code> and <code>renderItem</code> parameters) and when we don't need much logic here, we may just pass items HTML layout in <code>items</code> parameter:

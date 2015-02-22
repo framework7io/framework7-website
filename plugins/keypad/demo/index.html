@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Framework7 Keypad</title>
+    <link rel="stylesheet" href="../../../dist/css/framework7.min.css">
+    <link rel="stylesheet" href="../../../dist/css/framework7.themes.min.css">
+    <link rel="stylesheet" href="../dist/framework7.keypad.css">
+    <style>
+      .content-block.passcode-input {
+        position: relative;
+        z-index: 5;
+      }
+      .content-block.passcode-numpad {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin-bottom: 0;
+        max-width: none;
+        z-index: 10;
+      }
+      #demo-numpad-inline {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        appearance: none;
+        .border-box();
+        border: none;
+        background: none;
+        border-radius: 0 0 0 0;
+        .box-shadow(none);
+        display: block;
+        padding: 0 0 0 5px;
+        margin: 0;
+        width: 100%;
+        height: 43px;
+        color: #000;
+        font-size: 17px;
+        font-family: inherit;
+        letter-spacing: 5px;
+        text-align: center;
+        font-size: 25px;
+        font-weight: 300;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="statusbar-overlay"></div>
+    <div class="views">
+      <div class="view view-main">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="center sliding">Framework7 Keypad</div>
+            <div class="right"><a href="#" class="link icon-only open-panel"><i class="icon icon-bars-blue"></i></a></div>
+          </div>
+        </div>
+        <div class="pages navbar-through">
+          <div data-page="index" class="page">
+            <div class="page-content">
+              <div class="content-block">
+                <div class="content-block-inner">
+                  <p>Keypad plugin extends Framework7 with additional custom keyboards. By default it comes with predefined <b>Numpad</b> and <b>Calculator</b> keyboards, but it also can be used to create custom keyboards with custom buttons.</p>
+                </div>
+              </div>
+              <div class="content-block-title">Numpad</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner"> 
+                        <div class="item-input">
+                          <input type="text" placeholder="Enter number" readonly="readonly" id="demo-numpad"/>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="content-block-title">Limited Value Length</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner"> 
+                        <div class="item-input">
+                          <input type="text" placeholder="Enter your age" readonly="readonly" id="demo-numpad-limited"/>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="content-block-title">Calculator</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner"> 
+                        <div class="item-input">
+                          <input type="text" placeholder="Enter number" readonly="readonly" id="demo-calculator"/>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="content-block-title">Mode demos</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <a href="passcode.html" class="item-link item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Inline numpad as passcode input</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="auto-init.html" class="item-link item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Automatic initialization</div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../../../dist/js/framework7.min.js"></script>
+    <script src="../dist/framework7.keypad.min.js"></script>
+    <script>
+      var $$ = Dom7;
+      var myApp = new Framework7({
+        animateNavBackIcon: true
+      });
+      var mainView = myApp.addView('.view-main', {
+        dynamicNavbar: true
+      });
+
+      var numpad = myApp.keypad({
+        input: '#demo-numpad'
+      });
+      var numpadLimited = myApp.keypad({
+        input: '#demo-numpad-limited',
+        valueMaxLength: 2,
+        dotButton: false
+      });
+      var calculator = myApp.keypad({
+        input: '#demo-calculator',
+        type: 'calculator',
+        toolbar: false
+      });
+
+      // Inline calculator
+      myApp.onPageInit('calculator', function (page) {
+        var calculatorInline = myApp.keypad({
+          input: '#demo-calculator-inline',
+          container: '#calculator-inline-container',
+          toolbar: false,
+          type: 'calculator'
+        });
+      });
+
+      // Passcode
+      myApp.onPageInit('passcode', function (page) {
+        var numpadInline = myApp.keypad({
+          input: '#demo-numpad-inline',
+          container: '#numpad-inline-container',
+          toolbar: false,
+          valueMaxLength: 4,
+          dotButton: false,
+          formatValue: function(p, value) {
+            value = value.toString();
+            return ('****').substring(0, value.length) + ('____').substring(0, 4 - value.length);
+          },
+          onChange: function (p, value) {
+            value = value.toString();
+            if (value.length === 4) {
+              myApp.alert('Thank you! Your passcode is<br><b>' + value + '</b>', function () {
+                mainView.router.back();
+              });
+            }
+          }
+        });
+      });
+      
+    </script>
+  </body>
+</html>

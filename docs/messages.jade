@@ -154,12 +154,18 @@ block content
         p There are few App's methods that we can use with Messages:
         .method-wrap
           p
-            span.method myApp.addMessage(<span>parameters</span>) 
+            span.method myApp.addMessage(<span>parameters</span>, <span>messagesContent</span>, <span>addToTop</span>) 
             span - add message
           ul.method-parameters
             li
               span.parameter parameters
               |  - <span class="parameter-type">object</span> message parameters. Required.
+            li
+              span.parameter messagesContent
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of "messages-content" container. Useful if you have multiples messages container available in Dom at the same time. Optional.
+            li
+              span.parameter addToTop
+              |  - <span class="parameter-type">boolean</span> message parameters. Set <code>true</code> and new message will be added to top (as a first message). Optional.
 
         .method-wrap
           p

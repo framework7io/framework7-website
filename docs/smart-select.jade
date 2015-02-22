@@ -260,6 +260,32 @@ block content
             |         &lt;/li&gt;
             |     &lt;/ul&gt;
             | &lt;/div&gt;
+        h2 Set Smart Select value by option text
+        p It is possible to set smart select (and its select) value depending on selected option value. For this case we need to add additional <code>"smart-select-value"</code> class to "item-after":
+        pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     &lt;li&gt;
+            |       &lt;a href="#" class="item-link smart-select"&gt;
+            |         &lt;!-- select --&gt;
+            |         &lt;select name="fruits"&gt;
+            |           &lt;option value="apple"&gt;Apple&lt;/option&gt;
+            |           &lt;option value="pineapple"&gt;Pineapple&lt;/option&gt;
+            |           ...
+            |         &lt;/select&gt;
+            |         &lt;div class="item-content"&gt;
+            |           &lt;div class="item-inner"&gt;
+            |             &lt;div class="item-title"&gt;Fruit&lt;/div&gt;
+            |             &lt;!-- Additional "smart-select-value" class to set selected option depending on this text value --&gt;
+            |             &lt;div class="item-after smart-select-value"&gt;Apple&lt;/div&gt;
+            |           &lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/a&gt;
+            |     &lt;/li&gt;
+            |   &lt;/ul&gt;
+            | &lt;/div&gt; 
+        p After that <code>&lt;option&gt;</code> with "Apple" text value will be set as selected.
         h2 Open smart select using JavaScript
         p It is also possible to "open" smart select with JavaScript. We need to use related App method:
         p

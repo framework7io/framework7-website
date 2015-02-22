@@ -82,6 +82,7 @@
                 <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
                 <li><a href="navbar.html">Navbar</a></li>
                 <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="sub-navbar.html">Sub Navbar</a></li>
                 <li><a href="toolbar.html">Toolbar</a></li>
                 <li><a href="tabbar.html">Tab Bar</a></li>
                 <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
@@ -99,6 +100,7 @@
                 <li><a href="popover.html">Popover</a></li>
                 <li><a href="action-sheet.html">Action Sheet</a></li>
                 <li><a href="login-screen.html">Login Screen</a></li>
+                <li><a href="picker-modal.html">Picker Modal</a></li>
               </ul>
             </li>
             <li><a href="preloader.html">Preloader Indicator</a></li>
@@ -113,6 +115,7 @@
               </ul>
             </li>
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="cards.html">Cards</a></li>
             <li><a href="buttons.html">Buttons</a></li>
             <li>Forms
               <ul>
@@ -126,14 +129,19 @@
               </ul>
             </li>
             <li><a href="tabs.html">Tabs</a></li>
-            <li><a href="slider.html">Slider</a></li>
+            <li><a href="swiper.html">Swiper Slider</a></li>
             <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="picker.html">Picker</a></li>
+            <li><a href="calendar.html">Calendar / Datepicker</a></li>
             <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
             <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
             <li><a href="messages.html">Messages</a></li>
             <li><a href="messagebar.html">Message Bar</a></li>
             <li><a href="notifications.html">Notifications</a></li>
-            <li class="title"><a href="color-themes.html">Color Themes</a></li>
+            <li><a href="lazy-load.html">Lazy Load</a></li>
+            <li class="title">Styling</li>
+            <li><a href="color-themes.html">Color Themes</a></li>
+            <li><a href="hairlines.html">Hairlines</a></li>
             <li class="title">Template7</li>
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
@@ -150,7 +158,7 @@
           <div class="full-width">
             <h1>Photo Browser</h1>
             <p>Photo Browser is an iOS like photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional). </p>
-            <p>Photo Browser uses <a href="slider.html">Slider</a> component to slide between photos.</p>
+            <p>Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.</p>
             <h2>Create Photo Browser Instance</h2>
             <p>Photo Browser can be created and initialized only using JavaScript. We need to use related App's method:</p>
             <div class="method-wrap">
@@ -398,37 +406,37 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>Callback function, will be executed after lazy loading photo will be loaded</td>
                 </tr>
                 <tr>
-                  <th colspan="4">Slider Callbacks</th>
+                  <th colspan="4">Swiper Callbacks</th>
                 </tr>
                 <tr>
-                  <td>onSlideChangeStart(slider)</td>
+                  <td>onSlideChangeStart(swiper)</td>
                   <td>function</td>
                   <td></td>
-                  <td>Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives slider instance as an argument.</td>
+                  <td>Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives Swiper instance as an argument.</td>
                 </tr>
                 <tr>
-                  <td>onSlideChangeEnd(slider)</td>
+                  <td>onSlideChangeEnd(swiper)</td>
                   <td>function</td>
                   <td></td>
-                  <td>Callback function, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.</td>
+                  <td>Callback function, will be executed after animation to other slide (next or previous). Receives Swiper instance as an argument.</td>
                 </tr>
                 <tr>
-                  <td>onClick(slider, event)</td>
+                  <td>onClick(swiper, event)</td>
                   <td>function</td>
                   <td></td>
-                  <td>Callback function, will be executed when user click/tap on Slider after 300ms delay. Receives slider instance and 'touchend' event as an arguments.</td>
+                  <td>Callback function, will be executed when user click/tap on slider after 300ms delay. Receives Swiper instance and 'touchend' event as an arguments.</td>
                 </tr>
                 <tr>
-                  <td>onTap(slider, event)</td>
+                  <td>onTap(swiper, event)</td>
                   <td>function</td>
                   <td></td>
-                  <td>Callback function, will be executed when user click/tap on Slider. Receives slider instance and 'touchend' event as an arguments.</td>
+                  <td>Callback function, will be executed when user click/tap on slider. Receives Swiper instance and 'touchend' event as an arguments.</td>
                 </tr>
                 <tr>
-                  <td>onDoubleTap(slider, event)</td>
+                  <td>onDoubleTap(swiper, event)</td>
                   <td>function</td>
                   <td></td>
-                  <td>Callback function, will be executed when user double tap on Slider's container. Receives slider instance and 'touchend' event as an arguments.</td>
+                  <td>Callback function, will be executed when user double tap on slider's container. Receives Swiper instance and 'touchend' event as an arguments.</td>
                 </tr>
               </tbody>
             </table>
@@ -440,8 +448,8 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <th colspan="2">Properties</th>
                 </tr>
                 <tr>
-                  <td>myPhotoBrowser.slider</td>
-                  <td>Contains initialized <a href="slider.html">Slider</a> instance with all available Slider <a href="slider.html#slider-methods-properties">methods and properties</a></td>
+                  <td>myPhotoBrowser.swiper</td>
+                  <td>Contains initialized <a href="slider.html">Swiper</a> instance with all available Swiper <a href="slider.html#swiper-methods-properties">methods and properties</a></td>
                 </tr>
                 <tr>
                   <td>myPhotoBrowser.container</td>
@@ -678,8 +686,8 @@ $$('.pb-standalone-video').on('click', function () {
     &lt;div class="view navbar-fixed toolbar-fixed"&gt;
         {{navbar}}
         &lt;div data-page="photo-browser-slides" class="page no-toolbar toolbar-fixed navbar-fixed"&gt;
-            &lt;div class="photo-browser-slider-container slider-container"&gt;
-                &lt;div class="photo-browser-slider-wrapper slider-wrapper"&gt;
+            &lt;div class="photo-browser-swiper-container swiper-container"&gt;
+                &lt;div class="photo-browser-swiper-wrapper swiper-wrapper"&gt;
                     {{photos}}
                 &lt;/div&gt;
             &lt;/div&gt;
@@ -746,18 +754,18 @@ $$('.pb-standalone-video').on('click', function () {
             </ul>
             <h3>Photo Element Template</h3>
             <p>Template example of single photo slide element that you can pass in <code>photoTemplate</code> parameter:</p>
-            <pre><code>&lt;div class="photo-browser-slide slider-slide"&gt;
+            <pre><code>&lt;div class="photo-browser-slide swiper-slide"&gt;
     &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
 &lt;/div&gt;            </code></pre>
             <h3>Lazy Photo Element Template</h3>
             <p>Template example of single photo slide element that you can pass in <code>photoLazyTemplate</code> parameter:</p>
-            <pre><code>&lt;div class="photo-browser-slide photo-browser-slide-lazy slider-slide"&gt;
+            <pre><code>&lt;div class="photo-browser-slide photo-browser-slide-lazy swiper-slide"&gt;
     &lt;div class="preloader"&gt;&lt;/div&gt;
     &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
 &lt;/div&gt;            </code></pre>
             <h3>Object Element Template</h3>
             <p>Template example of single object slide element that you can pass in <code>objectTemplate</code> parameter:</p>
-            <pre><code>&lt;div class="photo-browser-slide photo-browser-object-slide slider-slide"&gt;
+            <pre><code>&lt;div class="photo-browser-slide photo-browser-object-slide swiper-slide"&gt;
     {{html}}
 &lt;/div&gt;</code></pre>
             <h3>Captions Container Template</h3>
@@ -796,8 +804,8 @@ $$('.pb-standalone-video').on('click', function () {
     </div>
     <footer>
       <div class="center">
-        <div class="links"><a href="../">Framework7</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
-        <div class="copy">2014 © Framework7 by iDangero.us</div>
+        <div class="links"><a href="../">Framework7</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2015 © Framework7 by iDangero.us</div>
       </div>
     </footer>
     <script src="../js/vendor/jquery-1.11.0.min.js"></script>
@@ -812,7 +820,7 @@ $$('.pb-standalone-video').on('click', function () {
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
       
       ga('create', 'UA-13289120-8', 'idangero.us');
-      ga('send', 'pageview');      
+      ga('send', 'pageview');     
     </script>
   </body>
 </html>

@@ -15,14 +15,15 @@ block content
       p Message Bar layour is pretty simple:
       pre
         code
-          | &lt;div class="toolbar messagebar" data-max-height="200"&gt;
+          | &lt;div class="toolbar messagebar" data-max-height="200" data-keyboard-height="200"&gt;
           |   &lt;div class="toolbar-inner"&gt;
           |     &lt;textarea placeholder="Message"&gt;&lt;/textarea&gt;&lt;a href="#" class="link"&gt;Send&lt;/a&gt;
           |   &lt;/div&gt;
           | &lt;/div&gt;   
       p Where
         ul
-          li <code>data-max-height</code> - message bar max height limit when it grows depending on its content
+          li <code>data-max-height</code> - message bar max height limit when it grows depending on its content. Optional
+          li <code>data-keyboard-height</code> - set additional padding on page content when using it with custom keyboards in Cordova app. Optional
       p But its place is very important, it should be inside of "page" and right before "messages-content":
       pre
         code

@@ -43,7 +43,7 @@ block content
           |   &lt;/div&gt;
           |   ...
           | &lt;/body&gt;
-      p <code>&lt;div class="pages"&td;</code> is a wrapper container for pages within a single View. It is required because all page transitions happen here.
+      p <code>&lt;div class="pages"&gt;</code> is a wrapper container for pages within a single View. It is required because all page transitions happen here.
       p Few important notes
       ul
         li 
@@ -165,6 +165,9 @@ block content
           tr
             td page.context
             td <span class="parameter-type">object</span>. Template7 context that was passed for this page when using Template7 pages
+          tr
+            td page.fromPage
+            td <span class="parameter-type">object</span>. Page Data object of the previously active page
           
           
       p Ok, let's look again how we can using one event handler write code for different pages

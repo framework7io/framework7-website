@@ -56,11 +56,11 @@ block scripts
       var modal = myApp.modal({
         title: 'Awesome Photos?',
         text: 'What do you think about my photos?',
-        afterText:  '<div class="slider-container" style="width: auto; margin:5px -15px">'+
-                      '<div class="slider-pagination"></div>'+
-                      '<div class="slider-wrapper">'+
-                        '<div class="slider-slide"><img src="http://hhhhold.com/270x150/jpg?1" height="150"></div>' +
-                        '<div class="slider-slide"><img src="http://hhhhold.com/270x150/jpg?2"></div>'+
+        afterText:  '<div class="swiper-container" style="width: auto; margin:5px -15px -15px">'+
+                      '<div class="swiper-pagination"></div>'+
+                      '<div class="swiper-wrapper">'+
+                        '<div class="swiper-slide"><img src="http://lorempixel.com/270/150/nature/1/" height="150" style="display:block"></div>' +
+                        '<div class="swiper-slide"><img src="http://lorempixel.com/270/150/nature/2/" height="150" style="display:block"></div>'+
                       '</div>'+
                     '</div>',
         buttons: [
@@ -76,7 +76,7 @@ block scripts
           },
         ]
       })
-      myApp.slider($$(modal).find('.slider-container'), {pagination: '.slider-pagination'});
+      myApp.swiper($$(modal).find('.swiper-container'), {pagination: '.swiper-pagination'});
     });
 
     $$('.open-tabs-modal').on('click', function () {

@@ -40,7 +40,7 @@ block content
             |       &lt;div class="swipeout-actions-right"&gt;
             |         &lt;!-- Swipeout actions links/buttons --&gt;
             |         &lt;a href="#"&gt;Action 1&lt;/a&gt;
-            |         &lt;a href="#"&gt;Action 2&lt;/a&gt;
+            |         &lt;a class="swipeout-close" href="#"&gt;Action 2&lt;/a&gt;
             |       &lt;/div&gt;
             |     &lt;/li&gt;
             |     ...
@@ -51,6 +51,7 @@ block content
           li <code>swipeout-content</code> - wrapper for your list element. This container will move during swipe over the list item
           li <code>swipeout-actions-left</code> - container with left swipeout action buttons/links
           li <code>swipeout-actions-right</code> - container with right swipeout action buttons/links
+          li <code>swipeout-close</code> - additional class on swipeout link that will close swipeout element when you click this link
         .important-note
           p Note that <strong>swipeout-content</strong> and <strong>swipeout-actions-left/right</strong> should be direct children of <strong>&lt;li&gt;</strong>
         p If you have only "item-content" you can simplify layout by adding "item-content" class to "swipeout-content":
@@ -267,23 +268,37 @@ block content
       h2(data-device-preview="../docs-demos/swipeout-api.html") Swipeout JavaScript API
       p Swipeouts also has rich JavaScript API that allows you to control swipeout elements. Let's look on appropriate App's properties and methods:
       p
-        span.method myApp.swipeoutOpen(<span>el</span>)</span> - reveal swipeout actions on specified element
+        span.method myApp.swipeoutOpen(<span>el</span>, <span>direction</span>, <span>callback</span>)</span> - reveal swipeout actions on specified element
       ul.method-parameters
         li
           span.parameter el
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+        li
+          span.parameter direction
+          |  - <span class="parameter-type">string</span> (could be "left" or "right") swipeout actions to open. Should be specified if item has both left and right swipeout actions. Optional
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">function</span> - callback function will be executed after swipeout element completes its opening animation
+        
+
       p
-        span.method myApp.swipeoutClose(<span>el</span>)</span> - close swipeout actions on specified element
+        span.method myApp.swipeoutClose(<span>el</span>, <span>callback</span>)</span> - close swipeout actions on specified element
       ul.method-parameters
         li
           span.parameter el
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">function</span> - callback function will be executed after swipeout element completes its closing animation
       p
-        span.method myApp.swipeoutDelete(<span>el</span>)</span> - delete specified swipeout element
+        span.method myApp.swipeoutDelete(<span>el</span>, <span>callback</span>)</span> - delete specified swipeout element
       ul.method-parameters
         li
           span.parameter el
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">function</span> - callback function will be executed after swipeout element completes its delete animation right before it will be removed from DOM
 
       p
         span.method myApp.swipeoutOpenedEl</span> - property. Contains link to currently opened swipeout HTMLElement. Or equal to 'undefined' if none of elements are currently opened

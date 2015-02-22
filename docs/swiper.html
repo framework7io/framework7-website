@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Swiper Slider | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="langs"><span>Language: </span><a href="http://www.idangero.us/framework7/">EN</a><a href="http://framework7.taobao.org">CN</a></div>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-demo-device">
+        <iframe width="320" height="548" frameborder="0" scrolling="on"></iframe>
+        <div class="fade-overlay"></div>
+      </div>
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="sub-navbar.html">Sub Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+                <li><a href="picker-modal.html">Picker Modal</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="cards.html">Cards</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="swiper.html">Swiper Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="picker.html">Picker</a></li>
+            <li><a href="calendar.html">Calendar / Datepicker</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="lazy-load.html">Lazy Load</a></li>
+            <li class="title">Styling</li>
+            <li><a href="color-themes.html">Color Themes</a></li>
+            <li><a href="hairlines.html">Hairlines</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
+            <li class="title">Utilities</li>
+            <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="device-api.html">Device API</a></li>
+            <li> <a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
+          </ul>
+        </div>
+        <div class="docs-content with-device">
+          <div class="full-width">
+            <h1>Swiper Slider</h1>
+            <p>Framework7 comes with powerful and most modern touch slider ever - <a href="http://www.idangero.us/swiper/">Swiper Slider</a> with super flexible configuration and lot, lot of features.</p>
+            <h2>Swiper Slider HTML Layout</h2>
+            <p>Swiper HTML layout is pretty simple:</p>
+            <pre><code>&lt;!-- Slider container --&gt;
+&lt;div class="swiper-container"&gt;
+    &lt;!-- Slides wrapper --&gt;
+    &lt;div class="swiper-wrapper"&gt;
+        &lt;!-- Slides --&gt;
+        &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;Slide 3&lt;/div&gt;
+        ... other slides ...
+    &lt;/div&gt;
+    &lt;!-- Pagination, if required --&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            <p>Where:</p>
+            <ul>
+              <li>
+                <p><code>swiper-container</code> - main slider container with slides and paginations. Required element</p>
+                <ul>
+                  <li>
+                    <p><code>swiper-wrapper</code> - additional wrapper for slides. Required element</p>
+                    <ul>
+                      <li>
+                        <p><code>swiper-slide</code> - single slide element. Could contain any HTML inside</p>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <p><code>swiper-pagination</code> - container with pagination bullets. Note, that pagination bullets will be created automatically. Optional element</p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <h2>Initialize Swiper with JavaScript</h2>
+            <p>Now, when we have Swiper' HTML, we need to initialize it. We need to use related App's method:</p>
+            <div class="method-wrap">
+              <p><span class="method">myApp.swiper(<span>swiperContainer</span>, <span>parameters</span>) </span><span>- initialize slider with options</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">swiperContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of swiper container HTML element. Required.</li>
+                <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with Swiper parameters. Optional.</li>
+                <li class="method-returns"><strong>Method returns initialized Swiper instance</strong></li>
+              </ul>
+            </div>
+            <p>OR</p>
+            <div class="method-wrap">
+              <p><span class="method">new Swiper(<span>swiperContainer</span>, <span>parameters</span>) </span><span>- initialize slider with options</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">swiperContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of swiper container HTML element. Required.</li>
+                <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with Swiper parameters. Optional.</li>
+                <li class="method-returns"><strong>Method returns initialized Swiper instance</strong></li>
+              </ul>
+            </div>
+            <p>For example:</p>
+            <pre><code>var mySwiper = app.swiper('.swiper-container', {
+    speed: 400,
+    spaceBetween: 100
+});   </code></pre>
+            <div class="important-note">Note that Swiper container should be in DOM on a moment of initialization. So if you use slider not on home page, you need to initialize it within <a href="pages.html#page-events">pageInit</a> event</div>
+            <h2>Swiper Parameters, Methods And Properties</h2>
+            <p>Let's look on list of all available parameters:</p>
+            <table class="params-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Type</th>
+                  <th>Default</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>initialSlide</td>
+                  <td>number</td>
+                  <td>0</td>
+                  <td>Index number of initial slide.</td>
+                </tr>
+                <tr>
+                  <td>direction</td>
+                  <td>string</td>
+                  <td>'horizontal'</td>
+                  <td>Could be 'horizontal' or 'vertical' (for vertical slider).</td>
+                </tr>
+                <tr>
+                  <td>speed</td>
+                  <td>number</td>
+                  <td>300</td>
+                  <td>Duration of transition between slides (in ms)</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Autoplay</th>
+                </tr>
+                <tr>
+                  <td>autoplay</td>
+                  <td>number</td>
+                  <td>-</td>
+                  <td>delay between transitions (in ms). If this parameter is not specified, auto play will be disabled</td>
+                </tr>
+                <tr>
+                  <td>autoplayDisableOnInteraction</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to false and autoplay will not be disabled after user interactions (swipes), it will be restarted every time after interaction</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Progress</th>
+                </tr>
+                <tr>
+                  <td>watchSlidesProgress</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Enable this feature to calculate each slides progress</td>
+                </tr>
+                <tr>
+                  <td>watchVisibility</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td><code>watchSlidesProgress</code> should be enabled. Enable this option and slides that are in viewport will have additional visible class</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Freemode</th>
+                </tr>
+                <tr>
+                  <td>freeMode</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>If <code>true</code> then slides will not have fixed positions</td>
+                </tr>
+                <tr>
+                  <td>freeModeMomentum</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>If <code>true</code>, then slide will keep moving for a while after you release it</td>
+                </tr>
+                <tr>
+                  <td>freeModeMomentumRatio</td>
+                  <td>number</td>
+                  <td>1</td>
+                  <td>Higher value produces larger momentum distance after you release slider</td>
+                </tr>
+                <tr>
+                  <td>freeModeMomentumBounce</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>false</code> if you want to disable momentum bounce in free mode</td>
+                </tr>
+                <tr>
+                  <td>freeModeMomentumBounceRatio</td>
+                  <td>number</td>
+                  <td>1</td>
+                  <td>Higher value produces larger momentum bounce effect</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Effects</th>
+                </tr>
+                <tr>
+                  <td>effect</td>
+                  <td>string</td>
+                  <td>'slide'</td>
+                  <td>Could be "slide", "fade", "cube" or "coverflow"</td>
+                </tr>
+                <tr>
+                  <td>cube</td>
+                  <td>object</td>
+                  <td>
+                    <pre><code>cube: {
+  slideShadows: true,
+  shadow: true,
+  shadowOffset: 20,
+  shadowScale: 0.94
+}</code></pre>
+                  </td>
+                  <td>Cube effect parameters. For better performance you may disable shadows</td>
+                </tr>
+                <tr>
+                  <td>coverflow</td>
+                  <td>object</td>
+                  <td>
+                    <pre><code>coverflow: {
+  rotate: 50,
+  stretch: 0,
+  depth: 100,
+  modifier: 1,
+  slideShadows : true
+}</code></pre>
+                  </td>
+                  <td>Coverflow effect parameters. For better performance you may disable shadows</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Slides grid</th>
+                </tr>
+                <tr>
+                  <td>spaceBetween</td>
+                  <td>number</td>
+                  <td>0</td>
+                  <td>Distance between slides in px.</td>
+                </tr>
+                <tr>
+                  <td>slidesPerView</td>
+                  <td>number or 'auto'</td>
+                  <td>1</td>
+                  <td>Number of slides per view (slides visible at the same time on slider's container).</td>
+                </tr>
+                <tr>
+                  <td>slidesPerColumn</td>
+                  <td>number</td>
+                  <td>1</td>
+                  <td>Number of slides per column, for multirow layout</td>
+                </tr>
+                <tr>
+                  <td>slidesPerColumnFill</td>
+                  <td>string</td>
+                  <td>'column'</td>
+                  <td>Could be 'column' or 'row'. Defines how slides should fill rows, by column or by row</td>
+                </tr>
+                <tr>
+                  <td>slidesPerGroup</td>
+                  <td>number</td>
+                  <td>1</td>
+                  <td>Set numbers of slides to define and enable group sliding. Useful to use with slidesPerView &gt; 1</td>
+                </tr>
+                <tr>
+                  <td>centeredSlides</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>If true, then active slide will be centered, not always on the left side.</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Grab Cursor</th>
+                </tr>
+                <tr>
+                  <td>grabCursor</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>This option may a little improve desktop usability. If <code>true</code>, user will see the "grab" cursor when hover on Swiper</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Touches</th>
+                </tr>
+                <tr>
+                  <td>touchRatio</td>
+                  <td>number</td>
+                  <td>1</td>
+                  <td>Touch ration</td>
+                </tr>
+                <tr>
+                  <td>touchAngle</td>
+                  <td>number</td>
+                  <td>45</td>
+                  <td>Allowable angle (in degrees) to trigger touch move</td>
+                </tr>
+                <tr>
+                  <td>simulateTouch</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>If true, Swiper will accept mouse events like touch events (click and drag to change slides)</td>
+                </tr>
+                <tr>
+                  <td>shortSwipes</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>false</code> if you want to disable short swipes</td>
+                </tr>
+                <tr>
+                  <td>longSwipes</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>false</code> if you want to disable long swipes</td>
+                </tr>
+                <tr>
+                  <td>longSwipesRatio</td>
+                  <td>number</td>
+                  <td>0.5</td>
+                  <td>Ratio to trigger swipe to next/previous slide during long swipes</td>
+                </tr>
+                <tr>
+                  <td>longSwipesMs</td>
+                  <td>number</td>
+                  <td>300</td>
+                  <td>Minimal duration (in ms) to trigger swipe to next/previous slide during long swipes</td>
+                </tr>
+                <tr>
+                  <td>followFinger</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>If disabled, then slider will be animated only when you release it, it will not move while you hold your finger on it</td>
+                </tr>
+                <tr>
+                  <td>onlyExternal</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>If true, then the only way to switch the slide is use of external API functions like slidePrev or slideNext</td>
+                </tr>
+                <tr>
+                  <td>threshold</td>
+                  <td>number</td>
+                  <td>0</td>
+                  <td>Threshold value in px. If "touch distance" will be lower than this value then swiper will not move</td>
+                </tr>
+                <tr>
+                  <td>touchMoveStopPropagation</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>If enabled, then propagation of "touchmove" will be stopped</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Touch Resistance</th>
+                </tr>
+                <tr>
+                  <td>resistance</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>false</code> if you want to disable resistant bounds</td>
+                </tr>
+                <tr>
+                  <td>resistanceRatio</td>
+                  <td>number</td>
+                  <td>0.85</td>
+                  <td>This option allows you to control resistance ratio</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Clicks</th>
+                </tr>
+                <tr>
+                  <td>preventClicks</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>true</code> to prevent accidental unwanted clicks on links during swiping</td>
+                </tr>
+                <tr>
+                  <td>preventClicksPropagation</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>true</code> to stop clicks event propagation on links during swiping</td>
+                </tr>
+                <tr>
+                  <td>releaseFormElements</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>true</code> to prevent swiping on form elements</td>
+                </tr>
+                <tr>
+                  <td>slideToClickedSlide</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to <code>true</code> and click on any slide will produce transition to this slide</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Swiping / No swiping</th>
+                </tr>
+                <tr>
+                  <td>allowSwipeToPrev</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>false</code> to disable swiping to previous slide direction (to left or top)</td>
+                </tr>
+                <tr>
+                  <td>allowSwipeToNext</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>false</code> to disable swiping to next slide direction (to right or bottom)</td>
+                </tr>
+                <tr>
+                  <td>noSwiping</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to <code>false</code> to disable swiping to next slide direction (to right or bottom)</td>
+                </tr>
+                <tr>
+                  <td>noSwipingClass</td>
+                  <td>string</td>
+                  <td>'swiper-no-swiping'</td>
+                  <td>If <code>true</code>, then you can add <code>noSwipingClass</code> class to swiper's slide to prevent/disable swiping on this element</td>
+                </tr>
+                <tr>
+                  <td>swipeHandler</td>
+                  <td>string / HTMLElement</td>
+                  <td>null</td>
+                  <td>String with CSS selector or HTML element of the container with pagination that will work as only available handler for swiping</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Pagination</th>
+                </tr>
+                <tr>
+                  <td>pagination</td>
+                  <td>string / HTMLElement</td>
+                  <td>null</td>
+                  <td>String with CSS selector or HTML element of the container with pagination</td>
+                </tr>
+                <tr>
+                  <td>paginationHide</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Toggle (hide/true) pagination container visibility when click on Slider's container</td>
+                </tr>
+                <tr>
+                  <td>paginationClickable</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>If <code>true</code> then clicking on pagination button will cause transition to appropriate slide</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Navigation Buttons</th>
+                </tr>
+                <tr>
+                  <td>nextButton</td>
+                  <td>string / HTMLElement</td>
+                  <td>null</td>
+                  <td>String with CSS selector or HTML element of the element that will work like "next" button after click on it</td>
+                </tr>
+                <tr>
+                  <td>prevButton</td>
+                  <td>string / HTMLElement</td>
+                  <td>null</td>
+                  <td>String with CSS selector or HTML element of the element that will work like "prev" button after click on it</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Scollbar</th>
+                </tr>
+                <tr>
+                  <td>scrollbar</td>
+                  <td>string / HTMLElement</td>
+                  <td>null</td>
+                  <td>String with CSS selector or HTML element of the container with scrollbar.</td>
+                </tr>
+                <tr>
+                  <td>scrollbarHide</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Hide scrollbar automatically after user interaction</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Images</th>
+                </tr>
+                <tr>
+                  <td>updateOnImagesReady</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>When enabled Swiper will be reinitialized after all inner images (&lt;img&gt; tags) are loaded</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Loop</th>
+                </tr>
+                <tr>
+                  <td>loop</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>
+                    <p>Set to <code>true</code> to enable continuous loop mode</p>
+                    <p class="important-note">If you use it along with <code>slidesPerView: 'auto'</code> then you need to specify <code>loopedSlides</code> parameter with amount of slides to loop (duplicate) </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>loopAdditionalSlides</td>
+                  <td>number</td>
+                  <td>0</td>
+                  <td>Addition number of slides that will be cloned after creating of loop</td>
+                </tr>
+                <tr>
+                  <td>loopedSlides</td>
+                  <td>number</td>
+                  <td>null</td>
+                  <td>If you use <code>slidesPerView:'auto'</code> with loop mode you should tell to Swiper how many slides it should loop (duplicate) using this parameter</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Controller</th>
+                </tr>
+                <tr>
+                  <td>control</td>
+                  <td>[Swiper Instance]</td>
+                  <td>undefined</td>
+                  <td>Pass here another Swiper instance or array with Swiper instances that should be controlled by this Swiper</td>
+                </tr>
+                <tr>
+                  <td>controlInverse</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to <code>true</code> and controlling will be in inverse direction</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Observer</th>
+                </tr>
+                <tr>
+                  <td>observer</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>observeParents</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th colspan="4">Callbacks</th>
+                </tr>
+                <tr>
+                  <td>onInit(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed right after Swiper initialization</td>
+                </tr>
+                <tr>
+                  <td>onSlideChangeStart(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives swiper instance as an argument.</td>
+                </tr>
+                <tr>
+                  <td>onSlideChangeEnd(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed after animation to other slide (next or previous). Receives slider instance as an argument.</td>
+                </tr>
+                <tr>
+                  <td>onTransitionStart(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed in the beginning of transition. Receives swiper instance as an argument.</td>
+                </tr>
+                <tr>
+                  <td>onTransitionEnd(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed after transition. Receives slider instance as an argument.</td>
+                </tr>
+                <tr>
+                  <td>onTouchStart(swiper, event)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when user touch Swiper. Receives swiper instance and 'touchstart' event as an arguments.</td>
+                </tr>
+                <tr>
+                  <td>onTouchMove(swiper, event)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when user touch and move finger over Swiper. Receives swiper instance and 'touchmove' event as an arguments.</td>
+                </tr>
+                <tr>
+                  <td>onTouchMoveOpposite(swiper, event)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when user touch and move finger over Swiper in direction opposite to <code>direction</code> parameter. Receives swiper instance and 'touchmove' event as an arguments.</td>
+                </tr>
+                <tr>
+                  <td>onSliderMove(swiper, event)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when user touch and move finger over Swiper and move it. Receives swiper instance and 'touchmove' event as an arguments.</td>
+                </tr>
+                <tr>
+                  <td>onTouchEnd(swiper, event)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when user release Swiper. Receives swiper instance and 'touchend' event as an arguments.</td>
+                </tr>
+                <tr>
+                  <td>onClick(swiper, event)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when user click/tap on Swiper after 300ms delay. Receives swiper instance and 'touchend' event as an arguments.</td>
+                </tr>
+                <tr>
+                  <td>onTap(swiper, event)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when user click/tap on Swiper. Receives swiper instance and 'touchend' event as an arguments.</td>
+                </tr>
+                <tr>
+                  <td>onDoubleTap(swiper, event)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when user double tap on Swiper's container. Receives swiper instance and 'touchend' event as an arguments</td>
+                </tr>
+                <tr>
+                  <td>onImagesReady(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed right after all inner images are loaded. <code>updateOnImagesReady</code> should be also enabled</td>
+                </tr>
+                <tr>
+                  <td>onProgress(swiper, progress)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when Swiper progress is changed, as second arguments it receives <b>progress</b> that is always from 0 to 1</td>
+                </tr>
+                <tr>
+                  <td>onReachBeginning(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when Swiper reach its beginning (initial position)</td>
+                </tr>
+                <tr>
+                  <td>onReachEnd(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when Swiper reach last slide</td>
+                </tr>
+                <tr>
+                  <td>onDestroy(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when you destroy Swiper</td>
+                </tr>
+                <tr>
+                  <td>onSetTranslate(swiper, translate)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when swiper's wrapper change its position. Receives swiper instance and current translate value as an arguments</td>
+                </tr>
+                <tr>
+                  <td>onSetTransition(swiper, transition)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed everytime when swiper starts animation. Receives swiper instance and current transition duration (in ms) as an arguments</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Namespace</th>
+                </tr>
+                <tr>
+                  <td>slideClass</td>
+                  <td>string</td>
+                  <td>'swiper-slide'</td>
+                  <td>CSS class name of slide</td>
+                </tr>
+                <tr>
+                  <td>slideActiveClass</td>
+                  <td>string</td>
+                  <td>'swiper-slide-active'</td>
+                  <td>CSS class name of currently active slide</td>
+                </tr>
+                <tr>
+                  <td>slideVisibleClass</td>
+                  <td>string</td>
+                  <td>'swiper-slide-visible'</td>
+                  <td>CSS class name of currently visible slide</td>
+                </tr>
+                <tr>
+                  <td>slideDuplicateClass</td>
+                  <td>string</td>
+                  <td>'swiper-slide-duplicate'</td>
+                  <td>CSS class name of slide duplicated by loop mode</td>
+                </tr>
+                <tr>
+                  <td>slideNextClass</td>
+                  <td>string</td>
+                  <td>'swiper-slide-next'</td>
+                  <td>CSS class name of slide which is right after currently active slide</td>
+                </tr>
+                <tr>
+                  <td>slidePrevClass</td>
+                  <td>string</td>
+                  <td>'swiper-slide-prev'</td>
+                  <td>CSS class name of slide which is right before currently active slide</td>
+                </tr>
+                <tr>
+                  <td>wrapperClass</td>
+                  <td>string</td>
+                  <td>'swiper-wrapper'</td>
+                  <td>CSS class name of slides' wrapper</td>
+                </tr>
+                <tr>
+                  <td>bulletClass</td>
+                  <td>string</td>
+                  <td>'swiper-pagination-bullet'</td>
+                  <td>CSS class name of single pagination bullet</td>
+                </tr>
+                <tr>
+                  <td>bulletActiveClass</td>
+                  <td>string</td>
+                  <td>'swiper-pagination-bullet-active'</td>
+                  <td>CSS class name of currently active pagination bullet</td>
+                </tr>
+                <tr>
+                  <td>paginationHiddenClass</td>
+                  <td>string</td>
+                  <td>'swiper-pagination-hidden'</td>
+                  <td>CSS class name of pagination when it becomes inactive</td>
+                </tr>
+                <tr>
+                  <td>buttonDisabledClass</td>
+                  <td>string</td>
+                  <td>'swiper-button-disabled'</td>
+                  <td>CSS class name of next/prev button when it becomes disabled</td>
+                </tr>
+              </tbody>
+            </table>
+            <h2>Slider Methods & Properties</h2>
+            <p>After we initialize Slider we have its initialized instance in variable (like <code>mySwiper</code> variable in example above) with helpful methods and properties:</p>
+            <table class="methods-table">
+              <tbody>
+                <tr>
+                  <th colspan="2">Properties</th>
+                </tr>
+                <tr>
+                  <td>mySwiper.params</td>
+                  <td>Object with passed initialization parameters</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.container</td>
+                  <td>Dom7/jQuery element with slider container HTML element. To get vanilla HTMLElement use <code>mySwiper.container[0]</code></td>
+                </tr>
+                <tr>
+                  <td>mySwiper.wrapper</td>
+                  <td>Dom7/jQuery element with slider wrapper HTML element. To get vanilla HTMLElement use <code>mySwiper.wrapper[0]</code></td>
+                </tr>
+                <tr>
+                  <td>mySwiper.slides</td>
+                  <td>Dom7/jQuery array-like collection of slides HTML elements. To get specific slide HTMLElement use <code>mySwiper.slides[1]</code></td>
+                </tr>
+                <tr>
+                  <td>mySwiper.bullets</td>
+                  <td>Dom7/jQuery collection of pagination buttons HTML elements. To get specific slide HTMLElement use <code>mySwiper.bullets[1]</code></td>
+                </tr>
+                <tr>
+                  <td>mySwiper.width</td>
+                  <td>Width of container</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.height</td>
+                  <td>Height of container</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.translate</td>
+                  <td>Current value of wrapper translate</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.progress</td>
+                  <td>Current progress of wrapper translate (from 0 to 1)</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.activeIndex</td>
+                  <td>Index number of currently active slide</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.previousIndex</td>
+                  <td>Index number of previously active slide</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.isBeginning</td>
+                  <td><b>true</b> if slider on most "left"/"top" position</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.isEnd</td>
+                  <td><b>true</b> if slider on most "right"/"bottom" position</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.touches</td>
+                  <td>Object with the following touch event properties:
+                    <ul>
+                      <li>mySwiper.touches.startX</li>
+                      <li>mySwiper.touches.startY</li>
+                      <li>mySwiper.touches.currentX</li>
+                      <li>mySwiper.touches.currentY</li>
+                      <li>mySwiper.touches.diff</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="2">Methods</th>
+                </tr>
+                <tr>
+                  <td>mySwiper.slideNext(<span>runCallbacks</span>, <span>speed</span>);</td>
+                  <td>Run transition to next slide<br>
+                    <ul class="method-parameters">
+                      <li><span class="parameter">runCallbacks</span> - <span class="parameter-type">boolean</span> - Set it to <code>false</code> (by default it is <code>true</code>) and transition will not produce onSlideChange callback functions. <em>Optional</em></li>
+                      <li><span class="parameter">speed</span> - <span class="parameter-type">number</span> - transition duration (in ms). <em>Optional</em></li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>mySwiper.slidePrev(<span>runCallbacks</span>, <span>speed</span>);</td>
+                  <td>Run transition to previous slide<br>
+                    <ul class="method-parameters">
+                      <li><span class="parameter">runCallbacks</span> - <span class="parameter-type">boolean</span> - Set it to <code>false</code> (by default it is <code>true</code>) and transition will not produce onSlideChange callback functions. <em>Optional</em></li>
+                      <li><span class="parameter">speed</span> - <span class="parameter-type">number</span> - transition duration (in ms). <em>Optional</em></li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>mySwiper.slideTo(<span>index</span>, <span>speed</span>, <span>runCallbacks</span>);</td>
+                  <td>Run transition to the slide with index number equal to 'index' parameter for the duration equal to 'speed' parameter.<br>
+                    <ul class="method-parameters">
+                      <li><span class="parameter">index</span> - <span class="parameter-type">number</span> - index number of slide</li>
+                      <li><span class="parameter">speed</span> - <span class="parameter-type">number</span> - transition duration (in ms). <em>Optional</em></li>
+                      <li><span class="parameter">runCallbacks</span> - <span class="parameter-type">boolean</span> - Set it to <code>false</code> (by default it is <code>true</code>) and transition will not produce onSlideChange callback functions. <em>Optional</em></li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>mySwiper.updateContainerSize();</td>
+                  <td>This method will recalculate size of swiper container</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.updateSlidesSize();</td>
+                  <td>This method will recalculate number of slides and their offsets. Useful after you add/remove slides with JavaScript</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.updateProgress();</td>
+                  <td>This method will recalculate swiper progress</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.updatePagination();</td>
+                  <td>Recalculate slider and slides sizes. Useful after you change slider size with JavaScript</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.updateClasses();</td>
+                  <td>Updates active/prev/next classes on slides and bullets</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.update(updateTranslate);</td>
+                  <td>
+                    <p>This method includes updateContainerSize, updateSlidesSize, updateProgress, updatePagination and updateClasses methods </p>
+                    <p>You should call it after you add/remove slides manually, or after you hide/show it, or do any custom DOM modifications with Swiper</p>
+                    <ul class="method-parameters">
+                      <li><span class="parameter">updateTranslate</span> - <span class="parameter-type">boolean</span> - Set it to <code>true</code> (by default it is <code>false</code>) to hard set/reset/update Swiper wrapper translate. It is useful if you use not default effect or scrollbar. <em>Optional</em></li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>mySwiper.onResize();</td>
+                  <td>Swiper executes this method when you resize browser. It is almost the same as <code>.update()</code> but a bit softer, without hard setting translate</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.detachEvents();</td>
+                  <td>Detach all events listeners</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.attachEvents();</td>
+                  <td>Atach all events listeners again</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.startAutoplay();</td>
+                  <td>start auto play. It may be useful for custom "Play" and "Pause" buttons</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.stopAutoplay();</td>
+                  <td>stop auto play. It may be useful for custom "Play" and "Pause" buttons</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.destroy();</td>
+                  <td>Destroy slider instance and detach all events listeners</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.appendSlide(slides);</td>
+                  <td>Add new slides to the end. <code>slides</code> could be HTMLElement or HTML string with new slide or array with such slides, for example:
+                    <pre><code>mySwiper.appendSlide('&lt;div class="swiper-slide"&gt;Slide 10"&lt;/div&gt;')
+mySwiper.appendSlide([
+   '&lt;div class="swiper-slide"&gt;Slide 10"&lt;/div&gt;', 
+   '&lt;div class="swiper-slide"&gt;Slide 11"&lt;/div&gt;'
+]);</code></pre>
+                  </td>
+                </tr>
+                <tr>
+                  <td>mySwiper.prependSlide(slides);</td>
+                  <td>Add new slides to the beginning. <code>slides</code> could be HTMLElement or HTML string with new slide or array with such slides, for example:
+                    <pre><code>mySwiper.prependSlide('&lt;div class="swiper-slide"&gt;Slide 0"&lt;/div&gt;')
+mySwiper.prependSlide([
+   '&lt;div class="swiper-slide"&gt;Slide 1"&lt;/div&gt;', 
+   '&lt;div class="swiper-slide"&gt;Slide 2"&lt;/div&gt;'
+]);</code></pre>
+                  </td>
+                </tr>
+                <tr>
+                  <td>mySwiper.removeSlide(slideIndex);</td>
+                  <td>Remove selected slides. <code>slideIndex</code> could be a number with slide index to remove or array with indexes, for example:
+                    <pre><code class="js">mySwiper.removeSlide(0); //remove first slide
+mySwiper.removeSlide([0, 1]); //remove first and second slides</code></pre>
+                  </td>
+                </tr>
+                <tr>
+                  <td>mySwiper.removeAllSlides();</td>
+                  <td>Remove all slides</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.setWrapperTranslate(translate);</td>
+                  <td>Set custom css3 transform's translate value for swiper wrapper</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.getWrapperTranslate();</td>
+                  <td>Get current value of swiper wrapper css3 transform translate</td>
+                </tr>
+              </tbody>
+            </table>
+            <h2>Initialize Swiper with HTML</h2>
+            <p>If you don't need Swiper callback you can initialize swiper using HTML without JavaScript. You can do that just by adding additional "swiper-init" class to <code>swiper-container</code></p>
+            <pre><code>&lt;!-- swiper-init to initialize swiper automatically --&gt;
+&lt;div class="swiper-container swiper-init"&gt;
+    &lt;div class="swiper-wrapper"&gt;
+        &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;Slide 3&lt;/div&gt;
+        ... other slides ...
+    &lt;/div&gt;
+&lt;/div&gt;  </code></pre>
+            <p>But what about Swiper parameters. In this case we need to pass them in <b>data-</b> attributes:</p>
+            <pre><code>&lt;!-- swiper properties in data- attributes --&gt;
+&lt;div class="swiper-container swiper-init" data-speed="400" data-spaceBetween="40" data-pagination=".swiper-pagination"&gt;
+    &lt;div class="swiper-wrapper"&gt;
+        &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;Slide 3&lt;/div&gt;
+        ... other slides ...
+    &lt;/div&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+&lt;/div&gt;        </code></pre>
+            <p>Or we can pass all Swiper parameters in <strong>valid JSON format</strong> in data-swiper attribute:</p>
+            <pre><code>&lt;!-- swiper properties in JSON format in data-swiper attribute --&gt;
+&lt;div class="swiper-container swiper-init" data-swiper="{'speed':'400', 'spaceBetween':'40', 'pagination': '.swiper-pagination'}"&gt;
+    &lt;div class="swiper-wrapper"&gt;
+        &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;Slide 3&lt;/div&gt;
+        ... other slides ...
+    &lt;/div&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            <h2>Access to Swiper's Instance</h2>
+            <p>If you initialize Swiper using HTML it is still possible to access to Swiper's instance. It is "swiper" property of slider's container HTML element:</p>
+            <pre><code>var mySwiper = $$('.swiper-container')[0].swiper;
+ 
+// Now you can use all slider methods like
+mySwiper.slideNext();</code></pre>
+          </div>
+          <h2>Examples</h2>
+          <h3 data-device-preview="../docs-demos/swiper-default.html">Default Swiper with pagination          </h3>
+          <pre><code>/* A bit of demo styles */;
+.swiper-container {
+  height: 100%;
+}
+.swiper-slide {
+  background:#fff;
+}
+.swiper-slide span {
+  text-align:center;
+  display:block;
+  margin:20px;
+  font-size:21px;
+}</code></pre>
+          <pre><code>...
+&lt;div class="page-content"&gt;
+  &lt;!-- Slider --&gt;
+  &lt;div class="swiper-container"&gt;
+    &lt;div class="swiper-wrapper"&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 3&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 4&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+...</code></pre>
+          <pre><code>  var myApp = new Framework7(); 
+ 
+  // Init slider and store its instance in mySwiper variable
+  var mySwiper = myApp.swiper('.swiper-container', {
+    pagination:'.swiper-pagination'
+  });</code></pre>
+          <h3 data-device-preview="../docs-demos/swiper-vertical.html">Vertical Swiper</h3>
+          <p>Styles and HTML layout are the same as in previous example</p>
+          <pre><code>  var myApp = new Framework7(); 
+ 
+  // Init slider and store its instance in mySwiper variable
+  var mySwiper = myApp.swiper('.swiper-container', {
+    pagination:'.swiper-pagination',
+    direction: 'vertical'
+  });</code></pre>
+          <div style="height:200px"></div>
+          <h3 data-device-preview="../docs-demos/swiper-space.html">With space between slides</h3>
+          <p>Styles and HTML layout are the same as in previous examples</p>
+          <pre><code>  var myApp = new Framework7(); 
+ 
+  // Init slider and store its instance in mySwiper variable
+  var mySwiper = myApp.swiper('.swiper-container', {
+    pagination:'.swiper-pagination',
+    spaceBetween: 100 // 100px between slides
+  });</code></pre>
+          <div style="height:200px"></div>
+          <h3 data-device-preview="../docs-demos/swiper-multiple.html">Multiple Swipers</h3>
+          <pre><code>.swiper-slide {
+  background: #fff;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+}
+.swiper-slide span {
+  text-align:center;
+  display:block;
+  margin: 20px;
+  font-size:21px;
+}
+.swiper-container {
+  height: 120px;
+  margin: 35px 0;
+}</code></pre>
+          <pre><code>&lt;div class="page-content"&gt;
+ 
+  &lt;div class="content-block-title"&gt;1 Slide Per View, 50px Between&lt;/div&gt;
+  &lt;div class="swiper-container swiper-1"&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+    &lt;div class="swiper-wrapper"&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+      ...
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+  &lt;div class="content-block-title"&gt;2 Slides Per View, 20px Between&lt;/div&gt;
+  &lt;div class="swiper-container swiper-2"&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+    &lt;div class="swiper-wrapper"&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+      ...
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+  &lt;div class="content-block-title"&gt;3 Slides Per View, 10px Between&lt;/div&gt;
+  &lt;div class="swiper-container swiper-3"&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+    &lt;div class="swiper-wrapper"&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+      ...
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+  &lt;div class="content-block-title"&gt;Vertical, 0px Between&lt;/div&gt;
+  &lt;div class="swiper-container swiper-vertical"&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+    &lt;div class="swiper-wrapper"&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+      ...
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 5&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+  &lt;div class="content-block-title"&gt;Slow speed&lt;/div&gt;
+  &lt;div class="swiper-container swiper-slow"&gt;
+    &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+    &lt;div class="swiper-wrapper"&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+      ...
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+&lt;/div&gt;  </code></pre>
+          <pre><code>var myApp = new Framework7(); 
+ 
+// 1 Slide Per View, 50px Between
+var mySwiper1 = myApp.swiper('.swiper-1', {
+  pagination:'.swiper-1 .swiper-pagination',
+  spaceBetween: 50
+});
+ 
+// 2 Slides Per View, 20px Between
+var mySwiper2 = myApp.swiper('.swiper-2', {
+  pagination:'.swiper-2 .swiper-pagination',
+  spaceBetween: 20,
+  slidesPerView: 2
+});
+ 
+// 3 Slides Per View, 10px Between
+var mySwiper3 = myApp.swiper('.swiper-3', {
+  pagination:'.swiper-3 .swiper-pagination',
+  spaceBetween: 10,
+  slidesPerView: 3
+});
+ 
+// Vertical, 0px Between
+var mySwiperVertical = myApp.swiper('.swiper-vertical', {
+  pagination:'.swiper-vertical .swiper-pagination',
+  direction: 'vertical'
+});
+ 
+// Slow speed
+var mySwiperSlow = myApp.swiper('.swiper-slow', {
+  pagination:'.swiper-slow .swiper-pagination',
+  speed: 600
+});                  </code></pre>
+          <h3 data-device-preview="../docs-demos/swiper-nested.html">Nested Swipers</h3>
+          <p>Let's initialize slider in this example using just HTML:</p>
+          <pre><code>.swiper-slide {
+  background:#fff;
+}
+.swiper-slide span {
+  text-align:center;
+  display:block;
+  margin:20px;
+  font-size:21px;
+}</code></pre>
+          <pre><code>&lt;div class="page-content"&gt;
+  &lt;!-- Horizontal parent slider --&gt;
+  &lt;div data-pagination=".swiper-pagination-h" data-paginationHide="false" class="swiper-container swiper-init"&gt;
+    &lt;div class="swiper-pagination swiper-pagination-h"&gt;&lt;/div&gt;
+    &lt;div class="swiper-wrapper"&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Horizontal Slide 1&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;
+ 
+        &lt;!-- Vertical nested child slider --&gt;
+        &lt;div class="swiper-container swiper-init" data-pagination=".swiper-pagination-v" data-direction="vertical" data-paginationHide="false"&gt;
+          &lt;div class="swiper-pagination swiper-pagination-v"&gt;&lt;/div&gt;
+          &lt;div class="swiper-wrapper"&gt;
+            &lt;div class="swiper-slide"&gt;&lt;span&gt;Vertical Slide 1&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="swiper-slide"&gt;&lt;span&gt;Vertical Slide 2&lt;/span&gt;&lt;/div&gt;
+            &lt;div class="swiper-slide"&gt;&lt;span&gt;Vertical Slide 3&lt;/span&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+ 
+      &lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Horizontal Slide 3&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="swiper-slide"&gt;&lt;span&gt;Horizontal Slide 4&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+ 
+&lt;/div&gt; </code></pre>
+          <h3 data-device-preview="../docs-demos/swiper-custom.html">Custom Controls</h3>
+          <pre><code>&lt;div class="page-content"&gt;
+  &lt;div class="slider-custom"&gt;
+    &lt;div class="swiper-container"&gt;
+      &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+      &lt;div class="swiper-wrapper"&gt;
+        &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 3&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 4&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 5&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 6&lt;/span&gt;&lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 7&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="slider-button-prev"&gt;&lt;/div&gt;
+    &lt;div class="slider-button-next"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>.swiper-custom {
+  position:relative;
+  height:100%;
+}
+.swiper-container {
+  height:100%;
+}
+.swiper-slide {
+  background: #fff;
+}
+.swiper-slide span {
+  text-align:center;
+  display:block;
+  margin: 20px;
+  font-size:21px;
+}
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: none;
+  border:1px solid #aaa;
+  border-radius: 0 0 0 0;
+  opacity:1;
+  cursor: pointer;
+}
+.swiper-pagination-bullet-active {
+  background: #007aff;
+  border-color: #007aff;
+}   </code></pre>
+          <pre><code>var myApp = new Framework7(); 
+ 
+var mySwiper = myApp.swiper('.swiper-container', {
+  pagination: '.swiper-pagination',
+  paginationHide: false,
+  paginationClickable: true,
+  nextButton: '.swiper-button-next',
+  prevButton: '.swiper-button-prev',
+});                         </code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2015 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');     
+    </script>
+  </body>
+</html>

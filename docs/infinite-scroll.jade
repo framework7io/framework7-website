@@ -31,6 +31,15 @@ block content
             p <code>div class="page-content infinite-scroll"</code> our infinite scroll container
           li
             p <code>data-distance</code> attribute allows to configure distance from the bottom of page (in px) to trigger infinite scroll event. By default, if note specified, it is <b>50</b> (px)
+        h2 Infinite Scroll On Top
+        p If you need to use infinite scroll on top the page (when it scrolled to top), you need to add additional "infinite-scroll-top" class to "page-content":
+        pre
+          code
+            | &lt;div class="page"&gt;
+            |     &lt;div class="page-content infinite-scroll infinite-scroll-top"&gt;
+            |         ... 
+            |     &lt;/div&gt;
+            | &lt;/div&gt;
         h2 Infinite Scroll Events
         table.events-table
           thead
@@ -43,6 +52,7 @@ block content
               td infinite
               td Infinite Scroll container<span>&lt;div class="page-content infinite-scroll"&gt;</span>
               td Event will be triggered when page scroll reaches specified (in data-distance attribute) distance to the bottom.
+
         h2 Infinite Scroll API
         p There are two App's methods that can be used with infinite scroll container:
         .method-wrap
