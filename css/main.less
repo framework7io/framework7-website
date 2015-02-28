@@ -252,6 +252,7 @@ header {
     padding-top: 34px;
     position: relative;
     color:#fff;
+    z-index: 1;
 
     &:before {
         position: absolute;
@@ -267,14 +268,13 @@ header {
     }
     
     .logo {
-        background: #fff url(../i/logo-text.png) no-repeat center;
-        width: 240px;
-        height: 240px;
-        border-radius: 100%;
+        background: url(../i/logo-new.png) no-repeat center;
+        width: 500px / 2;
+        height: 500px / 2;
         margin: 0 auto;
-        -webkit-background-size: 45% auto;
-        -moz-background-size: 45% auto;
-        background-size: 45% auto;
+        -webkit-background-size: 100% auto;
+        -moz-background-size: 100% auto;
+        background-size: 100% auto;
         display: block;
     }
 
@@ -284,6 +284,7 @@ header {
         font-weight: 100;
         line-height: 1;
         margin: 25px 0;
+        // .myriad();
 
     }
     .slogan {
@@ -292,6 +293,7 @@ header {
         font-weight: 100;
         line-height: 1.2;
         margin: 25px 0;
+        // .myriad();
     }
     &.inner-header {
         height: auto;
@@ -308,7 +310,7 @@ header {
         .logo {
             height: 150px;
             width: 150px;
-            background: url(../i/logo-inner.png);
+            background: url(../i/logo-new.png);
             -webkit-background-size: 100% auto;
             background-size: 100% auto;
             float: left;
@@ -610,10 +612,12 @@ footer {
     padding-top: 20px;
     padding-bottom: 20px;
     a {
-        color:#fff;
         color: rgba(255,255,255,0.7);
         text-decoration: none;
         border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    a:hover {
+        color:#fff;
     }
     .links a {
         margin: 0 10px;

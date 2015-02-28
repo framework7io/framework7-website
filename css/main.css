@@ -145,6 +145,7 @@ header {
   padding-top: 34px;
   position: relative;
   color: #fff;
+  z-index: 1;
 }
 header:before {
   position: absolute;
@@ -159,14 +160,13 @@ header:before {
   opacity: 0.4;
 }
 header .logo {
-  background: #ffffff url(../i/logo-text.png) no-repeat center;
-  width: 240px;
-  height: 240px;
-  border-radius: 100%;
+  background: url(../i/logo-new.png) no-repeat center;
+  width: 250px;
+  height: 250px;
   margin: 0 auto;
-  -webkit-background-size: 45% auto;
-  -moz-background-size: 45% auto;
-  background-size: 45% auto;
+  -webkit-background-size: 100% auto;
+  -moz-background-size: 100% auto;
+  background-size: 100% auto;
   display: block;
 }
 header .title {
@@ -199,7 +199,7 @@ header.inner-header {
 header.inner-header .logo {
   height: 150px;
   width: 150px;
-  background: url(../i/logo-inner.png);
+  background: url(../i/logo-new.png);
   -webkit-background-size: 100% auto;
   background-size: 100% auto;
   float: left;
@@ -450,6 +450,74 @@ header .small-links a:hover {
   font-size: 47px;
   margin-bottom: 20px;
   font-weight: 300;
+}
+.home-featured {
+  background: #f3f3f3;
+  text-align: center;
+  padding: 40px 30px 40px;
+  margin-top: 0;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin-top: -50px;
+  margin-bottom: -50px;
+}
+.home-featured h2 {
+  font-size: 35px;
+  margin-bottom: 30px;
+  margin-top: 0px;
+}
+.home-featured p {
+  margin: 0;
+}
+.home-featured .feat-apps {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  margin-bottom: 30px;
+}
+.home-featured .feat-app {
+  width: 20%;
+}
+.home-featured .feat-app-icon {
+  display: block;
+  width: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.home-featured .feat-app-icon img {
+  width: 100px;
+  height: 100px;
+}
+.home-featured .feat-app-icon.feat-app-icon-rounded img {
+  border-radius: 20px;
+}
+.home-featured .feat-app-title {
+  font-size: 17px;
+  text-decoration: none;
+  display: block;
+  line-height: 1.3;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.home-featured .feat-app-author {
+  font-size: 13px;
+}
+.home-featured .feat-app-author a {
+  text-decoration: none;
+}
+.home-featured .feat-app-author a:hover {
+  text-decoration: underline;
 }
 .home-easy-to-use .pic {
   float: left;
@@ -729,6 +797,45 @@ header .small-links a:hover {
 img.lazy {
   background: #ddd;
 }
+.home-products {
+  text-align: center;
+}
+.home-products .product {
+  text-align: center;
+  float: left;
+  width: 33.33%;
+  margin: 1em 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+.home-products .title {
+  font-size: 25px;
+  font-weight: 300;
+}
+.home-products a {
+  text-decoration: none;
+}
+.home-products a:hover img {
+  opacity: 0.8;
+}
+.home-products img {
+  width: 150px;
+}
+.home-products .text {
+  color: #333;
+}
+.home-products .more-products {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
 .content {
   padding: 40px;
   -webkit-box-sizing: border-box;
@@ -795,10 +902,12 @@ footer {
   padding-bottom: 20px;
 }
 footer a {
-  color: #fff;
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+footer a:hover {
+  color: #fff;
 }
 footer .links a {
   margin: 0 10px;

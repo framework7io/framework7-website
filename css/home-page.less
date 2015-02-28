@@ -54,6 +54,73 @@
         font-weight: 300;
     }
 }
+.home-featured {
+    background: #f3f3f3;
+    position: relative;
+    text-align: center;
+    padding: 40px 30px 40px;
+    margin-top: 0;
+    position: relative;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    left: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin-top: -50px;
+    margin-bottom: -50px;
+    h2 {
+        font-size: 35px;
+        margin-bottom: 30px;
+        margin-top: 0px;
+    }
+    p {
+        margin: 0;
+    }
+    .feat-apps {
+        .flexbox();
+        margin-bottom: 30px;
+    }
+    .feat-app {
+        width: 20%;
+    }
+    .feat-app-icon {
+        display: block;
+        width: 100px;
+        margin-left: auto;
+        margin-right: auto;
+        img {
+            width: 100px;
+            height: 100px;
+        }
+        &.feat-app-icon-rounded img {
+            border-radius: 20px;
+        }
+    }
+    .feat-app-title {
+        font-size: 17px;
+        text-decoration: none;
+        display: block;
+        line-height: 1.3;
+        // margin-bottom: 5px;
+        color:#000;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    .feat-app-author {
+        font-size: 13px;
+        a {
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+}
 .home-easy-to-use {
     .pic {
         float: left;
@@ -237,4 +304,38 @@
 }
 img.lazy {
     background: #ddd;
+}
+.home-products {
+    text-align: center;
+    .product {
+        text-align: center;
+        float: left;
+        width: 33.33%;
+        margin: 1em 0;
+        .border-box();
+        padding: 0 20px;
+    }
+    .title {
+        font-size: 25px;
+        font-weight: 300;
+    
+    }
+    a {
+        text-decoration: none;
+    }
+    a:hover {
+        img {
+            opacity: 0.8;
+        }
+    }
+    img {
+        width: 150px;
+    }
+    .text {
+        color:#333;
+    }
+    .more-products {
+        .flexbox();
+        .justify-content(center);
+    }
 }
