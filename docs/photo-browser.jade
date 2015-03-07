@@ -219,16 +219,6 @@ block content
               td 
               td Callback function, will be executed when user close photo browser with swipe up/down.
             tr
-              td onImageLoad(photobrowser, slide, image)
-              td function
-              td 
-              td Callback function, will be executed when Photo Browser begins to load lazy loading photo
-            tr
-              td onImageLoaded(photobrowser, slide, image)
-              td function
-              td 
-              td Callback function, will be executed after lazy loading photo will be loaded
-            tr
               th(colspan="4") Swiper Callbacks
             tr
               td onSlideChangeStart(swiper)
@@ -255,6 +245,16 @@ block content
               td function
               td 
               td Callback function, will be executed when user double tap on slider's container. Receives Swiper instance and 'touchend' event as an arguments.
+            tr
+              td onLazyImageLoad(swiper, slide, image)
+              td function
+              td 
+              td Callback function, will be executed when Photo Browser begins to load lazy loading photo
+            tr
+              td onLazyImageReady(swiper, slide, image)
+              td function
+              td 
+              td Callback function, will be executed after lazy loading photo will be loaded
             
         h2 Photo Browser Methods & Properties
         p After we initialize Photo Browser we have its initialized instance in variable (like <code>myPhotoBrowser</code> variable in example above) with helpful methods and properties:
@@ -566,7 +566,7 @@ block content
           code
             | &lt;div class="photo-browser-slide photo-browser-slide-lazy swiper-slide"&gt;
             |     &lt;div class="preloader"&gt;&lt;/div&gt;
-            |     &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
+            |     &lt;span class="photo-browser-zoom-container"&gt;&lt;img class="swiper-lazy" src="{{url}}"&gt;&lt;/span&gt;
             | &lt;/div&gt;            
         h3 Object Element Template
         p Template example of single object slide element that you can pass in <code>objectTemplate</code> parameter:

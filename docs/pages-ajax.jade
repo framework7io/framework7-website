@@ -135,13 +135,21 @@ block content
       pre
         code
           | &lt;!-- Refresh currently active page (reload from server) --&gt;
-          | &lt;a href="about.html" data-reload="true" data-ignoreCache="true"&gt;Refresh page&lt;/a&gt;
+          | &lt;a href="about.html" data-reload="true" data-ignore-cache="true"&gt;Refresh page&lt;/a&gt;
           | 
           | &lt;!-- Go back but to another page, not to actual previous page in history. Such method also allows to jump back in history: --&gt;
           | &lt;a href="about.html" class="back" data-force="true"&gt;Back to About&lt;/a&gt;
           | 
           | &lt;!-- Load new page without animation --&gt;
-          | &lt;a href="about.html" data-animatePages="false"&gt;&lt;/a&gt;          
+          | &lt;a href="about.html" data-animate-pages="false"&gt;&lt;/a&gt;          
+      .important-note
+        p Note that such attributes should be used in hypens-case instead of camelCase: 
+        ul
+          li animatePages - data-animate-pages
+          li ignoreCache - data-ignore-cache
+          li animatePages - data-animate-pages
+          li contextName - data-context-name
+          li reloadPrevious - data-reload-previous
       h2 Load pages using JavaScript
       p It is possible to load page from HTML files using JavaScript API, not only using <code>&lt;a&gt;</code> tags. For this case we may use <code>.router.loadPage(url)</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:
       pre

@@ -272,7 +272,7 @@
                   <td>Enable this feature to calculate each slides progress</td>
                 </tr>
                 <tr>
-                  <td>watchVisibility</td>
+                  <td>watchSlidesVisibility</td>
                   <td>boolean</td>
                   <td>false</td>
                   <td><code>watchSlidesProgress</code> should be enabled. Enable this option and slides that are in viewport will have additional visible class</td>
@@ -320,6 +320,16 @@
                   <td>Could be "slide", "fade", "cube" or "coverflow"</td>
                 </tr>
                 <tr>
+                  <td>fade</td>
+                  <td>object</td>
+                  <td>
+                    <pre><code>fade: {
+  crossFade: false
+}</code></pre>
+                  </td>
+                  <td>Fade effect parameters</td>
+                </tr>
+                <tr>
                   <td>cube</td>
                   <td>object</td>
                   <td>
@@ -345,6 +355,15 @@
 }</code></pre>
                   </td>
                   <td>Coverflow effect parameters. For better performance you may disable shadows</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Parallax</th>
+                </tr>
+                <tr>
+                  <td>parallax</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Enable, if you want to use "parallaxed" elements inside of slider</td>
                 </tr>
                 <tr>
                   <th colspan="4">Slides grid</th>
@@ -494,12 +513,6 @@
                   <td>Set to <code>true</code> to stop clicks event propagation on links during swiping</td>
                 </tr>
                 <tr>
-                  <td>releaseFormElements</td>
-                  <td>boolean</td>
-                  <td>true</td>
-                  <td>Set to <code>true</code> to prevent swiping on form elements</td>
-                </tr>
-                <tr>
                   <td>slideToClickedSlide</td>
                   <td>boolean</td>
                   <td>false</td>
@@ -560,6 +573,20 @@
                   <td>If <code>true</code> then clicking on pagination button will cause transition to appropriate slide</td>
                 </tr>
                 <tr>
+                  <td>paginationBulletRender(index, className)</td>
+                  <td>function</td>
+                  <td>null</td>
+                  <td>This parameter allows totally customize pagination bullets, you need to pass here a function that accepts <b>index</b> number of pagination bullet and required element class name (<b>className</b>). 
+                    <p>For example, with this code, we can add slide number into pagination bullet:</p>
+                    <pre><code class="js">var swiper = new Swiper('.swiper-container', {
+  //...
+  paginationBulletRender: function (index, className) {
+      return '&lt;span class="' + className + '"&gt;' + (index + 1) + '&lt;/span&gt;';
+  }
+});              </code></pre>
+                  </td>
+                </tr>
+                <tr>
                   <th colspan="4">Navigation Buttons</th>
                 </tr>
                 <tr>
@@ -593,10 +620,34 @@
                   <th colspan="4">Images</th>
                 </tr>
                 <tr>
+                  <td>preloadImages</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>When enabled Swiper will force to load all images</td>
+                </tr>
+                <tr>
                   <td>updateOnImagesReady</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>When enabled Swiper will be reinitialized after all inner images (&lt;img&gt; tags) are loaded</td>
+                  <td>When enabled Swiper will be reinitialized after all inner images (&lt;img&gt; tags) are loaded. Required <code>preloadImages: true</code></td>
+                </tr>
+                <tr>
+                  <td>lazyLoading</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to "true" to enable images lazy loading. Note that <code>preloadImages</code> should be disabled</td>
+                </tr>
+                <tr>
+                  <td>lazyLoadingInPrevNext</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images)</td>
+                </tr>
+                <tr>
+                  <td>lazyLoadingOnTransitionStart</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>By default, Swiper will load lazy images after transition to this slide, so you may enable this parameter if you need it to start loading of new image in the beginning of transition</td>
                 </tr>
                 <tr>
                   <th colspan="4">Loop</th>
@@ -654,6 +705,12 @@
                 </tr>
                 <tr>
                   <th colspan="4">Callbacks</th>
+                </tr>
+                <tr>
+                  <td>runCallbacksOnInit</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Run on[Transition/SlideChange][Start/End] callbacks on swiper initialization. Such callbacks will be fired on initialization in case of your initialSlide is not 0, or you use loop mode</td>
                 </tr>
                 <tr>
                   <td>onInit(swiper)</td>
@@ -774,6 +831,30 @@
                   <td>function</td>
                   <td></td>
                   <td>Callback function, will be executed everytime when swiper starts animation. Receives swiper instance and current transition duration (in ms) as an arguments</td>
+                </tr>
+                <tr>
+                  <td>onAutoplayStart(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when when autoplay started</td>
+                </tr>
+                <tr>
+                  <td>onAutoplayStop(swiper)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when when autoplay stopped</td>
+                </tr>
+                <tr>
+                  <td>onLazyImageLoad(swiper, slide, image)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed in the beginning of lazy loading of image</td>
+                </tr>
+                <tr>
+                  <td>onLazyImageReady(swiper, slide, image)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when lazy loading image will be loaded</td>
                 </tr>
                 <tr>
                   <th colspan="4">Namespace</th>
@@ -904,6 +985,14 @@
                 <tr>
                   <td>mySwiper.isEnd</td>
                   <td><b>true</b> if slider on most "right"/"bottom" position</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.autoplaying</td>
+                  <td><b>true</b> if autoplay is enabled</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.animating</td>
+                  <td><b>true</b> if swiper is in transition</td>
                 </tr>
                 <tr>
                   <td>mySwiper.touches</td>
@@ -1043,6 +1132,76 @@ mySwiper.removeSlide([0, 1]); //remove first and second slides</code></pre>
                 </tr>
               </tbody>
             </table>
+            <h2>Parallax</h2>
+            <ul>
+              <li>Direct child elements of <code>swiper-container</code>. Parallax effect for such elements will depend on total slider progress. Useful for parallax backgrounds</li>
+              <li>Slides child elements. Parallax effect for such elements will depend on slide progress</li>
+            </ul>
+            <p>To enable parallax effects you need to init Swiper with passed <code>parallax:true</code> parameter and add <code>data-swiper-parallax</code> attribute on required elements</p>
+            <pre><code>&lt;div class="swiper-container"&gt;
+    &lt;!-- Parallax background element --&gt;
+    &lt;div 
+        class="parallax-bg" 
+        style="background-image:url(http://lorempixel.com/900/600/nightlife/2/)" 
+        data-swiper-parallax="-23%"&gt;
+    &lt;/div&gt;
+    &lt;div class="swiper-wrapper"&gt;
+        &lt;div class="swiper-slide"&gt;
+            &lt;!-- Each slide has parallax title --&gt;
+            &lt;div class="title" data-swiper-parallax="-100"&gt;Slide 1&lt;/div&gt;
+            &lt;!-- Parallax subtitle --&gt;
+            &lt;div class="subtitle" data-swiper-parallax="-200"&gt;Subtitle&lt;/div&gt;
+            &lt;!-- And parallax text --&gt;
+            &lt;div class="text" data-swiper-parallax="-300"&gt;
+              &lt;p&gt;Lorem ipsum dolor sit amet, ...&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        ...
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            <p>All elements with specified <code>data-swiper-parallax</code> attribute will have parallax transition. This attribute may accept: </p>
+            <ul>
+              <li><b>number</b> - value in px (as for title, subtitle in example above) to move element depending on progress. In this case such element will be moved on ± this value in px depending on slide position (next or previous)</li>
+              <li><b>percentage</b> - (as for "parallax-bg") to move element depending on progress and on its size. In this case such element will be moved on ± this percentage of its size (width in horizontal direction, and height in vertical direction) depending on slide position (next or previous). So if element has 400px width and you specified data-swiper-parallax="50%" then it will be moved on ± 200px</li>
+            </ul>
+            <p>It also possible to overwrite parallax direction by using <code>data-swiper-parallax-x</code> and <code>data-swiper-parallax-y</code> attributes with same rules</p>
+            <h2>Lazy Loading</h2>
+            <p>To enable lazy loading, first of all we need special layout for images in slides:</p>
+            <pre><code>&lt;div class="swiper-container"&gt;
+    &lt;div class="swiper-wrapper"&gt;
+        &lt;div class="swiper-slide"&gt;
+            &lt;img data-src="path/to/picture-1.jpg" class="swiper-lazy"&gt;
+            &lt;div class="preloader"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;
+            &lt;img data-src="path/to/picture-2.jpg" class="swiper-lazy"&gt;
+            &lt;div class="preloader"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="swiper-slide"&gt;
+            &lt;img data-src="path/to/picture-3.jpg" class="swiper-lazy"&gt;
+            &lt;div class="preloader"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt; </code></pre>
+            <p>As you see:</p>
+            <ul>
+              <li>Each lazy loaded image should have additional "swiper-lazy" class</li>
+              <li>Image source should be specified in "data-src" attribute instead of "src"</li>
+            </ul>
+            <p>You may also add animated preloader spinner to slide which will be removed automatically after image loaded:</p>
+            <pre><code>&lt;div class="preloader"&gt;&lt;/div&gt;</code></pre>
+            <p>Or white-one for dark layout:</p>
+            <pre><code>&lt;div class="preloader preloader-white"&gt;&lt;/div&gt;</code></pre>
+            <p>After that we need to enable lazy loading on Swiper initialization:</p>
+            <pre><code>var swiper = new Swiper('.swiper-container', {
+    // Disable preloading of all images
+    preloadImages: false,
+    // Enable lazy loading
+    lazyLoading: true
+});    </code></pre>
+            <div class="important-note">
+              <p>If you use slidesPerView "auto" or slidesPerView &gt; 1, then you should also enable <b>watchSlidesVisibility</b> and Swiper will load images in currently visible slides</p>
+            </div>
             <h2>Initialize Swiper with HTML</h2>
             <p>If you don't need Swiper callback you can initialize swiper using HTML without JavaScript. You can do that just by adding additional "swiper-init" class to <code>swiper-container</code></p>
             <pre><code>&lt;!-- swiper-init to initialize swiper automatically --&gt;
@@ -1054,9 +1213,12 @@ mySwiper.removeSlide([0, 1]); //remove first and second slides</code></pre>
         ... other slides ...
     &lt;/div&gt;
 &lt;/div&gt;  </code></pre>
-            <p>But what about Swiper parameters. In this case we need to pass them in <b>data-</b> attributes:</p>
+            <p>But what about Swiper parameters. In this case we need to pass them in <b>data-</b> attributes. </p>
+            <div class="important-note">
+              <p>Parameters that used in camelCase, for example <b>slidesPerView</b>, in data- attributes should be used as hypens-case as <b>data-slides-per-view</b></p>
+            </div>
             <pre><code>&lt;!-- swiper properties in data- attributes --&gt;
-&lt;div class="swiper-container swiper-init" data-speed="400" data-spaceBetween="40" data-pagination=".swiper-pagination"&gt;
+&lt;div class="swiper-container swiper-init" data-speed="400" data-space-between="40" data-pagination=".swiper-pagination"&gt;
     &lt;div class="swiper-wrapper"&gt;
         &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
         &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
@@ -1258,14 +1420,14 @@ var mySwiperSlow = myApp.swiper('.swiper-slow', {
 }</code></pre>
           <pre><code>&lt;div class="page-content"&gt;
   &lt;!-- Horizontal parent slider --&gt;
-  &lt;div data-pagination=".swiper-pagination-h" data-paginationHide="false" class="swiper-container swiper-init"&gt;
+  &lt;div data-pagination=".swiper-pagination-h"class="swiper-container swiper-init"&gt;
     &lt;div class="swiper-pagination swiper-pagination-h"&gt;&lt;/div&gt;
     &lt;div class="swiper-wrapper"&gt;
       &lt;div class="swiper-slide"&gt;&lt;span&gt;Horizontal Slide 1&lt;/span&gt;&lt;/div&gt;
       &lt;div class="swiper-slide"&gt;
  
         &lt;!-- Vertical nested child slider --&gt;
-        &lt;div class="swiper-container swiper-init" data-pagination=".swiper-pagination-v" data-direction="vertical" data-paginationHide="false"&gt;
+        &lt;div class="swiper-container swiper-init" data-pagination=".swiper-pagination-v" data-direction="vertical"&gt;
           &lt;div class="swiper-pagination swiper-pagination-v"&gt;&lt;/div&gt;
           &lt;div class="swiper-wrapper"&gt;
             &lt;div class="swiper-slide"&gt;&lt;span&gt;Vertical Slide 1&lt;/span&gt;&lt;/div&gt;
@@ -1338,6 +1500,53 @@ var mySwiper = myApp.swiper('.swiper-container', {
   nextButton: '.swiper-button-next',
   prevButton: '.swiper-button-prev',
 });                         </code></pre>
+          <h3 data-device-preview="../docs-demos/swiper-lazy.html">Lazy Loading</h3>
+          <pre><code>&lt;div class="swiper-container"&gt;
+  &lt;div class="swiper-wrapper"&gt;
+    &lt;div class="swiper-slide"&gt;
+      &lt;img data-src="http://lorempixel.com/1600/1200/nature/1" class="swiper-lazy"&gt;
+      &lt;div class="preloader"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;
+      &lt;img data-src="http://lorempixel.com/1600/1200/nature/2" class="swiper-lazy"&gt;
+      &lt;div class="preloader"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;
+      &lt;img data-src="http://lorempixel.com/1600/1200/nature/3" class="swiper-lazy"&gt;
+      &lt;div class="preloader"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;
+      &lt;img data-src="http://lorempixel.com/1600/1200/nature/4" class="swiper-lazy"&gt;
+      &lt;div class="preloader"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="swiper-slide"&gt;
+      &lt;img data-src="http://lorempixel.com/1600/1200/nature/5" class="swiper-lazy"&gt;
+      &lt;div class="preloader"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="swiper-pagination color-white"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>.swiper-container {
+  height: 100%;
+}
+.swiper-slide {
+  background: #000;
+  position: relative;
+}
+.swiper-slide img {
+  position: absolute;
+  left:50%;
+  top:50%;
+  max-width: 100%;
+  max-height: 100%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}</code></pre>
+          <pre><code>var mySwiper = new Swiper('.swiper-container', {
+  preloadImages: false,
+  lazyLoading: true,
+  pagination: '.swiper-pagination'
+})                          </code></pre>
         </div>
       </div>
     </div>

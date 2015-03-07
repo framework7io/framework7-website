@@ -217,7 +217,7 @@
           </p>
           <h2 data-device-preview="../docs-demos/smart-select-custom.html">Custom page title and back link text</h2>
           <p>By default, Smart Select's page title is the same as in clicked item's "item-title" text and back-link text is equal to the one specified in "smartSelectBackText" App's paramter. </p>
-          <p>But sometimes we may need to have custom page title and back-link for specific Smart Selects. We may use "data-page-title" and "data-back-text" attributes on Smart Select link:</p>
+          <p>But sometimes we may need to have custom page title and back-link for specific Smart Selects. We may use <b>data-page-title</b> and <b>data-back-text</b> attributes on Smart Select link:</p>
           <pre><code>&lt;div class="list-block"&gt;
   &lt;ul&gt;
     &lt;!-- Smart select item --&gt;
@@ -235,7 +235,7 @@
 &lt;/div&gt;</code></pre>
           <h2 data-device-preview="../docs-demos/smart-select-popup.html">Open in Popup</h2>
           <p>It is possible to open Smart select as <a href="popup.html">popup</a>, not as page. If you want to open all Smart selects in popup you may just enable it by passing <code>smartSelectInPopup:true</code> parameter on <a href="init-app.html">App initialization</a>.</p>
-          <p>Otherwise it can be configured via "data-open-in" attribute:</p>
+          <p>Otherwise it can be configured via <b>data-open-in</b> attribute:</p>
           <pre><code>&lt;div class="list-block"&gt;
   &lt;ul&gt;
     &lt;li&gt;
@@ -255,12 +255,14 @@
           <div class="important-note">
             <p>Note, if you set all Smart select as popups using App <b>smartSelectInPopup:true</b>, you may still open it as page using <b>data-open-in="page"</b> attribute</p>
           </div>
-          <h2 data-device-preview="../docs-demos/smart-select-images.html">Custom icons and images</h2>
-          <p>You can also specify Smart Select page' list view element custom icon or image. We need to use additional "data-option-icon" or "data-option-image" attributes on smart select <code>&lt;select&gt;</code> (to set default image for all options) or on <code>&lt;option&gt;</code> to set image or icon on single option</p>
+          <h2 data-device-preview="../docs-demos/smart-select-images.html">Custom icons, colors and images</h2>
+          <p>You can also specify Smart Select page' list view element custom icon, image or color. We need to use additional <b>data-option-icon</b>, <b>data-option-image</b> attributes on smart select <code>&lt;select&gt;</code> (to set default image for all options) or on <code>&lt;option&gt;</code> to set image or icon on single option.</p>
+          <p>For single option we may also use <b>data-option-color</b> and <b>data-option-class</b> attributes to add specific option color or css class for additional styling</p>
           <pre><code>&lt;a href="#" class="item-link smart-select"&gt;
   &lt;select name="fruits"&gt;
     &lt;option value="apple" selected data-option-image="http://lorempixel.com/29/29/"&gt;Apple&lt;/option&gt;
     &lt;option value="pineapple" data-option-image="http://lorempixel.com/29/29/?2"&gt;Pineapple&lt;/option&gt;
+    &lt;option value="pear" data-option-color="orange" data-option-image="http://lorempixel.com/29/29/?3"&gt;Pear&lt;/option&gt;
     ...
   &lt;/select&gt;
   &lt;div class="item-content"&gt;
@@ -307,11 +309,11 @@
           <p>We can also use multiple select and group options using &lt;optgroup&gt;. So if we add "multiple" attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:</p>
           <div class="full-width stop-scroll-device">
             <h2>Close Smart Select on user pick</h2>
-            <p>It is possible to close Smart Select page automatically after user selects any option. We need to add special <b>data-back-onselect</b> attribute to make it work:</p>
+            <p>It is possible to close Smart Select page automatically after user selects any option. We need to add special <b>data-back-on-select</b> attribute to make it work:</p>
             <pre><code>&lt;div class="list-block"&gt;
   &lt;ul&gt;
-    &lt;!-- data-back-onselect="true" to close page automatically --&gt;
-    &lt;li&gt;&lt;a href="#" class="item-link smart-select" data-back-onselect="true"&gt;
+    &lt;!-- data-back-on-select="true" to close page automatically --&gt;
+    &lt;li&gt;&lt;a href="#" class="item-link smart-select" data-back-on-select="true"&gt;
         &lt;select name="car" multiple&gt;
           ...
         &lt;/select&gt;
@@ -324,7 +326,7 @@
 &lt;/div&gt; </code></pre>
             <p>If you want to add such behavior for all of your smart selects you may use <b>smartSelectBackOnSelect</b> <a href="init-app.html">App parameter</a></p>
             <h2>Smart Select With Virtual List</h2>
-            <p>You may enable Virtual List for smart select if your select has a lot (hundreds, thousands) of options. In this case we just need to add <code>data-virtual-list</code> attribute to smart select:</p>
+            <p>You may enable Virtual List for smart select if your select has a lot (hundreds, thousands) of options. In this case we just need to add <b>data-virtual-list="true"</b> attribute to smart select:</p>
             <pre><code>&lt;div class="list-block"&gt;
     &lt;ul&gt;
         &lt;li&gt;
@@ -345,7 +347,7 @@
         &lt;/li&gt;
     &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
-            <p>If you need to specify list item height in virtual list, you may add additional <code>data-virtual-list-height</code> attribute:</p>
+            <p>If you need to specify list item height in virtual list, you may add additional <b>data-virtual-list-height</b> attribute:</p>
             <pre><code>&lt;div class="list-block"&gt;
     &lt;ul&gt;
         &lt;li&gt;
@@ -367,7 +369,7 @@
     &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
             <h2>Smart Select Color Themes</h2>
-            <p>You can also specify form and navbar color themes on smart select page or in smart select popup using <code>data-form-theme</code> and <code>data-navbar-theme</code> attributes:</p>
+            <p>You can also specify form and navbar color themes on smart select page or in smart select popup using <b>data-form-theme</b> and <b>data-navbar-theme</b> attributes:</p>
             <pre><code>&lt;div class="list-block"&gt;
     &lt;ul&gt;
         &lt;li&gt;
@@ -387,7 +389,7 @@
     &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
             <h2>Set Smart Select value by option text</h2>
-            <p>It is possible to set smart select (and its select) value depending on selected option value. For this case we need to add additional <code>"smart-select-value"</code> class to "item-after":</p>
+            <p>It is possible to set smart select (and its select) value depending on selected option value. For this case we need to add additional <b>"smart-select-value"</b> class to "item-after":</p>
             <pre><code>&lt;div class="list-block"&gt;
   &lt;ul&gt;
     &lt;li&gt;
@@ -416,6 +418,23 @@
             <ul class="method-parameters">
               <li><span class="parameter">smartSelect</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required ".smart-select". Required.</li>
             </ul>
+            <h2>Add options dynamically</h2>
+            <p>It is possible to add Smart Select options later dynamically, if it is even already opened. We need to use appropriate App method:</p>
+            <p><span class="method">myApp.smartSelectAddOption(<span>select</span>, <span>optionHTML</span>, index) - add option to select at specified index</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">select</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Smart Select's <code>&lt;select&gt;</code> or <code>&lt;optgroup&gt;</code>. Required.</li>
+              <li><span class="parameter">optionHTML</span> - <span class="parameter-type">string</span> with HTML of option to add. Required.</li>
+              <li><span class="parameter">index</span> - <span class="parameter-type">number</span> index number for new option. If not specified, then option will be added to the end</li>
+            </ul>
+            <p>For example:</p>
+            <pre><code class="js">// Append option
+myApp.smartSelectAddOption('.smart-select select', '&lt;option value="apple"&gt;Apple&lt;/option&gt;');
+ 
+// Add new option as first selected option
+myApp.smartSelectAddOption('.smart-select select', '&lt;option value="apple" selected&gt;Apple&lt;/option&gt;', 0);
+ 
+// Append new option to second &lt;optgroup&gt;
+myApp.smartSelectAddOption($$('.smart-select select optigroup').eq(1), '&lt;option value="apple"&gt;Apple&lt;/option&gt;', 0);            </code></pre>
           </div>
         </div>
       </div>

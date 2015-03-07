@@ -167,6 +167,28 @@ block content
                 code.js
                   | var id = $$('p').data('id'); //-> 123
           tr
+            th(colspan="2") Data Set
+          tr
+            td .dataset()
+            td Returns element's data set (set of data- attributes) as plain Object
+              pre
+                code
+                  | &lt;div id="my-div" data-loop="true" data-animate-pages="false" data-index="0" data-hello="world"&gt;
+                  |     ...
+                  | &lt;/div&gt;
+              pre
+                code.js
+                  | var dataset = $$('#my-div').dataset();
+                  | /* 
+                  | dataset will contain plain object with camelCase keys and with formatted boolean and number types:
+                  | {
+                  |     loop: true,
+                  |     animatePages: false,
+                  |     index: 0,
+                  |     hello: 'world'
+                  | }
+                  | */
+          tr
             th(colspan="2") CSS transform, transitions
           tr
             td .transform(<span>CSSTransformString</span>) 
@@ -613,6 +635,48 @@ block content
         code.js
           | var params = {foo: 'bar', id: 5};
           | console.log($$.serializeObject(params)); //-> 'foo=bar&id=5'
+      h4 Dom7.camelCase
+      .method-wrap
+        p
+          span.method Dom7.camelCase(<span>string</span>) 
+          span - Convert hypens-case string to camelCase string
+        ul.method-parameters
+          li
+            span.parameter string
+            |  - <span class="parameter-type">string</span> - hypens-case string
+        p.method-returns returns a new camelCase string
+      pre
+        code
+          | var hypensCaseString = 'hello-my-world';
+          | var camelCaseString = $$.camelCase(hypensCaseString);
+          | console.log(camelCaseString); //helloMyWorld
+      h4 Dom7.dataset
+      .method-wrap
+        p
+          span.method Dom7.dataset(<span>el</span>) 
+          span - Get element's data set (set of data- attributes) as plain Object
+        ul.method-parameters
+          li
+            span.parameter el
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - element with data- attributes to get dataset from
+        p.method-returns returns a new plain object with dataset
+      pre
+        code
+          | &lt;div id="my-div" data-loop="true" data-animate-pages="false" data-index="0" data-hello="world"&gt;
+          |     ...
+          | &lt;/div&gt;
+      pre
+        code.js
+          | var dataset = $$.dataset('#my-div');
+          | /* 
+          | dataset will create plain object with camelCase keys and with formatted boolean and number types:
+          | {
+          |     loop: true,
+          |     animatePages: false,
+          |     index: 0,
+          |     hello: 'world'
+          | }
+          | */          
       h4 Dom7.requestAnimationFrame
       .method-wrap
         p

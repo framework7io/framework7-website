@@ -394,18 +394,6 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>Callback function, will be executed when user close photo browser with swipe up/down.</td>
                 </tr>
                 <tr>
-                  <td>onImageLoad(photobrowser, slide, image)</td>
-                  <td>function</td>
-                  <td></td>
-                  <td>Callback function, will be executed when Photo Browser begins to load lazy loading photo</td>
-                </tr>
-                <tr>
-                  <td>onImageLoaded(photobrowser, slide, image)</td>
-                  <td>function</td>
-                  <td></td>
-                  <td>Callback function, will be executed after lazy loading photo will be loaded</td>
-                </tr>
-                <tr>
                   <th colspan="4">Swiper Callbacks</th>
                 </tr>
                 <tr>
@@ -437,6 +425,18 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>function</td>
                   <td></td>
                   <td>Callback function, will be executed when user double tap on slider's container. Receives Swiper instance and 'touchend' event as an arguments.</td>
+                </tr>
+                <tr>
+                  <td>onLazyImageLoad(swiper, slide, image)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed when Photo Browser begins to load lazy loading photo</td>
+                </tr>
+                <tr>
+                  <td>onLazyImageReady(swiper, slide, image)</td>
+                  <td>function</td>
+                  <td></td>
+                  <td>Callback function, will be executed after lazy loading photo will be loaded</td>
                 </tr>
               </tbody>
             </table>
@@ -761,7 +761,7 @@ $$('.pb-standalone-video').on('click', function () {
             <p>Template example of single photo slide element that you can pass in <code>photoLazyTemplate</code> parameter:</p>
             <pre><code>&lt;div class="photo-browser-slide photo-browser-slide-lazy swiper-slide"&gt;
     &lt;div class="preloader"&gt;&lt;/div&gt;
-    &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
+    &lt;span class="photo-browser-zoom-container"&gt;&lt;img class="swiper-lazy" src="{{url}}"&gt;&lt;/span&gt;
 &lt;/div&gt;            </code></pre>
             <h3>Object Element Template</h3>
             <p>Template example of single object slide element that you can pass in <code>objectTemplate</code> parameter:</p>

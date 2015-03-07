@@ -26,7 +26,7 @@
               </div>
             </div>
             <div class="page-content messages-content">
-              <div class="messages messages-auto-layout">
+              <div class="messages">
                 <div class="messages-date">Sunday, Feb 9 <span>12:58</span></div>
                 <div class="message message-sent">
                   <div class="message-text">Hello</div>
@@ -67,16 +67,23 @@
       // Conversation flag
       var conversationStarted = false;
       
+      // Init Messages
+      var myMessages = myApp.messages('.messages', {
+        autoLayout:true
+      });
+      
+      // Init Messagebar
+      var myMessagebar = myApp.messagebar('.messagebar');
+      
       // Handle message
       $$('.messagebar .link').on('click', function () {
-        var textarea = $$('.messagebar textarea');
         // Message text
-        var messageText = textarea.val().trim();
+        var messageText = myMessagebar.value().trim();
         // Exit if empy message
         if (messageText.length === 0) return;
         
-        // Empty textarea
-        textarea.val('').trigger('change');
+        // Empty messagebar
+        myMessagebar.clear()
         
         // Random message type
         var messageType = (['sent', 'received'])[Math.round(Math.random())];
@@ -88,7 +95,7 @@
           name = 'Kate';
         }
         // Add message
-        myApp.addMessage({
+        myMessages.addMessage({
           // Message text
           text: messageText,
           // Random message type

@@ -104,7 +104,7 @@ block content
           |     &lt;/div&gt;
           | &lt;/div&gt;
       h3 Plain Data Objects
-      p Plain data objects in templates data provide more complex and more customizable way of pages data handling. Such objects allow us to pass custom context to loaded page using usual links and special <code>data-contextName</code> attribute on them.
+      p Plain data objects in templates data provide more complex and more customizable way of pages data handling. Such objects allow us to pass custom context to loaded page using usual links and special <code>data-context-name</code> attribute on them.
       p Let's look at the following example where we have index page with links to page with languages list that contains link to another detail language page:
       p
         b index.html:
@@ -113,7 +113,7 @@ block content
           | &lt;div class="list-block"&gt;
           |   &lt;ul&gt;
           |     &lt;li&gt;
-          |       &lt;a href="languages.html" class="item-link item-content" data-contextName="languages"&gt;
+          |       &lt;a href="languages.html" class="item-link item-content" data-context-name="languages"&gt;
           |           &lt;div class="item-inner"&gt;
           |             &lt;div class="item-title"&gt;Languages&lt;/div&gt;
           |           &lt;/div&gt;
@@ -134,7 +134,7 @@ block content
           |         {{#each this.frontend}}
           |         &lt;li&gt;
           |           &lt;!-- As a context name for this link we pass context path from template7Data root --&gt;
-          |           &lt;a href="language-details.html" class="item-link item-content" data-contextName="languages.frontend.{{@index}}"&gt;
+          |           &lt;a href="language-details.html" class="item-link item-content" data-context-name="languages.frontend.{{@index}}"&gt;
           |               &lt;div class="item-inner"&gt;
           |                 &lt;div class="item-title"&gt;{{this.name}}&lt;/div&gt;
           |               &lt;/div&gt;
@@ -150,7 +150,7 @@ block content
           |         {{#each this.backend}}
           |         &lt;li&gt;
           |           &lt;!-- As a context name for this link we pass context path from template7Data root --&gt;
-          |           &lt;a href="language-details.html" class="item-link item-content" data-contextName="languages.backend.{{@index}}"&gt;
+          |           &lt;a href="language-details.html" class="item-link item-content" data-context-name="languages.backend.{{@index}}"&gt;
           |               &lt;div class="item-inner"&gt;
           |                 &lt;div class="item-title"&gt;{{this.name}}&lt;/div&gt;
           |               &lt;/div&gt;
@@ -173,11 +173,11 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/div&gt;
-      p So, using <code>data-contextName</code> link attribute we may pass required context from <code>template7Data</code>. As you note, it also supports context paths (usign <code>.</code> separator) that allow us to pass child properties. 
+      p So, using <code>data-context-name</code> link attribute we may pass required context from <code>template7Data</code>. As you note, it also supports context paths (usign <code>.</code> separator) that allow us to pass child properties. 
       p For example, using context path we may create link to CSS language details page:
       pre
         code
-          | &lt;a href="language-details.html" data-contextName="languages.frontend.1"&gt;CSS&lt;/a&gt;
+          | &lt;a href="language-details.html" data-context-name="languages.frontend.1"&gt;CSS&lt;/a&gt;
       p In JavaScript, we may also do the same using View's Router <code>.load()</code> method and <code>contextName</code> property:
       pre
         code.js

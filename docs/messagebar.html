@@ -155,18 +155,12 @@
           <p>Framework7 comes with special resizealbe toolbar for usage with <a href="messages.html">Messages</a></p>
           <h2>Message Bar Layout</h2>
           <p>Message Bar layour is pretty simple:</p>
-          <pre><code>&lt;div class="toolbar messagebar" data-max-height="200" data-keyboard-height="200"&gt;
+          <pre><code>&lt;div class="toolbar messagebar"&gt;
   &lt;div class="toolbar-inner"&gt;
     &lt;textarea placeholder="Message"&gt;&lt;/textarea&gt;&lt;a href="#" class="link"&gt;Send&lt;/a&gt;
   &lt;/div&gt;
 &lt;/div&gt;   </code></pre>
-          <p>Where
-            <ul>
-              <li><code>data-max-height</code> - message bar max height limit when it grows depending on its content. Optional</li>
-              <li><code>data-keyboard-height</code> - set additional padding on page content when using it with custom keyboards in Cordova app. Optional</li>
-            </ul>
-          </p>
-          <p>But its place is very important, it should be inside of "page" and right before "messages-content":</p>
+          <p>Its place is very important, it should be inside of "page" and right before "messages-content":</p>
           <pre><code>&lt;div class="page toolbar-fixed"&gt;
   &lt;!-- messagebar --&gt;
   &lt;div class="toolbar messagebar"&gt;
@@ -181,19 +175,93 @@
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
-          <h2>Related App Methods</h2>
+          <h2>Initialize Messagebar with JavaScript</h2>
+          <p>Now, when we have Messagebar' HTML, we need to initialize it. We need to use related App's method:</p>
           <div class="method-wrap">
-            <p><span class="method">myApp.destroyMessagebar(<span>container</span>) </span><span>- detach all message bar events and actions</span></p>
+            <p><span class="method">myApp.messagebar(<span>messagebarContainer</span>, <span>parameters</span>) </span><span>- initialize Messagebar with options</span></p>
             <ul class="method-parameters">
-              <li><span class="parameter">container</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - of message bar element (&lt;div class="messagebar"&gt;) or of page that contains message bar</li>
+              <li><span class="parameter">messagebarContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Messagebar container HTML element. Required.</li>
+              <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with Messagebar parameters. Optional.</li>
+              <li class="method-returns"><strong>Method returns initialized Messagebar instance</strong></li>
             </ul>
           </div>
-          <div class="method-wrap">
-            <p><span class="method">myApp.initMessagebar(<span>container</span>) </span><span>- attach all message bar events and actions again after destroy</span></p>
-            <ul class="method-parameters">
-              <li><span class="parameter">container</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - of message bar element (&lt;div class="messagebar"&gt;) or of page that contains message bar</li>
-            </ul>
+          <p>For example:</p>
+          <pre><code>var myMessagebar = app.messagebar('.messagebar', {
+    maxHeight: 200
+});   </code></pre>
+          <div class="important-note">Note that Messagebar container should be in DOM on a moment of initialization. So if you use it not on home page, you need to initialize it within <b>pageInit</b> <a href="pages.html#page-events">event</a> or <a href="page-callbacks.html">callback</a></div>
+          <h2>Messagebar Parameters</h2>
+          <p>Let's look on list of all available parameters:</p>
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>maxHeight</td>
+                <td>number</td>
+                <td>null</td>
+                <td>Max height of textarea when it resized depending on amount of its text</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Messagebar Methods & Properties</h2>
+          <p>After we initialize Messagebar we have its initialized instance in variable (like <code>myMessagebar</code> variable in example above) with helpful methods and properties:</p>
+          <table class="methods-table">
+            <tbody>
+              <tr>
+                <th colspan="2">Properties</th>
+              </tr>
+              <tr>
+                <td>myMessagebar.params</td>
+                <td>Object with passed initialization parameters </td>
+              </tr>
+              <tr>
+                <td>myMessagebar.container</td>
+                <td>Dom7 element with messagebar container HTML element.</td>
+              </tr>
+              <tr>
+                <td>myMessagebar.textarea</td>
+                <td>Dom7 element with messagebar textarea HTML element</td>
+              </tr>
+              <tr>
+                <th colspan="2">Methods</th>
+              </tr>
+              <tr>
+                <td>myMessagebar.value(<span>newValue</span>);</td>
+                <td>Set messagebar textarea value/text. Or return messagebar textarea value if <b>newValue</b> is not specified</td>
+              </tr>
+              <tr>
+                <td>myMessagebar.clear();</td>
+                <td>Clear textarea and update/reset its size</td>
+              </tr>
+              <tr>
+                <td>myMessagebar.destroy();</td>
+                <td>Destroy messagebar instance</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Initialize Messagebar with HTML</h2>
+          <p>If you don't need to use Messagebar methods and properties you can initialize it using HTML without JavaScript. You can do that just by adding additional "messagebar-init" class to <code>.messagebar</code>. In this case we may pass required parameters using <b>data-</b> attributes. </p>
+          <pre><code>&lt;div class="toolbar messagebar messagebar-init" data-max-height="200"&gt;
+  &lt;div class="toolbar-inner"&gt;
+    &lt;textarea placeholder="Message"&gt;&lt;/textarea&gt;&lt;a href="#" class="link"&gt;Send&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;   </code></pre>
+          <div class="important-note">
+            <p>Parameters that used in camelCase, for example <b>maxHeight</b>, in data- attributes should be used as hypens-case as <b>data-max-height</b></p>
           </div>
+          <p><b>Access to Messagebar's Instance</b></p>
+          <p>If you initialize Messagebar using HTML it is still possible to access to Messagebar's instance. It is "f7Messagebar" property of messagebar's container HTML element:</p>
+          <pre><code>var myMessagebar = $$('.messagebar')[0].f7Messagebar;
+ 
+// Now you can use it
+myMessagebar.value('Hello world');</code></pre>
         </div>
       </div>
     </div>
