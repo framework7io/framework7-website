@@ -976,6 +976,7 @@ table {
     }
 }
 table.params-table {
+    line-height: 1.4;
     th, td {
         vertical-align: top;
     }
@@ -995,6 +996,12 @@ table.params-table {
     td:last-child pre {
         white-space: pre-wrap;
     }
+    td p:first-child {
+        margin-top: 0;
+    }
+    td p:last-child {
+        margin-bottom: 0;
+    }
 }
 .method-wrap {
     background: #f8f8f8;
@@ -1007,7 +1014,10 @@ table.params-table {
     p:last-child, ul:last-child {
         margin-bottom: 0;
     }
-
+    .method-returns {
+        font-weight: 500;
+        font-style: normal;
+    }
 }
 p.method, span.method {
     .monospace();
@@ -1038,6 +1048,7 @@ ul.method-parameters {
     font-style: italic;
 }
 table.methods-table {
+    line-height: 1.4;
     th, td {
         vertical-align: top;
     }
@@ -1064,6 +1075,12 @@ table.methods-table {
     }
     th[colspan="2"] {
         background: #eee;
+    }
+    td p:first-child {
+        margin-top: 0;
+    }
+    td p:last-child {
+        margin-bottom: 0;
     }
     &.dom7-table {
         td {

@@ -27,7 +27,7 @@ block content
               span.parameter parameters
               |  - <span class="parameter-type">object</span> - object with Picker parameters. Required.
             
-            li.method-returns <strong>Method returns initialized Picker instance</strong>
+            li.method-returns Method returns initialized Picker instance
         p For example:
         pre
           code
@@ -77,6 +77,11 @@ block content
               td boolean
               td true
               td Converts picker modal to Popover on large screens (on iPad)
+            tr
+              td onlyOnPopover
+              td boolean
+              td false
+              td Enable it and Picker will be always opened in Popover
             tr
               td cssClass
               td string

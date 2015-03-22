@@ -160,7 +160,7 @@ block content
               span.parameter parameters
               |  - <span class="parameter-type">object</span> - object with Messages parameters. Optional.
             
-            li.method-returns <strong>Method returns initialized Messages instance</strong>
+            li.method-returns Method returns initialized Messages instance
 
         p For example:
         pre
@@ -236,6 +236,9 @@ block content
             tr
               td myMessages.layout();
               td Apply messages auto layout
+            tr
+              td myMessages.clean();
+              td Clean/remove all the messages
             tr
               td myMessages.destroy();
               td Destroy messages instance

@@ -199,7 +199,7 @@
               <ul class="method-parameters">
                 <li><span class="parameter">swiperContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of swiper container HTML element. Required.</li>
                 <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with Swiper parameters. Optional.</li>
-                <li class="method-returns"><strong>Method returns initialized Swiper instance</strong></li>
+                <li class="method-returns">Method returns initialized Swiper instance</li>
               </ul>
             </div>
             <p>OR</p>
@@ -208,7 +208,7 @@
               <ul class="method-parameters">
                 <li><span class="parameter">swiperContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of swiper container HTML element. Required.</li>
                 <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with Swiper parameters. Optional.</li>
-                <li class="method-returns"><strong>Method returns initialized Swiper instance</strong></li>
+                <li class="method-returns">Method returns initialized Swiper instance</li>
               </ul>
             </div>
             <p>For example:</p>
@@ -248,6 +248,18 @@
                   <td>Duration of transition between slides (in ms)</td>
                 </tr>
                 <tr>
+                  <td>setWrapperSize</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Enabled this option and plugin will set width/height on swiper wrapper equal to total size of all slides. Mostly should be used as compatibility fallback option for browser that don't support flexbox layout well</td>
+                </tr>
+                <tr>
+                  <td>virtualTranslate</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Enabled this option and swiper will be operated as usual except it will not move, real translate values on wrapper will not be set. Useful when you may need to create custom slide transition</td>
+                </tr>
+                <tr>
                   <th colspan="4">Autoplay</th>
                 </tr>
                 <tr>
@@ -284,13 +296,13 @@
                   <td>freeMode</td>
                   <td>boolean</td>
                   <td>false</td>
-                  <td>If <code>true</code> then slides will not have fixed positions</td>
+                  <td>If <b>true</b> then slides will not have fixed positions</td>
                 </tr>
                 <tr>
                   <td>freeModeMomentum</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>If <code>true</code>, then slide will keep moving for a while after you release it</td>
+                  <td>If <b>true</b>, then slide will keep moving for a while after you release it</td>
                 </tr>
                 <tr>
                   <td>freeModeMomentumRatio</td>
@@ -302,7 +314,7 @@
                   <td>freeModeMomentumBounce</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>false</code> if you want to disable momentum bounce in free mode</td>
+                  <td>Set to <b>false</b> if you want to disable momentum bounce in free mode</td>
                 </tr>
                 <tr>
                   <td>freeModeMomentumBounceRatio</td>
@@ -378,7 +390,10 @@
                   <td>slidesPerView</td>
                   <td>number or 'auto'</td>
                   <td>1</td>
-                  <td>Number of slides per view (slides visible at the same time on slider's container).</td>
+                  <td>
+                    <p>Number of slides per view (slides visible at the same time on slider's container).</p>
+                    <p class="important-note">If you use it with "auto" value and along with <code>loop: true</code> then you need to specify <code>loopedSlides</code> parameter with amount of slides to loop (duplicate) </p>
+                  </td>
                 </tr>
                 <tr>
                   <td>slidesPerColumn</td>
@@ -411,7 +426,7 @@
                   <td>grabCursor</td>
                   <td>boolean</td>
                   <td>false</td>
-                  <td>This option may a little improve desktop usability. If <code>true</code>, user will see the "grab" cursor when hover on Swiper</td>
+                  <td>This option may a little improve desktop usability. If <b>true</b>, user will see the "grab" cursor when hover on Swiper</td>
                 </tr>
                 <tr>
                   <th colspan="4">Touches</th>
@@ -438,13 +453,13 @@
                   <td>shortSwipes</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>false</code> if you want to disable short swipes</td>
+                  <td>Set to <b>false</b> if you want to disable short swipes</td>
                 </tr>
                 <tr>
                   <td>longSwipes</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>false</code> if you want to disable long swipes</td>
+                  <td>Set to <b>false</b> if you want to disable long swipes</td>
                 </tr>
                 <tr>
                   <td>longSwipesRatio</td>
@@ -489,7 +504,7 @@
                   <td>resistance</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>false</code> if you want to disable resistant bounds</td>
+                  <td>Set to <b>false</b> if you want to disable resistant bounds</td>
                 </tr>
                 <tr>
                   <td>resistanceRatio</td>
@@ -504,19 +519,19 @@
                   <td>preventClicks</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>true</code> to prevent accidental unwanted clicks on links during swiping</td>
+                  <td>Set to <b>true</b> to prevent accidental unwanted clicks on links during swiping</td>
                 </tr>
                 <tr>
                   <td>preventClicksPropagation</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>true</code> to stop clicks event propagation on links during swiping</td>
+                  <td>Set to <b>true</b> to stop clicks event propagation on links during swiping</td>
                 </tr>
                 <tr>
                   <td>slideToClickedSlide</td>
                   <td>boolean</td>
                   <td>false</td>
-                  <td>Set to <code>true</code> and click on any slide will produce transition to this slide</td>
+                  <td>Set to <b>true</b> and click on any slide will produce transition to this slide</td>
                 </tr>
                 <tr>
                   <th colspan="4">Swiping / No swiping</th>
@@ -525,25 +540,25 @@
                   <td>allowSwipeToPrev</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>false</code> to disable swiping to previous slide direction (to left or top)</td>
+                  <td>Set to <b>false</b> to disable swiping to previous slide direction (to left or top)</td>
                 </tr>
                 <tr>
                   <td>allowSwipeToNext</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>false</code> to disable swiping to next slide direction (to right or bottom)</td>
+                  <td>Set to <b>false</b> to disable swiping to next slide direction (to right or bottom)</td>
                 </tr>
                 <tr>
                   <td>noSwiping</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Set to <code>false</code> to disable swiping to next slide direction (to right or bottom)</td>
+                  <td>Set to <b>false</b> to disable swiping to next slide direction (to right or bottom)</td>
                 </tr>
                 <tr>
                   <td>noSwipingClass</td>
                   <td>string</td>
                   <td>'swiper-no-swiping'</td>
-                  <td>If <code>true</code>, then you can add <code>noSwipingClass</code> class to swiper's slide to prevent/disable swiping on this element</td>
+                  <td>If <b>true</b>, then you can add <code>noSwipingClass</code> class to swiper's slide to prevent/disable swiping on this element</td>
                 </tr>
                 <tr>
                   <td>swipeHandler</td>
@@ -570,7 +585,7 @@
                   <td>paginationClickable</td>
                   <td>boolean</td>
                   <td>false</td>
-                  <td>If <code>true</code> then clicking on pagination button will cause transition to appropriate slide</td>
+                  <td>If <b>true</b> then clicking on pagination button will cause transition to appropriate slide</td>
                 </tr>
                 <tr>
                   <td>paginationBulletRender(index, className)</td>
@@ -600,6 +615,39 @@
                   <td>string / HTMLElement</td>
                   <td>null</td>
                   <td>String with CSS selector or HTML element of the element that will work like "prev" button after click on it</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Accessibility</th>
+                </tr>
+                <tr>
+                  <td>a11y</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Option to enable keyboard accessibility to provide foucsable navigation buttons and basic ARIA for screen readers</td>
+                </tr>
+                <tr>
+                  <td>prevSlideMessage</td>
+                  <td>string</td>
+                  <td>'Previous slide'</td>
+                  <td>Message for screen readers for previous button</td>
+                </tr>
+                <tr>
+                  <td>nextSlideMessage</td>
+                  <td>string</td>
+                  <td>'Next slide'</td>
+                  <td>Message for screen readers for next button</td>
+                </tr>
+                <tr>
+                  <td>firstSlideMessage</td>
+                  <td>string</td>
+                  <td>'This is the first slide'</td>
+                  <td>Message for screen readers for previous button when swiper is on first slide</td>
+                </tr>
+                <tr>
+                  <td>lastSlideMessage</td>
+                  <td>string</td>
+                  <td>'This is the last slide'</td>
+                  <td>Message for screen readers for previous button when swiper is on last slide</td>
                 </tr>
                 <tr>
                   <th colspan="4">Scollbar</th>
@@ -657,7 +705,7 @@
                   <td>boolean</td>
                   <td>false</td>
                   <td>
-                    <p>Set to <code>true</code> to enable continuous loop mode</p>
+                    <p>Set to <b>true</b> to enable continuous loop mode</p>
                     <p class="important-note">If you use it along with <code>slidesPerView: 'auto'</code> then you need to specify <code>loopedSlides</code> parameter with amount of slides to loop (duplicate) </p>
                   </td>
                 </tr>
@@ -686,7 +734,7 @@
                   <td>controlInverse</td>
                   <td>boolean</td>
                   <td>false</td>
-                  <td>Set to <code>true</code> and controlling will be in inverse direction</td>
+                  <td>Set to <b>true</b> and controlling will be in inverse direction</td>
                 </tr>
                 <tr>
                   <th colspan="4">Observer</th>
@@ -701,7 +749,7 @@
                   <td>observeParents</td>
                   <td>boolean</td>
                   <td>false</td>
-                  <td></td>
+                  <td>      </td>
                 </tr>
                 <tr>
                   <th colspan="4">Callbacks</th>
@@ -940,19 +988,19 @@
                 </tr>
                 <tr>
                   <td>mySwiper.container</td>
-                  <td>Dom7/jQuery element with slider container HTML element. To get vanilla HTMLElement use <code>mySwiper.container[0]</code></td>
+                  <td>Dom7 element with slider container HTML element. To get vanilla HTMLElement use <code>mySwiper.container[0]</code></td>
                 </tr>
                 <tr>
                   <td>mySwiper.wrapper</td>
-                  <td>Dom7/jQuery element with slider wrapper HTML element. To get vanilla HTMLElement use <code>mySwiper.wrapper[0]</code></td>
+                  <td>Dom7 element with slider wrapper HTML element. To get vanilla HTMLElement use <code>mySwiper.wrapper[0]</code></td>
                 </tr>
                 <tr>
                   <td>mySwiper.slides</td>
-                  <td>Dom7/jQuery array-like collection of slides HTML elements. To get specific slide HTMLElement use <code>mySwiper.slides[1]</code></td>
+                  <td>Dom7 array-like collection of slides HTML elements. To get specific slide HTMLElement use <code>mySwiper.slides[1]</code></td>
                 </tr>
                 <tr>
                   <td>mySwiper.bullets</td>
-                  <td>Dom7/jQuery collection of pagination buttons HTML elements. To get specific slide HTMLElement use <code>mySwiper.bullets[1]</code></td>
+                  <td>Dom7 collection of pagination buttons HTML elements. To get specific slide HTMLElement use <code>mySwiper.bullets[1]</code></td>
                 </tr>
                 <tr>
                   <td>mySwiper.width</td>
@@ -1038,32 +1086,20 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>mySwiper.updateContainerSize();</td>
-                  <td>This method will recalculate size of swiper container</td>
-                </tr>
-                <tr>
-                  <td>mySwiper.updateSlidesSize();</td>
-                  <td>This method will recalculate number of slides and their offsets. Useful after you add/remove slides with JavaScript</td>
-                </tr>
-                <tr>
-                  <td>mySwiper.updateProgress();</td>
-                  <td>This method will recalculate swiper progress</td>
-                </tr>
-                <tr>
-                  <td>mySwiper.updatePagination();</td>
-                  <td>Recalculate slider and slides sizes. Useful after you change slider size with JavaScript</td>
-                </tr>
-                <tr>
-                  <td>mySwiper.updateClasses();</td>
-                  <td>Updates active/prev/next classes on slides and bullets</td>
-                </tr>
-                <tr>
                   <td>mySwiper.update(updateTranslate);</td>
                   <td>
                     <p>This method includes updateContainerSize, updateSlidesSize, updateProgress, updatePagination and updateClasses methods </p>
                     <p>You should call it after you add/remove slides manually, or after you hide/show it, or do any custom DOM modifications with Swiper</p>
                     <ul class="method-parameters">
                       <li><span class="parameter">updateTranslate</span> - <span class="parameter-type">boolean</span> - Set it to <code>true</code> (by default it is <code>false</code>) to hard set/reset/update Swiper wrapper translate. It is useful if you use not default effect or scrollbar. <em>Optional</em></li>
+                    </ul>
+                    <p>This method also includes subcall of the following methods which you can use separately:</p>
+                    <ul>
+                      <li>mySwiper.updateContainerSize() - recalculate size of swiper container</li>
+                      <li>mySwiper.updateSlidesSize() - recalculate number of slides and their offsets. Useful after you add/remove slides with JavaScript</li>
+                      <li>mySwiper.updateProgress() - recalculate swiper progress</li>
+                      <li>mySwiper.updatePagination() - updates pagination layout and re-render bullets</li>
+                      <li>mySwiper.updateClasses() - update active/prev/next classes on slides and bullets</li>
                     </ul>
                   </td>
                 </tr>
@@ -1129,6 +1165,18 @@ mySwiper.removeSlide([0, 1]); //remove first and second slides</code></pre>
                 <tr>
                   <td>mySwiper.getWrapperTranslate();</td>
                   <td>Get current value of swiper wrapper css3 transform translate</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.on(callback, handler)</td>
+                  <td>Add callback/event handler</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.once(callback, handler)</td>
+                  <td>Add event/callback that will be executed only once</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.off(callback)</td>
+                  <td>Remove all handlers for specified callback/event </td>
                 </tr>
               </tbody>
             </table>
@@ -1201,6 +1249,31 @@ mySwiper.removeSlide([0, 1]); //remove first and second slides</code></pre>
 });    </code></pre>
             <div class="important-note">
               <p>If you use slidesPerView "auto" or slidesPerView &gt; 1, then you should also enable <b>watchSlidesVisibility</b> and Swiper will load images in currently visible slides</p>
+            </div>
+            <h2>Emitter API / Events</h2>
+            <p>Emitter API allows to you add events/callbacks to Swiper like usual events, even after Swiper initialization:</p>
+            <pre><code>// Init Swiper
+var mySwiper = new Swiper('.swiper-container');
+ 
+// Later add callback
+mySwiper.on('slideChangeStart', function () {
+    console.log('slide change start');
+});
+ 
+// Add one more handler for this event
+mySwiper.on('slideChangeStart', function () {
+    console.log('slide change start 2');
+});
+ 
+// Add handler that will be executed only once
+mySwiper.once('sliderMove', function () {
+    console.log('slider moved');
+});
+ 
+// Somewhen later, remove all slideChangeStart handlers
+mySwiper.off('slideChangeStart');  </code></pre>
+            <div class="important-note">
+              <p>Note, that callback/event name in this case is the same as usual callback name but without "on" and with lowercase first character, so "onTouchMove" becames just "touchMove"</p>
             </div>
             <h2>Initialize Swiper with HTML</h2>
             <p>If you don't need Swiper callback you can initialize swiper using HTML without JavaScript. You can do that just by adding additional "swiper-init" class to <code>swiper-container</code></p>

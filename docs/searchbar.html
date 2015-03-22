@@ -211,7 +211,7 @@
               <ul class="method-parameters">
                 <li><span class="parameter">searchbarContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Searchbar container HTML element. Required.</li>
                 <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with Searchbar parameters. Optional.</li>
-                <li class="method-returns"><strong>Method returns initialized Searchbar instance</strong></li>
+                <li class="method-returns">Method returns initialized Searchbar instance</li>
               </ul>
             </div>
             <p>For example:</p>
@@ -242,7 +242,7 @@
                   <td>searchIn</td>
                   <td>string</td>
                   <td>'.item-title'</td>
-                  <td>CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title')</td>
+                  <td>CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <b>'.item-title, item-text'</b></td>
                 </tr>
                 <tr>
                   <td>found</td>
@@ -265,8 +265,14 @@
                 <tr>
                   <td>ignore</td>
                   <td>string</td>
-                  <td>'.searhbar-ignore'</td>
+                  <td>'.searchbar-ignore'</td>
                   <td>CSS selector for items to be ignored by searchbar and always present in search results</td>
+                </tr>
+                <tr>
+                  <td>customSearch</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>When enabled searchbar will not search through any of list blocks specified by `searchList` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually</td>
                 </tr>
               </tbody>
             </table>

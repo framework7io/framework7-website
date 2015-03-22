@@ -72,7 +72,7 @@ block content
               span.parameter parameters
               |  - <span class="parameter-type">object</span> - object with Searchbar parameters. Optional.
             
-            li.method-returns <strong>Method returns initialized Searchbar instance</strong>
+            li.method-returns Method returns initialized Searchbar instance
 
         p For example:
         pre
@@ -101,7 +101,7 @@ block content
               td searchIn
               td string
               td '.item-title'
-              td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title')
+              td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <b>'.item-title, item-text'</b>
             tr
               td found
               td string or HTMLElement
@@ -120,8 +120,14 @@ block content
             tr
               td ignore
               td string
-              td '.searhbar-ignore'
+              td '.searchbar-ignore'
               td CSS selector for items to be ignored by searchbar and always present in search results
+            tr
+              td customSearch
+              td boolean
+              td false
+              td When enabled searchbar will not search through any of list blocks specified by `searchList` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
+            
         h2 Searchbar Methods & Properties
         p After we initialize Searchbar we have its initialized instance in variable (like <code>mySearchbar</code> variable in example above) with helpful methods and properties:
         table.methods-table

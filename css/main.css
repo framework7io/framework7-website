@@ -1286,6 +1286,9 @@ table td {
   padding: 5px;
   border: 1px solid #ccc;
 }
+table.params-table {
+  line-height: 1.4;
+}
 table.params-table th,
 table.params-table td {
   vertical-align: top;
@@ -1306,6 +1309,12 @@ table.params-table tbody th[colspan="4"] {
 table.params-table td:last-child pre {
   white-space: pre-wrap;
 }
+table.params-table td p:first-child {
+  margin-top: 0;
+}
+table.params-table td p:last-child {
+  margin-bottom: 0;
+}
 .method-wrap {
   background: #f8f8f8;
   padding: 10px;
@@ -1318,6 +1327,10 @@ table.params-table td:last-child pre {
 .method-wrap p:last-child,
 .method-wrap ul:last-child {
   margin-bottom: 0;
+}
+.method-wrap .method-returns {
+  font-weight: 500;
+  font-style: normal;
 }
 p.method,
 span.method {
@@ -1345,6 +1358,9 @@ ul.method-parameters .parameter-type {
 .method-returns {
   list-style: none;
   font-style: italic;
+}
+table.methods-table {
+  line-height: 1.4;
 }
 table.methods-table th,
 table.methods-table td {
@@ -1374,6 +1390,12 @@ table.methods-table ul.method-parameters .parameter-type {
 }
 table.methods-table th[colspan="2"] {
   background: #eee;
+}
+table.methods-table td p:first-child {
+  margin-top: 0;
+}
+table.methods-table td p:last-child {
+  margin-bottom: 0;
 }
 table.methods-table.dom7-table td {
   vertical-align: top;

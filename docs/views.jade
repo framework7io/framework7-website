@@ -53,17 +53,18 @@ block content
           |   // ...
           | });   
       p This instance has a lot of methods to work with different parts of our app. And there is one method to initialize view:
-      p
-        span.method myApp.addView(<span>selector, parameters</span>)</span>
-        |  - initialize View.
-      ul.method-parameters
-        li
-          span.parameter container
-          |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. If string - CSS selector of View element
-        li
-          span.parameter parameters
-          |  - <span class="parameter-type">object</span>. Object with View parameters
-        li.method-returns This method returns object with View instance.
+      .method-wrap
+        p
+          span.method myApp.addView(<span>selector, parameters</span>)</span>
+          |  - initialize View.
+        ul.method-parameters
+          li
+            span.parameter container
+            |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. If string - CSS selector of View element
+          li
+            span.parameter parameters
+            |  - <span class="parameter-type">object</span>. Object with View parameters
+          li.method-returns This method returns object with just created View instance.
       h3 View initialization parameters
       table.params-table
         thead
@@ -125,34 +126,49 @@ block content
             td boolean
             td false
             td When enabled, View will always reload currently active page without loading new one
-          
+          tr
+            td preroute
+            td function(view, options)
+            td -
+            td 
+              p This callback allows to prevent default router load/back actions and to load another page or do another required actions. 
+              p Allows to override the same <a href="init-app.html">App callback</a> but for the current View
+              p <a href="init-app.html#example-with-preprocess-content">Example</a>
+          tr
+            td preprocess
+            td function(content, url, next)
+            td -
+            td 
+              p This callback function allows you to modify loaded by router (mostly Ajax) content right before it will be injected to DOM. Callback receives "content" and "url" of the loaded page and the "next" callback function.
+              p Allows to override the same <a href="init-app.html">App callback</a> but for the current View
+              p <a href="init-app.html#example-with-preroute">Example</a>
           tr
             th(colspan="4") Swipe back
           tr
             td swipeBackPage
             td boolean
             td 
-            td By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
           tr
             td swipeBackPageThreshold
             td number
             td 
-            td By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
           tr
             td swipeBackPageActiveArea
             td number
             td 
-            td By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
           tr
             td swipeBackPageAnimateShadow
             td boolean
             td 
-            td By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
           tr
             td swipeBackPageAnimateOpacity
             td boolean
             td 
-            td By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
           tr
             th(colspan="4") Callbacks
           tr
@@ -251,7 +267,20 @@ block content
       pre
         code
           &lt;div class="view" data-url="index2.html"&gt;
-      h2 Access to View's instance with other ways
+      h2 Get Current View
+      p There could be situation when we need to get currently active View, because instead of main app view we may also have view in opened popup, popover, opened panel, tabs, etc. This method allows to get the View instance of currently active/visible/"most-top" view. 
+      p For example, if you have initilized View in panel, and panel is currently opened, then this method will return panel's view. Or, if you use app with tab bar layout, where each tab is view, then this method will return currently active/visible tab-view
+      .method-wrap
+          p
+            span.method myApp.getCurrentView(<span>index</span>) 
+            span - get currently active/visible View instance
+          ul.method-parameters
+            li
+              span.parameter index
+              |  - <span class="parameter-type">number</span> - If there are few currently active views (as in Split View layout), then you need to specify index number of View. Optional
+            
+            li.method-returns Method returns initialized View instance or array with View instances if there are few currently active views
+      h2 Access to View's instance from DOM
       p Sometimes it could be useful to know or to get View's instance from HTML element. It is easy, right after we iniitalize view, Framework7 adds special property-link to our <code>&lt;div class="view"&gt;</code> element so we can access it any time in our JavaScript:
       pre
         code

@@ -2,7 +2,7 @@ extends ../jade/_internal-template
 
 block vars
   - var activeLink = 'docs';
-  - var title = 'Caledar / Datepicker | Framework7 Documentation';
+  - var title = 'Calendar / Datepicker | Framework7 Documentation';
 
 block content
   .docs-demo-device
@@ -13,7 +13,7 @@ block content
       include ../jade/_docs-menu
     .docs-content.with-device
       .full-width
-        h1 Caledar / Datepicker
+        h1 Calendar / Datepicker
         p Calendar is a touch optimized component that provides an easy way to handle dates.
         p Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).
         h2 Create Calendar Instance
@@ -27,7 +27,7 @@ block content
               span.parameter parameters
               |  - <span class="parameter-type">object</span> - object with Calendar parameters. Required.
             
-            li.method-returns <strong>Method returns initialized Calendar instance</strong>
+            li.method-returns Method returns initialized Calendar instance
         p For example:
         pre
           code
@@ -71,6 +71,11 @@ block content
               td boolean
               td true
               td Converts calendar modal to Popover on large screens (on iPad)
+            tr
+              td onlyOnPopover
+              td boolean
+              td false
+              td Enable it and Calendar will be always opened in Popover
             tr
               td cssClass
               td string

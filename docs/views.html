@@ -191,12 +191,14 @@
   // ...
 });   </code></pre>
           <p>This instance has a lot of methods to work with different parts of our app. And there is one method to initialize view:</p>
-          <p><span class="method">myApp.addView(<span>selector, parameters</span>)</span></span> - initialize View.</p>
-          <ul class="method-parameters">
-            <li><span class="parameter">container</span> - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. If string - CSS selector of View element</li>
-            <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span>. Object with View parameters</li>
-            <li class="method-returns">This method returns object with View instance.</li>
-          </ul>
+          <div class="method-wrap">
+            <p><span class="method">myApp.addView(<span>selector, parameters</span>)</span></span> - initialize View.</p>
+            <ul class="method-parameters">
+              <li><span class="parameter">container</span> - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. If string - CSS selector of View element</li>
+              <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span>. Object with View parameters</li>
+              <li class="method-returns">This method returns object with just created View instance.</li>
+            </ul>
+          </div>
           <h3>View initialization parameters</h3>
           <table class="params-table">
             <thead>
@@ -272,37 +274,57 @@
                 <td>When enabled, View will always reload currently active page without loading new one</td>
               </tr>
               <tr>
+                <td>preroute</td>
+                <td>function(view, options)</td>
+                <td>-</td>
+                <td>
+                  <p>This callback allows to prevent default router load/back actions and to load another page or do another required actions. </p>
+                  <p>Allows to override the same <a href="init-app.html">App callback</a> but for the current View</p>
+                  <p><a href="init-app.html#example-with-preprocess-content">Example</a></p>
+                </td>
+              </tr>
+              <tr>
+                <td>preprocess</td>
+                <td>function(content, url, next)</td>
+                <td>-</td>
+                <td>
+                  <p>This callback function allows you to modify loaded by router (mostly Ajax) content right before it will be injected to DOM. Callback receives "content" and "url" of the loaded page and the "next" callback function.</p>
+                  <p>Allows to override the same <a href="init-app.html">App callback</a> but for the current View</p>
+                  <p><a href="init-app.html#example-with-preroute">Example</a></p>
+                </td>
+              </tr>
+              <tr>
                 <th colspan="4">Swipe back</th>
               </tr>
               <tr>
                 <td>swipeBackPage</td>
                 <td>boolean</td>
                 <td></td>
-                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+                <td>By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View</td>
               </tr>
               <tr>
                 <td>swipeBackPageThreshold</td>
                 <td>number</td>
                 <td></td>
-                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+                <td>By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View</td>
               </tr>
               <tr>
                 <td>swipeBackPageActiveArea</td>
                 <td>number</td>
                 <td></td>
-                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+                <td>By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View</td>
               </tr>
               <tr>
                 <td>swipeBackPageAnimateShadow</td>
                 <td>boolean</td>
                 <td></td>
-                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+                <td>By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View</td>
               </tr>
               <tr>
                 <td>swipeBackPageAnimateOpacity</td>
                 <td>boolean</td>
                 <td></td>
-                <td>By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View</td>
+                <td>By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View</td>
               </tr>
               <tr>
                 <th colspan="4">Callbacks</th>
@@ -426,7 +448,17 @@ var anotherView = myApp.addView('.another-view');</code></pre>
           <h2>Default View URL </h2>
           <p>If you think that for some reason Framework7 detects wrong default View URL (which is used for navigation history), or if you want to have different default View URL, you can specify it using <code>data-url</code> attribute on View element or using <code>url</code> parameter when you initialze View:</p>
           <pre><code>&lt;div class="view" data-url="index2.html"&gt;</code></pre>
-          <h2>Access to View's instance with other ways</h2>
+          <h2>Get Current View</h2>
+          <p>There could be situation when we need to get currently active View, because instead of main app view we may also have view in opened popup, popover, opened panel, tabs, etc. This method allows to get the View instance of currently active/visible/"most-top" view. </p>
+          <p>For example, if you have initilized View in panel, and panel is currently opened, then this method will return panel's view. Or, if you use app with tab bar layout, where each tab is view, then this method will return currently active/visible tab-view</p>
+          <div class="method-wrap">
+            <p><span class="method">myApp.getCurrentView(<span>index</span>) </span><span>- get currently active/visible View instance</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">index</span> - <span class="parameter-type">number</span> - If there are few currently active views (as in Split View layout), then you need to specify index number of View. Optional</li>
+              <li class="method-returns">Method returns initialized View instance or array with View instances if there are few currently active views</li>
+            </ul>
+          </div>
+          <h2>Access to View's instance from DOM</h2>
           <p>Sometimes it could be useful to know or to get View's instance from HTML element. It is easy, right after we iniitalize view, Framework7 adds special property-link to our <code>&lt;div class="view"&gt;</code> element so we can access it any time in our JavaScript:</p>
           <pre><code>var viewsElement = $$('.view-main')[0];
 var viewInstance = viewsElement.f7View;</code></pre>

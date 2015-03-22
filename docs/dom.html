@@ -474,20 +474,20 @@ $$('p').show();</code></pre>
                 <td>Get scrollTop position of element</td>
               </tr>
               <tr>
-                <td>.scrollTop(position, duration) </td>
-                <td>Set scrollTop "position" with animation during "duration" (in ms). Scroll top position will be set immediately if duration is not specified</td>
+                <td>.scrollTop(position, duration, callback) </td>
+                <td>Set scrollTop "position" with animation during "duration" (in ms). Scroll top position will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed</td>
               </tr>
               <tr>
                 <td>.scrollLeft() </td>
                 <td>Get scrollLeft position of element</td>
               </tr>
               <tr>
-                <td>.scrollLeft(position, duration) </td>
-                <td>Set scrollLeft "position" with animation during "duration" (in ms). Scroll left postion will be set immediately if duration is not specified</td>
+                <td>.scrollLeft(position, duration, callback) </td>
+                <td>Set scrollLeft "position" with animation during "duration" (in ms). Scroll left postion will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed</td>
               </tr>
               <tr>
-                <td>.scrollTo(left, top, duration) </td>
-                <td>Set scroll left and scroll top with animation during "duration" (in ms). Scroll postion will be set immediately if duration is not specified</td>
+                <td>.scrollTo(left, top, duration, callback) </td>
+                <td>Set scroll left and scroll top with animation during "duration" (in ms). Scroll postion will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed</td>
               </tr>
               <tr>
                 <th colspan="2">Dom Manipulation</th>
@@ -771,6 +771,38 @@ links.add(divs).addClass('red');</code></pre>
             </tbody>
           </table>
           <h2>Utilities</h2>
+          <h4>Dom7.each</h4>
+          <p>A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties</p>
+          <div class="method-wrap">
+            <p><span class="method">Dom7.each(<span>object/array</span>, <span>callback</span>) </span><span>- iterate through object or array</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">object/array</span> - <span class="parameter-type">object</span> or <span class="parameter-type">array</span> - to iterate over. Required.</li>
+              <li><span class="parameter">callback</span> - <span class="parameter-type">function</span> - callback function that will be executed on every object property, or on every array element. Required.</li>
+            </ul>
+          </div>
+          <pre><code>var fruits = ['Apple', 'Orange', 'Pineapple', 'Bannana'];
+$$.each(fruits, function (index, value) {
+    alert(index + ': ' + element); 
+});          
+ 
+//This produces 4 alerts:
+0: Apple
+1: Orange
+2: Pineapple
+3: Bannana</code></pre>
+          <pre><code>var person = {
+    firstName: 'John',
+    lastName: 'Doe',
+    age: 25,
+};
+$$.each(person, function (key, value) {
+    alert(key + ': ' + value);
+});
+ 
+//This produces 3 alerts:
+firstName: John
+lastName: Doe
+age: 25          </code></pre>
           <h4>Dom7.parseUrlQuery</h4>
           <div class="method-wrap">
             <p><span class="method">Dom7.parseUrlQuery(<span>url</span>) </span><span>- parse url query get parameters</span></p>

@@ -339,17 +339,17 @@ block content
             td .scrollTop() 
             td Get scrollTop position of element
           tr
-            td .scrollTop(position, duration) 
-            td Set scrollTop "position" with animation during "duration" (in ms). Scroll top position will be set immediately if duration is not specified
+            td .scrollTop(position, duration, callback) 
+            td Set scrollTop "position" with animation during "duration" (in ms). Scroll top position will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed
           tr
             td .scrollLeft() 
             td Get scrollLeft position of element
           tr
-            td .scrollLeft(position, duration) 
-            td Set scrollLeft "position" with animation during "duration" (in ms). Scroll left postion will be set immediately if duration is not specified
+            td .scrollLeft(position, duration, callback) 
+            td Set scrollLeft "position" with animation during "duration" (in ms). Scroll left postion will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed
           tr
-            td .scrollTo(left, top, duration) 
-            td Set scroll left and scroll top with animation during "duration" (in ms). Scroll postion will be set immediately if duration is not specified
+            td .scrollTo(left, top, duration, callback) 
+            td Set scroll left and scroll top with animation during "duration" (in ms). Scroll postion will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed
           tr
             th(colspan="2") Dom Manipulation
           tr
@@ -579,6 +579,46 @@ block content
             td .scroll(<span>handler</span>) 
             td Add "scroll" event handler to collection
       h2 Utilities
+      h4 Dom7.each
+      p A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties
+      .method-wrap
+        p
+          span.method Dom7.each(<span>object/array</span>, <span>callback</span>) 
+          span - iterate through object or array
+        ul.method-parameters
+          li
+            span.parameter object/array
+            |  - <span class="parameter-type">object</span> or <span class="parameter-type">array</span> - to iterate over. Required.
+          li
+            span.parameter callback
+            |  - <span class="parameter-type">function</span> - callback function that will be executed on every object property, or on every array element. Required.
+      pre
+        code
+          | var fruits = ['Apple', 'Orange', 'Pineapple', 'Bannana'];
+          | $$.each(fruits, function (index, value) {
+          |     alert(index + ': ' + element); 
+          | });          
+          | 
+          | //This produces 4 alerts:
+          | 0: Apple
+          | 1: Orange
+          | 2: Pineapple
+          | 3: Bannana
+      pre
+        code
+          | var person = {
+          |     firstName: 'John',
+          |     lastName: 'Doe',
+          |     age: 25,
+          | };
+          | $$.each(person, function (key, value) {
+          |     alert(key + ': ' + value);
+          | });
+          | 
+          | //This produces 3 alerts:
+          | firstName: John
+          | lastName: Doe
+          | age: 25          
       h4 Dom7.parseUrlQuery
       .method-wrap
         p

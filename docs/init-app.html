@@ -296,6 +296,24 @@
                 <td>Enable/disable preloading of previous page when you go deep in navigation. Should be enabled for correct work of "swipe back page" feature.</td>
               </tr>
               <tr>
+                <td>preroute</td>
+                <td>function(view, options)</td>
+                <td>-</td>
+                <td>
+                  <p>This callback allows to prevent default router load/back actions and to load another page or do another required actions</p>
+                  <p>Look for example below</p>
+                </td>
+              </tr>
+              <tr>
+                <td>preprocess</td>
+                <td>function(content, url, next)</td>
+                <td>-</td>
+                <td>
+                  <p>This callback function allows you to modify loaded router (mostly Ajax) content right before it will be injected to DOM. Callback receives "content" and "url" of the loaded page and the "next" callback function. After you modify content within this function you should return it with: <code>return content</code></p>
+                  <p>Look for example below</p>
+                </td>
+              </tr>
+              <tr>
                 <th colspan="4">Push State</th>
               </tr>
               <tr>
@@ -760,12 +778,6 @@
                 <td>Callback function that will be executed after Ajax request. This function accepts xhr data as an argument.</td>
               </tr>
               <tr>
-                <td>preprocess</td>
-                <td>function(content, url, next)</td>
-                <td>-</td>
-                <td>This callback function allows you to modify loaded Ajax content right before it will be injected to DOM. As arguments this function receive "content" and "url" of the loaded page and "next" callback function. This option will be very useful if you are going to use some client-side template engine like "Handlebars", "Mustache", etc. After you modify content within this function you should return it: <code>return content</code></td>
-              </tr>
-              <tr>
                 <th colspan="4">Namespace
                   <p><strong>Attention! If you change following class names you will also need to change them in CSS!</strong></p>
                 </th>
@@ -816,13 +828,13 @@
     }
 });   </code></pre>
           <h2>Example with "preprocess" content</h2>
-          <p>Framework7 allows you to use your favorite client-side template engine (like Handlebars or Mustache). </p>
-          <p>Let's look on how to init app with usage of Handlebars as our client-side template engine (Handlebars library should be also included in your HTML)</p>
+          <p>Framework7 allows you to use your favorite client-side template engine or do any modifications with loaded content. </p>
+          <p>Let's look on how to init app with usage of Template7 as our client-side template engine </p>
           <p>Init app in <code>my-app.js</code>:</p>
           <pre><code>var myApp = new Framework7({
     preprocess: function (content, url, next) {
         if (url === 'people.html') {
-            var template = Handlebars.compile(content);
+            var template = Template7.compile(content);
             var resultContent = template({
                 title: 'People',
                 people: ['John', 'Ivan', 'Mary']
@@ -855,7 +867,7 @@
             // For example, we will retreive template JSON data using Ajax and only after that we will continue page loading process
             $$.get('sometemplate.html', function(data) {
                 // Template
-                var template = Handlebars.compile(content);
+                var template = Template7.compile(content);
  
                 // Compile content template with received JSON data
                 var resultContent = template(data);
@@ -867,6 +879,17 @@
         }
     }
 });          </code></pre>
+          <h2>Example with "preroute"</h2>
+          <p>This callback allows to prevent default router load/back actions and to load another page, redirects or do another required actions.</p>
+          <p>For example we can check if the user is not logged in when he requesting some page and then to redirect him to the login page</p>
+          <pre><code>var myApp = new Framework7({
+    preroute: function (view, options) {
+        if (!userLoggedIn) {
+            view.router.loadPage('auth.html'); //load another page with auth form
+            return false; //required to prevent default router action
+        }
+    }
+});</code></pre>
           <h2>What's next</h2>
           <p>Ok, right after we initialize our App we need to add and initialize <a href="views.html">Views</a></p>
         </div>
