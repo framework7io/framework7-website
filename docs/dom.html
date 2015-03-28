@@ -59,7 +59,7 @@
         <div class="docs-nav">
           <ul>
             <li class="title">Core</li>
-            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="dom.html">Dom7 - Custom DOM Library</a></li>
             <li><a href="app-layout.html">App HTML Layout</a></li>
             <li><a href="rtl-layout.html">RTL Layout</a></li>
             <li><a href="init-app.html">Initialize App / App parameters</a></li>
@@ -142,8 +142,10 @@
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
-            <li class="title">Utilities</li>
+            <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
@@ -843,16 +845,16 @@ console.log($$.unique(fruits)); //-> ['Apple', 'Orange'];</code></pre>
           </div>
           <pre><code class="js">var params = {foo: 'bar', id: 5};
 console.log($$.serializeObject(params)); //-> 'foo=bar&id=5'</code></pre>
-          <h4>Dom7.camelCase</h4>
+          <h4>Dom7.toCamelCase</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.camelCase(<span>string</span>) </span><span>- Convert hypens-case string to camelCase string</span></p>
+            <p><span class="method">Dom7.toCamelCase(<span>string</span>) </span><span>- Convert hypens-case string to camelCase string</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">string</span> - <span class="parameter-type">string</span> - hypens-case string</li>
             </ul>
             <p class="method-returns">returns a new camelCase string</p>
           </div>
           <pre><code>var hypensCaseString = 'hello-my-world';
-var camelCaseString = $$.camelCase(hypensCaseString);
+var camelCaseString = $$.toCamelCase(hypensCaseString);
 console.log(camelCaseString); //helloMyWorld</code></pre>
           <h4>Dom7.dataset</h4>
           <div class="method-wrap">

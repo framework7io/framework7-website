@@ -63,7 +63,7 @@
         <div class="docs-nav">
           <ul>
             <li class="title">Core</li>
-            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="dom.html">Dom7 - Custom DOM Library</a></li>
             <li><a href="app-layout.html">App HTML Layout</a></li>
             <li><a href="rtl-layout.html">RTL Layout</a></li>
             <li><a href="init-app.html">Initialize App / App parameters</a></li>
@@ -146,8 +146,10 @@
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
-            <li class="title">Utilities</li>
+            <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
@@ -1055,6 +1057,14 @@
                   </td>
                 </tr>
                 <tr>
+                  <td>mySwiper.clickedIndex</td>
+                  <td>Index number of last clicked slide</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.clickedSlide</td>
+                  <td>Link to last clicked slide (<i>HTMLElement</i>)</td>
+                </tr>
+                <tr>
                   <th colspan="2">Methods</th>
                 </tr>
                 <tr>
@@ -1125,7 +1135,12 @@
                 </tr>
                 <tr>
                   <td>mySwiper.destroy();</td>
-                  <td>Destroy slider instance and detach all events listeners</td>
+                  <td>Destroy slider instance and detach all events listeners, where<br>
+                    <ul class="method-parameters">
+                      <li><span class="parameter">deleteInstance</span> - <span class="parameter-type">boolean</span> - Set it to <code>false</code> (by default it is <code>true</code>) to not to delete Swiper instance</li>
+                      <li><span class="parameter">cleanupStyles</span> - <span class="parameter-type">boolean</span> - Set it to <code>true</code> (by default it is <code>false</code>) and all custom styles will be removed from slides, wrapper and container. Useful if you need to destroy Swiper and to init again with new options or in different direction</li>
+                    </ul>
+                  </td>
                 </tr>
                 <tr>
                   <td>mySwiper.appendSlide(slides);</td>

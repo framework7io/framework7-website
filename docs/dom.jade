@@ -675,10 +675,10 @@ block content
         code.js
           | var params = {foo: 'bar', id: 5};
           | console.log($$.serializeObject(params)); //-> 'foo=bar&id=5'
-      h4 Dom7.camelCase
+      h4 Dom7.toCamelCase
       .method-wrap
         p
-          span.method Dom7.camelCase(<span>string</span>) 
+          span.method Dom7.toCamelCase(<span>string</span>) 
           span - Convert hypens-case string to camelCase string
         ul.method-parameters
           li
@@ -688,7 +688,7 @@ block content
       pre
         code
           | var hypensCaseString = 'hello-my-world';
-          | var camelCaseString = $$.camelCase(hypensCaseString);
+          | var camelCaseString = $$.toCamelCase(hypensCaseString);
           | console.log(camelCaseString); //helloMyWorld
       h4 Dom7.dataset
       .method-wrap

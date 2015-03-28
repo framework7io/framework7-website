@@ -63,7 +63,7 @@
         <div class="docs-nav">
           <ul>
             <li class="title">Core</li>
-            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="dom.html">Dom7 - Custom DOM Library</a></li>
             <li><a href="app-layout.html">App HTML Layout</a></li>
             <li><a href="rtl-layout.html">RTL Layout</a></li>
             <li><a href="init-app.html">Initialize App / App parameters</a></li>
@@ -146,8 +146,10 @@
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
-            <li class="title">Utilities</li>
+            <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
@@ -248,6 +250,7 @@
           <div class="full-width stop-scroll-device">
             <h3>Animate back-link icon</h3>
             <p>If you use default back-links (icon + "Back" word) you can enable additional animation for these links to have more iOS 7 look. To make it work you need to add <code>animateNavBackIcon: true</code> parameter on <a href="init-app.html">App initialization</a> and to have link with "back" class and icon in Left Navbar part. Nothing different in layout, here is example:</p>
+            <h3>Demos</h3>
             <div class="row">
               <div class="col-50">
                 <h4>Usual Sliding</h4>
@@ -263,6 +266,61 @@
               </div>
               <div class="clearfix"></div>
             </div>
+            <div style="height:50px" class="device-spacer"></div>
+            <h2>Dynamic Navbar Events</h2>
+            <p>Dynamic navbar has the following events:</p>
+            <table class="events-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Target</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>navbarBeforeInit</td>
+                  <td>Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span></td>
+                  <td>Event will be triggered when Framework7 just inserts new navbar inner to DOM</td>
+                </tr>
+                <tr>
+                  <td>navbarInit</td>
+                  <td>Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span></td>
+                  <td>Event will be triggered after Framework7 initialize navbar</td>
+                </tr>
+                <tr>
+                  <td>navbarReinit</td>
+                  <td>Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span></td>
+                  <td>This event will be triggered when cached navbar inner becomes visible. It is only applicaple for Inline Pages (DOM cached pages)</td>
+                </tr>
+                <tr>
+                  <td>navbarBeforeRemove</td>
+                  <td>Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span></td>
+                  <td>Event will be triggered right before navbar inner will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>Each event data containes useful information with <code>navbar</code> elements and <a href="pages.html#page-data">Page Data</a> of related page. For example</p>
+            <pre><code class="js">$$(document).on('navbarInit', function (e) {
+  var navbar = e.detail.navbar;
+  var page = e.detail.page
+});</code></pre>
+            <p>Now, in the example above we have initialized Navbar elements in <code>navbar</code> variable and related  Page Data in <code>page</code> variable. Lets look on properties of <code>navbar</code> object:</p>
+            <table class="methods-table">
+              <tbody>
+                <tr>
+                  <th colspan="2">Navbar Properties</th>
+                </tr>
+                <tr>
+                  <td>navbar.navbarContainer</td>
+                  <td>Link to parent Navbar <span class="parameter-type">HTMLElement</span></td>
+                </tr>
+                <tr>
+                  <td>navbar.navbarInnerContainer</td>
+                  <td>Link to target Navbar Inner <span class="parameter-type">HTMLElement</span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

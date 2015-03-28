@@ -72,6 +72,11 @@ block content
               td true
               td Optional. If "true" then it will be title instead of button
             tr
+              td disabled
+              td boolean
+              td false
+              td Optional. Set to "true" if you want to make button disabled
+            tr
               td onClick
               td function
               td 
@@ -323,4 +328,26 @@ block content
             |     &lt;/div&gt;
             |   {{/each}}
             | &lt;/div&gt;            
+        h2 Action Sheet To Popover Template
+        p If you use convertation of Action Sheet to Popover, then you may customize Popover template by passing <code>modalActionsToPopoverTemplate</code> parameter on <a href="init-app.html">App initialization</a>. This parameter accepts <a href="template7.html">Template7</a> formatted HTML string that will be compiled by Template7 with passed <code>groups</code> context. 
+        p Here is the default template:
+        pre
+          code
+            | &lt;div class="popover actions-popover"&gt;
+            |   &lt;div class="popover-inner"&gt;
+            |     {{#each this}}
+            |     &lt;div class="list-block"&gt;
+            |       &lt;ul&gt;
+            |         {{#each this}}
+            |         {{#if label}}
+            |         &lt;li class="actions-popover-label {{#if color}}color-{{color}}{{/if}} {{#if bold}}actions-popover-bold{{/if}}"&gt;{{text}}&lt;/li&gt;
+            |         {{else}}
+            |         &lt;li&gt;&lt;a href="#" class="item-link list-button {{#if color}}color-{{color}}{{/if}} {{#if bg}}bg-{{bg}}{{/if}} {{#if bold}}actions-popover-bold{{/if}} {{#if disabled}}disabled{{/if}}"&gt;{{text}}&lt;/a&gt;&lt;/li&gt;
+            |         {{/if}}
+            |         {{/each}}
+            |       &lt;/ul&gt;
+            |     &lt;/div&gt;
+            |     {{/each}}
+            |   &lt;/div&gt;
+            | &lt;/div&gt;                       
           

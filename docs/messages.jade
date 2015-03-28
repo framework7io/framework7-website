@@ -190,6 +190,11 @@ block content
               td false
               td Enable if you want to use new messages on top, instead of having them on bottom
             tr
+              td messages
+              td array
+              td
+                td Array with initial messages. Each message in array should be presented as object with <a href="#single-message-parameters">message parameters</a>
+            tr
               td messageTemplate
               td string
               td * Look bellow
@@ -222,14 +227,51 @@ block content
             tr
               th(colspan="2") Methods
             tr
-              td myMessages.addMessage(<span>messageParameters</span>, <span>method</span>);
-              td Add new message to the end or to the beginning depending on newMessagesFirst parameter. The second <code>method</code> argument can be 'append' or 'prepend'. In this case, it will work like <code>.appendMessage</code> and <code>.prependMessage</code> methods
+              td myMessages.addMessage(<span>messageParameters</span>, <span>method</span>, <span>animate</span>);
+              td
+                p Add new message to the end or to the beginning depending on <b>method</b> parameter
+                ul.method-parameters
+                  li
+                    span.parameter messageParameters
+                    |  - <span class="parameter-type">object</span> parameters of message to add. Required.
+                  li
+                    span.parameter method
+                    |  - <span class="parameter-type">string</span> - ('append' or 'prepend') dictates to add new message in the end or in the beginning of messages container. Optional, if not specified, then it will add message depending on <code>newMessagesFirst</code> parameter
+                  li
+                    span.parameter animate
+                    |  - <span class="parameter-type">boolean</span> - (by default <b>true</b>) You may pass here <b>false</b> and message will be added immediately without any transiton and scrolling animation. Optional.
+                  
+                  li.method-returns Method returns HTMLElement of added messsage
             tr
-              td myMessages.appendMessage(<span>messageParameters</span>);
+              td myMessages.appendMessage(<span>messageParameters</span>, <span>animate</span>);
               td Add new message to the end (to the bottom)
             tr
-              td myMessages.prependMessage(<span>messageParameters</span>);
+              td myMessages.prependMessage(<span>messageParameters</span>, <span>animate</span>);
               td Add new message to the beginning (to the top)
+            tr
+              td myMessages.addMessages(<span>messages</span>, <span>method</span>, <span>animate</span>);
+              td Add multiple messages per once. 
+                ul.method-parameters
+                  li
+                    span.parameter messages
+                    |  - <span class="parameter-type">array</span> with messages to add. Each message in array should be presented as object with <a href="#single-message-parameters">message parameters</a> Required.
+                  li.method-returns Method returns array of HTMLElements with added messsages
+            tr
+              td myMessages.removeMessage(<span>message</span>);
+              td Remove message
+                ul.method-parameters
+                  li
+                    span.parameter message
+                    |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of message element to remove. Required
+                  li.method-returns Method returns <b>true</b> if specified message was removed
+            tr
+              td myMessages.removeMessages(<span>messages</span>);
+              td Remove multiple messages
+                ul.method-parameters
+                  li
+                    span.parameter messages
+                    |  - <span class="parameter-type">array</span> (with HTMLElements) or <span class="parameter-type">string</span> (with CSS Selector) of messages to remove. Required
+                  li.method-returns Method returns <b>true</b> if specified messages was removed
             tr
               td myMessages.scrollMessages();
               td Scroll messages to top/bottom depending on newMessagesFirst parameter
@@ -242,7 +284,7 @@ block content
             tr
               td myMessages.destroy();
               td Destroy messages instance
-        h4 Single Message Parameters
+        h3 Single Message Parameters
         p Let's look on single message parameters object that we should use to addMessage, appendMessage and prependMessage methods:
         table.params-table
           thead

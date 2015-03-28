@@ -131,7 +131,7 @@ block content
             td 
               p 
                 code viewContainer
-                |  - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLEelement</span>. URL of page to load
+                |  - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. URL of page to load
               p Call this method to recalculate positional styles for Navbar in selected View. For example: <b>myApp.sizeNavbars('.view-main')</b>
               p It could be useful after you change some of Navbar elements dynamically.
       p And the following example:
@@ -170,5 +170,8 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/div&gt;
-      .device-spacer(style="height:100px")
-      
+      .device-spacer(style="height:150px")
+      .full-width.stop-scroll-device
+        h2 Dynamic Navbar Events
+        p If you use <a href="dynamic-navbar.html">Dynamic Navbar</a> in your app then it will also have useful <a href="dynamic-navbar.html#dynamic-navbar-events">special events</a>.
+        

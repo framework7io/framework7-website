@@ -453,6 +453,83 @@ block content
                   | &lt;h3&gt;"Friends" TV Show&lt;/h3&gt;
                   | &lt;p&gt;Was released in year 2001&lt;/p&gt;
                   | &lt;p&gt;Genres: comedy, drama&lt;/p&gt;
+      h4 {{js "expression"}}
+      p This inline helper allows to execute some simple JavaScript directly in template to modify/check context on the fly or for some JS calculations
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          tr
+            td
+              pre
+                code
+                  | &lt;h3&gt;{{title}}&lt;/h3&gt;
+                  | &lt;p&gt;Price: ${{js "this.price * 1.2"}} &lt;/p&gt;
+                  | &lt;p&gt;{{js "this.inStock ? 'In Stock' : 'Not in stock'"}} &lt;/p&gt;
+            td
+              pre
+                code
+                  | {
+                  |   title: 'iPhone 6 Plus',
+                  |   price: 1000,
+                  |   inStock: true
+                  | }
+            td
+              pre
+                code
+                  | &lt;h3&gt;iPhone&lt;/h3&gt;
+                  | &lt;p&gt;Price: $1200&lt;/p&gt;
+                  | &lt;p&gt;In stock&lt;/p&gt;
+      h4 {{#js_compare "expression"}}...{{/js_compare}}
+      p Block helper for easier compares of context variables. It renders content if JavaScript expression is not "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper
+      table.template7-examples
+        thead
+          tr
+            th Template ->
+            th Context ->
+            th Output
+        tbody
+          tr
+            td
+              pre
+                code.html
+                  | &lt;h3&gt;{{title}}&lt;/h3&gt;
+                  | &lt;p&gt;Price: ${{price}} &lt;/p&gt;
+                  | &lt;p&gt;{{#js_compare "color === 'white' && memory > 16"}}Not in stock{{else}}In stock{{/js_compare}} &lt;/p&gt;
+            td
+              pre
+                code
+                  | {
+                  |   title: 'iPhone 6 Plus',
+                  |   price: 1000,
+                  |   color: 'white',
+                  |   memory: 32
+                  | }
+            td
+              pre
+                code
+                  | &lt;h3&gt;iPhone&lt;/h3&gt;
+                  | &lt;p&gt;Price: $1000&lt;/p&gt;
+                  | &lt;p&gt;Not in stock&lt;/p&gt;
+          tr
+            td
+              pre
+                code.html
+                  | &lt;p&gt;{{#js_compare "a === b"}}A equals to B{{else}}A not equal to B{{/js_compare}} &lt;/p&gt;
+            td
+              pre
+                code
+                  | {
+                  |   a: 5,
+                  |   b: 34
+                  | }
+            td
+              pre
+                code
+                  | &lt;p&gt;A not equal to B&lt;/p&gt;
       h2 Using Custom Helpers
       p Template7 allows to register custom helpers with the following method:
       .method-wrap
@@ -605,6 +682,37 @@ block content
       pre
         code.html
           | &lt;p&gt;Hello, {{@global.username}}. Your email is {{@global.email}}&lt;/p&gt;
+      h2 Access To Root Context
+      p Sometimes we may need to access to initially passed root context in our templates. For this case we need to use <code>{{@root}}</code> variable. This is especially helpful when we are deep in context:
+      pre
+        code.js
+          | {
+          |     persons: [
+          |         {
+          |             name: 'John',
+          |             hobby: ['Cars', 'Food']
+          |         },
+          |         {
+          |             name: 'Kyle',
+          |             hobby: ['Travel', 'Puzzles']
+          |         },
+          |  
+          |     ],
+          |     showHobby: true
+          | }    
+      pre
+        code
+          | {{#each persons}}
+          |     &lt;h2&gt;{{name}}&lt;/h2&gt;
+          |     &lt;h3&gt;Hobby:&lt;/h3&gt;
+          |     {{#if @root.showHobby}}
+          |         &lt;ul&gt;
+          |             {{#each hobby}}
+          |                 &lt;li&gt;{{this}}&lt;/li&gt;
+          |             {{../each}}
+          |         &lt;/ul&gt;
+          |     {{/if}}
+          | {{/each}}              
       h2 Performance Tips
       p Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:
       pre

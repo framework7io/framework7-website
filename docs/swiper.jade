@@ -775,6 +775,12 @@ block content
                   li mySwiper.touches.currentY
                   li mySwiper.touches.diff
             tr
+              td mySwiper.clickedIndex
+              td Index number of last clicked slide
+            tr
+              td mySwiper.clickedSlide
+              td Link to last clicked slide (<i>HTMLElement</i>)
+            tr
               th(colspan="2") Methods
             tr
               td mySwiper.slideNext(<span>runCallbacks</span>, <span>speed</span>);
@@ -846,7 +852,15 @@ block content
               td stop auto play. It may be useful for custom "Play" and "Pause" buttons
             tr
               td mySwiper.destroy();
-              td Destroy slider instance and detach all events listeners
+              td 
+                | Destroy slider instance and detach all events listeners, where<br>
+                ul.method-parameters
+                  li
+                    span.parameter deleteInstance
+                    |  - <span class="parameter-type">boolean</span> - Set it to <code>false</code> (by default it is <code>true</code>) to not to delete Swiper instance
+                  li
+                    span.parameter cleanupStyles
+                    |  - <span class="parameter-type">boolean</span> - Set it to <code>true</code> (by default it is <code>false</code>) and all custom styles will be removed from slides, wrapper and container. Useful if you need to destroy Swiper and to init again with new options or in different direction
             tr
               td mySwiper.appendSlide(slides);
               td Add new slides to the end. <code>slides</code> could be HTMLElement or HTML string with new slide or array with such slides, for example:

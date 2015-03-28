@@ -59,7 +59,7 @@
         <div class="docs-nav">
           <ul>
             <li class="title">Core</li>
-            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="dom.html">Dom7 - Custom DOM Library</a></li>
             <li><a href="app-layout.html">App HTML Layout</a></li>
             <li><a href="rtl-layout.html">RTL Layout</a></li>
             <li><a href="init-app.html">Initialize App / App parameters</a></li>
@@ -142,8 +142,10 @@
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
-            <li class="title">Utilities</li>
+            <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
@@ -598,6 +600,85 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
+          <h4>{{js "expression"}}</h4>
+          <p>This inline helper allows to execute some simple JavaScript directly in template to modify/check context on the fly or for some JS calculations</p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code>&lt;h3&gt;{{title}}&lt;/h3&gt;
+&lt;p&gt;Price: ${{js "this.price * 1.2"}} &lt;/p&gt;
+&lt;p&gt;{{js "this.inStock ? 'In Stock' : 'Not in stock'"}} &lt;/p&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  title: 'iPhone 6 Plus',
+  price: 1000,
+  inStock: true
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;h3&gt;iPhone&lt;/h3&gt;
+&lt;p&gt;Price: $1200&lt;/p&gt;
+&lt;p&gt;In stock&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h4>{{#js_compare "expression"}}...{{/js_compare}}</h4>
+          <p>Block helper for easier compares of context variables. It renders content if JavaScript expression is not "false" (or "undefined" or "null" or "" or "0") , otherwise it renders inverse content that optionally could be passed to {{else}} expression inside of helper</p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code class="html">&lt;h3&gt;{{title}}&lt;/h3&gt;
+&lt;p&gt;Price: ${{price}} &lt;/p&gt;
+&lt;p&gt;{{#js_compare "color === 'white' && memory > 16"}}Not in stock{{else}}In stock{{/js_compare}} &lt;/p&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  title: 'iPhone 6 Plus',
+  price: 1000,
+  color: 'white',
+  memory: 32
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;h3&gt;iPhone&lt;/h3&gt;
+&lt;p&gt;Price: $1000&lt;/p&gt;
+&lt;p&gt;Not in stock&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <pre><code class="html">&lt;p&gt;{{#js_compare "a === b"}}A equals to B{{else}}A not equal to B{{/js_compare}} &lt;/p&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  a: 5,
+  b: 34
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;p&gt;A not equal to B&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <h2>Using Custom Helpers</h2>
           <p>Template7 allows to register custom helpers with the following method:</p>
           <div class="method-wrap">
@@ -736,6 +817,33 @@ var html = compiledTemplate(context);</code></pre>
 };</code></pre>
           <p>To access it in templates we need to use <code>{{@global}}</code> variable:</p>
           <pre><code class="html">&lt;p&gt;Hello, {{@global.username}}. Your email is {{@global.email}}&lt;/p&gt;</code></pre>
+          <h2>Access To Root Context</h2>
+          <p>Sometimes we may need to access to initially passed root context in our templates. For this case we need to use <code>{{@root}}</code> variable. This is especially helpful when we are deep in context:</p>
+          <pre><code class="js">{
+    persons: [
+        {
+            name: 'John',
+            hobby: ['Cars', 'Food']
+        },
+        {
+            name: 'Kyle',
+            hobby: ['Travel', 'Puzzles']
+        },
+ 
+    ],
+    showHobby: true
+}    </code></pre>
+          <pre><code>{{#each persons}}
+    &lt;h2&gt;{{name}}&lt;/h2&gt;
+    &lt;h3&gt;Hobby:&lt;/h3&gt;
+    {{#if @root.showHobby}}
+        &lt;ul&gt;
+            {{#each hobby}}
+                &lt;li&gt;{{this}}&lt;/li&gt;
+            {{../each}}
+        &lt;/ul&gt;
+    {{/if}}
+{{/each}}              </code></pre>
           <h2>Performance Tips</h2>
           <p>Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:</p>
           <pre><code>// Initialize app

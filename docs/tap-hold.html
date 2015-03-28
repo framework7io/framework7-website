@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Ajax Form Submit | Framework7 Documentation</title>
+    <title>Tap Hold Event | Framework7 Documentation</title>
     <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
     <link rel="stylesheet" href="../css/normalize.css">
     <link rel="stylesheet" href="../css/main.css">
@@ -153,75 +153,52 @@
           </ul>
         </div>
         <div class="docs-content">
-          <h1>Ajax Form Submit</h1>
-          <p>Framework7 allows automatically send form data using Ajax. </p>
-          <p>It could be done in two ways</p>
-          <ul>
-            <li>when user submits it (when he clicks on "submit" button) or when "submit" event triggered on form programmatically</li>
-            <li>when user change any form field or when "change" event triggered on form (or form field) programmatically</li>
-          </ul>
-          <h2>Send form data on submit</h2>
-          <p>To enable Ajax form and send data automatically on submit, we just need to add "ajax-submit" class to form:</p>
-          <pre>     <code>&lt;form action="send-here.html" method="GET" class="ajax-submit"&gt;
-    ...
-&lt;/form&gt; </code></pre>
-          <p>And when user will submit this form, it automatically will be sended using Ajax with the following rules:</p>
-          <div class="important-note">
-            <ul>
-              <li>
-                <p>Form data will be sended to the file/url specified in form's <b>"action" attribute</b></p>
-              </li>
-              <li>
-                <p>Request method will be the same as specified in form's <b>"method" attribute</b></p>
-              </li>
-              <li>
-                <p>Content type will be the same as specified in form's <b>"enctype" attribute</b>. By default (if not specified), it is <b>application/x-www-form-urlencoded</b></p>
-              </li>
-            </ul>
-          </div>
-          <h2>Send form data on input change</h2>
-          <p>Mostly we don't use "submit" buttons in apps, so in this cases we need to submit form data when user changes any form fields. For this case we need to use "ajax-submit-onchange" class:</p>
-          <pre>     <code>&lt;form action="send-here.html" method="GET" class="ajax-submit-onchange"&gt;
-    ...
-&lt;/form&gt; </code></pre>
-          <p>And when user will change any form filed, form data automatically will be sended using Ajax with the same rules as in previous case.</p>
-          <h2>Ajax submit event</h2>
-          <p>Sometimes we need to get actual XHR repsonse from the file/url where we send form data with Ajax. We can use special event for that:</p>
-          <table class="events-table">
+          <h1>Tap Hold Event (Long Tap)</h1>
+          <p>Framework7 has so called "tap hold" event. It triggers (if enabled) after a sustained, complete touch event. By default it is disabled and could be enabled and configured using the following <a href="init-app.html">App paremeters</a> on app initialization:</p>
+          <table class="params-table">
             <thead>
               <tr>
-                <th>Event</th>
-                <th>Target</th>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Default</th>
                 <th>Description</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>submitted</td>
-                <td>Form Element<span>&lt;form class="ajax-submit"&gt;</span></td>
-                <td>Event will be triggered after successful Ajax request </td>
+                <td>tapHold</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to <b>true</b> to enable tap hold events</td>
               </tr>
               <tr>
-                <td>beforeSubmit</td>
-                <td>Form Element<span>&lt;form class="ajax-submit"&gt;</span></td>
-                <td>Event will be triggered right before Ajax request </td>
+                <td>tapHoldDelay</td>
+                <td>number</td>
+                <td>750</td>
+                <td>Determines how long (in ms) the user must hold their tap before the taphold event is fired on the target element</td>
               </tr>
               <tr>
-                <td>submitError</td>
-                <td>Form Element<span>&lt;form class="ajax-submit"&gt;</span></td>
-                <td>Event will be triggered on Ajax request error </td>
+                <td>tapHoldPreventClicks</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>When enabled (by default), then click event will not be fired after tap hold event</td>
               </tr>
             </tbody>
           </table>
-          <pre><code>var myApp = new Framework7();
+          <p>Note, that Tap Hold is a part of built-in <b>Fast Clicks</b> library, so Fast Clicks should be also enabled.</p>
+          <p>Also note, that you probably will need to disable mobile browser default "long-tap" actions by adding these CSS rules to elements:</p>
+          <pre><code>-moz-user-select: none;        
+-webkit-user-select: none;        
+user-select: none;</code></pre>
+          <h2>Example     </h2>
+          <pre><code>var myApp = new Framework7({
+  tapHold: true //enable tap hold events
+});
  
 var $$ = Dom7;
  
-$$('form.ajax-submit').on('submitted', function (e) {
-  var xhr = e.detail.xhr; // actual XHR object
- 
-  var data = e.detail.data; // Ajax repsonse from action file
-  // do something with response data
+$$('.some-link').on('taphold', function () {
+  myApp.alert('Tap hold fired!');
 });</code></pre>
         </div>
       </div>

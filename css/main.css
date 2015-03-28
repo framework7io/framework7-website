@@ -849,6 +849,15 @@ img.lazy {
 .centered {
   text-align: center;
 }
+.row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+.row .col-50 {
+  width: 50%;
+}
 .github-buttons iframe {
   border: none;
 }
@@ -1357,7 +1366,7 @@ ul.method-parameters .parameter-type {
 }
 .method-returns {
   list-style: none;
-  font-style: italic;
+  font-weight: 500;
 }
 table.methods-table {
   line-height: 1.4;

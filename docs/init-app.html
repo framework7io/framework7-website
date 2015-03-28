@@ -59,7 +59,7 @@
         <div class="docs-nav">
           <ul>
             <li class="title">Core</li>
-            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="dom.html">Dom7 - Custom DOM Library</a></li>
             <li><a href="app-layout.html">App HTML Layout</a></li>
             <li><a href="rtl-layout.html">RTL Layout</a></li>
             <li><a href="init-app.html">Initialize App / App parameters</a></li>
@@ -142,8 +142,10 @@
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
-            <li class="title">Utilities</li>
+            <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
@@ -231,6 +233,24 @@
                 <td>string</td>
                 <td>'a, button, label, span'</td>
                 <td>CSS selector of elements where <code>activeState</code> will add appropriate active class</td>
+              </tr>
+              <tr>
+                <td>tapHold</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to <b>true</b> to enable tap hold events</td>
+              </tr>
+              <tr>
+                <td>tapHoldDelay</td>
+                <td>number</td>
+                <td>750</td>
+                <td>Determines how long (in ms) the user must hold their tap before the taphold event is fired on the target element</td>
+              </tr>
+              <tr>
+                <td>tapHoldPreventClicks</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>When enabled (by default), then click event will not be fired after tap hold event</td>
               </tr>
               <tr>
                 <th colspan="4">Navigation / Router</th>
@@ -503,6 +523,12 @@
                 <td>string</td>
                 <td>undefined</td>
                 <td><a href="template7.html">Template7</a> formatted HTML template for Action Sheet. Could be useful if you want to add some custom elements to Action Sheet layout. Look at the example of <a href="action-sheet.html#action-sheet-template">Action Sheet Template</a></td>
+              </tr>
+              <tr>
+                <td>modalActionsToPopoverTemplate</td>
+                <td>string</td>
+                <td></td>
+                <td><a href="template7.html">Template7</a> formatted HTML template for Action Sheet that will be <a href="http:/action-sheet.html#convert-action-sheet-to-popover">converted to Popover</a>. Could be useful if you want to add some custom elements to Popover layout. Look at the example of <a href="action-sheet.html#action-sheet-to-popover-template">Action Sheet To Popover Template</a></td>
               </tr>
               <tr>
                 <td>modalUsernamePlaceholder</td>

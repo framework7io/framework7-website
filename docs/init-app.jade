@@ -82,6 +82,21 @@ block content
             td 'a, button, label, span'
             td CSS selector of elements where <code>activeState</code> will add appropriate active class
           tr
+            td tapHold
+            td boolean
+            td false
+            td Set to <b>true</b> to enable tap hold events
+          tr
+            td tapHoldDelay
+            td number
+            td 750
+            td Determines how long (in ms) the user must hold their tap before the taphold event is fired on the target element
+          tr
+            td tapHoldPreventClicks
+            td boolean
+            td true
+            td When enabled (by default), then click event will not be fired after tap hold event
+          tr
             th(colspan="4") Navigation / Router
           tr
             td router
@@ -305,6 +320,12 @@ block content
             td string
             td undefined
             td <a href="template7.html">Template7</a> formatted HTML template for Action Sheet. Could be useful if you want to add some custom elements to Action Sheet layout. Look at the example of <a href="action-sheet.html#action-sheet-template">Action Sheet Template</a>
+          
+          tr
+            td modalActionsToPopoverTemplate
+            td string
+            td 
+            td <a href="template7.html">Template7</a> formatted HTML template for Action Sheet that will be <a href="http:/action-sheet.html#convert-action-sheet-to-popover">converted to Popover</a>. Could be useful if you want to add some custom elements to Popover layout. Look at the example of <a href="action-sheet.html#action-sheet-to-popover-template">Action Sheet To Popover Template</a>
           tr
             td modalUsernamePlaceholder
             td string

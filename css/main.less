@@ -234,8 +234,6 @@ code {
 }
 // Header
 header {
-        
-
     background: @dark;
     background: -moz-radial-gradient(0% 0%, circle cover, @light 0%, @dark 50%);
     background: -webkit-gradient(radial, 0% 0%, 0px, center center, 100%, color-stop(0%, @light), color-stop(50%,@dark));
@@ -551,6 +549,14 @@ header {
 }
 .centered {
     text-align: center;
+}
+
+// Grid
+.row {
+    .flexbox();
+    .col-50 {
+        width: 50%;
+    }
 }
 
 // Github buttons
@@ -1045,7 +1051,8 @@ ul.method-parameters {
 }
 .method-returns {
     list-style: none;
-    font-style: italic;
+    // font-style: italic;
+    font-weight: 500;
 }
 table.methods-table {
     line-height: 1.4;

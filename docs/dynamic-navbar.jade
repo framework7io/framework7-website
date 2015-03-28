@@ -100,6 +100,7 @@ block content
       .full-width.stop-scroll-device
         h3 Animate back-link icon
         p If you use default back-links (icon + "Back" word) you can enable additional animation for these links to have more iOS 7 look. To make it work you need to add <code>animateNavBackIcon: true</code> parameter on <a href="init-app.html">App initialization</a> and to have link with "back" class and icon in Left Navbar part. Nothing different in layout, here is example:
+        h3 Demos
         .row
           .col-50 
             h4 Usual Sliding
@@ -110,3 +111,47 @@ block content
             .docs-demo-device.docs-inline-device
               iframe(width="320", height="548", frameborder="0", scrolling="on", src="../docs-demos/dynamic-navbar-backlink.html")
           .clearfix
+        .device-spacer(style="height:50px")
+        h2 Dynamic Navbar Events
+        p Dynamic navbar has the following events:
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td navbarBeforeInit
+              td Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span>
+              td Event will be triggered when Framework7 just inserts new navbar inner to DOM
+            tr
+              td navbarInit
+              td Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span>
+              td Event will be triggered after Framework7 initialize navbar
+            tr
+              td navbarReinit
+              td Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span>
+              td This event will be triggered when cached navbar inner becomes visible. It is only applicaple for Inline Pages (DOM cached pages)
+            tr
+              td navbarBeforeRemove
+              td Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span>
+              td Event will be triggered right before navbar inner will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+        p Each event data containes useful information with <code>navbar</code> elements and <a href="pages.html#page-data">Page Data</a> of related page. For example
+        pre
+          code.js
+            | $$(document).on('navbarInit', function (e) {
+            |   var navbar = e.detail.navbar;
+            |   var page = e.detail.page
+            | });
+        p Now, in the example above we have initialized Navbar elements in <code>navbar</code> variable and related  Page Data in <code>page</code> variable. Lets look on properties of <code>navbar</code> object:
+        table.methods-table
+          tbody
+            tr
+              th(colspan="2") Navbar Properties
+            tr
+              td navbar.navbarContainer
+              td Link to parent Navbar <span class="parameter-type">HTMLElement</span>
+            tr
+              td navbar.navbarInnerContainer
+              td Link to target Navbar Inner <span class="parameter-type">HTMLElement</span>

@@ -63,7 +63,7 @@
         <div class="docs-nav">
           <ul>
             <li class="title">Core</li>
-            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="dom.html">Dom7 - Custom DOM Library</a></li>
             <li><a href="app-layout.html">App HTML Layout</a></li>
             <li><a href="rtl-layout.html">RTL Layout</a></li>
             <li><a href="init-app.html">Initialize App / App parameters</a></li>
@@ -146,8 +146,10 @@
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
-            <li class="title">Utilities</li>
+            <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
@@ -211,6 +213,12 @@
                   <td>boolean</td>
                   <td>true</td>
                   <td>Optional. If "true" then it will be title instead of button</td>
+                </tr>
+                <tr>
+                  <td>disabled</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Optional. Set to "true" if you want to make button disabled</td>
                 </tr>
                 <tr>
                   <td>onClick</td>
@@ -453,6 +461,26 @@ $$('.something').on('click', function (e) {
     &lt;/div&gt;
   {{/each}}
 &lt;/div&gt;            </code></pre>
+            <h2>Action Sheet To Popover Template</h2>
+            <p>If you use convertation of Action Sheet to Popover, then you may customize Popover template by passing <code>modalActionsToPopoverTemplate</code> parameter on <a href="init-app.html">App initialization</a>. This parameter accepts <a href="template7.html">Template7</a> formatted HTML string that will be compiled by Template7 with passed <code>groups</code> context. </p>
+            <p>Here is the default template:</p>
+            <pre><code>&lt;div class="popover actions-popover"&gt;
+  &lt;div class="popover-inner"&gt;
+    {{#each this}}
+    &lt;div class="list-block"&gt;
+      &lt;ul&gt;
+        {{#each this}}
+        {{#if label}}
+        &lt;li class="actions-popover-label {{#if color}}color-{{color}}{{/if}} {{#if bold}}actions-popover-bold{{/if}}"&gt;{{text}}&lt;/li&gt;
+        {{else}}
+        &lt;li&gt;&lt;a href="#" class="item-link list-button {{#if color}}color-{{color}}{{/if}} {{#if bg}}bg-{{bg}}{{/if}} {{#if bold}}actions-popover-bold{{/if}} {{#if disabled}}disabled{{/if}}"&gt;{{text}}&lt;/a&gt;&lt;/li&gt;
+        {{/if}}
+        {{/each}}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    {{/each}}
+  &lt;/div&gt;
+&lt;/div&gt;                       </code></pre>
           </div>
         </div>
       </div>

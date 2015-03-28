@@ -63,7 +63,7 @@
         <div class="docs-nav">
           <ul>
             <li class="title">Core</li>
-            <li><a href="dom.html">Custom DOM Library</a></li>
+            <li><a href="dom.html">Dom7 - Custom DOM Library</a></li>
             <li><a href="app-layout.html">App HTML Layout</a></li>
             <li><a href="rtl-layout.html">RTL Layout</a></li>
             <li><a href="init-app.html">Initialize App / App parameters</a></li>
@@ -146,8 +146,10 @@
             <li><a href="template7.html">Getting Started</a></li>
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
-            <li class="title">Utilities</li>
+            <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
+            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
@@ -271,7 +273,7 @@
               <tr>
                 <td>myApp.sizeNavbars(<span>viewContainer</span>)</td>
                 <td>
-                  <p><code>viewContainer</code> - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLEelement</span>. URL of page to load</p>
+                  <p><code>viewContainer</code> - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. URL of page to load</p>
                   <p>Call this method to recalculate positional styles for Navbar in selected View. For example: <b>myApp.sizeNavbars('.view-main')</b></p>
                   <p>It could be useful after you change some of Navbar elements dynamically.</p>
                 </td>
@@ -310,7 +312,11 @@ $('.show-navbar').on('click', function () {
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
-          <div style="height:100px" class="device-spacer"></div>
+          <div style="height:150px" class="device-spacer"></div>
+          <div class="full-width stop-scroll-device">
+            <h2>Dynamic Navbar Events</h2>
+            <p>If you use <a href="dynamic-navbar.html">Dynamic Navbar</a> in your app then it will also have useful <a href="dynamic-navbar.html#dynamic-navbar-events">special events</a>.</p>
+          </div>
         </div>
       </div>
     </div>
