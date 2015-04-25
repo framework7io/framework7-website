@@ -1150,18 +1150,37 @@ ul.tutorials {
         font-size: 27px;
         font-weight: 300;
         span.video {
-            font-size: 13px;
             margin-left: 5px;
-            padding: 2px 5px;
-            background:darken(@dark,10%);    
+            background:darken(@dark,10%);
+            width: 20px;
+            height: 20px;
+            border-radius: 100%;
             color:#fff;
             font-weight: normal;
             display: inline-block;
             vertical-align: middle;
+            position: relative;
+            &:after {
+                content: '';
+                width: 0;
+                height: 0;
+                position: absolute;
+                border-top: 4px solid transparent;
+                border-bottom: 4px solid transparent;
+                border-left: 6px solid #fff;
+                position: absolute;
+                left: 50%;
+                margin-left: -3px;
+                margin-top: -4px;
+                top: 50%;
+            }
         }
     }
 }
-.tutorial-author {
+.tutorial-meta {
+    .tutorial-date {
+        color: #777;
+    }
     a {
         color:darken(@dark,10%);
         text-decoration: none;

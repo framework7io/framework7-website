@@ -24,11 +24,6 @@ html
             .links-label Project:
             .links
               a(href="https://github.com/nolimits4web/Framework7", target="_blank") Download
-              
-              - if (activeLink == 'plugins')
-                a(href="../plugins/").active Plugins
-              - else
-                a(href="../plugins/") Plugins
 
               - if (activeLink == 'contribute')
                 a(href="../contribute/").active Contribute
@@ -67,6 +62,11 @@ html
                 a(href="../examples/").active Examples
               - else
                 a(href="../examples/") Examples
+                
+              - if (activeLink == 'plugins')
+                a(href="../plugins/").active Plugins
+              - else
+                a(href="../plugins/") Plugins
 
               - if (activeLink == 'apps')
                 a(href="../apps/").active Demo Apps

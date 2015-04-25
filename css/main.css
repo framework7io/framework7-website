@@ -454,7 +454,7 @@ header .small-links a:hover {
 .home-featured {
   background: #f3f3f3;
   text-align: center;
-  padding: 40px 30px 40px;
+  padding: 40px 0px 40px;
   margin-top: 0;
   position: relative;
   -webkit-box-sizing: border-box;
@@ -466,6 +466,13 @@ header .small-links a:hover {
   border-bottom: 1px solid #eee;
   margin-top: -50px;
   margin-bottom: -50px;
+}
+@media (max-width: 960px) {
+  .home-featured {
+    width: 960px;
+    margin-left: -40px;
+    left: 0;
+  }
 }
 .home-featured h2 {
   font-size: 35px;
@@ -1463,20 +1470,38 @@ ul.tutorials .tutorial-title {
   font-weight: 300;
 }
 ul.tutorials .tutorial-title span.video {
-  font-size: 13px;
   margin-left: 5px;
-  padding: 2px 5px;
   background: #8c2418;
+  width: 20px;
+  height: 20px;
+  border-radius: 100%;
   color: #fff;
   font-weight: normal;
   display: inline-block;
   vertical-align: middle;
+  position: relative;
 }
-.tutorial-author a {
+ul.tutorials .tutorial-title span.video:after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid #fff;
+  position: absolute;
+  left: 50%;
+  margin-left: -3px;
+  margin-top: -4px;
+  top: 50%;
+}
+.tutorial-meta .tutorial-date {
+  color: #777;
+}
+.tutorial-meta a {
   color: #8c2418;
   text-decoration: none;
 }
-.tutorial-author a:hover {
+.tutorial-meta a:hover {
   text-decoration: underline;
 }
 a.donate-button {
