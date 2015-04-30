@@ -361,6 +361,12 @@
                 <td>If false then it will inherit View's animatePages parameter. If true, then push state navigation will happen without animation (page transitions)</td>
               </tr>
               <tr>
+                <td>pushStatePreventOnLoad</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>If enabled, the first pop state event on app load will be ignored, as it can casue issues that load unnecessary. But useful to disable when you init app using async loaders like Require.js</td>
+              </tr>
+              <tr>
                 <th colspan="4">Swipe back</th>
               </tr>
               <tr>
@@ -612,25 +618,31 @@
                 <td>hideNavbarOnPageScroll</td>
                 <td>boolean</td>
                 <td>false</td>
-                <td>Set to true and Navbar will be hidden automatically on page scroll down, and became visible on scroll up</td>
+                <td>Set to true and Navbar will be hidden automatically on page scroll down, and become visible on scroll up</td>
               </tr>
               <tr>
                 <td>hideToolbarOnPageScroll</td>
                 <td>boolean</td>
                 <td>false</td>
-                <td>Set to true and Toolbar will be hidden automatically on page scroll down, and became visible on scroll up</td>
+                <td>Set to true and Toolbar will be hidden automatically on page scroll down, and become visible on scroll up</td>
               </tr>
               <tr>
                 <td>hideTabbarOnPageScroll</td>
                 <td>boolean</td>
                 <td>false</td>
-                <td>Set to true and Tab bar will be hidden automatically on page scroll down, and became visible on scroll up. Note that this is only for Tab Bar app layout, otherwise use <code>hideToolbarOnPageScroll</code></td>
+                <td>Set to true and Tab bar will be hidden automatically on page scroll down, and become visible on scroll up. Note that this is only for Tab Bar app layout, otherwise use <code>hideToolbarOnPageScroll</code></td>
               </tr>
               <tr>
                 <td>showBarsOnPageScrollEnd</td>
                 <td>boolean</td>
                 <td>true</td>
                 <td>Set to true to show hidden Navbar and Toolbar when scrolling reaches end of the page</td>
+              </tr>
+              <tr>
+                <td>showBarsOnPageScrollTop</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Set to false and bars will not become visible when you scroll page to top everytime. They will become visible only on the most top scroll position, in the beginning of the page</td>
               </tr>
               <tr>
                 <td>scrollTopOnNavbarClick</td>
@@ -762,31 +774,43 @@
                 <td>onPageBeforeInit</td>
                 <td>function(app, page)</td>
                 <td>-</td>
-                <td>Callback function that will be executed when Framework7 just inserts new page to DOM. Do the same as "pageBeforeInit" <a href="pages.html#page-events">page event</a></td>
+                <td>Callback function that will be executed when Framework7 just inserts new page to DOM. Does the same as "pageBeforeInit" <a href="pages.html#page-events">page event</a></td>
               </tr>
               <tr>
                 <td>onPageInit</td>
                 <td>function(app, page)</td>
                 <td>-</td>
-                <td>Callback function that will be executed when Framework7 initialize required page's components and navbar. Do the same as "pageInit" <a href="pages.html#page-events">page event</a></td>
+                <td>Callback function that will be executed when Framework7 initialize required page's components and navbar. Does the same as "pageInit" <a href="pages.html#page-events">page event</a></td>
               </tr>
               <tr>
                 <td>onPageBeforeAnimation</td>
                 <td>function(app, page)</td>
                 <td>-</td>
-                <td>Callback function that will be executed when everything initialized and page (and navbar) is ready to be animated. Do the same as "pageBeforeAnimation" <a href="pages.html#page-events">page event</a></td>
+                <td>Callback function that will be executed when everything initialized and page (and navbar) is ready to be animated. Does the same as "pageBeforeAnimation" <a href="pages.html#page-events">page event</a></td>
               </tr>
               <tr>
                 <td>onPageAfterAnimation</td>
                 <td>function(app, page)</td>
                 <td>-</td>
-                <td>Callback function that will be executed after page (and navbar) animation. Do the same as "pageAfterAnimation" <a href="pages.html#page-events">page event</a></td>
+                <td>Callback function that will be executed after page (and navbar) animation. Does the same as "pageAfterAnimation" <a href="pages.html#page-events">page event</a></td>
               </tr>
               <tr>
                 <td>onPageBeforeRemove</td>
                 <td>function(app, page)</td>
                 <td>-</td>
-                <td>Callback function that will be executed right before page will be removed from DOM. Do the same as "pageBeforeRemove" <a href="pages.html#page-events">page event</a></td>
+                <td>Callback function that will be executed right before page will be removed from DOM. Does the same as "pageBeforeRemove" <a href="pages.html#page-events">page event</a></td>
+              </tr>
+              <tr>
+                <td>onPageBack</td>
+                <td>function(app, page)</td>
+                <td>-</td>
+                <td>Callback function that will be executed right before "back" transition. Difference with "onPageBeforeAnimation" is that this callback will be executed for the "old" page - page that slides from center to right. Does the same as "pageBack" <a href="pages.html#page-events">page event</a></td>
+              </tr>
+              <tr>
+                <td>onPageAfterBack</td>
+                <td>function(app, page)</td>
+                <td>-</td>
+                <td>Callback function that will be executed right after "back" transition. Difference with "onPageAfterAnimation" is that this callback will be executed for the "old" page - page that slides from center to right. Does the same as "pageAfterBack" <a href="pages.html#page-events">page event</a></td>
               </tr>
               <tr>
                 <th colspan="4">Ajax Callbacks</th>

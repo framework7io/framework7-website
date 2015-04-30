@@ -60,6 +60,10 @@ block content
                 td col-#{className}
                 td tablet-#{className}
                 td #{cols[i]}%
+            tr
+              td col-auto
+              td tablet-auto
+              td Equal width
             
       h2(data-device-preview="../docs-demos/grid.html") Usage example
       p By default grid columns (cells) has no any visual styles, we'll add them for this demo:
@@ -205,6 +209,31 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;          
           | 
+          |   &lt;div class="content-block-title"&gt;COLUMNS WITH EQUAL WIDTH&lt;/div&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;div class="row"&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="row"&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="row"&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="row no-gutter"&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |       &lt;div class="col-auto"&gt;.col-auto&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;          
           |   ...
           | &lt;/body&gt;          
 

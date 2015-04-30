@@ -182,6 +182,26 @@ block content
                 li <code>previousPage</code> - HTMLElement with previous (left) page
                 li <code>activeNavbar</code> - HTMLElement with currently active navbar (only for Dynamic Navbar)
                 li <code>previousNavbar</code> - HTMLElement with previous (left) navbar (only for Dynamic Navbar)
+          tr
+            td onSwipeBackBeforeChange(callbackData)
+            td function
+            td 
+            td Callback function that will be executed right before swipe back animation to previous page when you release it. 
+          tr
+            td onSwipeBackAfterChange(callbackData)
+            td function
+            td 
+            td Callback function that will be executed after swipe back animation to previous page when you release it. 
+          tr
+            td onSwipeBackBeforeReset(callbackData)
+            td function
+            td 
+            td Callback function that will be executed right before swipe back animation to current page when you release it. 
+          tr
+            td onSwipeBackAfterReset(callbackData)
+            td function
+            td 
+            td Callback function that will be executed after swipe back animation to current page when you release it. 
       p Now when we know all required parameters we can initialize our views according to HTML example above:
       pre
         code
@@ -259,9 +279,25 @@ block content
             th Description
         tbody
           tr
-            td swipebackmove
+            td swipeBackMove
             td View Element<span>&lt;div class="view"&gt;</span>
             td Event will be triggered during swipe back move
+          tr
+            td swipeBackBeforeChange
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered right before swipe back animation to previous page when you release it
+          tr
+            td swipeBackAfterChange
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered after swipe back animation to previous page when you release it
+          tr
+            td swipeBackBeforeReset
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered right before swipe back animation to current page when you release it
+          tr
+            td swipeBackAfterReset
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered after swipe back animation to current page when you release it
       h2 Default View URL 
       p If you think that for some reason Framework7 detects wrong default View URL (which is used for navigation history), or if you want to have different default View URL, you can specify it using <code>data-url</code> attribute on View element or using <code>url</code> parameter when you initialze View:
       pre

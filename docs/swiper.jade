@@ -120,6 +120,20 @@ block content
               td false
               td Enabled this option and swiper will be operated as usual except it will not move, real translate values on wrapper will not be set. Useful when you may need to create custom slide transition
             tr
+              td width
+              td number
+              td 
+              td Swiper width (in px). Parameter allows to force Swiper width. Useful <b>only</b> if you initialize Swiper when it is hidden.
+                .important-note Setting this parameter will make Swiper not responsive
+
+            tr
+              td height
+              td number
+              td 
+              td Swiper height (in px). Parameter allows to force Swiper height. Useful <b>only</b> if you initialize Swiper when it is hidden.
+                .important-note Setting this parameter will make Swiper not responsive
+            
+            tr
               th(colspan="4") Autoplay
             tr
               td autoplay
@@ -170,6 +184,11 @@ block content
               td number
               td 1
               td Higher value produces larger momentum bounce effect
+            tr
+              td freeModeSticky
+              td boolean
+              td false
+              td Set to <b>true</b> to enable snap to slides positions in free mode
             tr
               th(colspan="4") Effects
             tr
@@ -234,7 +253,8 @@ block content
               td 1
               td 
                 p Number of slides per view (slides visible at the same time on slider's container).
-                p.important-note If you use it with "auto" value and along with <code>loop: true</code> then you need to specify <code>loopedSlides</code> parameter with amount of slides to loop (duplicate) 
+                p.important-note If you use it with "auto" value and along with <b>loop: true</b> then you need to specify <b>loopedSlides</b> parameter with amount of slides to loop (duplicate)
+                p.important-note <b>slidesPerView: 'auto'</b> is currently not compatible with multirow mode, when <b>slidesPerColumn</b> > 1 
             tr
               td slidesPerColumn
               td number
@@ -480,12 +500,12 @@ block content
             tr
               td lazyLoadingInPrevNext
               td boolean
-              td true
+              td false
               td Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images)
             tr
               td lazyLoadingOnTransitionStart
               td boolean
-              td true
+              td false
               td By default, Swiper will load lazy images after transition to this slide, so you may enable this parameter if you need it to start loading of new image in the beginning of transition
             tr
               th(colspan="4") Loop
@@ -524,12 +544,12 @@ block content
               td observer
               td boolean
               td false
-              td 
+              td Set to <b>true</b> to enable Mutation Observer on Swiper and its elements. In this case Swiper will be updated (reinitialized) each time if you change its style (like hide/show) or modify its child elements (like adding/removing slides)
             tr
               td observeParents
               td boolean
               td false
-              td       
+              td Set to <b>true</b> if you also need to watch Mutations for Swiper parent elements
             tr
               th(colspan="4") Callbacks
             tr
@@ -749,7 +769,9 @@ block content
               td Current progress of wrapper translate (from 0 to 1)
             tr
               td mySwiper.activeIndex
-              td Index number of currently active slide
+              td 
+                p Index number of currently active slide
+                p.important-note Note, that in loop mode active index value will be always shifted on a number of looped/duplicated slides
             tr
               td mySwiper.previousIndex
               td Index number of previously active slide
@@ -906,6 +928,16 @@ block content
             tr
               td mySwiper.off(callback)
               td Remove all handlers for specified callback/event 
+
+            tr
+              td mySwiper.lockSwipeToNext()<br>mySwiper.unlockSwipeToNext()
+              td Disable (lock) / enable (unlock) ability to slide to the next slides
+            tr
+              td mySwiper.lockSwipeToPrev()<br>mySwiper.unlockSwipeToPrev()
+              td Disable (lock) / enable (unlock) ability to slide to the previous slides
+            tr
+              td mySwiper.lockSwipes()<br>mySwiper.unlockSwipes()
+              td Disable (lock) / enable (unlock) ability to change slides
         h2 Parallax
         ul
           li Direct child elements of <code>swiper-container</code>. Parallax effect for such elements will depend on total slider progress. Useful for parallax backgrounds
@@ -938,7 +970,8 @@ block content
         ul
           li <b>number</b> - value in px (as for title, subtitle in example above) to move element depending on progress. In this case such element will be moved on ± this value in px depending on slide position (next or previous)
           li <b>percentage</b> - (as for "parallax-bg") to move element depending on progress and on its size. In this case such element will be moved on ± this percentage of its size (width in horizontal direction, and height in vertical direction) depending on slide position (next or previous). So if element has 400px width and you specified data-swiper-parallax="50%" then it will be moved on ± 200px
-        p It also possible to overwrite parallax direction by using <code>data-swiper-parallax-x</code> and <code>data-swiper-parallax-y</code> attributes with same rules
+        p It is possible to overwrite parallax direction by using <code>data-swiper-parallax-x</code> and <code>data-swiper-parallax-y</code> attributes with same rules.
+        p You can also pass custom transition duration for parallax elements by adding <code>data-swiper-parallax-duration</code> attribute.
 
         h2 Lazy Loading
         p To enable lazy loading, first of all we need special layout for images in slides:

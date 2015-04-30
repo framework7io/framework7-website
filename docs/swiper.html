@@ -262,6 +262,22 @@
                   <td>Enabled this option and swiper will be operated as usual except it will not move, real translate values on wrapper will not be set. Useful when you may need to create custom slide transition</td>
                 </tr>
                 <tr>
+                  <td>width</td>
+                  <td>number</td>
+                  <td></td>
+                  <td>Swiper width (in px). Parameter allows to force Swiper width. Useful <b>only</b> if you initialize Swiper when it is hidden.
+                    <div class="important-note">Setting this parameter will make Swiper not responsive</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>height</td>
+                  <td>number</td>
+                  <td></td>
+                  <td>Swiper height (in px). Parameter allows to force Swiper height. Useful <b>only</b> if you initialize Swiper when it is hidden.
+                    <div class="important-note">Setting this parameter will make Swiper not responsive</div>
+                  </td>
+                </tr>
+                <tr>
                   <th colspan="4">Autoplay</th>
                 </tr>
                 <tr>
@@ -323,6 +339,12 @@
                   <td>number</td>
                   <td>1</td>
                   <td>Higher value produces larger momentum bounce effect</td>
+                </tr>
+                <tr>
+                  <td>freeModeSticky</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to <b>true</b> to enable snap to slides positions in free mode</td>
                 </tr>
                 <tr>
                   <th colspan="4">Effects</th>
@@ -394,7 +416,8 @@
                   <td>1</td>
                   <td>
                     <p>Number of slides per view (slides visible at the same time on slider's container).</p>
-                    <p class="important-note">If you use it with "auto" value and along with <code>loop: true</code> then you need to specify <code>loopedSlides</code> parameter with amount of slides to loop (duplicate) </p>
+                    <p class="important-note">If you use it with "auto" value and along with <b>loop: true</b> then you need to specify <b>loopedSlides</b> parameter with amount of slides to loop (duplicate)</p>
+                    <p class="important-note"><b>slidesPerView: 'auto'</b> is currently not compatible with multirow mode, when <b>slidesPerColumn</b> > 1 </p>
                   </td>
                 </tr>
                 <tr>
@@ -690,13 +713,13 @@
                 <tr>
                   <td>lazyLoadingInPrevNext</td>
                   <td>boolean</td>
-                  <td>true</td>
+                  <td>false</td>
                   <td>Set to "true" to enable lazy loading for the closest slides images (for previous and next slide images)</td>
                 </tr>
                 <tr>
                   <td>lazyLoadingOnTransitionStart</td>
                   <td>boolean</td>
-                  <td>true</td>
+                  <td>false</td>
                   <td>By default, Swiper will load lazy images after transition to this slide, so you may enable this parameter if you need it to start loading of new image in the beginning of transition</td>
                 </tr>
                 <tr>
@@ -745,13 +768,13 @@
                   <td>observer</td>
                   <td>boolean</td>
                   <td>false</td>
-                  <td></td>
+                  <td>Set to <b>true</b> to enable Mutation Observer on Swiper and its elements. In this case Swiper will be updated (reinitialized) each time if you change its style (like hide/show) or modify its child elements (like adding/removing slides)</td>
                 </tr>
                 <tr>
                   <td>observeParents</td>
                   <td>boolean</td>
                   <td>false</td>
-                  <td>      </td>
+                  <td>Set to <b>true</b> if you also need to watch Mutations for Swiper parent elements</td>
                 </tr>
                 <tr>
                   <th colspan="4">Callbacks</th>
@@ -1022,7 +1045,10 @@
                 </tr>
                 <tr>
                   <td>mySwiper.activeIndex</td>
-                  <td>Index number of currently active slide</td>
+                  <td>
+                    <p>Index number of currently active slide</p>
+                    <p class="important-note">Note, that in loop mode active index value will be always shifted on a number of looped/duplicated slides</p>
+                  </td>
                 </tr>
                 <tr>
                   <td>mySwiper.previousIndex</td>
@@ -1193,6 +1219,18 @@ mySwiper.removeSlide([0, 1]); //remove first and second slides</code></pre>
                   <td>mySwiper.off(callback)</td>
                   <td>Remove all handlers for specified callback/event </td>
                 </tr>
+                <tr>
+                  <td>mySwiper.lockSwipeToNext()<br>mySwiper.unlockSwipeToNext()</td>
+                  <td>Disable (lock) / enable (unlock) ability to slide to the next slides</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.lockSwipeToPrev()<br>mySwiper.unlockSwipeToPrev()</td>
+                  <td>Disable (lock) / enable (unlock) ability to slide to the previous slides</td>
+                </tr>
+                <tr>
+                  <td>mySwiper.lockSwipes()<br>mySwiper.unlockSwipes()</td>
+                  <td>Disable (lock) / enable (unlock) ability to change slides</td>
+                </tr>
               </tbody>
             </table>
             <h2>Parallax</h2>
@@ -1227,7 +1265,8 @@ mySwiper.removeSlide([0, 1]); //remove first and second slides</code></pre>
               <li><b>number</b> - value in px (as for title, subtitle in example above) to move element depending on progress. In this case such element will be moved on ± this value in px depending on slide position (next or previous)</li>
               <li><b>percentage</b> - (as for "parallax-bg") to move element depending on progress and on its size. In this case such element will be moved on ± this percentage of its size (width in horizontal direction, and height in vertical direction) depending on slide position (next or previous). So if element has 400px width and you specified data-swiper-parallax="50%" then it will be moved on ± 200px</li>
             </ul>
-            <p>It also possible to overwrite parallax direction by using <code>data-swiper-parallax-x</code> and <code>data-swiper-parallax-y</code> attributes with same rules</p>
+            <p>It is possible to overwrite parallax direction by using <code>data-swiper-parallax-x</code> and <code>data-swiper-parallax-y</code> attributes with same rules.</p>
+            <p>You can also pass custom transition duration for parallax elements by adding <code>data-swiper-parallax-duration</code> attribute.</p>
             <h2>Lazy Loading</h2>
             <p>To enable lazy loading, first of all we need special layout for images in slides:</p>
             <pre><code>&lt;div class="swiper-container"&gt;

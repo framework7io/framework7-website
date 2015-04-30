@@ -345,6 +345,30 @@
                   </ul>
                 </td>
               </tr>
+              <tr>
+                <td>onSwipeBackBeforeChange(callbackData)</td>
+                <td>function</td>
+                <td></td>
+                <td>Callback function that will be executed right before swipe back animation to previous page when you release it. </td>
+              </tr>
+              <tr>
+                <td>onSwipeBackAfterChange(callbackData)</td>
+                <td>function</td>
+                <td></td>
+                <td>Callback function that will be executed after swipe back animation to previous page when you release it. </td>
+              </tr>
+              <tr>
+                <td>onSwipeBackBeforeReset(callbackData)</td>
+                <td>function</td>
+                <td></td>
+                <td>Callback function that will be executed right before swipe back animation to current page when you release it. </td>
+              </tr>
+              <tr>
+                <td>onSwipeBackAfterReset(callbackData)</td>
+                <td>function</td>
+                <td></td>
+                <td>Callback function that will be executed after swipe back animation to current page when you release it. </td>
+              </tr>
             </tbody>
           </table>
           <p>Now when we know all required parameters we can initialize our views according to HTML example above:</p>
@@ -441,9 +465,29 @@ var anotherView = myApp.addView('.another-view');</code></pre>
             </thead>
             <tbody>
               <tr>
-                <td>swipebackmove</td>
+                <td>swipeBackMove</td>
                 <td>View Element<span>&lt;div class="view"&gt;</span></td>
                 <td>Event will be triggered during swipe back move</td>
+              </tr>
+              <tr>
+                <td>swipeBackBeforeChange</td>
+                <td>View Element<span>&lt;div class="view"&gt;</span></td>
+                <td>Event will be triggered right before swipe back animation to previous page when you release it</td>
+              </tr>
+              <tr>
+                <td>swipeBackAfterChange</td>
+                <td>View Element<span>&lt;div class="view"&gt;</span></td>
+                <td>Event will be triggered after swipe back animation to previous page when you release it</td>
+              </tr>
+              <tr>
+                <td>swipeBackBeforeReset</td>
+                <td>View Element<span>&lt;div class="view"&gt;</span></td>
+                <td>Event will be triggered right before swipe back animation to current page when you release it</td>
+              </tr>
+              <tr>
+                <td>swipeBackAfterReset</td>
+                <td>View Element<span>&lt;div class="view"&gt;</span></td>
+                <td>Event will be triggered after swipe back animation to current page when you release it</td>
               </tr>
             </tbody>
           </table>
