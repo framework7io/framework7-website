@@ -679,6 +679,9 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
+          <div class="important-note">
+            <p>Nore that in <b>js</b> and in <b>js_compare</b> helper you may need to use <code><b>this.</b>variableName</code> instead of just <code>variableName</code></p>
+          </div>
           <h2>Using Custom Helpers</h2>
           <p>Template7 allows to register custom helpers with the following method:</p>
           <div class="method-wrap">
@@ -840,7 +843,7 @@ var html = compiledTemplate(context);</code></pre>
         &lt;ul&gt;
             {{#each hobby}}
                 &lt;li&gt;{{this}}&lt;/li&gt;
-            {{../each}}
+            {{/each}}
         &lt;/ul&gt;
     {{/if}}
 {{/each}}              </code></pre>

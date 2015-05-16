@@ -278,7 +278,7 @@ block content
               pre
                 code
                   | {
-                  |   name: 'John Doen',
+                  |   name: 'John Doe',
                   |   hobby: false
                   | }
             td
@@ -326,7 +326,7 @@ block content
               pre
                 code
                   | {
-                  |   name: 'John Doen',
+                  |   name: 'John Doe',
                   |   hobby: false
                   | }
             td
@@ -480,7 +480,7 @@ block content
             td
               pre
                 code
-                  | &lt;h3&gt;iPhone&lt;/h3&gt;
+                  | &lt;h3&gt;iPhone 6 Plus&lt;/h3&gt;
                   | &lt;p&gt;Price: $1200&lt;/p&gt;
                   | &lt;p&gt;In stock&lt;/p&gt;
       h4 {{#js_compare "expression"}}...{{/js_compare}}
@@ -511,7 +511,7 @@ block content
             td
               pre
                 code
-                  | &lt;h3&gt;iPhone&lt;/h3&gt;
+                  | &lt;h3&gt;iPhone 6 Plus&lt;/h3&gt;
                   | &lt;p&gt;Price: $1000&lt;/p&gt;
                   | &lt;p&gt;Not in stock&lt;/p&gt;
           tr
@@ -530,6 +530,8 @@ block content
               pre
                 code
                   | &lt;p&gt;A not equal to B&lt;/p&gt;
+      .important-note
+        p Nore that in <b>js</b> and in <b>js_compare</b> helper you may need to use <code><b>this.</b>variableName</code> instead of just <code>variableName</code>
       h2 Using Custom Helpers
       p Template7 allows to register custom helpers with the following method:
       .method-wrap
@@ -709,7 +711,7 @@ block content
           |         &lt;ul&gt;
           |             {{#each hobby}}
           |                 &lt;li&gt;{{this}}&lt;/li&gt;
-          |             {{../each}}
+          |             {{/each}}
           |         &lt;/ul&gt;
           |     {{/if}}
           | {{/each}}              
