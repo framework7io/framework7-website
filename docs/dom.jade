@@ -222,6 +222,27 @@ block content
                   |   console.log('link clicked'); 
                   | });
           tr
+            td .once(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) 
+            td Add event handler function to one or more events to the selected elements that will be executed only once
+              pre
+                code.js
+                  | $$('a').once('click', function (e) { 
+                  |   console.log('clicked'); 
+                  | });
+              pre
+                code.js
+                  | $$('input[type="text"]').once('keyup keydown change', function (e) { 
+                  |   console.log('input value changed'); 
+                  | });
+          tr
+            td .once(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>, <span>useCapture</span>) 
+            td Live/delegated event handler that will be executed only once
+              pre
+                code.js
+                  | $$(document).once('click', 'a', function (e) { 
+                  |   console.log('link clicked'); 
+                  | });
+          tr
             td .off(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) 
             td Remove event handler
               pre

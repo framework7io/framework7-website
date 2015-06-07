@@ -354,6 +354,25 @@ dataset will contain plain object with camelCase keys and with formatted boolean
                 </td>
               </tr>
               <tr>
+                <td>.once(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) </td>
+                <td>Add event handler function to one or more events to the selected elements that will be executed only once
+                  <pre><code class="js">$$('a').once('click', function (e) { 
+  console.log('clicked'); 
+});</code></pre>
+                  <pre><code class="js">$$('input[type="text"]').once('keyup keydown change', function (e) { 
+  console.log('input value changed'); 
+});</code></pre>
+                </td>
+              </tr>
+              <tr>
+                <td>.once(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>, <span>useCapture</span>) </td>
+                <td>Live/delegated event handler that will be executed only once
+                  <pre><code class="js">$$(document).once('click', 'a', function (e) { 
+  console.log('link clicked'); 
+});</code></pre>
+                </td>
+              </tr>
+              <tr>
                 <td>.off(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) </td>
                 <td>Remove event handler
                   <pre><code class="js">function clickHandler(){
