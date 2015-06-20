@@ -296,6 +296,12 @@ $$('img').removeAttr('src');</code></pre>
                 </td>
               </tr>
               <tr>
+                <td>.removeData(<span>key</span>) </td>
+                <td>Remove specified data
+                  <pre><code class="js">$$('a').removeData('user')</code></pre>
+                </td>
+              </tr>
+              <tr>
                 <th colspan="2">Data Set</th>
               </tr>
               <tr>
@@ -379,9 +385,9 @@ dataset will contain plain object with camelCase keys and with formatted boolean
     console.log('clicked');
 }
 // Add event listener
-$('a').on('click', clickHandler);
+$$('a').on('click', clickHandler);
 // Remove event listener
-$('a').off('click', clickHandler);                  </code></pre>
+$$('a').off('click', clickHandler);                  </code></pre>
                 </td>
               </tr>
               <tr>
@@ -391,9 +397,9 @@ $('a').off('click', clickHandler);                  </code></pre>
     console.log('clicked');
 }
 // Add event listener
-$(document).on('click', 'a', clickHandler);
+$$(document).on('click', 'a', clickHandler);
 // Remove event listener
-$(document).off('click', 'a', clickHandler);</code></pre>
+$$(document).off('click', 'a', clickHandler);</code></pre>
                 </td>
               </tr>
               <tr>
@@ -465,19 +471,19 @@ $$('p').show();</code></pre>
               <tr>
                 <td>.css(<span>property</span>) </td>
                 <td>Get value of specified CSS property for the first element:
-                  <pre><code>$$('.content').css('left'); //-> 200px</code></pre>
+                  <pre><code class="js">$$('.content').css('left'); //-> 200px</code></pre>
                 </td>
               </tr>
               <tr>
                 <td>.css(<span>property</span>, <span>value</span>) </td>
                 <td>Set specified CSS property to the matched elements:
-                  <pre><code>$$('.content').css('left', '100px');</code></pre>
+                  <pre><code class="js">$$('.content').css('left', '100px');</code></pre>
                 </td>
               </tr>
               <tr>
                 <td>.css(<span>propertiesObject</span>) </td>
                 <td>Set multiple CSS properties to the matched elements:
-                  <pre><code>$('a').css({
+                  <pre><code class="js">$$('a').css({
     left: '100px',
     top: '200px',
     color: 'red',
@@ -516,8 +522,8 @@ $$('p').show();</code></pre>
               <tr>
                 <td>.add(elements) </td>
                 <td>Create a new Dom7 collection with elements added to the set of matched elements:
-                  <pre><code class="js">var links = $('a');
-var divs = $('div');
+                  <pre><code class="js">var links = $$('a');
+var divs = $$('div');
 links.add('p').addClass('blue');
 links.add(divs).addClass('red');</code></pre>
                 </td>
@@ -613,6 +619,14 @@ links.add(divs).addClass('red');</code></pre>
               <tr>
                 <td>.children(<span>selector</span>) </td>
                 <td>Get the children of each element in the set of matched elements, optionally filtered by a selector</td>
+              </tr>
+              <tr>
+                <td>.filter(<span>callback</span>) </td>
+                <td>Filter collection of elements
+                  <pre><code class="js">var redLinks = $$('a').filter(function(index, el) {
+    return $$(this).hasClass('red');
+})                  </code></pre>
+                </td>
               </tr>
               <tr>
                 <td>.remove() </td>
@@ -1137,9 +1151,26 @@ animId = $.requestAnimationFrame(anim);</code></pre>
             </ul>
             <p class="method-returns">returns plain XHR object</p>
           </div>
-          <pre><code class="js">$$.getJSON('items.json', function (json) {
-  console.log(json);
+          <pre><code class="js">$$.getJSON('items.json', function (data) {
+  console.log(data);
 });</code></pre>
+          <h3>Original Request Parameters</h3>
+          <p>Each of Ajax methods returns plain XHR object, which is also available in callbacks. This default XHR object extended with the following properties:</p>
+          <table class="methods-table">
+            <tbody>
+              <tr>
+                <th colspan="2">Properties</th>
+              </tr>
+              <tr>
+                <td>xhr.requestParameters</td>
+                <td>Object with passed XHR request parameters </td>
+              </tr>
+              <tr>
+                <td>xhr.requestUrl</td>
+                <td>String with request URL</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

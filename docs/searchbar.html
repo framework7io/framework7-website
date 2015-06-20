@@ -282,6 +282,45 @@
                   <td>false</td>
                   <td>Enable to remove/replace diacritics (á, í, ó, etc.) during search</td>
                 </tr>
+                <tr>
+                  <td>hideDividers</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them</td>
+                </tr>
+                <tr>
+                  <td>hideGroups</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>If enabled, then search will consider list view groups hide them if there are no found items inside of these groups</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Callbacks</th>
+                </tr>
+                <tr>
+                  <td>onSearch</td>
+                  <td>function (s)</td>
+                  <td></td>
+                  <td>Callback function will be triggered during search (search field change).</td>
+                </tr>
+                <tr>
+                  <td>onEnable</td>
+                  <td>function (s)</td>
+                  <td></td>
+                  <td>Callback will be triggered when Search Bar becomes active</td>
+                </tr>
+                <tr>
+                  <td>onDisable</td>
+                  <td>function (s)</td>
+                  <td></td>
+                  <td>Callback will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button or on "searchbar-overlay" element</td>
+                </tr>
+                <tr>
+                  <td>onClear</td>
+                  <td>function (s)</td>
+                  <td></td>
+                  <td>Callback will be triggered when user clicks on Search Bar's "clear" element</td>
+                </tr>
               </tbody>
             </table>
             <h2>Searchbar Methods & Properties</h2>
@@ -294,6 +333,10 @@
                 <tr>
                   <td>mySearchbar.params</td>
                   <td>Object with passed initialization parameters </td>
+                </tr>
+                <tr>
+                  <td>mySearchbar.query</td>
+                  <td>Current search query (search input value)</td>
                 </tr>
                 <tr>
                   <td>mySearchbar.searchList</td>

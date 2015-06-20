@@ -241,6 +241,21 @@ var html = compiledTemplate(context);</code></pre>
           <p>Helpers in Template7 are like predefined functions that do something with passed context.</p>
           <h4>{{#each}}...{{else}}...{{/each}}</h4>
           <p><code>{{#each}}</code> is a block expression, that iterates through items of passed Array or through properties of passed Object.</p>
+          <p>The following additional variables are available inside of this helper:</p>
+          <ul>
+            <li>
+              <p><code>@index</code> - index number of the item. For arrays only</p>
+            </li>
+            <li>
+              <p><code>@first</code> - equal to <b>true</b> for the first item in array. For arrays only</p>
+            </li>
+            <li>
+              <p><code>@last</code> - equal to <b>true</b> for the last item in array. For arrays only</p>
+            </li>
+            <li>
+              <p><code>@key</code> - name of current object property. For objects only</p>
+            </li>
+          </ul>
           <table class="template7-examples">
             <thead>
               <tr>
@@ -600,6 +615,35 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
+          <h4>{{escape}}</h4>
+          <p>This plain helper returns escaped HTML string. It escapes only the following characters: <code>&lt; &gt; " &amp;</code></p>
+          <table class="template7-examples">
+            <thead>
+              <tr>
+                <th>Template -></th>
+                <th>Context -></th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <pre><code>&lt;h1&gt;{{title}}&lt;/h1&gt;
+&lt;p&gt;{{escape body}}&lt;/p&gt;</code></pre>
+                </td>
+                <td>
+                  <pre><code>{
+  title: 'Paragraphs',
+  body: 'We need to use &lt;p&gt; tags to add paragraphs in HTML',
+}</code></pre>
+                </td>
+                <td>
+                  <pre><code>&lt;h1&gt;Paragraphs&lt;/h1&gt;
+&lt;p&gt;We need to use &amp;lt;p&amp;gt; tags to add paragraphs in HTML&lt;/p&gt;</code></pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <h4>{{js "expression"}}</h4>
           <p>This inline helper allows to execute some simple JavaScript directly in template to modify/check context on the fly or for some JS calculations</p>
           <table class="template7-examples">
@@ -679,9 +723,7 @@ var html = compiledTemplate(context);</code></pre>
               </tr>
             </tbody>
           </table>
-          <div class="important-note">
-            <p>Nore that in <b>js</b> and in <b>js_compare</b> helper you may need to use <code><b>this.</b>variableName</code> instead of just <code>variableName</code></p>
-          </div>
+          <p class="important-note">Nore that in <b>js</b> and in <b>js_compare</b> helper you may need to use <code><b>this.</b>variableName</code> instead of just <code>variableName</code></p>
           <h2>Using Custom Helpers</h2>
           <p>Template7 allows to register custom helpers with the following method:</p>
           <div class="method-wrap">
@@ -847,6 +889,151 @@ var html = compiledTemplate(context);</code></pre>
         &lt;/ul&gt;
     {{/if}}
 {{/each}}              </code></pre>
+          <h2>Partials</h2>
+          <p>Template7 allows to reuse template using through partials. Partials are normal usual Template7 templates that may be called by other templates.</p>
+          <p>We can register and unregister partials using the following methods:</p>
+          <div class="method-wrap">
+            <p><span class="method">Template7.registerPartial(<span>name</span>, <span>template</span>) </span>- register partial</p>
+            <ul class="method-parameters">
+              <li><span class="parameter">name - </span><span class="parameter-type">string</span> - partial name</li>
+              <li><span class="parameter">helper - </span><span class="parameter-type">string</span> - partial template</li>
+            </ul>
+          </div>
+          <div class="method-wrap">
+            <p><span class="method">Template7.unregisterPartial(<span>name</span>) </span>- unregister partial</p>
+            <ul class="method-parameters">
+              <li><span class="parameter">name - </span><span class="parameter-type">string</span> - partial name</li>
+            </ul>
+          </div>
+          <p>Then we can use our partials using special helper <code>{{&gt; "partialName"}}</code></p>
+          <p><b>Template:</b></p>
+          <pre><code class="hbs">&lt;ul class="users"&gt;
+    {{#each users}}
+    {{&gt; "user"}}
+    {{/each}}
+&lt;/ul&gt;
+&lt;ul class="admins"&gt;
+    {{#each admins}}
+    {{&gt; "user"}}
+    {{/each}}
+&lt;/ul&gt;</code></pre>
+          <p><b>Register partial</b>:</p>
+          <pre><code class="js">Template7.registerPartial('user', '&lt;li&gt;&lt;h2&gt;{{firstName}} {{lastName}}&lt;/h2&gt;&lt;p&gt;{{bio}}&lt;/p&gt;&lt;/li&gt;')</code></pre>
+          <p><b>Apply to the template this context</b>:</p>
+          <pre><code>{
+    users: [
+        {
+            firstName: 'John',
+            lastName: 'Doe',
+            bio: 'Lorem ipsum dolor'
+        },
+        {
+            firstName: 'Jane',
+            lastName: 'Doe',
+            bio: 'Donec sodales euismod augue'
+        }
+    ],
+    admins: [
+        {
+            firstName: 'Mike',
+            lastName: 'Doe',
+            bio: 'Lorem ipsum dolor'
+        },
+        {
+            firstName: 'Kate',
+            lastName: 'Doe',
+            bio: 'Donec sodales euismod augue'
+        }
+    ]
+}</code></pre>
+          <p><b>And we will get the following output:</b></p>
+          <pre><code>        
+&lt;ul class="users"&gt;
+    &lt;li&gt;
+        &lt;h2&gt;John Doe&lt;/h2&gt;
+        &lt;p&gt;Lorem ipsum dolor&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;h2&gt;Jane Doe&lt;/h2&gt;
+        &lt;p&gt;Donec sodales euismod augue&lt;/p&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul class="admins"&gt;
+    &lt;li&gt;
+        &lt;h2&gt;Mike Doe&lt;/h2&gt;
+        &lt;p&gt;Lorem ipsum dolor&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;h2&gt;Kate Doe&lt;/h2&gt;
+        &lt;p&gt;Donec sodales euismod augue&lt;/p&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;    </code></pre>
+          <h2>Recursive Partials </h2>
+          <p>We can even use partials to make recursive templates, like nested comments:</p>
+          <pre><code>// Simple template with just a partial
+var template = '{{&gt; "comments"}}'
+ 
+// Register partial
+Template7.registerPartial(
+    'comments', 
+    '&lt;ul&gt;' + 
+        '{{#each comments}}' +
+            '&lt;li&gt;' +
+            '&lt;h2&gt;{{author}}&lt;/h2&gt;' +
+            '&lt;p&gt;{{text}}&lt;/p&gt;' +
+            '{{#if comments}}{{&gt; "comments"}}{{/if}}' +
+            '&lt;/li&gt;' +
+        '{{/each}}' +
+    '&lt;/ul&gt;'
+);
+ 
+// Compile template 
+var compiledTemplate = Template7.compile(template);
+ 
+// Render template 
+var output = compiledTemplate({
+    comments: [
+        {
+            author: 'John Doe',
+            text: 'Lorem ipsum dolor',
+            comments: [
+                {
+                    author: 'Mike Doe',
+                    text: 'Aliquam erat volutpat'
+                },
+                {
+                    author: 'Kate Doe',
+                    text: 'Donec eget fringilla turpis'
+                }
+            ]
+        },
+        {
+            author: 'Jane Doe',
+            text: 'Donec sodales euismod augue'
+        }
+    ]
+})</code></pre>
+          <p>And the output will be:</p>
+          <pre><code>&lt;ul class="comments"&gt;
+    &lt;li&gt;
+        &lt;h2&gt;John Doe&lt;/h2&gt;
+        &lt;p&gt;Lorem ipsum dolor&lt;/p&gt;
+        &lt;ul class="comments"&gt;
+            &lt;li&gt;
+                &lt;h2&gt;Mike Doe&lt;/h2&gt;
+                &lt;p&gt;Aliquam erat volutpat&lt;/p&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                &lt;h2&gt;Kate Doe&lt;/h2&gt;
+                &lt;p&gt;Donec eget fringilla turpis&lt;/p&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;h2&gt;Jane Doe&lt;/h2&gt;
+        &lt;p&gt;Donec sodales euismod augue&lt;/p&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
           <h2>Performance Tips</h2>
           <p>Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:</p>
           <pre><code>// Initialize app

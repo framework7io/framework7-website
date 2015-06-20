@@ -167,6 +167,12 @@ block content
                 code.js
                   | var id = $$('p').data('id'); //-> 123
           tr
+            td .removeData(<span>key</span>) 
+            td Remove specified data
+              pre
+                code.js
+                  | $$('a').removeData('user')
+          tr
             th(colspan="2") Data Set
           tr
             td .dataset()
@@ -251,9 +257,9 @@ block content
                   |     console.log('clicked');
                   | }
                   | // Add event listener
-                  | $('a').on('click', clickHandler);
+                  | $$('a').on('click', clickHandler);
                   | // Remove event listener
-                  | $('a').off('click', clickHandler);                  
+                  | $$('a').off('click', clickHandler);                  
               
           tr
             td .off(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>, <span>useCapture</span>) 
@@ -264,9 +270,9 @@ block content
                   |     console.log('clicked');
                   | }
                   | // Add event listener
-                  | $(document).on('click', 'a', clickHandler);
+                  | $$(document).on('click', 'a', clickHandler);
                   | // Remove event listener
-                  | $(document).off('click', 'a', clickHandler);
+                  | $$(document).off('click', 'a', clickHandler);
           tr
             td .trigger(<span>eventName</span>, <span>eventData</span>) 
             td Execute all handlers added to the matched elements for the specified event
@@ -333,20 +339,20 @@ block content
             td .css(<span>property</span>) 
             td Get value of specified CSS property for the first element:
               pre
-                code
+                code.js
                   | $$('.content').css('left'); //-> 200px
           tr
             td .css(<span>property</span>, <span>value</span>) 
             td Set specified CSS property to the matched elements:
               pre
-                code
+                code.js
                   | $$('.content').css('left', '100px');
           tr
             td .css(<span>propertiesObject</span>) 
             td Set multiple CSS properties to the matched elements:
               pre
-                code
-                  | $('a').css({
+                code.js
+                  | $$('a').css({
                   |     left: '100px',
                   |     top: '200px',
                   |     color: 'red',
@@ -378,8 +384,8 @@ block content
             td Create a new Dom7 collection with elements added to the set of matched elements:
               pre
                 code.js
-                  | var links = $('a');
-                  | var divs = $('div');
+                  | var links = $$('a');
+                  | var divs = $$('div');
                   | links.add('p').addClass('blue');
                   | links.add(divs).addClass('red');
 
@@ -452,6 +458,15 @@ block content
           tr
             td .children(<span>selector</span>) 
             td Get the children of each element in the set of matched elements, optionally filtered by a selector
+          tr
+            td .filter(<span>callback</span>) 
+            td Filter collection of elements
+              pre
+                code.js
+                  | var redLinks = $$('a').filter(function(index, el) {
+                  |     return $$(this).hasClass('red');
+                  | })                  
+          
           tr
             td .remove() 
             td Remove/detach matched elements from the Dom
@@ -986,10 +1001,19 @@ block content
         p.method-returns returns plain XHR object
       pre
         code.js
-          | $$.getJSON('items.json', function (json) {
-          |   console.log(json);
+          | $$.getJSON('items.json', function (data) {
+          |   console.log(data);
           | });
-      
-
-
+      h3 Original Request Parameters
+      p Each of Ajax methods returns plain XHR object, which is also available in callbacks. This default XHR object extended with the following properties:
+      table.methods-table
+        tbody
+          tr
+            th(colspan="2") Properties
+          tr
+            td xhr.requestParameters
+            td Object with passed XHR request parameters 
+          tr
+            td xhr.requestUrl
+            td String with request URL
           

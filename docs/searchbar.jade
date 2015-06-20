@@ -132,7 +132,38 @@ block content
               td boolean
               td false
               td Enable to remove/replace diacritics (á, í, ó, etc.) during search
-            
+            tr
+              td hideDividers
+              td boolean
+              td true
+              td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
+            tr
+              td hideGroups
+              td boolean
+              td true
+              td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups
+            tr
+              th(colspan="4") Callbacks
+            tr
+              td onSearch
+              td function (s)
+              td 
+              td Callback function will be triggered during search (search field change).
+            tr
+              td onEnable
+              td function (s)
+              td 
+              td Callback will be triggered when Search Bar becomes active
+            tr
+              td onDisable
+              td function (s)
+              td 
+              td Callback will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button or on "searchbar-overlay" element
+            tr
+              td onClear
+              td function (s)
+              td 
+              td Callback will be triggered when user clicks on Search Bar's "clear" element
         h2 Searchbar Methods & Properties
         p After we initialize Searchbar we have its initialized instance in variable (like <code>mySearchbar</code> variable in example above) with helpful methods and properties:
         table.methods-table
@@ -142,6 +173,9 @@ block content
             tr
               td mySearchbar.params
               td Object with passed initialization parameters 
+            tr
+              td mySearchbar.query
+              td Current search query (search input value)
             tr
               td mySearchbar.searchList
               td Dom7 element with search list block.
