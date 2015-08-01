@@ -78,7 +78,7 @@ block content
             td dynamicNavbar
             td boolean
             td false
-            td Set to true to enable Dynamic Navbar in this View
+            td Set to true to enable Dynamic Navbar in this View <span class="ios-only">iOS theme only</span>
           tr
             td url
             td string
@@ -143,7 +143,7 @@ block content
               p Allows to override the same <a href="init-app.html">App callback</a> but for the current View
               p <a href="init-app.html#example-with-preroute">Example</a>
           tr
-            th(colspan="4") Swipe back
+            th(colspan="4") Swipe back (iOS theme only)
           tr
             td swipeBackPage
             td boolean
@@ -170,7 +170,7 @@ block content
             td 
             td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
           tr
-            th(colspan="4") Callbacks
+            th(colspan="4") Callbacks (iOS theme only)
           tr
             td onSwipeBackMove(callbackData)
             td function
@@ -271,6 +271,7 @@ block content
             td Destroy initialized View, detach swipe events, and disable navigation
       
       h2 View Events
+      p.ios-only These events are available only in iOS theme
       table.events-table
         thead
           tr

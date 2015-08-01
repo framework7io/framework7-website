@@ -19,7 +19,10 @@ block content
           | $ bower install framework7
   p In the downloaded/installed package we need files from the <code>dist/</code> folder.
   h3 Basic App layout
-  p Now we need to create our <code>index.html</code> file with our app layout.<br>This will be an app with single view, left panel and dynamic through navbar and through toolbar:
+  p 
+    em In this basic app we will use iOS theme layout. For Android/Material app layout check out <a href="../docs/app-layout.html">App Layout</a> docs section.
+  p Now we need to create our <code>index.html</code> file with our app layout.<br>This will be an iOS app with single view, left panel and dynamic through navbar and through toolbar:
+
   pre
     code
       | &lt;!DOCTYPE html&gt;
@@ -32,8 +35,10 @@ block content
       |     &lt;meta name="apple-mobile-web-app-status-bar-style" content="black"&gt;
       |     &lt;!-- Your app title --&gt;
       |     &lt;title&gt;My App&lt;/title&gt;
-      |     &lt;!-- Path to Framework7 Library CSS--&gt;
-      |     &lt;link rel="stylesheet" href="path/to/framework7.min.css"&gt;
+      |     &lt;!-- Path to Framework7 iOS CSS theme styles--&gt;
+      |     &lt;link rel="stylesheet" href="path/to/framework7.ios.min.css"&gt;
+      |     &lt;!-- Path to Framework7 iOS related color styles --&gt;
+      |     &lt;link rel="stylesheet" href="path/to/framework7.ios.colors.min.css"&gt;
       |     &lt;!-- Path to your custom app styles--&gt;
       |     &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
       |   &lt;/head&gt;
@@ -185,7 +190,7 @@ block content
   h3 Launch App 
   p To launch our App we just need to enter path to <code>index.html</code> file in browser.<br>Because Framework7 uses Ajax for navigation between pages make sure that you have http server running (not required for PhoneGap)!
   h3 What next?
-  p As you see it is really easy to create basic iOS 7 app with Framework7. But hey, this app is pretty simple and you want to learn more? So here are your next steps:
+  p As you see it is really easy to create basic iOS or Android app with Framework7. But hey, this app is pretty simple and you want to learn more? So here are your next steps:
   ul
     li Go to <a href="../docs/">Documentation</a> to more learn about all Framework7 components, layouts, API and how to control every part of your app.
     li Look at available <a href="../tutorials/" target="_blank">Tutorials</a>. Some of them could be very helpful.

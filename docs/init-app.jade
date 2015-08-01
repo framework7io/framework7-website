@@ -33,6 +33,34 @@ block content
             th Description
         tbody
           tr
+            th(colspan="4") Material Theme (Material theme only)
+          tr
+            td material
+            td boolean
+            td false
+            td Set to <b>true</b> to activate Material-specific App JS behavior
+          tr
+            td materialPageLoadDelay
+            td number
+            td 0
+            td Delay (in ms) before animation of loaded page. Can be increased a bit to improve performance
+          tr
+            td materialRipple
+            td boolean
+            td true
+            td Enable/disable Material-specific touch ripple effect
+          tr
+            td materialRippleElements
+            td string
+            td '.ripple, a.link, a.item-link, .button, .modal-button, .tab-link, .label-radio, .label-checkbox, .actions-modal-button, a.searchbar-clear, .floating-button'
+            td CSS selector of elements to apply touch ripple effect on click
+          tr
+            td materialPreloaderSvg
+            td string
+            td '&lt;svg xmlns="http://www.w3.org/2000/svg" height="75" width="75" viewbox="0 0 75 75"&gt;&lt;circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/&gt;&lt;/svg&gt;'
+            td HTML of Material' theme SVG preloader
+          
+          tr
             th(colspan="4") Caching
           tr
             td cache
@@ -69,7 +97,7 @@ block content
           tr
             td fastClicksDistanceThreshold
             td number
-            td 0
+            td 10
             td distance threshold (in px) to prevent short taps. So if tap/move distance is larget than this value then "click" will not be triggered
           tr
             td activeState
@@ -137,7 +165,7 @@ block content
             td animateNavBackIcon
             td boolean
             td false
-            td This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding".
+            td This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding". <span class="ios-only">iOS theme only</span>
           tr 
             td animatePages
             td boolean
@@ -191,7 +219,7 @@ block content
             td If enabled, the first pop state event on app load will be ignored, as it can casue issues that load unnecessary. But useful to disable when you init app using async loaders like Require.js
           
           tr
-            th(colspan="4") Swipe back
+            th(colspan="4") Swipe back (iOS theme only)
           tr
             td swipeBackPage
             td boolean
@@ -273,11 +301,6 @@ block content
             td boolean
             td true
             td Enable/disable ability to close panel by clicking outside of panel (on panel's  overlay)
-          tr
-            td panelsVisibleZIndex
-            td number
-            td 6000
-            td CSS z-index property for panel
           tr
             th(colspan="4") Modals
           tr
@@ -452,17 +475,17 @@ block content
             td notificationTitle
             td string
             td undefined
-            td Default title for all notifications
+            td Default title for all notifications <span class="ios-only">iOS theme only</span>
           tr
             td notificationSubtitle
             td string
             td undefined
-            td Default subtitle for all notifications
+            td Default subtitle for all notifications <span class="ios-only">iOS theme only</span>
           tr
             td notificationMedia
             td string
             td undefined
-            td Default media (icon or image) for all notifications
+            td Default media (icon or image) for all notifications <span class="ios-only">iOS theme only</span>
           tr
             td notificationHold
             td number
@@ -477,9 +500,14 @@ block content
             td notificationCloseIcon
             td boolean
             td true
-            td Set to true if you want to display close icon (button) for notifications by default
+            td Set to true if you want to display close icon (button) for notifications by default <span class="ios-only">iOS theme only</span>
           tr
-            th(colspan="4") Status Bar
+            td notificationCloseButtonText
+            td string
+            td 'Close'
+            td Default text for Snackbars' close button <span class="material-only">Material theme only</span>
+          tr
+            th(colspan="4") Status Bar (iOS theme only)
           tr
             td statusbarOverlay
             td boolean

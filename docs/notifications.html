@@ -117,6 +117,7 @@
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
             <li><a href="cards.html">Cards</a></li>
             <li><a href="buttons.html">Buttons</a></li>
+            <li><a href="floating-action-button.html">Floating Action Button</a></li>
             <li>Forms
               <ul>
                 <li><a href="form-elements.html">Form Elements</a></li>
@@ -149,12 +150,13 @@
             <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li> <a href="touch-ripple.html">Touch Ripple (Material)</a></li>
             <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build  </a></li>
-          </ul>
+          </ul><a href="#" class="toggle-docs-nav"><span></span></a>
         </div>
         <div class="docs-content with-device">
           <div class="full-width">
@@ -190,19 +192,19 @@
                   <td>title</td>
                   <td>string</td>
                   <td></td>
-                  <td>Notification title. By default, equal to the <code>notificationTitle</code> App's parameter - undefined. </td>
+                  <td>Notification title. By default, equal to the <code>notificationTitle</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span></td>
                 </tr>
                 <tr>
                   <td>subtitle</td>
                   <td>string</td>
                   <td></td>
-                  <td>Notification subtitle. By default, equal to the <code>notificationSubtitle</code> App's parameter - undefined. </td>
+                  <td>Notification subtitle. By default, equal to the <code>notificationSubtitle</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span></td>
                 </tr>
                 <tr>
                   <td>media</td>
                   <td>string</td>
                   <td></td>
-                  <td>Notification media element - HTML string with icon or image. By default, equal to the <code>notificationMedia</code> App's parameter - undefined. </td>
+                  <td>Notification media element - HTML string with icon or image. By default, equal to the <code>notificationMedia</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span></td>
                 </tr>
                 <tr>
                   <td>hold</td>
@@ -214,7 +216,26 @@
                   <td>closeIcon</td>
                   <td>boolean</td>
                   <td>true</td>
-                  <td>Disable to remove Close icon/button from notification. By default, equal to the <code>notificationCloseIcon</code> App's parameter - true. </td>
+                  <td>Disable to remove Close icon/button from notification. By default, equal to the <code>notificationCloseIcon</code> App's parameter - true. <span class="ios-only">iOS theme only</span></td>
+                </tr>
+                <tr>
+                  <td>button</td>
+                  <td>object</td>
+                  <td></td>
+                  <td>Material notification button. Accepts 3 properties:
+                    <pre><code class="js">{
+  text: 'close',
+  color: 'blue',
+  close: true
+}</code></pre>
+                    <p>Where</p>
+                    <ul>
+                      <li><code>text</code> - button text. By default equal to <code>notificationCloseButtonText</code> App's parameter</li>
+                      <li><code>color</code> - button color</li>
+                      <li><code>close</code> - close notification on button click</li>
+                    </ul>
+                    <p><span class="material-only">Material theme only</span></p>
+                  </td>
                 </tr>
                 <tr>
                   <td>closeOnClick</td>
@@ -299,7 +320,7 @@
   &lt;/div&gt;    
 &lt;/body&gt;  </code></pre>
           </div>
-          <h2 data-device-preview="../docs-demos/notifications.html">Example</h2>
+          <h2 data-device-preview="../docs-demos/notifications.html">Example iOS</h2>
           <pre><code>&lt;div class="page-content"&gt;
   &lt;div class="content-block"&gt;
     &lt;p&gt;&lt;a href="#" class="button notification-default"&gt;Default notification&lt;/a&gt;&lt;/p&gt;
@@ -345,7 +366,46 @@ $$('.notification-callback').on('click', function () {
             myApp.alert('Notification closed');
         }
     });
-});                 </code></pre>
+});</code></pre>
+          <h2 data-device-preview="../docs-demos/notifications-material.html">Example Material</h2>
+          <pre><code>var myApp = new Framework7({
+  material: true
+}); 
+var mainView = myApp.addView('.view-main');
+ 
+var $$ = Dom7;
+ 
+$$('.notification-single').on('click', function () {
+    myApp.addNotification({
+        message: 'Simple message'
+    });
+});
+$$('.notification-multi').on('click', function () {
+    myApp.addNotification({
+        message: 'Multi-line message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in magna nisi.',
+    });
+});
+$$('.notification-custom').on('click', function () {
+    myApp.addNotification({
+        message: 'Nice yellow button',
+        button: {
+            text: 'Click me',
+            color: 'yellow'
+        }
+    });
+});
+$$('.notification-callback').on('click', function () {
+    myApp.addNotification({
+        message: 'Close me to see Alert',
+        button: {
+            text: 'Close Me',
+            color: 'lightgreen'
+        },
+        onClose: function () {
+            myApp.alert('Notification closed');
+        }
+    });
+});          </code></pre>
         </div>
       </div>
     </div>

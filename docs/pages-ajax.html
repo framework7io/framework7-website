@@ -113,6 +113,7 @@
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
             <li><a href="cards.html">Cards</a></li>
             <li><a href="buttons.html">Buttons</a></li>
+            <li><a href="floating-action-button.html">Floating Action Button</a></li>
             <li>Forms
               <ul>
                 <li><a href="form-elements.html">Form Elements</a></li>
@@ -145,12 +146,13 @@
             <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li> <a href="touch-ripple.html">Touch Ripple (Material)</a></li>
             <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build  </a></li>
-          </ul>
+          </ul><a href="#" class="toggle-docs-nav"><span></span></a>
         </div>
         <div class="docs-content">
           <h1>Ajax Pages</h1>
@@ -209,6 +211,7 @@
 &lt;/div&gt; </code></pre>
           <p>The main point here is that page for speific View should be wrapped with <code>&lt;div class="view"&gt;</code> with the same classes as in main layout. It will help Framework7 to recognize which page is for which view.</p>
           <h2>Internal file structure with Dynamic Navbar</h2>
+          <p class="ios-only">Such structure is supported only in iOS Theme</p>
           <p>As you may see in <a href="navbar-toolbar-layouts.html">Nabvar & Toolbar layout types</a> dynamic navbar requires through-type layout. But in this layout type navbar is not inside of page. So here is where we need to put it in <code>about.html</code> file:</p>
           <pre><code>&lt;div class="navbar"&gt;
   ... Navbar content goes here
@@ -239,6 +242,7 @@
           </div>
           <p>As you see <code>href</code> attribute is not required for "back" link, but try to keep it there for fallback.</p>
           <h2>Swipe back</h2>
+          <p class="ios-only">This feature is available only in iOS Theme</p>
           <p>If you have enabled "swipeBackPage" <a href="init-app.html">App parameter</a> then you can also go to previous page by swiping from left to right from the left edge of the screen. But sometimes you may need to disable this behavior for some specific pages. In this case you may add additional <b>no-swipeback</b> class:</p>
           <pre><code>&lt;div class="page no-swipeback"&gt;
     ...

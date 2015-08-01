@@ -57,7 +57,7 @@ block content
             p Checkbox (&lt;input type="checkbox"&gt;) must be a first child of "item-content"
           li
             p Checkbox icon must be in "item-media"
-      h2(data-device-preview="../docs-demos/checkboxes-radios-radios.html") Radios group
+      h2(data-device-preview="../docs-demos/checkboxes-radios-radios.html") Radios group iOS
       p Let's look at radio inputs group layout:
         pre
           code
@@ -76,7 +76,6 @@ block content
             |     &lt;!-- Another radio input --&gt;
             |     &lt;li&gt;
             |       &lt;label class="label-radio item-content"&gt;
-            |         &lt;!-- Checked by default --&gt;
             |         &lt;input type="radio" name="my-radio" value="Movies"&gt;
             |         &lt;div class="item-inner"&gt;
             |           &lt;div class="item-title"&gt;Movies&lt;/div&gt;
@@ -92,6 +91,41 @@ block content
             p "item-content" should be a &lt;label&gt; element with additional "label-radio" class.
           li
             p Radio input (&lt;input type="radio"&gt;) must be a first child of "item-content"
+      h2(data-device-preview="../docs-demos/checkboxes-radios-radios-material.html") Radios group Material
+      .important-note
+        p Note that in Material theme you'll have to add additional icon for Radios:
+      pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     &lt;!-- Single radio input --&gt;
+            |     &lt;li&gt;
+            |       &lt;label class="label-radio item-content"&gt;
+            |         &lt;!-- Checked by default --&gt;
+            |         &lt;input type="radio" name="my-radio" value="Books" checked="checked"&gt;
+            |         &lt;div class="item-media"&gt;
+            |           &lt;i class="icon icon-form-radio"&gt;&lt;/i&gt;
+            |         &lt;/div&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Books&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/label&gt;
+            |     &lt;/li&gt;
+            |     &lt;!-- Another radio input --&gt;
+            |     &lt;li&gt;
+            |       &lt;label class="label-radio item-content"&gt;
+            |         &lt;input type="radio" name="my-radio" value="Movies"&gt;
+            |         &lt;div class="item-media"&gt;
+            |           &lt;i class="icon icon-form-radio"&gt;&lt;/i&gt;
+            |         &lt;/div&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Movies&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/label&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;    
       
       h2(data-device-preview="../docs-demos/checkboxes-radios-media.html") With media list view
       p You can use checkboxes and radios groups with media list view:

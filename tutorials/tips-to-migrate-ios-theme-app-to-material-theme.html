@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tips to migrate iOS Theme app to Material Theme | Framework7 Tutorials</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="langs"><span>Language: </span><a href="http://www.idangero.us/framework7/">EN</a><a href="http://framework7.taobao.org">CN</a></div>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/">Docs</a><a href="../tutorials/" class="active">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Examples</a><a href="../plugins/">Plugins</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <h1>Tips to migrate iOS Theme app to Material Theme</h1>
+      <p>With release of Material theme you'll probably want to make Material version of your app for Android devices. </p>
+      <p>In this article we'll look at main difference between these themes to make migration of iOS app to Material theme easier.</p>
+      <h2>Difference</h2>
+      <h3>1. CSS Files</h3>
+      <p>First of all we need to include Material specific CSS files instead of iOS ones:</p>
+      <pre><code>&lt;head&gt;
+    ...
+    &lt;link rel="stylesheet" href="path/to/framework7.material.min.css"&gt;
+    &lt;link rel="stylesheet" href="path/to/framework7.material.colors.min.css"&gt;
+&lt;/head&gt;</code></pre>
+      <h3>2. Enable Material</h3>
+      <p>Then we need to enable Material theme specific JS logic by passing <code>material:true</code> parameter on <a href="../docs/init-app.html">App initialization</a>:</p>
+      <pre><code>var myApp = new Framework7({
+  material: true //enable Material theme
+})      </code></pre>
+      <h3>3. No Swipe Back</h3>
+      <p>Material theme doesn't support Swipe Back gesture. And if your app contains pages or views which are highly related on this feature, you'll have to change it or provide additional "back" button. </p>
+      <p>You don't need to disable this feature in App or View parameters. It will be ignored automatically when Material is enabled on App initialization.</p>
+      <h3>4. No Through-Type Toolbars Layout</h3>
+      <p>Material theme doesn't support <a href="../docs/navbar-toolbar-layouts.html#through-layout">such layout</a> as well as <a href="../docs/dynamic-navbar.html">Dynamic Navbar</a>, so we have to change our pages/toolbars layout to <a href="../docs/navbar-toolbar-layouts.html#fixed-layout">Fixed layout</a>.</p>
+      <p>In iOS Theme, we have:</p>
+      <pre><code>&lt;!-- Main Page View --&gt;
+&lt;div class="view navbar-through"&gt;
+    &lt;div class="navbar"&gt;
+        &lt;div class="navbar-inner"&gt;
+            &lt;div class="center"&gt;Page Title&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;    
+    &lt;div class="pages"&gt;
+        &lt;div class="page"&gt;
+            &lt;div class="page-content"&gt;
+                &lt;!-- Page content here --&gt;        
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+ 
+&lt;!-- Internal Page --&gt;
+&lt;div class="navbar"&gt;
+    &lt;div class="navbar-inner"&gt;
+        &lt;div class="center"&gt;Page Title&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="page"&gt;
+    &lt;div class="page-content"&gt;
+        &lt;!-- Page content here --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;      </code></pre>
+      <p>In Material Theme, we need to <b>put navbar inside of page</b>, so change it to:</p>
+      <pre><code>&lt;!-- Main Page View --&gt;
+&lt;div class="view navbar-fixed"&gt;
+    &lt;div class="pages"&gt;
+        &lt;div class="page"&gt;
+            &lt;div class="navbar"&gt;
+                &lt;div class="navbar-inner"&gt;
+                    &lt;div class="center"&gt;Page Title&lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;    
+            &lt;div class="page-content"&gt;
+                &lt;!-- Page content here --&gt;        
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+ 
+&lt;!-- Internal Page --&gt;
+&lt;div class="page"&gt;
+    &lt;div class="navbar"&gt;
+        &lt;div class="navbar-inner"&gt;
+            &lt;div class="center"&gt;Page Title&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="page-content"&gt;
+        &lt;!-- Page content here --&gt;
+    &lt;/div&gt;
+&lt;/div&gt;      </code></pre>
+      <h3>5. Form Radios</h3>
+      <p>If you use <a href="../docs/checkboxes-radios.html">Checkboxes and radios</a> in your app, pay attention to <a href="../docs/checkboxes-radios.html#radios-group-material">Radios Group Material</a> layout. It is a bit different and uses additional radio icon.</p>
+      <h3>6. Tab Bar Application</h3>
+      <p>If your app is a Tab Bar application layout (where each Tab contains separate View), then you will probably need to reconsider such layout as it is not very popular and not widely used in Material apps.</p>
+      <h2>Maintain Both Themes</h2>
+      <p>As we see there is no much critical difference in these themes layout and it is not hard to convert your iOS app to Material theme app. Also, there is a way to <a href="maintain-both-ios-and-material-themes-in-single-app.html">maintain both iOS and Material themes</a> in single app.</p>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2015 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');     
+    </script>
+  </body>
+</html>

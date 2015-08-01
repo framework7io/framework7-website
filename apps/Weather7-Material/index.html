@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html manifest="manifest.php">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#9c27b0">
+    <title>Weather7</title>
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,300,500,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../../dist/css/framework7.material.min.css">
+    <link rel="stylesheet" href="../../dist/css/framework7.material.colors.min.css">
+    <link rel="stylesheet" href="css/weather7.css">
+    <link rel="icon" href="img/icon.png">
+  </head>
+  <body>
+    <!-- Main views-->
+    <div class="views">
+      <div class="view view-main navbar-fixed">
+        <div class="pages">
+          <div data-page="index" class="page"><a href="#" class="open-popup link floating-button color-blue"><i class="icon icon-plus"></i></a>
+            <div class="navbar theme-purple">
+              <div class="navbar-inner">
+                <div class="center">Weather7</div>
+              </div>
+            </div>
+            <div class="fake-navbar bg-purple"></div>
+            <div class="page-content">
+              <div class="list-block places-list">
+                <ul></ul>
+                <div class="list-block-label"><img src="img/yahoo-logo.png" height="20"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Search popup-->
+    <div class="popup">
+      <div class="view">
+        <div class="pages">
+          <div class="page navbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <form class="searchbar">
+                  <div class="searchbar-input">
+                    <input type="search" placeholder="Search"><a href="#" class="searchbar-clear"></a>
+                    <div class="preloader preloader-white"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="list-block">
+                <ul class="search-results"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Templates-->
+    <script id="search-results-template" type="text/template">
+      {{#each this}}
+      {{#if admin1}}{{#if admin1.content}}
+      <li data-woeid="{{woeid}}" data-city="{{name}}" data-country="{{country.content}}" class="close-popup"><a href="#" class="item-content item-link">
+          <div class="item-inner">
+            <div class="item-title">{{name}} <span>{{admin1.content}}, {{country.content}}</span></div>
+          </div></a></li>{{/if}}{{/if}}
+      {{/each}}
+    </script>
+    <script id="home-items-template" type="text/template">{{#each this}}
+      <li data-woeid="{{woeid}}" class="swipeout">
+        <div class="swipeout-content"><a href="#" data-woeid="{{woeid}}" class="item-content item-link">
+            <div class="item-inner">
+              <div class="item-title">
+                <div class="city">{{city}}</div>
+                <div class="country">{{country}}</div>
+              </div>
+              <div class="item-after">{{condition.temp}}&deg;</div>
+            </div></a></div>
+        <div class="swipeout-actions-right"><a href="#" class="swipeout-delete"><i class="icon icon-delete"></i></a></div>
+      </li>{{else}}
+      <li class="item-content">
+        <div class="item-inner">
+          <div class="item-title">You haven't added any places yet</div>
+        </div>
+      </li>{{/each}}
+    </script>
+    <script id="details-template" type="text/template">
+      <div class="pages navbar-fixed">
+        <div data-page="detail" data-woeid="{{woeid}}" class="page">
+          <div class="navbar theme-purple">
+            <div class="navbar-inner">
+              <div class="left"><a href="index.html" class="back link icon-only"><i class="icon icon-back"></i></a></div>
+              <div class="center">{{city}}</div>
+            </div>
+          </div>
+          <div class="fake-navbar bg-purple"></div>
+          <div class="page-content">
+            <div class="detail-page-header">
+              <div class="detail-page-header-overlay"></div>
+              <div class="detail-temp">{{condition.temp}}&deg;</div>
+              <div class="detail-condition">{{condition.text}}</div>
+            </div>
+            <div class="list-block forecast-list">
+              <ul>{{#each forecast}}
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">
+                      <div class="day">{{dayOfWeek date}}</div>
+                      <div class="date">{{formatedDated date}}</div>
+                    </div>
+                    <div class="item-after"> 
+                      <div class="state">{{text}}</div>
+                      <div class="temps"><span class="high">{{high}}&deg;</span><span class="low">{{low}}&deg;</span></div>
+                    </div>
+                  </div>
+                </li>{{/each}}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="../../dist/js/framework7.min.js"></script>
+    <!-- Path to your app js-->
+    <script type="text/javascript" src="js/weather7.js"></script>
+  </body>
+</html>

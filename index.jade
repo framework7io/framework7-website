@@ -2,7 +2,7 @@ doctype
 html
   head
     meta(charset="utf-8")
-    title Framework7 - Full Featured Mobile HTML Framework For Building iOS Apps
+    title Framework7 - Full Featured Mobile HTML Framework For Building iOS & Android Apps
     meta(property="og:image", content="http://idangero.us/framework7/i/f7-banner.jpg")
     link(rel="stylesheet", href="css/normalize.css")
     link(rel="stylesheet", href="css/main.css")
@@ -14,11 +14,11 @@ html
         .left
           a(href="./").logo
           .title Framework7
-          .slogan Full Featured HTML Framework<br>For Building iOS Apps
+          .slogan Full Featured HTML Framework<br>For Building iOS & Android Apps
           .buttons
-            a(href="https://github.com/nolimits4web/Framework7/archive/v1.0.7.zip") Download
+            a(href="https://github.com/nolimits4web/Framework7/archive/v1.2.0.zip") Download
             a(href="./get-started/") Get Started
-          .release-info MIT Licensed, v1.0.7 released on June 20, 2015 | 
+          .release-info MIT Licensed, v1.2.0 released on July 18, 2015 | 
             a(href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md", target="_blank") Changelog
           .links
             a(href="./docs/") Docs
@@ -30,9 +30,24 @@ html
             | <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
             | <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
         .phone
-          iframe(src="kitchen-sink/", frameborder="0", scrolling="no")
-          a(href="kitchen-sink/", target="_blank").fullscreen Fullscreen preview
+          iframe(src="kitchen-sink-ios/", frameborder="0", scrolling="no")
           .statusbar
+          .theme-switch
+            a(href="kitchen-sink-ios/", target="_blank").active
+              .theme-icon
+                .logo-apple
+                span iOS 
+              .fullscreen
+                i
+                span Fullscreen<br>Preview
+            a(href="kitchen-sink-material/", target="_blank")
+              .theme-icon
+                .logo-android
+                span Material
+              .fullscreen
+                i
+                span Fullscreen<br>Preview
+
     .share-line
       .center 
         .share
@@ -55,10 +70,10 @@ html
     .content.center
       .home-block.home-intro
         h1 Framework7
-        p Framework7 - is a free and open source mobile HTML framework to develop hybrid mobile apps or web apps with iOS native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to.
-        p The main approach of the Framework7 is to give you an opportunity to create iOS apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!
-        p Framework7 is not compatible with all platforms. It is focused only on iOS to bring the best experience and simplicity.
-        p <strong>Framework7 is definitely for you if you decide to build iOS hybrid app (PhoneGap) or web app that looks like and feels as great native iOS apps.</strong>
+        p Framework7 - is a free and open source mobile HTML framework to develop hybrid mobile apps or web apps with iOS & Android native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to.
+        p The main approach of the Framework7 is to give you an opportunity to create iOS & Android apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!
+        p Framework7 is not compatible with all platforms. It is focused only on iOS and Google Material design to bring the best experience and simplicity.
+        p <strong>Framework7 is definitely for you if you decide to build iOS or Android hybrid app (PhoneGap) or web app that looks like and feels as great native iOS and Google Material apps.</strong>
 
       .home-block.home-easy-to-use
         .pic
@@ -68,12 +83,18 @@ html
           p To create iOS apps using Framework7 is so easy as website creation. Try to start and you will be surprised how easy is it. All you need to make it work is a simple HTML layout and attached framework's CSS and JS files! Framework7 doesn't force you to write some custom tags that will be converted by JavaScript to something else. It doesn't force you to write and describe all your content in JavaScript (or JSON). Just plain HTML and you always get exactly the same that you expect to get when you write this HTML.
         .clearfix
       .home-block.home-ios
-        
         .text
           h2 iOS Specific
-          p As said above Framework7 is iOS specific framework. From the very beginning it was carefully thought-out to give you easy ways to realize all incredible features  from all necessary UI elements visualization to complicated animation and touch interactions that characterize the platform. That is why Framework7 is the only solution to realize precisely pixel-perfect iOS native app's interface.
+          p As said above Framework7 is iOS specific framework. From the very beginning it was carefully thought-out to give you easy ways to realize all incredible features from all necessary UI elements visualization to complicated animation and touch interactions that characterize the platform. That is why Framework7 is the only solution to realize precisely pixel-perfect iOS native app's interface.
         .pic
             img(src="i/feats/ios.jpg", alt="")
+        .clearfix
+      .home-block.home-ios
+        .text
+          h2 Material Theme
+          p Framework7 Material theme was designed according to the official Google Material design specification to bring pixel-perfect Material features - from visual design and colors to interactions and effects. And now, Framework7 will be a great solution to create Android apps with native Material look and feel.
+        .pic
+            img(src="i/feats/material.jpg", alt="")
         .clearfix
       .home-block.home-ui
         .text
@@ -125,7 +146,7 @@ html
         .text
           h2 Easy To Customize
           p With Framework7 everything is simple, all styles are divided by parts into small <b>.less</b> files, so you can really easy bring your own custom styles to your app.
-          p Check out Framework7 iOS apps in <a href="showcase/">Showcase</a> section:
+          p Check out Framework7 iOS & Android apps in <a href="showcase/">Showcase</a> section:
         .pic
           img(src="i/showcase/delights1.jpeg")
           img(src="i/showcase/series72.png")
@@ -208,7 +229,7 @@ html
           h2 And It Is Free
           p Framework7 is completely free and open-source (MIT Licensed)
           p
-            a(href="https://github.com/nolimits4web/Framework7/archive/v1.0.7.zip") Download
+            a(href="https://github.com/nolimits4web/Framework7/archive/v1.2.0.zip") Download
             a(href="./get-started/") Get Started With Framework7
             a(href="./docs/") Documentation
             a(href="./contribute/") Contribute

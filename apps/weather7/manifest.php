@@ -7,8 +7,8 @@ $filesToCache = array(
     './img/logo.png', 
     './img/bg.jpg', 
     './img/yahoo-logo.png', 
-    '../../dist/js/framework7.min.js', 
-    '../../dist/css/framework7.min.css'
+    '../../dist/js/framework7.ios.min.js', 
+    '../../dist/css/framework7.ios.colors.min.css'
 );
 ?>
 CACHE MANIFEST

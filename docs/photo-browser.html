@@ -117,6 +117,7 @@
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
             <li><a href="cards.html">Cards</a></li>
             <li><a href="buttons.html">Buttons</a></li>
+            <li><a href="floating-action-button.html">Floating Action Button</a></li>
             <li>Forms
               <ul>
                 <li><a href="form-elements.html">Form Elements</a></li>
@@ -149,12 +150,13 @@
             <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li> <a href="touch-ripple.html">Touch Ripple (Material)</a></li>
             <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build  </a></li>
-          </ul>
+          </ul><a href="#" class="toggle-docs-nav"><span></span></a>
         </div>
         <div class="docs-content with-device">
           <div class="full-width">
@@ -361,12 +363,6 @@ myPhotoBrowser.open(); // open photo browser</code></pre>
                   <td>string</td>
                   <td>*Look below</td>
                   <td>Single object element HTML template</td>
-                </tr>
-                <tr>
-                  <td>captionsTemplate</td>
-                  <td>string</td>
-                  <td>*Look below</td>
-                  <td>Captions container HTML template</td>
                 </tr>
                 <tr>
                   <td>captionTemplate</td>
@@ -695,48 +691,60 @@ $$('.pb-standalone-video').on('click', function () {
             <h2>Photo Browser Templates </h2>
             <p>Let's look at Photo Browser templates which you can pass on Photo Browser initialization</p>
             <h3>Main Photo Browser Template</h3>
-            <p>You can pass this customized HTML template using <code>template</code> parameter. Here is an example template:</p>
-            <pre><code>&lt;div class="photo-browser photo-browser-dark"&gt;
+            <p>You can pass this customized Template7 template using <code>template</code> parameter. Here is an example template:</p>
+            <pre><code class="html">&lt;div class="photo-browser photo-browser-{{theme}}"&gt;
     &lt;div class="view navbar-fixed toolbar-fixed"&gt;
-        {{navbar}}
-        &lt;div data-page="photo-browser-slides" class="page no-toolbar toolbar-fixed navbar-fixed"&gt;
+        {{#unless material}}{{#if navbar}}
+        navbarTemplate
+        {{/if}}{{/unless}}
+        &lt;div class="page no-toolbar {{#unless navbar}}no-navbar{{/unless}} toolbar-fixed navbar-fixed" data-page="photo-browser-slides"&gt;
+            {{#if material}}{{#if navbar}}
+            navbarTemplate
+            {{/if}}{{/if}}
+            {{#if toolbar}}
+            toolbarTemplate
+            {{/if}}
+            &lt;div class="photo-browser-captions photo-browser-captions-{{js "this.captionsTheme || this.theme"}}"&gt;
+                {{#each photos}}{{#if caption}}
+                captionTemplate
+                {{/if}}{{/each}}
+            &lt;/div&gt;
             &lt;div class="photo-browser-swiper-container swiper-container"&gt;
                 &lt;div class="photo-browser-swiper-wrapper swiper-wrapper"&gt;
-                    {{photos}}
+                    {{#each photos}}
+                    {{#js_compare "this.html || ((typeof this === \'string\' || this instanceof String) && (this.indexOf(\'&lt;\') &gt;= 0 || this.indexOf(\'&gt;\') &gt;= 0))"}}
+                        objectTemplate
+                    {{else}}
+                        {{#if @root.lazyLoading}}
+                        photoLazyTemplate
+                        {{else}}
+                        photoTemplate
+                        {{/if}}
+                    {{/js_compare}}
+                    {{/each}}
                 &lt;/div&gt;
             &lt;/div&gt;
-            {{toolbar}}
         &lt;/div&gt;
     &lt;/div&gt;
-&lt;/div&gt; </code></pre>
-            <p>Where</p>
-            <ul>
-              <li>
-                <p><code>{{navbar}}</code> - will be replaced with Navbar template</p>
-              </li>
-              <li>
-                <p><code>{{toolbar}}</code> - will be replaced with Toolbar template</p>
-              </li>
-              <li>
-                <p><code>{{photos}}</code> - will be replaced with single photo template</p>
-              </li>
-            </ul>
+&lt;/div&gt;          </code></pre>
             <h3>Navbar Template</h3>
             <p>Here is an example of Navbar template that you can pass in <code>navbarTemplate</code> parameter:</p>
             <pre><code>&lt;div class="navbar"&gt;
     &lt;div class="navbar-inner"&gt;
         &lt;div class="left sliding"&gt;
-            &lt;a href="#" class="link close-popup photo-browser-close-link"&gt;
-                &lt;i class="icon icon-back"&gt;&lt;/i&gt;
-                &lt;span&gt;Close&lt;/span&gt;
+            &lt;a href="#" class="link close-popup photo-browser-close-link {{#unless backLinkText}}icon-only{{/unless}} {{js "this.type === \'page\' ? \'back\' : \'\'"}}"&gt;
+                &lt;i class="icon icon-back {{iconsColorClass}}"&gt;&lt;/i&gt;
+                {{#if backLinkText}}&lt;span&gt;{{backLinkText}}&lt;/span&gt;{{/if}}
             &lt;/a&gt;
         &lt;/div&gt;
         &lt;div class="center sliding"&gt;
-            &lt;span class="photo-browser-current"&gt;&lt;/span&gt; &lt;span class="photo-browser-of"&gt;of&lt;/span&gt; &lt;span class="photo-browser-total"&gt;&lt;/span&gt;
+            &lt;span class="photo-browser-current"&gt;&lt;/span&gt; 
+            &lt;span class="photo-browser-of"&gt;{{ofText}}&lt;/span&gt; 
+            &lt;span class="photo-browser-total"&gt;&lt;/span&gt;
         &lt;/div&gt;
         &lt;div class="right"&gt;&lt;/div&gt;
     &lt;/div&gt;
-&lt;/div&gt;        </code></pre>
+&lt;/div&gt;  </code></pre>
             <p>Where:</p>
             <ul>
               <li>   
@@ -753,8 +761,12 @@ $$('.pb-standalone-video').on('click', function () {
             <p>Example of Photo Browser's Toolbar template that you can pass in <code>toolbarTemplate</code> parameter:</p>
             <pre><code>&lt;div class="toolbar tabbar"&gt;
     &lt;div class="toolbar-inner"&gt;
-        &lt;a href="#" class="link photo-browser-prev"&gt;&lt;i class="icon icon-prev"&gt;&lt;/i&gt;&lt;/a&gt;
-        &lt;a href="#" class="link photo-browser-next"&gt;&lt;i class="icon icon-next"&gt;&lt;/i&gt;&lt;/a&gt;
+        &lt;a href="#" class="link photo-browser-prev"&gt;
+            &lt;i class="icon icon-prev {{iconsColorClass}}"&gt;&lt;/i&gt;
+        &lt;/a&gt;
+        &lt;a href="#" class="link photo-browser-next"&gt;
+            &lt;i class="icon icon-next {{iconsColorClass}}"&gt;&lt;/i&gt;
+        &lt;/a&gt;
     &lt;/div&gt;
 &lt;/div&gt;</code></pre>
             <p>As you see it is actually tab bar, where:</p>
@@ -769,27 +781,24 @@ $$('.pb-standalone-video').on('click', function () {
             <h3>Photo Element Template</h3>
             <p>Template example of single photo slide element that you can pass in <code>photoTemplate</code> parameter:</p>
             <pre><code>&lt;div class="photo-browser-slide swiper-slide"&gt;
-    &lt;span class="photo-browser-zoom-container"&gt;&lt;img src="{{url}}"&gt;&lt;/span&gt;
-&lt;/div&gt;            </code></pre>
+    &lt;span class="photo-browser-zoom-container"&gt;
+        &lt;img src="{{js "this.url || this"}}"&gt;
+    &lt;/span&gt;
+&lt;/div&gt;</code></pre>
             <h3>Lazy Photo Element Template</h3>
             <p>Template example of single photo slide element that you can pass in <code>photoLazyTemplate</code> parameter:</p>
             <pre><code>&lt;div class="photo-browser-slide photo-browser-slide-lazy swiper-slide"&gt;
-    &lt;div class="preloader"&gt;&lt;/div&gt;
-    &lt;span class="photo-browser-zoom-container"&gt;&lt;img class="swiper-lazy" src="{{url}}"&gt;&lt;/span&gt;
-&lt;/div&gt;            </code></pre>
+    &lt;div class="preloader {{@root.preloaderColorClass}}"&gt;{{#if @root.material}}{{@root.materialPreloaderSvg}}{{/if}}&lt;/div&gt;
+    &lt;span class="photo-browser-zoom-container"&gt;
+        &lt;img data-src="{{js "this.url || this"}}" class="swiper-lazy"&gt;
+    &lt;/span&gt;
+&lt;/div&gt;</code></pre>
             <h3>Object Element Template</h3>
             <p>Template example of single object slide element that you can pass in <code>objectTemplate</code> parameter:</p>
-            <pre><code>&lt;div class="photo-browser-slide photo-browser-object-slide swiper-slide"&gt;
-    {{html}}
-&lt;/div&gt;</code></pre>
-            <h3>Captions Container Template</h3>
-            <p>Template example of element that contains all captions. You can pass in <code>captionsTemplate</code> parameter:</p>
-            <pre><code>&lt;div class="photo-browser-captions photo-browser-captions-dark"&gt;
-    {{captions}}
-&lt;/div&gt;</code></pre>
+            <pre><code>&lt;div class="photo-browser-slide photo-browser-object-slide swiper-slide"&gt;{{js "this.html || this"}}&lt;/div&gt;</code></pre>
             <h3>Single Caption Template</h3>
             <p>Template example of sinble caption element. You can pass in <code>captionTemplate</code> parameter:</p>
-            <pre><code>&lt;div class="photo-browser-caption" data-caption-index="{{captionIndex}}"&gt;
+            <pre><code>&lt;div class="photo-browser-caption" data-caption-index="{{@index}}"&gt;
     {{caption}}
 &lt;/div&gt;</code></pre>
           </div>

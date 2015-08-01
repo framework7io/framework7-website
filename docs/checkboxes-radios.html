@@ -117,6 +117,7 @@
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
             <li><a href="cards.html">Cards</a></li>
             <li><a href="buttons.html">Buttons</a></li>
+            <li><a href="floating-action-button.html">Floating Action Button</a></li>
             <li>Forms
               <ul>
                 <li><a href="form-elements.html">Form Elements</a></li>
@@ -149,12 +150,13 @@
             <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li> <a href="touch-ripple.html">Touch Ripple (Material)</a></li>
             <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build  </a></li>
-          </ul>
+          </ul><a href="#" class="toggle-docs-nav"><span></span></a>
         </div>
         <div class="docs-content with-device">
           <div class="full-width">
@@ -207,7 +209,7 @@
               </li>
             </ul>
           </div>
-          <h2 data-device-preview="../docs-demos/checkboxes-radios-radios.html">Radios group</h2>
+          <h2 data-device-preview="../docs-demos/checkboxes-radios-radios.html">Radios group iOS</h2>
           <p>Let's look at radio inputs group layout:
             <pre><code>&lt;div class="list-block"&gt;
   &lt;ul&gt;
@@ -224,7 +226,6 @@
     &lt;!-- Another radio input --&gt;
     &lt;li&gt;
       &lt;label class="label-radio item-content"&gt;
-        &lt;!-- Checked by default --&gt;
         &lt;input type="radio" name="my-radio" value="Movies"&gt;
         &lt;div class="item-inner"&gt;
           &lt;div class="item-title"&gt;Movies&lt;/div&gt;
@@ -245,6 +246,40 @@
               </li>
             </ul>
           </div>
+          <h2 data-device-preview="../docs-demos/checkboxes-radios-radios-material.html">Radios group Material</h2>
+          <div class="important-note">
+            <p>Note that in Material theme you'll have to add additional icon for Radios:</p>
+          </div>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;!-- Single radio input --&gt;
+    &lt;li&gt;
+      &lt;label class="label-radio item-content"&gt;
+        &lt;!-- Checked by default --&gt;
+        &lt;input type="radio" name="my-radio" value="Books" checked="checked"&gt;
+        &lt;div class="item-media"&gt;
+          &lt;i class="icon icon-form-radio"&gt;&lt;/i&gt;
+        &lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Books&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/label&gt;
+    &lt;/li&gt;
+    &lt;!-- Another radio input --&gt;
+    &lt;li&gt;
+      &lt;label class="label-radio item-content"&gt;
+        &lt;input type="radio" name="my-radio" value="Movies"&gt;
+        &lt;div class="item-media"&gt;
+          &lt;i class="icon icon-form-radio"&gt;&lt;/i&gt;
+        &lt;/div&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Movies&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/label&gt;
+    &lt;/li&gt;
+    ...
+  &lt;/ul&gt;
+&lt;/div&gt;    </code></pre>
           <h2 data-device-preview="../docs-demos/checkboxes-radios-media.html">With media list view</h2>
           <p>You can use checkboxes and radios groups with media list view:</p>
           <pre><code>&lt;div class="content-block-title"&gt;Select Message&lt;/div&gt;

@@ -15,6 +15,18 @@
         });
     }
 
+    $('.theme-switch a').click(function (e) {
+        if ($(this).hasClass('active')) {
+            return;
+        }
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $('header .phone iframe').attr('src', url);
+        $('.theme-switch a').toggleClass('active');
+        $('header .phone').toggleClass('phone-android');
+        $('header .phone .fullscreen').attr('href', url);
+    });
+
     $('.home-killer .tab-links a').click(function (e) {
         e.preventDefault();
         var index = $(this).index();
@@ -58,18 +70,14 @@
         });
     }
 
-    function handleNavScroll() {
-        var ul = $('.docs-nav > ul');
-        var diff = ($(window).scrollTop()) - ($('.docs-nav').offset().top + ul.height() + 40 + 50);
-        var top = 0;
-        if (diff > 0) {
-            top = diff;
-            ul.addClass('collapsed');
-        }
-        else {
-            ul.removeClass('collapsed');
-        }
-        
+    function handleDocsNavToggle() {
+        var st = $(window).scrollTop();
+        var toggle = $('.toggle-docs-nav');
+        var top = $(window).height() / 2 + st - $('.docs-nav').offset().top - 25;
+        if (top < 5) top = 5;
+        toggle.css({
+            transform: 'translateY(' + top + 'px)'
+        });
     }
     if ($('.docs-nav').length > 0) {
         var loc = document.location.href;
@@ -86,7 +94,18 @@
             }
         });
 
-        $(window).on('resize scroll', handleNavScroll);
+        if ($('.toggle-docs-nav').length > 0) {
+            $('.toggle-docs-nav').click(function (e) {
+                e.preventDefault();
+                $('.docs-nav').toggleClass('collapsed');
+                $(this).toggleClass('expand');
+            });
+
+            $(window).on('resize scroll', handleDocsNavToggle);
+            handleDocsNavToggle();
+            $('.toggle-docs-nav').css({opacity:1});
+        }
+            
     }
     // Docs scroll spy
     var demoDevicePreviewLink;
@@ -137,6 +156,7 @@
         });
         $(window).trigger('resize');
     }
+
 
     $('.app-show-shots a').click(function(e) {
         e.preventDefault();

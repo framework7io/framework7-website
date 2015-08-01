@@ -49,17 +49,17 @@ block content
               td title
               td string
               td 
-              td Notification title. By default, equal to the <code>notificationTitle</code> App's parameter - undefined. 
+              td Notification title. By default, equal to the <code>notificationTitle</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span>
             tr
               td subtitle
               td string
               td 
-              td Notification subtitle. By default, equal to the <code>notificationSubtitle</code> App's parameter - undefined. 
+              td Notification subtitle. By default, equal to the <code>notificationSubtitle</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span>
             tr
               td media
               td string
               td 
-              td Notification media element - HTML string with icon or image. By default, equal to the <code>notificationMedia</code> App's parameter - undefined. 
+              td Notification media element - HTML string with icon or image. By default, equal to the <code>notificationMedia</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span>
             tr
               td hold
               td number
@@ -69,7 +69,25 @@ block content
               td closeIcon
               td boolean
               td true
-              td Disable to remove Close icon/button from notification. By default, equal to the <code>notificationCloseIcon</code> App's parameter - true. 
+              td Disable to remove Close icon/button from notification. By default, equal to the <code>notificationCloseIcon</code> App's parameter - true. <span class="ios-only">iOS theme only</span>
+            tr
+              td button
+              td object
+              td 
+              td Material notification button. Accepts 3 properties:
+                pre
+                  code.js
+                    | {
+                    |   text: 'close',
+                    |   color: 'blue',
+                    |   close: true
+                    | }
+                p Where
+                ul
+                  li <code>text</code> - button text. By default equal to <code>notificationCloseButtonText</code> App's parameter
+                  li <code>color</code> - button color
+                  li <code>close</code> - close notification on button click
+                p <span class="material-only">Material theme only</span>
             tr
               td closeOnClick
               td boolean
@@ -151,7 +169,7 @@ block content
             |     &lt;/ul&gt;
             |   &lt;/div&gt;    
             | &lt;/body&gt;  
-      h2(data-device-preview="../docs-demos/notifications.html") Example
+      h2(data-device-preview="../docs-demos/notifications.html") Example iOS
       pre
         code
           | &lt;div class="page-content"&gt;
@@ -201,4 +219,45 @@ block content
           |             myApp.alert('Notification closed');
           |         }
           |     });
-          | });                 
+          | });
+      h2(data-device-preview="../docs-demos/notifications-material.html") Example Material
+      pre
+        code
+          | var myApp = new Framework7({
+          |   material: true
+          | }); 
+          | var mainView = myApp.addView('.view-main');
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.notification-single').on('click', function () {
+          |     myApp.addNotification({
+          |         message: 'Simple message'
+          |     });
+          | });
+          | $$('.notification-multi').on('click', function () {
+          |     myApp.addNotification({
+          |         message: 'Multi-line message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in magna nisi.',
+          |     });
+          | });
+          | $$('.notification-custom').on('click', function () {
+          |     myApp.addNotification({
+          |         message: 'Nice yellow button',
+          |         button: {
+          |             text: 'Click me',
+          |             color: 'yellow'
+          |         }
+          |     });
+          | });
+          | $$('.notification-callback').on('click', function () {
+          |     myApp.addNotification({
+          |         message: 'Close me to see Alert',
+          |         button: {
+          |             text: 'Close Me',
+          |             color: 'lightgreen'
+          |         },
+          |         onClose: function () {
+          |             myApp.alert('Notification closed');
+          |         }
+          |     });
+          | });          

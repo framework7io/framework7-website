@@ -261,21 +261,32 @@ header .left {
   position: relative;
 }
 header .buttons a {
-  display: inline-block;
-  border: 1px solid #fff;
-  line-height: 44px;
-  width: 200px;
-  height: 44px;
-  text-decoration: none;
-  color: #fff;
-  font-size: 17px;
   border-radius: 5px;
-  margin: 0 10px;
+  display: inline-block;
+  height: 27px;
+  line-height: 25px;
+  border: 1px solid #b72f20;
+  text-decoration: none;
+  font-weight: normal;
+  padding: 0 15px;
+  box-sizing: border-box;
+  font-weight: 500;
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
   -webkit-transition: 200ms;
   -moz-transition: 200ms;
   -ms-transition: 200ms;
   -o-transition: 200ms;
   transition: 200ms;
+  border-color: #fff;
+  line-height: 44px;
+  width: 200px;
+  height: 44px;
+  color: #fff;
+  font-size: 17px;
+  margin: 0 10px;
+}
+header .buttons a:hover {
+  background: rgba(183, 47, 32, 0.1);
 }
 header .buttons a:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -286,13 +297,14 @@ header .buttons a:active {
 }
 header .phone {
   position: absolute;
-  width: 377px;
-  height: 796px;
   background: #111;
   border-radius: 55px;
   box-shadow: 0px 0px 0px 2px #aaa;
-  top: -70px;
+  top: -50px;
   right: 40px;
+  width: 320px;
+  height: 568px;
+  padding: 105px 25px;
 }
 header .phone:after {
   content: '';
@@ -318,59 +330,154 @@ header .phone:before {
   top: 50px;
 }
 header .phone .statusbar {
-  content: '';
   position: absolute;
   width: 320px;
   height: 20px;
   background: url(../i/status-bar.png);
   left: 50%;
   margin-left: -160px;
-  top: 118px;
+  top: 100px;
   -webkit-background-size: 100% auto;
   background-size: 100% auto;
 }
 header .phone iframe {
   width: 320px;
   height: 548px;
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+}
+header .phone.phone-android {
+  border-radius: 20px;
+  width: 360px;
+  padding: 60px 20px;
+  height: 640px;
+  margin-top: 9px;
+}
+header .phone.phone-android .theme-switch {
+  margin-top: -9px;
+}
+header .phone.phone-android:before {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
   position: absolute;
   left: 50%;
-  margin-left: -160px;
-  top: 50%;
-  margin-top: -260px;
+  margin-left: -7px;
+  background: #666;
+  top: 25px;
 }
-header .phone .ios8-ready {
-  background: #007aff;
+header .phone.phone-android:after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  left: 50px;
+  background: #444;
+  top: 30px;
+  margin-left: 0;
+}
+header .phone.phone-android iframe {
+  width: 360px;
+  height: 615px;
+  margin-top: 25px;
+}
+header .phone.phone-android .statusbar {
+  width: 360px;
+  height: 25px;
+  background-image: url(../i/status-bar-android.png);
+  margin-left: -180px;
+  top: 60px;
+}
+header .phone .theme-switch {
   position: absolute;
   right: 100%;
+  margin-right: 2px;
+  top: 70px;
   white-space: nowrap;
-  font-weight: 300;
-  font-size: 16px;
-  padding: 3px 7px;
-  border-radius: 5px 0px 0px 5px;
-  top: 150px;
 }
-header .phone .fullscreen {
-  position: absolute;
-  top: 50%;
-  left: 0px;
-  color: #fff;
-  background: #a1291c;
+header .phone .theme-switch a {
+  text-align: center;
+  background: #b72f20;
   text-decoration: none;
-  padding: 0px 15px;
-  border-radius: 5px 5px 0 0;
-  line-height: 40px;
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-  -webkit-transform-origin: left bottom;
-  -moz-transform-origin: left bottom;
-  -ms-transform-origin: left bottom;
-  -o-transform-origin: left bottom;
-  transform-origin: left bottom;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px 0 0 5px;
+  display: block;
+  font-size: 12px;
+  -webkit-transition: 200ms;
+  -moz-transition: 200ms;
+  -ms-transition: 200ms;
+  -o-transition: 200ms;
+  transition: 200ms;
+  opacity: 0.5;
+  background: rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+header .phone .theme-switch a span {
+  display: block;
+}
+header .phone .theme-switch a.active,
+header .phone .theme-switch a:hover {
+  opacity: 1;
+}
+header .phone .theme-switch a + a {
+  margin-top: 10px;
+}
+header .phone .theme-switch a.active:hover .theme-icon {
+  opacity: 0;
+}
+header .phone .theme-switch a.active:hover .fullscreen {
+  opacity: 1;
+}
+header .phone .theme-switch .theme-icon,
+header .phone .theme-switch .fullscreen {
+  -webkit-transition: 100ms;
+  -moz-transition: 100ms;
+  -ms-transition: 100ms;
+  -o-transition: 100ms;
+  transition: 100ms;
+}
+header .phone .theme-switch .fullscreen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 5px 10px;
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0;
+}
+header .phone .theme-switch .fullscreen i {
+  width: 30px;
+  height: 30px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'32'%20height%3D'32'%20viewBox%3D'0%200%2032%2032'%3E%3Cpath%20d%3D'M3.205%2028.795h10.662v-10.664h-10.662v10.664zM4.271%2019.198h8.53v8.531h-8.53v-8.531z'%20fill%3D'%23ffffff'%3E%3C%2Fpath%3E%3Cpath%20d%3D'M23.464%2016h1.066v-8.53h-8.53v1.066h6.762l-7.88%207.88%200.754%200.754%207.828-7.828z'%20fill%3D'%23ffffff'%3E%3C%2Fpath%3E%3Cpath%20d%3D'M3.205%203.205v12.795h1.066v-11.729h23.457v23.457h-11.729v1.066h12.795v-25.59z'%20fill%3D'%23ffffff'%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  background-size: 24px 24px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+header .phone .theme-switch .logo-apple,
+header .phone .theme-switch .logo-android {
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-bottom: 3px;
+}
+header .phone .theme-switch .logo-apple {
+  background-image: url(../i/logo-apple.png);
+}
+header .phone .theme-switch .logo-android {
+  background-image: url(../i/logo-android.png);
 }
 header .release-info {
   font-size: 14px;
@@ -388,21 +495,31 @@ header .links {
   text-align: center;
 }
 header .links a {
-  color: #fff;
+  border-radius: 5px;
   display: inline-block;
-  border: 1px solid #fff;
-  border-right: none;
-  text-decoration: none;
   height: 27px;
-  line-height: 27px;
-  width: 100px;
-  font-size: 13px;
-  width: 84px;
+  line-height: 25px;
+  border: 1px solid #b72f20;
+  text-decoration: none;
+  font-weight: normal;
+  padding: 0 15px;
+  box-sizing: border-box;
+  font-weight: 500;
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
   -webkit-transition: 200ms;
   -moz-transition: 200ms;
   -ms-transition: 200ms;
   -o-transition: 200ms;
   transition: 200ms;
+  color: #fff;
+  border: 1px solid #fff;
+  border-right: none;
+  border-radius: 0;
+  padding: 0;
+  width: 84px;
+}
+header .links a:hover {
+  background: rgba(183, 47, 32, 0.1);
 }
 header .links a:first-child {
   border-radius: 5px 0 0 5px;
@@ -878,6 +995,8 @@ img.lazy {
   background: #8c2418;
   border-top: 1px solid #b72f20;
   padding: 15px 0;
+  box-sizing: border-box;
+  height: 55px;
 }
 .share-line .center {
   padding: 0 40px;
@@ -966,6 +1085,38 @@ footer .links {
   background: #333;
   top: 50px;
 }
+.example .device.device-android {
+  border-radius: 20px;
+  width: 360px;
+  padding: 60px 20px;
+  height: 640px;
+  margin-left: -15px;
+}
+.example .device.device-android:before {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  position: absolute;
+  left: 50%;
+  margin-left: -7px;
+  background: #666;
+  top: 25px;
+}
+.example .device.device-android:after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  left: 50px;
+  background: #444;
+  top: 30px;
+  margin-left: 0;
+}
+.example .device.device-android iframe {
+  width: 360px;
+  height: 640px;
+}
 .example .device-inner {
   width: 100%;
   height: 100%;
@@ -1035,11 +1186,22 @@ footer .links {
   border-radius: 5px;
   display: inline-block;
   height: 27px;
-  line-height: 27px;
+  line-height: 25px;
   border: 1px solid #b72f20;
   text-decoration: none;
   font-weight: normal;
   padding: 0 15px;
+  box-sizing: border-box;
+  font-weight: 500;
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
+  -webkit-transition: 200ms;
+  -moz-transition: 200ms;
+  -ms-transition: 200ms;
+  -o-transition: 200ms;
+  transition: 200ms;
+}
+.example a.button:hover {
+  background: rgba(183, 47, 32, 0.1);
 }
 .example a.button + a.button {
   margin-left: 15px;
@@ -1117,6 +1279,24 @@ footer .links {
   margin-top: -40px;
   margin-bottom: -40px;
   box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.15) inset;
+  -webkit-transition: 400ms;
+  -moz-transition: 400ms;
+  -ms-transition: 400ms;
+  -o-transition: 400ms;
+  transition: 400ms;
+}
+.docs-nav.collapsed {
+  background: #fff;
+  box-shadow: -1px 0px 0px rgba(0, 0, 0, 0.15) inset;
+  margin-left: -220px;
+}
+.docs-nav.collapsed ul {
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+}
+.docs-nav.collapsed + .docs-content {
+  width: 100%;
 }
 .docs-nav:before {
   content: '';
@@ -1136,6 +1316,11 @@ footer .links {
   line-height: 1.3;
   list-style: none;
   font-size: 14px;
+  -webkit-transition: 400ms;
+  -moz-transition: 400ms;
+  -ms-transition: 400ms;
+  -o-transition: 400ms;
+  transition: 400ms;
 }
 .docs-nav ul li {
   margin-left: 10px;
@@ -1181,8 +1366,54 @@ footer .links {
 .docs-nav .inactive .inactive {
   opacity: 1;
 }
+.docs-nav .toggle-docs-nav {
+  position: absolute;
+  top: 0px;
+  right: 0;
+  z-index: 100;
+  background: #000;
+  width: 20px;
+  height: 50px;
+  background: -webkit-linear-gradient(left, #eeeeee, #ffffff);
+  background: linear-gradient(to right, #eeeeee, #ffffff);
+  border-radius: 5px 0 0 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-right: none;
+  opacity: 0;
+}
+.docs-nav .toggle-docs-nav span {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid #b72f20;
+  border-left: 2px solid #b72f20;
+  left: 50%;
+  top: 50%;
+  margin-left: -3px;
+  margin-top: -5px;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  -webkit-transition: 300ms;
+  -moz-transition: 300ms;
+  -ms-transition: 300ms;
+  -o-transition: 300ms;
+  transition: 300ms;
+}
+.docs-nav .toggle-docs-nav.expand span {
+  -webkit-transform: rotate(135deg);
+  -moz-transform: rotate(135deg);
+  -ms-transform: rotate(135deg);
+  -o-transform: rotate(135deg);
+  transform: rotate(135deg);
+  margin-left: -6px;
+}
 .docs-content {
   width: 100%;
+  width: -webkit-calc(100% - 190px);
+  width: calc(100% - 190px);
   -webkit-flex-shrink: 1;
   -ms-flex: 0 1 auto;
   flex-shrink: 1;
@@ -1190,6 +1421,11 @@ footer .links {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   position: relative;
+  -webkit-transition: 400ms;
+  -moz-transition: 400ms;
+  -ms-transition: 400ms;
+  -o-transition: 400ms;
+  transition: 400ms;
 }
 .docs-content.with-device {
   padding-right: 360px;
@@ -1203,6 +1439,51 @@ footer .links {
 .docs-content h2[id],
 .docs-content h3[id] {
   cursor: pointer;
+}
+.ios-only,
+.material-only {
+  background: #eee;
+  padding: 10px 10px;
+  border-radius: 3px;
+  font-weight: bold;
+  margin: 0;
+  line-height: 1;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.ios-only:before,
+.material-only:before {
+  width: 16px;
+  height: 16px;
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  position: relative;
+  top: -2px;
+}
+.ios-only:before {
+  background: url(../i/logo-apple-black.png) no-repeat center;
+  background-size: 100% auto;
+  top: -2px;
+}
+.material-only:before {
+  background: url(../i/logo-android-black.png) no-repeat center;
+  background-size: 100% auto;
+  top: -2px;
+}
+span.ios-only,
+span.material-only {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: normal;
+  padding: 3px 3px;
+}
+span.ios-only:before,
+span.material-only:before {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  top: -1px;
 }
 .docs-demo-device {
   position: absolute;
@@ -1440,9 +1721,10 @@ table.events-table tbody td:first-child {
 }
 .important-note {
   padding: 5px 10px;
-  background: #ffe5e5;
+  background: #fff0f0;
   color: #000;
   border: 1px solid #ffcccc;
+  border-radius: 3px;
 }
 .important-note ul {
   margin: 0;
@@ -1469,6 +1751,7 @@ ul.tutorials .tutorial-title {
   font-size: 27px;
   font-weight: 300;
   line-height: 1.3;
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 ul.tutorials .tutorial-title span.video {
   margin-left: 5px;
@@ -1509,11 +1792,22 @@ a.donate-button {
   border-radius: 5px;
   display: inline-block;
   height: 27px;
-  line-height: 27px;
+  line-height: 25px;
   border: 1px solid #b72f20;
   text-decoration: none;
   font-weight: normal;
   padding: 0 15px;
+  box-sizing: border-box;
+  font-weight: 500;
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
+  -webkit-transition: 200ms;
+  -moz-transition: 200ms;
+  -ms-transition: 200ms;
+  -o-transition: 200ms;
+  transition: 200ms;
+}
+a.donate-button:hover {
+  background: rgba(183, 47, 32, 0.1);
 }
 a.donate-button:hover {
   background: rgba(183, 47, 32, 0.1);
@@ -1560,11 +1854,19 @@ h1 + .tutorial-author {
   border-radius: 5px;
   display: inline-block;
   height: 27px;
-  line-height: 27px;
+  line-height: 25px;
   border: 1px solid #b72f20;
   text-decoration: none;
   font-weight: normal;
   padding: 0 15px;
+  box-sizing: border-box;
+  font-weight: 500;
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
+  -webkit-transition: 200ms;
+  -moz-transition: 200ms;
+  -ms-transition: 200ms;
+  -o-transition: 200ms;
+  transition: 200ms;
   width: 150px;
   padding: 0;
   text-align: center;

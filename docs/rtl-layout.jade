@@ -19,13 +19,14 @@ block content
           |     ...
           |     &lt;title&gt;My App&lt;/title&gt;
           |     &lt;!-- Path to Framework7 Library CSS--&gt;
-          |     &lt;link rel="stylesheet" href="path/to/framework7.min.css"&gt;
+          |     &lt;link rel="stylesheet" href="path/to/framework7.[theme].min.css"&gt;
           |     
           |     &lt;!-- Enable RTL by including additional RTL styles: --&gt;
-          |     &lt;link rel="stylesheet" href="path/to/framework7.rtl.min.css"&gt;
+          |     &lt;link rel="stylesheet" href="path/to/framework7.[theme].rtl.min.css"&gt;
           |     
           |     &lt;!-- Path to your custom app styles--&gt;
           |     &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
           |     ...
+      p Where <b>[theme]</b> is the theme you use: <code>ios</code> or <code>material</code>
       .important-note
         p Note that all RTL "mirrors" in RTL mode are made using CSS only, so you should not change order of HTML elements and keep it in LTR way. 

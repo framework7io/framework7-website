@@ -1,0 +1,61 @@
+extends _layout-material
+block content
+  .views
+    .view.view-main
+      .pages.navbar-fixed
+        .page(data-page="home")
+          .navbar
+            .navbar-inner
+              .center Notifications
+          .page-content
+            .content-block
+              p
+                a(href="#").button.button-raised.notification-single Single-line message
+              p
+                a(href="#").button.button-raised.notification-multi Multi-line message
+              p
+                a(href="#").button.button-raised.notification-custom With custom button
+              p
+                a(href="#").button.button-raised.notification-callback With callback on close
+              
+
+block scripts
+  script.
+    var myApp = new Framework7({
+      material: true
+    }); 
+    var mainView = myApp.addView('.view-main');
+
+    var $$ = Dom7;
+
+    $$('.notification-single').on('click', function () {
+        myApp.addNotification({
+            message: 'Simple message'
+        });
+    });
+    $$('.notification-multi').on('click', function () {
+        myApp.addNotification({
+            message: 'Multi-line message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in magna nisi.',
+        });
+    });
+    $$('.notification-custom').on('click', function () {
+        myApp.addNotification({
+            message: 'Nice yellow button',
+            button: {
+                text: 'Click me',
+                color: 'yellow'
+            }
+        });
+    });
+    $$('.notification-callback').on('click', function () {
+        myApp.addNotification({
+            message: 'Close me to see Alert',
+            button: {
+                text: 'Close Me',
+                color: 'lightgreen'
+            },
+            onClose: function () {
+                myApp.alert('Notification closed');
+            }
+        });
+    });

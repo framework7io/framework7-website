@@ -1,0 +1,80 @@
+extends _layout-material
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+                a(href="#").link.icon-only
+                  i.icon.icon-back
+              .center Color Themes
+              .right 
+                a(href="#").link.icon-only
+                  i.icon.icon-bars
+          a(href="#").floating-button
+              i.icon.icon-plus
+          .page-content
+            .content-block Praesent varius justo odio. Duis in <a href="#">cursus</a> lorem. Suspendisse convallis porta ornare. Vivamus consectetur varius ligula convallis posuere. Proin quis neque eget nisi tempus <a href="#">faucibus</a> at volutpat leo. Suspendisse id erat aliquet, vulputate sem ac, iaculis metus. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+            .content-block
+              p.buttons-row
+                a(href="#").button.active Button 1
+                a(href="#").button Button 2
+                a(href="#").button Button 3
+              p.buttons-row
+                a(href="#").button.button-raised.active Button 1
+                a(href="#").button.button-raised Button 2
+                a(href="#").button.button-raised Button 3
+              p.buttons-row
+                a(href="#").button.button-raised.button-fill.active Button 1
+                a(href="#").button.button-raised.button-fill Button 2
+                a(href="#").button.button-raised.button-fill Button 3
+              
+              p
+                a(href="#").button.button-big.button-raised.button-fill Big Button
+            .content-block-title Choose Color Theme
+            .list-block
+              ul
+                - var colors = ('red pink purple deeppurple indigo blue lightblue cyan teal green lightgreen lime yellow amber orange deeporange brown gray bluegray white black').split(' ');
+                - var colorsNames = ('Red:Pink:Purple:Deep Purple:Indigo:Blue:Light Blue:Cyan:Teal:Green:Light Green:Lime:Yellow:Amber:Orange:Deep Orange:Brown:Gray:Blue Gray:White:Black').split(':');
+                - for (var i = 0; i < colors.length; i++)
+                  li
+                    label.label-radio.item-content
+                      input(type="radio", name="color-radio", value="#{colors[i]}")
+                      .item-inner
+                        .item-title #{colorsNames[i]}
+            .content-block-title Choose Layout Theme
+            .list-block
+              ul
+                li
+                  label.label-radio.item-content
+                    input(type="radio", name="layout-radio", value="", checked=true)
+                    .item-inner
+                      .item-title Default
+                li
+                  label.label-radio.item-content
+                    input(type="radio", name="layout-radio", value="layout-dark")
+                    .item-inner
+                      .item-title Dark
+
+block scripts
+  
+  script.
+    var myApp = new Framework7({
+      material: true
+    });
+    var $$ = Dom7;
+    $$('input[name="color-radio"]').on('change', function () {
+      if (this.checked) {
+        var colors = 'theme-' + 'red pink purple deeppurple indigo blue lightblue cyan teal green lightgreen lime yellow amber orange deeporange brown gray bluegray white black'.split(' ').join(' theme-');
+        $$('.view').removeClass(colors);
+        $$('.view').addClass('theme-' + $$(this).val());
+      }
+    });
+    $$('input[name="layout-radio"]').on('change', function () {
+      if (this.checked) {
+        $$('.view').removeClass('layout-dark layout-white');
+        $$('.view').addClass(this.value);
+      }
+    });

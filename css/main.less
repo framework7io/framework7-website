@@ -75,21 +75,27 @@
     -webkit-align-self: @as;
     align-self: @as;
 }
+.myriad() {
+    font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
+}
 .button() {
     border-radius: 5px;
     display: inline-block;
     height: 27px;
-    line-height: 27px;
+    line-height: 25px;
     border: 1px solid @dark;
     text-decoration: none;
     font-weight: normal;
     padding: 0 15px;
+    box-sizing: border-box;
+    font-weight: 500;
+    .myriad();
+    .transition(200ms);
     &:hover {
         background: rgba(red(@dark),green(@dark),blue(@dark),0.1);
     }
 }
-@light: #eb562e;
-@dark: #b72f20;
+
 .clearfix() {
     &:before,
     &:after {
@@ -133,11 +139,10 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
+@light: #eb562e;
+@dark: #b72f20;
 @import url('fonts.less');
-.myriad() {
-    font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
-}
+
 body {
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 14px;
@@ -282,7 +287,6 @@ header {
         font-weight: 100;
         line-height: 1;
         margin: 25px 0;
-        // .myriad();
 
     }
     .slogan {
@@ -291,7 +295,6 @@ header {
         font-weight: 100;
         line-height: 1.2;
         margin: 25px 0;
-        // .myriad();
     }
     &.inner-header {
         height: auto;
@@ -375,17 +378,14 @@ header {
     }
     .buttons {
         a {
-            display: inline-block;
-            border: 1px solid #fff;
+            .button();
+            border-color:#fff;
             line-height: 44px;
             width: 200px;
             height: 44px;
-            text-decoration: none;
             color:#fff;
             font-size: 17px;
-            border-radius: 5px;
             margin: 0 10px;
-            .transition(200ms);
         }
         a:hover {
             background: rgba(255,255,255,0.1);
@@ -397,13 +397,14 @@ header {
     }
     .phone {
         position: absolute;
-        width: 377px;
-        height: 1592px/2;
         background: #111;
         border-radius: 55px;
         box-shadow: 0px 0px 0px 2px #aaa; 
-        top: -70px;
+        top: -50px;
         right: 40px;
+        width: 320px;
+        height: 568px;
+        padding: 105px 25px;
         &:after {
             content: '';
             position: absolute;
@@ -427,58 +428,154 @@ header {
             background: #333;
             top: 50px;
         }
+        
         .statusbar {
-            content: '';
             position: absolute;
             width: 320px;
             height: 20px;
             background: url(../i/status-bar.png);
             left: 50%;
             margin-left: -160px;
-            top: 118px;
+            top: 100px;
             -webkit-background-size: 100% auto;
             background-size: 100% auto;
         }
         iframe {
             width: 320px;
             height: 548px;
-            position: absolute;
-            left: 50%;
-            margin-left: -160px;
-            top: 50%;
-            margin-top: -260px;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
         }
-        .ios8-ready {
-            background: #007aff;
+        &.phone-android {
+            border-radius: 20px;
+            width: 360px;
+            padding: 60px 20px;
+            height: 640px;
+            margin-top: 9px;
+            .theme-switch {
+                margin-top: -9px;
+            }
+            &:before {
+                  width: 14px;
+                  height: 14px;
+                  border-radius: 50%;
+                  position: absolute;
+                  left: 50%;
+                  margin-left: -7px;
+                  background: #666;
+                  top: 25px;
+            }
+            &:after {
+                content: '';
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                position: absolute;
+                left: 50px;
+                background: #444;
+                top: 30px;
+                margin-left: 0;
+            }
+            iframe {
+                width: 360px;
+                height: 640px - 25;
+                margin-top: 25px;
+
+            }
+            .statusbar {
+                width: 360px;
+                height: 25px;
+                background-image: url(../i/status-bar-android.png);
+                margin-left: -180px;
+                top: 60px;
+            }
+        }
+        .theme-switch {
             position: absolute;
             right: 100%;
+            margin-right: 2px;
+            top: 70px;
             white-space: nowrap;
-            font-weight: 300;
-            font-size: 16px;
-            padding: 3px 7px;
-            border-radius: 5px 0px 0px 5px;
-            top: 150px;
-        }
-        .fullscreen {
-            position: absolute;
-            top: 50%;
-            left: 0px;
-            color:#fff;
-            background: darken(@dark, 5%);
-            text-decoration: none;
-            padding: 0px 15px;
-            border-radius: 5px 5px 0 0;
-            line-height: 40px;
-            .transform(rotate(-90deg));
-            -webkit-transform-origin: left bottom;
-            -moz-transform-origin: left bottom;
-            -ms-transform-origin: left bottom;
-            -o-transform-origin: left bottom;
-            transform-origin: left bottom;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            a {
+                text-align: center;
+                background: @dark;
+                text-decoration: none;
+                color:#fff;
+                padding: 5px 10px;
+                border-radius: 5px 0 0 5px;
+                display: block;
+                font-size: 12px;
+                .transition(200ms);
+                opacity: 0.5;
+                background: rgba(0,0,0,0.5);
+                position: relative;
+                span {
+                    display: block;
+                }
+                &.active, &:hover {
+                    opacity: 1;
+                }
+                + a {
+                    margin-top: 10px;
+                }
+                &.active:hover {
+                    .theme-icon {
+                        opacity: 0;
+                    }
+                    .fullscreen {
+                        opacity: 1;
+                    }
+                }
+            }
+            .theme-icon, .fullscreen {
+                .transition(100ms);
+            }
+            .fullscreen {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                box-sizing: border-box;
+                padding: 5px 10px;
+                font-size: 10px;
+                line-height: 1;
+                opacity: 0;
+                i {
+                    width: 30px;
+                    height: 30px;
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    @svg: "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M3.205 28.795h10.662v-10.664h-10.662v10.664zM4.271 19.198h8.53v8.531h-8.53v-8.531z' fill='#ffffff'></path><path d='M23.464 16h1.066v-8.53h-8.53v1.066h6.762l-7.88 7.88 0.754 0.754 7.828-7.828z' fill='#ffffff'></path><path d='M3.205 3.205v12.795h1.066v-11.729h23.457v23.457h-11.729v1.066h12.795v-25.59z' fill='#ffffff'></path></svg>";
+                    @url: `encodeURIComponent(@{svg})`;
+                    background-image: url("data:image/svg+xml;charset=utf-8,@{url}");
+                    background-size: 24px 24px;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                }
+            }
+            .logo-apple, .logo-android {
+                width: 30px;
+                height: 30px;
+                margin-left: auto;
+                margin-right: auto;
+                background-size: 100% 100%;
+                background-position: center;
+                background-repeat: no-repeat;
+                margin-bottom: 3px;
+            }
+            .logo-apple {
+                background-image: url(../i/logo-apple.png);
+            }
+            .logo-android {
+                background-image: url(../i/logo-android.png);
+            }
         }
     }
+
+        
     .release-info {
         font-size: 14px;
         margin: 20px 0;
@@ -494,17 +591,13 @@ header {
         margin: 20px 0;
         text-align: center;
         a {
+            .button();
             color:#fff;
-            display: inline-block;
             border: 1px solid #fff;
             border-right: none;
-            text-decoration: none;
-            height: 27px;
-            line-height: 27px;
-            width: 100px;
-            font-size: 13px;
+            border-radius: 0;
+            padding: 0;
             width: 84px;
-            .transition(200ms);
         }
         a:first-child {
             border-radius: 5px 0 0 5px;
@@ -577,6 +670,8 @@ header {
     background: darken(@dark, 10%);
     border-top: 1px solid @dark;
     padding: 15px 0;
+    box-sizing: border-box;
+    height: 55px;
     .center {
         padding: 0 40px;
     }
@@ -668,6 +763,38 @@ footer {
             background: #333;
             top: 50px;
         }
+        &.device-android {
+            border-radius: 20px;
+            width: 360px;
+            padding: 60px 20px;
+            height: 640px;
+            margin-left: -15px;
+            &:before {
+                  width: 14px;
+                  height: 14px;
+                  border-radius: 50%;
+                  position: absolute;
+                  left: 50%;
+                  margin-left: -7px;
+                  background: #666;
+                  top: 25px;
+            }
+            &:after {
+                content: '';
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                position: absolute;
+                left: 50px;
+                background: #444;
+                top: 30px;
+                margin-left: 0;
+            }
+            iframe {
+                width: 360px;
+                height: 640px;
+            }
+        }
     }
     .device-inner {
         width: 100%;
@@ -735,14 +862,7 @@ footer {
         margin-bottom: 20px;
     }
     a.button {
-        border-radius: 5px;
-        display: inline-block;
-        height: 27px;
-        line-height: 27px;
-        border: 1px solid @dark;
-        text-decoration: none;
-        font-weight: normal;
-        padding: 0 15px;
+        .button();
         + a.button {
             margin-left: 15px;
         }
@@ -812,6 +932,20 @@ footer {
     margin-top: -40px;
     margin-bottom: -40px;
     box-shadow: -2px 0px 2px rgba(0,0,0,0.15) inset;
+    .transition(400ms);
+    &.collapsed {
+        background: #fff;
+        box-shadow: -1px 0px 0px rgba(0,0,0,0.15) inset;
+        margin-left: -220px;
+        ul {
+            pointer-events: none;
+            visibility: hidden;
+            opacity: 0;
+        }
+        + .docs-content {
+            width: 100%;
+        }
+    }
     &:before {
         content: '';
         position: absolute;
@@ -830,6 +964,7 @@ footer {
         line-height: 1.3;
         list-style: none;
         font-size: 14px;
+        .transition(400ms);
         li {
             margin-left: 10px;
             margin-bottom: 10px;
@@ -875,12 +1010,48 @@ footer {
             opacity: 1;
         }
     }
+    .toggle-docs-nav {
+        position: absolute;
+        top: 0px;
+        right: 0;
+        z-index: 100;
+        background: #000;
+        width: 20px;
+        height: 50px;
+        background: -webkit-linear-gradient(left, #eee, #fff);
+        background: linear-gradient(to right, #eee, #fff);
+        border-radius: 5px 0 0 5px;
+        border: 1px solid rgba(0,0,0,0.2);
+        border-right: none;
+        opacity: 0;
+        span {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid @dark;
+            border-left: 2px solid @dark;
+            left: 50%;
+            top: 50%;
+            margin-left: -3px;
+            margin-top: -5px;
+            .transform(rotate(-45deg));
+            .transition(300ms);
+        }
+        &.expand span{
+            .transform(rotate(135deg));
+            margin-left: -6px;
+        }
+    }
 }
 .docs-content {
     width: 100%;
+    width: ~"-webkit-calc(100% - 190px)";
+    width: ~"calc(100% - 190px)";
     .flex-shrink(1);
     .border-box();
     position: relative;
+    .transition(400ms);
+
     &.with-device {
         padding-right: 360px;
         .device-spacer {
@@ -892,6 +1063,48 @@ footer {
     }
     h2[id], h3[id] {
         cursor: pointer;
+    }
+}
+.ios-only, .material-only {
+    background: #eee;
+    padding: 10px 10px;
+    border-radius: 3px;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1;
+    border: 1px solid rgba(0,0,0,0.1);
+    &:before {
+        width: 16px;
+        height: 16px;
+        content: '';
+       
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 6px;
+        position: relative;
+        top: -2px;
+    }
+}
+.ios-only:before {
+    background: url(../i/logo-apple-black.png) no-repeat center;
+    background-size: 100% auto;
+    top: -2px;
+}
+.material-only:before {
+    background: url(../i/logo-android-black.png) no-repeat center;
+    background-size: 100% auto;
+    top: -2px;
+}
+span.ios-only, span.material-only {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: normal;
+    padding: 3px 3px;
+    &:before {
+        width: 12px;
+        height: 12px;
+        margin-right: 4px;
+        top: -1px;
     }
 }
 .docs-demo-device {
@@ -1122,9 +1335,10 @@ table.events-table {
 }
 .important-note {
     padding: 5px 10px;
-    background: lighten(red,45%);
+    background: lighten(red,47%);
     color:#000;
     border: 1px solid lighten(red,40%);
+    border-radius: 3px;
     ul {
         margin: 0;
         padding-left: 20px;
@@ -1150,6 +1364,7 @@ ul.tutorials {
         font-size: 27px;
         font-weight: 300;
         line-height: 1.3;
+        .myriad();
         span.video {
             margin-left: 5px;
             background:darken(@dark,10%);
@@ -1191,14 +1406,7 @@ ul.tutorials {
     }
 }
 a.donate-button {
-    border-radius: 5px;
-    display: inline-block;
-    height: 27px;
-    line-height: 27px;
-    border: 1px solid @dark;
-    text-decoration: none;
-    font-weight: normal;
-    padding: 0 15px;
+    .button();
     &:hover {
         background: rgba(red(@dark),green(@dark),blue(@dark),0.1);
     }

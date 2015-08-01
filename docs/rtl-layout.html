@@ -113,6 +113,7 @@
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
             <li><a href="cards.html">Cards</a></li>
             <li><a href="buttons.html">Buttons</a></li>
+            <li><a href="floating-action-button.html">Floating Action Button</a></li>
             <li>Forms
               <ul>
                 <li><a href="form-elements.html">Form Elements</a></li>
@@ -145,12 +146,13 @@
             <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li> <a href="touch-ripple.html">Touch Ripple (Material)</a></li>
             <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build  </a></li>
-          </ul>
+          </ul><a href="#" class="toggle-docs-nav"><span></span></a>
         </div>
         <div class="docs-content">
           <h1>RTL Layout</h1>
@@ -161,14 +163,15 @@
     ...
     &lt;title&gt;My App&lt;/title&gt;
     &lt;!-- Path to Framework7 Library CSS--&gt;
-    &lt;link rel="stylesheet" href="path/to/framework7.min.css"&gt;
+    &lt;link rel="stylesheet" href="path/to/framework7.[theme].min.css"&gt;
     
     &lt;!-- Enable RTL by including additional RTL styles: --&gt;
-    &lt;link rel="stylesheet" href="path/to/framework7.rtl.min.css"&gt;
+    &lt;link rel="stylesheet" href="path/to/framework7.[theme].rtl.min.css"&gt;
     
     &lt;!-- Path to your custom app styles--&gt;
     &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
     ...</code></pre>
+          <p>Where <b>[theme]</b> is the theme you use: <code>ios</code> or <code>material</code></p>
           <div class="important-note">
             <p>Note that all RTL "mirrors" in RTL mode are made using CSS only, so you should not change order of HTML elements and keep it in LTR way. </p>
           </div>

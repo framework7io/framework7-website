@@ -113,6 +113,7 @@
             <li><a href="accordion.html">Accordion / Collapsible</a></li>
             <li><a href="cards.html">Cards</a></li>
             <li><a href="buttons.html">Buttons</a></li>
+            <li><a href="floating-action-button.html">Floating Action Button</a></li>
             <li>Forms
               <ul>
                 <li><a href="form-elements.html">Form Elements</a></li>
@@ -145,12 +146,13 @@
             <li class="title">Fast Clicks</li>
             <li> <a href="active-state.html">Active State</a></li>
             <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li> <a href="touch-ripple.html">Touch Ripple (Material)</a></li>
             <li class="title">Utilities</li>
             <li> <a href="device-api.html">Device API</a></li>
             <li> <a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
             <li class="title"><a href="custom-build.html">Custom Build  </a></li>
-          </ul>
+          </ul><a href="#" class="toggle-docs-nav"><span></span></a>
         </div>
         <div class="docs-content">
           <h1>Initialize App</h1>
@@ -174,6 +176,39 @@
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <th colspan="4">Material Theme (Material theme only)</th>
+              </tr>
+              <tr>
+                <td>material</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Set to <b>true</b> to activate Material-specific App JS behavior</td>
+              </tr>
+              <tr>
+                <td>materialPageLoadDelay</td>
+                <td>number</td>
+                <td>0</td>
+                <td>Delay (in ms) before animation of loaded page. Can be increased a bit to improve performance</td>
+              </tr>
+              <tr>
+                <td>materialRipple</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Enable/disable Material-specific touch ripple effect</td>
+              </tr>
+              <tr>
+                <td>materialRippleElements</td>
+                <td>string</td>
+                <td>'.ripple, a.link, a.item-link, .button, .modal-button, .tab-link, .label-radio, .label-checkbox, .actions-modal-button, a.searchbar-clear, .floating-button'</td>
+                <td>CSS selector of elements to apply touch ripple effect on click</td>
+              </tr>
+              <tr>
+                <td>materialPreloaderSvg</td>
+                <td>string</td>
+                <td>'&lt;svg xmlns="http://www.w3.org/2000/svg" height="75" width="75" viewbox="0 0 75 75"&gt;&lt;circle cx="37.5" cy="37.5" r="33.5" stroke-width="8"/&gt;&lt;/svg&gt;'</td>
+                <td>HTML of Material' theme SVG preloader</td>
+              </tr>
               <tr>
                 <th colspan="4">Caching</th>
               </tr>
@@ -219,7 +254,7 @@
               <tr>
                 <td>fastClicksDistanceThreshold</td>
                 <td>number</td>
-                <td>0</td>
+                <td>10</td>
                 <td>distance threshold (in px) to prevent short taps. So if tap/move distance is larget than this value then "click" will not be triggered</td>
               </tr>
               <tr>
@@ -301,7 +336,7 @@
                 <td>animateNavBackIcon</td>
                 <td>boolean</td>
                 <td>false</td>
-                <td>This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding".</td>
+                <td>This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding". <span class="ios-only">iOS theme only</span></td>
               </tr>
               <tr>
                 <td>animatePages</td>
@@ -367,7 +402,7 @@
                 <td>If enabled, the first pop state event on app load will be ignored, as it can casue issues that load unnecessary. But useful to disable when you init app using async loaders like Require.js</td>
               </tr>
               <tr>
-                <th colspan="4">Swipe back</th>
+                <th colspan="4">Swipe back (iOS theme only)</th>
               </tr>
               <tr>
                 <td>swipeBackPage</td>
@@ -466,12 +501,6 @@
                 <td>boolean</td>
                 <td>true</td>
                 <td>Enable/disable ability to close panel by clicking outside of panel (on panel's  overlay)</td>
-              </tr>
-              <tr>
-                <td>panelsVisibleZIndex</td>
-                <td>number</td>
-                <td>6000</td>
-                <td>CSS z-index property for panel</td>
               </tr>
               <tr>
                 <th colspan="4">Modals</th>
@@ -678,19 +707,19 @@
                 <td>notificationTitle</td>
                 <td>string</td>
                 <td>undefined</td>
-                <td>Default title for all notifications</td>
+                <td>Default title for all notifications <span class="ios-only">iOS theme only</span></td>
               </tr>
               <tr>
                 <td>notificationSubtitle</td>
                 <td>string</td>
                 <td>undefined</td>
-                <td>Default subtitle for all notifications</td>
+                <td>Default subtitle for all notifications <span class="ios-only">iOS theme only</span></td>
               </tr>
               <tr>
                 <td>notificationMedia</td>
                 <td>string</td>
                 <td>undefined</td>
-                <td>Default media (icon or image) for all notifications</td>
+                <td>Default media (icon or image) for all notifications <span class="ios-only">iOS theme only</span></td>
               </tr>
               <tr>
                 <td>notificationHold</td>
@@ -708,10 +737,16 @@
                 <td>notificationCloseIcon</td>
                 <td>boolean</td>
                 <td>true</td>
-                <td>Set to true if you want to display close icon (button) for notifications by default</td>
+                <td>Set to true if you want to display close icon (button) for notifications by default <span class="ios-only">iOS theme only</span></td>
               </tr>
               <tr>
-                <th colspan="4">Status Bar</th>
+                <td>notificationCloseButtonText</td>
+                <td>string</td>
+                <td>'Close'</td>
+                <td>Default text for Snackbars' close button <span class="material-only">Material theme only</span></td>
+              </tr>
+              <tr>
+                <th colspan="4">Status Bar (iOS theme only)</th>
               </tr>
               <tr>
                 <td>statusbarOverlay</td>

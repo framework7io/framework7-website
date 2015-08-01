@@ -72,6 +72,7 @@ block content
           | &lt;/div&gt; 
       p The main point here is that page for speific View should be wrapped with <code>&lt;div class="view"&gt;</code> with the same classes as in main layout. It will help Framework7 to recognize which page is for which view.
       h2 Internal file structure with Dynamic Navbar
+      p.ios-only Such structure is supported only in iOS Theme
       p As you may see in <a href="navbar-toolbar-layouts.html">Nabvar & Toolbar layout types</a> dynamic navbar requires through-type layout. But in this layout type navbar is not inside of page. So here is where we need to put it in <code>about.html</code> file:
       pre
         code
@@ -102,6 +103,7 @@ block content
           p This behavior can not be changed because user always expect to get previous page when he clicks on "back" link, not something else.
       p As you see <code>href</code> attribute is not required for "back" link, but try to keep it there for fallback.
       h2 Swipe back
+      p.ios-only This feature is available only in iOS Theme
       p If you have enabled "swipeBackPage" <a href="init-app.html">App parameter</a> then you can also go to previous page by swiping from left to right from the left edge of the screen. But sometimes you may need to disable this behavior for some specific pages. In this case you may add additional <b>no-swipeback</b> class:
       pre
         code

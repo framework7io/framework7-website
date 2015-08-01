@@ -7,7 +7,24 @@ block vars
 block content
   h1 Ready To Use Demo Apps
   p On this page you may find ready to use open source apps made with Framework7.
-  
+  .example
+    .device.device-left.device-v.device-android
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Weather7-Material/")
+    .info
+      h2 Weather7 Material
+      p Material version of Weather7 demo app. It is the simple weather webapp that demonstrates how easy to create fully functioning Material app with Framework7. With PhoneGap you can easily convert it to native Android app.
+      h4 Weather7 Features:
+      ul.app-features
+        li <strong>Material Responsive Layout</strong> - app has a bit different layout on tablets (large screens) to match Material apps design guides
+        li <strong>Local Storage</strong>. All your personal weather data is stored in Local Storage, so you don't need to add weather locations each time you launch app.
+        li <strong>Manifest Cache</strong>. Due to Manifest Cache you can still access app without internet connection. You need internet connection only when you need to update weather data.
+        li <strong>YQL</strong> - fast and easy way to get the required data. Here we use YQL to search locations and get weather data for selected ones.
+        li <strong>Flickr API</strong> - to show locations' photos.
+      p So Weather7 is a real fully functioning Android Material app. Just open it in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./Weather7-Material/", target="_blank").button Open app in new window
+        a(href="https://github.com/nolimits4web/Weather7-Material/", target="_blank").button Source code
+    .clearfix  
   .example
     .device.device-left.device-v
       iframe(width="320", height="568", scrolling="no", frameborder="0", src="http://www.timo-ernst.net/misc/f7angulardemo/")
@@ -160,7 +177,7 @@ block content
     .clearfix
   .example
     .device.device-left.device-v
-      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./weather7/")
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Weather7/")
     .info
       h2 Weather7
       p Weather7 is the simple weather webapp that demonstrates how easy to create fully functioning iOS app with Framework7. With PhoneGap you can easily convert it to native iOS app.
@@ -172,7 +189,7 @@ block content
         li <strong>Full Screen</strong>. Weather7 is a full screen app (on iOS). Just add it to your home screen to make sure. And the fun part is that with Framework7 you can easily control background color of status bar - click on "+" icon to open search popup and look at status bar.
       p So Weather7 is a real fully functioning iOS app. Just open it in new window and pin it to your home screen:
       p.buttons 
-        a(href="./weather7/", target="_blank").button Open app in new window
+        a(href="./Weather7/", target="_blank").button Open app in new window
         a(href="https://github.com/nolimits4web/Weather7/", target="_blank").button Source code
     .clearfix
   .example

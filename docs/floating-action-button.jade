@@ -1,0 +1,42 @@
+extends ../jade/_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Floating Action Button | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../jade/_docs-menu
+    .docs-content.with-device
+      h1(data-device-preview="../docs-demos/floating-action-button.html") Floating Action Button
+      p.material-only Floating Action Button is supported only in Material Theme
+      p Floating action buttons are used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.
+      h2 Layout
+      p Layout of floating action button is very simple. Just put it as the direct child of <code>page</code> or <code>view</code>:
+      pre
+        code
+          | &lt;!-- Page--&gt;
+          | &lt;div class="page navbar-fixed"&gt;
+          |   &lt;!-- Navbar--&gt;
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="center"&gt;Floating Action Button&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Floatin Action Button --&gt;
+          |   &lt;a href="#" class="floating-button color-pink"&gt;
+          |     &lt;i class="icon icon-plus"&gt;&lt;/i&gt;
+          |   &lt;/a&gt;
+          |   &lt;!-- Scrollable Page Content--&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       Lorem ipsum dolor sit amet, ....
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt; 
+      .stop-scroll-device         
+      
