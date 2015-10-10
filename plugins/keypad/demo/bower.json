@@ -4,6 +4,6 @@
   "author": "Vladimir Kharlampidi",
   "license": ["MIT"],
   "dependencies": {
-    "framework7": "~0.10.0"
+    "framework7": "~1.2.0"
   }
 }

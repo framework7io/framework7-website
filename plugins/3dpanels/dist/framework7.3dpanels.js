@@ -1,24 +1,38 @@
-/*
- * Framework7 3D Panels 0.9.1
+/**
+ * Framework7 3D Panels 1.0.0
  * Framework7 plugin to add 3d effect for side panels
- *
- * http://www.idangero.us/framework7/
- *
- * Copyright 2014, Vladimir Kharlampidi
+ * 
+ * http://www.idangero.us/framework7/plugins/
+ * 
+ * Copyright 2015, Vladimir Kharlampidi
  * The iDangero.us
  * http://www.idangero.us/
- *
+ * 
  * Licensed under MIT
- *
- * Released on: August 15, 2014
-*/
+ * 
+ * Released on: August 22, 2015
+ */
 Framework7.prototype.plugins.panels3d = function (app, params) {
     'use strict';
-
+    params = params || {enabled: true};
     var $ = window.Dom7;
+
+    app.panels3d = {
+        enable: function () {
+            $('body').addClass('panels-3d');
+            params.enabled = true;
+        },
+        disable: function () {
+            $('body').removeClass('panels-3d');
+            params.enabled = false;
+        },
+    };
+    if (params.enabled) $('body').addClass('panels-3d');
+    
     var leftPanelWidth, rightPanelWidth, leftPanel, rightPanel, views;
 
     function leftPanelOpen() {
+        if (!params.enabled) return;
         views.css({
             '-webkit-transform-origin': '100% center',
             'transform-origin': '100% center',
@@ -26,6 +40,7 @@ Framework7.prototype.plugins.panels3d = function (app, params) {
     }
 
     function rightPanelOpen() {
+        if (!params.enabled) return;
         views.css({
             '-webkit-transform-origin': '0% center',
             'transform-origin': '0% center',
@@ -43,6 +58,7 @@ Framework7.prototype.plugins.panels3d = function (app, params) {
     }
 
     function setPanelTransform(viewsContainer, panel, perc) {
+        if (!params.enabled) return;
         panel = $(panel);
         if (!panel.hasClass('panel-reveal')) return;
 

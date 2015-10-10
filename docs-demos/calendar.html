@@ -64,6 +64,34 @@
                   </li>
                 </ul>
               </div>
+              <div class="content-block-title">With Events</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-input">
+                          <input type="text" placeholder="Select date" readonly id="calendar-events">
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="content-block-title">Disabled Dates</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-input">
+                          <input type="text" placeholder="Select date" readonly id="calendar-disabled">
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
               <div class="content-block-title">Inline with custom toolbar</div>
               <div class="content-block">
                 <div style="padding:0; margin-right:-15px; width:auto" class="content-block-inner">
@@ -111,6 +139,28 @@
           input: '#calendar-multiple',
           dateFormat: 'M dd yyyy',
           multiple: true
+      });
+      // With events
+      var today = new Date();
+      var weekLater = new Date().setDate(today.getDate() + 7);
+      var calendarEvents = myApp.calendar({
+          input: '#calendar-events',
+          dateFormat: 'M dd yyyy',
+          events: {
+            from: today,
+            to: weekLater
+          }
+      });
+      // Disabled
+      var today = new Date();
+      var weekLater = new Date().setDate(today.getDate() + 7);
+      var calendarDisabled = myApp.calendar({
+          input: '#calendar-disabled',
+          dateFormat: 'M dd yyyy',
+          disabled: {
+            from: today,
+            to: weekLater
+          }
       });
       // Inline with custom toolbar
       var $$ = Dom7;

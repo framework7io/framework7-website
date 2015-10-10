@@ -1,16 +1,16 @@
 /**
- * Framework7 Keypad 1.0.0
+ * Framework7 Keypad 1.0.3
  * Keypad plugin extends Framework7 with additional custom keyboards
  * 
  * http://www.idangero.us/framework7/plugins/
  * 
- * Copyright 2010-2015, Vladimir Kharlampidi
+ * Copyright 2015, Vladimir Kharlampidi
  * The iDangero.us
  * http://www.idangero.us/
  * 
  * Licensed under MIT
  * 
- * Released on: February 4, 2015
+ * Released on: August 22, 2015
  */
 Framework7.prototype.plugins.keypad = function (app) {
     'use strict';
@@ -181,9 +181,11 @@ Framework7.prototype.plugins.keypad = function (app) {
                 }
             })(),
             // Common settings
+            closeByOutsideClick: true,
             scrollToInput: true,
             inputReadOnly: true,
             convertToPopover: true,
+            onlyInPopover: false,
             toolbar: true,
             toolbarCloseText: 'Done',
             toolbarTemplate: 
@@ -215,13 +217,16 @@ Framework7.prototype.plugins.keypad = function (app) {
         // Should be converted to popover
         function isPopover() {
             var toPopover = false;
-            if (!p.params.convertToPopover) return toPopover;
+            if (!p.params.convertToPopover && !p.params.onlyInPopover) return toPopover;
             if (!p.inline && p.params.input) {
-                if (app.device.ios) {
-                    toPopover = app.device.ipad ? true : false;
-                }
+                if (p.params.onlyInPopover) toPopover = true;
                 else {
-                    if ($(window).width() >= 768) toPopover = true;
+                    if (app.device.ios) {
+                        toPopover = app.device.ipad ? true : false;
+                    }
+                    else {
+                        if ($(window).width() >= 768) toPopover = true;
+                    }
                 }
             } 
             return toPopover; 
@@ -457,10 +462,8 @@ Framework7.prototype.plugins.keypad = function (app) {
                     pageHeight = pageContent[0].offsetHeight - paddingTop - p.container.height(),
                     pageScrollHeight = pageContent[0].scrollHeight - paddingTop - p.container.height(),
                     newPaddingBottom;
-
                 var inputTop = p.input.offset().top - paddingTop + p.input[0].offsetHeight;
                 if (inputTop > pageHeight) {
-
                     var scrollTop = pageContent.scrollTop() + inputTop - pageHeight;
                     if (scrollTop + pageHeight > pageScrollHeight) {
                         newPaddingBottom = scrollTop + pageHeight - pageScrollHeight + paddingBottom;
@@ -487,27 +490,34 @@ Framework7.prototype.plugins.keypad = function (app) {
 
         if (p.params.input) {
             p.input = $(p.params.input);
-            if (p.params.inputReadOnly) p.input.prop('readOnly', true);
-            if (!p.inline) {
-                p.input.on('click', openOnInput);    
-            }
-            if (p.params.inputReadOnly) {
-                p.input.on('focus mousedown', function (e) {
-                    e.preventDefault();
-                });
+            if (p.input.length > 0) {
+                if (p.params.inputReadOnly) p.input.prop('readOnly', true);
+                if (!p.inline) {
+                    p.input.on('click', openOnInput);    
+                }
+                if (p.params.inputReadOnly) {
+                    p.input.on('focus mousedown', function (e) {
+                        e.preventDefault();
+                    });
+                }
             }
         }
         
-        if (!p.inline) $('html').on('click', closeOnHTMLClick);
+        if (!p.inline && p.params.closeByOutsideClick) $('html').on('click', closeOnHTMLClick);
 
         // Open
         function onPickerClose() {
             p.opened = false;
-            p.input.parents('.page-content').css({'padding-bottom': ''});
+            if (p.input && p.input.length > 0) {
+                p.input.parents('.page-content').css({'padding-bottom': ''});
+                if (app.params.material) p.input.trigger('blur');
+            }
             if (p.params.onClose) p.params.onClose(p);
 
             // Destroy events
-            p.destroyKeypadEvents();
+            p.container.find('.picker-items-col').each(function () {
+                p.destroyPickerCol(this);
+            });
         }
 
         p.opened = false;
@@ -556,6 +566,11 @@ Framework7.prototype.plugins.keypad = function (app) {
                 else {
                     if (p.value) p.setValue(p.value);
                 }
+
+                // Material Focus
+                if (p.input && p.input.length > 0 && app.params.material) {
+                    p.input.trigger('focus');
+                }
             }
 
             // Set flag
@@ -581,7 +596,7 @@ Framework7.prototype.plugins.keypad = function (app) {
         // Destroy
         p.destroy = function () {
             p.close();
-            if (p.params.input) {
+            if (p.params.input && p.input.length > 0) {
                 p.input.off('click focus', openOnInput);
             }
             $('html').off('click', closeOnHTMLClick);

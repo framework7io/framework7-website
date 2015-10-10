@@ -137,6 +137,70 @@ block content
                       .item-after Another label
                   .swipeout-actions-right
                       a(href="#").action1 Action
+            .content-block-title With auto close on dismiss
+            .list-block
+              ul
+                li.swipeout
+                  .swipeout-content.item-content
+                    .item-media
+                      i.icon.icon-f7
+                    .item-inner
+                      .item-title Item title
+                      .item-after Label
+                  .swipeout-actions-right
+                      a(href="#").action1 Action 1
+                      a(href="#", data-confirm="Are you sure want to delete this item?", data-close-on-cancel="true").swipeout-delete Delete
+                li.swipeout
+                  .swipeout-content.item-content
+                    .item-media
+                      i.icon.icon-f7
+                    .item-inner
+                      .item-title With confirm title
+                      .item-after 
+                        span.badge.bg-red 5
+                  .swipeout-actions-right
+                      a(href="#").action1 Action 1
+                      a(href="#", data-confirm="Are you sure want to delete this item?", data-confirm-title="Delete?", data-close-on-cancel="true").swipeout-delete Delete
+                li.swipeout
+                  .swipeout-content.item-content
+                    .item-media
+                      i.icon.icon-f7
+                    .item-inner
+                      .item-title Another item
+                      .item-after Another label
+                  .swipeout-actions-right
+                      a(href="#").action1 Action 1
+                      a(href="#", data-confirm="Are you sure want to delete this item?", data-close-on-cancel="true").swipeout-delete Delete
+                li.swipeout
+                  .swipeout-content.item-content
+                    .item-media
+                      i.icon.icon-f7
+                    .item-inner
+                      .item-title With confirm title
+                      .item-after Label
+                  .swipeout-actions-right
+                      a(href="#").action1 Action 1
+                      a(href="#", data-confirm="Are you sure want to delete this item?", data-confirm-title="Delete?", data-close-on-cancel="true").swipeout-delete Delete
+                li.swipeout
+                  .swipeout-content.item-content
+                    .item-media
+                      i.icon.icon-f7
+                    .item-inner
+                      .item-title Item with badge
+                      .item-after 
+                        span.badge.bg-yellow 5
+                  .swipeout-actions-right
+                      a(href="#").action1 Action 1
+                      a(href="#", data-confirm="Are you sure want to delete this item?", data-close-on-cancel="true").swipeout-delete Delete
+                li.swipeout
+                  .swipeout-content.item-content
+                    .item-media
+                      i.icon.icon-f7
+                    .item-inner
+                      .item-title You can't delete me
+                      .item-after Another label
+                  .swipeout-actions-right
+                      a(href="#").action1 Action
 
 block scripts
   script.

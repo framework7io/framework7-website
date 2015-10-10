@@ -1,9 +1,9 @@
 {
-  "name": "Framework7-Scroll-Effects-Demo",
-  "description": "Demo for Framework7-Scroll-Effects plugin",
+  "name": "Framework7 Feeds Demo",
+  "description": "Demo for Framework7 Feeds plugin",
   "author": "Vladimir Kharlampidi",
   "license": ["MIT"],
   "dependencies": {
-    "framework7": "~0.10.0"
+    "framework7": "~1.2.0"
   }
 }

@@ -181,7 +181,7 @@ block content
           |   myApp.alert('Action 2');
           | });  
       h2(data-device-preview="../docs-demos/swipe-delete.html") Swipe To Delete
-      p Framework7 supports this frequently used feature from the box without single line of JavaScript. All you need is to add &lt;a class="swipeout-delete"&gt; link to swipeout actions buttons:
+      p Framework7 supports this frequently used feature from the box without single line of JavaScript. All you need is to add <b>&lt;a class="swipeout-delete"&gt;</b> link to swipeout actions buttons:
       pre
         code
           | &lt;li class="swipeout"&gt;
@@ -194,7 +194,7 @@ block content
           |     &lt;a href="#" class="swipeout-delete"&gt;Delete&lt;/a&gt;
           |   &lt;/div&gt;
           | &lt;/li&gt;
-      p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add addition "data-confirm" and "data-confirm-title" (optional) attributes to Delete link:
+      p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add additional <b>data-confirm</b> and <b>data-confirm-title</b> (optional) attributes to Delete link:
       pre
         code
           | &lt;li class="swipeout"&gt;
@@ -208,8 +208,22 @@ block content
           |     &lt;/div&gt;
           |   &lt;/div&gt;
           | &lt;/li&gt;
+      p If you want to close swipeout element when user dismissed Confirm modal, then you need also to add <b>data-close-on-cancel</b> attribute:
+      pre
+        code
+          | &lt;li class="swipeout"&gt;
+          |   &lt;div class="swipeout-content item-content"&gt;
+          |     &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;!-- We add data-close-on-cancel attribute to close swipeout automatically --&gt;
+          |     &lt;a href="#" class="swipeout-delete" data-confirm="Are you sure want to delete this item?" data-confirm-title="Delete?" data-close-on-cancel="true"&gt;Delete&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/li&gt;
       h2(data-device-preview="../docs-demos/swipeout-overswipe.html") Overswipe
-      p Swipeouts also support "overswipe" actions that will be triggered automatically if you swipe actions too much. In this case we need to add <code>swipeout-overswipe</code> class to required actions button:
+      p Swipeouts also support "overswipe" actions that will be triggered automatically if you swipe actions too much. In this case we need to add <b>"swipeout-overswipe"</b> class to required actions button:
       pre
         code
           | &lt;li class="swipeout"&gt;
@@ -224,8 +238,13 @@ block content
           |   &lt;/div&gt;
           | &lt;/li&gt;
       .important-note
-        p <code>overswipe</code> could be used only on last button in right swipeout actions, and only on first button in left swipeout actions.
-        p With overswipe, script will automatically trigger "click" event on overswipe button, so you need to add appropriate event listener to this button
+        ul
+          li
+            p <b>overswipe</b> can be used only on last button in right swipeout actions, and only on first button in left swipeout actions.
+          li
+            p With overswipe, script will automatically trigger "click" event on overswipe button, so you need to add appropriate event listener to this button
+          li
+            p Overswipe button will have additonal <b>"swipeout-overswipe-active"</b> class during overswipe which you can use for additional styling of such state
       pre
         code
           | &lt;li class="swipeout"&gt;

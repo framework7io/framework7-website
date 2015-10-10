@@ -1,0 +1,73 @@
+extends _layout
+block content
+  .views
+    .view.view-main
+      .navbar
+        .navbar-inner
+          .left 
+          .center.sliding Smart Select Picker
+          .right 
+      .pages.navbar-through
+        .page(data-page="home")
+          .page-content
+            .list-block
+              ul
+                li
+                  a(href="#", data-open-in="picker").item-link.smart-select
+                    select(name="fruits")
+                      option(value="apple", selected=true) Apple
+                      option(value="pineapple") Pineapple
+                      option(value="pear") Pear
+                      option(value="orange") Orange
+                      option(value="melon") Melon
+                      option(value="peach") Peach
+                      option(value="banana") Banana
+                    .item-content
+                      .item-inner
+                        .item-title Fruit
+                li
+                  a(href="#", data-open-in="picker", data-picker-close-text="Close Cars").item-link.smart-select
+                    select(name="car")
+                      option(value="mercedes") Mercedes
+                      option(value="bmw") BMW
+                      option(value="volvo") Volvo
+                      option(value="vw", selected=true) Volkswagen
+                      option(value="toyota") Toyota
+                      option(value="cadillac") Cadillac
+                      option(value="nissan") Nissan
+                      option(value="mazda") Mazda
+                      option(value="ford") Ford
+                      option(value="chrysler") Chrysler
+                      option(value="dodge") Dodge
+                    .item-content
+                      .item-inner
+                        .item-title Car
+            .content-block-title With custom height
+            .list-block
+              ul
+                li
+                  a(href="#", data-open-in="picker", data-picker-height="400px").item-link.smart-select
+                    select(name="car")
+                      option(value="mercedes") Mercedes
+                      option(value="bmw") BMW
+                      option(value="volvo") Volvo
+                      option(value="vw", selected=true) Volkswagen
+                      option(value="toyota") Toyota
+                      option(value="cadillac") Cadillac
+                      option(value="nissan") Nissan
+                      option(value="mazda") Mazda
+                      option(value="ford") Ford
+                      option(value="chrysler") Chrysler
+                      option(value="dodge") Dodge
+                    .item-content
+                      .item-inner
+                        .item-title Car
+
+block scripts
+  script.
+    var myApp = new Framework7({
+      animateNavBackIcon:true
+    }); 
+    var mainView = myApp.addView('.view-main', {
+      dynamicNavbar: true,
+    });

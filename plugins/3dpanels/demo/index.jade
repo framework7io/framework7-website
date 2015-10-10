@@ -6,8 +6,9 @@ html
     meta(name='apple-mobile-web-app-capable', content='yes')
     meta(name="apple-mobile-web-app-status-bar-style", content="black")
     title 3D Panels
-    link(rel="stylesheet", href="bower_components/framework7/dist/css/framework7.min.css")
-    link(rel="stylesheet", href="../build/framework7.3dpanels.css")
+    link(rel="stylesheet", href="libs/framework7/dist/css/framework7.ios.min.css")
+    link(rel="stylesheet", href="libs/framework7/dist/css/framework7.ios.colors.min.css")
+    link(rel="stylesheet", href="../dist/framework7.3dpanels.css")
     style.
       body {
         background: #074d55; 
@@ -118,8 +119,8 @@ html
                     a(href="#", data-panel="left").button.open-panel Left Panel
                   .col-50
                     a(href="#", data-panel="right").button.open-panel Right Panel
-    script(src="bower_components/framework7/dist/js/framework7.min.js")
-    script(src="../build/framework7.3dpanels.js")
+    script(src="libs/framework7/dist/js/framework7.min.js")
+    script(src="../dist/framework7.3dpanels.js")
     script.
         var myApp = new Framework7({swipePanel:'left'});
         var mainView = myApp.addView('.view-main');

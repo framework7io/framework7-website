@@ -1,16 +1,16 @@
 /**
- * Framework7 Keypad 1.0.0
+ * Framework7 Keypad 1.0.3
  * Keypad plugin extends Framework7 with additional custom keyboards
  * 
  * http://www.idangero.us/framework7/plugins/
  * 
- * Copyright 2010-2015, Vladimir Kharlampidi
+ * Copyright 2015, Vladimir Kharlampidi
  * The iDangero.us
  * http://www.idangero.us/
  * 
  * Licensed under MIT
  * 
- * Released on: February 4, 2015
+ * Released on: August 22, 2015
  */
 .picker-keypad.picker-modal-inline {
   height: 200px;

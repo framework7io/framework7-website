@@ -34,6 +34,22 @@ block content
                     .item-inner 
                       .item-input
                         input(type="text", placeholder="Select multiple dates", readonly)#calendar-multiple
+            .content-block-title With Events
+            .list-block
+              ul
+                li
+                  .item-content
+                    .item-inner 
+                      .item-input
+                        input(type="text", placeholder="Select date", readonly)#calendar-events
+            .content-block-title Disabled Dates
+            .list-block
+              ul
+                li
+                  .item-content
+                    .item-inner 
+                      .item-input
+                        input(type="text", placeholder="Select date", readonly)#calendar-disabled
             .content-block-title Inline with custom toolbar
             .content-block
               .content-block-inner(style="padding:0; margin-right:-15px; width:auto")
@@ -73,6 +89,28 @@ block scripts
         input: '#calendar-multiple',
         dateFormat: 'M dd yyyy',
         multiple: true
+    });
+    // With events
+    var today = new Date();
+    var weekLater = new Date().setDate(today.getDate() + 7);
+    var calendarEvents = myApp.calendar({
+        input: '#calendar-events',
+        dateFormat: 'M dd yyyy',
+        events: {
+          from: today,
+          to: weekLater
+        }
+    });
+    // Disabled
+    var today = new Date();
+    var weekLater = new Date().setDate(today.getDate() + 7);
+    var calendarDisabled = myApp.calendar({
+        input: '#calendar-disabled',
+        dateFormat: 'M dd yyyy',
+        disabled: {
+          from: today,
+          to: weekLater
+        }
     });
     // Inline with custom toolbar
     var $$ = Dom7;

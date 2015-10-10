@@ -373,10 +373,10 @@ block content
           tr
             th(colspan="4") Smart Select
           tr
-            td smartSelectInPopup
-            td boolean
-            td false
-            td Set to true and all Smart Selects, by default, will be opened as popup
+            td smartSelectOpenIn
+            td string
+            td 'page'
+            td Specify default way of how Smart Select should be opened. Can be 'page', 'popup' or 'picker'
 
           tr
             td smartSelectBackTemplate
@@ -399,6 +399,11 @@ block content
             td string
             td 'Close'
             td Default close link text for Smart Select's popup navbar
+          tr
+            td smartSelectPickerCloseText
+            td string
+            td 'Done'
+            td Default close link text for Smart Select's picker toolbar
           tr
             td smartSelectSearchbar
             td boolean

@@ -162,7 +162,7 @@
           <div class="full-width">
             <h1>Pull To Refresh</h1>
             <p>Pull to refresh is a special component that can be used to initiate the refreshing of a page’s contents.</p>
-            <h2>Pull To Refresh layout</h2>
+            <h2>Pull To Refresh Layout</h2>
             <p>Let's look on how to integrate pull to refresh to page:</p>
             <pre><code>&lt;div class="page"&gt;
   &lt;!-- Page content should have additional "pull-to-refresh-content" class --&gt;
@@ -186,11 +186,11 @@
                 <li><code>data-ptr-distance="55"</code> additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px.</li>
               </ul>
             </p>
-            <h2>Pull To Refresh sequence</h2>
+            <h2>Pull To Refresh Sequence</h2>
             <p>When user starts to pull <b>pull-to-refresh-content</b> down, then <b>pull-to-refresh-layer</b> will receive additional "<b>pull-down</b>" class.</p>
             <p>When user pulls down <b>pull-to-refresh-content</b> on a distance more than 44px (when <b>pull-to-refresh-layer</b> will be fully visible), then <b>pull-to-refresh-layer</b> will receive additional "<b>pull-up</b>" class which changes arrow rotation to notify user about refresh action on release.</p>
             <p>When user release pull to refresh content when it is in "pull-up" state, then <b>pull-to-refresh-layer</b> will receive additional "<b>refreshing</b>" class. In "refreshing" state arrow will be hidden and user will see preloader indicator. On this stage you probably need to do Ajax request and refresh page content.</p>
-            <h2>Pull To Refresh event</h2>
+            <h2>Pull To Refresh Events</h2>
             <p>There is a special JavaScript event that helps us to recognize when we need to refresh content:</p>
             <table class="events-table">
               <thead>
@@ -202,9 +202,29 @@
               </thead>
               <tbody>
                 <tr>
+                  <td>pullstart</td>
+                  <td>Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span></td>
+                  <td>Event will be triggered when you start to move pull to refresh content</td>
+                </tr>
+                <tr>
+                  <td>pullmove</td>
+                  <td>Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span></td>
+                  <td>Event will be triggered during you move pull to refresh content</td>
+                </tr>
+                <tr>
+                  <td>pullend</td>
+                  <td>Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span></td>
+                  <td>Event will be triggered when you release pull to refresh content</td>
+                </tr>
+                <tr>
                   <td>refresh</td>
                   <td>Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span></td>
                   <td>Event will be triggered when pull to refresh enters in "refreshing" state</td>
+                </tr>
+                <tr>
+                  <td>refreshdone</td>
+                  <td>Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span></td>
+                  <td>Event will be triggered after pull to refresh is done and it is back to initial state (after calling <b>pullToRefreshDone</b> method)</td>
                 </tr>
               </tbody>
             </table>

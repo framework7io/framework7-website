@@ -82,6 +82,11 @@ block content
               td 
               td Additional CSS class name to be set on calendar modal
             tr
+              td closeByOutsideClick
+              td boolean
+              td true
+              td If enabled, picker will be closed by clicking outside of picker or related input element
+            tr
               td toolbar
               td boolean
               td true
@@ -105,12 +110,28 @@ block content
                     |   &lt;/div&gt;
                     | &lt;/div&gt; 
             tr
-              th(colspan="4") Specific Picker Parameters
+              th(colspan="4") Specific Calendar Parameters
             tr
               td value
               td array
               td
               td Array with initial selected dates. Each array item represents selected date
+            tr
+              td disabled
+              td Date Range
+              td
+              td Additonal disabled dates. Parameter accepts so called <b>Date Range</b> (look below for details)
+            tr
+              td events
+              td Date Range
+              td 
+              td Dates with events. Will be marked with additonal "dot" on calendar day. Parameter accepts so called <b>Date Ranges</b> (look below for details)
+            tr
+              td rangesClasses
+              td array
+              td 
+              td Date ranges you want to add custom CSS class for additional styling. Look below for accepted format
+            
             tr 
               td formatValue
               td function (p, values)
@@ -287,7 +308,84 @@ block content
               td function (p)
               td
               td Callback function that will be executed when picker is closed
-        
+        h3 Date Range
+        p Some of Calendar parameters (<b>disabled</b>, <b>events</b> and <b>rangesClasses</b>) accept so called Date Range. It is simple way to specify and cover all possible dates combination.
+        p It can be array with dates, for example:
+        pre
+          code.js
+            | var myCalendar = myApp.calendar({
+            |     ...
+            |     //Disabled 10th November 2015 and 11th November 2015:
+            |     disabled: [new Date(2015, 10, 10), new Date(2015, 10, 11)],
+            |     ...
+            | });
+        p It can be custom function where you need to return <b>true</b> or <b>false</b>
+        pre
+          code.js
+            | var myCalendar = myApp.calendar({
+            |     ...
+            |     //Disabled all dates in November 2015
+            |     disabled: function (date) {
+            |         if (date.getFullYear() === 2015 && date.getMonth() === 10) {
+            |             return true;
+            |         }
+            |         else {
+            |             return false;
+            |         }
+            |     },
+            |     ...
+            | });
+        p Or object with <b>from</b> and <b>to</b> properties
+        pre
+          code.js
+            | var myCalendar = myApp.calendar({
+            |     ...
+            |     //Disable all dates between 1st October 2015 and 31 December 2015
+            |     disabled: {
+            |         from: new Date(2015, 9, 1),
+            |         to: new Date(2015, 11, 31)
+            |     },
+            |     ...
+            | });  
+        p Or object with just <b>from</b> or <b>to</b> properties
+        pre
+          code.js
+            | var myCalendar = myApp.calendar({
+            |     ...
+            |     //Disable everyting since December 2015
+            |     disabled: {
+            |         from: new Date(2015, 11, 1)
+            |     },
+            |     ...
+            | }); 
+        h3 rangesClasses
+        p <b>rangesClasses</b> accepts array of objects with Date Range and class names for this range:
+        pre
+          code.js
+            | var myCalendar = myApp.calendar({
+            |     ...
+            |     //Add classes for november and october
+            |     rangesClasses: [
+            |         //Add "day-october' class for all october dates
+            |         {
+            |             // string CSS class name for this range in "cssClass" property
+            |             cssClass: 'day-october', //string CSS class
+            |             // Date Range in "range" property
+            |             range: function (date) {
+            |                 return date.getMonth() === 9
+            |             }
+            |         },
+            |         //Add "day-holiday" class for 1-10th January 2015
+            |         {
+            |             cssClass: 'day-holiday',
+            |             range: {
+            |                 from: new Date(2016, 0, 1),
+            |                 to: new Date(2016, 0, 10)
+            |             }
+            |         }
+            |     ],
+            |     ...
+            | });            
         h2 Calendar Methods & Properties
         p After we initialize Calendar we have its initialized instance in variable (like <code>myCalendar</code> variable in example above) with helpful methods and properties:
         table.methods-table
@@ -420,6 +518,68 @@ block content
           |     dateFormat: 'M dd yyyy',
           |     multiple: true
           | });
+      h4 With Events
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;With Events&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Select dates" readonly id="calendar-events"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;          
+      pre
+        code
+          | var today = new Date();
+          | var weekLater = new Date().setDate(today.getDate() + 7);
+          | 
+          | var calendarEvents = myApp.calendar({
+          |     input: '#calendar-events',
+          |     dateFormat: 'M dd yyyy',
+          |     events: {
+          |       from: today,
+          |       to: weekLater
+          |     }
+          | });
+      h4 Disabled Dates
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Disabled Dates&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Select dates" readonly id="calendar-disabled"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;          
+      pre
+        code
+          | var today = new Date();
+          | var weekLater = new Date().setDate(today.getDate() + 7);
+          | 
+          | var calendarDisabled = myApp.calendar({
+          |     input: '#calendar-disabled',
+          |     dateFormat: 'M dd yyyy',
+          |     disabled: {
+          |       from: today,
+          |       to: weekLater
+          |     }
+          | });
+          
+      
       h4 Inline With Custom Toolbar
       pre
         code
