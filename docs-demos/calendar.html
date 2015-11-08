@@ -64,6 +64,20 @@
                   </li>
                 </ul>
               </div>
+              <div class="content-block-title">Range Picker</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-input">
+                          <input type="text" placeholder="Select date range" readonly id="calendar-range">
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
               <div class="content-block-title">With Events</div>
               <div class="list-block">
                 <ul>
@@ -139,6 +153,12 @@
           input: '#calendar-multiple',
           dateFormat: 'M dd yyyy',
           multiple: true
+      });
+      // Range Picker
+      var calendarRange = myApp.calendar({
+          input: '#calendar-range',
+          dateFormat: 'M dd yyyy',
+          rangePicker: true
       });
       // With events
       var today = new Date();

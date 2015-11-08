@@ -165,7 +165,7 @@ block content
           |       &lt;!-- /End of Top Navbar--&gt;          
           |             
           |       &lt;!-- Now we need additional "navbar-through" and "toolbar-fixed" classes on Pages --&gt;
-          |       &lt;div class="pages navbar-through fixed-through"&gt;
+          |       &lt;div class="pages navbar-through toolbar-fixed"&gt;
           |         &lt;div data-page="index" class="page"&gt;
           |           &lt;div class="page-content"&gt;
           |             &lt;p&gt;Other content goes here&lt;/p&gt;
@@ -194,18 +194,18 @@ block content
       h4 Static
       pre
         code
-          | .view   
-          |   .pages    
-          |     .page   
-          |       .page-content   
-          |         .navbar   
+          | .view
+          |   .pages
+          |     .page
+          |       .page-content
+          |         .navbar
           |         // other page content
-          |         .toolbar    
+          |         .toolbar
       h4 Fixed
       pre
         code
           | .view
-          |   .pages.navbar-fixed.navbar-through
+          |   .pages.navbar-fixed.toolbar-fixed
           |     .page
           |       .navbar
           |       .page-content

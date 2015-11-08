@@ -194,6 +194,11 @@ block content
               td false
               td Enable to allows select multiple dates/values
             tr 
+              td rangePicker
+              td boolean
+              td false
+              td Enable to enable range picker. Not compatible with <code>multiple</code>
+            tr 
               td direction
               td string
               td 'horizontal'
@@ -309,7 +314,7 @@ block content
               td
               td Callback function that will be executed when picker is closed
         h3 Date Range
-        p Some of Calendar parameters (<b>disabled</b>, <b>events</b> and <b>rangesClasses</b>) accept so called Date Range. It is simple way to specify and cover all possible dates combination.
+        p Some of Calendar parameters (<b>disabled</b>, <b>events</b> and <b>rangesClasses</b>) accept so called Date Range. It is a simple way to specify and cover all possible dates combination.
         p It can be array with dates, for example:
         pre
           code.js
@@ -358,6 +363,25 @@ block content
             |     },
             |     ...
             | }); 
+        p Or array with mixed dates and objects:
+        pre
+          code.js
+            | var myCalendar = myApp.calendar({
+            |     ...
+            |     events: [
+            |         new Date(2015, 9, 1),
+            |         new Date(2015, 9, 5),
+            |         {
+            |             from: new Date(2015, 9, 10),
+            |             to: new Date(2015, 9, 15)
+            |         },
+            |         {
+            |             from: new Date(2015, 9, 20),
+            |             to: new Date(2015, 9, 31)
+            |         }
+            |     ],
+            |     ...
+            | });
         h3 rangesClasses
         p <b>rangesClasses</b> accepts array of objects with Date Range and class names for this range:
         pre
@@ -517,6 +541,30 @@ block content
           |     input: '#calendar-multiple',
           |     dateFormat: 'M dd yyyy',
           |     multiple: true
+          | });
+      h4 Range Picker
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Range Picker&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Select date range" readonly id="calendar-range"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | var calendarRange = myApp.calendar({
+          |     input: '#calendar-range',
+          |     dateFormat: 'M dd yyyy',
+          |     rangePicker: true
           | });
       h4 With Events
       pre

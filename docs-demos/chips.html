@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>My App</title>
+    <link rel="stylesheet" href="../dist/css/framework7.material.min.css">
+    <link rel="stylesheet" href="../dist/css/framework7.material.colors.min.css">
+  </head>
+  <body>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages">
+          <div class="page navbar-fixed">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="center">Chips</div>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="content-block-title">Chips With Text</div>
+              <div class="content-block">
+                <div class="chip">
+                  <div class="chip-label">Example Chip</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-label">Another Chip</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-label">One More Chip</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-label">Fourth Chip</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-label">Last One</div>
+                </div>
+              </div>
+              <div class="content-block-title">Icon Chips</div>
+              <div class="content-block">
+                <div class="chip">
+                  <div class="chip-media bg-blue"><i class="icon demo-icon-calendar"></i></div>
+                  <div class="chip-label">Set Date</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-purple"><i class="icon demo-icon-email"></i></div>
+                  <div class="chip-label">Sent</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-red"><i class="icon demo-icon-upload"></i></div>
+                  <div class="chip-label">Uploaded</div>
+                </div>
+              </div>
+              <div class="content-block-title">Contact Chips</div>
+              <div class="content-block">
+                <div class="chip">
+                  <div class="chip-media"><img src="http://lorempixel.com/100/100/people/9/"></div>
+                  <div class="chip-label">Jane Doe</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-media"><img src="http://lorempixel.com/100/100/people/3/"></div>
+                  <div class="chip-label">John Doe</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-media"><img src="http://lorempixel.com/100/100/people/7/"></div>
+                  <div class="chip-label">Adam Smith</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-pink">J</div>
+                  <div class="chip-label">Jennifer</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-teal">C</div>
+                  <div class="chip-label">Chris</div>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-red">K</div>
+                  <div class="chip-label">Kate</div>
+                </div>
+              </div>
+              <div class="content-block-title">Deletable Chips / Tags</div>
+              <div class="content-block">
+                <div class="chip">
+                  <div class="chip-label">Example Chip</div><a href="#" class="chip-delete"></a>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-teal">C</div>
+                  <div class="chip-label">Chris</div><a href="#" class="chip-delete"></a>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-purple"><i class="icon demo-icon-email"></i></div>
+                  <div class="chip-label">Sent</div><a href="#" class="chip-delete"></a>
+                </div>
+                <div class="chip">
+                  <div class="chip-media"><img src="http://lorempixel.com/100/100/people/9/"></div>
+                  <div class="chip-label">Jane Doe</div><a href="#" class="chip-delete"></a>
+                </div>
+                <div class="chip">
+                  <div class="chip-label">One More Chip</div><a href="#" class="chip-delete"></a>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-pink">J</div>
+                  <div class="chip-label">Jennifer</div><a href="#" class="chip-delete"></a>
+                </div>
+                <div class="chip">
+                  <div class="chip-media"><img src="http://lorempixel.com/100/100/people/7/"></div>
+                  <div class="chip-label">Adam Smith</div><a href="#" class="chip-delete"></a>
+                </div>
+                <div class="chip">
+                  <div class="chip-media bg-blue"><i class="icon demo-icon-calendar"></i></div>
+                  <div class="chip-label">Set Date</div><a href="#" class="chip-delete"></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../dist/js/framework7.min.js"></script>
+    <style>
+      i.demo-icon-email {
+        width: 24px;
+        height: 24px;
+        background-image: url("data:image/svg+xml;charset=utf-8,<svg fill='#fff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+      }
+      i.demo-icon-calendar {
+        width: 24px;
+        height: 24px;
+        background-image: url("data:image/svg+xml;charset=utf-8,<svg fill='#fff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+      }
+      i.demo-icon-upload {
+        width: 24px;
+        height: 24px;
+        background-image: url("data:image/svg+xml;charset=utf-8,<svg fill='#FFFFFF' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h24v24H0z' fill='none'/><path d='M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z'/></svg>");
+      }
+    </style>
+    <script>
+      var myApp = new Framework7({
+        material: true
+      });
+      var $$ = Dom7;
+      $$('.chip-delete').on('click', function (e) {
+          e.preventDefault();
+          var chip = $$(this).parents('.chip');
+          myApp.confirm('Do you want to delete this tiny demo Chip?', function () {
+              chip.remove();
+          });
+      });
+    </script>
+  </body>
+</html>
