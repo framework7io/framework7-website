@@ -283,6 +283,57 @@ block content
           | &lt;/div&gt; 
       .important-note
         p Note that animted tabs wrapper (div class="tabs-animated-wrap") should be a fixed height. By default, it is 100% height of its parent
+
+      h2(data-device-preview="../docs-demos/tabs-swipeable.html") Swipeable Tabs
+      p It is also possible to switch tabs with simple transition. This requires additional <code>div class="tabs-swipeable-wrap"</code> wrapper for <code>div class="tabs"</code>.
+      p In this example let's put tab links in Subnavbar and we will use <b>page-content</b> as <b>tab</b> to keep scrolling position for each tab separately:
+      pre
+        code
+          | &lt;div class="pages navbar-fixed"&gt;
+          |   &lt;div data-page="home" class="page with-subnavbar"&gt;
+          |     &lt;div class="navbar"&gt;
+          |       &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="center"&gt;Swipeable Tabs&lt;/div&gt;
+          |         &lt;div class="subnavbar"&gt;
+          |           &lt;!-- Buttons row as tabs controller in Subnavbar--&gt;
+          |           &lt;div class="buttons-row"&gt;
+          |             &lt;!-- Link to 1st tab, active --&gt;
+          |             &lt;a href="#tab1" class="button active tab-link"&gt;Tab 1&lt;/a&gt;
+          |             &lt;!-- Link to 2nd tab --&gt;
+          |             &lt;a href="#tab2" class="button tab-link"&gt;Tab 2&lt;/a&gt;
+          |             &lt;!-- Link to 3rd tab --&gt;
+          |             &lt;a href="#tab3" class="button tab-link"&gt;Tab 3&lt;/a&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;!-- Tabs swipeable wrapper, required to switch tabs with swipes --&gt;
+          |     &lt;div class="tabs-swipeable-wrap"&gt;
+          |       &lt;!-- Tabs, tabs wrapper --&gt;
+          |       &lt;div class="tabs"&gt;
+          |         &lt;!-- Tab 1, active by default --&gt;
+          |         &lt;div id="tab1" class="page-content tab active"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             ... Tab 1 content ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |         &lt;!-- Tab 2 --&gt;
+          |         &lt;div id="tab2" class="page-content tab"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             ... Tab 2 content ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |         &lt;!-- Tab 3 --&gt;
+          |         &lt;div id="tab3" class="page-content tab"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             ... Tab 3 content ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+
       h2(data-device-preview="../docs-demos/tabs-events.html") Tabs JavaScript events
       p Tabs events could be very useful when you need to do something in JavaScript when some Tabs becomes active:
         table.events-table

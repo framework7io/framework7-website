@@ -28,7 +28,7 @@ block content
           |     &lt;/div&gt;
           | &lt;/div&gt;
       p By default, all Toolbar elements (links) equally spaced along toolbar - they have equal space between each other.
-         
+
       h2(data-device-preview="../docs-demos/toolbar-hide.html") Related App and View methods
       p If we have <a href="views.html">initialized View</a> we can use following methods available for Toolbars:
       table.methods-table
@@ -63,7 +63,7 @@ block content
           | });
       h2(data-device-preview="../docs-demos/toolbar-hide-auto.html") Hide Toolbar automatically
       p Framework7 allows you to hide/show Toolbar automatically for some Ajax loaded pages where you may not need Toolbar. It is useful only when you use through-type layout.
-      p To make it work all you need is to add <srong>"no-toolbar"</srong> class to loaded page (<code>&lt;div class="page no-toolbar"&gt;</code>):
+      p To make it work all you need is to add <strong>"no-toolbar"</strong> class to loaded page (<code>&lt;div class="page no-toolbar"&gt;</code>):
       pre
         code
           | &lt;!-- Page has additional "no-toolbar" class --&gt;
@@ -76,4 +76,28 @@ block content
           |   &lt;/div&gt;
           | &lt;/div&gt;
 
-      .device-spacer
+      h2(data-device-preview="../docs-demos/toolbar-bottom-material.html") Bottom Toolbar
+      p.material-only Bottom Toolbar is supported only in Material Theme. In iOS Theme it is on the bottom by default
+      p In Material Theme Toolbar/Tabbar is usually on top of the app right below the Navbar. But if you really need to Toolbar on bottom you can do it by just using addional <b>"toolbar-bottom"</b> class:
+      p Framework7 allows you to hide/show Toolbar automatically for some Ajax loaded pages where you may not need Toolbar. It is useful only when you use through-type layout.
+      pre
+        code
+          | &lt;div data-page="home" class="page toolbar-fixed navbar-fixed"&gt;
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="center"&gt;Bottom Toolbar&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;!-- Toolbar has additional "toolbar-bottom" class --&gt;
+          |   &lt;div class="toolbar toolbar-bottom"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |       &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+          |       &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+          |       &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
+          |   &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="page-content"&gt;
+          |     ...
+          |   &lt;/div&gt;
+          | &lt;/div&gt;

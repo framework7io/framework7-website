@@ -1013,10 +1013,10 @@ img.lazy {
   width: 78px !important;
 }
 .share-line .addthis_button_twitter_follow_native {
-  width: 215px !important;
+  width: 220px !important;
 }
-.share-line .addthis_button_tweet {
-  width: 100px !important;
+.share-line .addthis_button_facebook_like .fb_iframe_widget {
+  max-height: 24px;
 }
 .inner-header + .share-line .center,
 .content + .share-line .center {

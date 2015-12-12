@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Autocomplete | Framework7 Documentation</title>
+    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
+    <link rel="stylesheet" href="../css/normalize.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/highlight.css">
+    <link rel="shortcut icon" href="../favicon.png">
+    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body>
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="langs"><span>Language: </span><a href="http://www.idangero.us/framework7/">EN</a><a href="http://f7cn.com/">CN</a></div>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7" target="_blank">Download</a><a href="../contribute/">Contribute</a><a href="../donate/">Donate</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Layouts</a><a href="../plugins/">Plugins</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-demo-device">
+        <iframe width="320" height="548" frameborder="0" scrolling="on"></iframe>
+        <div class="fade-overlay"></div>
+      </div>
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li class="title">Core</li>
+            <li><a href="dom.html">Dom7 - Custom DOM Library</a></li>
+            <li><a href="app-layout.html">App HTML Layout</a></li>
+            <li><a href="rtl-layout.html">RTL Layout</a></li>
+            <li><a href="init-app.html">Initialize App / App parameters</a></li>
+            <li><a href="views.html">Views</a></li>
+            <li><a href="pages.html">Pages</a></li>
+            <li><a href="page-callbacks.html">Page Callbacks</a></li>
+            <li class="title">Navigation / Router</li>
+            <li><a href="router-api.html">API</a></li>
+            <li><a href="pages-ajax.html">Ajax Pages</a></li>
+            <li><a href="pages-dynamic.html">Dynamic Pages</a></li>
+            <li><a href="pages-inline.html">Inline Pages (DOM Cache)</a></li>
+            <li><a href="linking-views.html">Linking Between Views</a></li>
+            <li class="title">Components</li>
+            <li>Navbars & Toolbars
+              <ul>
+                <li><a href="navbar-toolbar-layouts.html">Layout types</a></li>
+                <li><a href="navbar.html">Navbar</a></li>
+                <li><a href="dynamic-navbar.html">Dynamic Navbar</a></li>
+                <li><a href="sub-navbar.html">Sub Navbar</a></li>
+                <li><a href="toolbar.html">Toolbar</a></li>
+                <li><a href="tabbar.html">Tab Bar</a></li>
+                <li><a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a></li>
+              </ul>
+            </li>
+            <li><a href="searchbar.html">Search Bar</a></li>
+            <li><a href="status-bar.html">Status Bar overlay</a></li>
+            <li><a href="side-panels.html">Side Panels</a></li>
+            <li><a href="content-block.html">Content Block</a></li>
+            <li><a href="grid.html">Layout Grid</a></li>
+            <li>Overlays
+              <ul>
+                <li><a href="modal.html">Modal</a></li>
+                <li><a href="popup.html">Popup</a></li>
+                <li><a href="popover.html">Popover</a></li>
+                <li><a href="action-sheet.html">Action Sheet</a></li>
+                <li><a href="login-screen.html">Login Screen</a></li>
+                <li><a href="picker-modal.html">Picker Modal</a></li>
+              </ul>
+            </li>
+            <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li><a href="progressbar.html">Progress Bar</a></li>
+            <li>List View (Table View)
+              <ul>
+                <li><a href="list-view.html">List View</a></li>
+                <li><a href="contacts-list.html">Contacts List</a></li>
+                <li><a href="media-list-view.html">Media List View</a></li>
+                <li><a href="swipeout.html">Swipeout</a></li>
+                <li><a href="sortable-list.html">Sortable List</a></li>
+                <li><a href="virtual-list.html">Virtual List</a></li>
+              </ul>
+            </li>
+            <li><a href="accordion.html">Accordion / Collapsible</a></li>
+            <li><a href="cards.html">Cards</a></li>
+            <li><a href="chips.html">Chips</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li><a href="floating-action-button.html">Floating Action Button</a></li>
+            <li>Forms
+              <ul>
+                <li><a href="form-elements.html">Form Elements</a></li>
+                <li><a href="checkboxes-radios.html">Checkboxes and Radios</a></li>
+                <li><a href="smart-select.html">Smart Select</a></li>
+                <li><a href="disabled-elements.html">Disabled Elements</a></li>
+                <li><a href="form-data.html">Form Data</a></li>
+                <li><a href="form-storage.html">Form Storage</a></li>
+                <li><a href="form-ajax-submit.html">Ajax Form Submit</a></li>
+              </ul>
+            </li>
+            <li><a href="tabs.html">Tabs</a></li>
+            <li><a href="swiper.html">Swiper Slider</a></li>
+            <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="autocomplete.html">Autocomplete</a></li>
+            <li><a href="picker.html">Picker</a></li>
+            <li><a href="calendar.html">Calendar / Datepicker</a></li>
+            <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
+            <li><a href="infinite-scroll.html">Infinite Scroll</a></li>
+            <li><a href="messages.html">Messages</a></li>
+            <li><a href="messagebar.html">Message Bar</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+            <li><a href="lazy-load.html">Lazy Load</a></li>
+            <li class="title">Styling</li>
+            <li><a href="color-themes.html">Color Themes</a></li>
+            <li><a href="hairlines.html">Hairlines</a></li>
+            <li class="title">Template7</li>
+            <li><a href="template7.html">Getting Started</a></li>
+            <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
+            <li><a href="template7-pages.html">Template7 Pages</a></li>
+            <li class="title">Fast Clicks</li>
+            <li><a href="active-state.html">Active State</a></li>
+            <li><a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li><a href="touch-ripple.html">Touch Ripple (Material)</a></li>
+            <li class="title">Utilities</li>
+            <li><a href="device-api.html">Device API</a></li>
+            <li><a href="support-api.html">Support API</a></li>
+            <li class="title"><a href="plugins-api.html">Plugins API</a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
+          </ul><a href="#" class="toggle-docs-nav"><span></span></a>
+        </div>
+        <div class="docs-content with-device">
+          <div class="full-width">
+            <h1>Autocomplete</h1>
+            <p>Framework7 comes with mobile-friendly and touch optimized Autocomplete component.</p>
+            <p>Autocomplete could be used in standalone mode or as a dropdown.</p>
+            <h2>Create Autocomplete Instance</h2>
+            <p>Autocomplete can be created and initialized only using JavaScript. We need to use related App's method:</p>
+            <div class="method-wrap">
+              <p><span class="method">myApp.autocomplete(<span>parameters</span>)</span><span>- initialize Autocomplete with parameters</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - object with Autocomplete parameters. Required.</li>
+                <li class="method-returns">Method returns initialized Autocomplete instance</li>
+              </ul>
+            </div>
+            <p>For example:</p>
+            <pre><code>var myAutocomplete = app.autocomplete();</code></pre>
+            <h2>Autocomplete Parameters</h2>
+            <p>Let's look on list of all available parameters:</p>
+            <table class="params-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Type</th>
+                  <th>Default</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>openIn</td>
+                  <td>string</td>
+                  <td>'page'</td>
+                  <td>Defines how to open Autocomplete, can be "page" or "popup" (for Standalone) or "dropdown"</td>
+                </tr>
+                <tr>
+                  <td>source</td>
+                  <td>function (autocomplete, query, render)</td>
+                  <td></td>
+                  <td>Function which accepts <b>autocomplete</b> instance, search <b>query</b> and <b>render</b> function where you need to pass array with matched items</td>
+                </tr>
+                <tr>
+                  <td>limit</td>
+                  <td>number</td>
+                  <td></td>
+                  <td>Limit number of maximum displayed items in autocomplete per query</td>
+                </tr>
+                <tr>
+                  <td>preloader</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to <b>true</b> to include Preloader to autocomplete layout</td>
+                </tr>
+                <tr>
+                  <td>preloaderColor</td>
+                  <td>string</td>
+                  <td></td>
+                  <td>Preloader color, can be "white" or "black". By default is "black"</td>
+                </tr>
+                <tr>
+                  <td>valueProperty</td>
+                  <td>string</td>
+                  <td>'id'</td>
+                  <td>Name of matched item object's key that represents item value</td>
+                </tr>
+                <tr>
+                  <td>textProperty</td>
+                  <td>string</td>
+                  <td>'text'</td>
+                  <td>Name of matched item object's key that represents item display value which is used as title of displayed options</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Standalone Autocomplete Parameters</th>
+                </tr>
+                <tr>
+                  <td>opener</td>
+                  <td>string or HTMLElement</td>
+                  <td></td>
+                  <td>String with CSS selector or HTMLElement of link which will open standalone autocomplete page or popup</td>
+                </tr>
+                <tr>
+                  <td>popupCloseText</td>
+                  <td>string</td>
+                  <td>'Close'</td>
+                  <td>Default text for "Close" button when opened as Popup</td>
+                </tr>
+                <tr>
+                  <td>backText</td>
+                  <td>string</td>
+                  <td>'Back'</td>
+                  <td>Default text for "Back" link when opened as Page</td>
+                </tr>
+                <tr>
+                  <td>pageTitle</td>
+                  <td>string</td>
+                  <td></td>
+                  <td>Autocomplete page title. If nothing is specified and passed <b>opener</b> is an item of List View, then text value of <b>item-title</b> will be used</td>
+                </tr>
+                <tr>
+                  <td>searchbarPlaceholderText</td>
+                  <td>string</td>
+                  <td>'Search...'</td>
+                  <td>Search Bar placeholder text</td>
+                </tr>
+                <tr>
+                  <td>searchbarCancelText</td>
+                  <td>string</td>
+                  <td>'Cancel'</td>
+                  <td>Search Bar cancel button text</td>
+                </tr>
+                <tr>
+                  <td>notFoundText</td>
+                  <td>string</td>
+                  <td>'Nothing found'</td>
+                  <td>Text that displayed when no matches found</td>
+                </tr>
+                <tr>
+                  <td>multiple</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to <b>true</b> to allow multiple selections</td>
+                </tr>
+                <tr>
+                  <td>backOnSelect</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>Set to <b>true</b> and autocomplete will be closed when user picks value. Not available if <b>multiple</b> is enabled</td>
+                </tr>
+                <tr>
+                  <td>navbarTheme</td>
+                  <td>string</td>
+                  <td></td>
+                  <td>Navbar color theme. One of available <a href="color-themes.html">color themes</a></td>
+                </tr>
+                <tr>
+                  <td>formTheme</td>
+                  <td>string</td>
+                  <td></td>
+                  <td>Form (checkboxes or radios) color theme. One of available <a href="color-themes.html">color themes</a></td>
+                </tr>
+                <tr>
+                  <th colspan="4">Dropdown Autocomplete Parameters</th>
+                </tr>
+                <tr>
+                  <td>input</td>
+                  <td>string or HTMLElement</td>
+                  <td></td>
+                  <td>String with CSS selector or HTMLElement of related text input</td>
+                </tr>
+                <tr>
+                  <td>dropdownPlaceholderText</td>
+                  <td>string</td>
+                  <td></td>
+                  <td>Specify dropdown placeholder text</td>
+                </tr>
+                <tr>
+                  <td>updateInputValueOnSelect</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>If <b>true</b> then value of related input will be update as well</td>
+                </tr>
+                <tr>
+                  <td>expandInput</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>If <b>true</b> then input which is used as <b>item-input</b> in List View will be expanded to full screen wide during dropdown visible. <span class="ios-only">iOS Only</span></td>
+                </tr>
+                <tr>
+                  <th colspan="4">Callbacks</th>
+                </tr>
+                <tr>
+                  <td>onChange</td>
+                  <td>function (autocomplete, value)</td>
+                  <td></td>
+                  <td>Callback function that will be executed when autocomplete value changed. Returned <b>value</b> is an array with selected items</td>
+                </tr>
+                <tr>
+                  <td>onOpen</td>
+                  <td>function (autocomplete)</td>
+                  <td></td>
+                  <td>Callback function that will be executed when Autocomplete is opened</td>
+                </tr>
+                <tr>
+                  <td>onClose</td>
+                  <td>function (autocomplete)</td>
+                  <td></td>
+                  <td>Callback function that will be executed when Autocomplete is closed</td>
+                </tr>
+                <tr>
+                  <th colspan="4">Templates</th>
+                </tr>
+                <tr>
+                  <td>navbarTemplate</td>
+                  <td>string</td>
+                  <td>* Look below</td>
+                  <td>Standalone autocomplete navbar Template7 template</td>
+                </tr>
+                <tr>
+                  <td>itemTemplate</td>
+                  <td>string</td>
+                  <td>* Look below</td>
+                  <td>Standalone form item (radio or checkbox) Template7 template</td>
+                </tr>
+                <tr>
+                  <td>dropdownTemplate</td>
+                  <td>string</td>
+                  <td>* Look below</td>
+                  <td>Dropdown Template7 template</td>
+                </tr>
+                <tr>
+                  <td>dropdownItemTemplate</td>
+                  <td>string</td>
+                  <td>* Look below</td>
+                  <td>Dropdown list item Template7 template</td>
+                </tr>
+                <tr>
+                  <td>dropdownPlaceholderTemplate</td>
+                  <td>string</td>
+                  <td>* Look below</td>
+                  <td>Dropdown placeholder item Template7 template</td>
+                </tr>
+              </tbody>
+            </table>
+            <h3>Default Templates</h3>
+            <h4>navbarTemplate</h4>
+            <pre><code>&lt;div class="navbar {{#if navbarTheme}}theme-{{navbarTheme}}{{/if}}"&gt;
+    &lt;div class="navbar-inner"&gt;
+        &lt;div class="left sliding"&gt;
+            {{#if material}}
+            &lt;a href="#" class="link {{#if inPopup}}close-popup{{else}}back{{/if}} icon-only"&gt;
+              &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+            &lt;/a&gt;
+            {{else}}
+            &lt;a href="#" class="link {{#if inPopup}}close-popup{{else}}back{{/if}}"&gt;
+                &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+                {{#if inPopup}}
+                &lt;span&gt;{{popupCloseText}}&lt;/span&gt;
+                {{else}}
+                &lt;span&gt;{{backText}}&lt;/span&gt;
+                {{/if}}
+            &lt;/a&gt;
+            {{/if}}
+        &lt;/div&gt;
+        &lt;div class="center sliding"&gt;{{pageTitle}}&lt;/div&gt;
+        {{#if preloader}}
+        &lt;div class="right"&gt;
+            &lt;div class="autocomplete-preloader preloader {{#if preloaderColor}}preloader-{{preloaderColor}}{{/if}}"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        {{/if}}
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            <h4>itemTemplate</h4>
+            <pre><code>&lt;li&gt;
+    &lt;label class="label-{{inputType}} item-content"&gt;
+        &lt;input type="{{inputType}}" name="{{inputName}}" value="{{value}}" {{#if selected}}checked{{/if}}&gt;
+        {{#if material}}
+            &lt;div class="item-media"&gt;
+                &lt;i class="icon icon-form-{{inputType}}"&gt;&lt;/i&gt;
+            &lt;/div&gt;
+            &lt;div class="item-inner"&gt;
+                &lt;div class="item-title"&gt;{{text}}&lt;/div&gt;
+            &lt;/div&gt;
+        {{else}}
+            {{#if checkbox}}
+            &lt;div class="item-media"&gt;
+                &lt;i class="icon icon-form-checkbox"&gt;&lt;/i&gt;
+            &lt;/div&gt;
+            {{/if}}
+            &lt;div class="item-inner"&gt;
+                &lt;div class="item-title"&gt;{{text}}&lt;/div&gt;
+            &lt;/div&gt;
+        {{/if}}
+    &lt;/label&gt;
+&lt;/li&gt;'</code></pre>
+            <h4>dropdownTemplate</h4>
+            <pre><code>&lt;div class="autocomplete-dropdown"&gt;
+    &lt;div class="autocomplete-dropdown-inner"&gt;
+        &lt;div class="list-block"&gt;
+            &lt;ul&gt;&lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    {{#if preloader}}
+    &lt;div class="autocomplete-preloader preloader {{#if preloaderColor}}preloader-{{preloaderColor}}{{/if}}"&gt;
+      {{#if material}}{{materialPreloaderHtml}}{{/if}}
+    &lt;/div&gt;
+    {{/if}}
+&lt;/div&gt;</code></pre>
+            <h4>dropdownItemTemplate</h4>
+            <pre><code>&lt;li&gt;
+    &lt;label class="{{#unless placeholder}}label-radio{{/unless}} item-content" data-value="{{value}}"&gt;
+        &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;{{text}}&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/label&gt;
+&lt;/li&gt;</code></pre>
+            <h4>dropdownPlaceholderTemplate</h4>
+            <pre><code>&lt;li class="autocomplete-dropdown-placeholder"&gt;
+    &lt;div class="item-content"&gt;
+        &lt;div class="item-inner"&gt;
+            &lt;div class="item-title"&gt;{{text}}&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/label&gt;
+&lt;/li&gt;</code></pre>
+            <h2>Autocomplete Methods & Properties</h2>
+            <p>After we initialize Autocomplete we have its initialized instance in variable (like <code>myAutocomplete</code> variable in example above) with helpful methods and properties:</p>
+            <table class="methods-table">
+              <tbody>
+                <tr>
+                  <th colspan="2">Properties</th>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.params</td>
+                  <td>Object with passed initialization parameters</td>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.value</td>
+                  <td>Array with selected items</td>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.opened</td>
+                  <td><b>true</b> if Autocomplete is currently opened</td>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.dropdown</td>
+                  <td>Dom7 instance of Autcomplete dropdown</td>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.popup</td>
+                  <td>Dom7 instance of Autcomplete popup (if opened)</td>
+                </tr>
+                <tr>
+                  <th colspan="2">Methods</th>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.open()</td>
+                  <td>Open Autocomplete (Dropdown, Page or Popup)</td>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.close()</td>
+                  <td>Close Autcomplete</td>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.showPreloader()</td>
+                  <td>Show autocomplete preloader</td>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.hidePreloader()</td>
+                  <td>Hide autocomplete preloader</td>
+                </tr>
+                <tr>
+                  <td>myAutocomplete.destroy()</td>
+                  <td>Destroy Autocomplete instance and remove all events</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h2 data-device-preview="../docs-demos/autocomplete.html">Examples</h2>
+          <pre><code>var myApp = new Framework7();
+var $$ = Dom7;
+ 
+var mainView = myApp.addView('.view-main');
+ 
+// Fruits data demo array
+var fruits = ('Apple Apricot Avocado Banana Melon Orange Peach Pear Pineapple').split(' ');</code></pre>
+          <h4>Simple Dropdown Autocomplete</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-title label"&gt;Fruit&lt;/div&gt;
+      &lt;div class="item-input"&gt;
+        &lt;input type="text" placeholder="Fruit" id="autocomplete-dropdown"&gt;&lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteDropdownSimple = myApp.autocomplete({
+    input: '#autocomplete-dropdown',
+    openIn: 'dropdown',
+    source: function (autocomplete, query, render) {
+        var results = [];
+        if (query.length === 0) {
+            render(results);
+            return;
+        }
+        // Find matched items
+        for (var i = 0; i &lt; fruits.length; i++) {
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
+        }
+        // Render items by passing array with result items
+        render(results);
+    }
+});</code></pre>
+          <h4>Dropdown With Input Expanded</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-title label"&gt;Fruit&lt;/div&gt;
+      &lt;div class="item-input"&gt;
+        &lt;input type="text" placeholder="Fruit" id="autocomplete-dropdown-expand"&gt;&lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteDropdownExpand = myApp.autocomplete({
+    input: '#autocomplete-dropdown-expand',
+    openIn: 'dropdown',
+    expandInput: true, // expand input
+    source: function (autocomplete, query, render) {
+        var results = [];
+        if (query.length === 0) {
+            render(results);
+            return;
+        }
+        // Find matched items
+        for (var i = 0; i &lt; fruits.length; i++) {
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
+        }
+        // Render items by passing array with result items
+        render(results);
+    }
+});</code></pre>
+          <h4>Dropdown With All Values</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-title label"&gt;Fruit&lt;/div&gt;
+      &lt;div class="item-input"&gt;
+        &lt;input type="text" placeholder="Fruit" id="autocomplete-dropdown-all"&gt;&lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteDropdownAll = myApp.autocomplete({
+    input: '#autocomplete-dropdown-all',
+    openIn: 'dropdown',
+    source: function (autocomplete, query, render) {
+        var results = [];
+        // Find matched items
+        for (var i = 0; i &lt; fruits.length; i++) {
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
+        }
+        // Render items by passing array with result items
+        render(results);
+    }
+});</code></pre>
+          <h4>Dropdown With Placeholder</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-title label"&gt;Fruit&lt;/div&gt;
+      &lt;div class="item-input"&gt;
+        &lt;input type="text" placeholder="Fruit" id="autocomplete-dropdown-placeholder"&gt;&lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteDropdownPlaceholder = myApp.autocomplete({
+    input: '#autocomplete-dropdown-placeholder',
+    openIn: 'dropdown',
+    dropdownPlaceholderText: 'Try to type "Apple"',
+    source: function (autocomplete, query, render) {
+        var results = [];
+        if (query.length === 0) {
+            render(results);
+            return;
+        }
+        // Find matched items
+        for (var i = 0; i &lt; fruits.length; i++) {
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
+        }
+        // Render items by passing array with result items
+        render(results);
+    }
+});</code></pre>
+          <h4>Dropdown With Ajax Data</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li class="item-content"&gt;
+      &lt;div class="item-title label"&gt;Language&lt;/div&gt;
+      &lt;div class="item-input"&gt;
+        &lt;input type="text" placeholder="Language" id="autocomplete-dropdown-ajax"&gt;&lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteDropdownAjax = myApp.autocomplete({
+    input: '#autocomplete-dropdown-ajax',
+    openIn: 'dropdown',
+    preloader: true, //enable preloader
+    valueProperty: 'id', //object's "value" property name
+    textProperty: 'name', //object's "text" property name
+    limit: 20, //limit to 20 results
+    dropdownPlaceholderText: 'Try "JavaScript"',
+    expandInput: true, // expand input
+    source: function (autocomplete, query, render) {
+        var results = [];
+        if (query.length === 0) {
+            render(results);
+            return;
+        }
+        // Show Preloader
+        autocomplete.showPreloader();
+        // Do Ajax request to Autocomplete data
+        $$.ajax({
+            url: 'autocomplete-languages.json',
+            method: 'GET',
+            dataType: 'json',
+            //send "query" to server. Useful in case you generate response dynamically
+            data: {
+                query: query
+            },
+            success: function (data) {
+                // Find matched items
+                for (var i = 0; i &lt; data.length; i++) {
+                    if (data[i].name.toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(data[i]);
+                }
+                // Hide Preoloader
+                autocomplete.hidePreloader();
+                // Render items by passing array with result items
+                render(results);
+            }
+        });
+    }
+});</code></pre>
+          <h4>Simple Standalone Autocomplete</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="#" id="autocomplete-standalone" class="item-link item-content autocomplete-opener"&gt;
+        &lt;input type="hidden"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Favorite Fruite&lt;/div&gt;
+          &lt;div class="item-after"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteStandaloneSimple = myApp.autocomplete({
+    openIn: 'page', //open in page
+    opener: $$('#autocomplete-standalone'), //link that opens autocomplete
+    backOnSelect: true, //go back after we select something
+    source: function (autocomplete, query, render) {
+        var results = [];
+        if (query.length === 0) {
+            render(results);
+            return;
+        }
+        // Find matched items
+        for (var i = 0; i &lt; fruits.length; i++) {
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
+        }
+        // Render items by passing array with result items
+        render(results);
+    },
+    onChange: function (autocomplete, value) {
+        // Add item text value to item-after
+        $$('#autocomplete-standalone').find('.item-after').text(value[0]);
+        // Add item value to input value
+        $$('#autocomplete-standalone').find('input').val(value[0]);
+    }
+});</code></pre>
+          <h4>Popup Standalone Autocomplete</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="#" id="autocomplete-standalone-popup" class="item-link item-content autocomplete-opener"&gt;
+        &lt;input type="hidden"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Favorite Fruite&lt;/div&gt;
+          &lt;div class="item-after"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteStandalonePopup = myApp.autocomplete({
+    openIn: 'popup', //open in popup
+    opener: $$('#autocomplete-standalone-popup'), //link that opens autocomplete
+    backOnSelect: true, //go back after we select something
+    source: function (autocomplete, query, render) {
+        var results = [];
+        if (query.length === 0) {
+            render(results);
+            return;
+        }
+        // Find matched items
+        for (var i = 0; i &lt; fruits.length; i++) {
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
+        }
+        // Render items by passing array with result items
+        render(results);
+    },
+    onChange: function (autocomplete, value) {
+        // Add item text value to item-after
+        $$('#autocomplete-standalone-popup').find('.item-after').text(value[0]);
+        // Add item value to input value
+        $$('#autocomplete-standalone-popup').find('input').val(value[0]);
+    }
+});</code></pre>
+          <h4>Multiple Values Dropdown Autocomplete</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="#" id="autocomplete-standalone-multiple" class="item-link item-content autocomplete-opener"&gt;
+        &lt;input type="hidden"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Favorite Fruite&lt;/div&gt;
+          &lt;div class="item-after"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteStandaloneMultiple = myApp.autocomplete({
+    openIn: 'page', //open in page
+    opener: $$('#autocomplete-standalone-multiple'), //link that opens autocomplete
+    multiple: true, //allow multiple values
+    source: function (autocomplete, query, render) {
+        var results = [];
+        if (query.length === 0) {
+            render(results);
+            return;
+        }
+        // Find matched items
+        for (var i = 0; i &lt; fruits.length; i++) {
+            if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
+        }
+        // Render items by passing array with result items
+        render(results);
+    },
+    onChange: function (autocomplete, value) {
+        // Add item text value to item-after
+        $$('#autocomplete-standalone-multiple').find('.item-after').text(value.join(', '));
+        // Add item value to input value
+        $$('#autocomplete-standalone-multiple').find('input').val(value.join(', '));
+    }
+});</code></pre>
+          <h4>Standalone With Ajax Data</h4>
+          <pre><code>&lt;div class="list-block"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="#" id="autocomplete-standalone-ajax" class="item-link item-content autocomplete-opener"&gt;
+        &lt;input type="hidden"&gt;
+        &lt;div class="item-inner"&gt;
+          &lt;div class="item-title"&gt;Language&lt;/div&gt;
+          &lt;div class="item-after"&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          <pre><code>var autocompleteStandaloneAjax = myApp.autocomplete({
+    openIn: 'page', //open in page
+    opener: $$('#autocomplete-standalone-ajax'), //link that opens autocomplete
+    multiple: true, //allow multiple values
+    valueProperty: 'id', //object's "value" property name
+    textProperty: 'name', //object's "text" property name
+    limit: 50,
+    preloader: true, //enable preloader
+    source: function (autocomplete, query, render) {
+        var results = [];
+        if (query.length === 0) {
+            render(results);
+            return;
+        }
+        // Show Preloader
+        autocomplete.showPreloader();
+        // Do Ajax request to Autocomplete data
+        $$.ajax({
+            url: 'autocomplete-languages.json',
+            method: 'GET',
+            dataType: 'json',
+            //send "query" to server. Useful in case you generate response dynamically
+            data: {
+                query: query
+            },
+            success: function (data) {
+                // Find matched items
+                for (var i = 0; i &lt; data.length; i++) {
+                    if (data[i].name.toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(data[i]);
+                }
+                // Hide Preoloader
+                autocomplete.hidePreloader();
+                // Render items by passing array with result items
+                render(results);
+            }
+        });
+    },
+    onChange: function (autocomplete, value) {
+        var itemText = [],
+            inputValue = [];
+        for (var i = 0; i &lt; value.length; i++) {
+            itemText.push(value[i].name);
+            inputValue.push(value[i].id);
+        }
+        // Add item text value to item-after
+        $$('#autocomplete-standalone-ajax').find('.item-after').text(itemText.join(', '));
+        // Add item value to input value
+        $$('#autocomplete-standalone-ajax').find('input').val(inputValue.join(', '));
+    }
+});</code></pre>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share">
+          <!-- AddThis Button BEGIN -->
+          <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+          <a class="addthis_button_tweet"></a>
+          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
+          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+          <a class="addthis_counter addthis_pill_style"></a>
+          </div>
+          <!-- AddThis Button END -->
+        </div>
+        <div class="github-buttons">
+          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
+          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links"><a href="../">Framework7</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
+        <div class="copy">2015 © Framework7 by iDangero.us</div>
+      </div>
+    </footer>
+    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/main.js"></script>
+    <script>var addthis_config = {"data_track_addressbar":true};</script>
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-13289120-8', 'idangero.us');
+      ga('send', 'pageview');     
+    </script>
+  </body>
+</html>

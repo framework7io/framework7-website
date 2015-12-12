@@ -104,12 +104,13 @@
               </ul>
             </li>
             <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li><a href="progressbar.html">Progress Bar</a></li>
             <li>List View (Table View)
               <ul>
                 <li><a href="list-view.html">List View</a></li>
                 <li><a href="contacts-list.html">Contacts List</a></li>
                 <li><a href="media-list-view.html">Media List View</a></li>
-                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="swipeout.html">Swipeout</a></li>
                 <li><a href="sortable-list.html">Sortable List</a></li>
                 <li><a href="virtual-list.html">Virtual List</a></li>
               </ul>
@@ -133,6 +134,7 @@
             <li><a href="tabs.html">Tabs</a></li>
             <li><a href="swiper.html">Swiper Slider</a></li>
             <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="autocomplete.html">Autocomplete</a></li>
             <li><a href="picker.html">Picker</a></li>
             <li><a href="calendar.html">Calendar / Datepicker</a></li>
             <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
@@ -149,14 +151,14 @@
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Fast Clicks</li>
-            <li> <a href="active-state.html">Active State</a></li>
-            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
-            <li> <a href="touch-ripple.html">Touch Ripple (Material)</a></li>
+            <li><a href="active-state.html">Active State</a></li>
+            <li><a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li><a href="touch-ripple.html">Touch Ripple (Material)</a></li>
             <li class="title">Utilities</li>
-            <li> <a href="device-api.html">Device API</a></li>
-            <li> <a href="support-api.html">Support API</a></li>
+            <li><a href="device-api.html">Device API</a></li>
+            <li><a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
           </ul><a href="#" class="toggle-docs-nav"><span></span></a>
         </div>
         <div class="docs-content with-device">
@@ -420,6 +422,53 @@
           <div class="important-note">
             <p>Note that animted tabs wrapper (div class="tabs-animated-wrap") should be a fixed height. By default, it is 100% height of its parent</p>
           </div>
+          <h2 data-device-preview="../docs-demos/tabs-swipeable.html">Swipeable Tabs</h2>
+          <p>It is also possible to switch tabs with simple transition. This requires additional <code>div class="tabs-swipeable-wrap"</code> wrapper for <code>div class="tabs"</code>.</p>
+          <p>In this example let's put tab links in Subnavbar and we will use <b>page-content</b> as <b>tab</b> to keep scrolling position for each tab separately:</p>
+          <pre><code>&lt;div class="pages navbar-fixed"&gt;
+  &lt;div data-page="home" class="page with-subnavbar"&gt;
+    &lt;div class="navbar"&gt;
+      &lt;div class="navbar-inner"&gt;
+        &lt;div class="center"&gt;Swipeable Tabs&lt;/div&gt;
+        &lt;div class="subnavbar"&gt;
+          &lt;!-- Buttons row as tabs controller in Subnavbar--&gt;
+          &lt;div class="buttons-row"&gt;
+            &lt;!-- Link to 1st tab, active --&gt;
+            &lt;a href="#tab1" class="button active tab-link"&gt;Tab 1&lt;/a&gt;
+            &lt;!-- Link to 2nd tab --&gt;
+            &lt;a href="#tab2" class="button tab-link"&gt;Tab 2&lt;/a&gt;
+            &lt;!-- Link to 3rd tab --&gt;
+            &lt;a href="#tab3" class="button tab-link"&gt;Tab 3&lt;/a&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!-- Tabs swipeable wrapper, required to switch tabs with swipes --&gt;
+    &lt;div class="tabs-swipeable-wrap"&gt;
+      &lt;!-- Tabs, tabs wrapper --&gt;
+      &lt;div class="tabs"&gt;
+        &lt;!-- Tab 1, active by default --&gt;
+        &lt;div id="tab1" class="page-content tab active"&gt;
+          &lt;div class="content-block"&gt;
+            ... Tab 1 content ...
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;!-- Tab 2 --&gt;
+        &lt;div id="tab2" class="page-content tab"&gt;
+          &lt;div class="content-block"&gt;
+            ... Tab 2 content ...
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;!-- Tab 3 --&gt;
+        &lt;div id="tab3" class="page-content tab"&gt;
+          &lt;div class="content-block"&gt;
+            ... Tab 3 content ...
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
           <h2 data-device-preview="../docs-demos/tabs-events.html">Tabs JavaScript events</h2>
           <p>Tabs events could be very useful when you need to do something in JavaScript when some Tabs becomes active:
             <table class="events-table">

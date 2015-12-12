@@ -104,12 +104,13 @@
               </ul>
             </li>
             <li><a href="preloader.html">Preloader Indicator</a></li>
+            <li><a href="progressbar.html">Progress Bar</a></li>
             <li>List View (Table View)
               <ul>
                 <li><a href="list-view.html">List View</a></li>
                 <li><a href="contacts-list.html">Contacts List</a></li>
                 <li><a href="media-list-view.html">Media List View</a></li>
-                <li><a href="swipeout.html">Swipeout </a></li>
+                <li><a href="swipeout.html">Swipeout</a></li>
                 <li><a href="sortable-list.html">Sortable List</a></li>
                 <li><a href="virtual-list.html">Virtual List</a></li>
               </ul>
@@ -133,6 +134,7 @@
             <li><a href="tabs.html">Tabs</a></li>
             <li><a href="swiper.html">Swiper Slider</a></li>
             <li><a href="photo-browser.html">Photo Browser</a></li>
+            <li><a href="autocomplete.html">Autocomplete</a></li>
             <li><a href="picker.html">Picker</a></li>
             <li><a href="calendar.html">Calendar / Datepicker</a></li>
             <li><a href="pull-to-refresh.html">Pull to Refresh</a></li>
@@ -149,21 +151,23 @@
             <li><a href="template7-auto-compilation.html">Templates Auto Compilation</a></li>
             <li><a href="template7-pages.html">Template7 Pages</a></li>
             <li class="title">Fast Clicks</li>
-            <li> <a href="active-state.html">Active State</a></li>
-            <li> <a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
-            <li> <a href="touch-ripple.html">Touch Ripple (Material)</a></li>
+            <li><a href="active-state.html">Active State</a></li>
+            <li><a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
+            <li><a href="touch-ripple.html">Touch Ripple (Material)</a></li>
             <li class="title">Utilities</li>
-            <li> <a href="device-api.html">Device API</a></li>
-            <li> <a href="support-api.html">Support API</a></li>
+            <li><a href="device-api.html">Device API</a></li>
+            <li><a href="support-api.html">Support API</a></li>
             <li class="title"><a href="plugins-api.html">Plugins API</a></li>
-            <li class="title"><a href="custom-build.html">Custom Build  </a></li>
+            <li class="title"><a href="custom-build.html">Custom Build</a></li>
           </ul><a href="#" class="toggle-docs-nav"><span></span></a>
         </div>
         <div class="docs-content with-device">
-          <h1 data-device-preview="../docs-demos/floating-action-button.html">Floating Action Button</h1>
-          <p class="material-only">Floating Action Button is supported only in Material Theme</p>
-          <p>Floating action buttons are used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.</p>
-          <h2>Layout</h2>
+          <div class="full-width">
+            <h1></h1>
+            <p class="material-only">Floating Action Button (FAB) is supported only in Material Theme</p>
+            <p>Floating action buttons are used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.</p>
+          </div>
+          <h2 data-device-preview="../docs-demos/floating-action-button.html">Floating Action Button Layout</h2>
           <p>Layout of floating action button is very simple. Just put it as the direct child of <code>page</code> or <code>view</code>:</p>
           <pre><code>&lt;!-- Page--&gt;
 &lt;div class="page navbar-fixed"&gt;
@@ -173,7 +177,7 @@
       &lt;div class="center"&gt;Floating Action Button&lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-  &lt;!-- Floatin Action Button --&gt;
+  &lt;!-- Floating Action Button --&gt;
   &lt;a href="#" class="floating-button color-pink"&gt;
     &lt;i class="icon icon-plus"&gt;&lt;/i&gt;
   &lt;/a&gt;
@@ -183,8 +187,103 @@
       Lorem ipsum dolor sit amet, ....
     &lt;/div&gt;
   &lt;/div&gt;
-&lt;/div&gt; </code></pre>
-          <div class="stop-scroll-device">        </div>
+&lt;/div&gt;</code></pre>
+          <h2 data-device-preview="../docs-demos/floating-action-button-popover.html">Morph To Popover</h2>
+          <p>If you want to open <a href="popover.html">Popover</a> by tapping on FAB, then you can use FAB that morphs to Popover to add more fancy transition.</p>
+          <p>In this case we need to add additional <code>floating-button-to-popover</code> class to FAB itself:</p>
+          <pre><code>&lt;div class="page navbar-fixed"&gt;
+  ...
+  &lt;!-- Floating Action Button
+  "open-popover" class to open popover
+  "floating-button-to-popover" class to open popover with morph transition
+  data-popover=".demo-popver" to specify which popover to open
+  --&gt;
+  &lt;a href="#" class="floating-button floating-button-to-popover open-popover color-purple"&gt;
+    &lt;i class="icon icon-plus"&gt;&lt;/i&gt;
+  &lt;/a&gt;
+  ...
+&lt;/div&gt;
+  ...
+&lt;!-- Popover --&gt;
+&lt;div class="popover demo-popover"&gt;
+  &lt;div class="popover-inner"&gt;
+    &lt;div class="list-block"&gt;
+      &lt;ul&gt;
+        &lt;li&gt;
+          &lt;a href="#" class="item-content item-link"&gt;
+            &lt;div class="item-inner"&gt;
+              &lt;div class="item-title"&gt;Link 1&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;a href="#" class="item-content item-link"&gt;
+            &lt;div class="item-inner"&gt;
+              &lt;div class="item-title"&gt;Link 2&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;a href="#" class="item-content item-link"&gt;
+            &lt;div class="item-inner"&gt;
+              &lt;div class="item-title"&gt;Link 3&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/a&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          <h2 data-device-preview="../docs-demos/floating-action-button-dial.html">Speed Dial</h2>
+          <p>The floating action button can fling out related actions upon press. The button should remain on screen after the menu is invoked. Tapping in the same spot should either activate the most commonly used action or close the open menu.</p>
+          <p>In this case we need to wrap FAB with <code>&lt;div class="speed-dial"&gt;...&lt;/div&gt;</code> and follow this layout:</p>
+          <pre><code>&lt;div class="page navbar-fixed"&gt;
+  &lt;div class="navbar"&gt;
+    &lt;div class="navbar-inner"&gt;
+      &lt;div class="center"&gt;FAB Speed Dial&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- Speed Dial Wrap --&gt;
+  &lt;div class="speed-dial"&gt;
+    &lt;!-- FAB inside will open Speed Dial actions --&gt;
+    &lt;a href="#" class="floating-button"&gt;
+      &lt;!-- First icon is visible when Speed Dial actions are closed --&gt;
+      &lt;i class="icon icon-plus"&gt;&lt;/i&gt;
+      &lt;!-- Second icon is visible when Speed Dial actions are opened --&gt;
+      &lt;i class="icon icon-close"&gt;&lt;/i&gt;
+    &lt;/a&gt;
+    &lt;!-- Speed Dial Actions --&gt;
+    &lt;div class="speed-dial-buttons"&gt;
+      &lt;!-- First Speed Dial button --&gt;
+      &lt;a href="#"&gt;
+        &lt;i class="icon demo-icon-email"&gt;&lt;/i&gt;
+      &lt;/a&gt;
+      &lt;!-- Second Speed Dial  button --&gt;
+      &lt;a href="#"&gt;
+        &lt;i class="icon demo-icon-calendar"&gt;&lt;/i&gt;
+      &lt;/a&gt;
+      &lt;!-- Third Speed Dial  button --&gt;
+      &lt;a href="#"&gt;
+        &lt;i class="icon demo-icon-upload"&gt;&lt;/i&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- End of Speed Dial --&gt;
+  &lt;div class="page-content"&gt;...&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          <div class="important-note">
+            <ul>
+              <li>
+                <p>Note that Speed Dial actions buttons will appear in reversed order</p>
+              </li>
+              <li>
+                <p>You shouldn't use more than 6 Speed Dial actions</p>
+              </li>
+              <li>
+                <p>You should use at least 3 Speed Dial actions</p>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

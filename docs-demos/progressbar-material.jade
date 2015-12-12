@@ -1,0 +1,183 @@
+extends _layout-material
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .center Progress Bar
+          .page-content
+            .content-block-title Determinate Progress Bar
+            .content-block
+              .content-block-inner
+                p Inline determinate progress bar:
+                .demo-progressbar-inline
+                  p
+                    span.progressbar(data-progress="10")
+                  p.buttons-row
+                    a(href="#", data-progress="10").button.button-raised 10%
+                    a(href="#", data-progress="30").button.button-raised 30%
+                    a(href="#", data-progress="50").button.button-raised 50%
+                    a(href="#", data-progress="100").button.button-raised 100%
+
+                p Inline determinate load & hide:
+                .demo-progressbar-load-hide
+                  p(style="height:2px")
+                  p
+                    a(href="#").button.button-raised Start Loading
+                p Overlay with determinate progress bar on top of the app:
+                p.demo-progressbar-overlay
+                  a(href="#").button.button-raised Start Loading
+            .content-block-title Infinite Progress Bar
+            .content-block
+              .content-block-inner
+                p Inline infinite progress bar
+                p
+                  span.progressbar-infinite
+                p Multi-color infinite progress bar
+                p
+                  span.progressbar-infinite.color-multi
+                p Overlay with infinite progress bar on top of the app
+                p.demo-progressbar-infinite-overlay
+                  a(href="#").button.button-raised Start Loading
+                p Overlay with infinite multi-color progress bar on top of the app
+                p.demo-progressbar-infinite-multi-overlay
+                  a(href="#").button.button-raised Start Loading
+            .content-block-title Colored
+            .list-block
+              ul
+                li.item-content
+                  .item-inner
+                    .progressbar.color-red(data-progress="5")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-pink(data-progress="10")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-purple(data-progress="15")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-deeppurple(data-progress="20")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-indigo(data-progress="25")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-blue(data-progress="30")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-lightblue(data-progress="35")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-cyan(data-progress="40")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-teal(data-progress="45")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-green(data-progress="50")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-lightgreen(data-progress="55")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-lime(data-progress="60")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-yellow(data-progress="65")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-amber(data-progress="70")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-orange(data-progress="75")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-deeporange(data-progress="80")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-brown(data-progress="85")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-gray(data-progress="90")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-bluegray(data-progress="95")
+                li.item-content
+                  .item-inner
+                    .progressbar.color-black(data-progress="100")
+                li.item-content(style="background-color: #999")
+                  .item-inner
+                    .progressbar.color-white(data-progress="95")
+block scripts
+  script.
+    var myApp = new Framework7({
+      material: true
+    });
+    var $$ = Dom7;
+
+    $$('.demo-progressbar-inline .button').on('click', function () {
+        var progress = $$(this).attr('data-progress');
+        var progressbar = $$('.demo-progressbar-inline .progressbar');
+        myApp.setProgressbar(progressbar, progress);
+    });
+    $$('.demo-progressbar-load-hide .button').on('click', function () {
+        var container = $$('.demo-progressbar-load-hide p:first-child');
+        if (container.children('.progressbar').length) return; //don't run all this if there is a current progressbar loading
+
+        myApp.showProgressbar(container, 0);
+
+        // Simluate Loading Something
+        var progress = 0;
+        function simulateLoading() {
+            setTimeout(function () {
+                var progressBefore = progress;
+                progress += Math.random() * 20;
+                myApp.setProgressbar(container, progress);
+                if (progressBefore < 100) {
+                    simulateLoading(); //keep "loading"
+                }
+                else myApp.hideProgressbar(container); //hide
+            }, Math.random() * 200 + 200);
+        }
+        simulateLoading();
+    });
+    $$('.demo-progressbar-overlay .button').on('click', function () {
+        // Add Directly To Body
+        var container = $$('body');
+        if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+
+        myApp.showProgressbar(container, 0, 'yellow');
+
+        // Simluate Loading Something
+        var progress = 0;
+        function simulateLoading() {
+            setTimeout(function () {
+                var progressBefore = progress;
+                progress += Math.random() * 20;
+                myApp.setProgressbar(container, progress);
+                if (progressBefore < 100) {
+                    simulateLoading(); //keep "loading"
+                }
+                else myApp.hideProgressbar(container); //hide
+            }, Math.random() * 200 + 200);
+        }
+        simulateLoading();
+    });
+    $$('.demo-progressbar-infinite-overlay .button').on('click', function () {
+        var container = $$('body');
+        if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+        myApp.showProgressbar(container, 'yellow');
+        setTimeout(function () {
+            myApp.hideProgressbar();
+        }, 5000);
+    });
+    $$('.demo-progressbar-infinite-multi-overlay .button').on('click', function () {
+        var container = $$('body');
+        if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+        myApp.showProgressbar(container, 'multi');
+        setTimeout(function () {
+            myApp.hideProgressbar();
+        }, 5000);
+    });
