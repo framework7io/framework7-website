@@ -162,11 +162,6 @@ block content
             tr
               th(colspan="4") Templates
             tr
-              td template
-              td string
-              td *Look below
-              td Photo Browser's HTML template
-            tr
               td navbarTemplate
               td string
               td *Look below
@@ -182,7 +177,7 @@ block content
               td *Look below
               td Single photo element HTML template
             tr
-              td photoLazyTemplate
+              td lazyPhotoTemplate
               td string
               td *Look below
               td Single lazy loading photo element HTML template
@@ -491,45 +486,6 @@ block content
       .full-width.stop-scroll-device
         h2 Photo Browser Templates 
         p Let's look at Photo Browser templates which you can pass on Photo Browser initialization
-        h3 Main Photo Browser Template
-        p You can pass this customized Template7 template using <code>template</code> parameter. Here is an example template:
-        pre
-          code.html
-            | &lt;div class="photo-browser photo-browser-{{theme}}"&gt;
-            |     &lt;div class="view navbar-fixed toolbar-fixed"&gt;
-            |         {{#unless material}}{{#if navbar}}
-            |         navbarTemplate
-            |         {{/if}}{{/unless}}
-            |         &lt;div class="page no-toolbar {{#unless navbar}}no-navbar{{/unless}} toolbar-fixed navbar-fixed" data-page="photo-browser-slides"&gt;
-            |             {{#if material}}{{#if navbar}}
-            |             navbarTemplate
-            |             {{/if}}{{/if}}
-            |             {{#if toolbar}}
-            |             toolbarTemplate
-            |             {{/if}}
-            |             &lt;div class="photo-browser-captions photo-browser-captions-{{js "this.captionsTheme || this.theme"}}"&gt;
-            |                 {{#each photos}}{{#if caption}}
-            |                 captionTemplate
-            |                 {{/if}}{{/each}}
-            |             &lt;/div&gt;
-            |             &lt;div class="photo-browser-swiper-container swiper-container"&gt;
-            |                 &lt;div class="photo-browser-swiper-wrapper swiper-wrapper"&gt;
-            |                     {{#each photos}}
-            |                     {{#js_compare "this.html || ((typeof this === \'string\' || this instanceof String) && (this.indexOf(\'&lt;\') &gt;= 0 || this.indexOf(\'&gt;\') &gt;= 0))"}}
-            |                         objectTemplate
-            |                     {{else}}
-            |                         {{#if @root.lazyLoading}}
-            |                         photoLazyTemplate
-            |                         {{else}}
-            |                         photoTemplate
-            |                         {{/if}}
-            |                     {{/js_compare}}
-            |                     {{/each}}
-            |                 &lt;/div&gt;
-            |             &lt;/div&gt;
-            |         &lt;/div&gt;
-            |     &lt;/div&gt;
-            | &lt;/div&gt;          
         h3 Navbar Template
         p Here is an example of Navbar template that you can pass in <code>navbarTemplate</code> parameter:
         pre
@@ -588,7 +544,7 @@ block content
             |     &lt;/span&gt;
             | &lt;/div&gt;
         h3 Lazy Photo Element Template
-        p Template example of single photo slide element that you can pass in <code>photoLazyTemplate</code> parameter:
+        p Template example of single photo slide element that you can pass in <code>lazyPhotoTemplate</code> parameter:
         pre
           code
             | &lt;div class="photo-browser-slide photo-browser-slide-lazy swiper-slide"&gt;

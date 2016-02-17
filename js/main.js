@@ -72,10 +72,9 @@
 
     function handleDocsNavToggle() {
         var st = $(window).scrollTop();
-        var toggle = $('.toggle-docs-nav');
         var top = $(window).height() / 2 + st - $('.docs-nav').offset().top - 25;
         if (top < 5) top = 5;
-        toggle.css({
+        $('.toggle-docs-nav').css({
             transform: 'translateY(' + top + 'px)'
         });
     }
@@ -105,7 +104,6 @@
             handleDocsNavToggle();
             $('.toggle-docs-nav').css({opacity:1});
         }
-            
     }
     // Docs scroll spy
     var demoDevicePreviewLink;
