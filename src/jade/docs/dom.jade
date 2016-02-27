@@ -1,0 +1,1028 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Dom7 - Custom DOM Library | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Dom7 - Custom DOM Library
+      p Framework7 doesn't use any third party library, even for DOM manipulation. It has its own custom DOM7 - DOM library that utilizes most edge and high-performance methods for DOM manipulation. You don’t need to learn something new, its usage is very simple because it has the same syntax as well known jQuery library with support of the most popular and widely used methods and jQuery-like chaining.
+      p To start use it there is a <code>Dom7</code> global window function, but we recommend to assign it to some local variable with more handy name, like <code>$$</code>, but not to "$" to prevent confilicts with other libraries like jQuery or Zepto:
+      pre
+        code
+          | //Export DOM7 to local variable to make it easy accessable
+          | var $$ = Dom7;
+      h2 Usage Example
+      p Just everything you already know:
+      pre
+        code
+          | $$('.something').on('click', function (e) {
+          |     $$(this).addClass('hello').attr('title', 'world').insertAfter('.something-else');
+          | });
+      h2 Available Methods
+      p All these methods works almost in the same way and with the same arguments as in jQuery or Zepto:
+      table.methods-table.dom7-table
+        tbody
+          tr
+            th(colspan="2") Classes
+          tr
+            td .addClass(<span>className</span>) 
+            td Add class to elements
+              pre
+                code.js
+                  | //Add "intro" class to all paragraphs
+                  | $$('p').addClass('intro');
+          tr
+            td .removeClass(<span>className</span>) 
+            td Remove specified class
+              pre
+                code.js
+                  | //Add "big" class from all links with "big" class
+                  | $$('a.big').removeClass('big');
+          tr
+            td .hasClass(<span>className</span>) 
+            td Determine whether any of the matched elements are assigned the given class:
+              pre
+                code.html
+                  | &lt;p class="intro"&gt;Lorem ipsum...&lt;/p&gt;
+              pre
+                code.js
+                  | $$('p').hasClass('intro'); //-> true
+          tr
+            td .toggleClass(<span>className</span>) 
+            td Remove (if class is present) or add (if not) one or more classes from each element in the set of matched elements:
+              pre
+                code.html
+                  | &lt;!-- Before --&gt;
+                  | &lt;h1 class="small"&gt;This is first title&lt;/h1&gt;
+                  | &lt;h2&gt;This is subtitle&lt;/h2&gt;                
+              pre
+                code.js
+                  | $$('h1, h2').toggleClass('small');
+              pre
+                code
+                  | &lt;!-- After --&gt;
+                  | &lt;h1&gt;This is first title&lt;/h1&gt;
+                  | &lt;h2 class="small"&gt;This is subtitle&lt;/h2&gt;                
+          tr
+            th(colspan="2") Attributes and properties
+          tr
+            td .prop(<span>propName</span>) 
+            td Get property value:
+              pre
+                code
+                  | var isChecked = $$('input').prop('checked');
+          tr
+            td .prop(<span>propName</span>, <span>propValue</span>) 
+            td Set single property value:
+              pre
+                code
+                  | //Make all checkboxes checked
+                  | $$('input[type="checkbox"]').prop('checked', true);
+          tr
+            td .prop(<span>propertiesObject</span>) 
+            td Set multiple properties:
+              pre
+                code.js
+                  | $$('input').prop({
+                  |   checked: false,
+                  |   disabled: true
+                  | })                
+          tr
+            td .attr(<span>attrName</span>) 
+            td Get attribute value:
+              pre
+                code
+                  | &lt;a href="http://google.com"&gt;Google&lt;/a&gt;
+              pre
+                code.js
+                  | var link = $$('a').attr('href'); //-&gt; http://google.com
+          tr
+            td .attr(<span>attrName</span>, <span>attrValue</span>) 
+            td Set single attribute value:
+              pre
+                code
+                  | //Set all links to google
+                  | $$('a').attr('href', 'http://google.com');
+          tr
+            td .attr(<span>attributesObject</span>) 
+            td Set multiple attributes:
+              pre
+                code.js
+                  | $$('a').attr({
+                  |   id: 'new-id',
+                  |   title: 'Link to Google',
+                  |   href: 'http://google.com'
+                  | }) 
+          tr
+            td .removeAttr(<span>attrName</span>) 
+            td Remove specified attribute:
+              pre
+                code.js
+                  | //Remove "src" attribute from all images
+                  | $$('img').removeAttr('src');
+          tr
+            td .val() 
+            td Get the current value of the first element in the set of matched elements
+              pre
+                code.html
+                  | &lt;input id="myInput" type="text" value="Lorem ipsum"/&gt;
+              pre
+                code.js
+                  | var inputVal = $$('#myInput').val(); //-> 'Lorem ipsum'
+          tr
+            td .val(<span>newValue</span>) 
+            td Set the value of every matched element
+              pre
+                code
+                  | $$('input#myInput').val('New value here');
+          tr
+            th(colspan="2") Data storage
+          tr
+            td .data(<span>key</span>, <span>value</span>) 
+            td Store arbitrary data associated with the matched elements
+              pre
+                code.js
+                  | $$('a').data('user', {
+                  |     id: '123',
+                  |     name: 'John',
+                  |     email: 'john@doe.com'
+                  | });  
+          tr
+            td .data(<span>key</span>) 
+            td Return the value at the named data store for the first element in the collection, as set by data(key, value) or by an HTML5 data-* attribute
+              pre
+                code.js
+                  | var user = $$('a').data('user'); 
+                  | //-> {id: '123', name: 'John', email: 'john@doe.com'}
+              p or
+              pre
+                code.html
+                  | &lt;p data-id="123"&gt;Lorem ipsum...&lt;/p&gt;
+              pre
+                code.js
+                  | var id = $$('p').data('id'); //-> 123
+          tr
+            td .removeData(<span>key</span>) 
+            td Remove specified data
+              pre
+                code.js
+                  | $$('a').removeData('user')
+          tr
+            th(colspan="2") Data Set
+          tr
+            td .dataset()
+            td Returns element's data set (set of data- attributes) as plain Object
+              pre
+                code
+                  | &lt;div id="my-div" data-loop="true" data-animate-pages="false" data-index="0" data-hello="world"&gt;
+                  |     ...
+                  | &lt;/div&gt;
+              pre
+                code.js
+                  | var dataset = $$('#my-div').dataset();
+                  | /* 
+                  | dataset will contain plain object with camelCase keys and with formatted boolean and number types:
+                  | {
+                  |     loop: true,
+                  |     animatePages: false,
+                  |     index: 0,
+                  |     hello: 'world'
+                  | }
+                  | */
+          tr
+            th(colspan="2") CSS transform, transitions
+          tr
+            td .transform(<span>CSSTransformString</span>) 
+            td Adds prefixed CSS transform property: 
+              pre <code class="js">$$('a').transform('rotate(90deg)')</code>
+          tr
+            td .transition(<span>transitionDuration</span>) 
+            td Set CSS transition-duration property to collection: 
+              pre <code class="js">$$('p').transition(300)</code>
+          tr
+            th(colspan="2") Events
+          tr
+            td .on(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) 
+            td Add event handler function to one or more events to the selected elements.
+              pre
+                code.js
+                  | $$('a').on('click', function (e) { 
+                  |   console.log('clicked'); 
+                  | });
+              pre
+                code.js
+                  | $$('input[type="text"]').on('keyup keydown change', function (e) { 
+                  |   console.log('input value changed'); 
+                  | });
+          tr
+            td .on(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>, <span>useCapture</span>) 
+            td Live/delegated event handler
+              pre
+                code.js
+                  | $$(document).on('click', 'a', function (e) { 
+                  |   console.log('link clicked'); 
+                  | });
+          tr
+            td .once(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) 
+            td Add event handler function to one or more events to the selected elements that will be executed only once
+              pre
+                code.js
+                  | $$('a').once('click', function (e) { 
+                  |   console.log('clicked'); 
+                  | });
+              pre
+                code.js
+                  | $$('input[type="text"]').once('keyup keydown change', function (e) { 
+                  |   console.log('input value changed'); 
+                  | });
+          tr
+            td .once(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>, <span>useCapture</span>) 
+            td Live/delegated event handler that will be executed only once
+              pre
+                code.js
+                  | $$(document).once('click', 'a', function (e) { 
+                  |   console.log('link clicked'); 
+                  | });
+          tr
+            td .off(<span>eventName</span>, <span>handler</span>, <span>useCapture</span>) 
+            td Remove event handler
+              pre
+                code.js
+                  | function clickHandler(){
+                  |     console.log('clicked');
+                  | }
+                  | // Add event listener
+                  | $$('a').on('click', clickHandler);
+                  | // Remove event listener
+                  | $$('a').off('click', clickHandler);                  
+              
+          tr
+            td .off(<span>eventName</span>, <span>delegatedTarget</span>, <span>handler</span>, <span>useCapture</span>) 
+            td Remove live/delegated event handler
+              pre
+                code.js
+                  | function clickHandler(){
+                  |     console.log('clicked');
+                  | }
+                  | // Add event listener
+                  | $$(document).on('click', 'a', clickHandler);
+                  | // Remove event listener
+                  | $$(document).off('click', 'a', clickHandler);
+          tr
+            td .trigger(<span>eventName</span>, <span>eventData</span>) 
+            td Execute all handlers added to the matched elements for the specified event
+            pre
+              code.js
+                | $$(window).trigger('resize');
+          tr
+            td .transitionEnd(<span>callback</span>, <span>permanent</span>) 
+            td Adds prefixed transitionEnd event handler to collection:
+              pre
+                code.js
+                  $$('a').transitionEnd(function(){ /* do something */ })
+          tr
+            td .animationEnd(<span>callback</span>) 
+            td Adds prefixed animationEnd event handler to collection:
+              pre
+                code.js
+                  $$('a').animationEnd(function(){ /* do something */ })
+          tr
+            th(colspan="2") Styles
+          tr
+            td .width() 
+            td Get the current computed width for the first element in the set of matched elements
+              pre
+                code.js var boxWidth = $$('div#box').width();
+          tr
+            td .outerWidth(<span>[includeMargin]</span>) 
+            td Get the current computed width for the first element in the set of matched elements, including padding and border, and margin (if includeMargin is <b>true</b>)
+              pre
+                code.js var outerWidth = $$('div#box').outerWidth(true);
+          tr
+            td .height() 
+            td Get the current computed height for the first element in the set of matched elements
+              pre
+                code.js var boxHeight = $$('div#box').height();
+          tr
+            td .outerHeight(<span>[includeMargin]</span>)
+            td Get the current computed height for the first element in the set of matched elements, including padding and border, and margin (if includeMargin is <b>true</b>)
+              pre
+                code.js var outerHeight = $$('div#box').outerHeight(true);
+          tr
+            td .offset() 
+            td Get the current coordinates of the first element relative to the document
+              pre
+                code.js
+                  | var coords = $$('.content').offset(); //-> {top: 100, left: 200}
+                  | var top = coords.top; //-> 100
+                  | var left = coords.left; //-> 200
+          tr
+            td .hide() 
+            td Set "display:none" to the matched elements
+              pre
+                code.js
+                  | //hide all paragraphs
+                  | $$('p').hide();
+          tr
+            td .show() 
+            td Set "display:block" to the matched elements
+              pre
+                code.js
+                  | //show all paragraphs
+                  | $$('p').show();
+          tr
+            td .css(<span>property</span>) 
+            td Get value of specified CSS property for the first element:
+              pre
+                code.js
+                  | $$('.content').css('left'); //-> 200px
+          tr
+            td .css(<span>property</span>, <span>value</span>) 
+            td Set specified CSS property to the matched elements:
+              pre
+                code.js
+                  | $$('.content').css('left', '100px');
+          tr
+            td .css(<span>propertiesObject</span>) 
+            td Set multiple CSS properties to the matched elements:
+              pre
+                code.js
+                  | $$('a').css({
+                  |     left: '100px',
+                  |     top: '200px',
+                  |     color: 'red',
+                  |     width: '300px',
+                  |     marginLeft: '17px',
+                  |     'padding-right': '20px'
+                  | });
+          tr
+            th(colspan="2") Scroll
+          tr
+            td .scrollTop() 
+            td Get scrollTop position of element
+          tr
+            td .scrollTop(<span>position</span>, <span>duration</span>, <span>callback</span>) 
+            td Set scrollTop "position" with animation during "duration" (in ms). Scroll top position will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed
+          tr
+            td .scrollLeft() 
+            td Get scrollLeft position of element
+          tr
+            td .scrollLeft(<span>position</span>, <span>duration</span>, <span>callback</span>) 
+            td Set scrollLeft "position" with animation during "duration" (in ms). Scroll left postion will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed
+          tr
+            td .scrollTo(<span>left</span>, <span>top</span>, <span>duration</span>, <span>callback</span>) 
+            td Set scroll left and scroll top with animation during "duration" (in ms). Scroll postion will be set immediately if duration is not specified. If you have specified "callback" function, then it will be executed after scrolling completed
+          tr
+            th(colspan="2") Dom Manipulation
+          tr
+            td .add(elements) 
+            td Create a new Dom7 collection with elements added to the set of matched elements:
+              pre
+                code.js
+                  | var links = $$('a');
+                  | var divs = $$('div');
+                  | links.add('p').addClass('blue');
+                  | links.add(divs).addClass('red');
+
+          tr
+            td .each(<span>callback</span>) 
+            td Iterate over collection, executing a callback function for each matched element
+          tr
+            td .html() 
+            td Get the HTML contents of the first element in the set of matched elements
+          tr
+            td .html(<span>newInnerHTML</span>) 
+            td Set the HTML contents of every matched element
+          tr
+            td .text() 
+            td Get the text contents of the first element in the set of matched elements
+          tr
+            td .text(<span>newTextContent</span>) 
+            td Set the text contents of every matched element
+          tr
+            td .is(<span>CSSSelector</span>) 
+            td Check the current matched set of elements against CSS selector
+          tr
+            td .is(<span>HTMLElement</span>) 
+            td Check the current matched set of elements against HTML element or Dom7 collection
+          tr
+            td .index() 
+            td Return the position of the first element within the Dom7 collection relative to its sibling elements
+          tr
+            td .eq(<span>index</span>) 
+            td Reduce the set of matched elements to the one at the specified index
+          tr
+            td .append(<span>HTMLString</span>) 
+            td Insert content, specified by the parameter, to the end of each element in the set of matched elements
+          tr
+            td .append(<span>HTMLElement</span>) 
+            td Insert specified HTML element to the end of element in the set of matched elements
+          tr
+            td .appendTo(<span>HTMLElement</span>) 
+            td Insert content/elements, to the end of element specified in parameter
+          tr
+            td .prepend(<span>newHTML</span>) 
+            td Insert content, specified by the parameter, to the beginning of each element in the set of matched elements
+          tr
+            td .prepend(<span>HTMLElement</span>) 
+            td Insert specified HTML element to the beginning of element in the set of matched elements
+          tr
+            td .prependTo(<span>HTMLElement</span>) 
+            td Insert content/elements, to the beginning of element specified in parameter
+          tr
+            td .insertBefore(<span>target</span>) 
+            td Insert every element in the set of matched elements before the target. Target could be specified as CSS selector or HTML element or Dom7 collection
+          tr
+            td .insertAfter(<span>target</span>) 
+            td Insert every element in the set of matched elements after the target. Target could be specified as CSS selector or HTML element or Dom7 collection
+          tr
+            td .next(<span>[selector]</span>) 
+            td Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector
+          tr
+            td .nextAll(<span>[selector]</span>) 
+            td Get all following siblings of each element in the set of matched elements, optionally filtered by a selector
+          tr
+            td .prev(<span>[selector]</span>) 
+            td Get the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector
+          tr
+            td .prevAll(<span>[selector]</span>) 
+            td Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector
+          tr
+            td .parent(<span>[selector]</span>) 
+            td Get the first parent of each element in the current set of matched elements, optionally filtered by a selector
+          tr
+            td .parents(<span>[selector]</span>) 
+            td Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector
+          tr
+            td .closest(<span>[selector]</span>) 
+            td For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree
+          tr
+            td .find(<span>selector</span>) 
+            td Get the descendants of each element in the current set of matched elements, filtered by a selector
+          tr
+            td .children(<span>selector</span>) 
+            td Get the children of each element in the set of matched elements, optionally filtered by a selector
+          tr
+            td .filter(<span>callback</span>) 
+            td Filter collection of elements
+              pre
+                code.js
+                  | var redLinks = $$('a').filter(function(index, el) {
+                  |     return $$(this).hasClass('red');
+                  | })                  
+          
+          tr
+            td .remove() 
+            td Remove/detach matched elements from the Dom
+          
+          tr
+            th(colspan="2") Shortcuts
+          tr
+            td .click()
+            td Trigger "click" event on collection
+          tr
+            td .click(<span>handler</span>) 
+            td Add "click" event handler to collection
+          tr
+            td .blur()
+            td Trigger "blur" event on collection
+          tr
+            td .blur(<span>handler</span>) 
+            td Add "blur" event handler to collection
+          tr
+            td .focus()
+            td Trigger "focus" event on collection
+          tr
+            td .focus(<span>handler</span>) 
+            td Add "focus" event handler to collection
+          tr
+            td .focusin()
+            td Trigger "focusin" event on collection
+          tr
+            td .focusin(<span>handler</span>) 
+            td Add "focusin" event handler to collection
+          tr 
+            td .focusout()
+            td Trigger "focusout" event on collection
+          tr 
+            td .focusout(<span>handler</span>) 
+            td Add "focusout" event handler to collection
+
+          tr 
+            td .keyup()
+            td Trigger "keyup" event on collection
+          tr 
+            td .keyup(<span>handler</span>) 
+            td Add "keyup" event handler to collection
+
+          tr
+            td .keydown()
+            td Trigger "keydown" event on collection
+          tr
+            td .keydown(<span>handler</span>) 
+            td Add "keydown" event handler to collection
+          tr
+            td .keypress()
+            td Trigger "keypress" event on collection
+          tr
+            td .keypress(<span>handler</span>) 
+            td Add "keypress" event handler to collection
+
+          tr
+            td .submit()
+            td Trigger "submit" event on collection
+          tr
+            td .submit(<span>handler</span>) 
+            td Add "submit" event handler to collection
+          tr
+            td .change()
+            td Trigger "change" event on collection
+          tr
+            td .change(<span>handler</span>) 
+            td Add "change" event handler to collection
+
+          tr
+            td .mousedown()
+            td Trigger "mousedown" event on collection
+          tr
+            td .mousedown(<span>handler</span>) 
+            td Add "mousedown" event handler to collection
+
+          tr
+            td .mousemove()
+            td Trigger "mousemove" event on collection
+          tr
+            td .mousemove(<span>handler</span>) 
+            td Add "mousemove" event handler to collection
+
+          tr
+            td .mouseup()
+            td Trigger "mouseup" event on collection
+          tr
+            td .mouseup(<span>handler</span>) 
+            td Add "mouseup" event handler to collection
+
+          tr
+            td .mouseenter()
+            td Trigger "mouseenter" event on collection
+          tr
+            td .mouseenter(<span>handler</span>) 
+            td Add "mouseenter" event handler to collection
+
+          tr
+            td .mouseleave()
+            td Trigger "mouseleave" event on collection
+          tr
+            td .mouseleave(<span>handler</span>) 
+            td Add "mouseleave" event handler to collection
+
+          tr
+            td .mouseout()
+            td Trigger "mouseout" event on collection
+          tr
+            td .mouseout(<span>handler</span>) 
+            td Add "mouseout" event handler to collection
+
+          tr
+            td .mouseover()
+            td Trigger "mouseover" event on collection
+          tr
+            td .mouseover(<span>handler</span>) 
+            td Add "mouseover" event handler to collection
+
+          tr
+            td .touchstart()
+            td Trigger "touchstart" event on collection
+          tr
+            td .touchstart(<span>handler</span>) 
+            td Add "touchstart" event handler to collection
+
+          tr
+            td .touchend()
+            td Trigger "touchend" event on collection
+          tr
+            td .touchend(<span>handler</span>) 
+            td Add "touchend" event handler to collection
+
+          tr
+            td .touchmove()
+            td Trigger "touchmove" event on collection
+          tr
+            td .touchmove(<span>handler</span>) 
+            td Add "touchmove" event handler to collection
+
+          tr
+            td .resize(<span>handler</span>) 
+            td Add "resize" event handler to collection
+
+          tr
+            td .scroll(<span>handler</span>) 
+            td Add "scroll" event handler to collection
+      h2 Utilities
+      h4 Dom7.each
+      p A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties
+      .method-wrap
+        p
+          span.method Dom7.each(<span>object/array</span>, <span>callback</span>) 
+          span - iterate through object or array
+        ul.method-parameters
+          li
+            span.parameter object/array
+            |  - <span class="parameter-type">object</span> or <span class="parameter-type">array</span> - to iterate over. Required.
+          li
+            span.parameter callback
+            |  - <span class="parameter-type">function</span> - callback function that will be executed on every object property, or on every array element. Required.
+      pre
+        code
+          | var fruits = ['Apple', 'Orange', 'Pineapple', 'Bannana'];
+          | $$.each(fruits, function (index, value) {
+          |     alert(index + ': ' + element); 
+          | });          
+          | 
+          | //This produces 4 alerts:
+          | 0: Apple
+          | 1: Orange
+          | 2: Pineapple
+          | 3: Bannana
+      pre
+        code
+          | var person = {
+          |     firstName: 'John',
+          |     lastName: 'Doe',
+          |     age: 25,
+          | };
+          | $$.each(person, function (key, value) {
+          |     alert(key + ': ' + value);
+          | });
+          | 
+          | //This produces 3 alerts:
+          | firstName: John
+          | lastName: Doe
+          | age: 25          
+      h4 Dom7.parseUrlQuery
+      .method-wrap
+        p
+          span.method Dom7.parseUrlQuery(<span>url</span>) 
+          span - parse url query get parameters
+        ul.method-parameters
+          li
+            span.parameter url
+            |  - <span class="parameter-type">string</span> - url with GET parameters. Required.
+        p.method-returns Method returns object with query parameters
+      pre
+        code.js
+          | var query = $$.parseUrlQuery('http://google.com/?id=5&foo=bar');
+          | console.log(query); //-> {id: 5, foo: 'bar'}
+      h4 Dom7.isArray
+      .method-wrap
+        p
+          span.method Dom7.isArray(<span>obj</span>) 
+          span - Determine whether the argument is an array
+        ul.method-parameters
+          li
+            span.parameter obj
+            |  - <span class="parameter-type">object</span> - Object to test whether or not it is an array
+        p.method-returns returns a Boolean indicating whether the object is a JavaScript array
+      pre
+        code.js
+          | var fruits = ['Apple', 'Orange'];
+          | console.log($$.isArray(fruits)); //-> true
+      h4 Dom7.unique
+      .method-wrap
+        p
+          span.method Dom7.unique(<span>array</span>) 
+          span - Remove duplicates in passed array
+        ul.method-parameters
+          li
+            span.parameter obj
+            |  - <span class="parameter-type">array</span> - Array to remove duplicates
+        p.method-returns returns a new unique array
+      pre
+        code.js
+          | var fruits = ['Apple', 'Orange', 'Apple'];
+          | console.log($$.unique(fruits)); //-> ['Apple', 'Orange'];
+      h4 Dom7.serializeObject
+      .method-wrap
+        p
+          span.method Dom7.serializeObject(<span>object</span>) 
+          span - Create a serialized representation of a plain object suitable for use in a URL query string
+        ul.method-parameters
+          li
+            span.parameter object
+            |  - <span class="parameter-type">object</span> - Object to serialize
+        p.method-returns returns a new unique array
+      pre
+        code.js
+          | var params = {foo: 'bar', id: 5};
+          | console.log($$.serializeObject(params)); //-> 'foo=bar&id=5'
+      h4 Dom7.toCamelCase
+      .method-wrap
+        p
+          span.method Dom7.toCamelCase(<span>string</span>) 
+          span - Convert hypens-case string to camelCase string
+        ul.method-parameters
+          li
+            span.parameter string
+            |  - <span class="parameter-type">string</span> - hypens-case string
+        p.method-returns returns a new camelCase string
+      pre
+        code
+          | var hypensCaseString = 'hello-my-world';
+          | var camelCaseString = $$.toCamelCase(hypensCaseString);
+          | console.log(camelCaseString); //helloMyWorld
+      h4 Dom7.dataset
+      .method-wrap
+        p
+          span.method Dom7.dataset(<span>el</span>) 
+          span - Get element's data set (set of data- attributes) as plain Object
+        ul.method-parameters
+          li
+            span.parameter el
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - element with data- attributes to get dataset from
+        p.method-returns returns a new plain object with dataset
+      pre
+        code
+          | &lt;div id="my-div" data-loop="true" data-animate-pages="false" data-index="0" data-hello="world"&gt;
+          |     ...
+          | &lt;/div&gt;
+      pre
+        code.js
+          | var dataset = $$.dataset('#my-div');
+          | /* 
+          | dataset will create plain object with camelCase keys and with formatted boolean and number types:
+          | {
+          |     loop: true,
+          |     animatePages: false,
+          |     index: 0,
+          |     hello: 'world'
+          | }
+          | */          
+      h4 Dom7.requestAnimationFrame
+      .method-wrap
+        p
+          span.method Dom7.requestAnimationFrame(<span>callback</span>) 
+          span - Cross-browser implementation on requestAnimationFrame
+        ul.method-parameters
+          li
+            span.parameter callback
+            |  - <span class="parameter-type">function</span> - A parameter specifying a function to call when it's time to update your animation for the next repaint
+        p.method-returns returns animation request id, that uniquely identifies the entry in the callback list
+      pre
+        code.js
+          | var animId;
+          | function anim() {
+          |   var left = parseInt($$('#anim').css('left'), 10) + 1;
+          |   $$('#anim').css({left: left + 'px'})
+          |   animId = $.requestAnimationFrame(anim);
+          | }
+          | animId = $.requestAnimationFrame(anim);
+      h4 Dom7.cancelAnimationFrame
+      .method-wrap
+        p
+          span.method Dom7.cancelAnimationFrame(<span>requestID</span>) 
+          span - Cancels an animation frame request
+        ul.method-parameters
+          li
+            span.parameter requestID
+            |  - <span class="parameter-type">number</span> - The ID value returned by the call to $$.requestAnimationFrame() that requested the callback
+      pre
+        code.js
+          | $.cancelAnimationFrame(animId);
+      h2 Ajax
+      .method-wrap
+        p
+          span.method $$.ajax(parameters) 
+          span - Load data from the server
+        ul.method-parameters
+          li
+            span.parameter parameters
+            |  - <span class="parameter-type">object</span> - Request parameters
+        p.method-returns returns plain XHR object
+      p Let's look at the list of available parameters
+      table.params-table
+        thead
+          tr
+            th Parameter
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td async
+            td boolean
+            td true
+            td If you need synchronous requests, set this option to <code>false</code>
+          tr
+            td method
+            td string
+            td 'GET'
+            td Request method (e.g. "POST", "GET", "PUT")
+          tr
+            td cache
+            td boolean
+            td true
+            td If set to false, it will force requested pages not to be cached by the browser. Setting cache to false will only work correctly with HEAD and GET requests. It works by appending "_nocache={timestamp}" to the GET parameters
+          tr
+            td contentType
+            td string
+            td 'application/x-www-form-urlencoded'
+            td Content type. Also could be 'multipart/form-data' and 'text/plain'. For cross-domain requests, setting the content type to anything other than application/x-www-form-urlencoded, multipart/form-data, or text/plain will trigger the browser to send a preflight OPTIONS request to the server
+          tr
+            td crossDomain
+            td boolean
+            td undefined
+            td If you wish to force a crossDomain request (such as JSONP) on the same domain, set the value of crossDomain to true. When <code>true</code> additional "X-Requested-With: XMLHttpRequest" header will be added to request
+          tr
+            td data
+            td Object or String or Array
+            td 
+            td Data to be sent to the server. It is converted to a query string, if not already a string. It's appended to the url for GET-requests. See processData option to prevent this automatic processing. For POST requests could be <code>FormData</code> type
+          tr
+            td processData
+            td boolean
+            td true
+            td By default, data passed in to the data option as an object (technically, anything other than a string) will be processed and transformed into a query string, fitting to the default content-type "application/x-www-form-urlencoded". If you want to send a DOMDocument, or other non-processed data, set this option to <code>false</code>
+          tr
+            td dataType
+            td string
+            td 'text'
+            td The type of data that you're expecting back from the server. Could be 'text' or 'json'
+          tr
+            td headers
+            td object
+            td 
+            td An object of additional header key/value pairs to send along with requests using the XMLHttpRequest transport
+          tr
+            td xhrFields
+            td object
+            td 
+            td An object of fieldName-fieldValue pairs to set on the native XHR object
+          tr
+            td username
+            td string
+            td 
+            td A username to be used with XMLHttpRequest in response to an HTTP access authentication request
+          tr
+            td password
+            td string
+            td 
+            td A password to be used with XMLHttpRequest in response to an HTTP access authentication request
+          tr
+            td timeout
+            td number
+            td 0
+            td Set a timeout (in milliseconds) for the request
+          tr
+            th(colspan="4") Callbacks
+          tr
+            td beforeSend
+            td function (xhr)
+            td
+            td A pre-request callback function that can be used to modify the XHR object before it is sent. Use this to set custom headers, etc
+          tr
+            td error
+            td function (xhr, status)
+            td
+            td A function to be called if the request fails
+          tr
+            td success
+            td function (data, status, xhr)
+            td
+            td A function to be called if the request succeeds
+          tr
+            td complete
+            td function (xhr, status)
+            td
+            td A function to be called when the request finishes (after success and error callbacks are executed)
+          tr
+            td statusCode
+            td object
+            td
+            td An object of numeric HTTP codes and functions to be called when the response has the corresponding code. For example, the following will alert when the response status is a 404:
+              pre
+                code
+                  | $$.ajax({
+                  |   url: 'somepage.html',
+                  |   statusCode: {
+                  |     404: function (xhr) {
+                  |       alert('page not found');
+                  |     }
+                  |   }
+                  | })                  
+          
+      h3 Ajax Events
+      p Each Ajax request produces global Ajax events on document, so you can always intercept and handle them:
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Description
+        tbody
+          tr
+            td ajaxStart
+            td <code>document</code>
+            td A pre-request event that can be used to modify the XHR object before it is sent. Use this to set custom headers
+          tr
+            td ajaxError
+            td <code>document</code>
+            td Event to be triggered if the request fails
+          tr
+            td ajaxSuccess
+            td <code>document</code>
+            td Event to be triggered if the request succeeds
+          tr
+            td ajaxComplete
+            td <code>document</code>
+            td Event to be triggered when the request finishes (after success and error events are executed)
+      p For example:
+      pre
+        code
+          | $$(document).on('ajaxComplete', function (e) {
+          |   var xhr = e.detail.xhr;
+          |   console.log('request performed');
+          | });
+      h3 Shorthand Methods
+      h4 Dom7.get
+      .method-wrap
+        p
+          span.method $$.get(<span>url</span>, <span>data</span>, <span>success</span>) 
+          span - Load data from the server using a HTTP GET request
+        ul.method-parameters
+          li
+            span.parameter url
+            |  - <span class="parameter-type">string</span> - Request url
+          li
+            span.parameter data
+            |  - <span class="parameter-type">object</span> - A plain object or string that is sent to the server with the request. <em>Optional</em>
+          li
+            span.parameter success
+            |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        p.method-returns returns plain XHR object
+      pre
+        code.js
+          | $$.get('blog-post.php', {foo:'bar', id:5}, function (data) {
+          |   $$('.articles').html(data);
+          |   console.log('Load was performed');
+          | });
+      h4 Dom7.post
+      .method-wrap
+        p
+          span.method $$.post(<span>url</span>, <span>data</span>, <span>success</span>) 
+          span - Load data from the server using a HTTP POST request
+        ul.method-parameters
+          li
+            span.parameter url
+            |  - <span class="parameter-type">string</span> - Request url
+          li
+            span.parameter data
+            |  - <span class="parameter-type">object</span> - A plain object or <em>FormData</em> or string that is sent to the server with the request. <em>Optional</em>
+          li
+            span.parameter success
+            |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        p.method-returns returns plain XHR object
+      pre
+        code.js
+          | $$.post('auth.php', {username:'foo', password: 'bar'}, function (data) {
+          |   $$('.login').html(data);
+          |   console.log('Load was performed');
+          | });
+      h4 Dom7.getJSON
+      .method-wrap
+        p
+          span.method $$.getJSON(<span>url</span>, <span>data</span>, <span>success</span>) 
+          span - Load JSON-encoded data from the server using a GET HTTP request
+        ul.method-parameters
+          li
+            span.parameter url
+            |  - <span class="parameter-type">string</span> - Request url
+          li
+            span.parameter data
+            |  - <span class="parameter-type">object</span> - A plain object or <em>FormData</em> or string that is sent to the server with the request. <em>Optional</em>
+          li
+            span.parameter success
+            |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        p.method-returns returns plain XHR object
+      pre
+        code.js
+          | $$.getJSON('items.json', function (data) {
+          |   console.log(data);
+          | });
+      h3 Original Request Parameters
+      p Each of Ajax methods returns plain XHR object, which is also available in callbacks. This default XHR object extended with the following properties:
+      table.methods-table
+        tbody
+          tr
+            th(colspan="2") Properties
+          tr
+            td xhr.requestParameters
+            td Object with passed XHR request parameters 
+          tr
+            td xhr.requestUrl
+            td String with request URL
+          

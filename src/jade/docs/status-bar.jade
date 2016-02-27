@@ -1,0 +1,59 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Status bar overlay | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Status bar overlay
+      p iOS 7+ allows you to have make full screen apps. But there could be such problem when status bar overlap your app:
+      .row
+        .col-50
+          p
+            strong Not good!
+          img(src="#{cdn}/i/docs/statusbar1.png", width="320")
+        .col-50
+          p
+            strong Good!
+          img(src="#{cdn}/i/docs/statusbar2.png", width="320")
+      p Framework7 helps you to solve this issue. It automatically detects if your app in full screen mode, and automatically adds <strong>"with-statusbar-overlay"</strong> class to <code>&lt;html&gt;</code> if app in full screen mode (or remove this class if app not in full screen mode). With this <strong>"with-statusbar-overlay"</strong> class (when app in full screen mode) <code>&lt;html&gt;</code> has additional padding on top to move bottom whole app's content on size of Status bar (20px).
+      p Now, when Framework7 did its job on this part, we can control background color of Status bar, we need to add <code>&lt;div class="statusbar-overlay"&gt;</code> right in <code>&lt;body&gt;</code>:
+      pre
+        code
+          | ...
+          | &lt;body&gt;
+          |   &lt;div class="statusbar-overlay"&gt;&lt;/div&gt;
+          |   ...
+      p This <strong>"statusbar-overlay"</strong> div is always fixed on top of screen and hidden by default. It becomes visible only when app is in full screen mode and <code>html</code> has "with-statusbar-overlay" class.
+      p We need just one CSS rule to make our status bar background pink:
+      pre
+        code
+          | .statusbar-overlay {
+          |     background: pink;
+          | }
+      p Such logic allows pretty flexible control over Status bar background and we can change its background dynamically. 
+      p For example, we have dark left-side panel with cover effect. We may change Status bar background to more dark color when panel opened:
+      pre
+        code
+          | /* Default Status bar background */
+          | .statusbar-overlay {
+          |     background: pink;
+          |     /* We can add transition for smooth color animation */
+          |     -webkit-transition: 400ms;
+          |     transition: 400ms;
+          | }
+          | 
+          | /* Change Status bar background when panel opened */
+          | body.with-panel-left-cover .statusbar-overlay {
+          |     background: #222;
+          | }       
+      h4 Problems
+      ul
+        li
+          p On home-screen web apps Status bar text color is always white. There is no way to change it.
+        li
+          p In PhoneGap apps Status bar text color is always black by default. It can't be changed from Framework7, but can be customized with PhoneGap plugins like <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>

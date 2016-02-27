@@ -1,0 +1,395 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Tabs | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Tabs
+        p Tabs allow to simply switch between different content.
+        h2 Tabs Layout
+        p Let's look at Tabs layout:
+        pre
+          code
+            | &lt;!-- Tabs wrapper, shoud have "tabs" class. Required element --&gt;
+            | &lt;div class="tabs"&gt;
+            |   &lt;!-- First tab, should have "tab" class and unique id attribute --&gt;
+            |   &lt;!-- First tab is active by default - additional "active" class --&gt;
+            |   &lt;div class="tab active" id="tab1"&gt;
+            |     ... Tab 1 content goes here ...
+            |   &lt;/div&gt;
+            |   &lt;!-- Second tab, should have "tab" class and unique id attribute --&gt;
+            |   &lt;div class="tab" id="tab2"&gt;
+            |     ... Tab 2 content goes here ...
+            |   &lt;/div&gt;
+            |   &lt;!-- Third tab, should have "tab" class and unique id attribute --&gt;
+            |   &lt;div class="tab" id="tab3"&gt;
+            |     ... Tab 3 content goes here ...
+            |   &lt;/div&gt;
+            | &lt;/div&gt;  
+        p Where:
+        ul
+          li <code>div class="tabs"</code> - required wrapper for all tabs. If you miss this elements, tabs will now work
+          li <code>div class="tab"</code> - single tab. Should have <strong>unique</strong> <code>id</code> attribute
+          li <code>div class="tab active"</code> - single active tab. Tab which is active (visible) by default, should have additional "<strong>active</strong>" class
+        h2 Switching between tabs
+        p After we have our tabs layout we need some contoller so user can switch between them. 
+        p To make it work we need to create links (<code>&lt;a&gt;</code> tags) with "<strong>tab-link</strong>" class and <code>href</code> attribute equal to the <code>id</code> attribute of target tab:
+        pre
+          code
+            | &lt;!-- Link that activates first tab, has the same href attribute (#tab1) as the id attribute of first tab (tab1)  --&gt;
+            | &lt;a href="#tab1" class="tab-link active"&gt;Tab 1&lt;/a&gt;
+            | 
+            | &lt;!-- Link that activates 2nd tab, has the same href attribute (#tab2) as the id attribute of 2nd tab (tab2)  --&gt;
+            | &lt;a href="#tab2" class="tab-link"&gt;Tab 2&lt;/a&gt;
+            | 
+            | &lt;!-- Link that activates 3rd tab, has the same href attribute (#tab2) as the id attribute of 3rd tab (tab3)  --&gt;
+            | &lt;a href="#tab3" class="tab-link"&gt;Tab 3&lt;/a&gt; 
+        .important-note
+          p As you may see, first link also has "<strong>active</strong>" class. It is not required, but if all this links will be on the same DOM tree level (the same-level children of mutual parent), then script will also change this "active" class on link related to active tab. It is useful when your "active" link has different visual style (like buttons <a href="buttons.html#buttons-row---segmented-control">Buttons Row / Segmented Control</a> or links in <a href="tabbar.html">Tab bar</a>)
+        h2 Switch multiple tabs
+        p Such notation as above uses ID attributes to specify tabs we need to switch to. But sometimes we may have situation when we need to switch few tabs using one tab-link, for this case we may use classes instead of IDs and "data-tab" attribute for tab-link. For example:
+        pre
+          code
+            | &lt;!-- Top Tabs --&gt;
+            | &lt;div class="tabs tabs-top"&gt;
+            |   &lt;div class="tab tab1 active"&gt;...&lt;/div&gt;
+            |   &lt;div class="tab tab2"&gt;...&lt;/div&gt;
+            |   &lt;div class="tab tab3"&gt;...&lt;/div&gt;
+            | &lt;/div&gt;
+            | &lt;!-- Bottom Tabs --&gt;
+            | &lt;div class="tabs tabs-bottom"&gt;
+            |   &lt;div class="tab tab1 active"&gt;...&lt;/div&gt;
+            |   &lt;div class="tab tab2"&gt;...&lt;/div&gt;
+            |   &lt;div class="tab tab3"&gt;...&lt;/div&gt;
+            | &lt;/div&gt;            
+            | &lt;!-- Tabs links --&gt;
+            | &lt;div class="tab-links"&gt;
+            |   &lt;!-- This links will switch top and bottom tabs to .tab1 --&gt;
+            |   &lt;a href="#" class="tab-link" data-tab=".tab1"&gt;Tab 1&lt;/a&gt;
+            |   &lt;!-- This links will switch top and bottom tabs to .tab2 --&gt;
+            |   &lt;a href="#" class="tab-link" data-tab=".tab2"&gt;Tab 2&lt;/a&gt;
+            |   &lt;!-- This links will switch top and bottom tabs to .tab3 --&gt;
+            |   &lt;a href="#" class="tab-link" data-tab=".tab3"&gt;Tab 3&lt;/a&gt;
+            | &lt;/div&gt;
+        p Where <code>data-tab</code> attribute of tab-link contains CSS selector of target tab/tabs
+
+      h3(data-device-preview="../docs-demos/tabs-inline.html") Inline Tabs example
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;!-- Buttons row as tabs controller --&gt;
+          |     &lt;div class="buttons-row"&gt;
+          |       &lt;!-- Link to 1st tab, active --&gt;
+          |       &lt;a href="#tab1" class="tab-link active button"&gt;Tab 1&lt;/a&gt;
+          |       &lt;!-- Link to 2nd tab --&gt;
+          |       &lt;a href="#tab2" class="tab-link button"&gt;Tab 2&lt;/a&gt;
+          |       &lt;!-- Link to 3rd tab --&gt;
+          |       &lt;a href="#tab3" class="tab-link button"&gt;Tab 3&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Tabs, tabs wrapper --&gt;
+          |   &lt;div class="tabs"&gt;
+          |     &lt;!-- Tab 1, active by default --&gt;
+          |     &lt;div id="tab1" class="tab active"&gt;
+          |       &lt;div class="content-block"&gt;
+          |         &lt;p&gt;This is tab 1 content&lt;/p&gt;
+          |         ...
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;!-- Tab 2 --&gt;
+          |     &lt;div id="tab2" class="tab"&gt;
+          |       &lt;div class="content-block"&gt;
+          |         &lt;p&gt;This is tab 2 content&lt;/p&gt;
+          |         ...
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;!-- Tab 3 --&gt;
+          |     &lt;div id="tab3" class="tab"&gt;
+          |       &lt;div class="content-block"&gt;
+          |         &lt;p&gt;This is tab 3 content&lt;/p&gt;
+          |         ...
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      h3(data-device-preview="../docs-demos/tabs-navbar.html") Switch tabs from Navbar example
+      pre
+        code
+          | &lt;div class="navbar"&gt;
+          |   &lt;div class="navbar-inner"&gt;
+          |     &lt;div class="center"&gt;
+          |       &lt;!-- Buttons row as tabs controller in navbar--&gt;
+          |       &lt;div class="buttons-row"&gt;
+          |         &lt;!-- Link to 1st tab, active --&gt;
+          |         &lt;a href="#tab1" class="tab-link active button"&gt;Tab 1&lt;/a&gt;
+          |         &lt;!-- Link to 2nd tab --&gt;
+          |         &lt;a href="#tab2" class="tab-link button"&gt;Tab 2&lt;/a&gt;
+          |         &lt;!-- Link to 3rd tab --&gt;
+          |         &lt;a href="#tab3" class="tab-link button"&gt;Tab 3&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | &lt;div class="pages"&gt;
+          |   &lt;div class="page"&gt;
+          |     &lt;!-- Tabs, tabs wrapper, pate-content are tabs now --&gt;
+          |     &lt;div class="page-content tabs"&gt;
+          |       &lt;!-- Tab 1, active by default --&gt;
+          |       &lt;div id="tab1" class="tab active"&gt;
+          |         &lt;div class="content-block"&gt;
+          |           &lt;p&gt;This is tab 1 content&lt;/p&gt;
+          |           ...
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;!-- Tab 2 --&gt;
+          |       &lt;div id="tab2" class="tab"&gt;
+          |         &lt;div class="content-block"&gt;
+          |           &lt;p&gt;This is tab 2 content&lt;/p&gt;
+          |           ...
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;!-- Tab 3 --&gt;
+          |       &lt;div id="tab3" class="tab"&gt;
+          |         &lt;div class="content-block"&gt;
+          |           &lt;p&gt;This is tab 3 content&lt;/p&gt;
+          |           ...
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;              
+      h3(data-device-preview="../docs-demos/tabs-tabbar.html") Switch views from Tab bar example
+      p Why single Tab could not be a seprate View with its own navigation and layout? It can, so you can just switch Views as tabs:
+      pre
+        code
+          | &lt;!-- Tabs, now tabs wrapper is "views" --&gt;
+          | &lt;div class="views tabs toolbar-fixed"&gt;
+          |   &lt;!-- Tab 1 - View 1, active by default --&gt;
+          |   &lt;div id="tab1" class="view tab active"&gt;
+          |     &lt;div class="navbar"&gt;
+          |       &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="center"&gt;View 1&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="pages navbar-fixed"&gt;
+          |       &lt;div data-page="home-1" class="page"&gt;
+          |         &lt;div class="page-content"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             &lt;p&gt;This is view 1&lt;/p&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Tab 2 - View 2 --&gt;
+          |   &lt;div id="tab2" class="view tab"&gt;
+          |     &lt;div class="navbar"&gt;
+          |       &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="center"&gt;View 2&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="pages navbar-fixed"&gt;
+          |       &lt;div data-page="home-2" class="page"&gt;
+          |         &lt;div class="page-content"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             &lt;p&gt;This is view 2&lt;/p&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Tab 2 - View 3 --&gt;
+          |   &lt;div id="tab3" class="view tab"&gt;
+          |     &lt;div class="navbar"&gt;
+          |       &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="center"&gt;View 3&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="pages navbar-fixed"&gt;
+          |       &lt;div data-page="home-3" class="page"&gt;
+          |         &lt;div class="page-content"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             &lt;p&gt;This is view 3&lt;/p&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Tab bar with tab links --&gt;
+          |   &lt;div class="toolbar tabbar"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |       &lt;a href="#tab1" class="tab-link active"&gt;&lt;i class="icon demo-icon-1"&gt;&lt;/i&gt;&lt;/a&gt;
+          |       &lt;a href="#tab2" class="tab-link"&gt;&lt;i class="icon demo-icon-2"&gt;&lt;/i&gt;&lt;/a&gt;
+          |       &lt;a href="#tab3" class="tab-link"&gt;&lt;i class="icon demo-icon-3"&gt;&lt;/i&gt;&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      h2(data-device-preview="../docs-demos/tabs-animated.html") Animated Tabs
+      p It is also possible to switch tabs with simple transition. This requires additional <code>div class="tabs-animated-wrap"</code> wrapper for <code>div class="tabs"</code>:
+      pre
+        code
+          | &lt;div class="navbar"&gt;
+          |   &lt;div class="navbar-inner"&gt;
+          |     &lt;div class="center"&gt;
+          |       &lt;!-- Buttons row as tabs controller in navbar--&gt;
+          |       &lt;div class="buttons-row"&gt;
+          |         &lt;!-- Link to 1st tab, active --&gt;
+          |         &lt;a href="#tab1" class="tab-link active button"&gt;Tab 1&lt;/a&gt;
+          |         &lt;!-- Link to 2nd tab --&gt;
+          |         &lt;a href="#tab2" class="tab-link button"&gt;Tab 2&lt;/a&gt;
+          |         &lt;!-- Link to 3rd tab --&gt;
+          |         &lt;a href="#tab3" class="tab-link button"&gt;Tab 3&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | &lt;div class="pages"&gt;
+          |   &lt;div class="page"&gt;
+          |     &lt;div class="page-content"&gt;
+          |       &lt;!-- Tabs animated wrapper, required to switch tabs with transition --&gt;
+          |       &lt;div class="tabs-animated-wrap"&gt;
+          |         
+          |         &lt;!-- Tabs, tabs wrapper --&gt;
+          |         &lt;div class="tabs"&gt;
+          |           &lt;!-- Tab 1, active by default --&gt;
+          |           &lt;div id="tab1" class="tab active"&gt;
+          |             ... Tab 1 content ...
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- Tab 2 --&gt;
+          |           &lt;div id="tab2" class="tab"&gt;
+          |             ... Tab 2 content ...
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- Tab 3 --&gt;
+          |           &lt;div id="tab3" class="tab"&gt;
+          |             ... Tab 3 content ...
+          |           &lt;/div&gt;       
+          |         &lt;/div&gt;
+          |         
+          |       &lt;/div&gt; 
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt; 
+      .important-note
+        p Note that animted tabs wrapper (div class="tabs-animated-wrap") should be a fixed height. By default, it is 100% height of its parent
+
+      h2(data-device-preview="../docs-demos/tabs-swipeable.html") Swipeable Tabs
+      p It is also possible to switch tabs with simple transition. This requires additional <code>div class="tabs-swipeable-wrap"</code> wrapper for <code>div class="tabs"</code>.
+      p In this example let's put tab links in Subnavbar and we will use <b>page-content</b> as <b>tab</b> to keep scrolling position for each tab separately:
+      pre
+        code
+          | &lt;div class="pages navbar-fixed"&gt;
+          |   &lt;div data-page="home" class="page with-subnavbar"&gt;
+          |     &lt;div class="navbar"&gt;
+          |       &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="center"&gt;Swipeable Tabs&lt;/div&gt;
+          |         &lt;div class="subnavbar"&gt;
+          |           &lt;!-- Buttons row as tabs controller in Subnavbar--&gt;
+          |           &lt;div class="buttons-row"&gt;
+          |             &lt;!-- Link to 1st tab, active --&gt;
+          |             &lt;a href="#tab1" class="button active tab-link"&gt;Tab 1&lt;/a&gt;
+          |             &lt;!-- Link to 2nd tab --&gt;
+          |             &lt;a href="#tab2" class="button tab-link"&gt;Tab 2&lt;/a&gt;
+          |             &lt;!-- Link to 3rd tab --&gt;
+          |             &lt;a href="#tab3" class="button tab-link"&gt;Tab 3&lt;/a&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;!-- Tabs swipeable wrapper, required to switch tabs with swipes --&gt;
+          |     &lt;div class="tabs-swipeable-wrap"&gt;
+          |       &lt;!-- Tabs, tabs wrapper --&gt;
+          |       &lt;div class="tabs"&gt;
+          |         &lt;!-- Tab 1, active by default --&gt;
+          |         &lt;div id="tab1" class="page-content tab active"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             ... Tab 1 content ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |         &lt;!-- Tab 2 --&gt;
+          |         &lt;div id="tab2" class="page-content tab"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             ... Tab 2 content ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |         &lt;!-- Tab 3 --&gt;
+          |         &lt;div id="tab3" class="page-content tab"&gt;
+          |           &lt;div class="content-block"&gt;
+          |             ... Tab 3 content ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+
+      h2(data-device-preview="../docs-demos/tabs-events.html") Tabs JavaScript events
+      p Tabs events could be very useful when you need to do something in JavaScript when some Tabs becomes active:
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td show
+              td Tab Element<span>&lt;div class="tab"&gt;</span>
+              td Event will be triggered when Tab becomes visible
+      pre
+        code
+          | var myApp = new Framework7();   
+          | var $$ = Dom7;
+          | 
+          | $$('#tab1').on('show', function () {
+          |     myApp.alert('Tab 1 is visible');
+          | });
+          | 
+          | $$('#tab2').on('show', function () {
+          |     myApp.alert('Tab 2 is visible');
+          | });
+          | 
+          | $$('#tab3').on('show', function () {
+          |     myApp.alert('Tab 3 is visible');
+          | });          
+      h2(data-device-preview="../docs-demos/tabs-javascript.html") Show Tab using JavaScript
+      p It is also possible to show tab (switch tabs) using JavaScript. We should call the following App method:
+      p
+        span.method myApp.showTab(<span>tab</span>)</span>
+      ul.method-parameters
+        li
+          span.parameter tab
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Tab to open. Requred
+        li.method-returns This method returns <strong>true</strong> if tab has been changed, otherwise it returns <strong>false</strong>
+      pre
+        code
+          | &lt;a href="#" class="show-tab-1"&gt;Show Tab 1&lt;/a&gt;
+          | &lt;a href="#" class="show-tab-2"&gt;Show Tab 2&lt;/a&gt;
+          | &lt;a href="#" class="show-tab-3"&gt;Show Tab 3&lt;/a&gt;
+      pre
+        code
+          | var myApp = new Framework7();   
+          | var $$ = Dom7;
+          | 
+          | $$('.show-tab-1').on('click', function () {
+          |     myApp.showTab('#tab1');
+          | });
+          | $$('.show-tab-2').on('click', function () {
+          |     myApp.showTab('#tab2');
+          | });
+          | $$('.show-tab-3').on('click', function () {
+          |     myApp.showTab('#tab3');
+          | });          
+      
+      .device-spacer

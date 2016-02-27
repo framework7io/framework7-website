@@ -1,0 +1,137 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Floating Action Button | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1
+        p.material-only Floating Action Button (FAB) is supported only in Material Theme
+        p Floating action buttons are used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.
+      h2(data-device-preview="../docs-demos/floating-action-button.html") Floating Action Button Layout
+      p Layout of floating action button is very simple. Just put it as the direct child of <code>page</code> or <code>view</code>:
+      pre
+        code
+          | &lt;!-- Page--&gt;
+          | &lt;div class="page navbar-fixed"&gt;
+          |   &lt;!-- Navbar--&gt;
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="center"&gt;Floating Action Button&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Floating Action Button --&gt;
+          |   &lt;a href="#" class="floating-button color-pink"&gt;
+          |     &lt;i class="icon icon-plus"&gt;&lt;/i&gt;
+          |   &lt;/a&gt;
+          |   &lt;!-- Scrollable Page Content--&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       Lorem ipsum dolor sit amet, ....
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      h2(data-device-preview="../docs-demos/floating-action-button-popover.html") Morph To Popover
+      p If you want to open <a href="popover.html">Popover</a> by tapping on FAB, then you can use FAB that morphs to Popover to add more fancy transition.
+      p In this case we need to add additional <code>floating-button-to-popover</code> class to FAB itself:
+      pre
+        code
+          | &lt;div class="page navbar-fixed"&gt;
+          |   ...
+          |   &lt;!-- Floating Action Button
+          |   "open-popover" class to open popover
+          |   "floating-button-to-popover" class to open popover with morph transition
+          |   data-popover=".demo-popver" to specify which popover to open
+          |   --&gt;
+          |   &lt;a href="#" class="floating-button floating-button-to-popover open-popover color-purple"&gt;
+          |     &lt;i class="icon icon-plus"&gt;&lt;/i&gt;
+          |   &lt;/a&gt;
+          |   ...
+          | &lt;/div&gt;
+          |   ...
+          | &lt;!-- Popover --&gt;
+          | &lt;div class="popover demo-popover"&gt;
+          |   &lt;div class="popover-inner"&gt;
+          |     &lt;div class="list-block"&gt;
+          |       &lt;ul&gt;
+          |         &lt;li&gt;
+          |           &lt;a href="#" class="item-content item-link"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Link 1&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/a&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;a href="#" class="item-content item-link"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Link 2&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/a&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;a href="#" class="item-content item-link"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Link 3&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/a&gt;
+          |         &lt;/li&gt;
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      h2(data-device-preview="../docs-demos/floating-action-button-dial.html") Speed Dial
+      p The floating action button can fling out related actions upon press. The button should remain on screen after the menu is invoked. Tapping in the same spot should either activate the most commonly used action or close the open menu.
+      p In this case we need to wrap FAB with <code>&lt;div class="speed-dial"&gt;...&lt;/div&gt;</code> and follow this layout:
+      pre
+        code
+          | &lt;div class="page navbar-fixed"&gt;
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="center"&gt;FAB Speed Dial&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Speed Dial Wrap --&gt;
+          |   &lt;div class="speed-dial"&gt;
+          |     &lt;!-- FAB inside will open Speed Dial actions --&gt;
+          |     &lt;a href="#" class="floating-button"&gt;
+          |       &lt;!-- First icon is visible when Speed Dial actions are closed --&gt;
+          |       &lt;i class="icon icon-plus"&gt;&lt;/i&gt;
+          |       &lt;!-- Second icon is visible when Speed Dial actions are opened --&gt;
+          |       &lt;i class="icon icon-close"&gt;&lt;/i&gt;
+          |     &lt;/a&gt;
+          |     &lt;!-- Speed Dial Actions --&gt;
+          |     &lt;div class="speed-dial-buttons"&gt;
+          |       &lt;!-- First Speed Dial button --&gt;
+          |       &lt;a href="#"&gt;
+          |         &lt;i class="icon demo-icon-email"&gt;&lt;/i&gt;
+          |       &lt;/a&gt;
+          |       &lt;!-- Second Speed Dial  button --&gt;
+          |       &lt;a href="#"&gt;
+          |         &lt;i class="icon demo-icon-calendar"&gt;&lt;/i&gt;
+          |       &lt;/a&gt;
+          |       &lt;!-- Third Speed Dial  button --&gt;
+          |       &lt;a href="#"&gt;
+          |         &lt;i class="icon demo-icon-upload"&gt;&lt;/i&gt;
+          |       &lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- End of Speed Dial --&gt;
+          |   &lt;div class="page-content"&gt;...&lt;/div&gt;
+          | &lt;/div&gt;
+      .important-note
+        ul
+          li 
+            p Note that Speed Dial actions buttons will appear in reversed order
+          li
+            p You shouldn't use more than 6 Speed Dial actions
+          li
+            p You should use at least 3 Speed Dial actions
+

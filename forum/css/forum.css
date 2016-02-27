@@ -1,0 +1,276 @@
+body {
+  font-family: Helvetica Neue, Helvetica, sans-serif;
+  background: url(../i/bg.jpg) no-repeat center top fixed;
+  -webkit-background-size: cover;
+  background-size: cover;
+  padding-top: 44px;
+}
+body .moot {
+  color: #000;
+}
+.forum-header {
+  height: 44px;
+  line-height: 44px;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background: rgba(139, 25, 12, 0.9);
+  font-size: 14px;
+  text-align: center;
+}
+.forum-header a {
+  color: #ea795a;
+  color: #fff;
+  text-decoration: none;
+}
+.forum-header a.active,
+.forum-header a:hover {
+  opacity: 0.7;
+}
+.forum-header ul,
+.forum-header li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.forum-header ul {
+  padding: 5px 20px;
+  position: absolute;
+  top: 44px;
+  width: 100%;
+  text-align: left;
+  background: rgba(139, 25, 12, 0.9);
+  left: -20px;
+  line-height: 1.5;
+  display: none;
+}
+.forum-header li {
+  display: block;
+  margin-bottom: 5px;
+}
+.forum-header h1 {
+  font-weight: 300;
+  font-size: 21px;
+  padding-right: 30px;
+  margin: 0;
+  color: #fff;
+  cursor: pointer;
+}
+.forum-header .title {
+  display: inline-block;
+  position: relative;
+}
+.forum-header .title:after {
+  content: 'l';
+  font-family: icon;
+  position: absolute;
+  right: 0;
+  top: 0%;
+  font-size: 20px;
+  color: #fff;
+  pointer-events: none;
+}
+.m-list .m-moot {
+  margin-bottom: 4px;
+}
+.m-list .m-seed {
+  background: #ffffff;
+  padding: 15px 10px 0px;
+  padding-bottom: 0;
+}
+.m-list .m-collapsed .m-seed {
+  padding-bottom: 5px;
+}
+.m-list .m-collapsed .m-seed .m-facelink {
+  width: 50px;
+  height: 50px;
+}
+.m-list .m-replies {
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.9);
+}
+.m-list .m-reply {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.m-list .m-reply.m-preview {
+  background: #fff;
+  border: none;
+  border-radius: 0;
+}
+.m-list .m-title {
+  color: #000;
+  font-weight: 500;
+}
+.m-list .m-form {
+  background: rgba(139, 25, 12, 0.3);
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  padding-right: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.m-list textarea.m-postinput {
+  background: #fff;
+  box-shadow: none;
+  border-radius: 0;
+  border: none;
+  outline: 0;
+  padding: 10px;
+}
+.m-list .m-expanded {
+  margin-bottom: 44px;
+}
+.m-wrap {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  max-width: 1100px !important;
+}
+.m-wrap .m-page {
+  padding-top: 0;
+  width: 100%;
+}
+.m-wrap .m-sidebar {
+  background: rgba(0, 0, 0, 0.2);
+  margin-top: 0;
+  color: #fff;
+  border: none;
+}
+.m-wrap .m-sidebar a.m-edit-cats {
+  color: #fff;
+}
+.m-wrap .m-links a {
+  color: #fff;
+}
+.m-wrap .m-links a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.m-wrap #moot-logo {
+  overflow: hidden;
+  width: 0;
+  height: 0;
+}
+.m-wrap .m-anon-count {
+  color: #fff;
+}
+.m-wrap .m-anon-count em {
+  color: #fff;
+}
+img.m-face {
+  border-radius: 100%;
+}
+.moot .m-header {
+  background: rgba(139, 25, 12, 0.7);
+}
+.moot #m-share {
+  position: absolute;
+}
+.moot .m-myname {
+  color: #fff;
+}
+.moot .m-myname + .m-down {
+  color: #fff;
+}
+.moot .m-navi a {
+  color: rgba(255, 255, 255, 0.8);
+}
+.moot .m-navi .m-selected {
+  color: #000;
+}
+.moot .m-controls button {
+  border: 1px solid #fff;
+  background: none;
+  font-size: 14px;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+.moot .m-controls button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.moot .m-form.m-create {
+  padding: 10px;
+  background: rgba(139, 25, 12, 0.3);
+  margin-top: 30px;
+}
+.moot .m-form.m-create .m-preview {
+  background: #fff;
+  border-radius: 0;
+}
+.moot .m-form.m-create .m-select {
+  color: #fff;
+}
+.moot .m-form.m-create .m-options {
+  color: #000;
+}
+.moot .m-input-wrap {
+  padding: 0;
+  height: auto;
+  border-radius: 0;
+  box-shadow: none !important;
+  border: none !important;
+  outline: 0 !important;
+}
+.moot .m-input-wrap textarea {
+  background: #fff;
+  padding: 10px;
+  font-family: inherit;
+  border: none;
+}
+.moot .m-input-body {
+  display: none;
+}
+.moot .m-focused .m-show-help {
+  margin-right: 10px;
+}
+.moot .m-focused .m-input-body {
+  display: block;
+}
+.moot .m-collapse-all {
+  margin-bottom: 10px;
+}
+.moot .m-collapse-all a,
+.moot .m-collapse-all em {
+  color: #fff;
+}
+.moot .m-collapse-all a:hover {
+  color: #fff;
+  opacity: 0.7;
+}
+.moot .m-login {
+  color: #fff;
+}
+.moot .m-search#m-search:before {
+  top: 3px;
+  display: none;
+}
+.moot .m-search#m-search input {
+  border-radius: 5px;
+  height: 29px;
+  padding-left: 28px;
+  box-shadow: none !important;
+  background: #ffffff url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 13' enable-background='new 0 0 13 13'><g><path fill='%23939398' d='M5,1c2.2,0,4,1.8,4,4S7.2,9,5,9S1,7.2,1,5S2.8,1,5,1 M5,0C2.2,0,0,2.2,0,5s2.2,5,5,5s5-2.2,5-5S7.8,0,5,0 L5,0z'/></g><line stroke='%23939398' stroke-miterlimit='10' x1='12.6' y1='12.6' x2='8.2' y2='8.2'/></svg>") no-repeat 8px center;
+  -webkit-background-size: 13px 13px;
+  -moz-background-size: 13px 13px;
+  background-size: 13px 13px;
+}
+.moot .m-pagetitle {
+  padding-top: 30px;
+}
+.moot .m-pagetitle div {
+  color: #fff !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+}
+.moot .m-pagetitle div:before {
+  color: #fff;
+}
+.moot a.m-ban {
+  color: #fff;
+}
+.moot a.m-ban:hover {
+  opacity: 0.7;
+  color: #fff;
+}

@@ -1,0 +1,179 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Navbar | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Navbar
+        p Navbar is a fixed <em>(with Fixed and Through layout types)</em> area at the top of a screen that contains Page title and navigation elements. 
+        p Navbar has 3 main parts: Left, Center and Right. Each part may contain any HTML content, but it is recommended to use them in the following way:
+        ul
+          li
+            p <strong>Left</strong> part is designed to be used with "back link", icons or with single text link.
+          li
+            p <strong>Center</strong> part is used to display page title or tab links (buttons row/segmented controller).
+          li
+            p <strong>Right</strong> part is for the same as the Left part.
+
+      h2(data-device-preview="../docs-demos/navbar-layout.html") Navbar layout
+      p Navbar layout is pretty simple and self explaining:
+      pre
+        code
+          | &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="left"&gt;Left&lt;/div&gt;
+          |         &lt;div class="center"&gt;Center&lt;/div&gt;
+          |         &lt;div class="right"&gt;Right&lt;/div&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      .important-note
+        p Note that Navbar's Center element has lowest width priority, and when window screen will not fit all three elements during window resize, then Center part will be cuted. 
+      p So if you use plain text in Center part it will have ellipsis (...) on the end when cuted. But you need to take care about it if you have some custom elements there.
+      h3(data-device-preview="../docs-demos/navbar-links.html") Navbar with links
+      p To add links in Left or Right part you just need to add the plain <code>&lt;a&gt;</code> tag with additional <code>link</code> class:
+      pre
+        code
+          | &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="left"&gt;
+          |             &lt;a href="#" class="link"&gt;Left Link&lt;/a&gt;
+          |         &lt;/div&gt;
+          |         &lt;div class="center"&gt;Center&lt;/div&gt;
+          |         &lt;div class="right"&gt;
+          |             &lt;a href="#" class="link"&gt;Right Link&lt;/a&gt;
+          |         &lt;/div&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;     
+      p Additional <code>link</code> class is not required but recommended, because it adds required link sizes and "active" opacity effect
+      h3(data-device-preview="../docs-demos/navbar-multiple-links.html") Multiple links
+      p Nothing extraordinary. Just add more <code>&lt;a class="link"</code> to the required part:
+      pre
+        code
+          | &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="left"&gt;
+          |             &lt;a href="#" class="link"&gt;Left 1&lt;/a&gt;
+          |             &lt;a href="#" class="link"&gt;Left 2&lt;/a&gt;
+          |         &lt;/div&gt;
+          |         &lt;div class="center"&gt;Center&lt;/div&gt;
+          |         &lt;div class="right"&gt;
+          |             &lt;a href="#" class="link"&gt;Right 1&lt;/a&gt;
+          |         &lt;/div&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      h3(data-device-preview="../docs-demos/navbar-links-icons.html") Links with icons + text
+      p Here comes a little difference. In this case we need to <strong>wrap link's text with</strong> <code>&lt;span&gt;</code> element. It is required for correct spacing between icon and "word", and for animation:
+      pre
+        code
+          | &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="left"&gt;
+          |             &lt;a href="#" class="link"&gt;
+          |                 &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+          |                 &lt;span&gt;Back&lt;/span&gt;
+          |             &lt;/a&gt;
+          |         &lt;/div&gt;
+          |         &lt;div class="center"&gt;Center&lt;/div&gt;
+          |         &lt;div class="right"&gt;
+          |             &lt;a href="#" class="link"&gt;
+          |                 &lt;i class="icon icon-bars"&gt;&lt;/i&gt;
+          |                 &lt;span&gt;Menu&lt;/span&gt;
+          |             &lt;/a&gt;
+          |         &lt;/div&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      h3(data-device-preview="../docs-demos/navbar-only-icons.html") Links with icons only
+      p If need links with icons and without text we need to additional <strong>"icon-only"</strong> class to links. With this class link will have fixed 44x44 px size so we can't miss it with finger:
+      pre
+        code
+          | &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="left"&gt;
+          |             &lt;a href="#" class="link icon-only"&gt;
+          |                 &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+          |             &lt;/a&gt;
+          |         &lt;/div&gt;
+          |         &lt;div class="center"&gt;Center&lt;/div&gt;
+          |         &lt;div class="right"&gt;
+          |             &lt;a href="#" class="link icon-only"&gt;
+          |                 &lt;i class="icon icon-bars"&gt;&lt;/i&gt;
+          |             &lt;/a&gt;
+          |         &lt;/div&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;    
+      h2(data-device-preview="../docs-demos/navbar-hide.html") Related App and View methods
+      p If we have <a href="views.html">initialized View</a> we can use following methods available for Navbar:
+      table.methods-table
+        tbody
+          tr
+            td myApp.hideNavbar(<span>navbar</span>)
+            td Hide specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
+          tr
+            td myApp.showNavbar(<span>navbar</span>)
+            td Show specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
+          tr
+            td view.hideNavbar()
+            td Hide navbar in this View
+          tr
+            td view.showNavbar()
+            td Show navbar in this View
+          tr
+            td myApp.sizeNavbars(<span>viewContainer</span>)
+            td 
+              p 
+                code viewContainer
+                |  - CSS Selector <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. URL of page to load
+              p Call this method to recalculate positional styles for Navbar in selected View. For example: <b>myApp.sizeNavbars('.view-main')</b>
+              p It could be useful after you change some of Navbar elements dynamically.
+              p
+                span.ios-only Used only by iOS theme
+      p And the following example:
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $ = Framework7.$;
+          | 
+          | var mainView = myApp.addView('.view-main');
+          | 
+          | $('.hide-navbar').on('click', function () {
+          |     mainView.hideNavbar();
+          | });
+          | 
+          | $('.show-navbar').on('click', function () {
+          |     mainView.showNavbar();
+          | });
+      h2(data-device-preview="../docs-demos/navbar-hide-auto.html") Hide Navbar automatically
+      p Framework7 allows you to hide/show navbar automatically for some Ajax loaded pages where you may not need Navbar. It is useful only when you use through-type layout.
+      p To make it work all you need is to add <srong>"no-navbar"</srong> class to loaded page (<code>&lt;div class="page no-navbar"&gt;</code>) and put there empty Navbar:
+      pre
+        code
+          | &lt;!-- Empty Navbar --&gt;
+          | &lt;div class="navbar"&gt;
+          |   &lt;div class="navbar-inner"&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;          
+          | 
+          | &lt;!-- Page has additional "no-navbar" class --&gt;
+          | &lt;div data-page="about" class="page no-navbar"&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="back button"&gt;Go Back&lt;/a&gt;&lt;/p&gt;
+          |       ...
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      .device-spacer(style="height:150px")
+      .full-width.stop-scroll-device
+        h2 Dynamic Navbar Events
+        p If you use <a href="dynamic-navbar.html">Dynamic Navbar</a> in your app then it will also have useful <a href="dynamic-navbar.html#dynamic-navbar-events">special events</a>.
+        

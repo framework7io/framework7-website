@@ -1,0 +1,55 @@
+extends _layout-ios
+block content
+  .panel-overlay
+  .panel.panel-left.panel-reveal
+    .content-block
+      p Left Panel content here
+      p
+        a(href="#").panel-close Close me
+      p
+        a(href="#").open-right-panel Open Right Panel
+    
+  .panel.panel-right.panel-cover
+    .content-block
+      p Right Panel content here
+      p
+        a(href="#").panel-close Close me
+      p
+        a(href="#").open-left-panel Open Left Panel
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Panels
+              .right 
+          .page-content
+            .content-block
+              p Open Panels with JavaScript
+              p 
+                a(href="#").open-left-panel Open Left Panel
+              p 
+                a(href="#").open-right-panel Open Right Panel
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    $$('.open-left-panel').on('click', function (e) {
+        // 'left' position to open Left panel
+        myApp.openPanel('left');
+    });
+
+    $$('.open-right-panel').on('click', function (e) {
+        // 'right' position to open Right panel
+        myApp.openPanel('right');
+    });
+
+    $$('.panel-close').on('click', function (e) {
+        myApp.closePanel();
+    });
+

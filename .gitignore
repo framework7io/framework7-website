@@ -1,5 +1,3 @@
-config.codekit
-forum
 *.swp
 node_modules/
 *.log

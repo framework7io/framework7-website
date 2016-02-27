@@ -1,0 +1,479 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Virtual List | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Virtual List
+      p Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 components which work with lists such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.
+      h2 Virtual List HTML Layout
+      p Virtual List HTML layout is pretty simple, it is almost the same as for usual <a href="list-view.html">List View</a> or <a href="media-list-view.html">Media List View</a> with only difference, you need to leave it empty:
+      pre
+        code
+          | &lt;!-- Virtual List --&gt;
+          | &lt;div class="list-block virtual-list"&gt;
+          |   &lt;!-- keep it empty --&gt;
+          | &lt;/div&gt;
+      p Where:
+      ul
+        li
+          p <code>virtual-list</code> - required additional class on any list-block that uses Virtual List
+          
+                  
+
+
+      h2 Initialize Virtual List
+      p Now, when we have list's HTML, we need to initialize it. We need to use required App method:
+      .method-wrap
+        p
+          span.method myApp.virtualList(<span>listBlockContainer</span>, <span>parameters</span>) 
+          span - initialize virtual list with parameters
+        ul.method-parameters
+          li
+            span.parameter listBlockContainer
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of "list-block" HTML element. Required.
+          li
+            span.parameter parameters
+            |  - <span class="parameter-type">object</span> - object with virtual list parameters. Required.
+          
+          li.method-returns Method returns initialized Virtual List instance
+      p For example:
+      pre
+        code
+          | var myList = app.virtualList('.list-block', {
+          |     items: [1,2,3,4],
+          |     height: 44
+          | });   
+      .important-note Note that Virtual List container (listBlockContainer) should be in DOM on a moment of initialization. So if you use virtual list not on home page, you need to initialize it within <a href="pages.html#page-events">pageInit</a> (or pageBeforeInit) event
+      h2 Virtual List Parameters
+      p Let's look on list of all available parameters:
+      table.params-table
+        thead
+          tr
+            th Parameter
+            th Type
+            th Default
+            th Description
+        tbody
+          
+          tr
+            td items
+            td array
+            td 
+            td Array with list items
+          tr
+            td rowsBefore
+            td number
+            td 
+            td Amount of rows (items) to be rendered before current screen scroll position. By default it is equal to double amount of rows (items) that fit to screen
+          tr
+            td rowsAfter
+            td number
+            td 
+            td Amount of rows (items) to be rendered after current screen scroll position. By default it is equal to the amount of rows (items) that fit to screen
+          tr
+            td cols
+            td number
+            td 1
+            td Number of items per row. Doesn't compatible when using Virtual List with dynamic height
+          tr
+            td height
+            td number or function(item)
+            td 44
+            td If <b>number</b> - item height in px. If <b>function</b> then function should return item height
+          tr
+            td template
+            td string or function
+            td 
+            td Template7 string template or Template7 compiled template that used to render single item. Template should contain full HTML layout for single item, including wrapping <code>&lt;li&gt;&lt;/li&gt;</code> tags
+          tr
+            td renderItem
+            td function(index, item)
+            td 
+            td This optional function allows to use custom function to render item HTML. It could be used instead of <b>template</b> parameter
+          tr
+            td dynamicHeightBufferSize
+            td number
+            td 1
+            td This parameter allows to control buffer size on Virtual Lists with dynamic height (when <code>height</code> parameter is function) as a buffer size multiplier
+          tr
+            td cache
+            td boolean
+            td true
+            td Disable or enable DOM cache for already rendered list items. In this case each item will be rendered only once and all futher manipulations will be with DOM element. It is useful if your list items have some user interaction elements (like form elements or swipe outs) or could be modified
+          tr
+            td updatableScroll
+            td boolean
+            td 
+            td Is the current device updates and handles scroll events during scroll. By default (if not specified) it is "false" for all iOS devices with iOS version less than 8. 
+          tr
+            td showFilteredItemsOnly
+            td boolean
+            td false
+            td Option to show filtered items only set by `filter()` method
+          tr
+            th(colspan="4") Search
+          tr
+            td searchByItem
+            td function(query, index, item)
+            td 
+            td Search function that will be used by Search Bar, it receives search query, item index and item itself. If item matches to search query you need to return <code>true</code>, otherwise this function should return <code>false</code>
+          tr
+            td searchAll
+            td function(query, items)
+            td 
+            td Search function that will be used by Search Bar, it receives search query and array with all items. You need to loop through items and return array with indexes of matched items
+          tr
+            th(colspan="4") Callbacks
+          tr
+            td onItemBeforeInsert 
+            td function(list, item)
+            td 
+            td Callback function, will be executed before item will be added to virtual document fragment
+          tr
+            td onBeforeClear
+            td function(list, fragment)
+            td 
+            td Callback function, will be executed before current DOM list will be removed and replaced with new document fragment
+          tr
+            td onItemsBeforeInsert
+            td function(list, fragment)
+            td 
+            td Callback function, will be executed after current DOM list will be removed and before new document will be inserted
+          tr
+            td onItemsAfterInsert
+            td function(list, fragment)
+            td 
+            td Callback function, will be executed after new document fragment with items inserted
+      h2 Virtual List Methods & Properties
+      p After we initialize Virtual List we have its initialized instance in variable (like <code>myList</code> variable in example above) with helpful methods and properties:
+      table.methods-table
+        tbody
+          tr
+            th(colspan="2") Properties
+          tr
+            td myList.items
+            td Array with items
+          tr
+            td myList.filteredItems
+            td Array with filtered items (after using ".filterItems" method)
+          tr
+            td myList.domCache
+            td Object with cached dom items
+          tr
+            td myList.params
+            td Parameters passed on list initialization
+          tr
+            td myList.listBlock
+            td Dom7 instance of virtual list "list-block" container
+          tr
+            td myList.pageContent
+            td Dom7 instance of parent "page-content" container 
+          tr
+            td myList.currentFromIndex
+            td Index number of currently first rendered item
+          tr
+            td myList.currentToIndex
+            td Index number of currently last rendered item
+          tr
+            td myList.reachEnd
+            td Boolean property. Equals <code>true</code> if the currently last rendered item is the last item of all specified items
+          tr
+            th(colspan="2") Methods
+          tr
+            td myList.filterItems(indexes);
+            td Filter virtual list by passing array with indexes of items to show
+          tr
+            td myList.resetFilter();
+            td Disable filter and display all items again
+          
+          tr
+            td myList.appendItem(item);
+            td Append item to virtual list
+          tr
+            td myList.appendItems(items);
+            td Append array with items to virtual list
+          tr
+            td myList.prependItem(item);
+            td Prepend item to virtual list
+          tr
+            td myList.prependItems(items);
+            td Prepend array with items to virtual list
+          tr
+            td myList.replaceItem(index, items);
+            td Replace item at specified index with the new one
+          tr
+            td myList.replaceAllItems(items);
+            td Replace all items with arrays of new items
+          tr
+            td myList.moveItem(oldIndex, newIndex);
+            td Move virtual item from oldIndex to newIndex
+          tr
+            td myList.insertItemBefore(index, item);
+            td Insert new item before item with specified index
+          tr
+            td myList.deleteItem(index);
+            td Delete item at specified index
+          tr
+            td myList.deleteItems(indexes);
+            td Delete items at specified array of indexes
+          tr
+            td myList.deleteAllItems();
+            td Delete all items
+          tr
+            td myList.clearCache();
+            td Clear virtual list cached DOM elements
+          tr
+            td myList.destroy();
+            td Destory initialized virtual list and detach all events
+          tr
+            td myList.update();
+            td Update virtual list, including recalculation of list sizes and re-rendering of virtual list
+          tr
+            td myList.scrollToItem(index);
+            td Scroll Virtual List to specified item by its index number
+      h2 Examples
+      h3 Plain Items
+      p In the most simple case when we don't need to use templating for items (without <code>template</code> and <code>renderItem</code> parameters) and when we don't need much logic here, we may just pass items HTML layout in <code>items</code> parameter:
+      pre
+        code.js
+          | var myList = myApp.virtualList('.list-block.virtual-list', {
+          |     // Array with plain HTML items
+          |     items: [
+          |         '&lt;li class="item-content"&gt;&lt;div clas="item-inner"&gt;&lt;div class="item-title"&gt;Item 1&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;',
+          |         '&lt;li class="item-content"&gt;&lt;div clas="item-inner"&gt;&lt;div class="item-title"&gt;Item 2&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;',
+          |         '&lt;li class="item-content"&gt;&lt;div clas="item-inner"&gt;&lt;div class="item-title"&gt;Item 3&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;',
+          |         //...
+          |         '&lt;li class="item-content"&gt;&lt;div clas="item-inner"&gt;&lt;div class="item-title"&gt;Item 1000&lt;/div&gt;&lt;/div&gt;&lt;/li&gt;'
+          |     ]
+          | });
+      h3 Templating
+      p But in most cases we may need some logic that we can use for filtering and templating, or if we load items from some JSON data. In this case we may pass array with data objects in <code>items</code> parameter and use Template7 <code>template</code> parameter or custom render function using <code>renderItem</code> parameter:
+      p With Template7 template:
+      pre
+        code.js
+          | var myList = myApp.virtualList('.list-block.virtual-list', {
+          |     // Array with items data
+          |     items: [
+          |         {
+          |             title: 'Item 1',
+          |             picture: 'path/to/picture1.jpg'
+          |         },
+          |         {
+          |             title: 'Item 2',
+          |             picture: 'path/to/picture2.jpg'
+          |         },
+          |         // ...
+          |         {
+          |             title: 'Item 1000',
+          |             picture: 'path/to/picture1000.jpg'
+          |         },
+          |     ],
+          |     // Template 7 template to render each item
+          |     template: '&lt;li class="item-content"&gt;' +
+          |                   '&lt;div class="item-media"&gt;&lt;img src="{{picture}}"&gt;&lt;/div&gt;' +
+          |                   '&lt;div class="item-inner"&gt;' +
+          |                       '&lt;div class="item-title"&gt;{{title}}&lt;/div&gt;' +
+          |                   '&lt;/div&gt;' +
+          |                '&lt;/li&gt;'
+          | });            
+      p With custom render function:
+      pre
+        code.js
+          | var myList = myApp.virtualList('.list-block.virtual-list', {
+          |     // Array with items data
+          |     items: [
+          |         {
+          |             title: 'Item 1',
+          |             picture: 'path/to/picture1.jpg'
+          |         },
+          |         {
+          |             title: 'Item 2',
+          |             picture: 'path/to/picture2.jpg'
+          |         },
+          |         // ...
+          |         {
+          |             title: 'Item 1000',
+          |             picture: 'path/to/picture1000.jpg'
+          |         },
+          |     ],
+          |     // Custom render function to render item's HTML
+          |     renderItem: function (index, item) {
+          |         return '&lt;li class="item-content"&gt;' +
+          |                   '&lt;div class="item-media"&gt;&lt;img src="' + item.picture + '"&gt;&lt;/div&gt;' +
+          |                   '&lt;div class="item-inner"&gt;' +
+          |                       '&lt;div class="item-title"&gt;' + item.title + '&lt;/div&gt;' +
+          |                   '&lt;/div&gt;' +
+          |                '&lt;/li&gt;';
+          |     }
+          | });            
+      h3 Using With Search Bar
+      p If we use Virtual List with search bar we need to provide search function in parameters using <code>searchAll</code> or <code>searchByItem</code> parameters:
+      pre
+        code
+          | var myList = myApp.virtualList('.list-block.virtual-list', {
+          |     // Array with items data
+          |     items: [
+          |         {
+          |             title: 'Item 1',
+          |             picture: 'path/to/picture1.jpg'
+          |         },
+          |         {
+          |             title: 'Item 2',
+          |             picture: 'path/to/picture2.jpg'
+          |         },
+          |         // ...
+          |         {
+          |             title: 'Item 1000',
+          |             picture: 'path/to/picture1000.jpg'
+          |         },
+          |     ],
+          |     // search all items, we need to return array with indexes of matched items
+          |     searchAll: function (query, items) {
+          |         var foundItems = [];
+          |         for (var i = 0; i < items.length; i++) {
+          |             // Check if title contains query string
+          |             if (items[i].title.indexOf(query.trim()) >= 0) foundItems.push(i);
+          |         }
+          |         // Return array with indexes of matched items
+          |         return foundItems; 
+          |     }
+          | });  
+      p The same but with <code>searchByItem</code> parameter:
+      pre
+        code
+          | var myList = myApp.virtualList('.list-block.virtual-list', {
+          |     // Array with items data
+          |     items: [
+          |         {
+          |             title: 'Item 1',
+          |             picture: 'path/to/picture1.jpg'
+          |         },
+          |         {
+          |             title: 'Item 2',
+          |             picture: 'path/to/picture2.jpg'
+          |         },
+          |         // ...
+          |         {
+          |             title: 'Item 1000',
+          |             picture: 'path/to/picture1000.jpg'
+          |         },
+          |     ],
+          |     // search item by item
+          |     searchByItem: function (query, index, item) {
+          |         // Check if title contains query string
+          |         if (item.title.indexOf(query.trim()) >= 0) {
+          |             return true; //item matches query
+          |         }
+          |         else {
+          |             return false; //item doesn't match
+          |         }
+          |     }
+          | }); 
+      h3 Dynamic Height
+      p If not all of our items should be the same height we use dynamic height by specifying function in <code>height</code> parameter instead of number:
+      pre
+        code
+          | var myList = myApp.virtualList('.list-block.virtual-list', {
+          |     // Array with items data
+          |     items: [
+          |         {
+          |             title: 'Item 1',
+          |             picture: 'path/to/picture1.jpg'
+          |         },
+          |         {
+          |             title: 'Item 2'
+          |         },
+          |         {
+          |             title: 'Item 3',
+          |             picture: 'path/to/picture3.jpg'
+          |         },
+          |         // ...
+          |         {
+          |             title: 'Item 1000'
+          |         },
+          |     ],
+          |     // Item template
+          |     template: '...',
+          | 
+          |     // Height function
+          |     height: function (item) {
+          |         if (item.picture) return 100; //item with picture is 100px height
+          |         else return 44; //item without picture is 44px height
+          |     }
+          | });     
+      .important-note
+        p Note that script will not actually set height on your items, so make sure that your items are really have specified height. You may also need to set it in CSS or using "style" attribute in <code>template</code> or <code>renderItem</code> parameters
+        p Also note that dynamic height currently is not compatible with <code>cols</code> parameter
+      h3 API Methods
+      p If we need to add, remove, replace or move items in list we need to use Virtual List methods:
+      pre
+        code
+          | // Initialize List
+          | var myList = myApp.virtualList('.list-block.virtual-list', {
+          |     // Array with items data
+          |     items: [
+          |         {
+          |             title: 'Item 1'
+          |         },
+          |         {
+          |             title: 'Item 2'
+          |         },
+          |         // ...
+          |         {
+          |             title: 'Item 1000'
+          |         }
+          |     ],
+          | 
+          |     // Item template
+          |     template: '...',
+          | });
+          | 
+          | // Append Item
+          | myList.appendItem({
+          |     title: 'Item 1001'
+          | });
+          | 
+          | // Append multiple items when clicking on some button
+          | $('.button.append-items').on('click', function () {
+          |     // Append multiple items by passing array with items
+          |     myList.appendItem([
+          |         {
+          |             title: 'Item 1002'
+          |         },
+          |         {
+          |             title: 'Item 1003'
+          |         },
+          |         {
+          |             title: 'Item 1004'
+          |         }
+          |     ]);    
+          | });
+          | 
+          | // Replace First Item
+          | myList.replaceItem(0, {
+          |     title: 'New Item 1'
+          | });
+          | 
+          | // Show only first 10 items when clicking on button
+          | $('.button.show-first-10').on('click', function () {
+          |     // We need to pass array with indexes of items to show
+          |     myList.filter([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+          | });
+          | 
+          | // Reset filter
+          | $('.button.reset-filter').on('click', function () {
+          |     myList.resetFilter();
+          | });
+          | 
+          | // Insert new item before 1st and 2nd:
+          | myList.insertItemBefore(1, {
+          |     title: 'Item 1.5'
+          | });    
+      .important-note
+        p Note that when you use methods to manipulate virtual list items you need to pass each item in the same format as you specify them in <b>items</b> parameter

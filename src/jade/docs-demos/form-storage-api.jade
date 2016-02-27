@@ -1,0 +1,89 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Form Storage API
+              .right 
+          .page-content
+            form(id="my-form2").list-block.store-data
+              ul
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Name
+                      .item-input
+                        input(type="text", name="name", placeholder="Your name")
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label E-mail
+                      .item-input
+                        input(type="email", name="email", placeholder="E-mail")
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Gender
+                      .item-input
+                        select(name="gender")
+                          option(value="male", selected) Male
+                          option(value="female") Female
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Switch
+                      .item-input
+                        label.label-switch
+                          input(type="checkbox", name="switch", value="yes")
+                          .checkbox
+                li
+                  .item-content
+                    .item-inner
+                      .item-title.label Slider
+                      .item-input
+                        .range-slider
+                          input(type="range", min="0", max="100", value="50", step="0.1", name="slider")
+            .content-block
+              p
+                a(href="#").button.get-storage-data Get Data
+              p
+                a(href="#").button.delete-storage-data Delete Data
+              p
+                a(href="#").button.save-storage-data Save Data
+
+              
+block scripts
+  script.
+    var myApp = new Framework7();  
+
+    var $$ = Dom7;
+
+    $$('.get-storage-data').on('click', function() {
+      var storedData = myApp.formGetData('my-form2');
+      if(storedData) {
+        alert(JSON.stringify(storedData));
+      }
+      else {
+        alert('There is no stored data for this form yet. Try to change any field')
+      }
+    });
+
+    $$('.delete-storage-data').on('click', function() {
+      var storedData = myApp.formDeleteData('my-form2');
+      alert('Form data deleted')
+    });
+
+    $$('.save-storage-data').on('click', function() {
+      var storedData = myApp.formStoreData('my-form2', {
+        'name': 'John',
+        'email': 'john@doe.com',
+        'gender': 'female',
+        'switch': ['yes'],
+        'slider': 10
+      });
+      alert('Form data replaced, refresh browser to see changes')
+    });

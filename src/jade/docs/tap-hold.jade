@@ -1,0 +1,60 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Tap Hold Event | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Tap Hold Event (Long Tap)
+      p Framework7 has so called "tap hold" event. It triggers (if enabled) after a sustained, complete touch event. By default it is disabled and could be enabled and configured using the following <a href="init-app.html">App paremeters</a> on app initialization:
+
+      table.params-table
+        thead
+          tr
+            th Parameter
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td tapHold
+            td boolean
+            td false
+            td Set to <b>true</b> to enable tap hold events
+          tr
+            td tapHoldDelay
+            td number
+            td 750
+            td Determines how long (in ms) the user must hold their tap before the taphold event is fired on the target element
+          tr
+            td tapHoldPreventClicks
+            td boolean
+            td true
+            td When enabled (by default), then click event will not be fired after tap hold event
+
+      p Note, that Tap Hold is a part of built-in <b>Fast Clicks</b> library, so Fast Clicks should be also enabled.
+      
+      p Also note, that you probably will need to disable mobile browser default "long-tap" actions by adding these CSS rules to elements:
+      pre
+        code 
+          | -moz-user-select: none;        
+          | -webkit-user-select: none;        
+          | user-select: none;
+
+      h2 Example     
+      pre
+        code
+          | var myApp = new Framework7({
+          |   tapHold: true //enable tap hold events
+          | });
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.some-link').on('taphold', function () {
+          |   myApp.alert('Tap hold fired!');
+          | });
+      

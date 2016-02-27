@@ -1,0 +1,60 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Form Elements
+              .right 
+          .page-content
+            .content-block-title Labels and inputs
+            .list-block
+              ul
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Name
+                      .item-input
+                        input(type="text", placeholder="Your name")
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label E-mail
+                      .item-input
+                        input(type="email", placeholder="E-mail")
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Gender
+                      .item-input
+                        select
+                          option Male
+                          option Female
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Birth date
+                      .item-input
+                        input(type="date", placeholder="Birth day", value="2014-04-30")
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Switch
+                      .item-input
+                        label.label-switch
+                          input(type="checkbox")
+                          .checkbox
+                li
+                  .item-content
+                    .item-inner
+                      .item-title.label Slider
+                      .item-input
+                        .range-slider
+                          input(type="range", min="0", max="100", value="50", step="0.1")
+
+block scripts
+  script.
+    var myApp = new Framework7();            

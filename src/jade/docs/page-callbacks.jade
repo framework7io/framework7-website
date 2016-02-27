@@ -1,0 +1,203 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Page Callbacks | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Page Callbacks
+      p Page Callbacks become very handy when you need to execute specific code for specific pages. Page Callbacks have a great advantages over the <a href="pages.html#page-events">Page Events</a>:
+      ul
+        li Page Callbacks are not events, and this means less memory usage and less memory leaks.
+        li Because they are not events, you should not worry about detaching them
+        li They are more convenient in sense of code structure
+      h2 Callbacks Methods
+      p To use Page Callbacks we need to use appropriate App's methods:
+      .method-wrap
+        p
+          span.method myApp.onPageBeforeInit(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed when Framework7 just inserts new page <em>(with "pageName" data-page attribute)</em> to DOM
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageInit(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed after Framework7 initialize required page's <em>(with "pageName" data-page attribute)</em> components and navbar
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageReinit(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed for specified cached page <em>(with "pageName" data-page attribute)</em> that becomes visible. It is only applicaple for Inline Pages (DOM cached pages)
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageBeforeAnimation(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed when everything initialized and page <em>(with "pageName" data-page attribute)</em> is ready to be animated
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageAfterAnimation(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed after page <em>(with "pageName" data-page attribute)</em> animation
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageBeforeRemove(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed right before page <em>(with "pageName" data-page attribute)</em> will be removed from DOM
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageBack(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed right before page <em>(with "pageName" data-page attribute)</em> "back" transition. Difference with "onPageBeforeAnimation" is that this callback will be triggered for the "old" page - page that slides from center to right
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      .method-wrap
+        p
+          span.method myApp.onPageAfterBack(<span>pageName</span>, <span>callback(page)</span>) 
+          span - "callback" function will be executed right after page <em>(with "pageName" data-page attribute)</em> "back" transition. Difference with "onPageAfterAnimation" is that this callback will be triggered for the "old" page - page that slides from center to right
+        ul.method-parameters
+          li
+            span.parameter pageName
+            |  - <span class="parameter-type">string</span> - expected page's "data-page" attribute
+          li
+            span.parameter callback(page)
+            |  - <span class="parameter-type">function</span> - callback function that will be executed. As an argument it receives <a href="pages.html#page-data">Page Data</a> object
+      h2 Callback Object
+      p Each of above methods returns sepcial Callback Object with two methods, that you can use to trigger Page Callback manually or to remove it later:
+      .method-wrap
+        p
+          span.method callbackObject.trigger() 
+          span - trigger callback function
+      .method-wrap
+        p
+          span.method callbackObject.remove() 
+          span - remove callback function
+
+      h3 Examples
+      p Let's look at some examples of Page Callbacks usage
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | //Add callback function that will be executed when Page with data-page="about" attribute will be initialized
+          | myApp.onPageInit('about', function (page) {
+          |   console.log('About page initialized');
+          |   console.log(page);
+          | });
+          | 
+          | //The same but for Services page
+          | myApp.onPageInit('services', function (page) {
+          |   console.log('Services page initialized');
+          |   console.log(page);
+          | });
+          | 
+          | //We can add one more callback for About page, and previously added callback for this page will not be overwritten
+          | myApp.onPageInit('about', function (page) {
+          |   console.log('One more callback for About page');
+          |   console.log(page);
+          | });
+          | 
+          | //Sometimes we may need the same callback for few pages. We may separate page names with space:
+          | myApp.onPageInit('about services', function (page) {
+          |   console.log(page.name + ' initialized'); 
+          |   //In console we will see 'about page initialized' for About page and 'services page initialized' for Services page
+          | });
+          | 
+          | //We can also add callback for all pages:
+          | myApp.onPageInit('*', function (page) {
+          |   console.log(page.name + ' initialized'); 
+          | });
+          | 
+          | //Let's create callback for Contacts page (with data-page="contacts" attribute) that we can control later:
+          | var contactsCallback = myApp.onPageInit('contacts', function (page) {
+          |   console.log('Contacts page initialized');
+          |   console.log(page);
+          | });
+          | // Later we can cancel/remove this callback:
+          | contactsCallback.remove();
+          | // Or we can trigger it manually:
+          | contactsCallback.trigger();          
+      h3 Callbacks for Inital Pages
+      p Sometimes we may need such Page Callbacks for initialy loaded pages (that are already in index.html file on app load), for example for home page. But there could be a problem because when we add our .onPage callbacks the App is already initialized and our callback will not be triggered. It could be solved in a few ways:
+      h4 1. Init App Manually
+      p In this case we need to init App manually after we add our callbacks for initial pages:
+      pre
+        code
+          | var myApp = new Framework7({
+          |   init: false //Disable App's automatica initialization
+          | });          
+          | 
+          | //Now we add our callback for initial page
+          | myApp.onPageInit('home', function (page) {
+          |   //Do something here with home page
+          | });
+          | 
+          | //And now we initialize app
+          | myApp.init();
+      h4 2. Use App's Parameter Callback
+      p This way is not very convenient but we can do it in App parameters:
+      pre
+        code
+          | var myApp = new Framework7({
+          |   onPageInit: function (app, page) {
+          |     if (page.name === 'home') {
+          |       //Do something here with home page
+          |     }
+          |   }
+          | });
+      h4 3. Trigger Callback Manually
+      pre
+        code
+          | var myApp = new Framework7();          
+          | 
+          | //Now we add our callback for initial page
+          | myApp.onPageInit('home', function (page) {
+          |   //Do something here with home page
+          | }).trigger(); //And trigger it right away
+      .important-note
+        p Note that in this case such manually triggered callback will not receive Page Data object as argument
+  
+

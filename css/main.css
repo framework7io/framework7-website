@@ -129,6 +129,16 @@ code {
   display: inline-block;
   padding: 2px 5px;
 }
+.coffeescript .javascript,
+.javascript .xml,
+.lasso .markup,
+.tex .hljs-formula,
+.xml .javascript,
+.xml .vbscript,
+.xml .css,
+.xml .hljs-cdata {
+  opacity: 1;
+}
 .nowrap {
   white-space: nowrap;
 }
@@ -565,6 +575,9 @@ header .small-links a:hover {
   letter-spacing: -1px;
   line-height: 1.25;
 }
+.home-block:last-child {
+  margin-bottom: 0;
+}
 .home-intro h1 {
   font-size: 47px;
   margin-bottom: 20px;
@@ -661,11 +674,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#ffffff));
-  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff);
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#fff));
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
   z-index: 1;
 }
 .home-ios:before {
@@ -675,11 +688,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(#ffffff), to(rgba(255, 255, 255, 0)));
-  background-image: -webkit-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -moz-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -o-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+  background-image: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -moz-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
   z-index: 1;
 }
 .home-ios .pic {
@@ -714,11 +727,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#ffffff));
-  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff);
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#fff));
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
   z-index: 1;
 }
 .home-ui:before {
@@ -728,11 +741,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(#ffffff), to(rgba(255, 255, 255, 0)));
-  background-image: -webkit-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -moz-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -o-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+  background-image: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -moz-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
   z-index: 1;
 }
 .home-ui .text {
@@ -831,11 +844,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#ffffff));
-  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff);
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#fff));
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
   z-index: 1;
 }
 .home-styles:before {
@@ -845,11 +858,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(#ffffff), to(rgba(255, 255, 255, 0)));
-  background-image: -webkit-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -moz-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -o-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+  background-image: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -moz-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
   z-index: 1;
 }
 .home-styles .pic {
@@ -948,6 +961,7 @@ img.lazy {
 }
 .home-products img {
   width: 150px;
+  border-radius: 50%;
 }
 .home-products .text {
   color: #333;
@@ -984,21 +998,41 @@ img.lazy {
 .row .col-50 {
   width: 50%;
 }
-.github-buttons iframe {
-  border: none;
+.github-buttons {
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 0;
+  line-height: 18px;
 }
-.github-buttons .flattr-button {
+.github-buttons img {
+  width: auto;
+  height: 18px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+.github-buttons a {
   display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  vertical-align: middle;
+  font-size: 12px;
+  margin-left: 10px;
 }
-.github-buttons .flattr-button + iframe {
-  margin-left: 5px;
+.github-buttons a span {
+  font-size: 15px;
+}
+.github-buttons a:hover {
+  opacity: 0.7;
+}
+.github-buttons a:first-child {
+  margin-left: 0px;
 }
 .share-line {
   background: #8c2418;
   border-top: 1px solid #b72f20;
-  padding: 15px 0;
+  padding: 14px 0;
   box-sizing: border-box;
-  height: 55px;
+  height: 50px;
 }
 .share-line .center {
   padding: 0 40px;
@@ -1006,19 +1040,13 @@ img.lazy {
 .share-line .github-buttons {
   float: right;
 }
-.share-line .share {
+.share-line .share-buttons {
   white-space: nowrap;
   float: left;
-  width: 590px;
 }
-.share-line .addthis_button_google_plusone {
-  width: 78px !important;
-}
-.share-line .addthis_button_twitter_follow_native {
-  width: 220px !important;
-}
-.share-line .addthis_button_facebook_like .fb_iframe_widget {
-  max-height: 24px;
+.share-line .share-button {
+  float: left;
+  margin-right: 5px;
 }
 .inner-header + .share-line .center,
 .content + .share-line .center {
@@ -1030,27 +1058,87 @@ img.lazy {
   float: left;
   position: relative;
 }
-footer {
+.content + .share-line {
+  border-top: none;
   background: #601911;
-  text-align: center;
+}
+footer {
+  background: #350e09;
   color: #fff;
-  color: rgba(255, 255, 255, 0.7);
-  padding-top: 20px;
-  padding-bottom: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 footer a {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 footer a:hover {
   color: #fff;
 }
-footer .links a {
-  margin: 0 10px;
-}
 footer .links {
-  margin-bottom: 10px;
+  padding: 20px 0;
+}
+footer .links-block {
+  float: left;
+  text-align: left;
+  margin-left: 100px;
+}
+footer .links-block:first-child {
+  margin-left: 0;
+}
+footer .links-block ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+footer .links-block li {
+  margin: 10px 0;
+}
+footer .links-block li:last-child {
+  margin-bottom: 0;
+}
+footer .links-block-title {
+  text-transform: uppercase;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+}
+footer .copy {
+  padding: 20px 0;
+  font-size: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+footer .copy a {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+footer .copy p {
+  margin: 5px 0;
+}
+footer .copy p:first-child {
+  margin-top: 0;
+}
+footer .copy p:last-child {
+  margin-bottom: 0;
+}
+footer a.keycdn-link {
+  text-decoration: none;
+  border-bottom: none;
+  opacity: 0.8;
+}
+footer a.keycdn-link:hover {
+  opacity: 1;
+}
+footer .copy-left {
+  float: left;
+}
+footer .copy-right {
+  float: right;
+}
+footer img.keycdn-logo {
+  height: 20px;
+  width: auto;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
 }
 .example {
   margin: 40px 0;
@@ -1310,13 +1398,14 @@ footer .links {
   text-transform: uppercase;
   color: #000;
   margin-bottom: 10px;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.07em;
 }
 .docs-nav .subtitle {
   text-transform: uppercase;
   margin-bottom: 12px;
-  font-size: 13px;
-  color: #444;
+  font-weight: 500;
 }
 .docs-nav > ul {
   position: relative;
@@ -1706,6 +1795,10 @@ table.methods-table.dom7-table tbody td:first-child:not(:last-child) {
 table.methods-table.dom7-table tbody td:first-child:not(:last-child) span {
   color: #8c2418;
 }
+table.methods-table code,
+table.params-table code {
+  white-space: pre-wrap;
+}
 table.events-table tbody td:nth-child(2) span {
   white-space: nowrap;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -1828,6 +1921,9 @@ h1 + .tutorial-author {
 }
 .showcase-apps .app-icon.app-icon-rounded img {
   border-radius: 45px;
+}
+.showcase-apps .app-icon.app-icon-bordered img {
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 .showcase-apps .app-info {
   margin-left: 230px;

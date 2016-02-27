@@ -1,0 +1,93 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Device API | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Device API
+      p Framework7 comes with Device detection library. After you <a href="init-app.html">initialize your app</a> you can access <code>myApp.device</code> object which contains useful information about device and platform:
+      table.methods-table
+        tr
+          td myApp.device.os
+          td <em>string</em>. Contains <strong>"android"</strong> (for Android), <strong>"ios"</strong> (for iOS), <strong>undefined</strong> (for any other OS/platform)
+        tr
+          td myApp.device.osVersion
+          td <em>string</em>. Contains version of operating system. Available only for Android and iOS devices. For example, if it is iOS device with iOS version 7.1 then it will contain "7.1".
+        tr
+          td myApp.device.android
+          td <em>boolean</em>. Contains <strong>true</strong> for Android device, otherwise contains false
+        tr
+          td myApp.device.ios
+          td <em>boolean</em>. Contains <strong>true</strong> for iOS device, otherwise contains false
+        tr
+          td myApp.device.ipad
+          td <em>boolean</em>. Contains <strong>true</strong> for iPad, otherwise contains false
+        tr
+          td myApp.device.iphone
+          td <em>boolean</em>. Contains <strong>true</strong> for iPhone/iPod Touch, otherwise contains false
+        tr
+          td myApp.device.pixelRatio
+          td <em>number</em>. Returns device screen pixel ratio. Actually it is a shortcut of <code>window.devicePixelRatio</code>
+        tr
+          td myApp.device.webView
+          td <em>boolean</em>. Contains <strong>true</strong> if app runs in UIWebView - webapp installed to home screen or phone gap.
+        tr
+          td myApp.device.minimalUi
+          td <em>boolean</em>. Contains <strong>true</strong> if minimal-ui mode is enabled: web app running in browser on iPhone/iPod with iOS 7.1+ and minimal-ui viewport meta tag value.
+        tr
+          td myApp.device.statusBar
+          td <em>boolean</em>. Contains <strong>true</strong> if app running in <a href="status-bar.html">full-screen mode</a> and requires for <a href="status-bar.html">Status bar overlay</a>. <strong>iOS only</strong>
+      h2 Additional &lt;html&gt; classes
+      p Also this Device detecting library adds additional classes on <code>&lt;html&gt;</code> element which can help you with different CSS styles for different OS and platforms.
+      p So if you open app with iOS 7.1 device you may have the following classes:
+      pre
+        code
+          | &lt;html class="ios ios-7 ios-7-1 ios-gt-6 pixel-ratio-1"&gt;
+          | ...
+      p If you open app with iOS 7.1 device with retina screen and your app running in full screen mode (myApp.device.statusBar = true):
+      pre
+        code
+          | &lt;html class="ios ios-7 ios-7-1 ios-gt-6 retina pixel-ratio-2 with-statusbar-overlay"&gt;
+          | ...
+      p If you open app with iOS 8.0 device and your app running in full screen mode (myApp.device.statusBar = true):
+      pre
+        code
+          | &lt;html class="ios ios-8 ios-8-0 ios-gt-6 ios-gt-7 with-statusbar-overlay"&gt;
+          | ...
+      p If you open app on iPhone6 Plus and your app running in full screen mode (myApp.device.statusBar = true):
+      pre
+        code
+          | &lt;html class="ios ios-8 ios-8-0 ios-gt-6 ios-gt-7 retina pixel-ratio-3 with-statusbar-overlay"&gt;
+          | ...
+      p If you open app with Android 4.4 device you will have the following classes:
+      pre
+        code
+          | &lt;html class="android android-4 android-4-4"&gt;
+          | ...
+      p In other words class calculated by the following rule: 
+      pre
+        code
+          | &lt;html class="[os] [os major version] [os full version] [retina] pixel-ratio-[devicePixelRatio] [with-statusbar-overlay]"&gt;
+          | ...
+      .important-note
+        p Note that "greater than" (ios-gt-6: for all iOS greater than iOS 6) classes available only for iOS
+      h2 Access to Device object without/before initialization
+      p It is also possible to access Device object with all its parameters using prototype:
+      pre
+        code
+          | var device = Framework7.prototype.device;
+          | if (device.iphone) {
+          |   console.log('this is iPhone')
+          | }
+      
+
+        
+        
+        
+
+        

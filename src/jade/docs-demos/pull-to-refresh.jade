@@ -1,0 +1,73 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Pull To Refresh
+              .right 
+          .page-content.pull-to-refresh-content
+            .pull-to-refresh-layer
+              .preloader
+              .pull-to-refresh-arrow
+            .list-block.media-list
+              ul
+                li.item-content
+                    .item-media
+                      img(src="http://hhhhold.com/88/d/jpg?1", width="44")
+                    .item-inner
+                      .item-title-row
+                        .item-title Yellow Submarine
+                      .item-subtitle Beatles
+                li.item-content
+                    .item-media
+                      img(src="http://hhhhold.com/88/d/jpg?2", width="44")
+                    .item-inner
+                      .item-title-row
+                        .item-title Don't Stop Me Now
+                      .item-subtitle Queen
+                li.item-content
+                    .item-media
+                      img(src="http://hhhhold.com/88/d/jpg?3", width="44")
+                    .item-inner
+                      .item-title-row
+                        .item-title Billie Jean
+                      .item-subtitle Michael Jackson
+              .list-block-label
+                p Just pull page down to let the magic happen.
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    // Dummy Content
+    var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
+    var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
+    // Pull to refresh content
+    var ptrContent = $$('.pull-to-refresh-content');
+    // Add 'refresh' listener on it
+    ptrContent.on('refresh', function (e) {
+        // Emulate 2s loading
+        setTimeout(function () {
+            var picURL = 'http://hhhhold.com/88/d/jpg?' + Math.round(Math.random() * 100);
+            var song = songs[Math.floor(Math.random() * songs.length)];
+            var author = authors[Math.floor(Math.random() * authors.length)];
+            var itemHTML = '<li class="item-content">' +
+                              '<div class="item-media"><img src="' + picURL + '" width="44"/></div>' +
+                              '<div class="item-inner">' +
+                                '<div class="item-title-row">' +
+                                  '<div class="item-title">' + song + '</div>' +
+                                '</div>' +
+                                '<div class="item-subtitle">' + author + '</div>' +
+                              '</div>' +
+                            '</li>';
+            // Prepend new list element
+            ptrContent.find('ul').prepend(itemHTML);
+            // When loading done, we need to reset it
+            myApp.pullToRefreshDone();
+        }, 2000);
+    });

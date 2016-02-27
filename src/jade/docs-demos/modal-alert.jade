@@ -1,0 +1,52 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Alert
+              .right 
+          .page-content
+            .content-block
+              p
+                a(href="#").alert-text Alert With Text
+              p
+                a(href="#").alert-text-title Alert With Text and Title
+              p
+                a(href="#").alert-text-title-callback Alert With Text and Title and Callback
+              p
+                a(href="#").alert-text-callback Alert With Text and Callback
+              
+              
+              
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    $$('.alert-text').on('click', function () {
+        myApp.alert('Here goes alert text');
+    });
+
+    $$('.alert-text-title').on('click', function () {
+        myApp.alert('Here goes alert text', 'Custom Title!');
+    });
+
+    $$('.alert-text-title-callback').on('click', function () {
+        myApp.alert('Here goes alert text', 'Custom Title!', function () {
+            myApp.alert('Button clicked!')
+        });
+    });
+
+    $$('.alert-text-callback').on('click', function () {
+        myApp.alert('Here goes alert text', function () {
+            myApp.alert('Button clicked!')
+        });
+    });
+
+    

@@ -1,0 +1,207 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'tutorials';
+  - var title = 'Maintain both iOS and Material Themes in single app | Framework7 Tutorials';
+
+block content
+  h1 Maintain both iOS and Material Themes in single app
+  p We <a href="tips-to-migrate-ios-theme-app-to-material-theme.html">already know</a> that there is no too much difference between these themes layouts. And of course, <b>if you want to deliver the best experience for both platforms it is better to keep them in separate apps</b>, but for simple case we can maintain both of them into single app.
+  h2 App Layout
+  p Let's take iOS theme layout for the base app layout:
+  pre
+    code
+      | &lt;!DOCTYPE html&gt;
+      | &lt;html&gt;
+      |   &lt;head&gt;
+      |     &lt;meta charset="utf-8"&gt;
+      |     &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"&gt;
+      |     &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
+      |     &lt;meta name="apple-mobile-web-app-status-bar-style" content="black"&gt;
+      |     &lt;title&gt;My App&lt;/title&gt;
+      |     &lt;!-- We will include related CSS styles using JavaScript --&gt;
+      |   &lt;/head&gt;
+      |   &lt;body&gt;
+      |     &lt;div class="statusbar-overlay"&gt;&lt;/div&gt;
+      |     &lt;div class="views"&gt;
+      |       &lt;!-- 
+      |       We use Through-type Navbar layout for dynamic navbar.
+      |       So we keep Navbar as the child of View, and have "navbar-through" class on View 
+      |       --&gt;
+      |       &lt;div class="view view-main navbar-through"&gt;
+      |         &lt;div class="navbar"&gt;
+      |           &lt;div class="navbar-inner"&gt;
+      |             &lt;div class="center sliding"&gt;Awesome App&lt;/div&gt;
+      |           &lt;/div&gt;
+      |         &lt;/div&gt;
+      |         &lt;div class="pages"&gt;
+      |           &lt;div data-page="index" class="page"&gt;
+      |             &lt;div class="page-content"&gt;
+      |               &lt;p&gt;Page content goes here&lt;/p&gt;
+      |               &lt;a href="about.html"&gt;About app&lt;/a&gt;
+      |             &lt;/div&gt;
+      |           &lt;/div&gt;
+      |         &lt;/div&gt;
+      |       &lt;/div&gt;
+      |     &lt;/div&gt;
+      |     &lt;script src="path/to/framework7.min.js"&gt;&lt;/script&gt;
+      |     &lt;!--
+      |     We need the following script to include styles depending on device's OS
+      |     It is important to keep it as inline script or in separate JS file with this code only!
+      |     --&gt;
+      |     &lt;script&gt;
+      |       (function () {
+      |         if (Framework7.prototype.device.android) {
+      |               Dom7('head').append(
+      |                   '&lt;link rel="stylesheet" href="path/to/framework7.material.min.css"&gt;' +
+      |                   '&lt;link rel="stylesheet" href="path/to/framework7.material.colors.min.css"&gt;' +
+      |                   '&lt;link rel="stylesheet" href="path/to/my-app.material.css"&gt;'
+      |               );
+      |           }
+      |           else {
+      |               Dom7('head').append(
+      |                   '&lt;link rel="stylesheet" href="path/to/framework7.ios.min.css"&gt;' +
+      |                   '&lt;link rel="stylesheet" href="path/to/framework7.ios.colors.min.css"&gt;' +
+      |                   '&lt;link rel="stylesheet" href="path/to/my-app.ios.css"&gt;'
+      |               );
+      |           }
+      |       })();
+      |     &lt;/script&gt;
+      |     &lt;script src="path/to/my-app.js"&gt;&lt;/script&gt;
+      |   &lt;/body&gt;
+      | &lt;/html&gt; 
+  h2 Java Script
+  p Let's look at <b>my-app.js</b>.
+  p But first of all, as we need to use conditions for iOS or Material theme, we need to determine our device. So the very first lines in our JS will be:
+  pre
+    code.js 
+      | var isAndroid = Framework7.prototype.device.android === true;
+      | var isIos = Framework7.prototype.device.ios === true;
+  p We also need to use this conditions in our Template7 templates, so we may assigin it to Template7 global context:
+  pre
+    code.js
+      | Template7.global = {
+      |     android: isAndroid,
+      |     ios: isIos
+      | };
+  p In further code we need to use Dom7, let's assign it to <code>$$</code>:
+  pre
+    code.js
+      | var $$ = Dom7;
+
+  p And the final part before App initialization, we need to change "Through" type navbar layout to "Fixed" in Material theme (for Android):
+  pre
+    code.js
+      | if (isAndroid) {
+      |     // Change class
+      |     $$('.view.navbar-through').removeClass('navbar-through').addClass('navbar-fixed');
+      |     // And move Navbar into Page
+      |     $$('.view .navbar').prependTo('.view .page');
+      | }
+  p Now we may initialize our App and View
+  pre
+    code.js
+      | // Init App
+      | var myApp = new Framework7({
+      |     // Enable Material theme for Android device only
+      |     material: isAndroid ? true : false,
+      |     // Enable Template7 pages
+      |     template7Pages: true
+      | });
+      | 
+      | // Init View
+      | var mainView = myApp.addView('.view-main', {
+      |     // Material doesn't support it but don't worry about it
+      |     // F7 will ignore it for Material theme
+      |     dynamicNavbar: true
+      | });
+  p These are all basics we need in our JS file. Here it is again, all in one:
+  pre
+    code.js
+      | // Determine theme depending on device
+      | var isAndroid = Framework7.prototype.device.android === true;
+      | var isIos = Framework7.prototype.device.ios === true;
+      | 
+      | // Set Template7 global devices flags
+      | Template7.global = {
+      |     android: isAndroid,
+      |     ios: isIos
+      | };
+      | 
+      | // Define Dom7
+      | var $$ = Dom7;
+      | 
+      | // Change Through navbar layout to Fixed
+      | if (isAndroid) {
+      |     // Change class
+      |     $$('.view.navbar-through').removeClass('navbar-through').addClass('navbar-fixed');
+      |     // And move Navbar into Page
+      |     $$('.view .navbar').prependTo('.view .page');
+      | }
+      | 
+      | // Init App
+      | var myApp = new Framework7({
+      |     // Enable Material theme for Android device only
+      |     material: isAndroid ? true : false,
+      |     // Enable Template7 pages
+      |     template7Pages: true
+      | });
+      | 
+      | // Init View
+      | var mainView = myApp.addView('.view-main', {
+      |     // Don't worry about that Material doesn't support it
+      |     // F7 will just ignore it for Material theme
+      |     dynamicNavbar: true
+      | });
+  h2 Internal Pages
+  p We have enabled Template7 to preprocess our internal pages. Now let's look at such internal page layout:
+  pre
+    code
+      | &lt;!-- Dynamic navbar for iOS theme --&gt;
+      | {{#if @global.ios}}
+      | &lt;div class="navbar"&gt;
+      |     &lt;div class="navbar-inner"&gt;
+      |         &lt;div class="left sliding"&gt;
+      |             &lt;a href="#" class="back"&gt;
+      |                 &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+      |                 &lt;span&gt;Back&lt;/span&gt;
+      |             &lt;/a&gt;
+      |         &lt;/div&gt;
+      |         &lt;div class="center sliding"&gt;About&lt;/div&gt;
+      |     &lt;/div&gt;
+      | &lt;/div&gt;
+      | {{/if}}
+      | 
+      | &lt;div class="page" data-page="about"&gt;
+      |     &lt;!-- Fixed navbar for Material theme --&gt;
+      |     {{#if @global.android}}
+      |     &lt;div class="navbar"&gt;
+      |         &lt;div class="navbar-inner"&gt;
+      |             &lt;div class="left"&gt;
+      |                 &lt;a href="#" class="back icon-only"&gt;
+      |                     &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+      |                 &lt;/a&gt;
+      |             &lt;/div&gt;
+      |             &lt;div class="center"&gt;About&lt;/div&gt;
+      |         &lt;/div&gt;
+      |     &lt;/div&gt;
+      |     {{/if}}
+      |     
+      |     &lt;div class="page-content"&gt;
+      |         &lt;!-- Page content goes here --&gt;
+      |     &lt;/div&gt;
+      | &lt;/div&gt;      
+  h2 Conclusion
+  p As we may see, it is pretty easy to configure basic app to maintain both iOS and Material themes. To summarize we just need to: 
+  ul 
+    li
+      p include appropriate CSS files, 
+    li
+      p change Through layout to Fixed one for Navbar by changing View class and moving Navbar into Page,
+    li
+      p enable <code>material</code> parameter for Material theme,
+    li
+      p use Template7 rendering for internal pages to render Navbar in appropriate place
+  p However, don't forget that <b>if you want to deliver the best experience for both platforms it is better to keep them in separate apps</b>!
+    
+  

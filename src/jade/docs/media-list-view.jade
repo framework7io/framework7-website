@@ -1,0 +1,141 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Media List View | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Media List View
+        p Media list view is extended case of <a href="list-view.html">list view</a> indended to display more complex data like products, services, users, etc.
+        p And of course it has a bit more complex layout:
+        pre
+          code
+            | &lt;!-- Media list block has additional "media-list" class --&gt;
+            | &lt;div class="list-block media-list"&gt;
+            |     &lt;ul&gt;
+            |         &lt;li&gt;
+            |             &lt;div class="item-content"&gt;
+            |                 &lt;div class="item-media"&gt;
+            |                     &lt;img src="path/to/img.jpg"&gt;
+            |                 &lt;/div&gt;
+            |                 &lt;div class="item-inner"&gt;
+            |                     &lt;div class="item-title-row"&gt;
+            |                         &lt;div class="item-title"&gt;Element title&lt;/div&gt;
+            |                         &lt;div class="item-after"&gt;Element label&lt;/div&gt;
+            |                     &lt;/div&gt;
+            |                     &lt;div class="item-subtitle"&gt;Subtitle&lt;/div&gt;
+            |                     &lt;div class="item-text"&gt;Additional description text&lt;/div&gt;
+            |                 &lt;/div&gt;
+            |             &lt;/div&gt;
+            |         &lt;/li&gt;
+            |     &lt;/ul&gt;
+            | &lt;/div&gt;  
+        p Where:
+        ul
+          li
+            p <code>item-content</code> - main flex wrapper for <code>item-media</code> and <code>item-inner</code>. <strong>Requred</strong> element.
+          ul
+            li
+              p <code>item-media</code> - container for your media element like icon, image, etc. <strong>Optional</strong> element.
+            li
+              p <code>item-inner</code> - <strong>Requred</strong> element.
+            ul
+              li
+                p <code>item-title-row</code> - main flex wrapper for <code>item-title</code> and <code>item-after</code>. <strong>Optional</strong> element.
+              ul
+                li
+                  p <code>item-title</code> - single-line list item title. <strong>Optional</strong> element.
+                li
+                  p <code>item-after</code> - list item label. Could countain any additional HTML elements, like label text, or badge, or switch/toggle or button, etc. <strong>Optional</strong> element.            
+              li
+                p <code>item-subtitle</code> - additional single-line title. <strong>Optional</strong> element.
+              li
+                p <code>item-text</code> - additional two-lines container for detailed description. <strong>Optional</strong> element.
+      h4(data-device-preview="../docs-demos/media-list.html") Example
+        
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Songs&lt;/div&gt;
+          | &lt;div class="list-block media-list"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;img src="..." width="80"&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title-row"&gt;
+          |             &lt;div class="item-title"&gt;Yellow Submarine&lt;/div&gt;
+          |             &lt;div class="item-after"&gt;$15&lt;/div&gt;
+          |           &lt;/div&gt;
+          |           &lt;div class="item-subtitle"&gt;Beatles&lt;/div&gt;
+          |           &lt;div class="item-text"&gt;Lorem ipsum dolor sit amet...&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/a&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="content-block-title"&gt;Mail App&lt;/div&gt;
+          | &lt;div class="list-block media-list"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title-row"&gt;
+          |             &lt;div class="item-title"&gt;Facebook&lt;/div&gt;
+          |             &lt;div class="item-after"&gt;17:14&lt;/div&gt;
+          |           &lt;/div&gt;
+          |           &lt;div class="item-subtitle"&gt;New messages from John Doe&lt;/div&gt;
+          |           &lt;div class="item-text"&gt;Lorem ipsum dolor sit amet...&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/a&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |  
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="content-block-title"&gt;Something more simple&lt;/div&gt;
+          | &lt;div class="list-block media-list"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;img src="..." width="44"&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title-row"&gt;
+          |             &lt;div class="item-title"&gt;Yellow Submarine&lt;/div&gt;
+          |           &lt;/div&gt;
+          |           &lt;div class="item-subtitle"&gt;Beatles&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="content-block-title"&gt;Inset&lt;/div&gt;
+          | &lt;div class="list-block media-list inset"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;a href="#" class="item-link item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;img src="..." width="44"&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title-row"&gt;
+          |             &lt;div class="item-title"&gt;Yellow Submarine&lt;/div&gt;
+          |           &lt;/div&gt;
+          |           &lt;div class="item-subtitle"&gt;Beatles&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/a&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;          
+      

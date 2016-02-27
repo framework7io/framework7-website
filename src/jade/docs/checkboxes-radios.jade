@@ -1,0 +1,176 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Checkboxes and radios | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Checkboxes and radios
+        p This <a href="list-view.html">List View</a> extention allows you to create groups of checkbox and radio inputs.
+      h2(data-device-preview="../docs-demos/checkboxes-radios-checkboxes.html") Checkboxes group
+      p Let's look at checkbox inputs group layout:
+        pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     &lt;!-- Single chekbox item --&gt;
+            |     &lt;li&gt;
+            |       &lt;label class="label-checkbox item-content"&gt;
+            |         &lt;!-- Checked by default --&gt;
+            |         &lt;input type="checkbox" name="my-checkbox" value="Books" checked="checked"&gt;
+            |         &lt;div class="item-media"&gt;
+            |           &lt;i class="icon icon-form-checkbox"&gt;&lt;/i&gt;
+            |         &lt;/div&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Books&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/label&gt;
+            |     &lt;/li&gt;
+            |     &lt;!-- Another chekbox item --&gt;
+            |     &lt;li&gt;
+            |       &lt;label class="label-checkbox item-content"&gt;
+            |         &lt;input type="checkbox" name="my-checkbox" value="Movies"&gt;
+            |         &lt;div class="item-media"&gt;
+            |           &lt;i class="icon icon-form-checkbox"&gt;&lt;/i&gt;
+            |         &lt;/div&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Movies&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/label&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;            
+      .important-note
+        ul
+          li
+            p "item-content" should be a &lt;label&gt; element with additional "label-checkbox" class.
+          li
+            p Checkbox (&lt;input type="checkbox"&gt;) must be a first child of "item-content"
+          li
+            p Checkbox icon must be in "item-media"
+      h2(data-device-preview="../docs-demos/checkboxes-radios-radios.html") Radios group iOS
+      p Let's look at radio inputs group layout:
+        pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     &lt;!-- Single radio input --&gt;
+            |     &lt;li&gt;
+            |       &lt;label class="label-radio item-content"&gt;
+            |         &lt;!-- Checked by default --&gt;
+            |         &lt;input type="radio" name="my-radio" value="Books" checked="checked"&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Books&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/label&gt;
+            |     &lt;/li&gt;
+            |     &lt;!-- Another radio input --&gt;
+            |     &lt;li&gt;
+            |       &lt;label class="label-radio item-content"&gt;
+            |         &lt;input type="radio" name="my-radio" value="Movies"&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Movies&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/label&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;                       
+      .important-note
+        ul
+          li
+            p "item-content" should be a &lt;label&gt; element with additional "label-radio" class.
+          li
+            p Radio input (&lt;input type="radio"&gt;) must be a first child of "item-content"
+      h2(data-device-preview="../docs-demos/checkboxes-radios-radios-material.html") Radios group Material
+      .important-note
+        p Note that in Material theme you'll have to add additional icon for Radios:
+      pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     &lt;!-- Single radio input --&gt;
+            |     &lt;li&gt;
+            |       &lt;label class="label-radio item-content"&gt;
+            |         &lt;!-- Checked by default --&gt;
+            |         &lt;input type="radio" name="my-radio" value="Books" checked="checked"&gt;
+            |         &lt;div class="item-media"&gt;
+            |           &lt;i class="icon icon-form-radio"&gt;&lt;/i&gt;
+            |         &lt;/div&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Books&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/label&gt;
+            |     &lt;/li&gt;
+            |     &lt;!-- Another radio input --&gt;
+            |     &lt;li&gt;
+            |       &lt;label class="label-radio item-content"&gt;
+            |         &lt;input type="radio" name="my-radio" value="Movies"&gt;
+            |         &lt;div class="item-media"&gt;
+            |           &lt;i class="icon icon-form-radio"&gt;&lt;/i&gt;
+            |         &lt;/div&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Movies&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/label&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;    
+      
+      h2(data-device-preview="../docs-demos/checkboxes-radios-media.html") With media list view
+      p You can use checkboxes and radios groups with media list view:
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Select Message&lt;/div&gt;
+          | &lt;div class="list-block media-list"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;label class="label-checkbox item-content"&gt;
+          |         &lt;input type="checkbox" name="my-checkbox"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-checkbox"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title-row"&gt;
+          |             &lt;div class="item-title"&gt;Facebook&lt;/div&gt;
+          |             &lt;div class="item-after"&gt;17:14&lt;/div&gt;
+          |           &lt;/div&gt;
+          |           &lt;div class="item-subtitle"&gt;New messages from John Doe&lt;/div&gt;
+          |           &lt;div class="item-text"&gt;Lorem ipsum dolor sit amet...&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/label&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="content-block-title"&gt;What is your favourite song?&lt;/div&gt;
+          | &lt;div class="list-block media-list"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;label class="label-radio item-content"&gt;
+          |         &lt;input type="radio" name="my-radio" checked&gt;
+          |         &lt;div class="item-media"&gt;&lt;img src="..." width="80"&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title-row"&gt;
+          |             &lt;div class="item-title"&gt;Yellow Submarine&lt;/div&gt;
+          |             &lt;div class="item-after"&gt;$15&lt;/div&gt;
+          |           &lt;/div&gt;
+          |           &lt;div class="item-subtitle"&gt;Beatles&lt;/div&gt;
+          |           &lt;div class="item-text"&gt;Lorem ipsum dolor ...&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/label&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;          
+      .device-spacer
+      

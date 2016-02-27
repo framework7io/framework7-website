@@ -1,0 +1,118 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Buttons
+              .right 
+          .page-content
+            .content-block-title Usual Buttons
+            .content-block
+              p 
+                a(href="#").button Usual Button 1
+              p 
+                a(href="#").button Usual Button 2
+              p 
+                a(href="#").button Usual Button 3
+            .content-block-title Active Button
+            .content-block
+              p 
+                a(href="#").button.active Active Button
+            .content-block-title Round Buttons
+            .content-block
+              p 
+                a(href="#").button.button-round Round Button 1
+              p 
+                a(href="#").button.button-round Round Button 2
+              p 
+                a(href="#").button.button-round.active Round Button Active
+            .content-block-title Big Buttons
+            .content-block
+              p 
+                a(href="#").button.button-big Big Button 
+              p 
+                a(href="#").button.button-big.button-round Big Round Button 
+              p 
+                a(href="#").button.button-big.button-round.active Big Round Active Button 
+            .content-block-title Buttons Row / Segmented Controller
+            .content-block
+              p.buttons-row 
+                a(href="#").button Button 1
+                a(href="#").button Button 2
+                a(href="#").button Button 3
+              p.buttons-row 
+                a(href="#").button.active Button 1
+                a(href="#").button Button 2
+                a(href="#").button Button 3
+              p.buttons-row 
+                a(href="#").button.button-round Button 1
+                a(href="#").button.button-round Button 2
+              p.buttons-row 
+                a(href="#").button.button-round Button 1
+                a(href="#").button.button-round.active Button 2
+            .content-block-title Fill buttons    
+            .content-block
+              p
+                a(href="#").button.button-fill Fill Button 
+              p
+                a(href="#").button.button-round.button-fill Round Fill Button
+              p
+                a(href="#").button.button-big.button-fill Big Fill Button 
+            .content-block-title Color buttons
+            .content-block
+              p.buttons-row.theme-pink 
+                a(href="#").button.active Button 1
+                a(href="#").button Button 2
+                a(href="#").button Button 3
+              p.buttons-row.theme-orange 
+                a(href="#").button Button 1
+                a(href="#").button.active Button 2
+                a(href="#").button Button 3
+              p
+                a(href="#").button.button-fill.color-green Green
+              p
+                a(href="#").button.button-fill.color-red.button-round Round Red
+              p
+                a(href="#").button.button-big.button-fill.color-gray Big Gray
+              p
+                a(href="#").button.button-fill.button-big.color-yellow Big Yellow
+            .content-block-title List block buttons
+            .list-block
+              ul
+                li
+                  a(href="#").item-link.list-button List Button 1
+                li
+                  a(href="#").item-link.list-button List Button 2
+                li
+                  a(href="#").item-link.list-button List Button 3
+            .content-block-title Inset list block buttons
+            .list-block.inset
+              ul
+                li
+                  a(href="#").item-link.list-button List Button 1
+                li
+                  a(href="#").item-link.list-button List Button 2
+                li
+                  a(href="#").item-link.list-button List Button 3
+            .content-block-title Using Grid
+            .content-block
+              .row
+                .col-50
+                  a(href="#").button.button-big.button-fill.color-red Cancel
+                .col-50
+                  a(href="#").button.button-big.button-fill.color-green Submit
+            
+                
+
+              
+
+              
+              
+
+block scripts
+  script.
+    var myApp = new Framework7();            

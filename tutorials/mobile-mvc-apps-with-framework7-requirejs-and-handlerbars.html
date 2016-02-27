@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>Mobile MVC Apps With Framework7, RequireJS and Handlebars | Framework7 Tutorials</title>
-    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
-    <link rel="stylesheet" href="../css/normalize.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/highlight.css">
-    <link rel="shortcut icon" href="../favicon.png">
-    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+    <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
+    <link rel="stylesheet" href="//cdn.framework7.io/css/normalize.css">
+    <link rel="stylesheet" href="//cdn.framework7.io/css/highlight.css">
+    <link rel="stylesheet" href="//cdn.framework7.io/css/main.css">
+    <link rel="shortcut icon" href="/favicon.png">
+    <script src="//cdn.framework7.io/js/vendor/modernizr-2.7.1.min.js"></script>
   </head>
   <body>
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
-        <div class="langs"><span>Language: </span><a href="http://www.idangero.us/framework7/">EN</a><a href="http://f7cn.com/">CN</a></div>
+        <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://f7cn.com/">CN</a></div>
         <div class="title-links">
           <div class="title">Framework7</div>
           <div class="links-row">
@@ -23,7 +23,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/">Docs</a><a href="../tutorials/" class="active">Tutorials</a><a href="../forum/">Forum</a>
+            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/" class="active">Tutorials</a><a href="http://forum.framework7.io">Forum</a>
             </div>
           </div>
           <div class="links-row">
@@ -36,21 +36,18 @@
     </header>
     <div class="share-line">
       <div class="center">
-        <div class="share">
-          <!-- AddThis Button BEGIN -->
-          <div class="addthis_toolbox addthis_default_style ">
-          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-          <a class="addthis_button_tweet"></a>
-          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
-          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-          <a class="addthis_counter addthis_pill_style"></a>
+        <div class="share-buttons">
+          <div class="share-button">
+            <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
           </div>
-          <!-- AddThis Button END -->
+          <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
+          <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
+          <div class="share-button">
+            <div data-size="medium" class="g-plusone"></div>
+          </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="github-buttons">
-          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
-          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
-        </div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="//cdn.framework7.io/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
         <div class="clearfix"></div>
       </div>
     </div>
@@ -71,7 +68,7 @@
           <li><a href="http://ionicons.com/" target="_blank">ionicons</a>  - amazing mobile-icons library</li>
         </ul>
       </ul>
-      <h3>Project structure:</h3><img src="../i/tutorials/mvc-requirejs/1.png" style="float:left; margin:0 40px 40px 0">
+      <h3>Project structure:</h3><img src="//cdn.framework7.io/i/tutorials/mvc-requirejs/1.png" style="float:left; margin:0 40px 40px 0">
       <p>Let’s create the following structure of project (index.html and app.js files leave empty yet). </p>
       <p>To make your live easier you can download archive with the structure using this link: <a href="https://www.dropbox.com/s/c7q1jftn1538awe/Framework7-MVC-structure.zip" target="_blank">https://www.dropbox.com/s/c7q1jftn1538awe/Framework7-MVC-structure.zip</a> (This archive is already filled with the first versions of the index.html and app.'s files) </p>
       <p>Also link to Github sources - there is the latest version with incremental revisions history: <a href="https://github.com/philipshurpik/Framework7-MVC-base" target="_blank">https://github.com/philipshurpik/Framework7-MVC-base</a></p>
@@ -135,7 +132,8 @@
 &lt;/body&gt;
 &lt;/html&gt;   </code></pre>
       <p>Put the application initialization in app.js file:</p>
-      <pre><code>var f7 = new Framework7({
+      <pre><code> 
+var f7 = new Framework7({
     modalTitle: 'F7-MVC-Base',
     animateNavBackIcon: true
 });
@@ -143,9 +141,9 @@ var mainView = f7.addView('.view-main', {
     dynamicNavbar: true
 });</code></pre>
       <p>Run application in browser:</p>
-      <p><img src="../i/tutorials/mvc-requirejs/2.png" style="float:left; margin:0 40px 40px 0"></p>
+      <p><img src="//cdn.framework7.io/i/tutorials/mvc-requirejs/2.png" style="float:left; margin:0 40px 40px 0"></p>
       <p>That's it. We have the first page and it is even something more than hello-world! :) </p>
-      <p><strong>Useful tip:</strong><br>In Chrome Devtools console, there is Emulation tab, where you can select target device or screen resolution and see how the application will look around on the screen of the device.</p>
+      <p> <strong>Useful tip:</strong><br>In Chrome Devtools console, there is Emulation tab, where you can select target device or screen resolution and see how the application will look around on the screen of the device.</p>
       <div class="clearfix"></div>
       <h3>Connect RequireJS</h3>
       <p>Now we need to dynamically load contacts (e.g. from localStorage) and display them in a list.<br>We have to modify our files:</p>
@@ -159,7 +157,8 @@ var mainView = f7.addView('.view-main', {
         <b>2. app.js</b><br>
         Transform it in RequireJS module:
       </p>
-      <pre><code>define('app', ['js/list/listController'], function(listController) {
+      <pre><code> 
+define('app', ['js/list/listController'], function(listController) {
     var f7 = new Framework7({
         modalTitle: 'F7-MVC-Base',
         animateNavBackIcon: true
@@ -176,13 +175,14 @@ var mainView = f7.addView('.view-main', {
       <p>All the same, but wrapped in a require module. We also have added initialization of our first controller (soon it also will appear).</p>
       <h3>Main page: controller, view and list element template. Connect Handlebars</h3>
       <p>Now we need to create a controller for the main page, its view. Then connect and configure Handlebars and make handlebars template. <br>I propose to place the files as follows: </p>
-      <p><img src="../i/tutorials/mvc-requirejs/3.png" style="float:left; margin:0 40px 40px 0"></p>
+      <p><img src="//cdn.framework7.io/i/tutorials/mvc-requirejs/3.png" style="float:left; margin:0 40px 40px 0"></p>
       <p>I like to group files in different directories by their functionality.</p>
       <p>It seems for me much easier to organize files, especially in big projects. </p>
       <div class="clearfix"></div>
       <p>Now create a simple controller for the list. And initialize our localStorage with some contacts in it.</p>
       <p>File: <b>js/list/listController.js</b></p>
-      <pre><code>define(["js/list/listView"], function(ListView) {
+      <pre><code> 
+define(["js/list/listView"], function(ListView) {
  
     function init() {
         var contacts = loadContacts();
@@ -247,7 +247,8 @@ var mainView = f7.addView('.view-main', {
       <p>Now we need to add the page to view and edit contact.</p>
       <h3>Navigation between pages in Framework7</h3>
       <p>Each page is placed in a separate html file.<br>Page content is contained in div with "page" class:</p>
-      <pre><code>&lt;div class="page" data-page="list"&gt;</code></pre>
+      <pre><code> 
+&lt;div class="page" data-page="list"&gt;</code></pre>
       <p>"data-page" attribute determines unique page name, that is used for routing.</p>
       <p>Navigation through the pages is performed in two ways:</p>
       <ul>
@@ -341,7 +342,7 @@ var mainView = f7.addView('.view-main', {
 &lt;/div&gt;   </code></pre>
       <p>Now when you click on a list item or button to add - the router tries to load the file js/contact/contactController.</p>
       <p>Appropriately, we need to create it, it’s view and template page.</p>
-      <p> <img src="../i/tutorials/mvc-requirejs/4.png"></p>
+      <p> <img src="//cdn.framework7.io/i/tutorials/mvc-requirejs/4.png"></p>
       <p>File: <b>contactController.js</b></p>
       <pre><code>define(["app","js/contact/contactView"], function(app, ContactView) {
  
@@ -426,7 +427,7 @@ var mainView = f7.addView('.view-main', {
     &lt;/form&gt;
 &lt;/div&gt; </code></pre>
       <p>Well. Now we can open our page to add or edit a contact:</p>
-      <p>  <img src="../i/tutorials/mvc-requirejs/5.png" style="float:left; margin:0 40px 40px 0"></p>
+      <p>  <img src="//cdn.framework7.io/i/tutorials/mvc-requirejs/5.png" style="float:left; margin:0 40px 40px 0"></p>
       <p>Now we need to add the ability to save and delete contacts. Let’s do it.</p>
       <div class="clearfix"></div>
       <h3>Saving Contact</h3>
@@ -511,7 +512,8 @@ function saveContact() {
 });      </code></pre>
       <p>Note. Functions are added not to the object itself, but in its prototype. <br> Accordingly, when converting the object in JSON, only its properties (without functions) are serialized. </p>
       <p>Now add the model in to contactController: <br>Add it to the list of dependencies:</p>
-      <pre><code>define(["app","js/contact/contactView", "js/contactModel"], function(app, ContactView, Contact)</code></pre>
+      <pre><code> 
+define(["app","js/contact/contactView", "js/contactModel"], function(app, ContactView, Contact)</code></pre>
       <p>Change creation and assignment of contact:</p>
       <pre><code>contact = new Contact(contacts[i]);</code></pre>
       <p>and</p>
@@ -578,7 +580,7 @@ function saveContact() {
     localStorage.setItem("f7Base", JSON.stringify(contacts));
 }</code></pre>
       <p>And look at the result:</p>
-      <p><img src="../i/tutorials/mvc-requirejs/6.png"><img src="../i/tutorials/mvc-requirejs/7.png"></p>
+      <p> <img src="//cdn.framework7.io/i/tutorials/mvc-requirejs/6.png"><img src="//cdn.framework7.io/i/tutorials/mvc-requirejs/7.png"></p>
       <h3>Summaries</h3>
       <p>We create very simple MVC mobile application using Framework7. </p>
       <p>Framework7 in conjunction with Phonegap let’s you create beautiful native-like applications for IOS. And it may be useful for developers who are new to ObjectiveC. </p>
@@ -586,47 +588,80 @@ function saveContact() {
       <p>Project sources with a history of edits available here: <a href="https://github.com/philipshurpik/Framework7-MVC-base" target="_blank">https://github.com/philipshurpik/Framework7-MVC-base</a> </p>
       <p>And I made ​​an extended case study contacts application, that has more features and uses more functions of Framework7. There are swiping left menu bar, popup, search bar, etc. It’s sources there: <a href="https://github.com/philipshurpik/Framework7-Contacts7-MVC" target="_blank">https://github.com/philipshurpik/Framework7-Contacts7-MVC</a> </p>
       <p>And screenshots (with cats) :)</p>
-      <p><img src="../i/tutorials/mvc-requirejs/8.png"></p>
+      <p><img src="//cdn.framework7.io/i/tutorials/mvc-requirejs/8.png"></p>
     </div>
     <div class="share-line">
       <div class="center">
-        <div class="share">
-          <!-- AddThis Button BEGIN -->
-          <div class="addthis_toolbox addthis_default_style ">
-          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-          <a class="addthis_button_tweet"></a>
-          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
-          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-          <a class="addthis_counter addthis_pill_style"></a>
+        <div class="share-buttons">
+          <div class="share-button">
+            <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
           </div>
-          <!-- AddThis Button END -->
+          <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
+          <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
+          <div class="share-button">
+            <div data-size="medium" class="g-plusone"></div>
+          </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="github-buttons">
-          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
-          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
-        </div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="//cdn.framework7.io/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
         <div class="clearfix"></div>
       </div>
     </div>
     <footer>
       <div class="center">
-        <div class="links"><a href="../">Framework7</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
-        <div class="copy">2015 © Framework7 by iDangero.us</div>
+        <div class="links">
+          <div class="links-block">
+            <div class="links-block-title">Project</div>
+            <ul>
+              <li><a href="https://github.com/nolimits4web/Framework7/releases" target="_blank">Download</a></li>
+              <li><a href="/contribute/">Contribute</a></li>
+              <li><a href="/donate/">Donate</a></li>
+              <li><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a></li>
+            </ul>
+          </div>
+          <div class="links-block">
+            <div class="links-block-title">Learn</div>
+            <ul>
+              <li><a href="/get-started/">Get Started</a></li>
+              <li><a href="/docs/">Docs</a></li>
+              <li><a href="/tutorials/">Tutorials</a></li>
+              <li><a href="http://forum.framework7.io" target="_blank">Forum</a></li>
+            </ul>
+          </div>
+          <div class="links-block">
+            <div class="links-block-title">Apps</div>
+            <ul>
+              <li><a href="/examples/">Layouts</a></li>
+              <li><a href="/plugins/">Plugins</a></li>
+              <li><a href="/apps/">Demo Apps</a></li>
+              <li><a href="/showcase/">Showcase</a></li>
+            </ul>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="copy">
+          <div class="copy-left">
+            <p>Code licensed under <a href="https://github.com/nolimits4web/Framework7/blob/master/LICENSE" target="_blank">MIT</a></p>
+            <p>2016 © Framework7 is brought to you by <a href="https://twitter.com/nolimits4web" target="_blank">Vladimir Kharlampidi</a> from <a href="http://idangero.us">iDangero.us</a>. </p>
+          </div>
+          <div class="copy-right">
+            <p>Proudly supported by <a href="https://www.keycdn.com/" class="keycdn-link" target="_blank"><img src="//cdn.framework7.io/i/keycdn-logo.svg" alt="KeyCDN" title="KeyCDN" class="keycdn-logo"></a></p>
+          </div>
+          <div class="clearfix"></div>
+        </div>
       </div>
     </footer>
-    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
-    <script src="../js/plugins.js"></script>
-    <script src="../js/main.js"></script>
-    <script>var addthis_config = {"data_track_addressbar":true};</script>
-    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script src="//cdn.framework7.io/js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="//cdn.framework7.io/js/plugins.js"></script>
+    <script src="//cdn.framework7.io/js/main.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
       
-      ga('create', 'UA-13289120-8', 'idangero.us');
-      ga('send', 'pageview');     
+      ga('create', 'UA-74282934-1', 'auto');
+      ga('send', 'pageview');
     </script>
   </body>
 </html>

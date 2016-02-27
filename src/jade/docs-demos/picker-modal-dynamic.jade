@@ -1,0 +1,47 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Picker Modal
+              .right 
+          .page-content
+            .content-block
+              p
+                a(href="#").create-picker Create Picker
+              p
+                a(href="#").close-picker Close Picker
+    
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    $$('.create-picker').on('click', function () {
+      // Check first, if we already have opened picker
+      if ($$('.picker-modal.modal-in').length > 0) {
+        myApp.closeModal('.picker-modal.modal-in');
+      }
+      myApp.pickerModal(
+        '<div class="picker-modal">' +
+          '<div class="toolbar">' +
+            '<div class="toolbar-inner">' +
+              '<div class="left"></div>' +
+              '<div class="right"><a href="#" class="close-picker">Close</a></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="picker-modal-inner">' +
+            '<div class="content-block">' +
+              '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      )
+    });
+    

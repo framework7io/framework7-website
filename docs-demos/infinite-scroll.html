@@ -14,9 +14,9 @@
       <div class="view view-main">
         <div class="navbar">
           <div class="navbar-inner">
-            <div class="left"></div>
+            <div class="left"> </div>
             <div class="center sliding">Infinite Scroll</div>
-            <div class="right"></div>
+            <div class="right"> </div>
           </div>
         </div>
         <div class="pages navbar-through">
@@ -168,15 +168,15 @@
       
         // Exit, if loading in progress
         if (loading) return;
-        
+      
         // Set loading flag
         loading = true;
-        
+      
         // Emulate 1s loading
         setTimeout(function () {
           // Reset loading flag
           loading = false;
-          
+      
           if (lastIndex >= maxItems) {
             // Nothing more to load, detach infinite scroll events to prevent unnecessary loadings
             myApp.detachInfiniteScroll($$('.infinite-scroll'));
@@ -184,21 +184,20 @@
             $$('.infinite-scroll-preloader').remove();
             return;
           }
-          
+      
           // Generate new items HTML
           var html = '';
           for (var i = lastIndex + 1; i <= lastIndex + itemsPerLoad; i++) {
             html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + i + '</div></div></li>';
           }
-          
+      
           // Append new items
           $$('.list-block ul').append(html);
-          
+      
           // Update last loaded index
           lastIndex = $$('.list-block li').length;
         }, 1000);
       });
-      
     </script>
   </body>
 </html>

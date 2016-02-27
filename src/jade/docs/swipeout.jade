@@ -1,0 +1,379 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Swipeout | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Swipeout (Swipeable List)
+        p Swipeout is an extension of <a href="list-view.html">list view</a> that allows you to swipe over list elements to reveal hidden menu with  available actions, like swipe-to-delete.
+        p Let's look on layout structure of swipeout element in your list views:
+        pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     &lt;!-- Additional "swipeout" class on li --&gt;
+            |     &lt;li class="swipeout"&gt;
+            |       &lt;!-- Usual list element wrapped with "swipeout-content" --&gt;
+            |       &lt;div class="swipeout-content"&gt;
+            |         &lt;!-- Your list element here --&gt;
+            |         &lt;div class="item-content"&gt;
+            |           &lt;div class="item-media"&gt;...&lt;/div&gt;
+            |           &lt;div class="item-inner"&gt;...&lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/div&gt;
+            |       &lt;!-- Swipeout actions left --&gt;
+            |       &lt;div class="swipeout-actions-left"&gt;
+            |         &lt;!-- Swipeout actions links/buttons --&gt;
+            |         &lt;a href="#"&gt;Action 1&lt;/a&gt;
+            |         &lt;a href="#"&gt;Action 2&lt;/a&gt;
+            |       &lt;/div&gt;
+            |       &lt;!-- Swipeout actions right --&gt;
+            |       &lt;div class="swipeout-actions-right"&gt;
+            |         &lt;!-- Swipeout actions links/buttons --&gt;
+            |         &lt;a href="#"&gt;Action 1&lt;/a&gt;
+            |         &lt;a class="swipeout-close" href="#"&gt;Action 2&lt;/a&gt;
+            |       &lt;/div&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;
+        p Where:
+        ul
+          li <code>swipeout-content</code> - wrapper for your list element. This container will move during swipe over the list item
+          li <code>swipeout-actions-left</code> - container with left swipeout action buttons/links
+          li <code>swipeout-actions-right</code> - container with right swipeout action buttons/links
+          li <code>swipeout-close</code> - additional class on swipeout link that will close swipeout element when you click this link
+        .important-note
+          p Note that <strong>swipeout-content</strong> and <strong>swipeout-actions-left/right</strong> should be direct children of <strong>&lt;li&gt;</strong>
+        p If you have only "item-content" you can simplify layout by adding "item-content" class to "swipeout-content":
+        pre
+          code
+            | &lt;li class="swipeout"&gt;
+            |   &lt;div class="swipeout-content item-content"&gt;
+            |     &lt;div class="item-media"&gt;...&lt;/div&gt;
+            |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
+            |   &lt;/div&gt;
+            |   &lt;div class="swipeout-actions-right"&gt;
+            |     &lt;a href="#"&gt;Action 1&lt;/a&gt;
+            |     &lt;a href="#"&gt;Action 2&lt;/a&gt;
+            |   &lt;/div&gt;
+            | &lt;/li&gt;
+        p If you use <a href="list-view.html#link-elements">link elements</a> you can use all these classes on link:
+        pre
+          code
+            | &lt;li class="swipeout"&gt;
+            |   &lt;div class="swipeout-content"&gt;
+            |     &lt;a href="#" class="item-content item-link"&gt;
+            |       &lt;div class="item-media"&gt;...&lt;/div&gt;
+            |       &lt;div class="item-inner"&gt;...&lt;/div&gt;
+            |     &lt;/a&gt;
+            |   &lt;/div&gt;
+            |   &lt;div class="swipeout-actions-right"&gt;
+            |     &lt;a href="#"&gt;Action 1&lt;/a&gt;
+            |     &lt;a href="#"&gt;Action 2&lt;/a&gt;
+            |   &lt;/div&gt;
+            | &lt;/li&gt;
+      h4(data-device-preview="../docs-demos/swipeout.html") Example
+      pre
+        code
+          | &lt;!-- On right side --&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-right"&gt;
+          |         &lt;a href="#" class="action1"&gt;Action 1&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-right"&gt;
+          |         &lt;a href="#" class="action1 bg-orange"&gt;Action 1&lt;/a&gt;
+          |         &lt;a href="#" class="action2"&gt;Action 2&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+          | 
+          | &lt;!-- On left side --&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-left"&gt;
+          |         &lt;a href="#" class="action1"&gt;Action 1&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-left"&gt;
+          |         &lt;a href="#" class="action1 bg-orange"&gt;Action 1&lt;/a&gt;
+          |         &lt;a href="#" class="action2"&gt;Action 2&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+          | 
+          | &lt;!-- On both sides --&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-left"&gt;
+          |         &lt;a href="#" class="action1"&gt;Action L1&lt;/a&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-right"&gt;
+          |         &lt;a href="#" class="action1"&gt;Action R1&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li class="swipeout"&gt;
+          |       &lt;div class="swipeout-content item-content"&gt;
+          |         &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-left"&gt;
+          |         &lt;a href="#" class="action1 bg-pink"&gt;Action L1&lt;/a&gt;
+          |         &lt;a href="#" class="action2 bg-lightblue"&gt;Action L2&lt;/a&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="swipeout-actions-right"&gt;
+          |         &lt;a href="#" class="action1 bg-orange"&gt;Action R1&lt;/a&gt;
+          |         &lt;a href="#" class="action2"&gt;Action R2&lt;/a&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.action1').on('click', function () {
+          |   myApp.alert('Action 1');
+          | });
+          | $$('.action2').on('click', function () {
+          |   myApp.alert('Action 2');
+          | });  
+      h2(data-device-preview="../docs-demos/swipe-delete.html") Swipe To Delete
+      p Framework7 supports this frequently used feature from the box without single line of JavaScript. All you need is to add <b>&lt;a class="swipeout-delete"&gt;</b> link to swipeout actions buttons:
+      pre
+        code
+          | &lt;li class="swipeout"&gt;
+          |   &lt;div class="swipeout-content item-content"&gt;
+          |     &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;!-- Add this button and item will be deleted automatically --&gt;
+          |     &lt;a href="#" class="swipeout-delete"&gt;Delete&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/li&gt;
+      p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add additional <b>data-confirm</b> and <b>data-confirm-title</b> (optional) attributes to Delete link:
+      pre
+        code
+          | &lt;li class="swipeout"&gt;
+          |   &lt;div class="swipeout-content item-content"&gt;
+          |     &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;!-- We add data-confirm and data-confirm-title attributes --&gt;
+          |     &lt;a href="#" class="swipeout-delete" data-confirm="Are you sure want to delete this item?" data-confirm-title="Delete?"&gt;Delete&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/li&gt;
+      p If you want to close swipeout element when user dismissed Confirm modal, then you need also to add <b>data-close-on-cancel</b> attribute:
+      pre
+        code
+          | &lt;li class="swipeout"&gt;
+          |   &lt;div class="swipeout-content item-content"&gt;
+          |     &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;!-- We add data-close-on-cancel attribute to close swipeout automatically --&gt;
+          |     &lt;a href="#" class="swipeout-delete" data-confirm="Are you sure want to delete this item?" data-confirm-title="Delete?" data-close-on-cancel="true"&gt;Delete&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/li&gt;
+      h2(data-device-preview="../docs-demos/swipeout-overswipe.html") Overswipe
+      p Swipeouts also support "overswipe" actions that will be triggered automatically if you swipe actions too much. In this case we need to add <b>"swipeout-overswipe"</b> class to required actions button:
+      pre
+        code
+          | &lt;li class="swipeout"&gt;
+          |   &lt;div class="swipeout-content item-content"&gt;
+          |     &lt;div class="item-media"&gt;...&lt;/div&gt;
+          |     &lt;div class="item-inner"&gt;...&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;a href="#"&gt;More&lt;/a&gt;
+          |     &lt;a href="#" class="swipeout-delete swipeout-overswipe"&gt;Delete&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/li&gt;
+      .important-note
+        ul
+          li
+            p <b>overswipe</b> can be used only on last button in right swipeout actions, and only on first button in left swipeout actions.
+          li
+            p With overswipe, script will automatically trigger "click" event on overswipe button, so you need to add appropriate event listener to this button
+          li
+            p Overswipe button will have additonal <b>"swipeout-overswipe-active"</b> class during overswipe which you can use for additional styling of such state
+      pre
+        code
+          | &lt;li class="swipeout"&gt;
+          |   &lt;div class="swipeout-content"&gt;
+          |     &lt;a href="#" class="item-content item-link"&gt;
+          |       &lt;div class="item-inner"&gt;
+          |         &lt;div class="item-title-row"&gt;
+          |           &lt;div class="item-title"&gt;Facebook&lt;/div&gt;
+          |           &lt;div class="item-after"&gt;17:14&lt;/div&gt;
+          |         &lt;/div&gt;
+          |         &lt;div class="item-subtitle"&gt;New messages from John Doe&lt;/div&gt;
+          |         &lt;div class="item-text"&gt;Lorem ipsum ...&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/a&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-left"&gt;
+          |     &lt;a href="#" class="swipeout-overswipe bg-green reply"&gt;Reply&lt;/a&gt;
+          |     &lt;a href="#" class="bg-blue forward"&gt;Forward&lt;/a&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swipeout-actions-right"&gt;
+          |     &lt;a href="#" class="mark bg-orange"&gt;Mark&lt;/a&gt;
+          |     &lt;a href="#" class="swipeout-delete swipeout-overswipe"&gt;Delete&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/li&gt;
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.mark').on('click', function () {
+          |   myApp.alert('Mark');
+          | });
+          | $$('.reply').on('click', function () {
+          |   myApp.alert('Reply');
+          | });
+          | $$('.forward').on('click', function () {
+          |   myApp.alert('Forward');
+          | });          
+      h2(data-device-preview="../docs-demos/swipeout-api.html") Swipeout JavaScript API
+      p Swipeouts also has rich JavaScript API that allows you to control swipeout elements. Let's look on appropriate App's properties and methods:
+      p
+        span.method myApp.swipeoutOpen(<span>el</span>, <span>direction</span>, <span>callback</span>)</span> - reveal swipeout actions on specified element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+        li
+          span.parameter direction
+          |  - <span class="parameter-type">string</span> (could be "left" or "right") swipeout actions to open. Should be specified if item has both left and right swipeout actions. Optional
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">function</span> - callback function will be executed after swipeout element completes its opening animation
+        
+
+      p
+        span.method myApp.swipeoutClose(<span>el</span>, <span>callback</span>)</span> - close swipeout actions on specified element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">function</span> - callback function will be executed after swipeout element completes its closing animation
+      p
+        span.method myApp.swipeoutDelete(<span>el</span>, <span>callback</span>)</span> - delete specified swipeout element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of list (&lt;li&gt;) element with "swipeout" class. Required
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">function</span> - callback function will be executed after swipeout element completes its delete animation right before it will be removed from DOM
+
+      p
+        span.method myApp.swipeoutOpenedEl</span> - property. Contains link to currently opened swipeout HTMLElement. Or equal to 'undefined' if none of elements are currently opened
+      
+
+      h2(data-device-preview="../docs-demos/swipeout-events.html") Swipeout events
+      p Swipeout elements have the following events:
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Description
+        tbody
+          tr
+            td swipeout
+            td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+            td Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage
+          tr
+            td open
+            td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+            td Event will be triggered when swipeout element starts its opening animation
+          tr
+            td opened
+            td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+            td Event will be triggered after swipeout element completes its opening animation
+          tr
+            td close
+            td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+            td Event will be triggered when swipeout element starts its closing animation
+          tr
+            td closed
+            td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+            td Event will be triggered after swipeout element completes its closing animation 
+          tr
+            td delete
+            td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+            td Event will be triggered after swipeout element starts its delete animation 
+          tr
+            td deleted
+            td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+            td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.swipeout').on('deleted', function () {
+          |   myApp.alert('Item removed');
+          | }); 
+          | 
+          | $$('.swipeout').on('swipeout', function (e) {
+          |   console.log('Item opened on: ' + e.detail.progress + '%');
+          | });                   
+
+      .device-spacer

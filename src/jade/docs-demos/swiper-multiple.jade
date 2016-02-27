@@ -1,0 +1,101 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Multiple Swipers
+              .right 
+          .page-content
+            .content-block-title 1 Slide Per View, 50px Between
+            .swiper-container.swiper-1
+              .swiper-pagination
+              .swiper-wrapper
+                - for (var i = 1; i < 11; i++)
+                  .swiper-slide <span>Slide #{i}</span>
+
+            .content-block-title 2 Slides Per View, 20px Between
+            .swiper-container.swiper-2
+              .swiper-pagination
+              .swiper-wrapper
+                - for (var i = 1; i < 11; i++)
+                  .swiper-slide <span>Slide #{i}</span>
+
+            .content-block-title 3 Slides Per View, 10px Between
+            .swiper-container.swiper-3
+              .swiper-pagination
+              .swiper-wrapper
+                - for (var i = 1; i < 11; i++)
+                  .swiper-slide <span>Slide #{i}</span>
+
+            .content-block-title Vertical, 0px Between
+            .swiper-container.swiper-vertical
+              .swiper-pagination
+              .swiper-wrapper
+                - for (var i = 1; i < 6; i++)
+                  .swiper-slide <span>Slide #{i}</span>
+
+            .content-block-title Slow speed
+            .swiper-container.swiper-slow
+              .swiper-pagination
+              .swiper-wrapper
+                - for (var i = 1; i < 11; i++)
+                  .swiper-slide <span>Slide #{i}</span>
+
+
+block scripts
+  style.
+    .swiper-slide {
+      background: #fff;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      line-height:120px;
+      text-align:center;
+    }
+    .swiper-slide span {
+      font-size:17px;
+    }
+    .swiper-container {
+      height: 120px;
+      margin: 0px 0 35px;
+    }
+  script.
+    var myApp = new Framework7(); 
+
+    // 1 Slide Per View, 50px Between
+    var mySwiper1 = myApp.swiper('.swiper-1', {
+      pagination:'.swiper-1 .swiper-pagination',
+      spaceBetween: 50
+    });
+
+    // 2 Slides Per View, 20px Between
+    var mySwiper2 = myApp.swiper('.swiper-2', {
+      pagination:'.swiper-2 .swiper-pagination',
+      spaceBetween: 20,
+      slidesPerView: 2
+    });
+
+    // 3 Slides Per View, 10px Between
+    var mySwiper3 = myApp.swiper('.swiper-3', {
+      pagination:'.swiper-3 .swiper-pagination',
+      spaceBetween: 10,
+      slidesPerView: 3
+    });
+
+    // Vertical, 0px Between
+    var mySwiperVertical = myApp.swiper('.swiper-vertical', {
+      pagination:'.swiper-vertical .swiper-pagination',
+      direction: 'vertical'
+    });
+
+    // Slow speed
+    var mySwiperSlow = myApp.swiper('.swiper-slow', {
+      pagination:'.swiper-slow .swiper-pagination',
+      speed: 600
+    });
+    
+
+    

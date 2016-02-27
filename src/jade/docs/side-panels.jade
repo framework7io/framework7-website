@@ -1,0 +1,245 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Side Panels | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Side Panels
+        p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of <code>body</code>:
+        pre
+          code
+            | &lt;body&gt;
+            |     &lt;!-- First, we need to add Panel's overlay that will overlays app while panel is opened --&gt;
+            |     &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+            | 
+            |     &lt;!-- Left panel --&gt;
+            |     &lt;div class="panel panel-left"&gt;
+            |         ... panel content goes here ...
+            |     &lt;/div&gt;
+            | 
+            |     &lt;!-- Right panel --&gt;
+            |     &lt;div class="panel panel-right"&gt;
+            |         ... panel content goes here ...
+            |     &lt;/div&gt;
+            | 
+            |     ...
+            | &lt;/body&gt;   
+        p After we add panels we need to choose opening effect for each panel. There could be one of two effects: "Reveal" (when panel moves out whole app's content) or "Cover" (when panel overlays app's content). If you want to use "Reveal" effect you should to add additional <strong>"panel-reveal"</strong> class to Panel, or <strong>"panel-cover"</strong> for cover effect:
+        pre
+          code
+            | &lt;body&gt;
+            |     &lt;!-- First, we need to add Panel's overlay that will overlays app while panel is opened --&gt;
+            |     &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+            | 
+            |     &lt;!-- Left panel, let it be with reveal effect --&gt;
+            |     &lt;div class="panel panel-left panel-reveal"&gt;
+            |         ... panel content goes here ...
+            |     &lt;/div&gt;
+            | 
+            |     &lt;!-- Right panel, with cover effect --&gt;
+            |     &lt;div class="panel panel-right panel-cover"&gt;
+            |         ... panel content goes here ...
+            |     &lt;/div&gt;
+            | 
+            |     ...
+            | &lt;/body&gt; 
+      h2 Open and Close Panels
+      h3(data-device-preview="../docs-demos/panels.html") From HTML
+      p Ok, now when we have panels in our App, we need to know how to open/close them:
+      .important-note
+        ul
+          li
+            p To open panel we need to add <strong>"open-panel"</strong> class to any HTML element (prefered to link)
+          li
+            p To close panel we need to add <strong>"close-panel"</strong> class to any HTML element (prefered to link)
+          li
+            p If you have two panels in app, such link will open/close Left panel by default
+          li
+            p If you want to specify which panel should opened/closed, then it could be done via additional <strong>data-panel="left"</strong> attribute on this HTML element
+      p According to above note:
+      pre
+        code
+          | &lt;body&gt;
+          |   &lt;!-- Panels Overlay --&gt;
+          |   &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+          | 
+          |   &lt;!-- Left Panel with Reveal effect --&gt;
+          |   &lt;div class="panel panel-left panel-reveal"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;Left Panel content here&lt;/p&gt;
+          |       &lt;!-- Click on link with "close-panel" class will close panel --&gt;
+          |       &lt;p&gt;&lt;a href="#" class="close-panel"&gt;Close me&lt;/a&gt;&lt;/p&gt;
+          |       &lt;!-- Click on link with "open-panel" and data-panel="right" attribute will open Right panel --&gt;
+          |       &lt;p&gt;&lt;a href="#" data-panel="right" class="open-panel"&gt;Open Right Panel&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;!-- Right Panel with Cover effect --&gt;
+          |   &lt;div class="panel panel-right panel-cover"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;Right Panel content here&lt;/p&gt;
+          |       &lt;!-- Click on link with "close-panel" class will close panel --&gt;
+          |       &lt;p&gt;&lt;a href="#" class="close-panel"&gt;Close me&lt;/a&gt;&lt;/p&gt;
+          |       &lt;!-- Click on link with "open-panel" and data-panel="left" attribute will open Left panel --&gt;
+          |       &lt;p&gt;&lt;a href="#" data-panel="left" class="open-panel"&gt;Open Left Panel&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;!-- If no data-panel attribute, Left panel will be opened by default --&gt;
+          |       &lt;p&gt;&lt;a href="#" class="open-panel"&gt;Open Left Panel&lt;/a&gt;&lt;/p&gt;
+          |       &lt;!-- Click on link with "open-panel" and data-panel="right" attribute will open Right panel --&gt;
+          |       &lt;p&gt;&lt;a href="#" data-panel="right" class="open-panel"&gt;Open Right Panel&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      h3(data-device-preview="../docs-demos/panels-js.html") Using JavaScript
+      p We can also open and close Panels with JavaScript, for this we need to look at related App methods:
+      p
+        span.method myApp.openPanel(<span>position</span>)</span>
+        |  - open Panel.
+      ul.method-parameters
+        li
+          span.parameter position
+          |  - <span class="parameter-type">string</span> - Position of panel to open: <strong>"left"</strong> or <strong>"right"</strong>. Required. 
+      p
+        span.method myApp.closePanel()</span>
+        |  - close currently opened Panel.
+      pre
+        code
+          | &lt;body&gt;
+          |   &lt;div class="panel-overlay"&gt;&lt;/div&gt;
+          |   &lt;div class="panel panel-left panel-reveal"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;Left Panel content here&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="panel-close"&gt;Close me&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="open-right-panel"&gt;Open Right Panel&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="panel panel-right panel-cover"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;Right Panel content here&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="panel-close"&gt;Close me&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="open-left-panel"&gt;Open Left Panel&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          |     &lt;div class="page-content"&gt;
+          |       &lt;div class="content-block"&gt;
+          |         &lt;p&gt;&lt;a href="#" class="open-left-panel"&gt;Open Left Panel&lt;/a&gt;&lt;/p&gt;
+          |         &lt;p&gt;&lt;a href="#" class="open-right-panel"&gt;Open Right Panel&lt;/a&gt;&lt;/p&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   ...
+          |   &lt;script&gt;
+          |     var myApp = new Framework7();
+          | 
+          |     var $$ = Dom7;
+          | 
+          |     $$('.open-left-panel').on('click', function (e) {
+          |         // 'left' position to open Left panel
+          |         myApp.openPanel('left');
+          |     });
+          | 
+          |     $$('.open-right-panel').on('click', function (e) {
+          |         // 'right' position to open Right panel
+          |         myApp.openPanel('right');
+          |     });
+          | 
+          |     $$('.panel-close').on('click', function (e) {
+          |         myApp.closePanel();
+          |     });
+          | 
+          |   &lt;/script&gt;
+          | &lt;/body&gt;    
+      h2(data-device-preview="../docs-demos/panels-events.html") Panel Events
+      p Panel events could be very useful to detect how user interact with your panels, or to do something in JavaScript when Panel opened/closed
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Description
+        tbody
+          tr
+            td open
+            td Panel Element<span>&lt;div class="panel"&gt;</span>
+            td Event will be triggered when Panel starts its opening animation
+          tr
+            td opened
+            td Panel Element<span>&lt;div class="panel"&gt;</span>
+            td Event will be triggered after Panel completes its opening animation
+          tr
+            td close
+            td Panel Element<span>&lt;div class="panel"&gt;</span>
+            td Event will be triggered when Panel starts its closing animation
+          tr
+            td closed
+            td Panel Element<span>&lt;div class="panel"&gt;</span>
+            td Event will be triggered after Panel completes its closing animation
+      p Here is an example:
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.panel-left').on('opened', function () {
+          |     myApp.alert('Left panel opened!');
+          | });
+          | $$('.panel-left').on('close', function () {
+          |     myApp.alert('Left panel is closing!');
+          | });
+          | $$('.panel-right').on('open', function () {
+          |     myApp.alert('Right panel is opening!');
+          | });
+          | $$('.panel-right').on('closed', function () {
+          |     myApp.alert('Right panel closed!');
+          | }); 
+      h2(data-device-preview="../docs-demos/panels-swipe.html") Open Panels With Swipe
+      p Framework7 has feature to open panel with Swipe gesture. <strong>But there is a restriction - only one panel could be set to open with Swipe</strong> (Left or Right).
+      p To make this feature works we need to enable it on <a href="init-app.html">App initialization</a> by passing related parameter:
+      pre
+        code
+          | var myApp = new Framework7({
+          |     swipePanel: 'left'
+          | });
+      p There are also <code>swipePanelCloseOpposite</code>, <code>swipePanelOnlyClose</code>, <code>swipePanelActiveArea</code>, <code>swipePanelNoFollow</code>, <code>swipePanelThreshold</code> parameters that gives you more control over swipe panels. You can learn more about them in <a href="init-app.html">Initialize App</a> section.
+      div(style="height:300px")
+      .full-width.stop-scroll-device
+        h2 Panel is Opened?
+        p Sometimes it could be useful to detect do we have some Panel opened or not? It is easy, when some panel is opened <code>&lt;body&gt;</code> will have addition class generated by the following rule: <strong>with-panel-[position]-[effect]</strong>:
+        ul
+          li
+            p If you have Left panel opened with Cover effect, body will have the "with-panel-left-cover" class <code>&lt;body class="with-panel-left-cover"&gt;</code>
+          li
+            p If you have Left panel opened with Reveal effect, body will have the "with-panel-left-reveal" class <code>&lt;body class="with-panel-left-reveal"&gt;</code>
+          li
+            p If you have Right panel opened with Cover effect, body will have the "with-panel-right-cover" class <code>&lt;body class="with-panel-right-cover"&gt;</code>
+          li
+            p If you have Right panel opened with Reveal effect, body will have the "with-panel-right-reveal" class <code>&lt;body class="with-panel-right-reveal"&gt;</code>
+        p You can use it in JavaScript to detect opened panel:
+        pre
+          code.js
+            | if ($$('body').hasClass('with-panel-left-cover')) {
+            |     console.log('Left Panel is opened')
+            | }
+        p Or in CSS for additional styling:
+        pre
+          code
+            | /* Change Status Bar background when panel is opened */        
+            | body.with-panel-left-cover .statusbar-overlay{
+            |     background-color: #333;
+            | }        

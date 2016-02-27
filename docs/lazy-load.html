@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>Lazy Load Images | Framework7 Documentation</title>
-    <meta property="og:image" content="http://idangero.us/framework7/i/f7-banner.jpg">
-    <link rel="stylesheet" href="../css/normalize.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/highlight.css">
-    <link rel="shortcut icon" href="../favicon.png">
-    <script src="../js/vendor/modernizr-2.7.1.min.js"></script>
+    <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
+    <link rel="stylesheet" href="//cdn.framework7.io/css/normalize.css">
+    <link rel="stylesheet" href="//cdn.framework7.io/css/highlight.css">
+    <link rel="stylesheet" href="//cdn.framework7.io/css/main.css">
+    <link rel="shortcut icon" href="/favicon.png">
+    <script src="//cdn.framework7.io/js/vendor/modernizr-2.7.1.min.js"></script>
   </head>
   <body>
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
-        <div class="langs"><span>Language: </span><a href="http://www.idangero.us/framework7/">EN</a><a href="http://f7cn.com/">CN</a></div>
+        <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://f7cn.com/">CN</a></div>
         <div class="title-links">
           <div class="title">Framework7</div>
           <div class="links-row">
@@ -23,7 +23,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started  </a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a>
+            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/" class="active">Docs</a><a href="../tutorials/">Tutorials</a><a href="http://forum.framework7.io">Forum</a>
             </div>
           </div>
           <div class="links-row">
@@ -36,21 +36,18 @@
     </header>
     <div class="share-line">
       <div class="center">
-        <div class="share">
-          <!-- AddThis Button BEGIN -->
-          <div class="addthis_toolbox addthis_default_style ">
-          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-          <a class="addthis_button_tweet"></a>
-          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
-          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-          <a class="addthis_counter addthis_pill_style"></a>
+        <div class="share-buttons">
+          <div class="share-button">
+            <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
           </div>
-          <!-- AddThis Button END -->
+          <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
+          <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
+          <div class="share-button">
+            <div data-size="medium" class="g-plusone"></div>
+          </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="github-buttons">
-          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
-          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
-        </div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="//cdn.framework7.io/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
         <div class="clearfix"></div>
       </div>
     </div>
@@ -247,7 +244,22 @@
         ...
     &lt;/div&gt;
     ...
-&lt;/div&gt;           </code></pre>
+&lt;/div&gt;</code></pre>
+            <h2>Init Lazy Load Manually</h2>
+            <p>If you add lazy load images manually after page initialization then Lazy Load won't be initialized and work. In this case you need to init it manually using the following method:</p>
+            <div class="method-wrap">
+              <p><span class="method">myApp.initImagesLazyLoad(<span>pageContainer</span>)</span><span> - initialize lazy loading on page</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">pageContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page which contains lazy load images. Required.</li>
+              </ul>
+            </div>
+            <p>And if you want to destroy it later:</p>
+            <div class="method-wrap">
+              <p><span class="method">myApp.destroyImagesLazyLoad(<span>pageContainer</span>)</span><span> - destroy lazy loading on page</span></p>
+              <ul class="method-parameters">
+                <li><span class="parameter">pageContainer</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page which contains lazy load images. Required.</li>
+              </ul>
+            </div>
             <h2>Trigger Lazy Load Manually</h2>
             <p>It is possible to trigger image loading by triggering <b>"lazy"</b> event on lazy image/element, for example:</p>
             <pre><code class="js">$$('img.lazy').trigger('lazy');
@@ -288,43 +300,76 @@ $$('div.lazy').trigger('lazy');</code></pre>
     </div>
     <div class="share-line">
       <div class="center">
-        <div class="share">
-          <!-- AddThis Button BEGIN -->
-          <div class="addthis_toolbox addthis_default_style ">
-          <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-          <a class="addthis_button_tweet"></a>
-          <a class="addthis_button_twitter_follow_native" tw:screen_name="idangerous"></a>
-          <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-          <a class="addthis_counter addthis_pill_style"></a>
+        <div class="share-buttons">
+          <div class="share-button">
+            <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
           </div>
-          <!-- AddThis Button END -->
+          <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
+          <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
+          <div class="share-button">
+            <div data-size="medium" class="g-plusone"></div>
+          </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="github-buttons">
-          <div class="flattr-button"><a target="_blank" href="https://flattr.com/submit/auto?              user_id=nolimits4web&amp;url=http://www.idangero.us/framework7/&amp;title=Framework7&amp;              description=Full Featured HTML Framework For Building iOS Apps&amp;language=en_GB&amp;              tags=api,programming,mobile,framework&amp;category=software"><img src="https://api.flattr.com/button/flattr-badge-large.png"></a></div><iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=watch&count=true" width="100" height="20"></iframe>
-          <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=nolimits4web&repo=framework7&type=fork&count=true" width="100" height="20"></iframe>
-        </div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="//cdn.framework7.io/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
         <div class="clearfix"></div>
       </div>
     </div>
     <footer>
       <div class="center">
-        <div class="links"><a href="../">Framework7</a><a href="../plugins/">Plugins</a><a href="../contribute/">Contribute</a><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../tutorials/">Tutorials</a><a href="../forum/">Forum</a><a href="../examples/">Examples</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a></div>
-        <div class="copy">2015 © Framework7 by iDangero.us</div>
+        <div class="links">
+          <div class="links-block">
+            <div class="links-block-title">Project</div>
+            <ul>
+              <li><a href="https://github.com/nolimits4web/Framework7/releases" target="_blank">Download</a></li>
+              <li><a href="/contribute/">Contribute</a></li>
+              <li><a href="/donate/">Donate</a></li>
+              <li><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a></li>
+            </ul>
+          </div>
+          <div class="links-block">
+            <div class="links-block-title">Learn</div>
+            <ul>
+              <li><a href="/get-started/">Get Started</a></li>
+              <li><a href="/docs/">Docs</a></li>
+              <li><a href="/tutorials/">Tutorials</a></li>
+              <li><a href="http://forum.framework7.io" target="_blank">Forum</a></li>
+            </ul>
+          </div>
+          <div class="links-block">
+            <div class="links-block-title">Apps</div>
+            <ul>
+              <li><a href="/examples/">Layouts</a></li>
+              <li><a href="/plugins/">Plugins</a></li>
+              <li><a href="/apps/">Demo Apps</a></li>
+              <li><a href="/showcase/">Showcase</a></li>
+            </ul>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="copy">
+          <div class="copy-left">
+            <p>Code licensed under <a href="https://github.com/nolimits4web/Framework7/blob/master/LICENSE" target="_blank">MIT</a></p>
+            <p>2016 © Framework7 is brought to you by <a href="https://twitter.com/nolimits4web" target="_blank">Vladimir Kharlampidi</a> from <a href="http://idangero.us">iDangero.us</a>. </p>
+          </div>
+          <div class="copy-right">
+            <p>Proudly supported by <a href="https://www.keycdn.com/" class="keycdn-link" target="_blank"><img src="//cdn.framework7.io/i/keycdn-logo.svg" alt="KeyCDN" title="KeyCDN" class="keycdn-logo"></a></p>
+          </div>
+          <div class="clearfix"></div>
+        </div>
       </div>
     </footer>
-    <script src="../js/vendor/jquery-1.11.0.min.js"></script>
-    <script src="../js/plugins.js"></script>
-    <script src="../js/main.js"></script>
-    <script>var addthis_config = {"data_track_addressbar":true};</script>
-    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52c9b0605d63191c"></script>
+    <script src="//cdn.framework7.io/js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="//cdn.framework7.io/js/plugins.js"></script>
+    <script src="//cdn.framework7.io/js/main.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
       
-      ga('create', 'UA-13289120-8', 'idangero.us');
-      ga('send', 'pageview');     
+      ga('create', 'UA-74282934-1', 'auto');
+      ga('send', 'pageview');
     </script>
   </body>
 </html>

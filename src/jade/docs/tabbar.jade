@@ -1,0 +1,155 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Tab bar | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Tab Bar
+        p Tab Bar is a particular case of Toolbar, but it contains icons (or icons with labels) instead of plain links and inteded to be used with <a href="tabs.html">Tabs</a>.
+      h2(data-device-preview="../docs-demos/tabbar-layout.html") Tab Bar Layout
+      p Tab bar layout is almost the same as for Toolbar, but Tab bar has additional <b>"tabbar"</b> class:
+      pre
+        code
+          | &lt;div class="toolbar tabbar"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |         &lt;a href="#tab1" class="tab-link active"&gt;
+          |             &lt;i class="icon demo-icon-1"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab2" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-2"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab3" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-3"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab4" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-4"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      p By default, all Tab Bar elements (links) equally spaced along toolbar - they have equal space between each other. But here is important note about links size
+      .important-note
+        ul
+          li
+            p On iPhone all links will have the same size equal to [screen width] / [number of links]
+          li
+            p On iPad all links will be centered with minimal width equal to 105px
+
+      h3(data-device-preview="../docs-demos/tabbar-badges.html") Add badges to icons
+      p If you need to add badges to Tab Bar icons, just put <code>&lt;span class="badge"&gt;</code> inside of icon:
+      pre
+        code
+          | &lt;div class="toolbar tabbar"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |         &lt;a href="#tab1" class="tab-link active"&gt;
+          |             &lt;i class="icon demo-icon-1"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab2" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-2"&gt;
+          |                 &lt;span class="badge bg-red"&gt;5&lt;/span&gt;
+          |             &lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab3" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-3"&gt;&lt;/i&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab4" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-4"&gt;
+          |                 &lt;span class="badge bg-green"&gt;15&lt;/span&gt;
+          |             &lt;/i&gt;
+          |         &lt;/a&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      h3(data-device-preview="../docs-demos/tabbar-labels.html") Tab Bar with labels
+      p If you need to use Tab Bar icons with labels we need one more <strong>"tabbar-labels"</strong> class on Tab Bar, and to put <code>&lt;span class="tabbar-label"&gt;</code> inside of link:
+      pre
+        code
+          | &lt;div class="toolbar tabbar tabbar-labels"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |         &lt;a href="#tab1" class="tab-link active"&gt;
+          |             &lt;i class="icon demo-icon-1"&gt;&lt;/i&gt;
+          |             &lt;span class="tabbar-label"&gt;Label 1&lt;/span&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab2" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-2"&gt;
+          |                 &lt;span class="badge bg-red"&gt;5&lt;/span&gt;
+          |             &lt;/i&gt;
+          |             &lt;span class="tabbar-label"&gt;Label 2&lt;/span&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab3" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-3"&gt;&lt;/i&gt;
+          |             &lt;span class="tabbar-label"&gt;Label 3&lt;/span&gt;
+          |         &lt;/a&gt;
+          |         &lt;a href="#tab4" class="tab-link"&gt;
+          |             &lt;i class="icon demo-icon-4"&gt;&lt;/i&gt;
+          |             &lt;span class="tabbar-label"&gt;Label 4&lt;/span&gt;
+          |         &lt;/a&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      .important-note
+        p Note that Tab Bar with labels will have more height instead of usual 44px: 50px on iPhone and 55px on iPad
+        p Because of more height, you should use "tabbar-labels-fixed" or "tabbar-labels-through" for <a href="navbar-toolbar-layouts.html">Fixed and Through layouts</a> with Tab Bar 
+      h2(data-device-preview="../docs-demos/tabbar-scrollable-material.html") Scrollable Tab Bar
+      p.material-only Scrollable Tab Bar is available only for Material Theme
+      p When you have a lot of links and they all don't fit into view, then it could be useful to use scrollable Tab Bar. It allows to swipe/scroll through tab links.
+      p All we need to make Tab Bar scrollable is just to add additional <b>"tabbar-scrollable"</b> class to Tab Bar:
+      pre
+        code
+          | &lt;div data-page="home" class="page toolbar-fixed navbar-fixed"&gt;
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="center"&gt;Scrollable Tab Bar&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Additional "tabbar-scrollable" class --&gt;
+          |   &lt;div class="toolbar tabbar tabbar-scrollable"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |       &lt;a href="#tab-1" class="tab-link active"&gt;Tab 1&lt;/a&gt;
+          |       &lt;a href="#tab-2" class="tab-link"&gt;Tab 2&lt;/a&gt;
+          |       &lt;a href="#tab-3" class="tab-link"&gt;Tab 3&lt;/a&gt;
+          |       &lt;a href="#tab-4" class="tab-link"&gt;Tab 4&lt;/a&gt;
+          |       &lt;a href="#tab-5" class="tab-link"&gt;Tab 5&lt;/a&gt;
+          |       &lt;a href="#tab-6" class="tab-link"&gt;Tab 6&lt;/a&gt;
+          |       &lt;a href="#tab-7" class="tab-link"&gt;Tab 7&lt;/a&gt;
+          |       &lt;a href="#tab-8" class="tab-link"&gt;Tab 8&lt;/a&gt;
+          |       &lt;a href="#tab-9" class="tab-link"&gt;Tab 9&lt;/a&gt;
+          |       &lt;a href="#tab-10" class="tab-link"&gt;Tab 10&lt;/a&gt;
+          |       &lt;a href="#tab-11" class="tab-link"&gt;Tab 11&lt;/a&gt;
+          |       &lt;a href="#tab-12" class="tab-link"&gt;Tab 12&lt;/a&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/div&gt;
+      .device-spacer(style="height: 100px")
+      .full-width
+        h2.stop-scroll-device Related App Methods
+        table.methods-table
+          tbody
+            tr
+              td myApp.hideToolbar(<span>toolbar</span>)
+              td Hide specified tab bar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required tab bar. Required.
+            tr
+              td myApp.showToolbar(<span>toolbar</span>)
+              td Show specified tab bar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required tab bar. Required.
+        h2 Hide Tab Bar Automatically
+        p Framework7 allows you to hide/show Tab Bar automatically for some Ajax loaded pages where you may not need it. It is useful only when you use through-type layout.
+        p To make it work all you need is to add <strong>"no-tabbar"</strong> class to loaded page (<code>&lt;div class="page no-tabbar"&gt;</code>):
+        pre
+          code
+            | &lt;!-- Page has additional "no-tabbar" class --&gt;
+            | &lt;div data-page="about" class="page no-tabbar"&gt;
+            |   &lt;div class="page-content"&gt;
+            |     &lt;div class="content-block"&gt;
+            |       &lt;p&gt;&lt;a href="#" class="back button"&gt;Go Back&lt;/a&gt;&lt;/p&gt;
+            |       ...
+            |     &lt;/div&gt;
+            |   &lt;/div&gt;
+            | &lt;/div&gt;
+

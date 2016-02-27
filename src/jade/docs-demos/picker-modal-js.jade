@@ -1,0 +1,44 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Picker Modal
+              .right 
+                a(href="#").link.open-info Info
+          .page-content
+            .content-block
+              p
+                a(href="#").open-info Open Info 
+              p
+                a(href="#").close-info Close Info 
+    
+  .picker-modal.picker-info
+    .toolbar
+      .toolbar-inner
+        .left
+        .right
+          a(href="#").close-picker Done
+    .picker-modal-inner
+      .content-block 
+        h4 Info 1
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+          
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    $$('.open-info').on('click', function () {
+      myApp.pickerModal('.picker-info')
+    });
+    $$('.close-info').on('click', function () {
+      myApp.closeModal('.picker-info')
+    });
+    

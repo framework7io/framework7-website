@@ -1,0 +1,64 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Preloader| Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Preloader
+        p Framework7 has a nice preloader indicator. Preloader is made with SVG and animated with CSS so it can be easily resized. 
+        p If you look for a Modal (popup) preloader/indicator look in the Modals section: <a href="modal.html#preloader">Modal Preloader</a>, <a href="modal.html#indicator">Modal Indicator</a>.
+        p By default, Preloader available in two colors: the default is for a light background and another one for dark background. The HTML is pretty easy, just create any element (for example <strong>&lt;span&gt;</strong>) with "preloader" class:
+      pre(data-device-preview="../docs-demos/preloader.html")
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block row"&gt;
+          | 
+          |       &lt;!-- Default preloader --&gt;
+          |       &lt;div class="col-25"&gt;
+          |         Default&lt;br&gt;
+          |         &lt;span class="preloader"&gt;&lt;/span&gt;
+          |       &lt;/div&gt;
+          | 
+          |       &lt;!-- White preloader, additional "preloader-white" class --&gt;
+          |       &lt;div class="col-25 col-dark"&gt;
+          |         White&lt;br&gt;
+          |         &lt;span class="preloader preloader-white"&gt;&lt;/span&gt;
+          |       &lt;/div&gt;
+          | 
+          |       &lt;!-- Default with custom size --&gt;
+          |       &lt;div class="col-25"&gt;
+          |         Big&lt;br&gt;
+          |         &lt;span style="width:42px; height:42px" class="preloader"&gt;&lt;/span&gt;
+          |       &lt;/div&gt;
+          | 
+          |       &lt;!-- White with custom size --&gt;
+          |       &lt;div class="col-25 col-dark"&gt;
+          |         White&lt;br&gt;
+          |         &lt;span style="width:42px; height:42px" class="preloader preloader-white"&gt;&lt;/span&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          | 
+          |   &lt;/div&gt;
+          |   ...
+          |   &lt;style&gt;
+          |     .col-25 {
+          |       padding:5px;
+          |       text-align:center;
+          |     }
+          |     .col-dark {
+          |       background:#222;
+          |     }
+          |   &lt;/style&gt;
+          | &lt;/body&gt;
+      

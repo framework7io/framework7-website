@@ -1,0 +1,197 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Pages | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Pages
+      p Page in Framework7 has the same meaning as when you think about web pages.
+      p Let's look at page' HTML structure:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;!-- Views --&gt;
+          |   &lt;div class="views"&gt;
+          |     &lt;!-- Your main view --&gt;
+          |     &lt;div class="view view-main"&gt;
+          |       &lt;!-- Pages --&gt;
+          |       &lt;div class="pages"&gt;
+          |         &lt;div class="page" data-page="home"&gt;
+          |           &lt;div class="page-content"&gt;
+          |             ... page content goes here ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;!-- Another view --&gt;
+          |     &lt;div class="view another-view"&gt;
+          |       &lt;!-- Pages --&gt;
+          |       &lt;div class="pages"&gt;
+          |         &lt;div class="page" data-page="home-another"&gt;
+          |           &lt;div class="page-content"&gt;
+          |             ... page content goes here ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;          
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      p <code>&lt;div class="pages"&gt;</code> is a wrapper container for pages within a single View. It is required because all page transitions happen here.
+      p Few important notes
+      ul
+        li 
+          p In main layout (index.html) each <strong>Page</strong> should be inside of <strong>Pages</strong> container (<code>&lt;div class="pages"&gt;</code>), which always should be a child of <strong>View</strong> (<code>&lt;div class="view"&gt;</code>).
+
+      h3 data-page
+      p As you may note each page has <code>data-page</code> attribute with unique page name. It is not required but very recommended to use it. 
+      p This attribute's value is very useful within "page events" or  with "<a href="page-callbacks.html">page callbacks</a>" and help us to define which page is loaded to make required manipulations.
+
+      h3 Page Content
+      p All visual content (like list views, forms, etc.) we should put inside of <code>&lt;div class="page-content"&gt;</code> that should be a child of <code>&lt;div class="page"&gt;</code>! This is required for correct styling, layout and scrolling
+
+      h2 Page Events
+      p Now, let's look at one of the most important part of page navigation - page events. These events allow us to manipulate just loaded pages by executing JavaScript for specific pages:
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Description
+        tbody
+          tr
+            td pageBeforeInit
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered when Framework7 just inserts new page to DOM
+          tr
+            td pageInit
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered after Framework7 initialize required page's components and navbar
+          tr
+            td pageReinit
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td This event will be triggered when cached page becomes visible. It is only applicaple for Inline Pages (DOM cached pages)
+          tr
+            td pageBeforeAnimation
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered when everything initialized and page (and navbar) is ready to be animated
+          tr
+            td pageAfterAnimation
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered after page (and navbar) animation
+          tr
+            td pageBeforeRemove
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          tr
+            td pageBack
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered right before "back" transition. Difference with "pageBeforeAnimation" is that this event will be triggered for the "old" page - page that slides from center to right
+          tr
+            td pageAfterBack
+            td Page Element<span>&lt;div class="page"&gt;</span>
+            td Event will be triggered right after "back" transition. Difference with "pageAfterAnimation" is that this event will be triggered for the "old" page - page that slides from center to right
+          
+      p Let's see how we can use these events. There are two ways to add page events handler:
+      pre
+        code
+          | // Option 1. Using one 'pageInit' handler for all pages (recommended way):
+          | $$(document).on('pageInit', function (e) {
+          |   // Do something here when page loaded and initialized
+          |   
+          | })
+          |  
+          | // Option 2. Using live 'pageInit' event handlers for each page (not recommended)
+          | $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
+          |   // Do something here when page with data-page="about" attribute loaded and initialized
+          | })          
+      p As you may see it is pretty easy, but hey, how to determine which page is loaded in first option when we use only one handler? For this case we have cool Page Dage in event details:
+      h3 Page Data
+      p One of the most convenient parts in "page events" and <a href="page-callbacks.html">page callbacks</a> is that they contains so called Page Data:
+      pre
+        code
+          | // In page callbacks:
+          | myApp.onPageInit('about', function (page) {
+          |   // "page" variable contains all required information about loaded and initialized page 
+          | })
+          | 
+          | // In page events:
+          | $$(document).on('pageInit', function (e) {
+          |   // Page Data contains all required information about loaded and initialized page 
+          |   var page = e.detail.page;
+          | })
+      p Now, in the example above we have Page Data in <code>page</code> variable. It is an object with the following properties:
+      table.methods-table
+        tbody
+          tr
+            th(colspan="2") Page Data Properties
+          tr
+            td page.name
+            td Contains <span class="parameter-type">string</span> value of <code>data-page</code> attribute
+          tr
+            td page.url
+            td Contains <span class="parameter-type">string</span> URL of just loaded page
+          tr
+            td page.query
+            td <span class="parameter-type">object</span> with URL query parameters. If your page URL is<strong> "about.html?id=10&count=20&color=blue"</strong> then page.query will contain:
+              pre
+                code
+                  | {
+                  |   id: '10',
+                  |   count: '20',
+                  |   color: 'blue'
+                  | }                  
+          tr
+            td page.view
+            td <span class="parameter-type">object</span>. View instance that contains this page (if this View was initialized)
+          tr
+            td page.container
+            td Link to Page <span class="parameter-type">HTMLElement</span>
+          tr
+            td page.from
+            td <span class="parameter-type">string</span> - direction of where Page comes from. It will be "right" if you load new page, and "left" - if page comes after you click on "Back" button
+          tr
+            td page.navbarInnerContainer
+            td Link to related "navbar-inner" <span class="parameter-type">HTMLElement</span>. Only for Dynamic Navbars
+          tr
+            td page.swipeBack
+            td <span class="parameter-type">boolean</span>. Equals to <code>true</code> if page animation was initiated by swipe back. Available only within onPageBefore/AfterAnimation callbacks/events.
+          tr
+            td page.context
+            td <span class="parameter-type">object</span>. Template7 context that was passed for this page when using Template7 pages
+          tr
+            td page.fromPage
+            td <span class="parameter-type">object</span>. Page Data object of the previously active page
+          
+          
+      p Ok, let's look again how we can using one event handler write code for different pages
+      pre
+        code
+          | $$(document).on('pageInit', function (e) {
+          |     var page = e.detail.page;
+          |     // Code for About page
+          |     if (page.name === 'about') {
+          |         // We need to get count GET parameter from URL (about.html?count=10)
+          |         var count = page.query.count;
+          |         // Now we can generate some dummy list
+          |         var listHTML = '&lt;ul&gt;';
+          |         for (var i = 0; i &lt; count; i++) {
+          |             listHTML += '&lt;li&gt;' + i + '&lt;/li&gt;';
+          |         }
+          |         listHTML += '&lt;/ul&gt;';
+          |         // And insert generated list to page content
+          |         $$(page.container).find('.page-content').append(listHTML);
+          |     }
+          |     // Code for Services page
+          |     if (page.name === 'services') {
+          |         myApp.alert('Here comes our services!');
+          |     }
+          | });
+      h2 What's next
+      p Now we need to understand how the <a href="router-api.html">navigation between pages</a> works. Also look at <a href="page-callbacks.html">Page Callbacks</a> to know how to use specific code for different pages without Page Events.

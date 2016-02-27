@@ -1,0 +1,313 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Search Bar | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Search Bar
+        p Search Bar allows user to search through <a href="list-view.html">List View</a> elements. Or it can be used as a visual UI component for your custom search realization.
+        h2 Search Bar Layout
+        p Search Bar should be placed inside of ".page" right before ".page-content":
+        pre
+          code
+            | &lt;div class="page"&gt;
+            |     &lt;!-- Search Bar --&gt;
+            |     &lt;form class="searchbar"&gt;
+            |         &lt;div class="searchbar-input"&gt;
+            |             &lt;input type="search" placeholder="Search"&gt;
+            |             &lt;a href="#" class="searchbar-clear"&gt;&lt;/a&gt;
+            |         &lt;/div&gt;
+            |         &lt;a href="#" class="searchbar-cancel"&gt;Cancel&lt;/a&gt;
+            |     &lt;/form&gt;
+            |     
+            |     &lt;!-- Search Bar overlay--&gt;
+            |     &lt;div class="searchbar-overlay"&gt;&lt;/div&gt;
+            |     
+            |     &lt;!-- Page content --&gt;
+            |     &lt;div class="page-content"&gt;
+            |         &lt;div class="content-block searchbar-not-found"&gt;
+            |                 Nothing found
+            |         &lt;/div&gt;
+            | 
+            |         &lt;div class="list-block list-block-search searchbar-found"&gt;
+            |             &lt;ul&gt;
+            |                 ... list view items ...
+            |             &lt;/ul&gt;
+            |         &lt;/div&gt;
+            |     &lt;/div&gt;
+            | &lt;/div&gt;
+        p Where:
+        ul
+          li <code>form class="searchbar"</code> - main search bar wrapper. It is not necessary should be a FORM element, but recommended
+            ul
+              li <code>div class="searchbar-input"</code> - wrapper for search field and Cancel button
+                ul
+                  li <code>input type="search"</code> - search field
+                  li <code>a class="searchbar-clear"</code> - button to clear field value and reset search results. Optional element
+              li <code>a class="searchbar-cancel"</code> - Search Bar "Cancel" button that will deactivate Search Bar, reset search results and clear search field. Optional element
+          li <code>div class="searchbar-overlay"</code> - Add this element right after search bar to enable dark overlay over page content when search bar is active. Optional element.
+          li <code>"list-block-search"</code> - list block where we are going to search elements.
+          li <code>"searchbar-found"</code> - element with this class will be displayed if Search Bar find elements that match to search query. Visible by default. Optional element.
+          li <code>"searchbar-not-found"</code> - element with this class will be displayed if Search Bar doesn't find elements that match to search query. Hidden by default. Optional element.
+        h2 Initialize Search Bar with JavaScript
+        p Now, when we have Search Bar' HTML, we need to initialize it. We need to use related App's method:
+        .method-wrap
+          p
+            span.method myApp.searchbar(<span>searchbarContainer</span>, <span>parameters</span>) 
+            span - initialize Search Bar with options
+          ul.method-parameters
+            li
+              span.parameter searchbarContainer
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Search Bar container HTML element. Required.
+            li
+              span.parameter parameters
+              |  - <span class="parameter-type">object</span> - object with Search Bar parameters. Optional.
+            
+            li.method-returns Method returns initialized Search Bar instance
+
+        p For example:
+        pre
+          code
+            | var mySearchbar = app.searchbar('.searchbar', {
+            |     searchList: '.list-block-search',
+            |     searchIn: '.item-title'
+            | });   
+        .important-note Note that Search Bar container should be in DOM on a moment of initialization. So if you use it not on home page, you need to initialize it within <b>pageInit</b> <a href="pages.html#page-events">event</a> or <a href="page-callbacks.html">callback</a>
+        h2 Search Bar Parameters
+        p Let's look on list of all available parameters:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              td searchList
+              td string or HTMLElement
+              td 
+              td CSS selector or HTML element of list block to search
+            tr
+              td searchIn
+              td string
+              td '.item-title'
+              td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <b>'.item-title, .item-text'</b>
+            tr
+              td found
+              td string or HTMLElement
+              td 
+              td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page
+            tr
+              td notFoud
+              td string or HTMLElement
+              td 
+              td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page
+            tr
+              td overlay
+              td string or HTMLElement
+              td 
+              td CSS selector or HTMLElement of searchbar overlay. If not specified, searchbar will look for <code>.searchbar-overlay</code> element on page
+            tr
+              td ignore
+              td string
+              td '.searchbar-ignore'
+              td CSS selector for items to be ignored by searchbar and always present in search results
+            tr
+              td customSearch
+              td boolean
+              td false
+              td When enabled searchbar will not search through any of list blocks specified by `searchList` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
+            tr
+              td removeDiacritics
+              td boolean
+              td false
+              td Enable to remove/replace diacritics (á, í, ó, etc.) during search
+            tr
+              td hideDividers
+              td boolean
+              td true
+              td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
+            tr
+              td hideGroups
+              td boolean
+              td true
+              td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups
+            tr
+              th(colspan="4") Callbacks
+            tr
+              td onSearch
+              td function (s)
+              td 
+              td Callback function will be triggered during search (search field change).
+            tr
+              td onEnable
+              td function (s)
+              td 
+              td Callback will be triggered when Search Bar becomes active
+            tr
+              td onDisable
+              td function (s)
+              td 
+              td Callback will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button or on "searchbar-overlay" element
+            tr
+              td onClear
+              td function (s)
+              td 
+              td Callback will be triggered when user clicks on Search Bar's "clear" element
+        h2 Search Bar Methods & Properties
+        p After we initialize Search Bar we have its initialized instance in variable (like <code>mySearchbar</code> variable in example above) with helpful methods and properties:
+        table.methods-table
+          tbody
+            tr
+              th(colspan="2") Properties
+            tr
+              td mySearchbar.params
+              td Object with passed initialization parameters 
+            tr
+              td mySearchbar.query
+              td Current search query (search input value)
+            tr
+              td mySearchbar.searchList
+              td Dom7 element with search list block.
+            tr
+              td mySearchbar.container
+              td Dom7 element with searchbar container HTML element.
+            tr
+              td mySearchbar.input
+              td Dom7 element with searchbar input HTML element
+            tr
+              td mySearchbar.active
+              td Boolean value that represents is searchbar enabled or disabled
+            
+            tr
+              th(colspan="2") Methods
+            tr
+              td mySearchbar.search(<span>query</span>);
+              td Force searchbar to search passed query
+            tr
+              td mySearchbar.enable();
+              td Enable/activate searchbar
+            tr
+              td mySearchbar.disable();
+              td Disable/deactivate searchbar
+            tr
+              td mySearchbar.clear();
+              td Clear search query and update results
+            tr
+              td mySearchbar.destroy();
+              td Destroy searchbar instance
+        h2 Initialize Search Bar with HTML
+        p If you don't need to use Search Bar methods and properties you can initialize it using HTML without JavaScript. You can do that just by adding additional "searchbar-init" class to <code>.searchbar</code>. In this case we may pass required parameters using <b>data-</b> attributes. 
+        pre
+          code
+            | &lt;div class="page"&gt;
+            |     &lt;!-- Search Bar with "searchbar-init" class for auto initialization --&gt;
+            |     &lt;form class="searchbar searchbar-init" data-search-list=".list-block-search" data-search-in=".item-title" data-found=".searchbar-found" data-not-found=".searchbar-not-found"&gt;
+            |         &lt;div class="searchbar-input"&gt;
+            |             &lt;input type="search" placeholder="Search"&gt;
+            |             &lt;a href="#" class="searchbar-clear"&gt;&lt;/a&gt;
+            |         &lt;/div&gt;
+            |         &lt;a href="#" class="searchbar-cancel"&gt;Cancel&lt;/a&gt;
+            |     &lt;/form&gt;
+            |     
+            |     &lt;div class="searchbar-overlay"&gt;&lt;/div&gt;
+            |     
+            |     &lt;div class="page-content"&gt;
+            |         &lt;div class="content-block searchbar-not-found"&gt;
+            |                 Nothing found
+            |         &lt;/div&gt;
+            | 
+            |         &lt;div class="list-block list-block-search searchbar-found"&gt;
+            |             &lt;ul&gt;
+            |                 ... list view items ...
+            |             &lt;/ul&gt;
+            |         &lt;/div&gt;
+            |     &lt;/div&gt;
+            | &lt;/div&gt; 
+        .important-note
+          p Parameters that used in camelCase, for example <b>searchList</b>, in data- attributes should be used as hypens-case as <b>data-search-list</b>
+        p 
+          b Access to Search Bar's Instance
+        p If you initialize Search Bar using HTML it is still possible to access to Search Bar's instance. It is "f7Searchbar" property of searchbar's container HTML element:
+        pre
+          code
+            | var mySearchbar = $$('.searchbar')[0].f7Searchbar;
+            | 
+            | // Now you can use it
+            | mySearchbar.search('Hello world');
+            
+                       
+      h2(data-device-preview="../docs-demos/searchbar.html") Search Bar Example
+      p In this example we use searchbar with auto initialization
+      pre
+        code
+          | &lt;div data-page="home" class="page"&gt;
+          |   &lt;!-- Search Bar --&gt;
+          |   &lt;form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init"&gt;
+          |     &lt;div class="searchbar-input"&gt;
+          |       &lt;input type="search" placeholder="Search"&gt;&lt;a href="#" class="searchbar-clear"&gt;&lt;/a&gt;
+          |     &lt;/div&gt;&lt;a href="#" class="searchbar-cancel"&gt;Cancel&lt;/a&gt;
+          |   &lt;/form&gt;
+          | 
+          |   &lt;!-- Search Bar overlay --&gt;
+          |   &lt;div class="searchbar-overlay"&gt;&lt;/div&gt;
+          | 
+          |   &lt;div class="page-content"&gt;
+          |     &lt;!-- This block will be displayed if nothing found --&gt;
+          |     &lt;div class="content-block searchbar-not-found"&gt;
+          |       &lt;div class="content-block-inner"&gt;Nothing found&lt;/div&gt;
+          |     &lt;/div&gt;
+          | 
+          |     &lt;!-- This block will be displayed if anything found, and this list block is used a searbar target --&gt;
+          |     &lt;div class="list-block list-block-search searchbar-found"&gt;
+          |       &lt;ul&gt;
+          |         &lt;li class="item-content"&gt;
+          |           &lt;div class="item-inner"&gt;
+          |             &lt;div class="item-title"&gt;Acura &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li class="item-content"&gt;
+          |           &lt;div class="item-inner"&gt;
+          |             &lt;div class="item-title"&gt;Audi&lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         ...
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;          
+      .full-width.stop-scroll-device
+        h2 Search Bar JavaScript Events
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td search
+              td List View specified in "data-search-list"<span>&lt;div class="list-block"&gt;</span>
+              td Event will be triggered during search (search field change). Event detail contains search query (e.detail.query) and array of found HTML elements (e.detail.foundItems)
+            tr
+              td clearSearch
+              td List View specified in "data-search-list"<span>&lt;div class="list-block"&gt;</span>
+              td Event will be triggered when user clicks on Search Bar's "clear" element (a href="#" class="searchbar-clear")
+            tr
+              td enableSearch
+              td List View specified in "data-search-list"<span>&lt;div class="list-block"&gt;</span>
+              td Event will be triggered when Search Bar becomes active
+            tr
+              td disableSearch
+              td List View specified in "data-search-list"<span>&lt;div class="list-block"&gt;</span>
+              td Event will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button (a href="searchbar-cancel") or on "searchbar-overlay" element        

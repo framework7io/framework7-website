@@ -1,0 +1,492 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Form Elements | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Form elements
+        p Form elements allow you to create flexible and beautiful Form layout. Form elements are just well known <a href="list-view.html">List View</a> but with few extensions.
+        h2 Single form element layout
+        p Let's look at layout of single form element (form field):
+        pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     ...
+            |     &lt;li&gt;
+            |       &lt;div class="item-content"&gt;
+            |         &lt;div class="item-media"&gt;... icon here ...&lt;/div&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title label"&gt;Name&lt;/div&gt;
+            |           &lt;div class="item-input"&gt;
+            |               &lt;input type="text" name="name"&gt;
+            |           &lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/div&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;   
+        p As you may see it is alsmost the same as usual <a href="list-view.html">List View</a> layout but with few changes:
+        ul
+          li
+            p <code>item-title</code> - single-line form element label. Should have additional "<strong>label</strong>" class. <strong>Optional</strong> element
+          li
+            p <code>item-input</code> - just contains your form input HTML element. <strong>Required</strong> element
+        h2 Supported form elements
+        p Here are the list of form elements that you can put inside of <code>item-input</code>:
+        table
+          tbody
+            tr
+              td 
+                p All text inputs 
+              td
+                p Supported types: <b>text</b>, <b>password</b>, <b>email</b>, <b>tel</b>, <b>url</b>, <b>date</b>, <b>number</b>, <b>datetime-local</b>
+                pre 
+                  code
+                    | ...
+                    |   &lt;div class="item-input"&gt;
+                    |     &lt;input type="text"&gt;
+                    |   &lt;/div&gt;                    
+                    | ...
+                pre 
+                  code
+                    | ...
+                    |   &lt;div class="item-input"&gt;
+                    |     &lt;input type="email"&gt;
+                    |   &lt;/div&gt;                    
+                    | ...
+            tr
+              td 
+                p Select
+              td
+                pre 
+                  code
+                    | ...
+                    |   &lt;div class="item-input"&gt;
+                    |     &lt;select&gt;...&lt;/select"&gt;
+                    |   &lt;/div&gt;                    
+                    | ...
+            tr
+              td 
+                p Textarea
+              td
+                pre 
+                  code
+                    | ...
+                    |   &lt;div class="item-input"&gt;
+                    |     &lt;textarea&gt;&lt;/textarea&gt;
+                    |   &lt;/div&gt;                    
+                    | ...
+                p Note that List View element with textarea should have additional "align-top" class on &lt;li&gt;:
+                pre
+                  code
+                    | &lt;div class="list-block"&gt;
+                    |   &lt;ul&gt;
+                    |     ...
+                    |     &lt;!-- Additional "align-top" class for correct textarea alignment --&gt;
+                    |     &lt;li class="align-top"&gt;
+                    |       &lt;div class="item-content"&gt;
+                    |         &lt;div class="item-inner"&gt;
+                    |           &lt;div class="item-title label"&gt;Textarea&lt;/div&gt;
+                    |           &lt;div class="item-input"&gt;
+                    |               &lt;textarea&gt;&lt;/textarea&gt;
+                    |           &lt;/div&gt;
+                    |         &lt;/div&gt;
+                    |       &lt;/div&gt;
+                    |     &lt;/li&gt;
+                    |     ...
+                    |   &lt;/ul&gt;
+                    | &lt;/div&gt;
+            tr
+              td 
+                p Resizable Textarea
+              td
+                p Resiable textarea. Just add "resizable" class to textarea and it will resize automatically depending on its content
+                pre 
+                  code
+                    | ...
+                    |   &lt;div class="item-input"&gt;
+                    |     &lt;textarea class="resizable"&gt;&lt;/textarea&gt;
+                    |   &lt;/div&gt;                    
+                    | ...
+            tr
+              td 
+                p Switch (Checkbox)
+              td
+                p Switch (Checkbox) requires additional wrapper:
+                pre 
+                  code
+                    | ...
+                    |   &lt;label class="label-switch"&gt;
+                    |     &lt;input type="checkbox"&gt;
+                    |     &lt;div class="checkbox"&gt;&lt;/div&gt;
+                    |   &lt;/label&gt;
+                    | ...
+            tr
+              td 
+                p Slider (Range input)
+              td
+                p Slider (Range input) requires additional wrapper:
+                pre 
+                  code
+                    | ...
+                    |   &lt;div class="item-input"&gt;
+                    |     &lt;div class="range-slider"&gt;
+                    |       &lt;input type="range" min="0" max="100" step="0.1"&gt;
+                    |     &lt;/div&gt;
+                    |   &lt;/div&gt;                    
+                    | ...
+      h2 Examples
+      h3(data-device-preview="../docs-demos/form-elements-full.html") Full Layout
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Full Layout&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;!-- Text inputs --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-name"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Name&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Your name"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-email"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;E-mail&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="email" placeholder="E-mail"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |     &lt;!-- Select --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-gender"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Gender&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;select&gt;
+          |               &lt;option&gt;Male&lt;/option&gt;
+          |               &lt;option&gt;Female&lt;/option&gt;
+          |             &lt;/select&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;!-- Date --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-calendar"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Birth date&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="date" placeholder="Birth day" value="2014-04-30"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;!-- Date time--&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-calendar"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Date time&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="datetime-local"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;!-- Switch (Checkbox) --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-toggle"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Switch&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;label class="label-switch"&gt;
+          |               &lt;input type="checkbox"&gt;
+          |               &lt;div class="checkbox"&gt;&lt;/div&gt;
+          |             &lt;/label&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;!-- Slider (Range input) --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-settings"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Slider&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;div class="range-slider"&gt;
+          |               &lt;input type="range" min="0" max="100" value="50" step="0.1"&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;!-- Textarea --&gt;
+          |     &lt;li class="align-top"&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-comment"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Textarea&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;textarea&gt;&lt;/textarea&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+      h3(data-device-preview="../docs-demos/form-elements-icons-inputs.html") Icons and inputs
+      p Because <code>item-title</code> is optional element, we can drop elements labels:
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Icons and inputs&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;!-- Text inputs --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-name"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Your name"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-email"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="email" placeholder="E-mail"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          | 
+          |     &lt;!-- Select --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-gender"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;select&gt;
+          |               &lt;option&gt;Male&lt;/option&gt;
+          |               &lt;option&gt;Female&lt;/option&gt;
+          |             &lt;/select&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          | 
+          |     &lt;!-- Date --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-calendar"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="date" placeholder="Birth day" value="2014-04-30"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          | 
+          |     &lt;!-- Switch (Checkbox) --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-toggle"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;label class="label-switch"&gt;
+          |               &lt;input type="checkbox"&gt;
+          |               &lt;div class="checkbox"&gt;&lt;/div&gt;
+          |             &lt;/label&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          | 
+          |     &lt;!-- Slider (Range input) --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-settings"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;div class="range-slider"&gt;
+          |               &lt;input type="range" min="0" max="100" value="50" step="0.1"&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt; 
+      h3(data-device-preview="../docs-demos/form-elements-labels-inputs.html") Labels and inputs
+      p Because <code>item-media</code> is optional element, we can drop elements icons:
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Labels and inputs&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;!-- Text inputs --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Name&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Your name"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;E-mail&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="email" placeholder="E-mail"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          | 
+          |     &lt;!-- Select --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Gender&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;select&gt;
+          |               &lt;option&gt;Male&lt;/option&gt;
+          |               &lt;option&gt;Female&lt;/option&gt;
+          |             &lt;/select&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          | 
+          |     &lt;!-- Date --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Birth date&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="date" placeholder="Birth day" value="2014-04-30"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          | 
+          |     &lt;!-- Switch (Checkbox) --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Switch&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;label class="label-switch"&gt;
+          |               &lt;input type="checkbox"&gt;
+          |               &lt;div class="checkbox"&gt;&lt;/div&gt;
+          |             &lt;/label&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          | 
+          |     &lt;!-- Slider (Range input) --&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Slider&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;div class="range-slider"&gt;
+          |               &lt;input type="range" min="0" max="100" value="50" step="0.1"&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+      h3(data-device-preview="../docs-demos/form-elements-inputs.html") Just inputs
+      p Sometimes we need just inputs, so we can drop <code>item-media</code> and <code>item-title</code>
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Just inputs&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Your name"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="email" placeholder="E-mail"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;select&gt;
+          |               &lt;option&gt;Male&lt;/option&gt;
+          |               &lt;option&gt;Female&lt;/option&gt;
+          |             &lt;/select&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="date" placeholder="Birth day" value="2014-04-30"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;              
+      h3(data-device-preview="../docs-demos/form-elements-inset.html") Inset
+      p And because form elements is a <a href="list-view.html">List View</a>, we can make it inset:
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Just inputs&lt;/div&gt;
+          | &lt;!-- "inset" class on list-block --&gt;
+          | &lt;div class="list-block inset"&gt;
+          |   ...
+          | &lt;/div&gt;  
+      .device-spacer
+      

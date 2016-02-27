@@ -1,0 +1,13 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'donate';
+  - var title = 'Donate To Framework7';
+
+block content
+  h1 Donate To Framework7
+  p If you like Framework7 you can always send us few cents by
+  ul
+    li
+      p using Skrill (Moneybookers):
+        a(href="http://idangero.us/donate/?for=Framework7%20Donation", target="_blank", onclick="_gaq.push(['_trackEvent', 'Donate Framework7', 'Clicked'])").donate-button Donate

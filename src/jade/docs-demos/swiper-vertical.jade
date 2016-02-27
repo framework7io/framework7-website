@@ -1,0 +1,41 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Vertical Swiper
+              .right 
+          .page-content
+            .swiper-container
+              .swiper-wrapper
+                .swiper-slide <span>Slide 1</span>
+                .swiper-slide <span>Slide 2</span>
+                .swiper-slide <span>Slide 3</span>
+                .swiper-slide <span>Slide 4</span>
+              .swiper-pagination
+
+block scripts
+  style.
+    .swiper-container {
+      height: 100%;
+    }
+    .swiper-slide {
+      background:#fff;
+    }
+    .swiper-slide span {
+      text-align:center;
+      display:block;
+      margin:20px;
+      font-size:21px;
+    }
+  script.
+    var myApp = new Framework7(); 
+
+    var mySwiper = myApp.swiper('.swiper-container', {
+      pagination:'.swiper-pagination',
+      direction:'vertical',
+    });

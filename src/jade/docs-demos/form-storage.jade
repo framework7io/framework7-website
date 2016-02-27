@@ -1,0 +1,53 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Form Storage
+              .right 
+          .page-content
+            .content-block Just fill up the form below and then go to any other page, or try to close this site, and when you will back here form fields will keep your data.
+            form(id="my-form").list-block.store-data
+              ul
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Name
+                      .item-input
+                        input(type="text", name="name", placeholder="Your name")
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label E-mail
+                      .item-input
+                        input(type="email", name="email", placeholder="E-mail")
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Gender
+                      .item-input
+                        select(name="gender")
+                          option(value="male", selected) Male
+                          option(value="female") Female
+                li
+                  .item-content
+                    .item-inner 
+                      .item-title.label Switch
+                      .item-input
+                        label.label-switch
+                          input(type="checkbox", name="switch", value="yes")
+                          .checkbox
+                li
+                  .item-content
+                    .item-inner
+                      .item-title.label Slider
+                      .item-input
+                        .range-slider
+                          input(type="range", min="0", max="100", value="50", step="0.1", name="slider")
+block scripts
+  script.
+    var myApp = new Framework7();  

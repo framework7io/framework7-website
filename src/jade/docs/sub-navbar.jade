@@ -1,0 +1,92 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Sub Navbar | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Sub Navbar
+        p Sub Navbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden
+        h2 Sub Navbar Layout
+        pre
+          code
+            | &lt;div class="navbar-inner"&gt;
+            |     &lt;div class="left"&gt;...&lt;/div&gt;
+            |     &lt;div class="center"&gt;...&lt;/div&gt;
+            |     &lt;div class="right"&gt;...&lt;/div&gt;
+            | 
+            |     &lt;!-- Sub navbar --&gt;
+            |     &lt;div class="subnavbar"&gt;
+            |         &lt;!-- Sub navbar content, for example tabs buttons --&gt;
+            |         &lt;div class="buttons-row"&gt;
+            |             &lt;a href="#tab1" class="button active"&gt;Tab 1&lt;/a&gt;
+            |             &lt;a href="#tab2" class="button"&gt;Tab 2&lt;/a&gt;
+            |             &lt;a href="#tab3" class="button"&gt;Tab 3&lt;/a&gt;
+            |         &lt;/div&gt;
+            |     &lt;/div&gt;
+            | 
+            | &lt;/div&gt;     
+        p Along with "left", "right" and "center" elements, "subnavbar" also supports "sliding" class for sliding transition when used with Dynamic Navbar
+        .important-note
+          p Note that page that contains Sub Navbar must have additional <b>"with-subnavbar"</b> class which adds additional padding top required for sub navbar
+      h2(data-device-preview="../docs-demos/subnavbar.html") Example
+      pre
+        code
+          | &lt;div class="views"&gt;
+          |   &lt;div class="view view-main"&gt;
+          |     &lt;div class="navbar"&gt;
+          |       &lt;div class="navbar-inner"&gt;
+          |         &lt;div class="left"&gt;&lt;/div&gt;
+          |         &lt;div class="center"&gt;Sub Navbar&lt;/div&gt;
+          |         &lt;div class="right"&gt;&lt;/div&gt;
+          |         &lt;!-- Sub navbar --&gt;
+          |         &lt;div class="subnavbar"&gt;
+          |           &lt;div class="buttons-row"&gt;
+          |             &lt;a href="#tab1" class="button tab-link active"&gt;Tab 1&lt;/a&gt;
+          |             &lt;a href="#tab2" class="button tab-link"&gt;Tab 2&lt;/a&gt;
+          |             &lt;a href="#tab3" class="button tab-link"&gt;Tab 3&lt;/a&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="pages navbar-through"&gt;
+          |       &lt;!-- Pag has additional "with-subnavbar" class --&gt;
+          |       &lt;div data-page="home" class="page with-subnavbar"&gt;
+          |         &lt;div class="page-content hide-bars-on-scroll"&gt;
+          |           &lt;div class="tabs"&gt;
+          |             &lt;div id="tab1" class="tab active"&gt;
+          |               &lt;div class="content-block"&gt;
+          |                 &lt;p&gt;Lorem ipsum dolor ...&lt;/p&gt;
+          |                 &lt;p&gt;In sed augue non ...&lt;/p&gt;
+          |               &lt;/div&gt;
+          |             &lt;/div&gt;
+          |             &lt;div id="tab2" class="tab"&gt;
+          |               &lt;div class="content-block"&gt;
+          |                 &lt;p&gt;Donec iaculis ...&lt;/p&gt;
+          |                 &lt;p&gt;Curabitur egestas, mi ...&lt;/p&gt;
+          |                 &lt;p&gt;Donec iaculis posuere ...&lt;/p&gt;
+          |               &lt;/div&gt;
+          |             &lt;/div&gt;
+          |             &lt;div id="tab3" class="tab"&gt;
+          |               &lt;div class="content-block"&gt;
+          |                 &lt;p&gt;Etiam non interdum erat...&lt;/p&gt;
+          |                 &lt;p&gt;Duis ac semper risus. Suspendisse...&lt;/p&gt;
+          |                 &lt;p&gt;Etiam non interdum erat...&lt;/p&gt;
+          |                 &lt;p&gt;Duis ac semper risus. Suspendisse...&lt;/p&gt;
+          |               &lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;          
+      

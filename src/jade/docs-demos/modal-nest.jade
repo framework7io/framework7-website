@@ -1,0 +1,29 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Nesting Modals
+              .right 
+          .page-content
+            .content-block
+              p
+                a(href="#").name What is your name?
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    $$('.name').on('click', function () {
+        myApp.prompt('What is your name?', function (value) {
+            myApp.confirm('Are you sure that your name is ' + value + '?', function () {
+                myApp.alert('Ok, your name is "' + value + '"!');
+            });
+        });
+    });

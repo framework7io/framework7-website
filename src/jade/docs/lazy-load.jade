@@ -1,0 +1,120 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Lazy Load Images | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Images Lazy Load
+        p Lazy Load delays loading of images on page while they are outside of viewport until user scrolls to them.
+        p It will make the page load faster, improve scrolling performance and also save traffic.
+        .important-note
+          p Note, that <em>lazy</em> images and elements should be inside of scrollable <b>&lt;div class="page-content"&gt;</b> to work correctly
+        h2 Usage
+        h4 For Images &lt;img&gt;
+        p To use lazy load on images:
+        ol
+          li specify image source into <code>data-src</code> attribute instead of <code>src</code> attribute
+          li add <code>lazy</code> class to image
+        pre
+          code
+            | &lt;div class="page-content"&gt;
+            |     ...
+            |     &lt;img data-src="path/to/image.jpg" class="lazy"&gt;
+            |     ...
+            | &lt;/div&gt;
+        h4 For Background Images
+        p It is also possible to use lazy load for background images, in this case:
+        ol
+          li specify element's background image source into <code>data-background</code>
+          li add <code>lazy</code> class to element
+        pre
+          code
+            | &lt;div class="page-content"&gt;
+            |     ...
+            |     &lt;div data-background="path/to/image.jpg" class="lazy"&gt;
+            |         ...
+            |     &lt;/div&gt;
+            |     ...
+            | &lt;/div&gt;
+        p That is all, after image appears in viewport, it will be loaded. After that <code>lazy</code> class will be replaced with <code>lazy-loaded</code>.
+
+        h4 With Fade-in Effect
+        p If you want to add fade-in effect when image is loaded, you need to add additional <code>lazy-fadein</code> class to image/element:
+        pre
+          code
+            | &lt;div class="page-content"&gt;
+            |     ...
+            |     &lt;img data-src="path/to/image.jpg" class="lazy lazy-fadein"&gt;
+            |     &lt;div data-background="path/to/image.jpg" class="lazy lazy-fadein"&gt;
+            |         ...
+            |     &lt;/div&gt;
+            |     ...
+            | &lt;/div&gt;
+
+        h2 Init Lazy Load Manually
+        p If you add lazy load images manually after page initialization then Lazy Load won't be initialized and work. In this case you need to init it manually using the following method:
+        .method-wrap
+          p
+            span.method myApp.initImagesLazyLoad(<span>pageContainer</span>)
+            span  - initialize lazy loading on page
+          ul.method-parameters
+            li
+              span.parameter pageContainer
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page which contains lazy load images. Required.
+        p And if you want to destroy it later:
+        .method-wrap
+          p
+            span.method myApp.destroyImagesLazyLoad(<span>pageContainer</span>)
+            span  - destroy lazy loading on page
+          ul.method-parameters
+            li
+              span.parameter pageContainer
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page which contains lazy load images. Required.
+        h2 Trigger Lazy Load Manually
+        p It is possible to trigger image loading by triggering <b>"lazy"</b> event on lazy image/element, for example:
+        pre
+          code.js
+            | $$('img.lazy').trigger('lazy');
+            | 
+            | $$('div.lazy').trigger('lazy');
+      h2(data-device-preview="../docs-demos/lazy-load.html") Examples
+      pre
+        code
+          | ...
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;div class="content-block-inner"&gt;
+          |       &lt;p&gt;
+          |         &lt;img data-src="http://lorempixel.com/500/500/nature/1" width="100%" class="lazy lazy-fadeIn"&gt;
+          |       &lt;/p&gt;
+          |       &lt;p&gt;Lorem ipsum dolor sit amet...&lt;/p&gt;
+          | 
+          |       &lt;p&gt;
+          |         &lt;img data-src="http://lorempixel.com/500/500/nature/2" width="100%" class="lazy lazy-fadeIn"&gt;
+          |       &lt;/p&gt;
+          |       &lt;p&gt;Aenean id congue orci...&lt;/p&gt;
+          | 
+          |       &lt;p&gt;
+          |         &lt;img data-src="http://lorempixel.com/500/500/nature/3" width="100%" class="lazy lazy-fadeIn"&gt;
+          |       &lt;/p&gt;
+          |       &lt;p&gt;Pellentesque aliquam ...&lt;/p&gt;
+          | 
+          |       ...
+          | 
+          |       &lt;p&gt;&lt;b&gt;Using as background image:&lt;/b&gt;&lt;/p&gt;
+          |       &lt;div data-background="http://lorempixel.com/500/500/people/10" style="background: #aaa; height:60vw; background-size-cover" class="lazy lazy-fadeIn"&gt;&lt;/div&gt;
+          |       &lt;p&gt;Suspendisse potenti. Curabitur ...&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | ...          
+      

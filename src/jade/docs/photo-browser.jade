@@ -1,0 +1,572 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Photo Browser | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Photo Browser
+        p Photo Browser is an iOS like photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional). 
+        p Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.
+
+        h2 Create Photo Browser Instance
+        p Photo Browser can be created and initialized only using JavaScript. We need to use related App's method:
+        .method-wrap
+          p
+            span.method myApp.photoBrowser(<span>parameters</span>) 
+            span - initialize Photo Browser with parameters
+          ul.method-parameters
+            li
+              span.parameter parameters
+              |  - <span class="parameter-type">object</span> - object with Photo Browser parameters. Required.
+            
+            li.method-returns Method returns initialized Photo Browser instance
+        p For example:
+        pre
+          code
+            | var myPhotoBrowser = app.photoBrowser({
+            |     zoom: 400,
+            |     photos: ['path/to/image1.jpg', 'path/to/image2.jpg']
+            | });   
+            | myPhotoBrowser.open(); // open photo browser
+        h2 Photo Browser Parameters
+        p Let's look on list of all available parameters:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              td photos
+              td array
+              td []
+              td Array with URLs of photos or array of objects with "url" (or "html") and "caption" properties.
+            tr
+              td initialSlide
+              td number
+              td 0
+              td Index number of initial photo slide.
+            tr
+              td spaceBetween
+              td number
+              td 20
+              td Distance between photo slides in px.
+            tr
+              td speed
+              td number
+              td 300
+              td Duration of transition between photo slides (in ms).
+            tr
+              td zoom
+              td boolean
+              td true
+              td Enable/disable ability to zoom and pan photos.
+            tr
+              td maxZoom
+              td number
+              td 3
+              td Max zoom ratio.
+            tr
+              td minZoom
+              td number
+              td 1
+              td Minimal zoom ratio.
+            tr
+              td exposition
+              td boolean
+              td true
+              td Enable disable exposition mode when clicking on Photo Browser.
+            tr
+              td expositionHideCaptions
+              td boolean
+              td false
+              td Set to true if you also want to hide captions in exposition mode
+            tr
+              td swipeToClose
+              td boolean
+              td true
+              td You can close Photo Browser with swipe up/down when this parameter is enabled
+            tr
+              td view
+              td <a href="views.html">View instance</a>
+              td undefined
+              td Link to initialized View instance if you want use "page" Photo Browser type. By default, if not specified, it will be opened in Main View.
+            tr
+              td type
+              td string
+              td 'standalone'
+              td Define how Photo Browser should be opened. Could be 'standalone' (will be opened as an overlay with custom transition effect), 'popup' (will be opened as <a href="popup.html">popup</a>), 'page' (will be injected to View and loaded as a new page).
+            tr
+              td loop
+              td boolean
+              td false
+              td Set to "true" to enable continuous loop mode
+            tr
+              td theme
+              td string
+              td 'light'
+              td Photo Browser color theme, could be 'light' or 'dark'
+            tr
+              td captionsTheme
+              td string
+              td 
+              td Captions color theme, could be also "dark" or "light". By default, equal to "theme" parameter
+            tr
+              td navbar
+              td boolean
+              td true
+              td Set to false to remove Photo Browser's Navbar
+            tr
+              td toolbar
+              td boolean
+              td true
+              td Set to false to remove Photo Browser's Toolbar
+            tr
+              td backLinkText
+              td string
+              td 'Close'
+              td Text on back link in Photo Browser's Navbar
+            tr
+              td ofText
+              td string
+              td 'of'
+              td Text of "of" in photos counter: "3 of 5"
+            tr
+              th(colspan="4") Lazy Loading
+            tr
+              td lazyLoading
+              td boolean
+              td false
+              td Set to "true" to enable images lazy loading
+            tr
+              td lazyLoadingInPrevNext
+              td boolean
+              td false
+              td Set to "true" to enable lazy loading for the closest photos (for previous and next photos)
+            tr
+              td lazyLoadingOnTransitionStart
+              td boolean
+              td false
+              td By default, Photo Browser will load lazy photos after transition to this photo, so you may enable this parameter if you need it to load new photo in the beginning of transition
+            tr
+              th(colspan="4") Templates
+            tr
+              td navbarTemplate
+              td string
+              td *Look below
+              td Navbar HTML template
+            tr
+              td toolbarTemplate
+              td string
+              td *Look below
+              td Toolbar HTML template
+            tr
+              td photoTemplate
+              td string
+              td *Look below
+              td Single photo element HTML template
+            tr
+              td lazyPhotoTemplate
+              td string
+              td *Look below
+              td Single lazy loading photo element HTML template
+            tr
+              td objectTemplate
+              td string
+              td *Look below
+              td Single object element HTML template
+            tr
+              td captionTemplate
+              td string
+              td *Look below
+              td Single caption element HTML template
+            tr
+              th(colspan="4") Callbacks
+            tr
+              td onOpen(photobrowser)
+              td function
+              td 
+              td Callback function, will be executed on photo browser open.
+            tr
+              td onClose(photobrowser)
+              td function
+              td 
+              td Callback function, will be executed when user close photo browser.
+            tr
+              td onSwipeToClose(photobrowser)
+              td function
+              td 
+              td Callback function, will be executed when user close photo browser with swipe up/down.
+            tr
+              th(colspan="4") Swiper Callbacks
+            tr
+              td onSlideChangeStart(swiper)
+              td function
+              td 
+              td Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives Swiper instance as an argument.
+            tr
+              td onSlideChangeEnd(swiper)
+              td function
+              td 
+              td Callback function, will be executed after animation to other slide (next or previous). Receives Swiper instance as an argument.
+            tr
+              td onTransitionStart(swiper)
+              td function
+              td 
+              td Callback function, will be executed in the beginning of transition. Receives swiper instance as an argument.
+            tr
+              td onTransitionEnd(swiper)
+              td function
+              td 
+              td Callback function, will be executed after transition. Receives slider instance as an argument.
+            tr
+              td onClick(swiper, event)
+              td function
+              td 
+              td Callback function, will be executed when user click/tap on slider after 300ms delay. Receives Swiper instance and 'touchend' event as an arguments.
+            tr
+              td onTap(swiper, event)
+              td function
+              td 
+              td Callback function, will be executed when user click/tap on slider. Receives Swiper instance and 'touchend' event as an arguments.
+            tr
+              td onDoubleTap(swiper, event)
+              td function
+              td 
+              td Callback function, will be executed when user double tap on slider's container. Receives Swiper instance and 'touchend' event as an arguments.
+            tr
+              td onLazyImageLoad(swiper, slide, image)
+              td function
+              td 
+              td Callback function, will be executed when Photo Browser begins to load lazy loading photo
+            tr
+              td onLazyImageReady(swiper, slide, image)
+              td function
+              td 
+              td Callback function, will be executed after lazy loading photo will be loaded
+            
+        h2 Photo Browser Methods & Properties
+        p After we initialize Photo Browser we have its initialized instance in variable (like <code>myPhotoBrowser</code> variable in example above) with helpful methods and properties:
+        table.methods-table
+          tbody
+            tr
+              th(colspan="2") Properties
+            tr
+              td myPhotoBrowser.swiper
+              td Contains initialized <a href="slider.html">Swiper</a> instance with all available Swiper <a href="slider.html#swiper-methods-properties">methods and properties</a>
+            tr
+              td myPhotoBrowser.container
+              td <a href="dom.html">Dom7</a> element with Photo Browser container HTML element
+            tr
+              td myPhotoBrowser.exposed
+              td Contains "true" if Photo Browser in exposition mode
+            tr
+              td myPhotoBrowser.activeIndex
+              td Index number of currently active photo slide
+            tr
+              td myPhotoBrowser.params
+              td Object with passed initialization parameters
+            tr
+              th(colspan="2") Methods
+            tr
+              td myPhotoBrowser.open(<span>index</span>);
+              td Open Photo Browser on photo with index number equal to "index" parameter. If "index" parameter is not specified, it will be opened on last closed photo.
+            tr
+              td myPhotoBrowser.close();
+              td Close Photo Browser
+            tr
+              td myPhotoBrowser.toggleZoom();
+              td Toggle zoom of currently active photo/slide
+            tr
+              td myPhotoBrowser.toggleExposition();
+              td Toggle exposition mode
+            tr
+              td myPhotoBrowser.enableExposition();
+              td Enable exposition mode
+            tr
+              td myPhotoBrowser.disableExposition();
+              td Disable exposition mode
+        h2 Photos Array
+        p When we initialize Photo Browser we need to pass array with photos/videos in "photos" parameter. Let's look at different variations of this array:
+        pre
+          code
+            | // If we need photo browser with just photos we may pass array with string urls:
+            | var photos = [
+            |     'image1.jpg',
+            |     'image2.jpg',
+            |     'image3.jpg',
+            |     'image4.jpg',
+            | ];
+            | 
+            | //If we need to use caption for some of photos then each photo should be presented as object:
+            | var photos = [
+            |     {
+            |         url: 'image1.jpg',
+            |         caption: 'Caption 1'
+            |     },
+            |     {
+            |         url: 'image2.jpg',
+            |         caption: 'Caption 1'
+            |     },
+            |     // This one will be without caption
+            |     {
+            |         url: 'image3.jpg',
+            |     },
+            |     // This one will be also without caption
+            |     'image4.jpg'
+            | ];
+            | 
+            | //If we need to use videos in some slides we need to pass HTML element of video element or iframe within "html" property:
+            | var photos = [
+            |     {
+            |         url: 'image1.jpg',
+            |         caption: 'Caption 1'
+            |     },
+            |     // Video element with caption
+            |     {
+            |         html: '&lt;video src="video1.mp4"&gt;&lt;/video&gt;',
+            |         caption: 'Video Caption'
+            |     },
+            |     // This one is embedded video without caption
+            |     {
+            |         html: '&lt;iframe src="..."&gt;&lt;/iframe&gt;',
+            |     },
+            |     // This one will be also video without caption
+            |     '&lt;video src="video2.mp4"&gt;&lt;/video&gt;'
+            | ];        
+      h2(data-device-preview="../docs-demos/photo-browser.html") Examples
+
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="content-block-title"&gt;Light Theme&lt;/div&gt;
+          |   &lt;div class="content-block row"&gt;
+          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-standalone"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
+          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-popup"&gt;Popup&lt;/a&gt;&lt;/div&gt;
+          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-page"&gt;Page&lt;/a&gt;&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="content-block-title"&gt;Dark Theme&lt;/div&gt;
+          |   &lt;div class="content-block row"&gt;
+          |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-standalone-dark"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
+          |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-popup-dark"&gt;Popup&lt;/a&gt;&lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt; 
+      pre
+        code           
+          | var myApp = new Framework7(); 
+          | 
+          | var $$ = Dom7;
+          | 
+          | var mainView = myApp.addView('.view-main', {
+          |   dynamicNavbar: true
+          | });
+          | 
+          | /*=== Default standalone ===*/
+          | var myPhotoBrowserStandalone = myApp.photoBrowser({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ]
+          | });
+          | //Open photo browser on click
+          | $$('.pb-standalone').on('click', function () {
+          |     myPhotoBrowserStandalone.open();
+          | });
+          | 
+          | /*=== Popup ===*/
+          | var myPhotoBrowserPopup = myApp.photoBrowser({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ],
+          |     type: 'popup'
+          | });
+          | $$('.pb-popup').on('click', function () {
+          |     myPhotoBrowserPopup.open();
+          | });
+          | 
+          | /*=== As Page ===*/
+          | var myPhotoBrowserPage = myApp.photoBrowser({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ],
+          |     type: 'page',
+          |     backLinkText: 'Back'
+          | });
+          | $$('.pb-page').on('click', function () {
+          |     myPhotoBrowserPage.open();
+          | });
+          | 
+          | /*=== Standalone Dark ===*/
+          | var myPhotoBrowserDark = myApp.photoBrowser({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ],
+          |     theme: 'dark'
+          | });
+          | $$('.pb-standalone-dark').on('click', function () {
+          |     myPhotoBrowserDark.open();
+          | });
+          | 
+          | /*=== Popup Dark ===*/
+          | var myPhotoBrowserPopupDark = myApp.photoBrowser({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ],
+          |     theme: 'dark',
+          |     type: 'popup'
+          | });
+          | $$('.pb-popup-dark').on('click', function () {
+          |     myPhotoBrowserPopupDark.open();
+          | }); 
+          | 
+          | /*=== With Captions ===*/
+          | var myPhotoBrowserPopupDark = myApp.photoBrowser({
+          |     photos : [
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/1/',
+          |             caption: 'Caption 1 Text'
+          |         },
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/2/',
+          |             caption: 'Second Caption Text'
+          |         },
+          |         // This one without caption
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/3/',
+          |         },
+          |     ],
+          |     theme: 'dark',
+          |     type: 'standalone'
+          | });
+          | $$('.pb-standalone-captions').on('click', function () {
+          |     myPhotoBrowserPopupDark.open();
+          | });
+          | 
+          | /*=== With Video ===*/
+          | var myPhotoBrowserPopupDark = myApp.photoBrowser({
+          |     photos : [
+          |         {
+          |             html: '&lt;iframe src="//www.youtube.com/embed/lmc21V-zBq0?list=PLpj0FBQgLGEr3mtZ5BTwtmSwF1dkPrPRM" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;',
+          |             caption: 'Woodkid - Run Boy Run (Official HD Video)'
+          |         },
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/2/',
+          |             caption: 'Second Caption Text'
+          |         },
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/3/',
+          |         },
+          |     ],
+          |     theme: 'dark',
+          |     type: 'standalone'
+          | });
+          | $$('.pb-standalone-video').on('click', function () {
+          |     myPhotoBrowserPopupDark.open();
+          | });
+      .full-width.stop-scroll-device
+        h2 Photo Browser Templates 
+        p Let's look at Photo Browser templates which you can pass on Photo Browser initialization
+        h3 Navbar Template
+        p Here is an example of Navbar template that you can pass in <code>navbarTemplate</code> parameter:
+        pre
+          code
+            &lt;div class="navbar"&gt;
+            |     &lt;div class="navbar-inner"&gt;
+            |         &lt;div class="left sliding"&gt;
+            |             &lt;a href="#" class="link close-popup photo-browser-close-link {{#unless backLinkText}}icon-only{{/unless}} {{js "this.type === \'page\' ? \'back\' : \'\'"}}"&gt;
+            |                 &lt;i class="icon icon-back {{iconsColorClass}}"&gt;&lt;/i&gt;
+            |                 {{#if backLinkText}}&lt;span&gt;{{backLinkText}}&lt;/span&gt;{{/if}}
+            |             &lt;/a&gt;
+            |         &lt;/div&gt;
+            |         &lt;div class="center sliding"&gt;
+            |             &lt;span class="photo-browser-current"&gt;&lt;/span&gt; 
+            |             &lt;span class="photo-browser-of"&gt;{{ofText}}&lt;/span&gt; 
+            |             &lt;span class="photo-browser-total"&gt;&lt;/span&gt;
+            |         &lt;/div&gt;
+            |         &lt;div class="right"&gt;&lt;/div&gt;
+            |     &lt;/div&gt;
+            | &lt;/div&gt;  
+        p Where:
+        ul
+          li    
+            p <code>&lt;a class="photo-browser-close-link"&gt;</code> - link that will close Photo Browser on click. Not just close popup or page, but also detach all events listeners
+          li
+            p <code>&lt;span class="photo-browser-current"&gt;</code>. Photo Browser will insert index number currently active slide into element with <b>photo-browser-current</b> class
+          li
+            p <code>&lt;span class="photo-browser-total"&gt;</code>. Photo Browser will insert total number of slides/photos into element with <b>photo-browser-total</b> class
+        h3 Toolbar Template
+        p Example of Photo Browser's Toolbar template that you can pass in <code>toolbarTemplate</code> parameter:
+        pre
+          code
+            | &lt;div class="toolbar tabbar"&gt;
+            |     &lt;div class="toolbar-inner"&gt;
+            |         &lt;a href="#" class="link photo-browser-prev"&gt;
+            |             &lt;i class="icon icon-prev {{iconsColorClass}}"&gt;&lt;/i&gt;
+            |         &lt;/a&gt;
+            |         &lt;a href="#" class="link photo-browser-next"&gt;
+            |             &lt;i class="icon icon-next {{iconsColorClass}}"&gt;&lt;/i&gt;
+            |         &lt;/a&gt;
+            |     &lt;/div&gt;
+            | &lt;/div&gt;
+        p As you see it is actually tab bar, where:
+        ul
+          li
+            p <code>&lt;a class="photo-browser-next"&gt;</code> - link with <b>photo-browser-next</b> class works like next button
+          li
+            p <code>&lt;a class="photo-browser-prev"&gt;</code> - link with <b>photo-browser-prev</b> class works like previous button
+        h3 Photo Element Template
+        p Template example of single photo slide element that you can pass in <code>photoTemplate</code> parameter:
+        pre
+          code
+            | &lt;div class="photo-browser-slide swiper-slide"&gt;
+            |     &lt;span class="photo-browser-zoom-container"&gt;
+            |         &lt;img src="{{js "this.url || this"}}"&gt;
+            |     &lt;/span&gt;
+            | &lt;/div&gt;
+        h3 Lazy Photo Element Template
+        p Template example of single photo slide element that you can pass in <code>lazyPhotoTemplate</code> parameter:
+        pre
+          code
+            | &lt;div class="photo-browser-slide photo-browser-slide-lazy swiper-slide"&gt;
+            |     &lt;div class="preloader {{@root.preloaderColorClass}}"&gt;{{#if @root.material}}{{@root.materialPreloaderSvg}}{{/if}}&lt;/div&gt;
+            |     &lt;span class="photo-browser-zoom-container"&gt;
+            |         &lt;img data-src="{{js "this.url || this"}}" class="swiper-lazy"&gt;
+            |     &lt;/span&gt;
+            | &lt;/div&gt;
+        h3 Object Element Template
+        p Template example of single object slide element that you can pass in <code>objectTemplate</code> parameter:
+        pre
+          code
+            | &lt;div class="photo-browser-slide photo-browser-object-slide swiper-slide"&gt;{{js "this.html || this"}}&lt;/div&gt;
+        h3 Single Caption Template
+        p Template example of sinble caption element. You can pass in <code>captionTemplate</code> parameter:
+        pre
+          code
+            | &lt;div class="photo-browser-caption" data-caption-index="{{@index}}"&gt;
+            |     {{caption}}
+            | &lt;/div&gt;
+
+          
+
+
+

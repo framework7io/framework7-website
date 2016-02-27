@@ -1,0 +1,51 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center List View
+              .right 
+          .page-content
+            .content-block-title Full Layout
+            .list-block
+              ul
+                li.item-content
+                  .item-media
+                    i.icon.icon-f7
+                  .item-inner
+                    .item-title Item title
+                    .item-after Label
+                li.item-content
+                  .item-media
+                    i.icon.icon-f7
+                  .item-inner
+                    .item-title Item with badge
+                    .item-after 
+                      span.badge 5
+                li.item-content
+                  .item-media
+                    i.icon.icon-f7
+                  .item-inner
+                    .item-title Another item
+                    .item-after Another label
+              .list-block-label List block label text goes here
+            .content-block-title Only titles
+            .list-block
+              ul
+                li.item-content
+                  .item-inner
+                    .item-title Item title
+                li.item-content
+                  .item-inner
+                    .item-title Item with badge
+                li.item-content
+                  .item-inner
+                    .item-title Another item
+
+block scripts
+  script.
+    var myApp = new Framework7();

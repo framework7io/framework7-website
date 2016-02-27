@@ -1,0 +1,76 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'examples';
+  - var title = 'Ready To Use Framework7 App Layouts';
+
+block content
+  h1 Ready To Use Framework7 App Layouts
+  p 
+    strong Below are the ready to use example app layouts that you can use as a starter templates for your app.
+  p You can download most of these example layouts on GitHub <a href="https://github.com/nolimits4web/Framework7/tree/master/examples" target="_blank">here</a>.
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="../dist/")
+    .info
+      h2 Single View Application
+      p This is the most widely used layout type where you have single view with its routing and navigation, navbar and/or toolbar, and side panels.
+      p.buttons 
+        a(href="../dist/", target="_blank").button Open app in new window
+    .clearfix
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="tab-bar/")
+    .info
+      h2 Tab Bar Application
+      p This is an example of tab bar application layout. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.
+      p Each tab/view may have different layout, different navbar type (dynamic, fixed or static) or without navbar like this tab.
+      p.buttons 
+        a(href="tab-bar/", target="_blank").button Open app in new window
+    .clearfix
+  .example
+    .center-info
+      h2 Split View Application
+      p This is an example of split view application layout, commonly used on iPad apps. The main approach of such kind of layout is that you can see different views at the same time.
+      p Each view may have different layout, different navbar type (dynamic, fixed or static) or without navbar.
+      p.buttons 
+        a(href="split-view/", target="_blank").button Open app in new window
+    .device.device-h
+      iframe(width="1024", height="700", scrolling="no", frameborder="0", src="split-view/")
+  .example
+    .center-info
+      h2 Split View Application With Degradation To Panel
+      p This is an example of split view application layout where left view degrades to panel on narrow screens (iPad portrait and iPhone). It behaves like default Mail app on iOS 7.
+      p Just click link below to open app in new window, and resize browser to see it in action.
+      p.buttons 
+        a(href="split-view-panel/", target="_blank").button Open app in new window
+    .device.device-h
+      iframe(width="1024", height="700", scrolling="no", frameborder="0", src="split-view-panel/")
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="inline-pages/")
+    .info
+      h2 Inline Pages
+      p Simple example of inline-pages usage. In such layout all your pages not loaded using Ajax, they are are already in DOM
+      p.buttons 
+        a(href="inline-pages/", target="_blank").button Open app in new window
+    .clearfix
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="template7-pages/")
+    .info
+      h2 Template7 Pages
+      p This examples shows how you can use built-in template engine to load pages and fill them automatically with specified data
+      p.buttons 
+        a(href="template7-pages", target="_blank").button Open app in new window
+    .clearfix
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="http://www.timo-ernst.net/misc/f7-pure-angular-template-demo/")
+    .info
+      h2 AngularJS Template
+      p A clean and simple template for Framework7 based on AngularJS with pure HTML5, CSS3 and JS
+      p.buttons 
+        a(href="http://www.timo-ernst.net/misc/f7-pure-angular-template-demo/", target="_blank").button Open app in new window
+        a(href="https://github.com/valnub/Framework7-Pure-Angular-Template", target="_blank").button Source code
+    .clearfix

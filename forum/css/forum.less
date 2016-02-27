@@ -1,0 +1,288 @@
+@light: #e4542d;
+@dark: #8b190c;
+@blue: #007aff;
+body {
+    font-family: Helvetica Neue, Helvetica, sans-serif;
+    background: url(../i/bg.jpg) no-repeat center top fixed;
+    -webkit-background-size: cover;
+    background-size: cover;
+    padding-top: 44px;
+    .moot {
+        color: #000;
+    }
+}
+.forum-header {
+    height: 44px;
+    line-height: 44px;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: rgba(red(@dark),green(@dark),blue(@dark),0.9);
+    font-size: 14px;
+    text-align: center;
+    a {
+        color: lighten(@light, 10%);
+        color:#fff;
+        text-decoration: none;
+    }
+    a.active, a:hover {
+        opacity: 0.7;
+    }
+    ul, li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    ul {
+        padding: 5px 20px;
+        position: absolute;
+        top: 44px;
+        width: 100%;
+        text-align: left;
+        background: rgba(red(@dark),green(@dark),blue(@dark),0.9);
+        left: -20px;
+        line-height: 1.5;
+        display: none;
+    }
+    li {
+        display: block;
+        margin-bottom: 5px;
+    }
+    h1 {
+        font-weight: 300;
+        font-size: 21px;
+        padding-right: 30px;
+        margin: 0;
+        color: #fff;
+        cursor: pointer;
+    }
+    .title {
+        display: inline-block;
+        position: relative;
+        &:after {
+            content:'l';
+            font-family: icon;
+            position: absolute;
+            right: 0;
+            top: 0%;
+            font-size: 20px;
+            color:#fff;
+            pointer-events:none;
+        }
+    }
+}
+.m-list {
+    .m-moot {
+        margin-bottom: 4px;
+    }
+    .m-seed {
+        background: rgba(255,255,255,1);
+        padding: 15px 10px 0px;
+        padding-bottom: 0;
+    }
+
+    .m-collapsed .m-seed {
+        padding-bottom: 5px;
+        .m-facelink {
+            width: 50px;
+            height: 50px;
+        }
+    }
+    .m-replies {
+        padding: 0 10px;
+        background: rgba(255,255,255,0.9);   
+    }
+    .m-reply {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        &.m-preview {
+            background: #fff;
+            border: none;
+            border-radius: 0;
+        }
+    }
+    .m-title {
+        color: #000;
+        font-weight: 500;
+    }
+    .m-form {
+        background: rgba(red(@dark), green(@dark), blue(@dark), 0.3);
+        border-top: 1px solid rgba(0,0,0,0.2);
+        padding-right: 10px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    textarea.m-postinput {
+        background: #fff;
+        box-shadow: none;
+        border-radius: 0;
+        border: none;
+        outline: 0;
+        padding: 10px;
+    }
+    .m-expanded {
+        margin-bottom: 44px;
+    }
+}
+.m-wrap {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    max-width: 1100px !important;
+    .m-page {
+        padding-top: 0;
+        width: 100%;
+    }
+    .m-sidebar {
+        background: rgba(0,0,0,0.2);
+        margin-top: 0;
+        color: #fff;
+        border: none;
+        
+        a.m-edit-cats {
+            color:#fff;
+        }
+    }
+    .m-links {
+        a {
+            color:#fff;
+        }
+        a:hover {
+            background: rgba(255,255,255,0.1);
+            color:#fff;
+        }
+    }
+    #moot-logo {
+        overflow: hidden;
+        width: 0;
+        height: 0;
+    }
+    .m-anon-count {
+        color:#fff;
+        em {
+            color:#fff;
+        }
+    }
+}
+img.m-face {
+    border-radius: 100%;
+}
+.moot {
+    .m-header {
+        background: rgba(red(@dark),green(@dark),blue(@dark),0.7);
+    }
+    #m-share {
+        position: absolute;
+    }    
+    .m-myname {
+        color:#fff;
+        + .m-down {
+            color:#fff;
+        }
+    }
+    .m-navi a{
+        color: rgba(255,255,255,0.8);
+    }
+    .m-navi .m-selected {
+        color:#000;
+    }
+    .m-controls button {
+        border: 1px solid #fff;
+        background: none;
+        font-size: 14px;
+        border-radius: 5px;
+        margin-right: 15px;
+        &:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    }
+    .m-form.m-create {
+        padding: 10px;
+        background: rgba(red(@dark), green(@dark), blue(@dark), 0.3);
+        margin-top: 30px;
+        .m-preview {
+            background: #fff;
+            border-radius: 0;
+        }
+        .m-select {
+            color:#fff;
+        }
+        .m-options {
+            color:#000;
+        }
+    }
+    .m-input-wrap {
+        padding: 0;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none !important;
+        border: none !important;
+        outline: 0 !important;
+        textarea {
+            background: #fff;
+            padding: 10px;
+            font-family: inherit;
+            border: none;
+        }
+    }
+    .m-input-body {
+        display: none;
+    }
+    .m-focused {
+        .m-show-help {
+            margin-right: 10px;
+        }
+        .m-input-body {
+            display: block;
+        }
+    }
+    .m-collapse-all {
+        margin-bottom: 10px;
+        a, em {
+            color:#fff;
+        }
+        a:hover {
+            color: #fff;
+            opacity: 0.7;
+        }
+    }
+    .m-login {
+        color:#fff;
+    }
+    .m-search#m-search {
+        &:before {
+            top: 3px;
+            display: none;
+        }
+        input {
+            border-radius: 5px;
+            height: 29px;
+            padding-left: 28px;
+            box-shadow: none !important;
+            background: #fff url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 13' enable-background='new 0 0 13 13'><g><path fill='%23939398' d='M5,1c2.2,0,4,1.8,4,4S7.2,9,5,9S1,7.2,1,5S2.8,1,5,1 M5,0C2.2,0,0,2.2,0,5s2.2,5,5,5s5-2.2,5-5S7.8,0,5,0 L5,0z'/></g><line stroke='%23939398' stroke-miterlimit='10' x1='12.6' y1='12.6' x2='8.2' y2='8.2'/></svg>") no-repeat 8px center;
+            -webkit-background-size: 13px 13px;
+            -moz-background-size: 13px 13px;
+            background-size: 13px 13px;
+        }
+    }
+    .m-pagetitle {
+        padding-top: 30px;
+        div {
+            color:#fff !important;
+            text-shadow:0px 1px 2px rgba(0,0,0,0.2);
+            &:before {
+                color:#fff;
+            }
+        }
+    }
+    a.m-ban {
+        color:#fff;
+        &:hover {
+            opacity: 0.7;
+            color:#fff;
+        }
+    }
+}
