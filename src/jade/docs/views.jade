@@ -133,7 +133,7 @@ block content
             td 
               p This callback allows to prevent default router load/back actions and to load another page or do another required actions. 
               p Allows to override the same <a href="init-app.html">App callback</a> but for the current View
-              p <a href="init-app.html#example-with-preprocess-content">Example</a>
+              p <a href="init-app.html#example-with-preroute">Example</a>
           tr
             td preprocess
             td function(content, url, next)
@@ -141,7 +141,7 @@ block content
             td 
               p This callback function allows you to modify loaded by router (mostly Ajax) content right before it will be injected to DOM. Callback receives "content" and "url" of the loaded page and the "next" callback function.
               p Allows to override the same <a href="init-app.html">App callback</a> but for the current View
-              p <a href="init-app.html#example-with-preroute">Example</a>
+              p <a href="init-app.html#example-with-preprocess-content">Example</a>
           tr
             th(colspan="4") Swipe back (iOS theme only)
           tr
