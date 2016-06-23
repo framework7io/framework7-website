@@ -7,7 +7,7 @@ http://framework7.io
 ## Gulp
 
 Run `npm install` under root dir to install npm packages.
-And then, you can use grunt to compile less and jade files, read more about [Gulp](http://gulpjs.com/).
+And then, you can use gulp to compile less and jade files, read more about [Gulp](http://gulpjs.com/).
 
 gulp tasks list
 
