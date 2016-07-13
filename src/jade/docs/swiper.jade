@@ -1,0 +1,476 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Swiper Slider | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Swiper Slider
+        p Framework7 comes with powerful and most modern touch slider ever - <a href="http://www.idangero.us/swiper/">Swiper Slider</a> with super flexible configuration and lot, lot of features.
+        h2 Swiper Slider HTML Layout
+        p Swiper HTML layout is pretty simple:
+        pre
+          code
+            | &lt;!-- Slider container --&gt;
+            | &lt;div class="swiper-container"&gt;
+            |     &lt;!-- Slides wrapper --&gt;
+            |     &lt;div class="swiper-wrapper"&gt;
+            |         &lt;!-- Slides --&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 3&lt;/div&gt;
+            |         ... other slides ...
+            |     &lt;/div&gt;
+            |     &lt;!-- Pagination, if required --&gt;
+            |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+            | &lt;/div&gt;
+        p Where:
+        ul
+          li
+            p <code>swiper-container</code> - main slider container with slides and paginations. Required element
+            ul
+              li
+                p <code>swiper-wrapper</code> - additional wrapper for slides. Required element
+                ul
+                  li
+                    p <code>swiper-slide</code> - single slide element. Could contain any HTML inside
+              li
+                p <code>swiper-pagination</code> - container with pagination bullets. Note, that pagination bullets will be created automatically. Optional element
+                    
+
+
+        h2 Initialize Swiper with JavaScript
+        p Now, when we have Swiper' HTML, we need to initialize it. We need to use related App's method:
+        .method-wrap
+          p
+            span.method myApp.swiper(<span>swiperContainer</span>, <span>parameters</span>) 
+            span - initialize slider with options
+          ul.method-parameters
+            li
+              span.parameter swiperContainer
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of swiper container HTML element. Required.
+            li
+              span.parameter parameters
+              |  - <span class="parameter-type">object</span> - object with Swiper parameters. Optional.
+            
+            li.method-returns Method returns initialized Swiper instance
+        p OR
+        .method-wrap
+          p
+            span.method new Swiper(<span>swiperContainer</span>, <span>parameters</span>) 
+            span - initialize slider with options
+          ul.method-parameters
+            li
+              span.parameter swiperContainer
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of swiper container HTML element. Required.
+            li
+              span.parameter parameters
+              |  - <span class="parameter-type">object</span> - object with Swiper parameters. Optional.
+            
+            li.method-returns Method returns initialized Swiper instance
+        p For example:
+        pre
+          code
+            | var mySwiper = app.swiper('.swiper-container', {
+            |     speed: 400,
+            |     spaceBetween: 100
+            | });   
+        .important-note Note that Swiper container should be in DOM on a moment of initialization. So if you use slider not on home page, you need to initialize it within <a href="pages.html#page-events">pageInit</a> event
+        h2 Swiper API (Parameters, Methods And Properties)
+        p Сheck out <a href="http://www.idangero.us/swiper/api/#parameters" target="_blank">Swiper API Website</a> for the most relevant API parameters and methods.
+        .important-note
+          p Note that Framework7's version of Swiper doesn't contain <b>Keyboard and Mousewheel</b> (keyboardControl, mousewheelControl and all related parameters) modules as they are desktop only things
+        h2 Initialize Swiper with HTML
+        p If you don't need Swiper callback you can initialize swiper using HTML without JavaScript. You can do that just by adding additional "swiper-init" class to <code>swiper-container</code>
+        pre
+          code
+            | &lt;!-- swiper-init to initialize swiper automatically --&gt;
+            | &lt;div class="swiper-container swiper-init"&gt;
+            |     &lt;div class="swiper-wrapper"&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 3&lt;/div&gt;
+            |         ... other slides ...
+            |     &lt;/div&gt;
+            | &lt;/div&gt;  
+        p But what about Swiper parameters. In this case we need to pass them in <b>data-</b> attributes. 
+        .important-note
+          p Parameters that used in camelCase, for example <b>slidesPerView</b>, in data- attributes should be used as hypens-case as <b>data-slides-per-view</b>
+        pre
+          code
+            | &lt;!-- swiper properties in data- attributes --&gt;
+            | &lt;div class="swiper-container swiper-init" data-speed="400" data-space-between="40" data-pagination=".swiper-pagination"&gt;
+            |     &lt;div class="swiper-wrapper"&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 3&lt;/div&gt;
+            |         ... other slides ...
+            |     &lt;/div&gt;
+            |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+            | &lt;/div&gt;        
+        p Or we can pass all Swiper parameters in <strong>valid JSON format</strong> in data-swiper attribute:
+        pre
+          code
+            | &lt;!-- swiper properties in JSON format in data-swiper attribute --&gt;
+            | &lt;div class="swiper-container swiper-init" data-swiper="{'speed':'400', 'spaceBetween':'40', 'pagination': '.swiper-pagination'}"&gt;
+            |     &lt;div class="swiper-wrapper"&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 1&lt;/div&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 2&lt;/div&gt;
+            |         &lt;div class="swiper-slide"&gt;Slide 3&lt;/div&gt;
+            |         ... other slides ...
+            |     &lt;/div&gt;
+            |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+            | &lt;/div&gt;
+        h2 Access to Swiper's Instance
+        p If you initialize Swiper using HTML it is still possible to access to Swiper's instance. It is "swiper" property of slider's container HTML element:
+        pre
+          code
+            | var mySwiper = $$('.swiper-container')[0].swiper;
+            | 
+            | // Now you can use all slider methods like
+            | mySwiper.slideNext();
+
+      h2 Examples
+      h3(data-device-preview="../docs-demos/swiper-default.html") Default Swiper with pagination          
+      pre
+        code
+          | /* A bit of demo styles */;
+          | .swiper-container {
+          |   height: 100%;
+          | }
+          | .swiper-slide {
+          |   background:#fff;
+          | }
+          | .swiper-slide span {
+          |   text-align:center;
+          |   display:block;
+          |   margin:20px;
+          |   font-size:21px;
+          | }
+      pre
+        code
+          | ...
+          | &lt;div class="page-content"&gt;
+          |   &lt;!-- Slider --&gt;
+          |   &lt;div class="swiper-container"&gt;
+          |     &lt;div class="swiper-wrapper"&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 3&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 4&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | ...
+      pre
+        code
+          |   var myApp = new Framework7(); 
+          | 
+          |   // Init slider and store its instance in mySwiper variable
+          |   var mySwiper = myApp.swiper('.swiper-container', {
+          |     pagination:'.swiper-pagination'
+          |   });
+            
+      h3(data-device-preview="../docs-demos/swiper-vertical.html") Vertical Swiper
+      p Styles and HTML layout are the same as in previous example
+      pre
+        code
+          |   var myApp = new Framework7(); 
+          | 
+          |   // Init slider and store its instance in mySwiper variable
+          |   var mySwiper = myApp.swiper('.swiper-container', {
+          |     pagination:'.swiper-pagination',
+          |     direction: 'vertical'
+          |   });
+      div(style="height:200px")
+      h3(data-device-preview="../docs-demos/swiper-space.html") With space between slides
+      p Styles and HTML layout are the same as in previous examples
+      pre
+        code
+          |   var myApp = new Framework7(); 
+          | 
+          |   // Init slider and store its instance in mySwiper variable
+          |   var mySwiper = myApp.swiper('.swiper-container', {
+          |     pagination:'.swiper-pagination',
+          |     spaceBetween: 100 // 100px between slides
+          |   });
+      div(style="height:200px")
+      h3(data-device-preview="../docs-demos/swiper-multiple.html") Multiple Swipers
+      pre
+        code
+          | .swiper-slide {
+          |   background: #fff;
+          |   box-sizing: border-box;
+          |   border: 1px solid #ccc;
+          | }
+          | .swiper-slide span {
+          |   text-align:center;
+          |   display:block;
+          |   margin: 20px;
+          |   font-size:21px;
+          | }
+          | .swiper-container {
+          |   height: 120px;
+          |   margin: 35px 0;
+          | }
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;1 Slide Per View, 50px Between&lt;/div&gt;
+          |   &lt;div class="swiper-container swiper-1"&gt;
+          |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="swiper-wrapper"&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;2 Slides Per View, 20px Between&lt;/div&gt;
+          |   &lt;div class="swiper-container swiper-2"&gt;
+          |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="swiper-wrapper"&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;3 Slides Per View, 10px Between&lt;/div&gt;
+          |   &lt;div class="swiper-container swiper-3"&gt;
+          |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="swiper-wrapper"&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;Vertical, 0px Between&lt;/div&gt;
+          |   &lt;div class="swiper-container swiper-vertical"&gt;
+          |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="swiper-wrapper"&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 5&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="content-block-title"&gt;Slow speed&lt;/div&gt;
+          |   &lt;div class="swiper-container swiper-slow"&gt;
+          |     &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+          |     &lt;div class="swiper-wrapper"&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |       ...
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 10&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          | &lt;/div&gt;  
+      pre
+        code
+          | var myApp = new Framework7(); 
+          | 
+          | // 1 Slide Per View, 50px Between
+          | var mySwiper1 = myApp.swiper('.swiper-1', {
+          |   pagination:'.swiper-1 .swiper-pagination',
+          |   spaceBetween: 50
+          | });
+          | 
+          | // 2 Slides Per View, 20px Between
+          | var mySwiper2 = myApp.swiper('.swiper-2', {
+          |   pagination:'.swiper-2 .swiper-pagination',
+          |   spaceBetween: 20,
+          |   slidesPerView: 2
+          | });
+          | 
+          | // 3 Slides Per View, 10px Between
+          | var mySwiper3 = myApp.swiper('.swiper-3', {
+          |   pagination:'.swiper-3 .swiper-pagination',
+          |   spaceBetween: 10,
+          |   slidesPerView: 3
+          | });
+          | 
+          | // Vertical, 0px Between
+          | var mySwiperVertical = myApp.swiper('.swiper-vertical', {
+          |   pagination:'.swiper-vertical .swiper-pagination',
+          |   direction: 'vertical'
+          | });
+          | 
+          | // Slow speed
+          | var mySwiperSlow = myApp.swiper('.swiper-slow', {
+          |   pagination:'.swiper-slow .swiper-pagination',
+          |   speed: 600
+          | });                  
+      h3(data-device-preview="../docs-demos/swiper-nested.html") Nested Swipers
+      p Let's initialize slider in this example using just HTML:
+      pre
+        code
+          | .swiper-slide {
+          |   background:#fff;
+          | }
+          | .swiper-slide span {
+          |   text-align:center;
+          |   display:block;
+          |   margin:20px;
+          |   font-size:21px;
+          | }
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;!-- Horizontal parent slider --&gt;
+          |   &lt;div data-pagination=".swiper-pagination-h"class="swiper-container swiper-init"&gt;
+          |     &lt;div class="swiper-pagination swiper-pagination-h"&gt;&lt;/div&gt;
+          |     &lt;div class="swiper-wrapper"&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Horizontal Slide 1&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;
+          | 
+          |         &lt;!-- Vertical nested child slider --&gt;
+          |         &lt;div class="swiper-container swiper-init" data-pagination=".swiper-pagination-v" data-direction="vertical"&gt;
+          |           &lt;div class="swiper-pagination swiper-pagination-v"&gt;&lt;/div&gt;
+          |           &lt;div class="swiper-wrapper"&gt;
+          |             &lt;div class="swiper-slide"&gt;&lt;span&gt;Vertical Slide 1&lt;/span&gt;&lt;/div&gt;
+          |             &lt;div class="swiper-slide"&gt;&lt;span&gt;Vertical Slide 2&lt;/span&gt;&lt;/div&gt;
+          |             &lt;div class="swiper-slide"&gt;&lt;span&gt;Vertical Slide 3&lt;/span&gt;&lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          | 
+          |       &lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Horizontal Slide 3&lt;/span&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-slide"&gt;&lt;span&gt;Horizontal Slide 4&lt;/span&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          | &lt;/div&gt; 
+      h3(data-device-preview="../docs-demos/swiper-custom.html") Custom Controls
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="swiper-custom"&gt;
+          |     &lt;div class="swiper-container"&gt;
+          |       &lt;div class="swiper-pagination"&gt;&lt;/div&gt;
+          |       &lt;div class="swiper-wrapper"&gt;
+          |         &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 1&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 2&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 3&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 4&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 5&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 6&lt;/span&gt;&lt;/div&gt;
+          |         &lt;div class="swiper-slide"&gt;&lt;span&gt;Slide 7&lt;/span&gt;&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="swiper-button-prev"&gt;&lt;/div&gt;
+          |     &lt;div class="swiper-button-next"&gt;&lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | .swiper-custom {
+          |   position:relative;
+          |   height:100%;
+          | }
+          | .swiper-container {
+          |   height:100%;
+          | }
+          | .swiper-slide {
+          |   background: #fff;
+          | }
+          | .swiper-slide span {
+          |   text-align:center;
+          |   display:block;
+          |   margin: 20px;
+          |   font-size:21px;
+          | }
+          | .swiper-pagination-bullet {
+          |   width: 10px;
+          |   height: 10px;
+          |   background: none;
+          |   border:1px solid #aaa;
+          |   border-radius: 0 0 0 0;
+          |   opacity:1;
+          |   cursor: pointer;
+          | }
+          | .swiper-pagination-bullet-active {
+          |   background: #007aff;
+          |   border-color: #007aff;
+          | }   
+      pre
+        code
+          | var myApp = new Framework7(); 
+          | 
+          | var mySwiper = myApp.swiper('.swiper-container', {
+          |   pagination: '.swiper-pagination',
+          |   paginationHide: false,
+          |   paginationClickable: true,
+          |   nextButton: '.swiper-button-next',
+          |   prevButton: '.swiper-button-prev',
+          | });                         
+      h3(data-device-preview="../docs-demos/swiper-lazy.html") Lazy Loading
+      pre
+        code
+          | &lt;div class="swiper-container"&gt;
+          |   &lt;div class="swiper-wrapper"&gt;
+          |     &lt;div class="swiper-slide"&gt;
+          |       &lt;img data-src="http://lorempixel.com/1600/1200/nature/1" class="swiper-lazy"&gt;
+          |       &lt;div class="preloader"&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="swiper-slide"&gt;
+          |       &lt;img data-src="http://lorempixel.com/1600/1200/nature/2" class="swiper-lazy"&gt;
+          |       &lt;div class="preloader"&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="swiper-slide"&gt;
+          |       &lt;img data-src="http://lorempixel.com/1600/1200/nature/3" class="swiper-lazy"&gt;
+          |       &lt;div class="preloader"&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="swiper-slide"&gt;
+          |       &lt;img data-src="http://lorempixel.com/1600/1200/nature/4" class="swiper-lazy"&gt;
+          |       &lt;div class="preloader"&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="swiper-slide"&gt;
+          |       &lt;img data-src="http://lorempixel.com/1600/1200/nature/5" class="swiper-lazy"&gt;
+          |       &lt;div class="preloader"&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="swiper-pagination color-white"&gt;&lt;/div&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | .swiper-container {
+          |   height: 100%;
+          | }
+          | .swiper-slide {
+          |   background: #000;
+          |   position: relative;
+          | }
+          | .swiper-slide img {
+          |   position: absolute;
+          |   left:50%;
+          |   top:50%;
+          |   max-width: 100%;
+          |   max-height: 100%;
+          |   -webkit-transform: translate(-50%, -50%);
+          |   transform: translate(-50%, -50%);
+          | }
+      pre
+        code
+          | var mySwiper = new Swiper('.swiper-container', {
+          |   preloadImages: false,
+          |   lazyLoading: true,
+          |   pagination: '.swiper-pagination'
+          | })                          
+      

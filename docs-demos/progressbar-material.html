@@ -180,9 +180,9 @@
       $$('.demo-progressbar-load-hide .button').on('click', function () {
           var container = $$('.demo-progressbar-load-hide p:first-child');
           if (container.children('.progressbar').length) return; //don't run all this if there is a current progressbar loading
-          
+      
           myApp.showProgressbar(container, 0);
-          
+      
           // Simluate Loading Something
           var progress = 0;
           function simulateLoading() {
@@ -202,9 +202,9 @@
           // Add Directly To Body
           var container = $$('body');
           if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-          
+      
           myApp.showProgressbar(container, 0, 'yellow');
-          
+      
           // Simluate Loading Something
           var progress = 0;
           function simulateLoading() {

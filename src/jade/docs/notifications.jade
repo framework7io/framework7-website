@@ -1,0 +1,263 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Notifications | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Notifications
+        p With Notifications component you can show required messages that looks like Push (or Local) iOS notifications.
+        
+        h2 Notifications JavaScript API
+        p To add/close notifications we need to use related App's methods:
+        .method-wrap
+          p
+            span.method myApp.addNotification(<span>parameters</span>) 
+            span - add/show notification with specified parameters
+          ul.method-parameters
+            li
+              span.parameter parameters
+              |  - <span class="parameter-type">object</span> with notification parameters. Required
+            li.method-returns This method returns HTMLElement with dynamically created notification element
+        .method-wrap
+          p
+            span.method myApp.closeNotification(<span>notificationElement</span>) 
+            span - close specified notification
+          ul.method-parameters
+            li
+              span.parameter notificationElement
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - of required Notification. Required
+        
+        p Let's look at notification parameters when we add new notification:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              td title
+              td string
+              td 
+              td Notification title. By default, equal to the <code>notificationTitle</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span>
+            tr
+              td subtitle
+              td string
+              td 
+              td Notification subtitle. By default, equal to the <code>notificationSubtitle</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span>
+            tr
+              td media
+              td string
+              td 
+              td Notification media element - HTML string with icon or image. By default, equal to the <code>notificationMedia</code> App's parameter - undefined. <span class="ios-only">iOS theme only</span>
+            tr
+              td hold
+              td number
+              td 
+              td Specify this parameter (in ms) if you want to close notification automatically after specified timeout. By default, equal to the <code>notificationHold</code> App's parameter - undefined. 
+            tr
+              td closeIcon
+              td boolean
+              td true
+              td Disable to remove Close icon/button from notification. By default, equal to the <code>notificationCloseIcon</code> App's parameter - true. <span class="ios-only">iOS theme only</span>
+            tr
+              td button
+              td object
+              td 
+              td Material notification button. Accepts 3 properties:
+                pre
+                  code.js
+                    | {
+                    |   text: 'close',
+                    |   color: 'blue',
+                    |   close: true
+                    | }
+                p Where
+                ul
+                  li <code>text</code> - button text. By default equal to <code>notificationCloseButtonText</code> App's parameter
+                  li <code>color</code> - button color
+                  li <code>close</code> - close notification on button click
+                p <span class="material-only">Material theme only</span>
+            tr
+              td closeOnClick
+              td boolean
+              td false
+              td Set to true and notification will be closed after click on it. By default, equal to the <code>notificationCloseOnClick</code> App's parameter - false. 
+            tr
+              td additionalClass
+              td string
+              td 
+              td Add additional specified CSS class to notification element (for additional styling)
+            
+            tr
+              td custom
+              td string
+              td 
+              td Use this parameter if you want to use notification with custom HTML layout. <strong>"title", "subtitle", "media" and "closeIcon" parameters will be ignored when using "custom" parameter</strong>
+            tr
+              td onClick
+              td function
+              td 
+              td Callback function that will be executed after click on notification item
+            tr
+              td onClose
+              td function
+              td 
+              td Callback function that will be executed when notification is closed (by click on close icon or via API using myApp.closeNotification method)
+
+        h2 Notifications Layout
+        p Notifications are just particual case of <a href="media-list-view.html">Media List View</a>. You probably don't need to use it manually because Notifications will be added using JavaScript, but it could be useful for understanding and custom styling. When you add notification F7 will add special "notifications" div to the body with list block:
+        pre
+          code
+            | &lt;body&gt;
+            |   ...
+            |   &lt;div class="notifications list-block media-list"&gt;
+            |     &lt;ul&gt;
+            | 
+            |       &lt;!-- Single notification item --&gt;
+            |       &lt;li class="notification-item"&gt;
+            |         &lt;div class="item-content"&gt;
+            |           &lt;div class="item-media"&gt;
+            |             &lt;!-- Notification media --&gt;
+            |           &lt;/div&gt;
+            |           &lt;div class="item-inner"&gt;
+            |             &lt;div class="item-title-row"&gt;
+            |               &lt;div class="item-title"&gt;
+            |                 &lt;!-- Notification title --&gt;
+            |               &lt;/div&gt;
+            |               &lt;div class="item-after"&gt;
+            |                   &lt;!-- Notification close icon --&gt;
+            |                   &lt;a href="#" class="close-notification"&gt;&lt;/a&gt;
+            |               &lt;/div&gt;
+            |             &lt;/div&gt;
+            |             &lt;div class="item-subtitle"&gt;
+            |               &lt;!-- Notification subtitle --&gt;
+            |             &lt;/div&gt;
+            |             &lt;div class="item-text"&gt;
+            |               &lt;!-- Notification message --&gt;
+            |             &lt;/div&gt;
+            |           &lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/li&gt;
+            | 
+            |     &lt;/ul&gt;
+            |   &lt;/div&gt;    
+            | &lt;/body&gt;
+        p Custom notification will have the following layout:
+        pre
+          code
+            | &lt;body&gt;
+            |   ...
+            |   &lt;div class="notifications list-block media-list"&gt;
+            |     &lt;ul&gt;
+            | 
+            |       &lt;!-- Single notification item --&gt;
+            |       &lt;li class="notification-item"&gt;
+            |         &lt;!-- Custom notification content --&gt;
+            |       &lt;/li&gt;
+            | 
+            |     &lt;/ul&gt;
+            |   &lt;/div&gt;    
+            | &lt;/body&gt;  
+      h2(data-device-preview="../docs-demos/notifications.html") Example iOS
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;p&gt;&lt;a href="#" class="button notification-default"&gt;Default notification&lt;/a&gt;&lt;/p&gt;
+          |     &lt;p&gt;&lt;a href="#" class="button notification-full"&gt;Full-layout notification&lt;/a&gt;&lt;/p&gt;
+          |     &lt;p&gt;&lt;a href="#" class="button notification-custom"&gt;With custom image&lt;/a&gt;&lt;/p&gt;
+          |     &lt;p&gt;&lt;a href="#" class="button notification-callback"&gt;With callback on close&lt;/a&gt;&lt;/p&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt; 
+      pre
+        code
+          | var myApp = new Framework7(); 
+          | var mainView = myApp.addView('.view-main');
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.notification-default').on('click', function () {
+          |     myApp.addNotification({
+          |         title: 'Framework7',
+          |         message: 'This is a simple notification message with title and message'
+          |     });
+          | });
+          | $$('.notification-full').on('click', function () {
+          |     myApp.addNotification({
+          |         title: 'Framework7',
+          |         subtitle: 'Notification subtitle',
+          |         message: 'This is a simple notification message with custom icon and subtitle',
+          |         media: '&lt;i class="icon icon-f7"&gt;&lt;/i&gt;'
+          |     });
+          | });
+          | $$('.notification-custom').on('click', function () {
+          |     myApp.addNotification({
+          |         title: 'My Awesome App',
+          |         subtitle: 'New message from John Doe',
+          |         message: 'Hello, how are you? Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut posuere erat. Pellentesque id elementum urna, a aliquam ante. Donec vitae volutpat orci. Aliquam sed molestie risus, quis tincidunt dui.',
+          |         media: '&lt;img width="44" height="44" style="border-radius:100%" src="http://lorempixel.com/output/people-q-c-100-100-9.jpg"&gt;'
+          |     });
+          | });
+          | $$('.notification-callback').on('click', function () {
+          |     myApp.addNotification({
+          |         title: 'My Awesome App',
+          |         subtitle: 'New message from John Doe',
+          |         message: 'Hello, how are you? Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut posuere erat. Pellentesque id elementum urna, a aliquam ante. Donec vitae volutpat orci. Aliquam sed molestie risus, quis tincidunt dui.',
+          |         media: '&lt;img width="44" height="44" style="border-radius:100%" src="http://lorempixel.com/output/people-q-c-100-100-9.jpg"&gt;',
+          |         onClose: function () {
+          |             myApp.alert('Notification closed');
+          |         }
+          |     });
+          | });
+      h2(data-device-preview="../docs-demos/notifications-material.html") Example Material
+      pre
+        code
+          | var myApp = new Framework7({
+          |   material: true
+          | }); 
+          | var mainView = myApp.addView('.view-main');
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.notification-single').on('click', function () {
+          |     myApp.addNotification({
+          |         message: 'Simple message'
+          |     });
+          | });
+          | $$('.notification-multi').on('click', function () {
+          |     myApp.addNotification({
+          |         message: 'Multi-line message. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in magna nisi.',
+          |     });
+          | });
+          | $$('.notification-custom').on('click', function () {
+          |     myApp.addNotification({
+          |         message: 'Nice yellow button',
+          |         button: {
+          |             text: 'Click me',
+          |             color: 'yellow'
+          |         }
+          |     });
+          | });
+          | $$('.notification-callback').on('click', function () {
+          |     myApp.addNotification({
+          |         message: 'Close me to see Alert',
+          |         button: {
+          |             text: 'Close Me',
+          |             color: 'lightgreen'
+          |         },
+          |         onClose: function () {
+          |             myApp.alert('Notification closed');
+          |         }
+          |     });
+          | });          

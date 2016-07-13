@@ -1,0 +1,52 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+                a(href="#", data-popover=".popover-about").link.open-popover About
+              .center Popover
+              .right 
+                a(href="#", data-popover=".popover-links").link.open-popover Links
+          .page-content
+            .content-block
+              p
+                a(href="#", data-popover=".popover-about").open-popover Open About Popover
+              p
+                a(href="#", data-popover=".popover-links").open-popover Open Links Popover
+  style.
+    .popover {
+      width:200px;
+    }
+    
+  .popover.popover-about
+    .popover-angle
+    .popover-inner
+      .content-block 
+        p About
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+  .popover.popover-links
+    .popover-angle
+    .popover-inner
+      .list-block
+        ul
+          li
+            a(href="#").list-button.item-link Link 1
+          li
+            a(href="#").list-button.item-link Link 2
+          li
+            a(href="#").list-button.item-link Link 3
+          li
+            a(href="#").list-button.item-link Link 4
+
+          
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+    

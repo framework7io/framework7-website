@@ -1,0 +1,181 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Inline Pages | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Inline Pages (DOM Cache)
+      p With this feature you may put all of your pages in DOM on app load, so you don't need to load any pages using Ajax or create them dynamically
+      h2 Enable Inline Pages
+      p By default, inline pages behavior is disabled. To enable it, we need to pass View's <code>domCache: true</code> parameter:
+      pre
+        code
+          | var mainView = myApp.addView('.view-main', {
+          |     domCache: true //enable inline pages
+          | });
+      h2 Inline Pages Structure
+      p As we said above, all of your pages could be already in DOM in index file on app load. So let's look at pages structure in index file:
+      pre
+        code
+          | &lt;html&gt;
+          |   &lt;head&gt;...&lt;/head&gt;
+          |   &lt;body&gt;
+          |     ...
+          |     &lt;!-- Views --&gt;
+          |     &lt;div class="views"&gt;
+          |       &lt;!-- View --&gt;
+          |       &lt;div class="view view-main"&gt;
+          |         &lt;!-- Pages --&gt;
+          |         &lt;div class="pages"&gt;
+          |           &lt;!-- Home page --&gt;
+          |           &lt;div class="page" data-page="index"&gt;
+          |             &lt;div class="page-content"&gt;
+          |               &lt;p&gt;Home page&lt;/p&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- About page --&gt;
+          |           &lt;div class="page cached" data-page="about"&gt;
+          |             &lt;div class="page-content"&gt;
+          |               &lt;p&gt;About page&lt;/p&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- Services page --&gt;
+          |           &lt;div class="page cached" data-page="services"&gt;
+          |             &lt;div class="page-content"&gt;
+          |               &lt;p&gt;Services page&lt;/p&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     ...
+          |   &lt;/body&gt;
+          | &lt;/html&gt;
+      p As you may see it is almost the same as in <a href="app-layout.html">usual app layout</a>, the only difference is that we already have all required pages and all additional pages have additional "cached" class
+      .important-note
+        p All additional (not currently active) pages should have additional <b>cached</b> class
+      h2 Inline Pages Structure With Dynamic Navbar
+      p.ios-only Structure with Dynamic Navbar is supported only in iOS Theme
+      p As you may see in <a href="navbar-toolbar-layouts.html">Nabvar & Toolbar layout</a> types dynamic navbar requires through-type layout. But in this layout type navbar is not inside of page. 
+      p So we also need put few navbar inners:
+      pre
+        code
+          | &lt;html&gt;
+          |   &lt;head&gt;...&lt;/head&gt;
+          |   &lt;body&gt;
+          |     ...
+          |     &lt;!-- Views --&gt;
+          |     &lt;div class="views"&gt;
+          |       &lt;!-- View --&gt;
+          |       &lt;div class="view view-main"&gt;
+          | 
+          |         &lt;!-- Navbar --&gt;
+          |         &lt;div class="navbar"&gt;
+          |           &lt;!-- Home page navbar --&gt;
+          |           &lt;div class="navbar-inner" data-page="index"&gt;
+          |             &lt;div class="center"&gt;Home&lt;/div&gt;
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- About page navbar --&gt;
+          |           &lt;div class="navbar-inner cached" data-page="about"&gt;
+          |             &lt;div class="center"&gt;About&lt;/div&gt;
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- Services page navbar --&gt;
+          |           &lt;div class="navbar-inner cached" data-page="services"&gt;
+          |             &lt;div class="center"&gt;Services&lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          | 
+          |         &lt;!-- Pages --&gt;
+          |         &lt;div class="pages navbar-through"&gt;
+          |           &lt;!-- Home page --&gt;
+          |           &lt;div class="page" data-page="index"&gt;
+          |             &lt;div class="page-content"&gt;
+          |               &lt;p&gt;Home page&lt;/p&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- About page --&gt;
+          |           &lt;div class="page cached" data-page="about"&gt;
+          |             &lt;div class="page-content"&gt;
+          |               &lt;p&gt;About page&lt;/p&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- Services page --&gt;
+          |           &lt;div class="page cached" data-page="services"&gt;
+          |             &lt;div class="page-content"&gt;
+          |               &lt;p&gt;Services page&lt;/p&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |     ...
+          |   &lt;/body&gt;
+          | &lt;/html&gt;          
+      .important-note
+        ul
+          li
+            p All additional (not currently active) navbar-inner should have additional <b>cached</b> class
+          li
+            p When using Dynamic Navbar with Inline Pages, every related "navbar-inner" should have the same related <b>data-page</b> attribute
+      h2 Inline Page URL
+      p Now, when we have our App structure with Views and Inline Pages we need to understand how we can create links to load such inline pages.
+      p Inline Page URL follows this rule: <code>&#35;{{pageName}}</code>, where {{pageName}} will be equal to loaded page name (data-page attribute)
+      p So, if we want to load "about" page we may use the following link:
+      pre
+        code
+          | &lt;a href="#about"&gt;Go to About page&lt;/a&gt;
+
+      h2 Go back in navigation
+      p There are absolutely the same rules as for usual <a href="pages-ajax.html">Ajax Pages</a>, the only difference is the page URL. All we need is to add "back" class to link:
+      pre
+        code
+          | &lt;div class="page" data-page="about"&gt;
+          |   &lt;!-- Just add additional "back" class to link --&gt;
+          |   &lt;a href="#index" class="back"&gt; Go back to home page &lt;/a&gt;
+          | &lt;/div&gt;
+      h2 Load Inline Pages using JavaScript
+      p It is also possible to load inline page using JavaScript API, not only using <code>&lt;a&gt;</code> tags. For this case we may use <code>.router.load()</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:
+      pre
+        code
+          | // Initialize App  
+          | var myApp = new Framework7();
+          |         
+          | // Initialize View          
+          | var mainView = myApp.addView('.view-main')          
+          |         
+          | // Load about page:
+          | mainView.router.load({pageName: 'about'});
+      p Note, that it is only possible for Views that were initialized
+
+      h2 Going back using JavaScript
+      p You can also get the same as when you click "back" link but with JavaScript using <code>.router.back()</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:
+      pre
+        code
+          | // Initialize App  
+          | var myApp = new Framework7();
+          |         
+          | // Initialize View          
+          | var mainView = myApp.addView('.view-main')          
+          |         
+          | // Go back on main View
+          | mainView.router.back();
+      p It is also possible only for Views that were initialized
+
+      h2 Conclusion
+      p As you may see linking and navigation for inline pages is pretty simple, all you should remember is that:
+      ul
+        li
+          p you may use usual <code>&lt;a&gt;</code> tags with plain "href" attribute that contains &#35;{{pageName}} of required page
+        li
+          p just add "back" class to any link (<b>&lt;a href="#index" class="back"&gt;</b>) to make it work like "back" link

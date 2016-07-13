@@ -1,0 +1,128 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Custom Modals
+              .right 
+          .page-content
+            .content-block
+              p
+                a(href="#").open-3-modal Modal With 3 Buttons
+              p
+                a(href="#").open-slider-modal Modal With Slider
+              p
+                a(href="#").open-tabs-modal Modal With Tabs
+              p
+                a(href="#").open-vertical-modal Modal With Vertical Buttons
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+    $$('.open-3-modal').on('click', function () {
+      myApp.modal({
+        title:  'Modal with 3 buttons',
+        text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
+        buttons: [
+          {
+            text: 'B1',
+            onClick: function() {
+              myApp.alert('You clicked first button!')
+            }
+          },
+          {
+            text: 'B2',
+            onClick: function() {
+              myApp.alert('You clicked second button!')
+            }
+          },
+          {
+            text: 'B3',
+            bold: true,
+            onClick: function() {
+              myApp.alert('You clicked third button!')
+            }
+          },
+        ]
+      })
+    });
+    $$('.open-slider-modal').on('click', function () {
+      var modal = myApp.modal({
+        title: 'Awesome Photos?',
+        text: 'What do you think about my photos?',
+        afterText:  '<div class="swiper-container" style="width: auto; margin:5px -15px -15px">'+
+                      '<div class="swiper-pagination"></div>'+
+                      '<div class="swiper-wrapper">'+
+                        '<div class="swiper-slide"><img src="http://lorempixel.com/270/150/nature/1/" height="150" style="display:block"></div>' +
+                        '<div class="swiper-slide"><img src="http://lorempixel.com/270/150/nature/2/" height="150" style="display:block"></div>'+
+                      '</div>'+
+                    '</div>',
+        buttons: [
+          {
+            text: 'Bad :('
+          },
+          {
+            text: 'Awesome!',
+            bold: true,
+            onClick: function () {
+              myApp.alert('Thanks! I know you like it!')
+            }
+          },
+        ]
+      })
+      myApp.swiper($$(modal).find('.swiper-container'), {pagination: '.swiper-pagination'});
+    });
+
+    $$('.open-tabs-modal').on('click', function () {
+      myApp.modal({
+        title:  '<div class="buttons-row">'+
+                  '<a href="#tab1" class="button active tab-link">Tab 1</a>'+
+                  '<a href="#tab2" class="button tab-link">Tab 2</a>'+
+                '</div>',
+        text: '<div class="tabs">'+
+                '<div class="tab active" id="tab1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam convallis nunc non dolor euismod feugiat. Sed at sapien nisl. Ut et tincidunt metus. Suspendisse nec risus vel sapien placerat tincidunt. Nunc pulvinar urna tortor.</div>'+
+                '<div class="tab" id="tab2">Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae</div>'+
+              '</div>',
+        buttons: [
+          {
+            text: 'Ok, got it',
+            bold: true
+          },
+        ]
+      })
+    });
+
+    $$('.open-vertical-modal').on('click', function () {
+      myApp.modal({
+        title:  'Vertical Buttons Layout',
+        text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
+        verticalButtons: true,
+        buttons: [
+          {
+            text: 'Button 1',
+            onClick: function() {
+              myApp.alert('You clicked first button!')
+            }
+          },
+          {
+            text: 'Button 2',
+            onClick: function() {
+              myApp.alert('You clicked second button!')
+            }
+          },
+          {
+            text: 'Button 3',
+            onClick: function() {
+              myApp.alert('You clicked third button!')
+            }
+          },
+        ]
+      })
+    });
+    

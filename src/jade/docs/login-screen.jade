@@ -1,0 +1,282 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Login Screen | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Login Screen
+        p Framework7 comes with ready to use Login Screen layout. It could be used inside of page or popup (embedded) or as a standalone overlay.
+        h2 Login Screen Layout
+        p First of all, let's look at the standalone Login Screen layout. It behaves almost in the same way as Popup:
+        pre
+          code
+            | &lt;body&gt;
+            |   ...
+            |   &lt;!-- Should be a direct child of BODY --&gt;
+            |   &lt;div class="login-screen"&gt;
+            |       &lt;!-- Default view-page layout --&gt;
+            |       &lt;div class="view"&gt;
+            |         &lt;div class="page"&gt;
+            |           &lt;!-- page-content has additional login-screen content --&gt;
+            |           &lt;div class="page-content login-screen-content"&gt;
+            |             &lt;div class="login-screen-title"&gt;My App&lt;/div&gt;
+            |             &lt;!-- Login form --&gt;
+            |             &lt;form&gt;
+            |               &lt;div class="list-block"&gt;
+            |                 &lt;ul&gt;
+            |                   &lt;li class="item-content"&gt;
+            |                     &lt;div class="item-inner"&gt;
+            |                       &lt;div class="item-title label"&gt;Username&lt;/div&gt;
+            |                       &lt;div class="item-input"&gt;
+            |                         &lt;input type="text" name="username" placeholder="Username"&gt;
+            |                       &lt;/div&gt;
+            |                     &lt;/div&gt;
+            |                   &lt;/li&gt;
+            |                   &lt;li class="item-content"&gt;
+            |                     &lt;div class="item-inner"&gt;
+            |                       &lt;div class="item-title label"&gt;Password&lt;/div&gt;
+            |                       &lt;div class="item-input"&gt;
+            |                         &lt;input type="password" name="password" placeholder="Password"&gt;
+            |                       &lt;/div&gt;
+            |                     &lt;/div&gt;
+            |                   &lt;/li&gt;
+            |                 &lt;/ul&gt;
+            |               &lt;/div&gt;
+            |               &lt;div class="list-block"&gt;
+            |                 &lt;ul&gt;
+            |                   &lt;li&gt;
+            |                     &lt;a href="#" class="item-link list-button"&gt;Sign In&lt;/a&gt;
+            |                   &lt;/li&gt;
+            |                 &lt;/ul&gt;
+            |                 &lt;div class="list-block-labe"&gt;Some text with login information.&lt;/div&gt;
+            |               &lt;/div&gt;
+            |             &lt;/form&gt;
+            |           &lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/div&gt;
+            |   &lt;/div&gt;
+            | &lt;/body&gt;
+        .important-note
+          p Note that all elements you see inside of &lt;div class="login-screen"&gt; are optional, but you can use them as boilerplate layout for your Login form
+        h2 Open and close Login Screen
+      h3(data-device-preview="../docs-demos/login-screen.html") From HTML
+      p It is possible to open and close Login Screen using special classes on links:
+      .important-note
+        ul
+          li
+            p To open login screen we need to add <strong>"open-login-screen"</strong> class to any HTML element (prefered to link)
+          li
+            p To close login screen we need to add <strong>"close-login-screen"</strong> class to any HTML element (prefered to link)
+      p According to above note:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |     &lt;div class="page-content"&gt;
+          |       &lt;div class="content-block"&gt;
+          |         &lt;p&gt;&lt;a href="#" class="open-login-screen"&gt;Open Login Screen&lt;/a&gt;&lt;/p&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   ...
+          |   &lt;div class="login-screen"&gt;
+          |     &lt;div class="view"&gt;
+          |       &lt;div class="page"&gt;
+          |         &lt;div class="page-content login-screen-content"&gt;
+          |           &lt;div class="login-screen-title"&gt;My App&lt;/div&gt;
+          |           &lt;form&gt;
+          |             &lt;div class="list-block"&gt;
+          |               &lt;ul&gt;
+          |                 &lt;li class="item-content"&gt;
+          |                   &lt;div class="item-inner"&gt;
+          |                     &lt;div class="item-title label"&gt;Username&lt;/div&gt;
+          |                     &lt;div class="item-input"&gt;
+          |                       &lt;input type="text" name="username" placeholder="Your username"&gt;
+          |                     &lt;/div&gt;
+          |                   &lt;/div&gt;
+          |                 &lt;/li&gt;
+          |                 &lt;li class="item-content"&gt;
+          |                   &lt;div class="item-inner"&gt;
+          |                     &lt;div class="item-title label"&gt;Password&lt;/div&gt;
+          |                     &lt;div class="item-input"&gt;
+          |                       &lt;input type="password" name="password" placeholder="Your password"&gt;
+          |                     &lt;/div&gt;
+          |                   &lt;/div&gt;
+          |                 &lt;/li&gt;
+          |               &lt;/ul&gt;
+          |             &lt;/div&gt;
+          |             &lt;div class="list-block"&gt;
+          |               &lt;ul&gt;
+          |                 &lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Sign In&lt;/a&gt;&lt;/li&gt;
+          |               &lt;/ul&gt;
+          |               &lt;div class="list-block-label"&gt;
+          |                 &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/p&gt;
+          |                 &lt;p&gt;&lt;a href="#" class="close-login-screen"&gt;Close Login Screen&lt;/a&gt;&lt;/p&gt;
+          |               &lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/form&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      h3(data-device-preview="../docs-demos/login-screen-js.html") Using JavaScript
+      p We can also open and close Login Screen with JavaScript, we need to look at related App methods:
+      p
+        span.method myApp.loginScreen()</span> - open Login Screen
+      p
+        span.method myApp.closeModal(<span>loginScreen</span>)</span> - close Login Screen
+      ul.method-parameters
+        li
+          span.parameter loginScreen
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Login Screen/Popup/Modal will be closed
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |     &lt;div class="page-content"&gt;
+          |       &lt;div class="content-block"&gt;
+          |         &lt;p&gt;&lt;a href="#" class="open-login"&gt;Open Login Screen&lt;/a&gt;&lt;/p&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   ...
+          |   &lt;div class="login-screen"&gt;
+          |     ... login screen content ...
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.open-login').on('click', function () {
+          |   myApp.loginScreen();
+          | });
+      h2 Login Screen Events
+      p Login Screen has the same events as Modals, they could be useful when you need to do something in JavaScript when Login Screen opened/closed
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Description
+        tbody
+          tr
+            td open
+            td Login Screen Element<span>&lt;div class="login-screen"&gt;</span>
+            td Event will be triggered when Login Screen starts its opening animation
+          tr
+            td opened
+            td Login Screen Element<span>&lt;div class="login-screen"&gt;</span>
+            td Event will be triggered after Login Screen completes its opening animation
+          tr
+            td close
+            td Login Screen Element<span>&lt;div class="login-screen"&gt;</span>
+            td Event will be triggered when Login Screen starts its closing animation
+          tr
+            td closed
+            td Login Screen Element<span>&lt;div class="login-screen"&gt;</span>
+            td Event will be triggered after Login Screen completes its closing animation
+      h2(data-device-preview="../docs-demos/login-screen-start.html") Start App With Login Screen
+      p In many cases we need to see Login Screen opened as App's first screen. To make it visible on load, we just need to add "modal-in" class to Login Screen overlay:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="login-screen modal-in"&gt;
+          |     ... login screen content ...
+          |   &lt;/div&gt;
+          | &lt;/body&gt;
+      div(style="height:400px")
+      h2(data-device-preview="../docs-demos/login-screen-embedded.html") Embedded Login Screen
+      p It is also possible to embed Login Screen into the page or popup. Let's look on the example of Login Screen inside of page:
+      p 
+        em index page:
+      pre
+        code
+          | &lt;div data-page="home" class="page navbar-fixed"&gt;
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="left"&gt;&lt;/div&gt;
+          |       &lt;div class="center"&gt;Embedded Login Screen&lt;/div&gt;
+          |       &lt;div class="right"&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="login-screen-page.html" class="open-login-screen"&gt;Open page with Login Screen&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      p 
+        em login-screen-page.html:
+      pre
+        code
+          | &lt;div data-page="login-screen" class="page no-navbar no-toolbar no-swipeback"&gt;
+          |   &lt;div class="page-content login-screen-content"&gt;
+          |     &lt;div class="login-screen-title"&gt;My App&lt;/div&gt;
+          |     &lt;form&gt;
+          |       &lt;div class="list-block"&gt;
+          |         &lt;ul&gt;
+          |           &lt;li class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title label"&gt;Username&lt;/div&gt;
+          |               &lt;div class="item-input"&gt;
+          |                 &lt;input type="text" name="username" placeholder="Your username"/&gt;
+          |               &lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/li&gt;
+          |           &lt;li class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title label"&gt;Password&lt;/div&gt;
+          |               &lt;div class="item-input"&gt;
+          |                 &lt;input type="password" name="password" placeholder="Your password"/&gt;
+          |               &lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/li&gt;
+          |         &lt;/ul&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="list-block"&gt;
+          |         &lt;ul&gt;
+          |           &lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Sign In&lt;/a&gt;&lt;/li&gt;
+          |         &lt;/ul&gt;
+          |         &lt;div class="list-block-label"&gt;
+          |           &lt;p&gt;Click Sign In to close Login Screen&lt;/p&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/form&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;   
+      p 
+        em my-app.js       
+      pre
+        code
+          | var myApp = new Framework7();
+          | var $$ = Dom7;
+          | 
+          | var mainView = myApp.addView('.view-main');
+          | 
+          | myApp.onPageInit('login-screen', function (page) {
+          |   var pageContainer = $$(page.container);
+          |   pageContainer.find('.list-button').on('click', function () {
+          |     var username = pageContainer.find('input[name="username"]').val();
+          |     var password = pageContainer.find('input[name="password"]').val();
+          |     // Handle username and password
+          |     myApp.alert('Username: ' + username + ', Password: ' + password, function () {
+          |       mainView.goBack();
+          |     });
+          |   });
+          | });     
+      .important-note
+        p Note that on login screen page we have additional "no-navbar", "no-toolbar" and "no-swipeback" classes to hide navigation element from user

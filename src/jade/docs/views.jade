@@ -1,0 +1,336 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Views | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Views
+      p <strong>View</strong> (&lt;div class="view"&gt;) - is a separate visual part of app with its own settings, navigation and history. Each view also may have different navbar and toolbar layouts, different styles. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app. 
+      p <strong>Views</strong> (&lt;div class="views"&gt;) - is the wrapper container for all visual views that stays visible most of time (not in modals, panels). Let's say that <strong>views</strong> is a main wrapper for body of your app. <strong>Only one "Views" element is allowed</strong>
+      p Let's look at views' HTML structure:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="panel panel-left panel-cover"&gt;
+          |     &lt;div class="view panel-view"&gt; ... &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;!-- Views --&gt;
+          |   &lt;div class="views"&gt;
+          |     &lt;!-- Your main view --&gt;
+          |     &lt;div class="view view-main"&gt;
+          |       &lt;!-- Navbar--&gt;
+          |       &lt;!-- Pages --&gt;
+          |       &lt;!-- Toolbar--&gt;
+          |     &lt;/div&gt;
+          |     &lt;!-- Another view --&gt;
+          |     &lt;div class="view another-view"&gt;
+          |       &lt;!-- Navbar--&gt;
+          |       &lt;!-- Pages --&gt;
+          |       &lt;!-- Toolbar--&gt;
+          |     &lt;/div&gt;          
+          |   &lt;/div&gt;
+          |   &lt;div class="popup"&gt;
+          |     &lt;div class="view popup-view"&gt; ... &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      p As you see <strong>View</strong> may be almost in any part of your app, except one important rule - all visible views should within <strong>Views</strong> (&lt;div class="views"&gt;). This required for some animations when we need to move whole app (like when you open panel).
+      h2 Main View
+      p Your main view should have additional <strong>view-main</strong> class. Why we need main view? By default all links (which is not in any initialized view) will load pages in main view. Also if you use pushState hash navigation then it works only for main view's navigation.
+      h2 Initialize View
+      p We already have required views in HTML and our app is already <a href="init-app.html">initialized</a>, now we need to initialize our views in JavaScript. 
+      p <strong>Note that not all views should be initialized, intialize only those where you need navigation.</strong> Other views (like in popup) may stay not initialized, we use them just for correct layout of navbars, pages and toolbars.
+      p As you remember from previous article we have app's initialized instance in <b>myApp</b> variable:
+      pre
+        code
+          | var myApp = new Framework7({
+          |   // ...
+          | });   
+      p This instance has a lot of methods to work with different parts of our app. And there is one method to initialize view:
+      .method-wrap
+        p
+          span.method myApp.addView(<span>selector, parameters</span>)</span>
+          |  - initialize View.
+        ul.method-parameters
+          li
+            span.parameter container
+            |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. If string - CSS selector of View element
+          li
+            span.parameter parameters
+            |  - <span class="parameter-type">object</span>. Object with View parameters
+          li.method-returns This method returns object with just created View instance.
+      h3 View initialization parameters
+      table.params-table
+        thead
+          tr
+            th Parameter
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td dynamicNavbar
+            td boolean
+            td false
+            td Set to true to enable Dynamic Navbar in this View <span class="ios-only">iOS theme only</span>
+          tr
+            td url
+            td string
+            td undefined
+            td Default (inital) View's url. If not specified, then it is equal to document url
+          tr
+            td domCache
+            td boolean
+            td false
+            td If enabled then all previous pages in navigation chain will not be removed from DOM when you navigate deeper and deeper. It could be useful, for example, if you have some Form from 5 steps (5 pages) and when you are on last 5th page you need access to form that was on 1st page.
+          tr
+            td linksView
+            td string / View instance
+            td undefined
+            td CSS Selector of another view or initialized View instance. By defaul all links in initialized (only) view will load pages in this view. You can change this logic on the fly by changing this paremeter. This tell links to load pages in other view.
+          tr
+            th(colspan="4") Navigation
+          tr
+            td uniqueHistory
+            td boolean
+            td 
+            td Set to true and App will keep View's navigation history unique, it will also remove duplicated pages. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+          tr
+            td uniqueHistoryIgnoreGetParameters
+            td boolean
+            td false
+            td Use this parameter in addition to <code>uniqueHistory</code>. Set to true and App will ignore URL GET parameters when cheking its uniqueness. So the URLs like "page.html" and "page.html?id=3" will be treated as the same. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+          tr
+            td allowDuplicateUrls
+            td boolean
+            td 
+            td You may enable this parameter to allow loading of new pages that have same url as currently "active" page in View. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+          tr 
+            td animatePages
+            td boolean
+            td 
+            td Set to false if you want to disable animated transitions between pages. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+          tr
+            td preloadPreviousPage
+            td boolean
+            td 
+            td Enable/disable preloading of previous page when you go deep in navigation. Should be enabled for correct work of "swipe back page" feature. By default, equal to the same App's parameter. Allows to override global <a href="init-app.html">App parameter</a> for current View
+          tr
+            td reloadPages
+            td boolean
+            td false
+            td When enabled, View will always reload currently active page without loading new one
+          tr
+            td preroute
+            td function(view, options)
+            td -
+            td 
+              p This callback allows to prevent default router load/back actions and to load another page or do another required actions. 
+              p Allows to override the same <a href="init-app.html">App callback</a> but for the current View
+              p <a href="init-app.html#example-with-preprocess-content">Example</a>
+          tr
+            td preprocess
+            td function(content, url, next)
+            td -
+            td 
+              p This callback function allows you to modify loaded by router (mostly Ajax) content right before it will be injected to DOM. Callback receives "content" and "url" of the loaded page and the "next" callback function.
+              p Allows to override the same <a href="init-app.html">App callback</a> but for the current View
+              p <a href="init-app.html#example-with-preroute">Example</a>
+          tr
+            th(colspan="4") Swipe back (iOS theme only)
+          tr
+            td swipeBackPage
+            td boolean
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
+          tr
+            td swipeBackPageThreshold
+            td number
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
+          tr
+            td swipeBackPageActiveArea
+            td number
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
+          tr
+            td swipeBackPageAnimateShadow
+            td boolean
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
+          tr
+            td swipeBackPageAnimateOpacity
+            td boolean
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="init-app.html">App parameter</a> but for the current View
+          tr
+            th(colspan="4") Callbacks (iOS theme only)
+          tr
+            td onSwipeBackMove(callbackData)
+            td function
+            td 
+            td Callback function that will be executed during swipe back move. <code>callbackData</code> contains object with the following properties:
+              ul
+                li <code>percentage</code> - number, swipe back percentage
+                li <code>activePage</code> - HTMLElement with currently active page
+                li <code>previousPage</code> - HTMLElement with previous (left) page
+                li <code>activeNavbar</code> - HTMLElement with currently active navbar (only for Dynamic Navbar)
+                li <code>previousNavbar</code> - HTMLElement with previous (left) navbar (only for Dynamic Navbar)
+          tr
+            td onSwipeBackBeforeChange(callbackData)
+            td function
+            td 
+            td Callback function that will be executed right before swipe back animation to previous page when you release it. 
+          tr
+            td onSwipeBackAfterChange(callbackData)
+            td function
+            td 
+            td Callback function that will be executed after swipe back animation to previous page when you release it. 
+          tr
+            td onSwipeBackBeforeReset(callbackData)
+            td function
+            td 
+            td Callback function that will be executed right before swipe back animation to current page when you release it. 
+          tr
+            td onSwipeBackAfterReset(callbackData)
+            td function
+            td 
+            td Callback function that will be executed after swipe back animation to current page when you release it. 
+      p Now when we know all required parameters we can initialize our views according to HTML example above:
+      pre
+        code
+          | var myApp = new Framework7({
+          |   // ...
+          | });   
+          | 
+          | /* Initialize views */
+          | var mainView = myApp.addView('.view-main', {
+          |   dynamicNavbar: true
+          | })
+          | var anotherView = myApp.addView('.another-view');
+      p That is all, it was pretty simple. In this example we don't init views that inside of panel and popup, because we don't use them for navigation, only for visual styling and correct layout. But if you need navigaion in those views you should also initialize them.
+      h2 View Methods & Properties
+      p As you may see in example above we initialize our views and store their instances in <code>mainView</code> and <code>anotherView</code> variables. View instance is an Object with useful methods and parameters that allows to manipulate views. Let's lool at list of these methods and parameters on example of <code>mainView</code>:
+      table.methods-table
+        tbody
+          tr
+            th(colspan="2") Properties
+          tr
+            td mainView.params
+            td Returns object with intialized parameters. You can access and rewrite some parameters like <code>mainView.params.linksView = '.another-view'</code>
+          tr
+            td mainView.history
+            td Returns array with View's history. Each array element contains URL of loaded page</code>
+          tr
+            td mainView.contentCache
+            td Returns object with cached pages. It is available only if you use dynamically generated content
+          tr
+            td mainView.url
+            td Returns string with url of currently active (loaded) page
+          tr
+            td mainView.pagesContainer
+            td Returns HTMLElement link to pages element
+          tr
+            td mainView.activePage
+            td Contains object with <a href="pages.html#page-data">Page Data</a> of currently active page
+          tr
+            td mainView.main
+            td Returns true if this view is main view
+          tr
+            td mainView.router
+            td Object with router methods
+          tr
+            th(colspan="2") Methods
+          tr
+            td.method mainView.router.load(options)
+            td Read more about it in <a href="router-api.html">Router API</a>
+
+          tr
+            td.method mainView.router.back(options)
+            td Read more about it in <a href="router-api.html">Router API</a>
+          tr
+            td mainView.hideNavbar()
+            td Hide navbar in this View
+          tr
+            td mainView.showNavbar()
+            td Show navbar in this View
+          tr
+            td mainView.hideToolbar()
+            td Hide toolbar in this View
+          tr
+            td mainView.showToolbar()
+            td Show toolbar in this View
+          tr
+            td mainView.destroy()
+            td Destroy initialized View, detach swipe events, and disable navigation
+      
+      h2 View Events
+      p.ios-only These events are available only in iOS theme
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Description
+        tbody
+          tr
+            td swipeBackMove
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered during swipe back move
+          tr
+            td swipeBackBeforeChange
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered right before swipe back animation to previous page when you release it
+          tr
+            td swipeBackAfterChange
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered after swipe back animation to previous page when you release it
+          tr
+            td swipeBackBeforeReset
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered right before swipe back animation to current page when you release it
+          tr
+            td swipeBackAfterReset
+            td View Element<span>&lt;div class="view"&gt;</span>
+            td Event will be triggered after swipe back animation to current page when you release it
+      h2 Default View URL 
+      p If you think that for some reason Framework7 detects wrong default View URL (which is used for navigation history), or if you want to have different default View URL, you can specify it using <code>data-url</code> attribute on View element or using <code>url</code> parameter when you initialze View:
+      pre
+        code
+          &lt;div class="view" data-url="index2.html"&gt;
+      h2 Get Current View
+      p There could be situation when we need to get currently active View, because instead of main app view we may also have view in opened popup, popover, opened panel, tabs, etc. This method allows to get the View instance of currently active/visible/"most-top" view. 
+      p For example, if you have initilized View in panel, and panel is currently opened, then this method will return panel's view. Or, if you use app with tab bar layout, where each tab is view, then this method will return currently active/visible tab-view
+      .method-wrap
+          p
+            span.method myApp.getCurrentView(<span>index</span>) 
+            span - get currently active/visible View instance
+          ul.method-parameters
+            li
+              span.parameter index
+              |  - <span class="parameter-type">number</span> - If there are few currently active views (as in Split View layout), then you need to specify index number of View. Optional
+            
+            li.method-returns Method returns initialized View instance or array with View instances if there are few currently active views
+      h2 Access to View's instance from DOM
+      p Sometimes it could be useful to know or to get View's instance from HTML element. It is easy, right after we iniitalize view, Framework7 adds special property-link to our <code>&lt;div class="view"&gt;</code> element so we can access it any time in our JavaScript:
+      pre
+        code
+          | var viewsElement = $$('.view-main')[0];
+          | var viewInstance = viewsElement.f7View;
+      
+      p Also, all view instances are stored in special App property - <code>views</code> (array of View instances). If we need to find main view we can do like that:
+      pre
+        code
+          | for (var i = 0; i < myApp.views.length; i ++) {
+          |   var view = myApp.views[i];
+          |   if (view.main) myApp.alert('I found main View!')
+          | }
+      h2 What's next
+      p Let's look now on <a href="pages.html">Pages</a>
+

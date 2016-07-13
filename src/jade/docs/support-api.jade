@@ -1,0 +1,27 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Support API | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Support API
+      p Framework7 also comes with features detection library. After you <a href="init-app.html">initialize your app</a> you can access <code>myApp.support</code> object which contains information about supported features:
+      table.methods-table
+        tr
+          td myApp.support.touch
+          td <em>boolean</em>. Contains <strong>true</strong> if browser supports Touch events (touchstart, touchmove, touchend)
+        
+      h2 Access to Support object without/before initialization
+      p It is also possible to access this Support object with all its parameters using prototype:
+      pre
+        code
+          | var support = Framework7.prototype.support;
+          | if (support.touch) {
+          |   console.log('Browser has touch event')
+          | }
+      

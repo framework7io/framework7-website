@@ -1,10 +1,10 @@
 {
   "framework": "Framework7",
-  "url": "http://idangero.us/framework7/",
-  "framework_current_version" : "1.3.5",
-  "comparison_data_last_update" : "8.11.2015",
+  "url": "http://framework7.io",
+  "framework_current_version" : "1.4.2",
+  "comparison_data_last_update" : "27.02.2016",
 
-  "tutorial_url": "http://idangero.us/framework7/tutorials/",
+  "tutorial_url": "http://framework7.io/tutorials/",
   "license": "mit-license",
   "documentation_url": "http://idangero.us/framework7/docs/",
 

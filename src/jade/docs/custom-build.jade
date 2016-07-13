@@ -1,0 +1,109 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Framework7 Custom Build | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Framework7 Custom Build
+      p Since version 1.0.0 Framework7 comes with Gulp builder that allows to build custom library version where you may include only required components/modules. We need the following:
+      ol
+        li 
+          p Download and unzip <a href="https://github.com/nolimits4web/Framework7" target="_blank">Framework7 GitHub repository</a> to local folder
+        li
+          p Install <a href="http://nodejs.org/" target="_blank">Node.js</a> (if not installed)
+        li
+          p Install Gulp (if not installed) by executing the following command in terminal:
+          pre
+            code $ npm install --global gulp
+        li
+          p Now, we need to install required dependencies. Go to the folder with downloaded and unzipped Framework7 repository and execute in terminal:
+          pre
+            code $ npm install
+        li 
+          p Now, we are ready to build custom version of Framework7. We need to execute <code>gulp custom</code> command and pass components/modules that we want to include as argument. For example, if we want to include just Accordion and Tabs:
+            pre
+              code $ gulp custom -accordion,tabs
+            .important-note Note, that there shouldn't be spaces between comma and components name
+        li
+          p That is all. Now you should see new <code>custom/</code> folder that will contain custom JS and CSS files and their minified versions
+      h2 Available Components/Modules
+      p Here is the list of all additional to core components that you can use for custom build:
+      table
+        tr
+          td.nowrap accordion
+          td <a href="accordion.html">Accordion</a> component
+        tr
+          td.nowrap searchbar
+          td <a href="searchbar.html">Search Bar</a> component
+        tr
+          td.nowrap messages
+          td Includes <a href="messages.html">Messages</a> and <a href="messagebar.html">Message Bar</a> components
+        tr
+          td.nowrap modals
+          td This includes all overlays components: <a href="modal.html">Modal</a>, <a href="popup.html">Popup</a>, <a href="popover.html">Popover</a>, <a href="action-sheet.html">Action Sheet</a> and <a href="login-screen.html">Login Screen</a>
+        tr
+          td.nowrap swipeout
+          td <a href="swipeout.html">Swipeout</a> component
+        tr
+          td.nowrap sortable
+          td <a href="sortable-list.html">Sortable</a> component
+        tr
+          td.nowrap cards
+          td <a href="cards.html">Cards</a> component
+        tr
+          td.nowrap smart-select
+          td <a href="smart-select.html">Smart Select</a> component
+        tr
+          td.nowrap virtual-list
+          td <a href="virtual-list.html">Virtual List</a> component
+        tr
+          td.nowrap pull-to-refresh
+          td <a href="pull-to-refresh.html">Pull To Refresh</a> component
+        tr
+          td.nowrap infinite-scroll
+          td <a href="infinite-scroll.html">Pull To Refresh</a> component
+        tr
+          td.nowrap scroll-toolbars
+          td <a href="hide-bars-on-scroll.html">Hide Bars On Scroll</a> component
+        tr
+          td.nowrap tabs
+          td <a href="tabs.html">Tabs</a> component
+        tr
+          td.nowrap fast-clicks
+          td This library required to remove 300ms click delay in mobile browser. You may not include it if you want to use third-party Fast Clicks library
+        tr
+          td.nowrap forms
+          td Forms logic. Includes <a href="form-storage.html">Form Storate</a>, <a href="form-data.html">Form Data</a> and <a href="form-ajax-submit.html">Ajax Form Submit</a>
+        tr
+          td.nowrap push-state
+          td Push State logic
+        tr
+          td.nowrap progressbar
+          td <a href="progressbar.html">Progress Bar</a> component
+        tr
+          td.nowrap autocomplete
+          td <a href="autocomplete.html">Autocomplete</a> component
+        tr
+          td.nowrap swiper
+          td <a href="swiper.html">Swiper Slider</a> component
+        tr
+          td.nowrap photo-browser
+          td <a href="photo-browser.html">Photo Browser</a> component. Slider is also will be installed, because it is required for Photo Browser.
+        tr
+          td.nowrap notifications
+          td <a href="notifications.html">Notifications</a> component
+        tr
+          td.nowrap picker
+          td <a href="picker.html">Picker</a> component
+        tr
+          td.nowrap calendar
+          td <a href="calendar.html">Calendar / Datepicker</a> component
+      h2 Only Core
+      p If you don't want to include any of this components, then just execute "gulp custom" without any arguments:
+      pre
+        code $ gulp custom

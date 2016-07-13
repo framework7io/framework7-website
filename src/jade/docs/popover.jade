@@ -1,0 +1,268 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Popover | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Popover
+        p Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
+        .important-note
+          p Note that is not recommended to use Popover on small screens (iPhone). On small screens you should use <a href="action-sheet.html">Action Sheet</a> instead or use <a href="action-sheet.html#convert-action-sheet-to-popover">Action Sheet To Popover coversion</a>.
+        h2 Popover Layout
+        p First of all let's look on Popover layout, it is pretty simple, just add somewhere in the end of the <code>&lt;body&gt;</code>:
+        pre
+          code
+            | &lt;body&gt;
+            |     ...
+            |     &lt;div class="popover"&gt;
+            |         &lt;!-- Popover's angle arrow --&gt;
+            |         &lt;div class="popover-angle"&gt;&lt;/div&gt;
+            | 
+            |         &lt;!-- Popover content --&gt;
+            |         &lt;div class="popover-inner"&gt;
+            |             &lt;!-- Any HTML content here --&gt;
+            |         &lt;/div&gt;
+            |     &lt;/div&gt;
+            | &lt;/body&gt;  
+        p Popover is highly customizable element and you can put anything inside, event another view with navigation.    
+      h2(data-device-preview="../docs-demos/popover.html") Open and close Popover
+      h3 From HTML
+      p It is possible to open and close required Popover using special classes and data attributes on links:
+      .important-note
+        ul
+          li
+            p To open popover we need to add <strong>"open-popover"</strong> class to any HTML element (prefered to link)
+          li
+            p To close popover we may add <strong>"close-popover"</strong> class to any HTML element (prefered to link)
+          li
+            p If you have more than one popover in app, you need to specify appropriate popover via additional <strong>data-popover=".my-popover"</strong> attribute on this HTML element
+      h4 Popover position
+      .important-note
+        p When we open Popover with such method (from HTML), it will be automatically positioned around element that we clicked to call this Popover.
+      pre
+        code
+          | &lt;body&gt;
+          |   ...  
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;!-- In data-popover attribute we specify CSS selector of popover we need to open --&gt;
+          |       &lt;div class="left"&gt;&lt;a href="#" data-popover=".popover-about" class="link open-popover"&gt;About&lt;/a&gt;&lt;/div&gt;
+          |       &lt;div class="center"&gt;Popover&lt;/div&gt;
+          |       &lt;div class="right"&gt;&lt;a href="#" data-popover=".popover-links" class="link open-popover"&gt;Links&lt;/a&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;!-- In data-popover attribute we specify CSS selector of popover we need to open --&gt;
+          |       &lt;p&gt;&lt;a href="#" data-popover=".popover-about" class="open-popover"&gt;Open About Popover&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" data-popover=".popover-links" class="open-popover"&gt;Open Links Popover&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | 
+          |   &lt;!-- By default popover has 320px width, let's make it a bit narrow --&gt;
+          |   &lt;style&gt;
+          |     .popover {
+          |       width: 200px;
+          |     }
+          |   &lt;/style&gt;
+          | 
+          |   &lt;!-- About popover --&gt;
+          |   &lt;div class="popover popover-about"&gt;
+          |     &lt;div class="popover-angle"&gt;&lt;/div&gt;
+          |     &lt;div class="popover-inner"&gt;
+          |       &lt;div class="content-block"&gt;
+          |         &lt;p&gt;About&lt;/p&gt;
+          |         &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.&lt;/p&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;!-- Links popover --&gt;
+          |   &lt;div class="popover popover-links"&gt;
+          |     &lt;div class="popover-angle"&gt;&lt;/div&gt;
+          |     &lt;div class="popover-inner"&gt;
+          |       &lt;div class="list-block"&gt;
+          |         &lt;ul&gt;
+          |           &lt;li&gt;&lt;a href="#" class="list-button item-link"&gt;Link 1&lt;/a&gt;&lt;/li&gt;
+          |           &lt;li&gt;&lt;a href="#" class="list-button item-link"&gt;Link 2&lt;/a&gt;&lt;/li&gt;
+          |           &lt;li&gt;&lt;a href="#" class="list-button item-link"&gt;Link 3&lt;/a&gt;&lt;/li&gt;
+          |           &lt;li&gt;&lt;a href="#" class="list-button item-link"&gt;Link 4&lt;/a&gt;&lt;/li&gt;
+          |         &lt;/ul&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/body&gt;
+
+      h3(data-device-preview="../docs-demos/popover-js.html") Using JavaScript
+      p We can also open and close Popover with JavaScript, for this we need to look at related App methods:
+      p
+        span.method myApp.popover(<span>popover</span>, <span>target</span>)</span> - open Popover around <strong>target</strong> element
+      ul.method-parameters
+        li
+          span.parameter popover
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Popover to open. Requred
+        li
+          span.parameter target
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of target element to set popover position around this element. Requred
+        li.method-returns This method returns Popover's HTMLElement
+      p
+        span.method myApp.closeModal(<span>popover</span>)</span> - close Popover
+      ul.method-parameters
+        li
+          span.parameter popover
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Popover will be closed
+      h4 Popover position
+      .important-note
+        p When we open popover using JavaScript we need to pass <strong>target</strong> element to set popover around this target element.
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="left"&gt;&lt;a href="#" class="link open-about"&gt;About&lt;/a&gt;&lt;/div&gt;
+          |       &lt;div class="center"&gt;Popover&lt;/div&gt;
+          |       &lt;div class="right"&gt;&lt;a href="#" class="link open-about"&gt;Links&lt;/a&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="open-about"&gt;Open About Popover&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="open-links"&gt;Open Links Popover&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;Praesent urna mi, sodales ac dolor vitae, dictum mattis sem. Mauris a dui faucibus, condimentum arcu quis, porta felis. Sed at metus arcu. Maecenas sodales tellus risus, id &lt;a href="#" class="open-about"&gt;About&lt;/a&gt; nibh iaculis quis. Suspendisse dignissim ante lobortis, molestie nibh id, pharetra risus. Proin blandit neque nec nibh scelerisque, eu vulputate ipsum malesuada. Phasellus sapien diam, fermentum eget ornare in, &lt;a href="#" class="open-links"&gt;Links&lt;/a&gt; rutrum vel justo. Integer accumsan posuere quam.&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          |   &lt;div class="popover popover-about"&gt;
+          |     ...
+          |   &lt;/div&gt;
+          |   &lt;div class="popover popover-links"&gt;
+          |     ...
+          |   &lt;/div&gt;
+          | &lt;/body&gt;
+      pre
+        code 
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | // Open About popover
+          | $$('.open-about').on('click', function () {
+          |     var clickedLink = this;
+          |     myApp.popover('.popover-about', clickedLink);
+          | });
+          | 
+          | // Open Links popover
+          | $$('.open-links').on('click', function () {
+          |     var clickedLink = this;
+          |     myApp.popover('.popover-links', clickedLink);
+          | });          
+
+      h2(data-device-preview="../docs-demos/popover-dynamic.html") Dynamic Popover
+      p Framework7 allows you to create Popover dynamically by passing its HTML to related App methods:
+      p
+        span.method myApp.popover(<span>popoverHTML</span>, <span>target</span>, <span>removeOnClose</span>)</span> - open Popover with <strong>popoverHTML</strong> content around <strong>target</strong> element
+      ul.method-parameters
+        li
+          span.parameter popoverHTML
+          |  - <span class="parameter-type">string</span>. HTML string of popover 
+        li
+          span.parameter target
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of target element to set popover position around this element. Requred
+        li
+          span.parameter removeOnClose
+          |  - <span class="parameter-type">boolean</span>. Optional, by default - true. If true then Popover will be removed from DOM when closed
+        li.method-returns This method returns dynamically created Popover's HTMLElement
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="left"&gt;&lt;a href="#" class="link create-about"&gt;About&lt;/a&gt;&lt;/div&gt;
+          |       &lt;div class="center"&gt;Popover&lt;/div&gt;
+          |       &lt;div class="right"&gt;&lt;a href="#" class="link create-links"&gt;Links&lt;/a&gt;&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="create-about"&gt;Create About Popover&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="create-links"&gt;Create Links Popover&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;Praesent urna mi, sodales ac dolor vitae, dictum mattis sem. Mauris a dui faucibus, condimentum arcu quis, porta felis. Sed at metus arcu. Maecenas sodales tellus risus, id &lt;a href="#" class="create-about"&gt;About&lt;/a&gt; nibh iaculis quis. Suspendisse dignissim ante lobortis, molestie nibh id, pharetra risus. Proin blandit neque nec nibh scelerisque, eu vulputate ipsum malesuada. Phasellus sapien diam, fermentum eget ornare in, &lt;a href="#" class="create-links"&gt;Links&lt;/a&gt; rutrum vel justo. Integer accumsan posuere quam.&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.create-about').on('click', function () {
+          |   var clickedLink = this;
+          |   var popoverHTML = '&lt;div class="popover"&gt;'+
+          |                       '&lt;div class="popover-inner"&gt;'+
+          |                         '&lt;div class="content-block"&gt;'+
+          |                           '&lt;p&gt;About Popover created dynamically.&lt;/p&gt;'+
+          |                           '&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.&lt;/p&gt;'+
+          |                         '&lt;/div&gt;'+
+          |                       '&lt;/div&gt;'+
+          |                     '&lt;/div&gt;'
+          |   myApp.popover(popoverHTML, clickedLink);
+          | });
+          | 
+          | $$('.create-links').on('click', function () {
+          |   var clickedLink = this;
+          |   var popoverHTML = '&lt;div class="popover"&gt;'+
+          |                       '&lt;div class="popover-inner"&gt;'+
+          |                         '&lt;div class="list-block"&gt;'+
+          |                           '&lt;ul&gt;'+
+          |                           '&lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Link 1&lt;/li&gt;'+
+          |                           '&lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Link 2&lt;/li&gt;'+
+          |                           '&lt;li&gt;&lt;a href="#" class="item-link list-button"&gt;Link 3&lt;/li&gt;'+
+          |                           '&lt;/ul&gt;'+
+          |                         '&lt;/div&gt;'+
+          |                       '&lt;/div&gt;'+
+          |                     '&lt;/div&gt;'
+          |   myApp.popover(popoverHTML, clickedLink);
+          | });
+      .full-width.stop-scroll-device 
+        h2 Popover Events
+        p Popover has the same events as any <a href="modal.html">Modal</a>
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td open
+              td Popover Element<span>&lt;div class="popover"&gt;</span>
+              td Event will be triggered when Popover starts its opening animation
+            tr
+              td opened
+              td Popover Element<span>&lt;div class="popover"&gt;</span>
+              td Event will be triggered after Popover completes its opening animation
+            tr
+              td close
+              td Popover Element<span>&lt;div class="popover"&gt;</span>
+              td Event will be triggered when Popover starts its closing animation
+            tr
+              td closed
+              td Popover Element<span>&lt;div class="popover"&gt;</span>
+              td Event will be triggered after Popover completes its closing animation      
+
+
+          

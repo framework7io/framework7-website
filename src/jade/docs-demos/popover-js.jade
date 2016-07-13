@@ -1,0 +1,61 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+                a(href="#").link.open-about About
+              .center Popover
+              .right 
+                a(href="#").link.open-links Links
+          .page-content
+            .content-block
+              p
+                a(href="#").open-about Open About Popover
+              p
+                a(href="#").open-links Open Links Popover
+              p Praesent urna mi, sodales ac dolor vitae, dictum mattis sem. Mauris a dui faucibus, condimentum arcu quis, porta felis. Sed at metus arcu. Maecenas sodales tellus risus, id <a href="#" class="open-about">About</a> nibh iaculis quis. Suspendisse dignissim ante lobortis, molestie nibh id, pharetra risus. Proin blandit neque nec nibh scelerisque, eu vulputate ipsum malesuada. Phasellus sapien diam, fermentum eget ornare in, <a href="#" class="open-links">Links</a> rutrum vel justo. Integer accumsan posuere quam.
+  style.
+    .popover {
+      width:200px;
+    }
+  .popover.popover-about
+    .popover-angle
+    .popover-inner
+      .content-block 
+        p About
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+  .popover.popover-links
+    .popover-angle
+    .popover-inner
+      .list-block
+        ul
+          li
+            a(href="#").list-button.item-link Link 1
+          li
+            a(href="#").list-button.item-link Link 2
+          li
+            a(href="#").list-button.item-link Link 3
+          li
+            a(href="#").list-button.item-link Link 4
+          
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    $$('.open-about').on('click', function () {
+        var clickedLink = this;
+        myApp.popover('.popover-about', clickedLink);
+    });
+
+    $$('.open-links').on('click', function () {
+        var clickedLink = this;
+        myApp.popover('.popover-links', clickedLink);
+    });
+    

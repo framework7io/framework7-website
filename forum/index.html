@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Framework7 Forum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/forum.css">
+    <link rel="shortcut icon" href="http://framework7.io/favicon.png">
+
+</head>
+<body>
+    <div class="forum-header">
+        <div class="title">
+            <h1>Framework7 Forum</h1>
+            <ul>
+                <li>
+                    <a href="http://framework7.io/" class="">Home Page</a>
+                </li>
+                <li>
+                    <a href="http://framework7.io/get-started/" class="">Get Started</a>
+                </li>
+                <li>
+                    <a href="http://framework7.io/docs/" class="">Docs</a>
+                </li>
+                <li>
+                    <a href="http://framework7.io/tutorials/" class="">Tutorials</a>
+                </li>
+                <li>
+                    <a href="http://framework7.io/examples/" class="">Layouts</a>
+                </li>
+                <li>
+                    <a href="http://framework7.io/plugins/" class="">Plugins</a>
+                </li>
+                <li>
+                    <a href="http://framework7.io/apps/" class="">Demo Apps</a>
+                </li>
+                <li>
+                    <a href="http://framework7.io/showcase/" class="">Showcase</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <a class="moot" href="https://moot.it/i/framework7">Framework7 Forum</a>
+    <script src="//cdn.moot.it/1/moot.min.js"></script>
+    <script>
+        document.querySelector('.forum-header .title h1').addEventListener('click', function(e){
+            e.preventDefault();
+            var ul = document.querySelector('.forum-header ul');
+            if (ul.style.display === 'block') ul.style.display = 'none';
+            else ul.style.display = 'block';
+        }, false);
+    </script>
+</body>
+</html>

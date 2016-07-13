@@ -1,0 +1,36 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center My App
+              .right 
+          .page-content
+            p This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.
+            .content-block
+              p Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. 
+            .content-block 
+              .content-block-inner Here comes another text block additionaly wrapped with "content-block-inner". Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. 
+            .content-block-title Content block title
+            .content-block 
+              p Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. 
+            .content-block-title Another ultra long content block title
+            .content-block
+              .content-block-inner 
+                p Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. 
+            .content-block-title Inset
+            .content-block.inset
+              .content-block-inner 
+                p Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. 
+            .content-block-title Tablet Inset
+            .content-block.tablet-inset
+              .content-block-inner 
+                p Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. 
+
+block scripts
+  script.
+    var myApp = new Framework7();

@@ -1,0 +1,108 @@
+block vars
+doctype
+html
+  head
+    meta(charset="utf-8")
+    title=title
+    meta(property="og:image", content="http://framework7.io/i/f7-banner.jpg")
+    link(rel="stylesheet", href="#{cdn}/css/normalize.css")
+    link(rel="stylesheet", href="#{cdn}/css/highlight.css")
+    link(rel="stylesheet", href="#{cdn}/css/main.css")
+    link(rel="shortcut icon" href="/favicon.png")
+    script(src="#{cdn}/js/vendor/modernizr-2.7.1.min.js")
+  body
+    header.inner-header
+      .center
+        a(href="../").logo
+        .langs
+          span Language: 
+          a(href="http://framework7.io") EN
+          a(href="http://f7cn.com/") CN
+        .title-links
+          .title Framework7
+          .links-row
+            .links-label Project:
+            .links
+              a(href="https://github.com/nolimits4web/Framework7", target="_blank") Download
+
+              - if (activeLink == 'contribute')
+                a(href="../contribute/").active Contribute
+              - else
+                a(href="../contribute/") Contribute
+
+              - if (activeLink == 'donate')
+                a(href="../donate/").active Donate
+              - else
+                a(href="../donate/") Donate
+
+              a(href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md", target="_blank") Changelog
+          .links-row
+            .links-label Learn:
+            .links
+              - if (activeLink == 'get-started')
+                a(href="../get-started/").active Get Started
+              - else
+                a(href="../get-started/") Get Started
+
+              - if (activeLink == 'docs')
+                a(href="../docs/").active Docs
+              - else
+                a(href="../docs/") Docs
+
+              - if (activeLink == 'tutorials')
+                a(href="../tutorials/").active Tutorials
+              - else
+                a(href="../tutorials/") Tutorials
+
+              a(href="http://forum.framework7.io") Forum
+          .links-row
+            .links-label Apps:
+            .links
+              - if (activeLink == 'examples')
+                a(href="../examples/").active Layouts
+              - else
+                a(href="../examples/") Layouts
+
+              - if (activeLink == 'plugins')
+                a(href="../plugins/").active Plugins
+              - else
+                a(href="../plugins/") Plugins
+
+              - if (activeLink == 'apps')
+                a(href="../apps/").active Demo Apps
+              - else
+                a(href="../apps/") Demo Apps
+
+              - if (activeLink == 'showcase')
+                a(href="../showcase/").active Showcase
+              - else
+                a(href="../showcase/") Showcase
+
+    .share-line
+      .center
+        include _share-buttons
+        include _github-buttons
+        .clearfix
+    .content.center
+      block content
+    .share-line
+      .center
+        include _share-buttons
+        include _github-buttons
+        .clearfix
+    footer
+      .center
+        include _footer
+    block footer
+    script(src="#{cdn}/js/vendor/jquery-1.11.0.min.js")
+    script(src="#{cdn}/js/plugins.js")
+    script(src="#{cdn}/js/main.js")
+    script.
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-74282934-1', 'auto');
+      ga('send', 'pageview');
+    block scripts

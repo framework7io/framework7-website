@@ -1,0 +1,40 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              // In data-picker attribute we specify CSS selector of picker we need to open
+              .left 
+              .center Picker Modal
+              .right 
+                a(href="#", data-picker=".picker-1").link.open-picker Picker
+          .page-content
+            .content-block
+              // In data-picker attribute we specify CSS selector of picker we need to open
+              p
+                a(href="#", data-picker=".picker-1").open-picker Open Picker 
+              // Link to close picker
+              p
+                a(href="#", data-picker=".picker-1").close-picker Close Picker 
+    
+  .picker-modal.picker-1
+    .toolbar
+      .toolbar-inner
+        .left
+        .right
+          a(href="#").close-picker Done
+    .picker-modal-inner
+      .content-block 
+        h4 Info 1
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+          
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+    

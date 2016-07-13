@@ -1,0 +1,113 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Form Data | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Form Data
+        p Framework7 comes with few very useful methods which make work with forms as simple as possibles:
+
+      h2(data-device-preview="../docs-demos/form-data-formtojson.html") Form to JSON
+      p Using this App's method we can easily convert all form fields values to JSON:
+      p
+        span.method myApp.formToJSON(<span>form</span>) - convert form fields valus to JSON
+      ul.method-parameters
+        li
+          span.parameter form
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to JSON. Required.
+        li.method-returns Method returns JSON data
+      pre
+        code
+          | &lt;form id="my-form" class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Name&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" name="name" placeholder="Your name"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ... other form fields
+          |   &lt;/ul&gt;
+          | &lt;/form&gt;
+          | 
+          | &lt;div class="content-block"&gt;
+          |   &lt;a href="#" class="button form-to-json"&gt;Get Form Data&lt;/a&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | var myApp = new Framework7();  
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.form-to-json').on('click', function(){
+          |   var formData = myApp.formToJSON('#my-form');
+          |   alert(JSON.stringify(formData));
+          | }); 
+      .important-note
+        ul
+          li
+            p Note that each input should have "name" attribute, otherwise its value will not be presented in JSON
+          li
+            p Checkboxes and "multiple" selects will be presented as Arrays in JSON
+      h2(data-device-preview="../docs-demos/form-data-formfromjson.html") Form from JSON
+      p Using this App's method we can easily fill up form according to JSON data:
+      p
+        span.method myApp.formFromJSON(<span>form</span>, <span>formData</span>) - fill up form according to JSON formData
+      ul.method-parameters
+        li
+          span.parameter form
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to JSON. Required.
+        li
+          span.parameter formData
+          |  - <span class="parameter-type">object</span> with from data in JSON format. Required.
+      pre
+        code
+          | &lt;form id="my-form" class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title label"&gt;Name&lt;/div&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" name="name" placeholder="Your name"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ... other form fields
+          |   &lt;/ul&gt;
+          | &lt;/form&gt;
+          | 
+          | &lt;div class="content-block"&gt;
+          |   &lt;a href="#" class="button form-from-json"&gt;Fill Up Form&lt;/a&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | var myApp = new Framework7();  
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.form-from-json').on('click', function(){
+          | 
+          |   var formData = {
+          |     'name': 'John',
+          |     'email': 'john@doe.com',
+          |     'gender': 'female',
+          |     'switch': ['yes'],
+          |     'slider': 10
+          |   }
+          |   myApp.formFromJSON('#my-form', formData);
+          | });                  

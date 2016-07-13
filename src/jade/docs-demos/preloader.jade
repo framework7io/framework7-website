@@ -1,0 +1,33 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Preloader
+              .right 
+          .page-content
+            .content-block.row
+              .col-25 Default<br>
+                span.preloader
+              .col-25.col-dark White<br>
+                span.preloader.preloader-white
+              .col-25 Big<br>
+                span.preloader(style="width:42px; height:42px")
+              .col-25.col-dark White<br>
+                span.preloader.preloader-white(style="width:42px; height:42px")
+            
+  style.
+    .col-25 {
+      padding:5px;
+      text-align:center;
+    }
+    .col-dark {
+      background:#222;
+    }
+block scripts
+  script.
+    var myApp = new Framework7();

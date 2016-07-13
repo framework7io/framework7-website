@@ -1,0 +1,513 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Progress Bar| Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Progress Bar
+        p In addition to <a href="preloader.html">Preloader</a> Framework7 also comes with fancy animated determinate and infinite/indeterminate progress bars to indicate activity.
+        p By default, Preloader available in two colors: the default is for a light background and another one for dark background. The HTML is pretty easy, just create any element (for example <strong>&lt;span&gt;</strong>) with "preloader" class:
+
+        h2 Determinate Progress Bar
+        p When progress bar is determinate it indicates how long an operation will take when the percentage complete is detectable.
+        p Let's look at layout of determinate progress bar:
+        pre
+          code
+            | &lt;div class="progressbar" data-progress="20"&gt;
+            |     &lt;span&gt;&lt;/span&gt;
+            | &lt;/div&gt;
+        p or:
+        pre
+          code
+            | &lt;span class="progressbar" data-progress="50"&gt;
+            |     &lt;span&gt;&lt;/span&gt;
+            | &lt;/span&gt;
+        p Where <b>data-progress="20"</b> - currently set progress (in percents). Note that this data attribute sets progress only on page load. If you need to change it later it should be done via API
+
+        h2 Infinite Progress Bar
+        p When progress bar is infinite/indeterminate it requests that the user wait while something finishes when it’s not necessary to indicate how long it will take.
+        p Let's look at layout of infinite progress bar:
+        pre
+          code
+            | &lt;div class="progressbar-infinite"&gt;&lt;/div&gt;
+        p or:
+        pre
+          code
+            | &lt;span class="progressbar-infinite"&gt;&lt;/span&gt;
+        p Multi-color:
+        pre
+          code
+            | &lt;div class="progressbar-infinite color-multi"&gt;&lt;/div&gt;
+
+        h2 Progress Bar JavaScript API
+        p Progress Bar comes with JavaScript API that allows you to control Progress Bar's progress, show and hide it. Let's look on appropriate App's properties and methods:
+
+        .method-wrap
+          p
+            span.method myApp.setProgressbar(<span>container, progress, speed</span>)</span>
+            |  - set progress for Determinate Progress Bar.
+          ul.method-parameters
+            li
+              span.parameter container
+              |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. Progress bar element container or element containing progress bar element. If string - CSS selector of such element. If not specified then it is equal to <code>'body'</code>
+            li
+              span.parameter progress
+              |  - <span class="parameter-type">number</span>. Progress in percents (from 0 to 100)
+            li
+              span.parameter speed
+              |  - <span class="parameter-type">number</span>. Transition duration of progress change animation (in ms)
+            li.method-returns This method returns Progress Bar container HTMLElement
+
+        .method-wrap
+          p
+            span.method myApp.hideProgressbar(<span>container</span>)</span>
+            |  - hide Progress Bar.
+          ul.method-parameters
+            li
+              span.parameter container
+              |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. Progress bar element container or element containing progress bar element. If string - CSS selector of such element. If not specified then it is equal to <code>'body'</code>
+
+        .method-wrap
+          p
+            span.method myApp.showProgressbar(<span>container</span>, <span>progress</span>, <span>color</span>)</span>
+            |  - create and show or just show (if already presented) <b>Determinate Progress Bar</b>
+          ul.method-parameters
+            li
+              span.parameter container
+              |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. Progress bar element container or element containing progress bar element. If string - CSS selector of such element. If not specified then it is equal to <code>'body'</code>
+            li
+              span.parameter progress
+              |  - <span class="parameter-type">number</span>. Progress in percents (from 0 to 100)
+            li
+              span.parameter color
+              |  - <span class="parameter-type">string</span>. Color of progress bar, for example "white", "red", etc. from available color themes. Optional
+            li.method-returns This method returns Progress Bar container HTMLElement
+        h4 Shortcuts Methods
+        .method-wrap
+          p
+            span.method myApp.showProgressbar(<span>container</span>, <span>color</span>)</span>
+            |  - create and show or just show (if already presented) <b>Infinite Progress Bar</b>
+          ul.method-parameters
+            li
+              span.parameter container
+              |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. Progress bar element container or element containing progress bar element. If string - CSS selector of such element. If not specified then it is equal to <code>'body'</code>
+            li
+              span.parameter progress
+              |  - <span class="parameter-type">number</span>. Progress in percents (from 0 to 100)
+            li
+              span.parameter color
+              |  - <span class="parameter-type">string</span>. Color of progress bar, for example "white", "red", etc. from available color themes. Optional
+
+        .method-wrap
+          p
+            span.method myApp.showProgressbar(progress, color)</span>
+            |  - create and show or just show (if already presented) <b>Determinate Progress Bar</b> as overlay element(<code>&lt;body&gt;</code>'s child)
+          ul.method-parameters
+            li
+              span.parameter progress
+              |  - <span class="parameter-type">number</span>. Progress in percents (from 0 to 100)
+            li
+              span.parameter color
+              |  - <span class="parameter-type">string</span>. Color of progress bar, for example "white", "red", etc. from available color themes. Optional
+
+        .method-wrap
+          p
+            span.method myApp.showProgressbar()</span>
+            |  - create and show or just show (if already presented) <b>Infinite Progress Bar</b> as overlay element(<code>&lt;body&gt;</code>'s child)
+          ul.method-parameters
+
+      h2(data-device-preview="../docs-demos/progressbar-ios.html") iOS Theme Examples
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="content-block-title"&gt;Determinate Progress Bar&lt;/div&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;div class="content-block-inner"&gt;
+          |       &lt;p&gt;Inline determinate progress bar:&lt;/p&gt;
+          |       &lt;div class="demo-progressbar-inline"&gt;
+          |         &lt;p&gt;&lt;span data-progress="10" class="progressbar"&gt;&lt;/span&gt;&lt;/p&gt;
+          |         &lt;p class="buttons-row"&gt;
+          |           &lt;a href="#" data-progress="10" class="button"&gt;10%&lt;/a&gt;
+          |           &lt;a href="#" data-progress="30" class="button"&gt;30%&lt;/a&gt;
+          |           &lt;a href="#" data-progress="50" class="button"&gt;50%&lt;/a&gt;
+          |           &lt;a href="#" data-progress="100" class="button"&gt;100%&lt;/a&gt;
+          |         &lt;/p&gt;
+          |       &lt;/div&gt;
+          |       &lt;p&gt;Inline determinate load & hide:&lt;/p&gt;
+          |       &lt;div class="demo-progressbar-load-hide"&gt;
+          |         &lt;p style="height:2px"&gt;&lt;/p&gt;
+          |         &lt;p&gt;&lt;a href="#" class="button"&gt;Start Loading&lt;/a&gt;&lt;/p&gt;
+          |       &lt;/div&gt;
+          |       &lt;p&gt;Overlay with determinate progress bar on top of the app:&lt;/p&gt;
+          |       &lt;p class="demo-progressbar-overlay"&gt;&lt;a href="#" class="button"&gt;Start Loading&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="content-block-title"&gt;Infinite Progress Bar&lt;/div&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;div class="content-block-inner"&gt;
+          |       &lt;p&gt;Inline infinite progress bar&lt;/p&gt;
+          |       &lt;p&gt;&lt;span class="progressbar-infinite"&gt;&lt;/span&gt;&lt;/p&gt;
+          |       &lt;p&gt;Multi-color infinite progress bar&lt;/p&gt;
+          |       &lt;p&gt;&lt;span class="progressbar-infinite color-multi"&gt;&lt;/span&gt;&lt;/p&gt;
+          |       &lt;p&gt;Overlay with infinite progress bar on top of the app&lt;/p&gt;
+          |       &lt;p class="demo-progressbar-infinite-overlay"&gt;&lt;a href="#" class="button"&gt;Start Loading&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;Overlay with infinite multi-color progress bar on top of the app&lt;/p&gt;
+          |       &lt;p class="demo-progressbar-infinite-multi-overlay"&gt;&lt;a href="#" class="button"&gt;Start Loading&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="content-block-title"&gt;Colored&lt;/div&gt;
+          |   &lt;div class="list-block"&gt;
+          |     &lt;ul&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="10" class="progressbar color-blue"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="20" class="progressbar color-orange"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="30" class="progressbar color-red"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="40" class="progressbar color-pink"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="50" class="progressbar color-green"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="60" class="progressbar color-lightblue"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="70" class="progressbar color-yellow"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="80" class="progressbar color-gray"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="90" class="progressbar color-black"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li style="background-color: #999" class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="95" class="progressbar color-white"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |     &lt;/ul&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | var myApp = new Framework7();
+          | var $$ = Dom7;
+          | 
+          | $$('.demo-progressbar-inline .button').on('click', function () {
+          |     var progress = $$(this).attr('data-progress');
+          |     var progressbar = $$('.demo-progressbar-inline .progressbar');
+          |     myApp.setProgressbar(progressbar, progress);
+          | });
+          | $$('.demo-progressbar-load-hide .button').on('click', function () {
+          |     var container = $$('.demo-progressbar-load-hide p:first-child');
+          |     if (container.children('.progressbar').length) return; //don't run all this if there is a current progressbar loading
+          | 
+          |     myApp.showProgressbar(container, 0);
+          | 
+          |     // Simluate Loading Something
+          |     var progress = 0;
+          |     function simulateLoading() {
+          |         setTimeout(function () {
+          |             var progressBefore = progress;
+          |             progress += Math.random() * 20;
+          |             myApp.setProgressbar(container, progress);
+          |             if (progressBefore &lt; 100) {
+          |                 simulateLoading(); //keep "loading"
+          |             }
+          |             else myApp.hideProgressbar(container); //hide
+          |         }, Math.random() * 200 + 200);
+          |     }
+          |     simulateLoading();
+          | });
+          | $$('.demo-progressbar-overlay .button').on('click', function () {
+          |     // Add Directly To Body
+          |     var container = $$('body');
+          |     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+          | 
+          |     myApp.showProgressbar(container, 0);
+          | 
+          |     // Simluate Loading Something
+          |     var progress = 0;
+          |     function simulateLoading() {
+          |         setTimeout(function () {
+          |             var progressBefore = progress;
+          |             progress += Math.random() * 20;
+          |             myApp.setProgressbar(container, progress);
+          |             if (progressBefore &lt; 100) {
+          |                 simulateLoading(); //keep "loading"
+          |             }
+          |             else myApp.hideProgressbar(container); //hide
+          |         }, Math.random() * 200 + 200);
+          |     }
+          |     simulateLoading();
+          | });
+          | $$('.demo-progressbar-infinite-overlay .button').on('click', function () {
+          |     // Add Directly To Body
+          |     var container = $$('body');
+          |     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+          |     myApp.showProgressbar(container);
+          |     setTimeout(function () {
+          |         myApp.hideProgressbar();
+          |     }, 3000);
+          | });
+          | $$('.demo-progressbar-infinite-multi-overlay .button').on('click', function () {
+          |     var container = $$('body');
+          |     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+          |     myApp.showProgressbar(container, 'multi');
+          |     setTimeout(function () {
+          |         myApp.hideProgressbar();
+          |     }, 3000);
+          | });
+      h2(data-device-preview="../docs-demos/progressbar-material.html") Material Theme Examples
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="content-block-title"&gt;Determinate Progress Bar&lt;/div&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;div class="content-block-inner"&gt;
+          |       &lt;p&gt;Inline determinate progress bar:&lt;/p&gt;
+          |       &lt;div class="demo-progressbar-inline"&gt;
+          |         &lt;p&gt;&lt;span data-progress="10" class="progressbar"&gt;&lt;/span&gt;&lt;/p&gt;
+          |         &lt;p class="buttons-row"&gt;
+          |           &lt;a href="#" data-progress="10" class="button button-raised"&gt;10%&lt;/a&gt;
+          |           &lt;a href="#" data-progress="30" class="button button-raised"&gt;30%&lt;/a&gt;
+          |           &lt;a href="#" data-progress="50" class="button button-raised"&gt;50%&lt;/a&gt;
+          |           &lt;a href="#" data-progress="100" class="button button-raised"&gt;100%&lt;/a&gt;
+          |         &lt;/p&gt;
+          |       &lt;/div&gt;
+          |       &lt;p&gt;Inline determinate load & hide:&lt;/p&gt;
+          |       &lt;div class="demo-progressbar-load-hide"&gt;
+          |         &lt;p style="height:2px"&gt;&lt;/p&gt;
+          |         &lt;p&gt;&lt;a href="#" class="button button-raised"&gt;Start Loading&lt;/a&gt;&lt;/p&gt;
+          |       &lt;/div&gt;
+          |       &lt;p&gt;Overlay with determinate progress bar on top of the app:&lt;/p&gt;
+          |       &lt;p class="demo-progressbar-overlay"&gt;&lt;a href="#" class="button button-raised"&gt;Start Loading&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="content-block-title"&gt;Infinite Progress Bar&lt;/div&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;div class="content-block-inner"&gt;
+          |       &lt;p&gt;Inline infinite progress bar&lt;/p&gt;
+          |       &lt;p&gt;&lt;span class="progressbar-infinite"&gt;&lt;/span&gt;&lt;/p&gt;
+          |       &lt;p&gt;Multi-color infinite progress bar&lt;/p&gt;
+          |       &lt;p&gt;&lt;span class="progressbar-infinite color-multi"&gt;&lt;/span&gt;&lt;/p&gt;
+          |       &lt;p&gt;Overlay with infinite progress bar on top of the app&lt;/p&gt;
+          |       &lt;p class="demo-progressbar-infinite-overlay"&gt;&lt;a href="#" class="button button-raised"&gt;Start Loading&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;Overlay with infinite multi-color progress bar on top of the app&lt;/p&gt;
+          |       &lt;p class="demo-progressbar-infinite-multi-overlay"&gt;&lt;a href="#" class="button button-raised"&gt;Start Loading&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="content-block-title"&gt;Colored&lt;/div&gt;
+          |   &lt;div class="list-block"&gt;
+          |     &lt;ul&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="5" class="progressbar color-red"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="10" class="progressbar color-pink"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="15" class="progressbar color-purple"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="20" class="progressbar color-deeppurple"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="25" class="progressbar color-indigo"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="30" class="progressbar color-blue"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="35" class="progressbar color-lightblue"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="40" class="progressbar color-cyan"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="45" class="progressbar color-teal"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="50" class="progressbar color-green"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="55" class="progressbar color-lightgreen"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="60" class="progressbar color-lime"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="65" class="progressbar color-yellow"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="70" class="progressbar color-amber"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="75" class="progressbar color-orange"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="80" class="progressbar color-deeporange"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="85" class="progressbar color-brown"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="90" class="progressbar color-gray"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="95" class="progressbar color-bluegray"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="100" class="progressbar color-black"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       &lt;li style="background-color: #999" class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div data-progress="95" class="progressbar color-white"&gt;&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |     &lt;/ul&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | var myApp = new Framework7({
+          |   material: true
+          | });
+          | var $$ = Dom7;
+          | 
+          | $$('.demo-progressbar-inline .button').on('click', function () {
+          |     var progress = $$(this).attr('data-progress');
+          |     var progressbar = $$('.demo-progressbar-inline .progressbar');
+          |     myApp.setProgressbar(progressbar, progress);
+          | });
+          | $$('.demo-progressbar-load-hide .button').on('click', function () {
+          |     var container = $$('.demo-progressbar-load-hide p:first-child');
+          |     if (container.children('.progressbar').length) return; //don't run all this if there is a current progressbar loading
+          | 
+          |     myApp.showProgressbar(container, 0);
+          | 
+          |     // Simluate Loading Something
+          |     var progress = 0;
+          |     function simulateLoading() {
+          |         setTimeout(function () {
+          |             var progressBefore = progress;
+          |             progress += Math.random() * 20;
+          |             myApp.setProgressbar(container, progress);
+          |             if (progressBefore &lt; 100) {
+          |                 simulateLoading(); //keep "loading"
+          |             }
+          |             else myApp.hideProgressbar(container); //hide
+          |         }, Math.random() * 200 + 200);
+          |     }
+          |     simulateLoading();
+          | });
+          | $$('.demo-progressbar-overlay .button').on('click', function () {
+          |     // Add Directly To Body
+          |     var container = $$('body');
+          |     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+          | 
+          |     myApp.showProgressbar(container, 0, 'yellow');
+          | 
+          |     // Simluate Loading Something
+          |     var progress = 0;
+          |     function simulateLoading() {
+          |         setTimeout(function () {
+          |             var progressBefore = progress;
+          |             progress += Math.random() * 20;
+          |             myApp.setProgressbar(container, progress);
+          |             if (progressBefore &lt; 100) {
+          |                 simulateLoading(); //keep "loading"
+          |             }
+          |             else myApp.hideProgressbar(container); //hide
+          |         }, Math.random() * 200 + 200);
+          |     }
+          |     simulateLoading();
+          | });
+          | $$('.demo-progressbar-infinite-overlay .button').on('click', function () {
+          |     var container = $$('body');
+          |     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+          |     myApp.showProgressbar(container, 'yellow');
+          |     setTimeout(function () {
+          |         myApp.hideProgressbar();
+          |     }, 5000);
+          | });
+          | $$('.demo-progressbar-infinite-multi-overlay .button').on('click', function () {
+          |     var container = $$('body');
+          |     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+          |     myApp.showProgressbar(container, 'multi');
+          |     setTimeout(function () {
+          |         myApp.hideProgressbar();
+          |     }, 5000);
+          | });

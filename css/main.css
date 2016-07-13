@@ -101,13 +101,13 @@ h4 {
 }
 code {
   font-size: 12px;
-  border: 1px solid #e1e1e1;
+  border: 1px solid #eee;
   color: #333;
   font-weight: normal !important;
 }
 pre,
 code {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 pre {
   overflow: hidden;
@@ -118,14 +118,26 @@ pre code {
   display: block;
 }
 code.hljs {
-  border: 1px solid #e1e1e1;
+  border: 1px solid #eee;
+  border-radius: 3px;
   padding: 10px;
+  background: #fafafa;
 }
 code {
-  background: #eee;
+  background: #fafafa;
   color: #000;
   display: inline-block;
   padding: 2px 5px;
+}
+.coffeescript .javascript,
+.javascript .xml,
+.lasso .markup,
+.tex .hljs-formula,
+.xml .javascript,
+.xml .vbscript,
+.xml .css,
+.xml .hljs-cdata {
+  opacity: 1;
 }
 .nowrap {
   white-space: nowrap;
@@ -563,6 +575,9 @@ header .small-links a:hover {
   letter-spacing: -1px;
   line-height: 1.25;
 }
+.home-block:last-child {
+  margin-bottom: 0;
+}
 .home-intro h1 {
   font-size: 47px;
   margin-bottom: 20px;
@@ -659,11 +674,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#ffffff));
-  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff);
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#fff));
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
   z-index: 1;
 }
 .home-ios:before {
@@ -673,11 +688,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(#ffffff), to(rgba(255, 255, 255, 0)));
-  background-image: -webkit-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -moz-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -o-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+  background-image: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -moz-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
   z-index: 1;
 }
 .home-ios .pic {
@@ -712,11 +727,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#ffffff));
-  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff);
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#fff));
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
   z-index: 1;
 }
 .home-ui:before {
@@ -726,11 +741,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(#ffffff), to(rgba(255, 255, 255, 0)));
-  background-image: -webkit-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -moz-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -o-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+  background-image: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -moz-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
   z-index: 1;
 }
 .home-ui .text {
@@ -829,11 +844,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#ffffff));
-  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #ffffff);
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff);
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), to(#fff));
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: -o-linear-gradient(left, rgba(255, 255, 255, 0), #fff);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
   z-index: 1;
 }
 .home-styles:before {
@@ -843,11 +858,11 @@ header .small-links a:hover {
   top: 0;
   height: 100%;
   width: 100px;
-  background-image: -webkit-gradient(linear, left top, right top, from(#ffffff), to(rgba(255, 255, 255, 0)));
-  background-image: -webkit-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -moz-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: -o-linear-gradient(left, #ffffff, rgba(255, 255, 255, 0));
-  background-image: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+  background-image: -webkit-gradient(linear, left top, right top, from(#fff), to(rgba(255, 255, 255, 0)));
+  background-image: -webkit-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -moz-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(left, #fff, rgba(255, 255, 255, 0));
+  background-image: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
   z-index: 1;
 }
 .home-styles .pic {
@@ -946,6 +961,7 @@ img.lazy {
 }
 .home-products img {
   width: 150px;
+  border-radius: 50%;
 }
 .home-products .text {
   color: #333;
@@ -982,21 +998,41 @@ img.lazy {
 .row .col-50 {
   width: 50%;
 }
-.github-buttons iframe {
-  border: none;
+.github-buttons {
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 0;
+  line-height: 18px;
 }
-.github-buttons .flattr-button {
+.github-buttons img {
+  width: auto;
+  height: 18px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+.github-buttons a {
   display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  vertical-align: middle;
+  font-size: 12px;
+  margin-left: 10px;
 }
-.github-buttons .flattr-button + iframe {
-  margin-left: 5px;
+.github-buttons a span {
+  font-size: 15px;
+}
+.github-buttons a:hover {
+  opacity: 0.7;
+}
+.github-buttons a:first-child {
+  margin-left: 0px;
 }
 .share-line {
   background: #8c2418;
   border-top: 1px solid #b72f20;
-  padding: 15px 0;
+  padding: 14px 0;
   box-sizing: border-box;
-  height: 55px;
+  height: 50px;
 }
 .share-line .center {
   padding: 0 40px;
@@ -1004,19 +1040,13 @@ img.lazy {
 .share-line .github-buttons {
   float: right;
 }
-.share-line .share {
+.share-line .share-buttons {
   white-space: nowrap;
   float: left;
-  width: 590px;
 }
-.share-line .addthis_button_google_plusone {
-  width: 78px !important;
-}
-.share-line .addthis_button_twitter_follow_native {
-  width: 220px !important;
-}
-.share-line .addthis_button_facebook_like .fb_iframe_widget {
-  max-height: 24px;
+.share-line .share-button {
+  float: left;
+  margin-right: 5px;
 }
 .inner-header + .share-line .center,
 .content + .share-line .center {
@@ -1028,27 +1058,87 @@ img.lazy {
   float: left;
   position: relative;
 }
-footer {
+.content + .share-line {
+  border-top: none;
   background: #601911;
-  text-align: center;
+}
+footer {
+  background: #350e09;
   color: #fff;
-  color: rgba(255, 255, 255, 0.7);
-  padding-top: 20px;
-  padding-bottom: 20px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "myriad", Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 footer a {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 footer a:hover {
   color: #fff;
 }
-footer .links a {
-  margin: 0 10px;
-}
 footer .links {
-  margin-bottom: 10px;
+  padding: 20px 0;
+}
+footer .links-block {
+  float: left;
+  text-align: left;
+  margin-left: 100px;
+}
+footer .links-block:first-child {
+  margin-left: 0;
+}
+footer .links-block ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+footer .links-block li {
+  margin: 10px 0;
+}
+footer .links-block li:last-child {
+  margin-bottom: 0;
+}
+footer .links-block-title {
+  text-transform: uppercase;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+}
+footer .copy {
+  padding: 20px 0;
+  font-size: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+footer .copy a {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+footer .copy p {
+  margin: 5px 0;
+}
+footer .copy p:first-child {
+  margin-top: 0;
+}
+footer .copy p:last-child {
+  margin-bottom: 0;
+}
+footer a.keycdn-link {
+  text-decoration: none;
+  border-bottom: none;
+  opacity: 0.8;
+}
+footer a.keycdn-link:hover {
+  opacity: 1;
+}
+footer .copy-left {
+  float: left;
+}
+footer .copy-right {
+  float: right;
+}
+footer img.keycdn-logo {
+  height: 20px;
+  width: auto;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
 }
 .example {
   margin: 40px 0;
@@ -1263,22 +1353,21 @@ footer .links {
   justify-content: space-between;
 }
 .docs-nav {
-  width: 180px;
+  width: 200px;
   margin-right: 30px;
   margin-left: -40px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 20px;
+  box-sizing: border-box;
   -webkit-flex-shrink: 0;
   -ms-flex: 0 0 auto;
   flex-shrink: 0;
   color: #222;
-  background: #f8f8f8;
+  background: #fafafa;
   position: relative;
   padding-top: 40px;
   padding-bottom: 40px;
   margin-top: -40px;
   margin-bottom: -40px;
-  box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.15) inset;
   -webkit-transition: 400ms;
   -moz-transition: 400ms;
   -ms-transition: 400ms;
@@ -1286,8 +1375,6 @@ footer .links {
   transition: 400ms;
 }
 .docs-nav.collapsed {
-  background: #fff;
-  box-shadow: -1px 0px 0px rgba(0, 0, 0, 0.15) inset;
   margin-left: -220px;
 }
 .docs-nav.collapsed ul {
@@ -1303,12 +1390,31 @@ footer .links {
   position: absolute;
   right: 100%;
   width: 2000px;
-  background: #f8f8f8;
+  background: #fafafa;
   height: 100%;
   top: 0;
 }
+.docs-nav .title {
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.07em;
+}
+.docs-nav .subtitle {
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
 .docs-nav > ul {
   position: relative;
+}
+.docs-nav > ul > li {
+  margin-top: 30px;
+}
+.docs-nav > ul > li:first-child {
+  margin-top: 0;
 }
 .docs-nav ul {
   margin: 0;
@@ -1322,42 +1428,23 @@ footer .links {
   -o-transition: 400ms;
   transition: 400ms;
 }
-.docs-nav ul li {
+.docs-nav ul ul ul {
   margin-left: 10px;
-  margin-bottom: 10px;
 }
-.docs-nav ul li.title {
-  margin-top: 0;
-  margin-left: 0;
-}
-.docs-nav ul ul {
-  margin-left: 20px;
-  margin-top: 5px;
-}
-.docs-nav ul ul li {
-  margin-bottom: 10px;
-  margin-left: 0;
-}
-.docs-nav li.title {
-  font-size: 16px;
-  font-weight: 500;
-  color: #000;
-}
-.docs-nav li.title a {
-  color: #000;
+.docs-nav li {
+  margin-bottom: 12px;
 }
 .docs-nav a {
-  color: #222;
+  color: #444;
   text-decoration: none;
+  display: block;
+  padding-right: 10px;
 }
-.docs-nav ul ul {
-  font-weight: normal;
-}
-.docs-nav li a:hover {
+.docs-nav a:hover {
   color: #b72f20;
 }
-.docs-nav li a.active {
-  font-weight: bold;
+.docs-nav a.active {
+  font-weight: 500;
   color: #db402f;
 }
 .docs-nav .inactive {
@@ -1374,12 +1461,10 @@ footer .links {
   background: #000;
   width: 20px;
   height: 50px;
-  background: -webkit-linear-gradient(left, #eeeeee, #ffffff);
-  background: linear-gradient(to right, #eeeeee, #ffffff);
-  border-radius: 5px 0 0 5px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
   border-right: none;
   opacity: 0;
+  background: #fff;
+  cursor: pointer;
 }
 .docs-nav .toggle-docs-nav span {
   position: absolute;
@@ -1442,13 +1527,11 @@ footer .links {
 }
 .ios-only,
 .material-only {
-  background: #eee;
+  background: #f4f4f4;
   padding: 10px 10px;
-  border-radius: 3px;
   font-weight: bold;
-  margin: 0;
   line-height: 1;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: 3px solid #000;
 }
 .ios-only:before,
 .material-only:before {
@@ -1459,7 +1542,6 @@ footer .links {
   vertical-align: middle;
   margin-right: 6px;
   position: relative;
-  top: -2px;
 }
 .ios-only:before {
   background: url(../i/logo-apple-black.png) no-repeat center;
@@ -1469,14 +1551,16 @@ footer .links {
 .material-only:before {
   background: url(../i/logo-android-black.png) no-repeat center;
   background-size: 100% auto;
-  top: -2px;
+  top: -1px;
 }
 span.ios-only,
 span.material-only {
   display: inline-block;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: normal;
-  padding: 3px 3px;
+  padding: 3px 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
 }
 span.ios-only:before,
 span.material-only:before {
@@ -1595,7 +1679,7 @@ table.params-table tbody td:nth-child(2),
 table.params-table tbody td:nth-child(3):not(:last-child) {
   font-size: 12px;
   color: #8c2418;
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 table.params-table tbody td:nth-child(2) {
   color: #006700;
@@ -1613,10 +1697,14 @@ table.params-table td p:last-child {
   margin-bottom: 0;
 }
 .method-wrap {
-  background: #f8f8f8;
   padding: 10px;
-  border: 1px solid #eee;
   margin: 1em 0px;
+  border-left: 3px solid #ccc;
+  color: #444;
+  background: #fafafa;
+}
+.method-wrap + .method-wrap {
+  margin-top: 30px;
 }
 .method-wrap p:first-child {
   margin-top: 0;
@@ -1626,17 +1714,17 @@ table.params-table td p:last-child {
   margin-bottom: 0;
 }
 .method-wrap .method-returns {
-  font-weight: 500;
   font-style: normal;
+  font-size: 13px;
 }
 p.method,
 span.method {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
-  font-size: 15px;
 }
 p.method span,
 span.method span {
+  font-weight: normal;
   color: #8c2418;
 }
 ul.method-parameters {
@@ -1645,16 +1733,17 @@ ul.method-parameters {
   padding-left: 30px;
 }
 ul.method-parameters .parameter {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
   color: #8c2418;
 }
 ul.method-parameters .parameter-type {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
   color: #006700;
 }
 .method-returns {
   list-style: none;
-  font-weight: 500;
 }
 table.methods-table {
   line-height: 1.4;
@@ -1664,7 +1753,7 @@ table.methods-table td {
   vertical-align: top;
 }
 table.methods-table tbody td:first-child:not(:last-child) {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
   white-space: nowrap;
   font-size: 12px;
@@ -1673,7 +1762,7 @@ table.methods-table tbody td:first-child:not(:last-child) span {
   color: #8c2418;
 }
 table.methods-table .parameter-type {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 12px;
   color: #006700;
 }
@@ -1698,7 +1787,7 @@ table.methods-table.dom7-table td {
   vertical-align: top;
 }
 table.methods-table.dom7-table tbody td:first-child:not(:last-child) {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
   white-space: normal;
   font-size: 12px;
@@ -1706,25 +1795,28 @@ table.methods-table.dom7-table tbody td:first-child:not(:last-child) {
 table.methods-table.dom7-table tbody td:first-child:not(:last-child) span {
   color: #8c2418;
 }
+table.methods-table code,
+table.params-table code {
+  white-space: pre-wrap;
+}
 table.events-table tbody td:nth-child(2) span {
   white-space: nowrap;
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #8c2418;
   font-size: 12px;
   display: block;
 }
 table.events-table tbody td:first-child {
-  font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
   white-space: nowrap;
   font-size: 12px;
 }
 .important-note {
-  padding: 5px 10px;
+  padding: 5px 10px 5px 15px;
   background: #fff0f0;
   color: #000;
-  border: 1px solid #ffcccc;
-  border-radius: 3px;
+  border-left: 3px solid #eb562e;
 }
 .important-note ul {
   margin: 0;
@@ -1829,6 +1921,9 @@ h1 + .tutorial-author {
 }
 .showcase-apps .app-icon.app-icon-rounded img {
   border-radius: 45px;
+}
+.showcase-apps .app-icon.app-icon-bordered img {
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 .showcase-apps .app-info {
   margin-left: 230px;

@@ -1,0 +1,620 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'tutorials';
+  - var title = 'Mobile MVC Apps With Framework7, RequireJS and Handlebars | Framework7 Tutorials';
+
+block content
+  h1 Mobile MVC Apps With Framework7, RequireJS and Handlebars
+  p.tutorial-author by 
+    a(href="https://github.com/philipshurpik", target="_blank").tutorial-author Philip Shurpik
+  p This app shows you example of using beautiful mobile framework - Framework7 in MVC way for building data-driven contacts application.
+  h3 Let’s start.
+
+  p We will need additional javascript libraries:
+  ul
+    li <a href="http://handlebarsjs.com/" target="_blank">Handlebars</a> - templating library
+    li <a href="http://requirejs.org/" target="_blank">RequireJS</a> - for asynchronous javascript modules loading
+    li Additional RequireJS plugins for handlebars templates loading:
+    ul
+      li <a href="https://github.com/requirejs/text" target="_blank">text</a>
+      li <a href="https://github.com/epeli/requirejs-hbs" target="_blank">hbs</a>
+      li <a href="http://lodash.com/" target="_blank">Lodash</a> - additional optional library for easy array manipulation
+      li <a href="http://ionicons.com/" target="_blank">ionicons</a>  - amazing mobile-icons library
+
+  h3 Project structure:
+  img(src="#{cdn}/i/tutorials/mvc-requirejs/1.png", style="float:left; margin:0 40px 40px 0")
+  p Let’s create the following structure of project (index.html and app.js files leave empty yet). 
+  p To make your live easier you can download archive with the structure using this link: <a href="https://www.dropbox.com/s/c7q1jftn1538awe/Framework7-MVC-structure.zip" target="_blank">https://www.dropbox.com/s/c7q1jftn1538awe/Framework7-MVC-structure.zip</a> (This archive is already filled with the first versions of the index.html and app.'s files) 
+
+  p Also link to Github sources - there is the latest version with incremental revisions history: <a href="https://github.com/philipshurpik/Framework7-MVC-base" target="_blank">https://github.com/philipshurpik/Framework7-MVC-base</a>
+  .clearfix
+  p Firstly create simply index.html file and connect all necessary libraries:
+  pre
+    code
+      | &lt;!DOCTYPE html&gt;
+      | &lt;html class="with-statusbar-overlay"&gt;
+      | &lt;head&gt;
+      |     &lt;meta charset="utf-8"&gt;
+      |     &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"&gt;
+      |     &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
+      |     &lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;
+      |     &lt;title&gt;F7 Contacts MVC&lt;/title&gt;
+      |     &lt;link rel="stylesheet" href="lib/css/framework7.css"&gt;
+      |     &lt;link rel="stylesheet" href="lib/css/ionicons.css"&gt;
+      |     &lt;link rel="stylesheet" href="css/app.css"&gt;
+      | &lt;/head&gt;
+      | &lt;body&gt;
+      |     &lt;div class="statusbar-overlay"&gt;&lt;/div&gt;
+      |     &lt;div class="views"&gt;
+      |         &lt;div class="view view-main navbar-fixed"&gt;
+      |             &lt;div class="navbar"&gt;
+      |                 &lt;div class="navbar-inner"&gt;
+      |                     &lt;div class="left"&gt;&lt;/div&gt;
+      |                     &lt;div class="center" style="left:22px"&gt;Contacts&lt;/div&gt;
+      |                     &lt;div class="right"&gt;
+      |                         &lt;a href="contact.html" class="link icon-only"&gt; &lt;i class="icon icon-plus"&gt;+&lt;/i&gt;
+      |                         &lt;/a&gt;
+      |                     &lt;/div&gt;
+      |                 &lt;/div&gt;
+      |             &lt;/div&gt;
+      |             &lt;div class="pages"&gt;
+      |                 &lt;div data-page="list" class="page"&gt;
+      |                     &lt;div class="page-content"&gt;
+      |                         &lt;div class="list-block contacts-list"&gt;
+      |                             &lt;ul&gt;
+      |                                 &lt;a href="contact.html" class="item-link item-content"&gt;
+      |                                     &lt;div class="item-media"&gt; &lt;i class="icon ion-ios7-person"&gt;&lt;/i&gt;
+      |                                     &lt;/div&gt;
+      |                                     &lt;div class="item-inner"&gt;
+      |                                         &lt;div class="item-title"&gt;Andrey Smirnov&lt;/div&gt;
+      |                                     &lt;/div&gt;
+      |                                 &lt;/a&gt;
+      |                                 &lt;a href="contact.html?id={{id}}" class="item-link item-content"&gt;
+      |                                     &lt;div class="item-media"&gt;
+      |                                         &lt;i class="icon ion-ios7-person"&gt;&lt;/i&gt;
+      |                                     &lt;/div&gt;
+      |                                     &lt;div class="item-inner"&gt;
+      |                                         &lt;div class="item-title"&gt;Olga Kot&lt;/div&gt;
+      |                                     &lt;/div&gt;
+      |                                 &lt;/a&gt;
+      |                             &lt;/ul&gt;
+      |                         &lt;/div&gt;
+      |                     &lt;/div&gt;
+      |                 &lt;/div&gt;
+      |             &lt;/div&gt;
+      |         &lt;/div&gt;
+      |     &lt;/div&gt;
+      |     &lt;script type="text/javascript" src="lib/framework7.js"&gt;&lt;/script&gt;
+      |     &lt;script type="text/javascript" src="app.js"&gt;&lt;/script&gt;
+      | &lt;/body&gt;
+      | &lt;/html&gt;   
+  p Put the application initialization in app.js file:
+  pre
+    code 
+      | var f7 = new Framework7({
+      |     modalTitle: 'F7-MVC-Base',
+      |     animateNavBackIcon: true
+      | });
+      | var mainView = f7.addView('.view-main', {
+      |     dynamicNavbar: true
+      | });
+  p Run application in browser:
+  p
+    img(src="#{cdn}/i/tutorials/mvc-requirejs/2.png", style="float:left; margin:0 40px 40px 0")
+  p That's it. We have the first page and it is even something more than hello-world! :) 
+  p 
+    strong Useful tip:
+    br
+    | In Chrome Devtools console, there is Emulation tab, where you can select target device or screen resolution and see how the application will look around on the screen of the device.
+  .clearfix
+  h3 Connect RequireJS
+  p Now we need to dynamically load contacts (e.g. from localStorage) and display them in a list.<br>We have to modify our files:
+  p <b>1. index.html</b><br>
+    | Let’s connect RequireJs library, instead of the direct connection of app.js file
+  pre
+    code
+      | &lt;script data-main="app" src="lib/require.js"&gt;&lt;/script&gt;
+  p Data-main attribute indicates the entry point of the application (this is our file app.js).<br>You can also delete what is inside the tags &lt;ul&gt; - soon internal list will be generated from a template
+  p <b>2. app.js</b><br>
+    | Transform it in RequireJS module:
+  pre
+    code 
+      | define('app', ['js/list/listController'], function(listController) {
+      |     var f7 = new Framework7({
+      |         modalTitle: 'F7-MVC-Base',
+      |         animateNavBackIcon: true
+      |     });
+      |     var mainView = f7.addView('.view-main', {
+      |         dynamicNavbar: true
+      |     });
+      |     listController.init();
+      |     return {
+      |         f7: f7,
+      |         mainView: mainView
+      |     };
+      | });
+  p All the same, but wrapped in a require module. We also have added initialization of our first controller (soon it also will appear).
+  h3 Main page: controller, view and list element template. Connect Handlebars
+  p Now we need to create a controller for the main page, its view. Then connect and configure Handlebars and make handlebars template. <br>I propose to place the files as follows: 
+  p
+    img(src="#{cdn}/i/tutorials/mvc-requirejs/3.png", style="float:left; margin:0 40px 40px 0")
+  p I like to group files in different directories by their functionality.
+  p It seems for me much easier to organize files, especially in big projects. 
+  .clearfix
+  p Now create a simple controller for the list. And initialize our localStorage with some contacts in it.
+  p File: 
+    b js/list/listController.js
+  pre
+    code 
+      | define(["js/list/listView"], function(ListView) {
+      | 
+      |     function init() {
+      |         var contacts = loadContacts();
+      |         ListView.render({ model: contacts });
+      |     }
+      | 
+      |     function loadContacts() {
+      |         var f7Base = localStorage.getItem("f7Base");
+      |         var contacts = f7Base ? JSON.parse(f7Base) : tempInitializeStorage();
+      |         return contacts;
+      |     }
+      | 
+      |     function tempInitializeStorage() {
+      |         var contacts = [
+      |             {id: "1", firstName: "Alex", lastName: "Black", phone: "+380501234567" },
+      |             {id: "2", firstName: "Kate", lastName: "White", phone: "+380507654321" }
+      |         ];
+      |         localStorage.setItem("f7Base", JSON.stringify(contacts));
+      |         return JSON.parse(localStorage.getItem("f7Base"));
+      |     }
+      | 
+      |     return {
+      |         init: init
+      |     };
+      | });
+  p Let’s configure our Handlebars and require plugins at the top of <b>app.js</b> file:
+  pre
+    code
+      | require.config({
+      |     paths: {
+      |         handlebars: "lib/handlebars",
+      |         text: "lib/text",
+      |         hbs: "lib/hbs"
+      |     },
+      |     shim: {
+      |         handlebars: {
+      |             exports: "Handlebars"
+      |         }
+      |     }
+      | });
+  p Now we need to add a view that will be responsible for rendering our data (which we pass from controller) using the template.
+  p File: 
+    b js/list/listView.js
+  pre
+    code
+      | define(['hbs!js/list/contact-list-item'], function(template) {
+      |     var $ = Framework7.$;
+      | 
+      |     function render(params) {
+      |         $('.contacts-list ul').html(template(params.model));
+      |     }
+      | 
+      |     return {
+      |         render: render
+      |     };
+      | });
+  p And our template:
+    br
+    | File: 
+    b js/list/contact-list-item.hbs
+  pre
+    code
+      | {{#.}}
+      |     &lt;a href="contact.html?id={{id}}" class="item-link item-content"&gt;
+      |         &lt;div class="item-media"&gt;&lt;i class="icon ion-ios7-person"&gt;&lt;/i&gt;&lt;/div&gt;
+      |         &lt;div class="item-inner"&gt;
+      |             &lt;div class="item-title"&gt;{{firstName}} {{lastName}}&lt;/div&gt;
+      |         &lt;/div&gt;
+      |     &lt;/a&gt;
+      | {{/.}}
+  p Let’s run it - and get - all the same, but much more modular and expandable. 
+  p Now we need to add the page to view and edit contact.
+  h3 Navigation between pages in Framework7
+  p Each page is placed in a separate html file.
+    br
+    | Page content is contained in div with "page" class:
+  pre
+    code 
+      | &lt;div class="page" data-page="list"&gt;
+  p "data-page" attribute determines unique page name, that is used for routing.
+  p Navigation through the pages is performed in two ways:
+  ul
+    li 1. By clicking the html link: 
+      pre
+        code
+          | &lt;a href="about.html"&gt;Go to About page&lt;/a&gt;
+    li 2. From js code:
+      pre
+        code app.mainView.loadPage('about.html');
+  p Navigation back (with animation) performed similarly: 
+  ul
+    li 1. By adding a “back” class in the link:
+      pre
+        code &lt;a href="index.html" class="back"&gt; Go back to home page &lt;/a&gt;
+    li 2. Or from js code:
+      pre
+        code app.mainView.goBack();
+  p Framework7 generates page events that you can subscribe:<br>PageBeforeInit, PageInit, PageBeforeAnimation, PageAfterAnimation, PageBeforeRemove
+
+  p Complete information about pages and events is here:
+    br
+    a(href="http://www.idangero.us/framework7/docs/pages.html") http://www.idangero.us/framework7/docs/pages.html
+    br
+    a(href="http://www.idangero.us/framework7/docs/router-api.html") http://www.idangero.us/framework7/docs/router-api.html
+
+  h3 Create router.js
+  p We should use an event that occurs after the insertion of a new page in the DOM - PageBeforeInit. <br>Create a simple router (file js/router.js) and subscribe for the event pageBeforeInit:
+  pre
+    code
+      | define(function() {
+      |     var $ = Framework7.$;
+      | 
+      |     function init() {
+      |         $(document).on('pageBeforeInit', function (e) {
+      |             var page = e.detail.page;
+      |             load(page.name, page.query);
+      |         });
+      |     }
+      | 
+      |     function load(controllerName, query) {
+      |         require(['js/' + controllerName + '/'+ controllerName + 'Controller'], function(controller) {
+      |             controller.init(query);
+      |         });
+      |     }
+      | 
+      |     return {
+      |         init: init,
+      |         load: load
+      |     };
+      | }); 
+  p When event will be triggered, require function is used to load controller module and initialize it, passing in the request page query parameters.
+  p Edit app.js module: 
+  ul
+    li add the router initialization
+    li remove the controller connection and initialization
+      pre
+        code
+          | define('app', ['js/router'], function(Router) {
+          |     Router.init();
+          |     var f7 = new Framework7({
+          |         modalTitle: 'F7-MVC-Base',
+          |         animateNavBackIcon: true
+          |     });
+          |     var mainView = f7.addView('.view-main', {
+          |         dynamicNavbar: true
+          |     });
+          |     return {
+          |         f7: f7,
+          |         mainView: mainView,
+          |         router: router
+          |     };
+          | });   
+  p At the first application load, after the main page insertion to the DOM, pageBeforeInit event handler will triggered.<br>It’s e.detail.page.name property will equals “list” (that name was given in the “data-page” property of index.html page). So appropriate controller will be launched.  
+  h3 Contact's edit page     
+  p Now we need to create contact add and edit page.
+  p Add contact.html  in the project root (if you downloaded archive with file structure, it should already be there).<br>Relevant links to contact.html already been added earlier in the homepage navbar and contact’s list template items.
+  pre
+    code
+      | &lt;div class="navbar"&gt;
+      |     &lt;div class="navbar-inner"&gt;
+      |         &lt;div class="left sliding"&gt;
+      |             &lt;a href="#" class="back link"&gt;
+      |                 &lt;i class="icon icon-back-white"&gt;&lt;/i&gt;
+      |                 &lt;span&gt;Back&lt;/span&gt;
+      |             &lt;/a&gt;
+      |         &lt;/div&gt;
+      |         &lt;div class="center contacts-header"&gt;&lt;/div&gt;
+      |         &lt;div class="right contact-save-link"&gt;
+      |             &lt;a href="#" class="link"&gt;
+      |                 &lt;span&gt;Save&lt;/span&gt;
+      |             &lt;/a&gt;
+      |         &lt;/div&gt;
+      |     &lt;/div&gt;
+      | &lt;/div&gt;
+      | &lt;div class="pages"&gt;
+      |     &lt;div data-page="contact" class="page contact-page"&gt;
+      | 
+      |     &lt;/div&gt;
+      | &lt;/div&gt;   
+  p Now when you click on a list item or button to add - the router tries to load the file js/contact/contactController.
+  p Appropriately, we need to create it, it’s view and template page.
+  p  
+    img(src="#{cdn}/i/tutorials/mvc-requirejs/4.png")
+  p File: 
+    b contactController.js
+  pre
+    code
+      | define(["app","js/contact/contactView"], function(app, ContactView) {
+      | 
+      |     var state = {isNew: false};
+      |     var contact = null;
+      | 
+      |     function init(query){
+      |         if (query && query.id) {
+      |             var contacts = JSON.parse(localStorage.getItem("f7Base"));
+      |             for (var i = 0; i &lt; contacts.length; i++) {
+      |                 if (contacts[i].id === query.id) {
+      |                     contact = contacts[i];
+      |                     state.isNew = false;
+      |                     break;
+      |                 }
+      |             }
+      |         }
+      |         else {
+      |             contact = { id: Math.floor((Math.random() * 100000) + 5).toString()};
+      |             state.isNew = true;
+      |         }
+      |         ContactView.render({
+      |             model: contact,
+      |             state: state
+      |         });
+      |     }
+      | 
+      |     return {
+      |         init: init
+      |     };
+      | });
+  p If the page is in edit mode (in the query contains the contact id value, then get it from localStorage.<br>If not, create a new one. So far, for simplicity, we do not use models, so our contact - it's just an object.
+  p File: 
+    b contactView.js
+  pre
+    code
+      | define(['hbs!js/contact/contact'], function(viewTemplate) {
+      |     var $ = Framework7.$;
+      | 
+      |     function render(params) {
+      |         $('.contact-page').html(viewTemplate({ model: params.model }));
+      |         $('.contacts-header').text(params.state.isNew ? "New contact" : "Contact");
+      |     }
+      | 
+      |     return {
+      |         render: render
+      |     }
+      | });  
+  p And <b>contact.hbs</b> template:    
+  pre
+    code
+      | &lt;div class="page-content"&gt;
+      |     &lt;form id="contactEdit" class="list-block"&gt;
+      |         &lt;ul&gt;
+      |             &lt;input name="id" type="hidden" value="{{model.id}}"&gt;
+      |             &lt;li&gt;
+      |                 &lt;div class="item-content"&gt;
+      |                     &lt;div class="item-media"&gt;&lt;i class="icon ion-ios7-football-outline"&gt;&lt;/i&gt;&lt;/div&gt;
+      |                     &lt;div class="item-inner"&gt;
+      |                         &lt;div class="item-input"&gt;
+      |                             &lt;input name="firstName" type="text" placeholder="First name" value="{{model.firstName}}"&gt;
+      |                         &lt;/div&gt;
+      |                     &lt;/div&gt;
+      |                 &lt;/div&gt;
+      |             &lt;/li&gt;
+      |             &lt;li&gt;
+      |                 &lt;div class="item-content"&gt;
+      |                     &lt;div class="item-media"&gt;&lt;i class="icon ion-ios7-football-outline"&gt;&lt;/i&gt;&lt;/div&gt;
+      |                     &lt;div class="item-inner"&gt;
+      |                         &lt;div class="item-input"&gt;
+      |                             &lt;input name="lastName" type="text" placeholder="Last name" value="{{model.lastName}}"&gt;
+      |                         &lt;/div&gt;
+      |                     &lt;/div&gt;
+      |                 &lt;/div&gt;
+      |             &lt;/li&gt;
+      |             &lt;li&gt;
+      |                 &lt;div class="item-content"&gt;
+      |                     &lt;div class="item-media"&gt;&lt;i class="icon ion-ios7-telephone-outline"&gt;&lt;/i&gt;&lt;/div&gt;
+      |                     &lt;div class="item-inner"&gt;
+      |                         &lt;div class="item-input"&gt;
+      |                             &lt;input name="phone" type="tel" placeholder="Phone" value="{{model.phone}}"&gt;
+      |                         &lt;/div&gt;
+      |                     &lt;/div&gt;
+      |                 &lt;/div&gt;
+      |             &lt;/li&gt;
+      |         &lt;/ul&gt;
+      |     &lt;/form&gt;
+      | &lt;/div&gt; 
+  p Well. Now we can open our page to add or edit a contact:
+  p   
+    img(src="#{cdn}/i/tutorials/mvc-requirejs/5.png", style="float:left; margin:0 40px 40px 0")
+  p Now we need to add the ability to save and delete contacts. Let’s do it.
+  .clearfix
+  h3 Saving Contact
+  p First, add a handler for the save button. <br>Of course you can do it right directly in the controller like this:
+  pre
+    code
+      | $('.contact-save-link').on('click', function() {
+      |  // some code here
+      | });
+  p But such way so is not good, and better to separate work with DOM and work with data and models.
+  p So divide event handling and it processing.
+  p Make an array of bindings in controller:
+  pre
+    code
+      | var bindings = [{
+      |     element: '.contact-save-link',
+      |     event: 'click',
+      |     handler: saveContact
+      | }];  
+  p Pass this array as one of the properties of params object to the view.
+  p And add a handler function in controller:
+  pre
+    code
+      | function saveContact() {
+      |     // some code here
+      | }      
+  p And in the view add event subscription - function bindEvents:
+  pre
+    code
+      | function bindEvents(bindings) {
+      |     for (var i in bindings) {
+      |         $(bindings[i].element).on(bindings[i].event, bindings[i].handler);
+      |     }
+      | }     
+  p Call it in the view render function:
+  pre
+    code bindEvents(params.bindings);
+  p Get the values, that user have entered into the form in saveContact function:
+  pre
+    code  
+      | function saveContact() {
+      |     var contacts = JSON.parse(localStorage.getItem("f7Base"))
+      |     var newContact = app.f7.formToJSON('#contactEdit');
+      |     if (state.isNew) {
+      |         contacts.push(newContact)
+      |     }
+      |     else {
+      |         for (var i = 0; i &lt; contacts.length; i++) {
+      |             if (contacts[i].id === newContact.id) {
+      |                 contacts[i] = newContact;
+      |                 break;
+      |             }
+      |         }
+      |     }
+      |     localStorage.setItem("f7Base", JSON.stringify(contacts));
+      |     app.router.load('list');
+      |     app.mainView.goBack();
+      | }    
+  p Save the data directly into localStorage. <br>The last two lines are responsible for go back to the previous page (list), and it’s listController reinitialization.
+  p Now everything works!
+  h3 Creating a model
+  p But data operation in the controller is not good idea. Also, sometimes we need to add some special features - such as the validation data. 
+
+  p Create the model in the file <b>js/contactModel.js</b>. <br>Put in it set and validation functions.
+  pre
+    code
+      | define(['app'],function(app) {
+      | 
+      |     function Contact(values) {
+      |         values = values || {};
+      |         this.id = values['id'] || Math.floor((Math.random() * 100000) + 5).toString();
+      | 
+      |         this.firstName = values['firstName'] || '';
+      |         this.lastName = values['lastName'] || '';
+      |         this.phone = values['phone'] || '';
+      |     }
+      | 
+      |     Contact.prototype.setValues = function(formInput) {
+      |         for(var field in formInput){
+      |             if (this[field] !== undefined) {
+      |                 this[field] = formInput[field];
+      |             }
+      |         }
+      |     };
+      | 
+      |     Contact.prototype.validate = function() {
+      |         var result = true;
+      |         if (!this.firstName && !this.lastName) {
+      |             result = false;
+      |         }
+      |         return result;
+      |     };
+      | 
+      |     return Contact;
+      | });      
+  p Note. Functions are added not to the object itself, but in its prototype. <br> Accordingly, when converting the object in JSON, only its properties (without functions) are serialized. 
+  p Now add the model in to contactController: <br>Add it to the list of dependencies:
+  pre
+    code 
+      | define(["app","js/contact/contactView", "js/contactModel"], function(app, ContactView, Contact)
+
+  p Change creation and assignment of contact:
+  pre
+    code contact = new Contact(contacts[i]);
+  p and
+  pre
+    code contact = new Contact();
+  p And modify save function, adding contact model validation:
+  pre
+    code
+      | function saveContact() {
+      |     var formInput = app.f7.formToJSON('#contactEdit');
+      |     contact.setValues(formInput);
+      |     if (!contact.validate()) {
+      |         app.f7.alert("First name and last name are empty");
+      |         return;
+      |     }
+      |     var contacts = JSON.parse(localStorage.getItem("f7Base"));
+      |     if (state.isNew) {
+      |         contacts.push(contact);
+      |     }
+      |     else {
+      |         for (var i = 0; i &lt; contacts.length; i++) {
+      |             if (contacts[i].id === contact.id) {
+      |                 contacts[i] = contact;
+      |                 break;
+      |             }
+      |         }
+      |     }
+      |     localStorage.setItem("f7Base", JSON.stringify(contacts));
+      |     app.mainView.goBack();
+      |     app.router.load('list');
+      | }
+  p Well. Save is ready!
+  h3 Swipe to delete
+  p Now add the removal from the list of contacts.<br>Implement it with a gesture Swipe To Delete. 
+  p Modify the list element template markup:
+  pre
+    code
+      | {{#.}}
+      |     &lt;li id="{{id}}" class="swipeout"&gt;
+      |         &lt;a href="contact.html?id={{id}}" class="item-link item-content swipeout-content"&gt;
+      |             &lt;div class="item-media"&gt;&lt;i class="icon ion-ios7-person"&gt;&lt;/i&gt;&lt;/div&gt;
+      |             &lt;div class="item-inner"&gt;
+      |                 &lt;div class="item-title"&gt;{{firstName}} {{lastName}}&lt;/div&gt;
+      |             &lt;/div&gt;
+      |         &lt;/a&gt;
+      |         &lt;div class="swipeout-actions"&gt;
+      |             &lt;div class="swipeout-actions-inner"&gt;
+      |                 &lt;a href="#" class="swipeout-delete"&gt;Delete&lt;/a&gt;
+      |             &lt;/div&gt;
+      |         &lt;/div&gt;
+      |     &lt;/li&gt;
+      | {{/.}} 
+  p Add event subscription to the listController:
+  pre
+    code
+      | var bindings = [{
+      |     element: '.swipeout',
+      |     event: 'deleted',
+      |     handler: itemDeleted
+      | }];   
+  p And then we'll do by analogy with the subscription in contacts - pass it to the view and call subscribe function bindEvents (bindings)
+  p Add event handler for item removal:      
+  pre
+    code
+      | function itemDeleted(e) {
+      |     var id = e.srcElement.id;
+      |     var contacts = JSON.parse(localStorage.getItem("f7Base"));
+      |     for (var i = 0; i &lt; contacts.length; i++) {
+      |         if (contacts[i].id === id) {
+      |             contacts.splice(i, 1);
+      |         }
+      |     }
+      |     localStorage.setItem("f7Base", JSON.stringify(contacts));
+      | }
+  p And look at the result:
+  p 
+    img(src="#{cdn}/i/tutorials/mvc-requirejs/6.png")
+    img(src="#{cdn}/i/tutorials/mvc-requirejs/7.png")
+  h3 Summaries
+  p We create very simple MVC mobile application using Framework7. 
+
+  p Framework7 in conjunction with Phonegap let’s you create beautiful native-like applications for IOS. And it may be useful for developers who are new to ObjectiveC. 
+  p Thus we immediately obtain a cross-platform application that works on Android.
+
+  p Project sources with a history of edits available here: <a href="https://github.com/philipshurpik/Framework7-MVC-base" target="_blank">https://github.com/philipshurpik/Framework7-MVC-base</a> 
+
+  p And I made ​​an extended case study contacts application, that has more features and uses more functions of Framework7. There are swiping left menu bar, popup, search bar, etc. It’s sources there: <a href="https://github.com/philipshurpik/Framework7-Contacts7-MVC" target="_blank">https://github.com/philipshurpik/Framework7-Contacts7-MVC</a> 
+
+  p And screenshots (with cats) :)
+  p
+    img(src="#{cdn}/i/tutorials/mvc-requirejs/8.png")

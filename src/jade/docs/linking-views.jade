@@ -1,0 +1,56 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Linking between views | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Linking Between Views
+      p Now let's look on more complex situation. 
+      p So we have two initialized Views (Left view and Right view) with separated navigation. In this case all links in Left view will load pages in Left view, and all links in Right view will load pages in Right view. 
+      p But now we need that some of links in Left view load pages in Right view. It is called <strong>linking between views</strong>. We already know how to do that with JavaScript - using <code>.router.load()</code> and <code>.router.back()</code> View methods.
+      p Framework7 allows to achieve this without JavaScript, all we need in this case is to add <code>data-view</code> attribute to link. This <code>data-view</code> attribute should contain CSS selector of required View:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;!-- Views --&gt;
+          |   &lt;div class="views"&gt;
+          |     &lt;!-- Left view --&gt;
+          |     &lt;div class="view view-main left-view"&gt;
+          |       &lt;!-- Pages --&gt;
+          |         
+          |         &lt;!-- These links will load pages to this Left view --&gt;
+          |         &lt;a href="about.html"&gt; About &lt;/a&gt;
+          |         &lt;a href="services.html"&gt; Services &lt;/a&gt;
+          |         
+          |         &lt;!-- This link will load pages to Right view --&gt;
+          |         &lt;a href="products.html" data-view=".right-view"&gt; Products &lt;/a&gt;
+          |     &lt;/div&gt;
+          |     &lt;!-- Right view --&gt;
+          |     &lt;div class="view right-view"&gt;
+          |       &lt;!-- Pages --&gt;
+          |         
+          |         &lt;!-- These links will load pages to this Right view --&gt;
+          |         &lt;a href="products.html"&gt; Products &lt;/a&gt;
+          |         &lt;a href="contacts.html"&gt; Contacts &lt;/a&gt;
+          |         
+          |         &lt;!-- This link will load pages to Left view --&gt;
+          |         &lt;a href="about.html" data-view=".left-view"&gt; About &lt;/a&gt;
+          |         &lt;a href="services.html" data-view=".left-view"&gt; Services &lt;/a&gt;
+          |         
+          |         &lt;!-- This link will trigger Go Back in Left view --&gt;
+          |         &lt;a href="#" class="back" data-view=".left-view"&gt; About &lt;/a&gt;
+          |     &lt;/div&gt;          
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      p That was easy, right? So just add <code>data-view</code> attribute with CSS selector of another View to any link, or even "back" link, to make linking between Views.
+      p As an real example you can look at <a href="../examples/">"Split View Application" example</a> when links from bottom of Left view control Main view.
+
+      h2 What's next
+      p Now when we know everything about main App structure and linking/loading pages, we need to fill our App with components. Let's start from one of the most important - <a href="navbar-toolbar-layouts.html">Navbars & Toolbars</a>

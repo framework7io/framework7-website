@@ -1,0 +1,640 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Modal | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Modal
+        p Modal is a small content pane that pops up over App's main content. Modals are usualy used to ask something from user, or to notify or warn user. Modal as all other overlays is part of so called "Temporary Views".
+        p Modals can be opened only using JavaScript. So let's look at related App methods to work with modals
+        h2 Predefined Modals
+        .important-note
+          ul
+            li
+              p Note, that if you don't specify predefined modal title, it will use default title ("Framework7") that can be chagend on <a href="init-app.html">App initialization</a> by passing <strong>modalTitle</strong> parameter  
+            li 
+              p Buttons text for predefined modals (like "Ok" and "Cancel") can be also chagend on <a href="init-app.html">App initialization</a> by passing <strong>modalButtonOk</strong> and <strong>modalButtonCancel</strong> parameters
+        p First of all, let's look on most used and already predefined modals in Framework7:
+      h3(data-device-preview="../docs-demos/modal-alert.html") Alert
+      p To open Alert modal we should call one of the following App methods:
+      p
+        span.method myApp.alert(<span>text, [title, callbackOk]</span>)</span>
+        br
+        | or 
+        br
+        span.method myApp.alert(<span>text, [callbackOk]</span>)</span>
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Text to alert 
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Optional. Alert modal title 
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Ok" button on Alert modal
+        li.method-returns This method returns dynamically created modal's HTMLElement
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="alert-text"&gt;Alert With Text&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="alert-text-title"&gt;Alert With Text and Title&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="alert-text-title-callback"&gt;Alert With Text and Title and Callback&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="alert-text-callback"&gt;Alert With Text and Callback&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;          
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.alert-text').on('click', function () {
+          |     myApp.alert('Here goes alert text');
+          | });
+          | 
+          | $$('.alert-text-title').on('click', function () {
+          |     myApp.alert('Here goes alert text', 'Custom Title!');
+          | });
+          | 
+          | $$('.alert-text-title-callback').on('click', function () {
+          |     myApp.alert('Here goes alert text', 'Custom Title!', function () {
+          |         myApp.alert('Button clicked!')
+          |     });
+          | });
+          | 
+          | $$('.alert-text-callback').on('click', function () {
+          |     myApp.alert('Here goes alert text', function () {
+          |         myApp.alert('Button clicked!')
+          |     });
+          | });
+      h3(data-device-preview="../docs-demos/modal-confirm.html") Confirm
+      p Confirm modal usualy used when it is required to confirm some action. To open Confirm modal we should also call one of the following App methods:
+      p
+        span.method myApp.confirm(<span>text, [title, callbackOk, callbackCancel]</span>)</span>
+        br
+        | or 
+        br
+        span.method myApp.confirm(<span>text, [callbackOk, callbackCancel]</span>)</span>
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Confirm text
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Optional. Confirm modal title 
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Ok" button on Confirm modal (when user confirm action)
+        li
+          span.parameter callbackCancel
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Cancel" button on Confirm modal (when user dismiss action)
+          
+        li.method-returns This method returns dynamically created modal's HTMLElement
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="confirm-ok"&gt;Confirm with text and Ok callback&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="confirm-ok-cancel"&gt;Confirm with text, Ok and Cancel callbacks&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="confirm-title-ok"&gt;Confirm with text, title and Ok callback&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="confirm-title-ok-cancel"&gt;Confirm with text, title, Ok and Cancel callback&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;            
+      pre
+        code
+          | $$('.confirm-ok').on('click', function () {
+          |     myApp.confirm('Are you sure?', function () {
+          |         myApp.alert('You clicked Ok button');
+          |     });
+          | });
+          | 
+          | $$('.confirm-ok-cancel').on('click', function () {
+          |     myApp.confirm('Are you sure?', 
+          |       function () {
+          |         myApp.alert('You clicked Ok button');
+          |       },
+          |       function () {
+          |         myApp.alert('You clicked Cancel button');
+          |       }
+          |     );
+          | });
+          | $$('.confirm-title-ok').on('click', function () {
+          |     myApp.confirm('Are you sure?', 'Custom Title', function () {
+          |         myApp.alert('You clicked Ok button');
+          |     });
+          | });
+          | $$('.confirm-title-ok-cancel').on('click', function () {
+          |     myApp.confirm('Are you sure?', 'Custom Title', 
+          |       function () {
+          |         myApp.alert('You clicked Ok button');
+          |       },
+          |       function () {
+          |         myApp.alert('You clicked Cancel button');
+          |       }
+          |     );
+          | });            
+      h3(data-device-preview="../docs-demos/modal-prompt.html") Prompt
+      p Prompt modal used when it is required to get some data/answer from user. To open Prompt modal we should also call one of the following App methods:
+      p
+        span.method myApp.prompt(<span>text, [title, callbackOk, callbackCancel]</span>)</span>
+        br
+        | or 
+        br
+        span.method myApp.prompt(<span>text, [callbackOk, callbackCancel]</span>)</span>
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Prompt text/question
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Optional. Prompt modal title 
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Ok" button on Prompt modal. <strong>As an argument function receives value of text input</strong>
+        li
+          span.parameter callbackCancel
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Cancel" button on Prompt modal. <strong>As an argument function receives value of text input</strong>
+          
+        li.method-returns This method returns dynamically created modal's HTMLElement
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="prompt-ok"&gt;Prompt with text and Ok callback&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="prompt-ok-cancel"&gt;Prompt with text, Ok and Cancel callbacks&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="prompt-title-ok"&gt;Prompt with text, title and Ok callback&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="prompt-title-ok-cancel"&gt;Prompt with text, title, Ok and Cancel callback&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;  
+      pre
+        code          
+          | $$('.prompt-ok').on('click', function () {
+          |     myApp.prompt('What is your name?', function (value) {
+          |         myApp.alert('Your name is "' + value + '". You clicked Ok button');
+          |     });
+          | });
+          | 
+          | $$('.prompt-ok-cancel').on('click', function () {
+          |     myApp.prompt('What is your name?', 
+          |       function (value) {
+          |         myApp.alert('Your name is "' + value + '". You clicked Ok button');
+          |       },
+          |       function (value) {
+          |         myApp.alert('Your name is "' + value + '". You clicked Cancel button');
+          |       }
+          |     );
+          | });
+          | $$('.prompt-title-ok').on('click', function () {
+          |     myApp.prompt('What is your name?', 'Custom Title', function (value) {
+          |         myApp.alert('Your name is "' + value + '". You clicked Ok button');
+          |     });
+          | });
+          | $$('.prompt-title-ok-cancel').on('click', function () {
+          |     myApp.prompt('What is your name?', 'Custom Title', 
+          |       function (value) {
+          |         myApp.alert('Your name is "' + value + '". You clicked Ok button');
+          |       },
+          |       function (value) {
+          |         myApp.alert('Your name is "' + value + '". You clicked Cancel button');
+          |       }
+          |     );
+          | });          
+      h3(data-device-preview="../docs-demos/modal-login-password.html") Login and Password
+      p There are also two special modals for authentication:
+      p
+        span.method myApp.modalLogin(<span>text, [title, callbackOk, callbackCancel]</span>)</span>
+        br
+        | or 
+        br
+        span.method myApp.modalLogin(<span>text, [callbackOk, callbackCancel]</span>)</span>
+      
+      
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Modal text
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Optional. Modal title 
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Ok" button. <strong>As an argument function receives username and password values</strong>
+        li
+          span.parameter callbackCancel
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Cancel" button. <strong>As an argument function receives username and password values</strong>
+          
+        li.method-returns This method returns dynamically created modal's HTMLElement
+      p
+        span.method myApp.modalPassword(<span>text, [title, callbackOk, callbackCancel]</span>)</span>
+        br
+        | or 
+        br
+        span.method myApp.modalPassword(<span>text, [callbackOk, callbackCancel]</span>)</span>
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Modal text
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Optional. Modal title 
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Ok" button. <strong>As an argument function receives password value</strong>
+        li
+          span.parameter callbackCancel
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Cancel" button. <strong>As an argument function receives password value</strong>
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="content-block"&gt;
+          |     &lt;p&gt;&lt;a href="#" class="login-modal"&gt;Login Modal&lt;/a&gt;&lt;/p&gt;
+          |     &lt;p&gt;&lt;a href="#" class="password-modal"&gt;Password Modal&lt;/a&gt;&lt;/p&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;  
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | $$('.login-modal').on('click', function () {
+          |     myApp.modalLogin('Authentication required', function (username, password) {
+          |         myApp.alert('Thank you! Username: ' + username + ', Password: ' + password);
+          |     });
+          | });
+          | 
+          | $$('.password-modal').on('click', function () {
+          |     myApp.modalPassword('You password please:', function (password) {
+          |         myApp.alert('Thank you! Your password is: ' + password);
+          |     });
+          | });        
+      h3(data-device-preview="../docs-demos/modal-nest.html") Nesting Modals
+      p And of course as you may already note, you can "nest" this modals in each other callbacks:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="name"&gt;What is your name?&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt; 
+      pre
+        code
+          | $$('.name').on('click', function () {
+          |     myApp.prompt('What is your name?', function (value) {
+          |         myApp.confirm('Are you sure that your name is ' + value + '?', function () {
+          |             myApp.alert('Ok, your name is "' + value + '"!');
+          |         });
+          |     });
+          | });
+      h3(data-device-preview="../docs-demos/modal-preloader.html") Preloader Modal
+      p Preloader Modal is used to indicate some background activity (like Ajax request) and to block any user actions during this activity. To open Preloader modal we should also call appropriate App method:
+      p
+        span.method myApp.showPreloader(<span>[title]</span>)</span> - show modal with Preloader
+      ul.method-parameters
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Optional. Preloader modal title. By default (if not specified) it is euqal to "Loading...". You can change default Preloader title by passing <strong>modalPreloaderTitle</strong> parameter on App initialization
+        li.method-returns This method returns dynamically created modal's HTMLElement
+      p
+        span.method myApp.hidePreloader()</span> - hide/close modal with Preloader. Because Preloader modal has not any buttons, it should be closed by JavaScript
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="open-preloader"&gt;Open Preloader&lt;/a&gt;&lt;/p&gt;
+          |       &lt;p&gt;&lt;a href="#" class="open-preloader-title"&gt;Open Preloader with custom title&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;          
+      pre
+        code
+          | $$('.open-preloader').on('click', function () {
+          |     myApp.showPreloader();
+          |     setTimeout(function () {
+          |         myApp.hidePreloader();
+          |     }, 2000);
+          | });
+          | $$('.open-preloader-title').on('click', function () {
+          |     myApp.showPreloader('Custom Title')
+          |     setTimeout(function () {
+          |         myApp.hidePreloader();
+          |     }, 2000);
+          | });          
+      
+      h3(data-device-preview="../docs-demos/modal-indicator.html") Indicator
+      p If you don't need such "big" modal window like Preloader Modal to indicate activity, you can use simple and small indicator modal:
+      p
+        span.method myApp.showIndicator()</span> - show modal with Indicator
+      p
+        span.method myApp.hideIndicator()</span> - hide/close modal with Indicator. Because Indicator modal has not any buttons, it should be closed by JavaScript
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="open-indicator"&gt;Open Indicator&lt;/a&gt;&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;          
+      pre
+        code
+          | $$('.open-indicator').on('click', function () {
+          |     myApp.showIndicator();
+          |     setTimeout(function () {
+          |         myApp.hideIndicator();
+          |     }, 2000);
+          | });
+
+      .full-width.stop-scroll-device
+        h2 Custom Modals
+        p Ok, all predefined modals were just particular case (like shortcuts) of full Modal methods. Let's look how to create custom modals:
+        p
+          span.method myApp.modal(<span>parameters</span>)</span> - show custom modal
+        ul.method-parameters
+          li
+            span.parameter parameters
+            |  - <span class="parameter-type">object</span>. Object with Modal parameters/options
+          li.method-returns This method returns dynamically created modal's HTMLElement
+        p Here is the list of Modal parameters:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              td title
+              td string
+              td 
+              td Optional. String with Modal title (could be HTML string)
+            tr
+              td text
+              td string
+              td 
+              td Optional. String with Modal text (could be HTML string)
+            tr
+              td afterText
+              td string
+              td 
+              td Optional. String with text (could be HTML string) that will be placed after "text"
+            tr
+              td buttons
+              td array
+              td 
+              td Optional. Array of buttons. Each button should be presented as Object with button parameters (look below)
+            tr
+              td verticalButtons
+              td boolean
+              td false
+              td Optional. Set to <code>true</code> to enable vertical buttons layout
+            tr
+              td onClick
+              td function
+              td 
+              td Optional. Callback function that will be executed when user clicks any of Modal's button. As arguments it receives <b>modal</b> (with Modal's HTMLElement) and <b>index</b> (with index number of clicked button)
+            
+        p Let's look at Button's parameters:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              td text
+              td string
+              td 
+              td String with Button's text (could be HTML string)
+            tr
+              td bold
+              td boolean
+              td false
+              td Optional. Set to true for bold button text
+            tr
+              td close
+              td boolean
+              td true
+              td Optional. If "true" then modal will be closed after click on this button
+            tr
+              td onClick
+              td function
+              td 
+              td Optional. Callback function that will be executed when user click this button
+
+        p Such configuration options allows to create flexible modals. Let's look at some examples.
+        .docs-demo-device.docs-inline-device
+          iframe(width="320", height="548", frameborder="0", scrolling="on", src="../docs-demos/modal-custom.html")
+        pre
+          code
+            | &lt;body&gt;
+            |   ...
+            |   &lt;div class="page-content"&gt;
+            |     &lt;div class="content-block"&gt;
+            |       &lt;p&gt;&lt;a href="#" class="open-3-modal"&gt;Modal With 3 Buttons&lt;/a&gt;&lt;/p&gt;
+            |       &lt;p&gt;&lt;a href="#" class="open-slider-modal"&gt;Modal With Slider&lt;/a&gt;&lt;/p&gt;
+            |       &lt;p&gt;&lt;a href="#" class="open-tabs-modal"&gt;Modal With Tabs&lt;/a&gt;&lt;/p&gt;
+            |       &lt;p&gt;&lt;a href="#" class="open-vertical-modal"&gt;Modal With Vertical Buttons&lt;/a&gt;&lt;/p&gt;
+            |     &lt;/div&gt;
+            |   &lt;/div&gt;
+            |   ...
+            | &lt;/body&gt;  
+        pre
+          code
+            | $$('.open-3-modal').on('click', function () {
+            |   myApp.modal({
+            |     title:  'Modal with 3 buttons',
+            |     text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
+            |     buttons: [
+            |       {
+            |         text: 'B1',
+            |         onClick: function() {
+            |           myApp.alert('You clicked first button!')
+            |         }
+            |       },
+            |       {
+            |         text: 'B2',
+            |         onClick: function() {
+            |           myApp.alert('You clicked second button!')
+            |         }
+            |       },
+            |       {
+            |         text: 'B3',
+            |         bold: true,
+            |         onClick: function() {
+            |           myApp.alert('You clicked third button!')
+            |         }
+            |       },
+            |     ]
+            |   })
+            | });
+            | $$('.open-slider-modal').on('click', function () {
+            |   var modal = myApp.modal({
+            |     title: 'Awesome Photos?',
+            |     text: 'What do you think about my photos?',
+            |     afterText:  '&lt;div class="swiper-container" style="width: auto; margin:5px -15px -15px"&gt;'+
+            |                   '&lt;div class="swiper-pagination"&gt;&lt;/div&gt;'+
+            |                   '&lt;div class="swiper-wrapper"&gt;'+
+            |                     '&lt;div class="swiper-slide"&gt;&lt;img src="..." height="150" style="display:block"&gt;&lt;/div&gt;' +
+            |                     '&lt;div class="swiper-slide"&gt;&lt;img src="..." height="150" style="display:block"&gt;&lt;/div&gt;'+
+            |                   '&lt;/div&gt;'+
+            |                 '&lt;/div&gt;',
+            |     buttons: [
+            |       {
+            |         text: 'Bad :('
+            |       },
+            |       {
+            |         text: 'Awesome!',
+            |         bold: true,
+            |         onClick: function () {
+            |           myApp.alert('Thanks! I know you like it!')
+            |         }
+            |       },
+            |     ]
+            |   })
+            |   myApp.swiper($$(modal).find('.swiper-container'), {pagination: '.swiper-pagination'});
+            | });
+            | 
+            | $$('.open-tabs-modal').on('click', function () {
+            |   myApp.modal({
+            |     title:  '&lt;div class="buttons-row"&gt;'+
+            |               '&lt;a href="#tab1" class="button active tab-link"&gt;Tab 1&lt;/a&gt;'+
+            |               '&lt;a href="#tab2" class="button tab-link"&gt;Tab 2&lt;/a&gt;'+
+            |             '&lt;/div&gt;',
+            |     text: '&lt;div class="tabs"&gt;'+
+            |             '&lt;div class="tab active" id="tab1"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam convallis nunc non dolor euismod feugiat. Sed at sapien nisl. Ut et tincidunt metus. Suspendisse nec risus vel sapien placerat tincidunt. Nunc pulvinar urna tortor.&lt;/div&gt;'+
+            |             '&lt;div class="tab" id="tab2"&gt;Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae&lt;/div&gt;'+
+            |           '&lt;/div&gt;',
+            |     buttons: [
+            |       {
+            |         text: 'Ok, got it',
+            |         bold: true
+            |       },
+            |     ]
+            |   })
+            | });
+            | 
+            | $$('.open-vertical-modal').on('click', function () {
+            |   myApp.modal({
+            |     title:  'Vertical Buttons Layout',
+            |     text: 'Vivamus feugiat diam velit. Maecenas aliquet egestas lacus, eget pretium massa mattis non. Donec volutpat euismod nisl in posuere. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae',
+            |     verticalButtons: true,
+            |     buttons: [
+            |       {
+            |         text: 'Button 1',
+            |         onClick: function() {
+            |           myApp.alert('You clicked first button!')
+            |         }
+            |       },
+            |       {
+            |         text: 'Button 2',
+            |         onClick: function() {
+            |           myApp.alert('You clicked second button!')
+            |         }
+            |       },
+            |       {
+            |         text: 'Button 3',
+            |         onClick: function() {
+            |           myApp.alert('You clicked third button!')
+            |         }
+            |       },
+            |     ]
+            |   })
+            | });            
+
+
+        h2 Close Modals With JavaScript
+        p Any Modal can be closed with JavaScript, not only by clicking on its buttons. For this we need to look at relate App method:
+        p
+          span.method myApp.closeModal(<span>modal</span>)</span> - close any modal
+        ul.method-parameters
+          li
+            span.parameter modal
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened modal will be closed
+        h2 Modal Events
+        p Modal events could be very useful when you need to do something in JavaScript when Modal opened/closed
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td open
+              td Modal Element<span>&lt;div class="modal"&gt;</span>
+              td Event will be triggered when Modal starts its opening animation
+            tr
+              td opened
+              td Modal Element<span>&lt;div class="modal"&gt;</span>
+              td Event will be triggered after Modal completes its opening animation
+            tr
+              td close
+              td Modal Element<span>&lt;div class="modal"&gt;</span>
+              td Event will be triggered when Modal starts its closing animation
+            tr
+              td closed
+              td Modal Element<span>&lt;div class="modal"&gt;</span>
+              td Event will be triggered after Modal completes its closing animation
+        h2 Modal Template
+        p If you want to customize Modal template, you may customize it by passing <code>modalTemplate</code> parameter on <a href="init-app.html">App initialization</a>. This parameter accepts <a href="template7.html">Template7</a> formatted HTML string that will be compiled by Template7 with passed <code>groups</code> context. 
+        p So the acceptable template could look like:
+        pre
+          code
+            | &lt;div class="modal {{#unless buttons}}modal-no-buttons{{/unless}}"&gt;
+            |   &lt;div class="modal-inner"&gt;
+            |     {{#if title}}
+            |       &lt;div class="modal-title"&gt;{{title}}&lt;/div&gt;
+            |     {{/if}}
+            |     {{#if text}}
+            |        &lt;div class="modal-text"&gt;{{text}}&lt;/div&gt;
+            |     {{/if}}
+            |     {{#if afterText}}
+            |       {{afterText}}
+            |     {{/if}}
+            |   &lt;/div&gt;
+            |   {{#if buttons}}
+            |     &lt;div class="modal-buttons"&gt;
+            |       {{#each buttons}}
+            |         &lt;span class="modal-button {{#if bold}}modal-button-bold{{/if}}"&gt;{{text}}&lt;/span&gt;
+            |       {{/each}}
+            |     &lt;/div&gt;
+            |   {{/if}}
+            | &lt;/div&gt;            
+
+

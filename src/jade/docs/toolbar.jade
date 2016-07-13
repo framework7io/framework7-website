@@ -1,0 +1,103 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Toolbar | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Toolbar
+        p Toolbar is a fixed <em>(with Fixed and Through layout types)</em> area at the bottom of a screen that contains navigation elements. 
+        p Toolbar does not have any parts, just plain links inside.
+      h2(data-device-preview="../docs-demos/toolbar-layout.html") Toolbar layout
+      p Toolbar layout is very simple:
+      pre
+        code
+          | &lt;div class="toolbar"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |         &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+          |         &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+          |         &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
+          |     &lt;/div&gt;
+          | &lt;/div&gt;
+      p By default, all Toolbar elements (links) equally spaced along toolbar - they have equal space between each other.
+
+      h2(data-device-preview="../docs-demos/toolbar-hide.html") Related App and View methods
+      p If we have <a href="views.html">initialized View</a> we can use following methods available for Toolbars:
+      table.methods-table
+        tbody
+          tr
+            td myApp.hideToolbar(<span>toolbar</span>)
+            td Hide specified toolbar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.
+          tr
+            td myApp.showToolbar(<span>toolbar</span>)
+            td Show specified toolbar.<br><code>toolbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.
+          tr
+            td view.hideToolbar()
+            td Hide toolbar in this View
+          tr
+            td view.showToolbar()
+            td Show toolbar in this View
+      p And the following example:
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $ = Framework7.$;
+          | 
+          | var mainView = myApp.addView('.view-main');
+          | 
+          | $('.hide-toolbar').on('click', function () {
+          |     mainView.hideToolbar();
+          | });
+          | 
+          | $('.show-toolbar').on('click', function () {
+          |     mainView.showToolbar();
+          | });
+      h2(data-device-preview="../docs-demos/toolbar-hide-auto.html") Hide Toolbar automatically
+      p Framework7 allows you to hide/show Toolbar automatically for some Ajax loaded pages where you may not need Toolbar. It is useful only when you use through-type layout.
+      p To make it work all you need is to add <strong>"no-toolbar"</strong> class to loaded page (<code>&lt;div class="page no-toolbar"&gt;</code>):
+      pre
+        code
+          | &lt;!-- Page has additional "no-toolbar" class --&gt;
+          | &lt;div data-page="about" class="page no-toolbar"&gt;
+          |   &lt;div class="page-content"&gt;
+          |     &lt;div class="content-block"&gt;
+          |       &lt;p&gt;&lt;a href="#" class="back button"&gt;Go Back&lt;/a&gt;&lt;/p&gt;
+          |       ...
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+
+      h2(data-device-preview="../docs-demos/toolbar-bottom-material.html") Bottom Toolbar
+      p.material-only Bottom Toolbar is supported only in Material Theme. In iOS Theme it is on the bottom by default
+      p In Material Theme Toolbar/Tabbar is usually on top of the app right below the Navbar. But if you really need to Toolbar on bottom you can do it by just using addional <b>"toolbar-bottom"</b> class:
+      p Framework7 allows you to hide/show Toolbar automatically for some Ajax loaded pages where you may not need Toolbar. It is useful only when you use through-type layout.
+      pre
+        code
+          | &lt;div data-page="home" class="page toolbar-fixed navbar-fixed"&gt;
+          |   &lt;div class="navbar"&gt;
+          |     &lt;div class="navbar-inner"&gt;
+          |       &lt;div class="center"&gt;Bottom Toolbar&lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;!-- Toolbar has additional "toolbar-bottom" class --&gt;
+          |   &lt;div class="toolbar toolbar-bottom"&gt;
+          |     &lt;div class="toolbar-inner"&gt;
+          |       &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+          |       &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+          |       &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
+          |   &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="page-content"&gt;
+          |     ...
+          |   &lt;/div&gt;
+          | &lt;/div&gt;

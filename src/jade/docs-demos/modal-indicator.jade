@@ -1,0 +1,29 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Indicator Modal
+              .right 
+          .page-content
+            .content-block
+              p
+                a(href="#").open-indicator Open Indicator
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    $$('.open-indicator').on('click', function () {
+        myApp.showIndicator();
+        setTimeout(function () {
+            myApp.hideIndicator();
+        }, 2000);
+    });
+    

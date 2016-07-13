@@ -1,0 +1,179 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Pull To Refresh | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Pull To Refresh
+        p Pull to refresh is a special component that can be used to initiate the refreshing of a page’s contents.
+        h2 Pull To Refresh Layout
+        p Let's look on how to integrate pull to refresh to page:
+        pre
+          code
+            | &lt;div class="page"&gt;
+            |   &lt;!-- Page content should have additional "pull-to-refresh-content" class --&gt;
+            |   &lt;div class="page-content pull-to-refresh-content" data-ptr-distance="55"&gt;
+            |     &lt;!-- Default pull to refresh layer--&gt;
+            |     &lt;div class="pull-to-refresh-layer"&gt;
+            |       &lt;div class="preloader"&gt;&lt;/div&gt;
+            |       &lt;div class="pull-to-refresh-arrow"&gt;&lt;/div&gt;
+            |     &lt;/div&gt;
+            | 
+            |     &lt;!-- usual content below --&gt;
+            |     &lt;div class="list-block"&gt;
+            |       ...
+            |     &lt;/div&gt;
+            |   &lt;/div&gt;
+            | &lt;/div&gt;   
+        p Where
+          ul
+            li <code>page-content</code> should have additional <code>pull-to-refresh-content</code> class. This is required to enable pull to refresh
+            li <code>pull-to-refresh-layer</code> hidden layer with pull to refresh visual elements: preloader and arrow. 
+            li <code>data-ptr-distance="55"</code> additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px.
+        h2 Pull To Refresh Sequence
+        p When user starts to pull <b>pull-to-refresh-content</b> down, then <b>pull-to-refresh-layer</b> will receive additional "<b>pull-down</b>" class.
+        p When user pulls down <b>pull-to-refresh-content</b> on a distance more than 44px (when <b>pull-to-refresh-layer</b> will be fully visible), then <b>pull-to-refresh-layer</b> will receive additional "<b>pull-up</b>" class which changes arrow rotation to notify user about refresh action on release.
+        p When user release pull to refresh content when it is in "pull-up" state, then <b>pull-to-refresh-layer</b> will receive additional "<b>refreshing</b>" class. In "refreshing" state arrow will be hidden and user will see preloader indicator. On this stage you probably need to do Ajax request and refresh page content.
+        h2 Pull To Refresh Events
+        p There is a special JavaScript event that helps us to recognize when we need to refresh content:
+        table.events-table
+          thead
+            tr
+              th Event
+              th Target
+              th Description
+          tbody
+            tr
+              td pullstart
+              td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
+              td Event will be triggered when you start to move pull to refresh content
+            tr
+              td pullmove
+              td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
+              td Event will be triggered during you move pull to refresh content
+            tr
+              td pullend
+              td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
+              td Event will be triggered when you release pull to refresh content
+            tr
+              td refresh
+              td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
+              td Event will be triggered when pull to refresh enters in "refreshing" state
+            tr
+              td refreshdone
+              td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
+              td Event will be triggered after pull to refresh is done and it is back to initial state (after calling <b>pullToRefreshDone</b> method)
+        h2 Reset Pull To Refresh
+        p After we refreshed page content, we need to reset pull to refresh component to let user pull it again:
+        .method-wrap
+          p
+            span.method myApp.pullToRefreshDone(<span>ptrContent</span>) 
+            span - reset specified pull to refresh content
+          ul.method-parameters
+            li
+              span.parameter ptrContent
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to reset
+        h2 Trigger Pull To Refresh
+        p We can also trigger Pull To Refresh manually by using the following method:
+        .method-wrap
+          p
+            span.method myApp.pullToRefreshTrigger(<span>ptrContent</span>) 
+            span - trigger pull to refresh on specified pull to refresh content
+          ul.method-parameters
+            li
+              span.parameter ptrContent
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to trigger
+      h2(data-device-preview="../docs-demos/pull-to-refresh.html") Example
+      pre
+        code
+          | &lt;div class="page-content pull-to-refresh-content"&gt;
+          |   &lt;div class="pull-to-refresh-layer"&gt;
+          |     &lt;div class="preloader"&gt;&lt;/div&gt;
+          |     &lt;div class="pull-to-refresh-arrow"&gt;&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="list-block media-list"&gt;
+          |     &lt;ul&gt;
+          |       &lt;li class="item-content"&gt;
+          |         &lt;div class="item-media"&gt;&lt;img src="http://hhhhold.com/88/d/jpg?1" width="44"&gt;&lt;/div&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-title-row"&gt;
+          |             &lt;div class="item-title"&gt;Yellow Submarine&lt;/div&gt;
+          |           &lt;/div&gt;
+          |           &lt;div class="item-subtitle"&gt;Beatles&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/li&gt;
+          |       ...
+          |     &lt;/ul&gt;
+          |     &lt;div class="list-block-label"&gt;
+          |       &lt;p&gt;Just pull page down to let the magic happen.&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;          
+      pre
+        code
+          | var myApp = new Framework7();
+          | 
+          | var $$ = Dom7;
+          | 
+          | // Dummy Content
+          | var songs = ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'];
+          | var authors = ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'];
+          | 
+          | // Pull to refresh content
+          | var ptrContent = $$('.pull-to-refresh-content');
+          | 
+          | // Add 'refresh' listener on it
+          | ptrContent.on('refresh', function (e) {
+          |     // Emulate 2s loading
+          |     setTimeout(function () {
+          |         // Random image
+          |         var picURL = 'http://hhhhold.com/88/d/jpg?' + Math.round(Math.random() * 100);
+          |         // Random song
+          |         var song = songs[Math.floor(Math.random() * songs.length)];
+          |         // Random author
+          |         var author = authors[Math.floor(Math.random() * authors.length)];
+          |         // List item html
+          |         var itemHTML = '&lt;li class="item-content"&gt;' +
+          |                           '&lt;div class="item-media"&gt;&lt;img src="' + picURL + '" width="44"/&gt;&lt;/div&gt;' +
+          |                           '&lt;div class="item-inner"&gt;' +
+          |                             '&lt;div class="item-title-row"&gt;' +
+          |                               '&lt;div class="item-title"&gt;' + song + '&lt;/div&gt;' +
+          |                             '&lt;/div&gt;' +
+          |                             '&lt;div class="item-subtitle"&gt;' + author + '&lt;/div&gt;' +
+          |                           '&lt;/div&gt;' +
+          |                         '&lt;/li&gt;';
+          |         // Prepend new list element
+          |         ptrContent.find('ul').prepend(itemHTML);
+          |         // When loading done, we need to reset it
+          |         myApp.pullToRefreshDone();
+          |     }, 2000);
+          | });
+      .full-width.stop-scroll-device
+        h2 Destroy/Disable Pull To Refresh
+        p Sometimes you may need to disable Pull To Refresh on page. We can do that using the following method: 
+        .method-wrap
+          p
+            span.method myApp.destroyPullToRefresh(<span>ptrContent</span>) 
+            span - destroy/disable pull to refresh on specified pull to refresh content
+          ul.method-parameters
+            li
+              span.parameter ptrContent
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to disable
+        p And if we need to initialize/enable it again:
+        .method-wrap
+          p
+            span.method myApp.initPullToRefresh(<span>ptrContent</span>) 
+            span - initialize/enable pull to refresh
+          ul.method-parameters
+            li
+              span.parameter ptrContent
+              |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of pull-to-refresh-content we need to enable

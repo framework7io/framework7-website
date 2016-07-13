@@ -1,0 +1,221 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Navbars & Toolbars Layout | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      h1 Navbars & Toolbars Layout
+      p Before we add Navbars and Toolbar to our App we need to decide which type of their layout we will use.
+      p Framework7 allows you to be very flexible with it and there are 3 different types of Navbar/Toolbar layout which defines where to put them on your page/view
+      h2(data-device-preview="../docs-demos/bars-static-index.html") "Static" Layout
+      p Static layout is the probably most rarely used layout type. In this case Navbar and Toolbar are just parts of the scrollable page content and each page has its own Navbar and Toolbar:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="views"&gt;
+          |     &lt;div class="view view-main"&gt;
+          |       &lt;div class="pages"&gt;
+          |         &lt;div data-page="index" class="page"&gt;
+          |           &lt;div class="page-content"&gt;
+          |             
+          |             &lt;!-- Top Navbar--&gt;
+          |             &lt;div class="navbar"&gt;
+          |               &lt;div class="navbar-inner"&gt;
+          |                 &lt;div class="center"&gt;Awesome App&lt;/div&gt;
+          |               &lt;/div&gt;
+          |             &lt;/div&gt;
+          |             &lt;!-- /End of Top Navbar--&gt;
+          |             
+          |             &lt;p&gt;Other content goes here&lt;/p&gt;
+          |             ...
+          |             
+          |             &lt;!-- Bottom Toolbar--&gt;
+          |             &lt;div class="toolbar"&gt;
+          |               &lt;div class="toolbar-inner"&gt;
+          |                 Hello
+          |               &lt;/div&gt;
+          |             &lt;/div&gt;          
+          |             &lt;!-- /End of Bottom Toolbar--&gt;
+          |             
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      h2(data-device-preview="../docs-demos/bars-fixed-index.html") "Fixed" Layout
+      p In Fixed layout each page also has its own navbar and toolbar but they are always visible on screen, so they not depend on page scroll:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="views"&gt;
+          |     &lt;div class="view view-main"&gt;
+          |       &lt;div class="pages"&gt;
+          |         &lt;!-- Now we need additional "navbar-fixed" and "toolbar-fixed" classes on Page --&gt;
+          |         &lt;div data-page="index" class="page navbar-fixed toolbar-fixed"&gt;
+          |             
+          |           &lt;!-- Top Navbar--&gt;
+          |           &lt;div class="navbar"&gt;
+          |             &lt;div class="navbar-inner"&gt;
+          |               &lt;div class="center"&gt;Awesome App&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |           &lt;!-- /End of Top Navbar--&gt;
+          | 
+          |           &lt;div class="page-content"&gt;
+          |             &lt;p&gt;Other content goes here&lt;/p&gt;
+          |             ...
+          |           &lt;/div&gt;
+          |             
+          |           &lt;!-- Bottom Toolbar--&gt;
+          |           &lt;div class="toolbar"&gt;
+          |             &lt;div class="toolbar-inner"&gt;
+          |               Hello
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;          
+          |           &lt;!-- /End of Bottom Toolbar--&gt;
+          |             
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      p As you may see the difference from Static layout is that:
+      ul
+        li
+          p Navbar and Toolbar are now child elements of Page (<code>&lt;div class="page"&gt;</code>)
+        li
+          p Each page has additional "navbar-fixed" (for fixed Navbar) and "toolbar-fixed" (for fixed Toolbar) classes.
+      p
+        strong Note, that if you want to use Fixed layout for every page within single View, you can just add "navbar-fixed" and "toolbar-fixed" to parent Pages (<code>&lt;div class="pages"&gt;</code>) instead of adding them to every single page.
+      h2(data-device-preview="../docs-demos/bars-through-index.html") "Through" Layout
+      p.ios-only This type of layout is only supported by iOS theme
+      p This one is the most interesting and widely used layout type - when Navbar and Toolbar stay the same through all pages within single View. With such layout you can use cool <strong>Dynamic Navbar</strong> (don't forget to enable it on <a href="views.html">View initialization</a>)
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="views"&gt;
+          |     &lt;div class="view view-main"&gt;
+          |             
+          |       &lt;!-- Top Navbar--&gt;
+          |       &lt;div class="navbar"&gt;
+          |         &lt;div class="navbar-inner"&gt;
+          |           &lt;div class="center"&gt;Awesome App&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;!-- /End of Top Navbar--&gt;          
+          |             
+          |       &lt;!-- Now we need additional "navbar-through" and "toolbar-through" classes on Pages --&gt;
+          |       &lt;div class="pages navbar-through toolbar-through"&gt;
+          |         &lt;div data-page="index" class="page"&gt;
+          |           &lt;div class="page-content"&gt;
+          |             &lt;p&gt;Other content goes here&lt;/p&gt;
+          |             ...
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |             
+          |       &lt;!-- Bottom Toolbar--&gt;
+          |       &lt;div class="toolbar"&gt;
+          |         &lt;div class="toolbar-inner"&gt;
+          |           Hello
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;          
+          |       &lt;!-- /End of Bottom Toolbar--&gt;
+          |             
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      p As you may see the difference from Static and Fixed layout are:
+      ul
+        li 
+          p Navbar and Toolbar are now child elements of View (<code>&lt;div class="view"&gt;</code>)
+        li
+          p View with "through" Navbar and Toolbar has additional "navbar-through" (for through-type Navbar) and "toolbar-through" (for through-type Toolbar) classes.
+      
+      h2(data-device-preview="../docs-demos/bars-mixed-index.html") Mixed Layouts
+      p As you guess you can different layout types for different Views, like "Fixed" layout in one View and "Through" in other one. But you can also mix these layouts within single View. For example, you may have "Through" Navbar and Fixed Toolbar:
+      pre
+        code
+          | &lt;body&gt;
+          |   ...
+          |   &lt;div class="views"&gt;
+          |     &lt;div class="view view-main"&gt;
+          |             
+          |       &lt;!-- Top Navbar--&gt;
+          |       &lt;div class="navbar"&gt;
+          |         &lt;div class="navbar-inner"&gt;
+          |           &lt;div class="center"&gt;Awesome App&lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;!-- /End of Top Navbar--&gt;          
+          |             
+          |       &lt;!-- Now we need additional "navbar-through" and "toolbar-fixed" classes on Pages --&gt;
+          |       &lt;div class="pages navbar-through toolbar-fixed"&gt;
+          |         &lt;div data-page="index" class="page"&gt;
+          |           &lt;div class="page-content"&gt;
+          |             &lt;p&gt;Other content goes here&lt;/p&gt;
+          |             ...
+          |           &lt;/div&gt;
+          | 
+          |           &lt;!-- Bottom Toolbar--&gt;
+          |           &lt;div class="toolbar"&gt;
+          |             &lt;div class="toolbar-inner"&gt;
+          |               Hello
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;          
+          |           &lt;!-- /End of Bottom Toolbar--&gt;
+          | 
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   ...
+          | &lt;/body&gt;
+      h2.stop-scroll-device No Navbar/Toolbar
+      p And of course if you don't need Navbar or Toolbar or both you may just not include them, and don't add appropriate classes ("navbar-fixed", "navbar-through", "toolbar-fixed", "toolbar-through") to page/pages/view.
+
+      h2 Cheat sheet
+      p So as you may see all these layout types are pretty easy to understand, all their difference is in additional classes on parent elements and different nesting level. Here is cheat sheet
+      h4 Static
+      pre
+        code
+          | .view
+          |   .pages
+          |     .page
+          |       .page-content
+          |         .navbar
+          |         // other page content
+          |         .toolbar
+      h4 Fixed
+      pre
+        code
+          | .view
+          |   .pages.navbar-fixed.toolbar-fixed
+          |     .page
+          |       .navbar
+          |       .page-content
+          |       .toolbar
+      h4 Through
+      pre
+        code
+          | .view
+          |   .navbar
+          |   .pages.navbar-through.toolbar-through
+          |     .page
+          |       .page-content
+          |   .toolbar

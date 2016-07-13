@@ -1,0 +1,566 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Picker | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Picker
+        p Picker is a powerful component that allows you to create custom overlay pickers which looks like iOS native picker.
+        p Picker could be used as inline component or as overlay. Overlay Picker will be automatically converted to Popover on tablets (iPad).
+        h2 Create Picker Instance
+        p Picker can be created and initialized only using JavaScript. We need to use related App's method:
+        .method-wrap
+          p
+            span.method myApp.picker(<span>parameters</span>) 
+            span - initialize Picker with parameters
+          ul.method-parameters
+            li
+              span.parameter parameters
+              |  - <span class="parameter-type">object</span> - object with Picker parameters. Required.
+            
+            li.method-returns Method returns initialized Picker instance
+        p For example:
+        pre
+          code
+            | var myPicker = app.picker({
+            |     input: '#picker-input'
+            |     cols: [
+            |        {
+            |          values: ['Apple', 'Orange', 'Bananna']
+            |        }
+            |      ]
+            | });   
+            | myPicker.open(); // open Picker
+        h2 Picker Parameters
+        p Let's look on list of all available parameters:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              th(colspan="4") Common Picker Modal Component Parameters
+            tr
+              td container
+              td string or HTMLElement
+              td 
+              td String with CSS selector or HTMLElement where to place generated Picker HTML. Use only for inline pickers
+            tr
+              td input
+              td string or HTMLElement
+              td 
+              td String with CSS selector or HTMLElement with related input element
+            tr
+              td scrollToInput
+              td boolean
+              td true
+              td Scroll viewport (page-content) to input when picker opened
+            tr
+              td inputReadOnly
+              td boolean
+              td true
+              td Sets "readonly" attribute on specified input
+            tr
+              td convertToPopover
+              td boolean
+              td true
+              td Converts picker modal to Popover on large screens (on iPad)
+            tr
+              td onlyOnPopover
+              td boolean
+              td false
+              td Enable it and Picker will be always opened in Popover
+            tr
+              td cssClass
+              td string
+              td 
+              td Additional CSS class name to be set on picker modal
+            tr
+              td closeByOutsideClick
+              td boolean
+              td true
+              td If enabled, picker will be closed by clicking outside of picker or related input element
+            tr
+              td toolbar
+              td boolean
+              td true
+              td Enables picker modal toolbar
+            tr
+              td toolbarCloseText
+              td string
+              td 'Done'
+              td Text for Done/Close toolbar button
+            tr
+              td toolbarTemplate
+              td string
+              td 
+              td Toolbar HTML Template. By default it is HTML string with following template:
+                pre
+                  code
+                    | &lt;div class="toolbar"&gt;
+                    |   &lt;div class="toolbar-inner"&gt;
+                    |     &lt;div class="left"&gt;&lt;/div&gt;
+                    |     &lt;div class="right"&gt;
+                    |       &lt;a href="#" class="link close-picker"&gt;{{closeText}}&lt;/a&gt;
+                    |     &lt;/div&gt;
+                    |   &lt;/div&gt;
+                    | &lt;/div&gt; 
+            tr
+              th(colspan="4") Specific Picker Parameters
+            tr
+              td rotateEffect
+              td boolean
+              td false
+              td Enables 3D rotate effect
+            tr
+              td momentumRatio
+              td number
+              td 7
+              td Larger values produces more momentum when you release picker after fast touch and move
+            tr
+              td updateValuesOnMomentum
+              td boolean
+              td false
+              td Updates picker and input values during momentum
+            tr
+              td updateValuesOnTouchmove
+              td boolean
+              td true
+              td Updates picker and input values during touch move
+            tr
+              td value
+              td array
+              td
+              td Array with initial values. Each array item represents value of related column
+            tr 
+              td formatValue
+              td function (p, values, displayValues)
+              td
+              td Function to format input value, should return new/formatted string value. <b>values</b> and <b>displayValues</b> are arrays where each item represents value/display value of related column
+            tr 
+              td cols
+              td array
+              td 
+              td Array with columns. Each array item represents object with column parameters
+            tr
+              th(colspan="4") Callbacks
+            tr 
+              td onChange
+              td function (p, values, displayValues)
+              td
+              td Callback function that will be executed when picker value changed. <b>values</b> and <b>displayValues</b> are arrays where each item represents value/display value of related column
+            tr 
+              td onOpen
+              td function (p)
+              td
+              td Callback function that will be executed when picker is opened
+            tr 
+              td onClose
+              td function (p)
+              td
+              td Callback function that will be executed when picker is closed
+        h4 Column parameters
+        p When we configure Picker we need to pass <code>cols</code> parameter. It is an array where each item is object with column parameters:
+        table.params-table
+          thead
+            tr
+              th Parameter
+              th Type
+              th Default
+              th Description
+          tbody
+            tr
+              td values
+              td array
+              td 
+              td Array with string columns values
+            tr
+              td displayValues
+              td array
+              td 
+              td Array with string columns values that will be displayed in Picker. If not specified, it will display values from <b>values</b> parameter
+            tr
+              td cssClass
+              td string
+              td 
+              td Additional CSS class name to be set on column HTML container
+            tr
+              td textAlign
+              td string
+              td
+              td Text alignment of column values, could be "left", "center" or "right"
+            tr
+              td width
+              td number
+              td
+              td Column width in px. Useful if you need to fix column widths in picker with dependent columns. By default, calculated automatically
+            tr
+              td divider
+              td boolean
+              td false
+              td Defines column that should be used as a visual divider, that doesn't have any values
+            tr
+              td content
+              td string
+              td 
+              td Should be specified for divider-column (<code>divider:true</code>) with content of the column
+            tr
+              th(colspan="4") Callbacks
+            tr 
+              td onChange
+              td function (p, value, displayValue)
+              td
+              td Callback function that will be executed when column value changed. <b>value</b> and <b>displayValue</b> represent current column <b>value</b> and <b>displayValue</b>
+        h2 Picker Methods & Properties
+        p After we initialize Picker we have its initialized instance in variable (like <code>myPicker</code> variable in example above) with helpful methods and properties:
+        table.methods-table
+          tbody
+            tr
+              th(colspan="2") Properties
+            tr
+              td myPicker.params
+              td Object with passed initialization parameters
+            tr
+              td myPicker.value
+              td Array where each item represents current selected value for each column
+            tr
+              td myPicker.displayValue
+              td Array where each item represents current selected display value for each column
+            tr
+              td myPicker.opened
+              td <b>true</b> if Picker is currently opened
+            tr
+              td myPicker.inline
+              td <b>true</b> if Picker is inline Picker
+            tr
+              td myPicker.cols
+              td Array with specified Picker columns. Each column also has its own methods and properties (look below)
+            tr
+              td myPicker.container
+              td Dom7 instance with Picker HTML container
+
+            tr
+              th(colspan="2") Methods
+            tr
+              td myPicker.setValue(values, duration)
+              td Set new picker value. <b>values</b> is array where each item represents value for each column. <b>duration</b> - transition duration in ms
+            tr
+              td myPicker.open()
+              td Open Picker
+            tr
+              td myPicker.close()
+              td Close Picker
+            tr
+              td myPicker.destroy()
+              td Destroy Picker instance and remove all events
+        h4 Column Methods & Properties
+        p Each column in <code>myPicker.cols</code> array also has its own useful methods and properties.
+        pre
+          code
+            | //Get first column
+            | var col = myPicker.cols[0];
+
+        table.methods-table
+          tbody
+            tr
+              th(colspan="2") Properties
+            tr
+              td col.container
+              td Dom7 instance with column HTML container
+            tr
+              td col.items
+              td Dom7 instance with column items HTML elements
+            tr
+              td col.value
+              td Currently selected column value
+            tr
+              td col.displayValue
+              td Currently selected column display value
+            tr
+              td col.activeIndex
+              td Index number of currently selected/active item
+            tr
+              th(colspan="2") Methods
+            tr
+              td col.setValue(value, duration)
+              td Set new value for current column. <b>value</b> is a new value, <b>duration</b> - transition duration in ms
+            tr
+              td col.replaceValues(values, displayValues)
+              td Replace column values and displayValues with new ones
+        h2 Access to Picker's Instance
+        p If you initialize Picker as inline Picker it is possible to access to Picker's instance from its HTML container
+        pre
+          code
+            | var myPicker = $$('.picker-inline')[0].f7Picker;
+      h2(data-device-preview="../docs-demos/picker.html") Examples
+      h4 Picker With Single Value
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Picker with single value&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Your iOS device" readonly id="picker-device"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt; 
+      pre
+        code
+          | var pickerDevice = myApp.picker({
+          |     input: '#picker-device',
+          |     cols: [
+          |         {
+          |             textAlign: 'center',
+          |             values: ['iPhone 4', 'iPhone 4S', 'iPhone 5', 'iPhone 5S', 'iPhone 6', 'iPhone 6 Plus', 'iPad 2', 'iPad Retina', 'iPad Air', 'iPad mini', 'iPad mini 2', 'iPad mini 3']
+          |         }
+          |     ]
+          | });
+      h4 Two Values and 3D-Rotate Effect
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;2 values and 3d-rotate effect&lt;/div&gt;
+          | &lt;div class="list-block"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li&gt;
+          |       &lt;div class="item-content"&gt;
+          |         &lt;div class="item-inner"&gt;
+          |           &lt;div class="item-input"&gt;
+          |             &lt;input type="text" placeholder="Describe yourself" readonly id="picker-describe"&gt;
+          |           &lt;/div&gt;
+          |         &lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/li&gt;
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;  
+      pre
+        code
+          | var pickerDescribe = myApp.picker({
+          |     input: '#picker-describe',
+          |     rotateEffect: true,
+          |     cols: [
+          |         {
+          |             textAlign: 'left',
+          |             values: ('Super Lex Amazing Bat Iron Rocket Lex Cool Beautiful Wonderful Raining Happy Amazing Funny Cool Hot').split(' ')
+          |         },
+          |         {
+          |             values: ('Man Luthor Woman Boy Girl Person Cutie Babe Raccoon').split(' ')
+          |         },
+          |     ]
+          | });                
+      h4 Dependent Values
+      pre
+        code
+         |&lt;div class="content-block-title"&gt;Dependent values&lt;/div&gt;
+         |&lt;div class="list-block"&gt;
+         |  &lt;ul&gt;
+         |    &lt;li&gt;
+         |      &lt;div class="item-content"&gt;
+         |        &lt;div class="item-inner"&gt;
+         |          &lt;div class="item-input"&gt;
+         |            &lt;input type="text" placeholder="Your car" readonly id="picker-dependent"&gt;
+         |          &lt;/div&gt;
+         |        &lt;/div&gt;
+         |      &lt;/div&gt;
+         |    &lt;/li&gt;
+         |  &lt;/ul&gt;
+         |&lt;/div&gt;
+      pre
+        code          
+          | var carVendors = {
+          |     Japanese : ['Honda', 'Lexus', 'Mazda', 'Nissan', 'Toyota'],
+          |     German : ['Audi', 'BMW', 'Mercedes', 'Volkswagen', 'Volvo'],
+          |     American : ['Cadillac', 'Chrysler', 'Dodge', 'Ford']
+          | };
+          | var pickerDependent = myApp.picker({
+          |     input: '#picker-dependent',
+          |     rotateEffect: true,
+          |     formatValue: function (picker, values) {
+          |         return values[1];
+          |     },
+          |     cols: [
+          |         {
+          |             textAlign: 'left',
+          |             values: ['Japanese', 'German', 'American'],
+          |             onChange: function (picker, country) {
+          |                 if(picker.cols[1].replaceValues){
+          |                     picker.cols[1].replaceValues(carVendors[country]);
+          |                 }
+          |             }
+          |         },
+          |         {
+          |             values: carVendors.Japanese,
+          |             width: 160,
+          |         },
+          |     ]
+          | });
+      h4 Custom toolbar
+      pre
+        code
+          |&lt;div class="content-block-title"&gt;Custom toolbar&lt;/div&gt;
+          |&lt;div class="list-block"&gt;
+          |  &lt;ul&gt;
+          |    &lt;li&gt;
+          |      &lt;div class="item-content"&gt;
+          |        &lt;div class="item-inner"&gt;
+          |          &lt;div class="item-input"&gt;
+          |            &lt;input type="text" placeholder="Describe yourself" readonly id="picker-custom-toolbar"&gt;
+          |          &lt;/div&gt;
+          |        &lt;/div&gt;
+          |      &lt;/div&gt;
+          |    &lt;/li&gt;
+          |  &lt;/ul&gt;
+          |&lt;/div&gt; 
+      pre
+        code
+          | var pickerCustomToolbar = myApp.picker({
+          |     input: '#picker-custom-toolbar',
+          |     rotateEffect: true,
+          |     toolbarTemplate: 
+          |         '&lt;div class="toolbar"&gt;' +
+          |             '&lt;div class="toolbar-inner"&gt;' +
+          |                 '&lt;div class="left"&gt;' +
+          |                     '&lt;a href="#" class="link toolbar-randomize-link"&gt;Randomize&lt;/a&gt;' +
+          |                 '&lt;/div&gt;' +
+          |                 '&lt;div class="right"&gt;' +
+          |                     '&lt;a href="#" class="link close-picker"&gt;That\'s me&lt;/a&gt;' +
+          |                 '&lt;/div&gt;' +
+          |             '&lt;/div&gt;' +
+          |         '&lt;/div&gt;',
+          |     cols: [
+          |         {
+          |             values: ['Mr', 'Ms'],
+          |         },
+          |         {
+          |             textAlign: 'left',
+          |             values: ('Super Lex Amazing Bat Iron Rocket Lex Cool Beautiful Wonderful Raining Happy Amazing Funny Cool Hot').split(' ')
+          |         },
+          |         {
+          |             values: ('Man Luthor Woman Boy Girl Person Cutie Babe Raccoon').split(' ')
+          |         },
+          |     ],
+          |     onOpen: function (picker) {
+          |         picker.container.find('.toolbar-randomize-link').on('click', function () {
+          |             var col0Values = picker.cols[0].values;
+          |             var col0Random = col0Values[Math.floor(Math.random() * col0Values.length)];
+          | 
+          |             var col1Values = picker.cols[1].values;
+          |             var col1Random = col1Values[Math.floor(Math.random() * col1Values.length)];
+          | 
+          |             var col2Values = picker.cols[2].values;
+          |             var col2Random = col2Values[Math.floor(Math.random() * col2Values.length)];
+          | 
+          |             picker.setValue([col0Random, col1Random, col2Random]);
+          |         });
+          |     }
+          | });          
+      h4 Inline Picker / Date-time
+      pre
+        code
+          |&lt;div class="content-block-title"&gt;Inline Picker / Date-time&lt;/div&gt;
+          |&lt;div class="content-block"&gt;
+          |  &lt;div style="padding:0; margin-right:-15px; width:auto" class="content-block-inner"&gt;
+          |    &lt;div style="margin:0" class="list-block"&gt;
+          |      &lt;ul style="border-top:none"&gt;
+          |        &lt;li&gt;
+          |          &lt;div class="item-content"&gt;
+          |            &lt;div class="item-inner"&gt;
+          |              &lt;div class="item-input"&gt;
+          |                &lt;input type="text" placeholder="Date Time" readonly id="picker-date"&gt;
+          |              &lt;/div&gt;
+          |            &lt;/div&gt;
+          |          &lt;/div&gt;
+          |        &lt;/li&gt;
+          |      &lt;/ul&gt;
+          |    &lt;/div&gt;
+          |    &lt;div id="picker-date-container"&gt;&lt;/div&gt;
+          |  &lt;/div&gt;
+          |&lt;/div&gt;
+      pre
+        code.js
+          | var today = new Date();
+          | 
+          | var pickerInline = myApp.picker({
+          |     input: '#picker-date',
+          |     container: '#picker-date-container',
+          |     toolbar: false,
+          |     rotateEffect: true,
+          | 
+          |     value: [today.getMonth(), today.getDate(), today.getFullYear(), today.getHours(), (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes())],
+          | 
+          |     onChange: function (picker, values, displayValues) {
+          |         var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
+          |         if (values[1] > daysInMonth) {
+          |             picker.cols[1].setValue(daysInMonth);
+          |         }
+          |     },
+          | 
+          |     formatValue: function (p, values, displayValues) {
+          |         return displayValues[0] + ' ' + values[1] + ', ' + values[2] + ' ' + values[3] + ':' + values[4];
+          |     },
+          | 
+          |     cols: [
+          |         // Months
+          |         {
+          |             values: ('0 1 2 3 4 5 6 7 8 9 10 11').split(' '),
+          |             displayValues: ('January February March April May June July August September October November December').split(' '),
+          |             textAlign: 'left'
+          |         },
+          |         // Days
+          |         {
+          |             values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+          |         },
+          |         // Years
+          |         {
+          |             values: (function () {
+          |                 var arr = [];
+          |                 for (var i = 1950; i <= 2030; i++) { arr.push(i); }
+          |                 return arr;
+          |             })(),
+          |         },
+          |         // Space divider
+          |         {
+          |             divider: true,
+          |             content: '&nbsp;&nbsp;'
+          |         },
+          |         // Hours
+          |         {
+          |             values: (function () {
+          |                 var arr = [];
+          |                 for (var i = 0; i <= 23; i++) { arr.push(i); }
+          |                 return arr;
+          |             })(),
+          |         },
+          |         // Divider
+          |         {
+          |             divider: true,
+          |             content: ':'
+          |         },
+          |         // Minutes
+          |         {
+          |             values: (function () {
+          |                 var arr = [];
+          |                 for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+          |                 return arr;
+          |             })(),
+          |         }
+          |     ]
+          | });                
+          | 

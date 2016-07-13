@@ -1,0 +1,712 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Initialize App | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Initialize App
+      p Now you can see our HTML layout with linked required CSS and JavaScript files. Now we should initialize our app (for example in <code>my-app.js</code>):
+      pre
+        code
+          | var myApp = new Framework7();
+      p In the example above we use <code>myApp</code> variable where we store Framework7 initialized instance for easy access in future. It is not necessary to name it "myApp", it could be any name you like.
+      p It was pretty simple. But Framework7 also provides more customization on initialization by passing object with parameters:
+      pre
+        code
+          | var myApp = new Framework7({
+          |     pushState: true,
+          |     swipePanel: 'left',
+          |     // ... other parameters
+          | });
+      p Let's look at the list of all available parameters:
+      table.params-table
+        thead
+          tr
+            th Parameter
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            th(colspan="4") Material Theme (Material theme only)
+          tr
+            td material
+            td boolean
+            td false
+            td Set to <b>true</b> to activate Material-specific App JS behavior
+          tr
+            td materialPageLoadDelay
+            td number
+            td 0
+            td Delay (in ms) before animation of loaded page. Can be increased a bit to improve performance
+          tr
+            td materialRipple
+            td boolean
+            td true
+            td Enable/disable Material-specific touch ripple effect
+          tr
+            td materialRippleElements
+            td string
+            td '.ripple, a.link, a.item-link, .button, .modal-button, .tab-link, .label-radio, .label-checkbox, .actions-modal-button, a.searchbar-clear, .floating-button'
+            td CSS selector of elements to apply touch ripple effect on click
+          tr
+            td materialPreloaderHtml
+            td string
+            td '&lt;span class="preloader-inner"&gt;&lt;span class="preloader-inner-gap"&gt;&lt;/span&gt;&lt;span class="preloader-inner-left"&gt;&lt;span class="preloader-inner-half-circle"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="preloader-inner-right"&gt;&lt;span class="preloader-inner-half-circle"&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;'
+            td HTML of Material's theme preloader
+          tr
+            th(colspan="4") Caching
+          tr
+            td cache
+            td boolean
+            td true
+            td As Framework7 uses Ajax to load HTML content for pages it is good to use caching, especially if your content in those pages updates not very often.
+          tr
+            td cacheDuration
+            td number
+            td 1000*60*10
+            td Duration in ms (milliseconds) while app will use cache instead of loading page with another Ajax request. By default it takes 10 minutes.
+          tr
+            td cacheIgnore
+            td array
+            td []
+            td Array of URLs (string) that should not be cached by Framework7
+          tr
+            td cacheIgnoreGetParameters
+            td boolean
+            td false
+            td If "true" then URLs like "about.html?id=2" and "about.html?id=3" will be treated and cached like single "about.html" page
+          tr
+            th(colspan="4") Fast clicks library
+          tr
+            td fastClicks
+            td boolean
+            td true
+            td Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script.
+          tr
+            td fastClicksDelayBetweenClicks
+            td number
+            td 50
+            td Minimal allowed delay (in ms) between multiple clicks
+          tr
+            td fastClicksDistanceThreshold
+            td number
+            td 10
+            td Distance threshold (in px) to prevent short taps. So if tap/move distance is larger than this value then "click" will not be triggered
+          tr
+            td activeState
+            td boolean
+            td true
+            td When enabled, app will add "active-state" class to currently touched (:active) element.
+          tr
+            td activeStateElemets
+            td string
+            td 'a, button, label, span'
+            td CSS selector of elements where <code>activeState</code> will add appropriate active class
+          tr
+            td tapHold
+            td boolean
+            td false
+            td Set to <b>true</b> to enable tap hold events
+          tr
+            td tapHoldDelay
+            td number
+            td 750
+            td Determines how long (in ms) the user must hold their tap before the taphold event is fired on the target element
+          tr
+            td tapHoldPreventClicks
+            td boolean
+            td true
+            td When enabled (by default), then click event will not be fired after tap hold event
+          tr
+            th(colspan="4") Navigation / Router
+          tr
+            td router
+            td boolean
+            td true
+            td With this option you may disable default navigation router if you want to implement your own
+          tr
+            td ajaxLinks
+            td string
+            td undefined
+            td By default (when this parameter is not specified) Framework7 will load all links (&lt;a&gt;) using Ajax. You can change this behavior by passing here CSS selector string for links that should be loaded with Ajax, like <code>"a.ajax"</code> - only all links with "ajax" class
+          tr
+            td dynamicPageUrl
+            td string
+            td 'content-{{index}}'
+            td URL rule for dynamically loaded pages. Available replaceable expressions: '{{index}}' (page index number in navigation history) and '{{name}}' (value of page "data-page" attribute)
+          tr
+            td uniqueHistory
+            td boolean
+            td false
+            td Set to true and App will keep View's navigation history unique, and remove duplicated pages
+          tr
+            td uniqueHistoryIgnoreGetParameters
+            td boolean
+            td false
+            td Use this parameter in addition to <code>uniqueHistory</code>. Set to true and App will ignore URL GET parameters when cheking its uniqueness. So the URLs like "page.html" and "page.html?id=3" will be treated as the same.
+          tr
+            td externalLinks
+            td string
+            td '.external'
+            td CSS selector for links that should be treated as external and shouldn't be handled by Framework7. For example such '.external' value will match to links like &lt;a href="somepage.html" class="external"&gt; (with class "external")
+          tr
+            td allowDuplicateUrls
+            td boolean
+            td false
+            td You may enable this parameter to allow loading of new pages that have same url as currently "active" page in View.
+          tr
+            td animateNavBackIcon
+            td boolean
+            td false
+            td This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding". <span class="ios-only">iOS theme only</span>
+          tr 
+            td animatePages
+            td boolean
+            td true
+            td Set to false if you want to disable animated transitions between pages
+          tr
+            td preloadPreviousPage
+            td boolean
+            td true
+            td Enable/disable preloading of previous page when you go deep in navigation. Should be enabled for correct work of "swipe back page" feature.
+          tr
+            td preroute
+            td function(view, options)
+            td -
+            td 
+              p This callback allows to prevent default router load/back actions and to load another page or do another required actions
+              p Look for example below
+          tr
+            td preprocess
+            td function(content, url, next)
+            td -
+            td 
+              p This callback function allows you to modify loaded router (mostly Ajax) content right before it will be injected to DOM. Callback receives "content" and "url" of the loaded page and the "next" callback function. After you modify content within this function you should return it with: <code>return content</code>
+              p Look for example below
+          tr
+            th(colspan="4") Push State
+          tr
+            td pushState
+            td boolean
+            td false
+            td If you develop web app (not PhoneGap or Home Screen web app) it is useful to enable hash navigation (browser url will look like "http://my-webapp.com/#/about.html"). User as well will be able to navigate through app's history by using browser's default back and forward buttons. 
+          tr
+            td pushStateSeparator
+            td string
+            td '#!/'
+            td Push state URL separator, can be changed for something like '#page/' and then your push state urls will look like "http://myapp.com/#page/about.html"
+          tr
+            td pushStateRoot
+            td string
+            td undefined
+            td Push state root URL separator, for example "http://my-app.com/". It is useful only in case when you use empty ("") pushStateSeparator 
+          tr
+            td pushStateNoAnimation
+            td boolean
+            td false
+            td If false then it will inherit View's animatePages parameter. If true, then push state navigation will happen without animation (page transitions)
+          tr
+            td pushStateOnLoad
+            td boolean
+            td true
+            td Disable to ignore parsing push state URL and loading page on app load
+          tr
+            th(colspan="4") Swipe back (iOS theme only)
+          tr
+            td swipeBackPage
+            td boolean
+            td true
+            td Enable/disable ability to swipe back from left edge of screen to get to the previous page.
+          tr
+            td swipeBackPageThreshold
+            td number
+            td 0
+            td Value in px. Swipe back action will start if "touch distance" will be more than this value.
+          tr
+            td swipeBackPageActiveArea
+            td number
+            td 30
+            td Value in px. Width of invisible left edge of the screen that triggers swipe back action
+          tr
+            td swipeBackPageAnimateShadow
+            td boolean
+            td true
+            td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance
+            tr
+            td swipeBackPageAnimateOpacity
+            td boolean
+            td true
+            td Enable/disable opacity animation during swipe back action. You can disable it to improve performance
+          tr
+            th(colspan="4") Sortable Lists
+          tr
+            td sortable
+            td boolean
+            td true
+            td If you don't use sortable lists you can disable it for potentially better performance.
+          tr
+            th(colspan="4") Swipeout
+          tr
+            td swipeout
+            td boolean
+            td true
+            td If you don't use swipeouts you can disable this feature for potentially better performance.
+          tr
+            td swipeoutNoFollow
+            td boolean
+            td false
+            td Fallback option for potentially better performance on old/slow devices. If you enable it, then swipeout item will not follow your finger during touch, it will be automatically opened/closed on swipe left/right. 
+          tr
+            th(colspan="4") Side Panels
+          tr
+            td swipePanel
+            td string
+            td false
+            td Disabled by default. If you want to enable ability to open side panels with swipe you can pass here "left" (for left panel) or "right" (for right panel).
+          tr
+            td swipePanelCloseOpposite
+            td boolean
+            td true
+            td This parameter gives ability to close opposite panel by swipe. For example, if your swipePanel is "left", then you could close "right" panel also with swipe.
+          tr
+            td swipePanelOnlyClose
+            td boolean
+            td false
+            td This parameter allows to close (but not open) panels with swipes
+          tr
+            td swipePanelActiveArea
+            td number
+            td false
+            td Value in px. Width of invisible edge from the screen that triggers swipe panel
+          tr
+            td swipePanelNoFollow
+            td boolean
+            td false
+            td Fallback option for potentially better performance on old/slow devices. If you enable it, then side panel will not follow your finger during touch, it will be automatically opened/closed on swipe left/right.
+          tr
+            td swipePanelThreshold
+            td number
+            td 0
+            td Value in px. Panel will not move with swipe if "touch distance" will be less than this value.
+          tr
+            td panelsCloseByOutside
+            td boolean
+            td true
+            td Enable/disable ability to close panel by clicking outside of panel (on panel's  overlay)
+          tr
+            th(colspan="4") Modals
+          tr
+            td modalTitle
+            td string
+            td 'Framework7'
+            td Default title for modals (Alert, Confirm, Prompt)
+          tr
+            td modalButtonOk
+            td string
+            td 'OK'
+            td Default text for modal's "OK" button
+          tr
+            td modalButtonCancel
+            td string
+            td 'Cancel'
+            td Default text for modal's "Cancel" button
+          tr
+            td modalPreloaderTitle
+            td string
+            td 'Loading... '
+            td Default text for preloader modal
+          tr
+            td modalCloseByOutside
+            td boolean
+            td false
+            td Enable/disable ability to close modal (Alert, Confirm, Prompt) by clicking outside of modal (on modal's  overlay)
+          tr
+            td actionsCloseByOutside
+            td boolean
+            td true
+            td The same as previous but for Action Sheet modal
+          tr
+            td popupCloseByOutside
+            td boolean
+            td true
+            td The same as previous but for Popup modal
+          tr
+            td modalTemplate
+            td string
+            td undefined
+            td Full HTML <a href="template7.html">Template7</a> formatted HTML template for modals (like alert, confirm and prompt). Look at the example of <a href="modal.html#modal-template">Modal Template</a>
+          tr
+            td modalActionsTemplate
+            td string
+            td undefined
+            td <a href="template7.html">Template7</a> formatted HTML template for Action Sheet. Could be useful if you want to add some custom elements to Action Sheet layout. Look at the example of <a href="action-sheet.html#action-sheet-template">Action Sheet Template</a>
+          
+          tr
+            td modalActionsToPopoverTemplate
+            td string
+            td 
+            td <a href="template7.html">Template7</a> formatted HTML template for Action Sheet that will be <a href="http:/action-sheet.html#convert-action-sheet-to-popover">converted to Popover</a>. Could be useful if you want to add some custom elements to Popover layout. Look at the example of <a href="action-sheet.html#action-sheet-to-popover-template">Action Sheet To Popover Template</a>
+          tr
+            td modalUsernamePlaceholder
+            td string
+            td 'Username'
+            td Place holder text for username input in Login Modal
+          tr
+            td modalPasswordPlaceholder
+            td string
+            td 'Password'
+            td Place holder text for password input in Login and Password Modals
+          tr
+            td modalStack
+            td boolean
+            td true
+            td This feature doesn't allow to open multiple modals at the same time, and will automatically open next modal when you close the current one. Such behavior is similar to browser native alerts
+          
+          tr
+            th(colspan="4") Smart Select
+          tr
+            td smartSelectOpenIn
+            td string
+            td 'page'
+            td Specify default way of how Smart Select should be opened. Can be 'page', 'popup' or 'picker'
+
+          tr
+            td smartSelectBackTemplate
+            td string
+            td '&lt;div class="left sliding"&gt;&lt;a href="#" class="back link"&gt;&lt;i class="icon icon-back"&gt;&lt;/i&gt;&lt;span&gt;{{backText}}&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;'
+            td Smart Select page navbar back link HTML template
+
+          tr
+            td smartSelectPopupCloseTemplate
+            td string
+            td '&lt;div class="left"&gt;&lt;a href="#" class="link close-popup"&gt;&lt;i class="icon icon-back"&gt;&lt;/i&gt;&lt;span&gt;{{closeText}}&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;'
+            td Smart Select popup close link HTML template
+          tr
+            td smartSelectBackText
+            td string
+            td 'Back'
+            td Default back link text for Smart Select's page navbar
+          tr
+            td smartSelectPopupCloseText
+            td string
+            td 'Close'
+            td Default close link text for Smart Select's popup navbar
+          tr
+            td smartSelectPickerCloseText
+            td string
+            td 'Done'
+            td Default close link text for Smart Select's picker toolbar
+          tr
+            td smartSelectSearchbar
+            td boolean
+            td false
+            td Set to true if you want to enable Search Bar for all Smart Selects
+          tr
+            td smartSelectBackOnSelect
+            td boolean
+            td false
+            td If enabled then smart select page will be automatically closed after user picks any option
+          tr
+            td smartSelectFormTheme
+            td string
+            td undefined
+            td One of 10 default <a href="color-themes.html">color themes</a> for form elements on smart select page/popup
+          tr
+            td smartSelectNavbarTheme
+            td string
+            td undefined
+            td One of 10 default <a href="color-themes.html">color themes</a> for navbar on smart select page/popup
+          
+          tr
+            th(colspan="4") Navbars / Toolbars
+          tr
+            td hideNavbarOnPageScroll
+            td boolean
+            td false
+            td Set to true and Navbar will be hidden automatically on page scroll down, and become visible on scroll up
+          tr
+            td hideToolbarOnPageScroll
+            td boolean
+            td false
+            td Set to true and Toolbar will be hidden automatically on page scroll down, and become visible on scroll up
+          tr
+            td hideTabbarOnPageScroll
+            td boolean
+            td false
+            td Set to true and Tab bar will be hidden automatically on page scroll down, and become visible on scroll up. Note that this is only for Tab Bar app layout, otherwise use <code>hideToolbarOnPageScroll</code>
+          tr
+            td showBarsOnPageScrollEnd
+            td boolean
+            td true
+            td Set to true to show hidden Navbar and Toolbar when scrolling reaches end of the page
+          tr
+            td showBarsOnPageScrollTop
+            td boolean
+            td true
+            td Set to false and bars will not become visible when you scroll page to top everytime. They will become visible only on the most top scroll position, in the beginning of the page
+          tr
+            td scrollTopOnNavbarClick
+            td boolean
+            td false
+            td Set to true and each click on Navbar's "center" element will scroll currently active page to top
+          tr
+            th(colspan="4") Images Lazy Load
+          tr
+            td imagesLazyLoadThreshold
+            td number
+            td 0
+            td By default images are loaded when they appear on the screen. Use this parameter if you want to load images earlier. Setting it to 50 will load image when it 50 pixels before it appears on viewport
+          tr
+            td imagesLazyLoadSequential
+            td boolean
+            td true
+            td If enabled, then lazy images will be loaded one by one when they appear in viewport
+          tr
+            td imagesLazyLoadPlaceholder
+            td string
+            td 
+            td Lazy load image placeholder source to show while image is not yet loaded. By default it is 1x1 px image
+          tr
+            th(colspan="4") Notifications
+          tr
+            td notificationTitle
+            td string
+            td undefined
+            td Default title for all notifications <span class="ios-only">iOS theme only</span>
+          tr
+            td notificationSubtitle
+            td string
+            td undefined
+            td Default subtitle for all notifications <span class="ios-only">iOS theme only</span>
+          tr
+            td notificationMedia
+            td string
+            td undefined
+            td Default media (icon or image) for all notifications <span class="ios-only">iOS theme only</span>
+          tr
+            td notificationHold
+            td number
+            td undefined
+            td Default hold duration (in ms) for all notifications
+          tr
+            td notificationCloseOnClick
+            td boolean
+            td false
+            td Set to true if you want to close notification on click by default
+          tr
+            td notificationCloseIcon
+            td boolean
+            td true
+            td Set to true if you want to display close icon (button) for notifications by default <span class="ios-only">iOS theme only</span>
+          tr
+            td notificationCloseButtonText
+            td string
+            td 'Close'
+            td Default text for Snackbars' close button <span class="material-only">Material theme only</span>
+          tr
+            th(colspan="4") Status Bar (iOS theme only)
+          tr
+            td statusbarOverlay
+            td boolean
+            td undefined
+            td With this option you can overwrite automatic <a href="status-bar.html">status bar detection</a>
+          tr
+            td scrollTopOnStatusbarClick
+            td boolean
+            td false
+            td Set to true and each click on Status bar ("status-bar-overlay") will scroll currently active page to top
+          tr
+            th(colspan="4") Template7
+          tr
+            td template7Pages
+            td boolean
+            td false
+            td Set to true to enable Template7 rendering for Ajax and Dynamic pages. Learn more about it in <a href="template7-pages.html">Template7 Pages</a> section
+          tr
+            td template7Data
+            td object
+            td {}
+            td Parameter to store templates/pages data for Template7 rendering. Learn more about it in <a href="template7-pages.html">Template7 Pages</a> section
+          tr
+            td precompileTemplates
+            td boolean
+            td false
+            td With this option you may framework will compile all Template7 templates automatically. Learn more about <a href="template7-auto-compilation.html">Templates Auto Compilation</a> section
+          tr
+            td templates
+            td object
+            td {}
+            td Object with compiled Template7 templates. Learn more about it in <a href="template7-auto-compilation.html">Templates Auto Compilation</a> section
+          tr
+            th(colspan="4") Page Callbacks
+          tr
+            td onPageBeforeInit
+            td function(app, page)
+            td -
+            td Callback function that will be executed when Framework7 just inserts new page to DOM. Does the same as "pageBeforeInit" <a href="pages.html#page-events">page event</a>
+          tr
+            td onPageInit
+            td function(app, page)
+            td -
+            td Callback function that will be executed when Framework7 initialize required page's components and navbar. Does the same as "pageInit" <a href="pages.html#page-events">page event</a>
+          tr
+            td onPageBeforeAnimation
+            td function(app, page)
+            td -
+            td Callback function that will be executed when everything initialized and page (and navbar) is ready to be animated. Does the same as "pageBeforeAnimation" <a href="pages.html#page-events">page event</a>
+          tr
+            td onPageAfterAnimation
+            td function(app, page)
+            td -
+            td Callback function that will be executed after page (and navbar) animation. Does the same as "pageAfterAnimation" <a href="pages.html#page-events">page event</a>
+          tr
+            td onPageBeforeRemove
+            td function(app, page)
+            td -
+            td Callback function that will be executed right before page will be removed from DOM. Does the same as "pageBeforeRemove" <a href="pages.html#page-events">page event</a>
+          tr
+            td onPageBack
+            td function(app, page)
+            td -
+            td Callback function that will be executed right before "back" transition. Difference with "onPageBeforeAnimation" is that this callback will be executed for the "old" page - page that slides from center to right. Does the same as "pageBack" <a href="pages.html#page-events">page event</a>
+          tr
+            td onPageAfterBack
+            td function(app, page)
+            td -
+            td Callback function that will be executed right after "back" transition. Difference with "onPageAfterAnimation" is that this callback will be executed for the "old" page - page that slides from center to right. Does the same as "pageAfterBack" <a href="pages.html#page-events">page event</a>
+          tr
+            th(colspan="4") Ajax Callbacks
+          tr
+            td onAjaxStart
+            td function(xhr)
+            td -
+            td Callback function that will be executed in the beginning of Ajax request. This function accepts xhr data as an argument.
+          tr
+            td onAjaxComplete
+            td function(xhr)
+            td -
+            td Callback function that will be executed after Ajax request. This function accepts xhr data as an argument.
+          tr
+            th(colspan="4") Namespace
+              p
+                strong Attention! If you change following class names you will also need to change them in CSS!
+          tr
+            td viewClass
+            td string
+            td 'view'
+            td Class name for your View element
+          tr
+            td viewMainClass
+            td string
+            td 'view-main'
+            td Class name for your Main View element
+          tr
+            td viewsClass
+            td string
+            td 'views'
+            td Class name for your Views element
+          
+          tr
+            th(colspan="4") Init
+          tr
+            td init
+            td boolean
+            td true
+            td By default Framework7 will be initialized automatically when you call <code>new Framework7()</code>. If you want to prevent this behavior you can disable it with this option and then initialize it manually with <code>myApp.init()</code> when you need it.
+      p So your final initialization code in <code>my-app.js</code> could look like:
+      pre
+        code
+          | var myApp = new Framework7({
+          |     // Default title for modals
+          |     modalTitle: 'My App',
+          | 
+          |     // If it is webapp, we can enable hash navigation:
+          |     pushState: true,
+          | 
+          |     // Hide and show indicator during ajax requests
+          |     onAjaxStart: function (xhr) {
+          |         myApp.showIndicator();
+          |     },
+          |     onAjaxComplete: function (xhr) {
+          |         myApp.hideIndicator();
+          |     }
+          | });   
+      h2 Example with "preprocess" content
+      p Framework7 allows you to use your favorite client-side template engine or do any modifications with loaded content. 
+      p Let's look on how to init app with usage of Template7 as our client-side template engine 
+      p Init app in <code>my-app.js</code>:
+      pre
+        code
+          | var myApp = new Framework7({
+          |     preprocess: function (content, url, next) {
+          |         if (url === 'people.html') {
+          |             var template = Template7.compile(content);
+          |             var resultContent = template({
+          |                 title: 'People',
+          |                 people: ['John', 'Ivan', 'Mary']
+          |             })
+          |             return resultContent;
+          |         }
+          |     }
+          | });
+      p And the <code>people.html</code> page:
+      pre
+        code
+          | &lt;div class="navbar"&gt;
+          |   &lt;div class="navbar-inner"&gt;
+          |     &lt;div class="center"&gt;{{title}}&lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | &lt;div class="pages"&gt;
+          |   &lt;div data-page="people" class="page"&gt;
+          |     &lt;div class="page-content"&gt;
+          |       &lt;ul&gt;
+          |         {{#each people}}
+          |         &lt;li&gt;{{this}}&lt;/li&gt;
+          |         {{/each}}
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;   
+      p But sometimes you may have asynchronous thread inside of your preprocess functon, for example if you need to do one more Ajax request and only after that to continue page loading. For this case we have "next" callback function where we need to pass our genereated/modified content:
+      pre
+        code
+          | var myApp = new Framework7({
+          |     preprocess: function (content, url, next) {
+          |         if (url === 'people.html') {
+          |             // For example, we will retreive template JSON data using Ajax and only after that we will continue page loading process
+          |             $$.get('sometemplate.html', function(data) {
+          |                 // Template
+          |                 var template = Template7.compile(content);
+          | 
+          |                 // Compile content template with received JSON data
+          |                 var resultContent = template(data);
+          | 
+          |                 // Now we call "next" callback function with result content
+          |                 next(resultContent);
+          |             });
+          |             // Now we shouldn't return anything
+          |         }
+          |     }
+          | });          
+      h2 Example with "preroute"
+      p This callback allows to prevent default router load/back actions and to load another page, redirects or do another required actions.
+      p For example we can check if the user is not logged in when he requesting some page and then to redirect him to the login page
+      pre
+        code
+          | var myApp = new Framework7({
+          |     preroute: function (view, options) {
+          |         if (!userLoggedIn) {
+          |             view.router.loadPage('auth.html'); //load another page with auth form
+          |             return false; //required to prevent default router action
+          |         }
+          |     }
+          | });
+      h2 What's next
+      p Ok, right after we initialize our App we need to add and initialize <a href="views.html">Views</a>

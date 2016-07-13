@@ -1,22 +1,21 @@
 {
   "name": "Framework7-Website",
-  "description": "Framework7 website offline",
-  "version": "0.9.0",
+  "description": "Framework7 Website",
   "keywords": [
     "Framework7"
   ],
-  "homepage": "http://www.idangero.us/framework7/",
-  "author": "nolimits4web",
+  "homepage": "http://framework7.io/",
+  "author": "Vladimir Kharlampidi",
   "repository": {
     "type": "git",
     "url": "https://github.com/nolimits4web/Framework7-Website"
   },
   "dependencies": {
-    "grunt": "~0.4.5",
-    "load-grunt-tasks": "~0.6.0",
-    "grunt-contrib-jade": "~0.12.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-newer": "~0.7.0",
-    "grunt-contrib-less": "~0.11.4"
+    "gulp": "~3.9.1",
+    "gulp-less": "~3.0.5",
+    "gulp-jade": "~1.1.0",
+    "gulp-connect": "~2.3.1",
+    "gulp-open": "~1.0.0",
+    "del": "~2.2.0"
   }
 }

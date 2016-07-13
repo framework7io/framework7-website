@@ -1,0 +1,239 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Cards | Framework7 Documentation';
+
+block content
+  .docs-demo-device
+    iframe(width="320", height="548", frameborder="0", scrolling="on")
+    .fade-overlay
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content.with-device
+      .full-width
+        h1 Cards
+        p Cards, along with List View, is a one more great way to contain and orginize your information. Cards contains unique related data, for example, a photo, text, and link all about a single subject. Cards are typically an entry point to more complex and detailed information.
+        h2 Card HTML Layout
+        p Let's look at basic card HTML layout
+        pre
+          code
+            | &lt;div class="card"&gt;
+            |     &lt;div class="card-header"&gt;Header&lt;/div&gt;
+            |     &lt;div class="card-content"&gt;
+            |         &lt;div class="card-content-inner"&gt;Card content&lt;/div&gt;
+            |     &lt;/div&gt;
+            |     &lt;div class="card-footer"&gt;Footer&lt;/div&gt;
+            | &lt;/div&gt; 
+        p Where
+        ul
+          li
+            p <code>&lt;div class="card"&gt;</code> - Card container
+            ul
+              li
+                p <code>&lt;div class="card-header"&gt;</code> - Card header. Mostly used to display card title. Optional
+              li
+                p <code>&lt;div class="card-footer"&gt;</code> - Card footer is used for some additional information or for custom actions/links. Optional
+              li
+                p <code>&lt;div class="card-content"&gt;</code> - Main container for card content. Required
+                ul
+                  li
+                    p <code>&lt;div class="card-content-inner"&gt;</code> - Additional inner wrapper. Used to add additional padding to card-content. Optional
+        .important-note
+          p Note, that "card-header" and "card-footer" has flexbox layout (<em>display:flex</em>) where items have center vertical alignment. If you need to align items to top or to bottom of header/footer, then you may use additional <b>valign</b> attribute, for exame:
+          p <b>&lt;div class="card-header" valgin="top"&gt;</b> - align header items by header top line
+          p <b>&lt;div class="card-footer" valgin="bottom"&gt;</b> - align footer items by footer bottom line
+      h2(data-device-preview="../docs-demos/cards.html") Examples
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Simple Cards&lt;/div&gt;
+          | &lt;div class="card"&gt;
+          |   &lt;div class="card-content"&gt;
+          |     &lt;div class="card-content-inner"&gt;This is simple card with plain text. But card could contain its own header, footer, list view, image, and any elements inside.&lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | &lt;div class="card"&gt;
+          |   &lt;div class="card-header"&gt;Card header&lt;/div&gt;
+          |   &lt;div class="card-content"&gt;
+          |     &lt;div class="card-content-inner"&gt;Card with header and footer. Card header is used to display card title and footer for some additional information or for custom actions.&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="card-footer"&gt;Card Footer&lt;/div&gt;
+          | &lt;/div&gt;
+          | &lt;div class="card"&gt;
+          |   &lt;div class="card-content"&gt;
+          |     &lt;div class="card-content-inner"&gt;Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;            
+      pre
+        code
+          | &lt;style&gt;
+          |   .demo-card-header-pic .card-header {
+          |     height: 40vw;
+          |     background-size: cover;
+          |     background-position: center;
+          |   }
+          | &lt;/style&gt;
+          | 
+          | &lt;div class="content-block-title"&gt;Styled Cards&lt;/div&gt;
+          | 
+          | &lt;div class="card demo-card-header-pic"&gt;
+          |   &lt;div style="background-image:url(...)" valign="bottom" class="card-header color-white no-border"&gt;Journey To Mountains&lt;/div&gt;
+          |   &lt;div class="card-content"&gt;
+          |     &lt;div class="card-content-inner"&gt;
+          |       &lt;p class="color-gray"&gt;Posted on January 21, 2015&lt;/p&gt;
+          |       &lt;p&gt;Quisque eget vestibulum nulla...&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="card-footer"&gt;
+          |     &lt;a href="#" class="link"&gt;Like&lt;/a&gt;
+          |     &lt;a href="#" class="link"&gt;Read more&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | ...
+      pre
+        code
+          | &lt;style&gt;
+          |   .facebook-card .card-header {
+          |     display: block;
+          |     padding: 10px;
+          |   }
+          |   .facebook-card .facebook-avatar {
+          |     float: left;
+          |   }
+          |   .facebook-card .facebook-name {
+          |     margin-left: 44px;
+          |     font-size: 14px;
+          |     font-weight: 500;
+          |   }
+          |   .facebook-card .facebook-date {
+          |     margin-left: 44px;
+          |     font-size: 13px;
+          |     color: #8e8e93;
+          |   }
+          |   .facebook-card .card-footer {
+          |     background: #fafafa;
+          |   }
+          |   .facebook-card .card-footer a {
+          |     color: #81848b;
+          |     font-weight: 500;
+          |   }
+          |   .facebook-card .card-content img {
+          |     display: block;
+          |   }
+          |   .facebook-card .card-content-inner {
+          |     padding: 15px 10px;
+          |   }  
+          | &lt;/style&gt;
+          | 
+          | &lt;div class="content-block-title"&gt;Facebook Cards&lt;/div&gt;
+          | 
+          | &lt;div class="card facebook-card"&gt;
+          |   &lt;div class="card-header no-border"&gt;
+          |     &lt;div class="facebook-avatar"&gt;&lt;img src="..." width="34" height="34"&gt;&lt;/div&gt;
+          |     &lt;div class="facebook-name"&gt;John Doe&lt;/div&gt;
+          |     &lt;div class="facebook-date"&gt;Monday at 3:47 PM&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="card-content"&gt;&lt;img src="..." width="100%"&gt;&lt;/div&gt;
+          |   &lt;div class="card-footer no-border"&gt;
+          |     &lt;a href="#" class="link"&gt;Like&lt;/a&gt;
+          |     &lt;a href="#" class="link"&gt;Comment&lt;/a&gt;
+          |     &lt;a href="#" class="link"&gt;Share&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+          | 
+          | &lt;div class="card facebook-card"&gt;
+          |   &lt;div class="card-header"&gt;
+          |     &lt;div class="facebook-avatar"&gt;&lt;img src="..." width="34" height="34"&gt;&lt;/div&gt;
+          |     &lt;div class="facebook-name"&gt;John Doe&lt;/div&gt;
+          |     &lt;div class="facebook-date"&gt;Monday at 2:15 PM&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="card-content"&gt;
+          |     &lt;div class="card-content-inner"&gt;
+          |       &lt;p&gt;What a nice photo i took yesterday!&lt;/p&gt;
+          |       &lt;img src="..." width="100%"&gt;
+          |       &lt;p class="color-gray"&gt;Likes: 112 &nbsp;&nbsp; Comments: 43&lt;/p&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="card-footer"&gt;
+          |     &lt;a href="#" class="link"&gt;Like&lt;/a&gt;
+          |     &lt;a href="#" class="link"&gt;Comment&lt;/a&gt;
+          |     &lt;a href="#" class="link"&gt;Share&lt;/a&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;   
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Cards With List View&lt;/div&gt;
+          | 
+          | &lt;div class="card"&gt;
+          |   &lt;div class="card-content"&gt;
+          |     &lt;div class="list-block"&gt;
+          |       &lt;ul&gt;
+          |         &lt;li&gt;
+          |           &lt;a href="#" class="item-link item-content"&gt;
+          |             &lt;div class="item-media"&gt;&lt;i class="icon icon-f7"&gt;&lt;/i&gt;&lt;/div&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Link 1&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/a&gt;
+          |         &lt;/li&gt;
+          |         ...
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      pre
+        code
+          | &lt;div class="card"&gt;
+          |   &lt;div class="card-header"&gt;New Releases:&lt;/div&gt;
+          | 
+          |   &lt;div class="card-content"&gt;
+          |     &lt;div class="list-block media-list"&gt;
+          |       &lt;ul&gt;
+          |         &lt;li class="item-content"&gt;
+          |           &lt;div class="item-media"&gt;
+          |             &lt;img src="..." width="44"&gt;
+          |           &lt;/div&gt;
+          |           &lt;div class="item-inner"&gt;
+          |             &lt;div class="item-title-row"&gt;
+          |               &lt;div class="item-title"&gt;Yellow Submarine&lt;/div&gt;
+          |             &lt;/div&gt;
+          |             &lt;div class="item-subtitle"&gt;Beatles&lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         ...
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | 
+          |   &lt;div class="card-footer"&gt;
+          |     &lt;span&gt;January 20, 2015&lt;/span&gt;
+          |     &lt;span&gt;5 comments&lt;/span&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;          
+      h2(data-device-preview="../docs-demos/cards-list-view.html") List View With Cards
+      p It could be useful to use Cards as elements of <a href="list-view.html">List View</a>, in this case it would be possible to use Seearch Bar, Virtual List and other List View features with Cards. In this case we need to add additional <b>cards-list</b> class to <code>&lt;div class="list-block"&gt;</code>
+      pre
+        code
+          | &lt;div class="list-block cards-list"&gt;
+          |   &lt;ul&gt;
+          |     &lt;li class="card"&gt;
+          |       &lt;div class="card-header"&gt;Card Header&lt;/div&gt;
+          |       &lt;div class="card-content"&gt;
+          |         &lt;div class="card-content-inner"&gt;Card content&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="card-footer"&gt;Card footer&lt;/div&gt;
+          |     &lt;/li&gt;
+          |     &lt;li class="card"&gt;
+          |       &lt;div class="card-header"&gt;Card Header&lt;/div&gt;
+          |       &lt;div class="card-content"&gt;
+          |         &lt;div class="card-content-inner"&gt;Card content&lt;/div&gt;
+          |       &lt;/div&gt;
+          |       &lt;div class="card-footer"&gt;Card footer&lt;/div&gt;
+          |     &lt;/li&gt;
+          |     ...
+          |   &lt;/ul&gt;
+          | &lt;/div&gt;
+      .device-spacer(style="height:200px")
+            
+    

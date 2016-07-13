@@ -38,7 +38,6 @@
         if (!Modernizr.touch) newVideo[0].play();
         $('.home-killer .tab-links a').eq(index).addClass('active');
     });
-        
 
     if (window.hljs) {
         hljs.configure({tabReplace: '    '});
@@ -72,10 +71,9 @@
 
     function handleDocsNavToggle() {
         var st = $(window).scrollTop();
-        var toggle = $('.toggle-docs-nav');
         var top = $(window).height() / 2 + st - $('.docs-nav').offset().top - 25;
         if (top < 5) top = 5;
-        toggle.css({
+        $('.toggle-docs-nav').css({
             transform: 'translateY(' + top + 'px)'
         });
     }
@@ -105,7 +103,6 @@
             handleDocsNavToggle();
             $('.toggle-docs-nav').css({opacity:1});
         }
-            
     }
     // Docs scroll spy
     var demoDevicePreviewLink;
@@ -168,4 +165,62 @@
         iframe.attr('src', iframe.data('src'));
         $(this).parents('.app-launcher').remove();
     });
+
+    // GH Stars/Forks
+    function fetchGitStats(local) {
+        if (local) {
+            if (localStorage.getItem('f7-git-stats-stars')) {
+                $('.gh-stars span').html(localStorage.getItem('f7-git-stats-stars'));
+            }
+            if (localStorage.getItem('f7-git-stats-forks')) {
+                $('.gh-forks span').html(localStorage.getItem('f7-git-stats-forks'));
+            }
+            return;
+        }
+        $.ajax({
+            dataType: 'jsonp',
+            url: 'https://api.github.com/repos/nolimits4web/framework7',
+            success: function(data){
+                console.log(data);
+                if (data) {
+                    localStorage.setItem('f7-git-stats-date', new Date().getTime());
+                    if(data.data.stargazers_count){
+                        var stars = data.data.stargazers_count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        localStorage.setItem('f7-git-stats-stars', stars);
+                        $('.gh-stars span').html(stars);
+                    }
+                    if(data.data.forks){
+                        var forks = data.data.forks.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        localStorage.setItem('f7-git-stats-forks', forks);
+                        $('.gh-forks span').html(forks);
+                    }
+                }
+            }
+        });
+    }
+    var gitStatsDate = localStorage.getItem('f7-git-stats-date');
+    if (gitStatsDate && (new Date().getTime() - gitStatsDate * 1) < 1000 * 60 * 60) {
+        fetchGitStats(true);
+    }
+    else {
+        fetchGitStats();
+    }
+
+    // FB
+    $('body').prepend('<div id="fb-root"></div>');
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=129338113911206";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    // TW
+    (function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}})(document, 'script', 'twitter-wjs');
+    // G+
+    (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/platform.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
 })();

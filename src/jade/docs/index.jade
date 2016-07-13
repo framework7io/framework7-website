@@ -1,0 +1,17 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Framework7 Documentation
+      p Start creating awesome iOS & Android apps with Framework7. 
+      p Before you start we highly recommend you to read <a href="../get-started/">Getting Started</a> guide about how to download/install Framework7 and look at its basic layout.
+      p Framework7's learning curve is pretty easy. If you know HTML, CSS and a bit of JavaScript - you almost know how to create apps with Framework7.
+      p For better understanding we recommend you to read documentation articles in direct order like you see them in left navigation.
+      p So, let's start from basic <a href="app-layout.html">App HTML Layout</a>

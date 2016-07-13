@@ -1,0 +1,185 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Framework7 Plugins API | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-menu
+    .docs-content
+      h1 Framework7 Plugins API
+      p Framework7 comes with easy to use Plugins API that allows you to create your own Framework7 plugins.
+      //- p Framework7's Plugin system is very interesting and simple, it is based on so called "hooks", "prevents" (not yet in core) and "process" (not yet in core). Hooks are like callbacks which are called in many different core parts that allow your plugin to execute code in required moments or to handle required data.
+      h2 Plugin File Structure
+      p First of all let's look at the basic plugin's JS structure:
+      p <b>framework7.myplugin.js</b>:
+      pre
+        code
+          | Framework7.prototype.plugins.myPlugin = function (app, params) {
+          |     ... plugin code here ...
+          | };            
+      p Where
+      ul
+        li <code>myPlugin</code> - name of your plugin, should be unique, this name is also used when user pass parameters to your plugins
+        li <code>app</code> - first of plugin function arguments. It is an <a href="init-app.html">initialized App instance</a>
+        li <code>params</code> - your plugin parameters (not required)
+      h2 Plugin parameters
+      p So how our plugin will accept its personal parameters that will be passed as <code>params</code> argument to plugin prototype function? It is simple and based on your plugin name, which is <code>myPlugin</code> in example above. So to pass parameters to this plugin we will need to specify its name in App's parameters on the moment of initialization:
+      pre
+        code
+          | var myApp = new Framework7({
+          |     modalTitle: 'My App',
+          |     pushState: true,
+          |     /* 
+          |     Here comes your plugin parameters that will be passed to your plugin in case of parameter name is the same as plugin name:
+          |     */
+          |     myPlugin: {
+          |         foo: 'bar'
+          |     }
+          | });
+      p So now in plugin:      
+      pre
+        code
+          | Framework7.prototype.plugins.myPlugin = function (app, params) {
+          |     console.log(params.foo); // 'bar'
+          | };        
+      h2 Plugin Code
+      p What's next, how to make our plugin do something what we need?
+      p Framework7's Plugin system is very interesting and simple, it is based on so called "hooks", "prevents" (not yet in core) and "process" (not yet in core): 
+      ul
+        li <b>hooks</b> - are like usual callbacks, they called by app in many different core parts. They allow to your plugin to execute code in required moments or to handle required data on different stages. Each hook receives different arguments.
+        li <b>prevents</b> allow to prevent some app's default actions, for example they may prevent default pages animation and make your own
+        li <b>processes</b> they work like preprocessors, each process method may takes data and modify it
+      p So plugin should return object that may contain 3 objects with methods (hooks, prevents and processes):
+      pre
+        code
+          | Framework7.prototype.plugins.myPlugin = function (app, params) {
+          | 
+          |     /* 
+          |     Local plugin scope 
+          |     */
+          | 
+          |     // Handle app init hook
+          |     function handleAppInit() {
+          |         console.log('app initialized');
+          |     }
+          | 
+          |     // Return hooks
+          |     return {
+          |         hooks: {
+          |             // App init hook
+          |             appInit: handleAppInit
+          |         }
+          |     };    
+          | }; 
+      .important-note
+        p Note, that plugin will be initialized on the first stage of app initialization and few things may be still unneaccessable here (where "local plugin scope" in example above). If you need to execute code when app is fully initialized, use 'appInit' hook
+      h2 Available Hooks
+      p Let's look at list of all currently available hooks (this list will be expanded) and their arguments:
+      table.methods-table
+        tr
+          td appInit
+          td Will be triggered when App is fully initialized
+        tr
+          td navbarInit (<span>navbar, pageData</span>)
+          td The same as "navbarInit" event
+        tr
+          td pageInit (<span>pageData</span>)
+          td The same as "pageInit" event or same page callback. Will be triggered after Framework7 initialize page's components and navbar
+        tr
+          td pageBeforeInit (<span>pageData</span>)
+          td The same as "pageBeforeInit" event or same page callback. Will be triggered before Framework7 just inserts new page to DOM
+        tr
+          td pageBeforeAnimation (<span>pageData</span>)
+          td The same as "pageBeforeAnimation" event or same page callback. Will be triggered when everything initialized and page (and navbar) is ready to be animated
+        tr
+          td pageAfterAnimation (<span>pageData</span>)
+          td The same as "pageAfterAnimation" event or same page callback. Will be triggered after page (and navbar) animation
+        tr
+          td pageBeforeRemove (<span>pageData</span>)
+          td The same as "pageBeforeRemove" event or same page callback. Will be triggered right before Page will be removed from DOM
+        tr
+          td addView (<span>view</span>)
+          td Will be triggered when user adds new View by calling <code>myApp.addView</code>. As an argument it receives initialized View instance
+        tr
+          td loadPage (<span>view, url, content</span>)
+          td This hook will be triggered in the most begining of new page loading process while it wasn't added to DOM yet.
+        tr
+          td goBack (<span>view, url, preloadOnly</span>)
+          td This hook will be triggered in the most begining of go back process.
+        tr
+          td swipePanelSetTransform (<span>views, panel, percentage</span>)
+          td This hook will be triggered during swipe on swipe panel
+      h2 Install Plugin
+      p To install/include plugin file you just need to include it right AFTER main Framework7 JavaScript library:
+      pre
+        code
+          | &lt;body&gt;
+          |     ...
+          |     &lt;script src="path/to/framework7.js"&gt;&lt;/script&gt;
+          |     &lt;script src="path/to/framework7.myplugin.js"&gt;&lt;/script&gt;
+          | &lt;/body&gt;
+      h2 Demo Plugin       
+      p Let's create simple Debug demo plugin. It will do nothing, just log all hooks and their arguments
+      p <b>framework7.debug.js</b>:
+      pre
+        code
+          | Framework7.prototype.plugins.debug = function (app, params) {
+          |     // exit if not enabled
+          |     if (!params) return;
+          | 
+          |     return {
+          |         hooks: {
+          |             appInit: function () {
+          |                 console.log ('appInit');
+          |             },
+          |             navbarInit: function (navbar, pageData) {
+          |                 console.log('navbarInit', navbar, pageData);
+          |             },
+          |             pageInit: function (pageData) {
+          |                 console.log('pageInit', pageData);
+          |             },
+          |             pageBeforeInit: function (pageData) {
+          |                 console.log('pageBeforeInit', pageData);
+          |             },
+          |             pageBeforeAnimation: function (pageData) {
+          |                 console.log('pageBeforeAnimation', pageData);
+          |             },
+          |             pageAfterAnimation: function (pageData) {
+          |                 console.log('pageAfterAnimation', pageData);
+          |             },
+          |             pageBeforeRemove: function (pageData) {
+          |                 console.log('pageBeforeRemove', pageData);
+          |             },
+          |             addView: function (view) {
+          |                 console.log('addView', view);
+          |             },
+          |             loadPage: function (view, url, content) {
+          |                 console.log('loadPage', view, url, content);
+          |             },
+          |             goBack: function (view, url, preloadOnly) {
+          |                 console.log('goBack', view, url, preloadOnly);
+          |             },
+          |             swipePanelSetTransform: function (views, panel, percentage) {
+          |                 console.log('swipePanelSetTransform', views, panel, percentage);
+          |             }
+          |         }
+          |     };
+          | };
+      p We need to include it to app:
+      pre
+        code
+          | &lt;body&gt;
+          |     ...
+          |     &lt;script src="path/to/framework7.js"&gt;&lt;/script&gt;
+          |     &lt;script src="path/to/framework7.debug.js"&gt;&lt;/script&gt;
+          |     &lt;script src="path/to/myapp.js"&gt;&lt;/script&gt;
+          | &lt;/body&gt;
+      p And enable it in <b>myapp.js</b>:
+      pre
+        code
+          | var myApp = new Framework7({
+          |     debug: true
+          | });

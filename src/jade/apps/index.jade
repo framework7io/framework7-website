@@ -1,0 +1,210 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'apps';
+  - var title = 'Ready To Use Demo Apps';
+
+block content
+  h1 Ready To Use Demo Apps
+  p On this page you may find ready to use open source apps made with Framework7.
+  .example
+    .device.device-left.device-v.device-android
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Weather7-Material/")
+    .info
+      h2 Weather7 Material
+      p Material version of Weather7 demo app. It is the simple weather webapp that demonstrates how easy to create fully functioning Material app with Framework7. With PhoneGap you can easily convert it to native Android app.
+      h4 Weather7 Features:
+      ul.app-features
+        li <strong>Material Responsive Layout</strong> - app has a bit different layout on tablets (large screens) to match Material apps design guides
+        li <strong>Local Storage</strong>. All your personal weather data is stored in Local Storage, so you don't need to add weather locations each time you launch app.
+        li <strong>Manifest Cache</strong>. Due to Manifest Cache you can still access app without internet connection. You need internet connection only when you need to update weather data.
+        li <strong>YQL</strong> - fast and easy way to get the required data. Here we use YQL to search locations and get weather data for selected ones.
+        li <strong>Flickr API</strong> - to show locations' photos.
+      p So Weather7 is a real fully functioning Android Material app. Just open it in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./Weather7-Material/", target="_blank").button Open app in new window
+        a(href="https://github.com/nolimits4web/Weather7-Material/", target="_blank").button Source code
+    .clearfix  
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="http://www.timo-ernst.net/misc/f7angulardemo/")
+    .info
+      h2 Fresh Tomatoes
+      .example-author by <a href="http://www.timo-ernst.net/" target="_blank">Timo Ernst</a>
+      p This demo application build on top of <a href="https://github.com/valnub/Framework7-Typescript-Template" target="_blank">Framework7 template with TypeScript and AngularJS</a>
+      p App will list upcoming and current movies from theaters and give you detailed information. Tapping on a movie will show additional information
+      p.buttons 
+        a(href="http://www.timo-ernst.net/misc/f7angulardemo/", target="_blank").button Open app in new window
+        a(href="https://github.com/valnub/Framework7-with-AngularJS-demo-app", target="_blank").button Source code
+    .clearfix
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="http://guillaumebiton.github.io/HackerNews7/")
+    .info
+      h2 HackerNews7
+      .example-author by <a href="https://github.com/GuillaumeBiton" target="_blank">Guillaume Biton</a>
+      p Hacker News Reader powered by Framework7 which is based on the Official Hacker News API.
+      h4 App Features:
+      ul.app-features
+        li Home page with top 100 hacker news stories
+        li Search through stories
+        li Detail page for each story with its link and comments
+        li Template7 for data rendering
+        li Pull To Refresh to update top stories
+        li Once loaded, the stories will be cached to Local Storage for fast access on app load in future
+      p.buttons 
+        a(href="http://guillaumebiton.github.io/HackerNews7/", target="_blank").button Open app in new window
+        a(href="https://github.com/GuillaumeBiton/HackerNews7", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="http://perehnbom.github.io/canjs-framework7-issuetracker/")
+    .info
+      h2 CanJS Issue Tracker
+      .example-author by <a href="http://www.perehnbom.se/" target="_blank">Per Ehnbom</a>
+      p Example project with CanJS and Framework7. The project highlights how the 2 frameworks can be combined.
+      p.buttons 
+        a(href="http://perehnbom.github.io/canjs-framework7-issuetracker/", target="_blank").button Open app in new window
+        a(href="https://github.com/perehnbom/canjs-framework7-issuetracker", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./UrbanDictionary_API/")
+    .info
+      h2 UrbanDictionary API
+      .example-author by <a href="https://github.com/KLVN" target="_blank">Kelvin</a>
+      p Simple Webapp based on the Framework7 to show Random Definitions from UrbanDictionary
+      h4 App Features:
+      ul.app-features
+        li UrbanDictionary JSON API as data
+        li App uses <a href="http://idangero.us/framework7/docs/template7.html" target="_blank">Template7</a> as template engine
+        li Pull-To-Refresh to refresh definitions
+      p.buttons 
+        a(href="./UrbanDictionary_API/", target="_blank").button Open app in new window
+        a(href="https://github.com/KLVN/UrbanDictionary_API", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Framework7-Contacts7-MVC/")
+    .info
+      h2 React Base
+      .example-author by <a href="https://github.com/philipshurpik" target="_blank">Philip Shurpik</a>
+      p This app shows you example of using mobile Framework7 with React to build data-driven contacts application.
+      h4 App Features:
+      ul.app-features
+        li App uses <a href="http://requirejs.org/" target="_blank">RequireJS</a> to bring handy file-separated MVC structure 
+        li <a href="http://facebook.github.io/react/" target="_blank">React.js</a> to bring real-time data bindings.
+        li Contacts list is sorted by name and by groups dynamically.
+        li Local Storage - all contacts data is stored in Local Storage.
+      p.buttons 
+        a(href="./framework7-react-base/", target="_blank").button Open app in new window
+        a(href="https://github.com/philipshurpik/framework7-react-base", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      .device-inner
+        iframe(width="320", height="568", scrolling="no", frameborder="0", data-src="https://f7-chat.firebaseapp.com/")
+        .app-launcher
+          span Launch App
+    .info
+      h2 Chattr
+      .example-author by <a href="https://github.com/kidGodzilla/" target="_blank">James Futhey</a>
+      p An elegant & speedy iOS 7 chat app built with JavaScript & Framework7, using firebase to handle chat persistence.
+      p Packaged as an HTML5 iOS app (Open in Safari, click the share icon, and select Add to Home Screen to install to your device).
+      p.buttons 
+        a(href="https://f7-chat.firebaseapp.com/", target="_blank").button Open app in new window
+        a(href="https://github.com/kidGodzilla/Chattr", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Bug-Reporter7/")
+    .info
+      h2 Bug Reporter<sup>7</sup>
+      .example-author by <a href="https://github.com/SniperGER/" target="_blank">Janik Schmidt</a>
+      p Bug Reporter<sup>7</sup> is a web based application to help you and your team keep your work organized by moving Bug Reporting into one centralized system. Driven by the powerful Framework7, Bug Reporter7 allows Users and Developers to advance development of their projects by submitting Bugs, which other Developers can try to fix.
+      h4 Bug Reporter<sup>7</sup> Features:
+      ul.app-features
+        li Submit bugs, report issues: Help advance development of your project by reporting issues you encounter. Just tap „Submit“ and enter the details.
+        li Show off your personality: Quickly change themes or tint colors to create the experience you want. Your settings are synchronized via the Cloud.
+        li Night and Day. Yours to choose: Timed Theme allows you to automatically apply the Dark theme when it's night. And when it's day, the theme will be Light again.
+        li With Updates, it keeps getting better: Every release of Bug Reporter⁷ now comes with Software Update to keep your app always up to date, because Updates are downloaded automatically.
+      p Open Bug Reporter<sup>7</sup> in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./Bug-Reporter7/", target="_blank").button Open app in new window
+        a(href="https://github.com/SniperGER/Bug-Reporter7", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="http://dearb.me/hi/build/")
+    .info
+      h2 hiApp
+      .example-author by <a href="http://dearb.me/" target="_blank">Belin Chung</a>
+      p HiApp is a demo app to show how to use Framework 7 to build a hybrid app. HiApp is also a part of <a href="http://m.hiliaox.com" target="_blank">Hiliao</a>, which is a real working web app.
+      h4 hiApp Features:
+      ul.app-features
+        li <a href="http://requirejs.org/" target="_blank">RequireJS</a> - for file-separated MVC structure 
+        li <a href="https://github.com/janl/mustache.js" target="_blank">Mustache.js</a> as a client side template engine
+      p Open hiApp in new window and pin it to your home screen:
+      p.buttons 
+        a(href="http://dearb.me/hi/build/", target="_blank").button Open app in new window
+        a(href="https://github.com/BelinChung/HiApp", target="_blank").button Source code
+    .clearfix
+
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Framework7-Contacts7-MVC/")
+    .info
+      h2 Contacts7-MVC
+      .example-author by <a href="https://github.com/philipshurpik" target="_blank">Philip Shurpik</a>
+      p Contacts7 shows you example of using beautiful Framework7 in MVC way for building data-driven contacts application. With PhoneGap you can easily convert it to native iOS 7 app.
+      h4 Contacts7 Features:
+      ul.app-features
+        li App uses <a href="http://requirejs.org/" target="_blank">RequireJS</a> to bring handy file-separated MVC structure 
+        li <a href="http://handlebarsjs.com/" target="_blank">Handlebars.js</a> as a client side template engine
+        li Contacts list is sorted by name and by groups dynamically using <a href="http://lodash.com/" target="_blank">Lo-Dash</a>
+        li Local Storage - all contacts data is stored in Local Storage.
+        li Full Screen. Contacts7 is a full screen app (on iOS 7)
+      p Open Contacts7 in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./Framework7-Contacts7-MVC/", target="_blank").button Open app in new window
+        a(href="https://github.com/philipshurpik/Framework7-Contacts7-MVC", target="_blank").button Source code
+    .clearfix
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./Weather7/")
+    .info
+      h2 Weather7
+      p Weather7 is the simple weather webapp that demonstrates how easy to create fully functioning iOS app with Framework7. With PhoneGap you can easily convert it to native iOS app.
+      h4 Weather7 Features:
+      ul.app-features
+        li <strong>Local Storage</strong>. All your personal weather data is stored in Local Storage, so you don't need to add weather locations each time you launch app.
+        li <strong>Manifest Cache</strong>. Due to Manifest Cache you can still access app without internet connection. You need internet connection only when you need to update weather data.
+        li <strong>YQL</strong> - fast and easy way to get the required data. Here we use YQL to search locations and get weather data for selected ones.
+        li <strong>Full Screen</strong>. Weather7 is a full screen app (on iOS). Just add it to your home screen to make sure. And the fun part is that with Framework7 you can easily control background color of status bar - click on "+" icon to open search popup and look at status bar.
+      p So Weather7 is a real fully functioning iOS app. Just open it in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./Weather7/", target="_blank").button Open app in new window
+        a(href="https://github.com/nolimits4web/Weather7/", target="_blank").button Source code
+    .clearfix
+  .example
+    .device.device-left.device-v
+      iframe(width="320", height="568", scrolling="no", frameborder="0", src="./todo7/")
+    .info
+      h2 ToDo7
+      p ToDo7 is the incredibly simple "to do" webapp with simple tasks management. ToDo7 demonstrates that you can create fully functioning iOS app with minimal efforts in a few hours. Using PhoneGap you can convert it to native iOS app.
+      h4 ToDo7 Features:
+      ul.app-features
+        li <strong>Local Storage</strong>. All your "to do" tasks are stored in Local Storage, so you don't need to add them each time you launch app.
+        li <strong>Manifest Cache</strong>. Due to Manifest Cache you can still access app without internet connection. 
+        li <strong>Full Screen</strong>. ToDo7 is also a full screen app (on iOS). 
+      p So just open it in new window and pin it to your home screen:
+      p.buttons 
+        a(href="./todo7/", target="_blank").button Open app in new window
+        a(href="https://github.com/nolimits4web/ToDo7", target="_blank").button Source code
+    .clearfix

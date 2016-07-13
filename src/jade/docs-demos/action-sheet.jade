@@ -1,0 +1,157 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .pages
+        .page(data-page="home").navbar-fixed
+          .navbar
+            .navbar-inner
+              .left 
+              .center Action Sheet
+              .right 
+          .page-content
+            .content-block
+              p
+                a(href="#").ac-1 One group, three buttons
+              p
+                a(href="#").ac-2 One group, title, three buttons
+              p
+                a(href="#").ac-3 Two groups
+              p
+                a(href="#").ac-4 Three groups
+              p
+                a(href="#").ac-5 With callbacks on click
+              
+
+block scripts
+  script.
+    var myApp = new Framework7();
+
+    var $$ = Dom7;
+
+    //- One group, three buttons
+    $$('.ac-1').on('click', function () {
+        var buttons = [
+            {
+                text: 'Button1',
+                bold: true
+            },
+            {
+                text: 'Button2'
+            },
+            {
+                text: 'Cancel',
+                color: 'red'
+            },
+        ];
+        myApp.actions(buttons);
+    });
+
+    //- One group, title, three buttons
+    $$('.ac-2').on('click', function () {
+        var buttons = [
+            {
+                text: 'Do something',
+                label: true
+            },
+            {
+                text: 'Button1',
+                bold: true
+            },
+            {
+                text: 'Button2',
+            },
+            {
+                text: 'Cancel',
+                color: 'red'
+            },
+        ];
+        myApp.actions(buttons);
+    });
+
+    //- Two groups
+    $$('.ac-3').on('click', function () {
+        var buttons1 = [
+            {
+                text: 'Do something',
+                label: true
+            },
+            {
+                text: 'Button1',
+                bold: true
+            },
+            {
+                text: 'Button2',
+            }
+        ];
+        var buttons2 = [
+            {
+                text: 'Cancel',
+                color: 'red'
+            }
+        ];
+        var groups = [buttons1, buttons2];
+        myApp.actions(groups);
+    });
+
+    //- Three groups
+    $$('.ac-4').on('click', function () {
+        var buttons1 = [
+            {
+                text: 'Share',
+                label: true
+            },
+            {
+                text: 'Mail',
+            },
+            {
+                text: 'Messages',
+            }
+        ];
+        var buttons2 = [
+            {
+                text: 'Social share',
+                label: true
+            },
+            {
+                text: 'Facebook',
+            },
+            {
+                text: 'Twitter',
+            }
+        ];
+        var buttons3 = [
+            {
+                text: 'Cancel',
+                color: 'red'
+            }
+        ];
+        var groups = [buttons1, buttons2, buttons3];
+        myApp.actions(groups);
+    });
+
+    //- With callbacks on click
+    $$('.ac-5').on('click', function () {
+        var buttons = [
+            {
+                text: 'Button1',
+                onClick: function () {
+                    myApp.alert('Button1 clicked')
+                }
+            },
+            {
+                text: 'Button2',
+                onClick: function () {
+                    myApp.alert('Button2 clicked')
+                }
+            },
+            {
+                text: 'Cancel',
+                color: 'red',
+                onClick: function () {
+                    myApp.alert('Cancel clicked')
+                }
+            },
+        ];
+        myApp.actions(buttons);
+    });
