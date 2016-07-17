@@ -57,7 +57,7 @@
                 dest: './get-started/'
             },
             plugins: {
-                src: './src/jade/examples/plugins.jade',
+                src: './src/jade/plugins/index.jade',
                 dest: './plugins/'
             },
             showcase: {
