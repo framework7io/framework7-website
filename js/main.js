@@ -139,7 +139,7 @@
             device.find('iframe')[0].onload = function() {
                 setTimeout(function () {
                     device.find('.fade-overlay').removeClass('visible');
-                }, 100);    
+                }, 100);
             };
             device.find('iframe').attr('src', newPreviewLink);
         }
@@ -157,7 +157,9 @@
 
     $('.app-show-shots a').click(function(e) {
         e.preventDefault();
-        $(this).parent().hide().parents('.app').find('.app-shots').show();
+        $(this).parent().hide().parents('.app').find('.app-shots').show().find('img').each(function () {
+            $(this).attr('src', $(this).attr('data-src'));
+        });
     });
 
     $('.app-launcher span').click(function () {

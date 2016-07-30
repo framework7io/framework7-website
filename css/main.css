@@ -1990,7 +1990,8 @@ h1 + .tutorial-author {
 .showcase-apps .appstore-button,
 .showcase-apps .firefox-button,
 .showcase-apps .google-button,
-.showcase-apps .amazon-button {
+.showcase-apps .amazon-button,
+.showcase-apps .chrome-button {
   width: 150px;
   height: 45px;
   display: inline-block;
@@ -2010,6 +2011,10 @@ h1 + .tutorial-author {
 .showcase-apps .google-button {
   background-image: url(../i/google-button.png);
 }
+.showcase-apps .chrome-button {
+  background-image: url(../i/chrome-button.png);
+  height: 42px;
+}
 .showcase-apps .app-author {
   margin-bottom: 15px;
 }
@@ -2027,11 +2032,15 @@ h1 + .tutorial-author {
   white-space: nowrap;
   display: none;
 }
-.showcase-apps .app-shots img {
+.showcase-apps .app-shots img,
+.showcase-apps .app-shots iframe {
   max-height: 568px;
   margin-right: 10px;
+  display: inline-block;
+  vertical-align: top;
 }
-.showcase-apps .app-shots img:last-child {
+.showcase-apps .app-shots img:last-child,
+.showcase-apps .app-shots iframe:last-child {
   margin-right: 0;
 }
 .showcase-apps .app-show-shots a {
