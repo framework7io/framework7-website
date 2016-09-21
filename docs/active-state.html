@@ -10,7 +10,16 @@
     <link rel="shortcut icon" href="/favicon.png">
     <script src="//cdn.framework7.io/js/vendor/modernizr-2.7.1.min.js"></script>
   </head>
-  <body>
+  <body><!-- BuySellAds Ad Code -->
+    <script>
+      (function(){
+        var bsa = document.createElement('script');
+           bsa.type = 'text/javascript';
+           bsa.async = true;
+           bsa.src = '//s3.buysellads.com/ac/bsa.js';
+        (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+      })();
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://f7cn.com/">CN</a></div>
@@ -278,6 +287,11 @@ html:not(.watch-active-state) .my-button:active {
           </div>
           <div class="clearfix"></div>
         </div>
+        <div class="sponsors">
+          <div class="sponsors-title">Sponsored by</div>
+          <div id="bsap_1306028" class="bsarocks bsap_692e54a1f79f00fb913f5a1c3ec9eaa5"></div>
+        </div>
+        <div class="clearfix"></div>
         <div class="copy">
           <div class="copy-left">
             <p>Code licensed under <a href="https://github.com/nolimits4web/Framework7/blob/master/LICENSE" target="_blank">MIT</a></p>

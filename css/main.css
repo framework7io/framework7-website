@@ -1095,11 +1095,12 @@ footer a:hover {
 }
 footer .links {
   padding: 20px 0;
+  float: left;
 }
 footer .links-block {
   float: left;
   text-align: left;
-  margin-left: 100px;
+  margin-left: 60px;
 }
 footer .links-block:first-child {
   margin-left: 0;
@@ -1119,6 +1120,61 @@ footer .links-block-title {
   text-transform: uppercase;
   font-size: 16px;
   letter-spacing: 0.1em;
+}
+footer .sponsors {
+  float: right;
+  padding: 20px 0;
+  text-align: right;
+}
+footer .sponsors-title {
+  text-transform: uppercase;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+  text-align: right;
+}
+footer #bsap_1306028 {
+  margin-top: 10px;
+  font-size: 0;
+  width: 460px;
+  text-align: right;
+}
+footer #bsap_1306028 a {
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 14px;
+  box-sizing: border-box;
+  display: inline-block;
+  border: none;
+  opacity: 0.97;
+  color: #fff;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+  float: none;
+}
+footer #bsap_1306028 a img {
+  border: none;
+  outline: 0;
+}
+footer #bsap_1306028 a:hover {
+  opacity: 1;
+}
+footer #bsap_1306028 a:nth-child(2n) {
+  margin-left: 20px;
+}
+footer #bsap_1306028 a.adhere {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  text-align: center;
+  width: 220px;
+  height: 65px;
+  background: none;
+  font-family: inherit;
+  line-height: 63px;
+  font-weight: normal;
+}
+footer #bsap_1306028 a.adhere:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 footer .copy {
   padding: 20px 0;

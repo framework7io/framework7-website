@@ -11,6 +11,16 @@ html
     link(rel="shortcut icon" href="/favicon.png")
     script(src="#{cdn}/js/vendor/modernizr-2.7.1.min.js")
   body
+    | <!-- BuySellAds Ad Code -->
+    script.
+      (function(){
+        var bsa = document.createElement('script');
+           bsa.type = 'text/javascript';
+           bsa.async = true;
+           bsa.src = '//s3.buysellads.com/ac/bsa.js';
+        (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+      })();
+    | <!-- End BuySellAds Ad Code -->
     header.inner-header
       .center
         a(href="../").logo

@@ -763,11 +763,12 @@ footer {
     }
     .links {
         padding: 20px 0;
+        float: left;
     }
     .links-block {
         float: left;
         text-align: left;
-        margin-left: 100px;
+        margin-left: 60px;
         &:first-child {
             margin-left: 0;
         }
@@ -787,6 +788,61 @@ footer {
         text-transform: uppercase;
         font-size: 16px;
         letter-spacing: 0.1em;
+    }
+    .sponsors {
+        float: right;
+        padding: 20px 0;
+        text-align: right;
+    }
+    .sponsors-title {
+        text-transform: uppercase;
+        font-size: 16px;
+        letter-spacing: 0.1em;
+        margin-bottom: 10px;
+        text-align: right;
+    }
+    #bsap_1306028 {
+        margin-top: 10px;
+        font-size: 0;
+        width: 220px * 2 + 20;
+        text-align: right;
+        a {
+            text-align: left;
+            margin-bottom: 20px;
+            font-size: 14px;
+            box-sizing: border-box;
+            display: inline-block;
+            border: none;
+            opacity: 0.97;
+            color: #fff;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+            float: none;
+            img {
+                border: none;
+                outline: 0;
+            }
+            &:hover {
+                opacity: 1;
+            }
+            &:nth-child(2n) {
+                margin-left: 20px;
+            }
+        }
+        a.adhere {
+            border: 1px solid rgba(255,255,255,0.4);
+            text-align: center;
+            width: 220px;
+            height: 65px;
+            background: none;
+            font-family: inherit;
+            line-height: 63px;
+            font-weight: normal;
+            &:hover {
+                background: rgba(255,255,255,0.05);
+            }
+        }
     }
     .copy {
         padding: 20px 0;
