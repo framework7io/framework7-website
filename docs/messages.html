@@ -47,14 +47,12 @@
     <div class="share-line">
       <div class="center">
         <div class="share-buttons">
+          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="//cdn.framework7.io/i/support-badge.png" style="height:20px"></a></div>
           <div class="share-button">
             <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
           </div>
           <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
           <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
-          <div class="share-button">
-            <div data-size="medium" class="g-plusone"></div>
-          </div>
           <div class="clearfix"></div>
         </div>
         <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="//cdn.framework7.io/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
@@ -416,7 +414,7 @@
             <pre><code>{{#if day}}
 &lt;div class="messages-date"&gt;{{day}} {{#if time}}, &lt;span&gt;{{time}}&lt;/span&gt;{{/if}}&lt;/div&gt;
 {{/if}}
-&lt;div class="message message-{{type}} {{#if hasImage}}message-pic{{/if}} {{#if avatar}}message-with-avatar{{/if}} message-appear-
+&lt;div class="message message-{{type}} {{#if hasImage}}message-pic{{/if}} {{#if avatar}}message-with-avatar{{/if}} message-appear-from-{{position}}{{/if}}"&gt;
     {{#if name}}&lt;div class="message-name"&gt;{{name}}&lt;/div&gt;{{/if}}
     &lt;div class="message-text"&gt;{{text}}&lt;/div&gt;
     {{#if avatar}}&lt;div class="message-avatar" style="background-image:url({{avatar}})"&gt;&lt;/div&gt;{{/if}}
@@ -677,14 +675,12 @@ $$('.messagebar .link').on('click', function () {
     <div class="share-line">
       <div class="center">
         <div class="share-buttons">
+          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="//cdn.framework7.io/i/support-badge.png" style="height:20px"></a></div>
           <div class="share-button">
             <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
           </div>
           <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
           <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
-          <div class="share-button">
-            <div data-size="medium" class="g-plusone"></div>
-          </div>
           <div class="clearfix"></div>
         </div>
         <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="//cdn.framework7.io/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>

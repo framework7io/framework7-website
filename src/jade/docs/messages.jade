@@ -206,7 +206,7 @@ block content
             | {{#if day}}
             | &lt;div class="messages-date"&gt;{{day}} {{#if time}}, &lt;span&gt;{{time}}&lt;/span&gt;{{/if}}&lt;/div&gt;
             | {{/if}}
-            | &lt;div class="message message-{{type}} {{#if hasImage}}message-pic{{/if}} {{#if avatar}}message-with-avatar{{/if}} message-appear-
+            | &lt;div class="message message-{{type}} {{#if hasImage}}message-pic{{/if}} {{#if avatar}}message-with-avatar{{/if}} message-appear-from-{{position}}{{/if}}"&gt;
             |     {{#if name}}&lt;div class="message-name"&gt;{{name}}&lt;/div&gt;{{/if}}
             |     &lt;div class="message-text"&gt;{{text}}&lt;/div&gt;
             |     {{#if avatar}}&lt;div class="message-avatar" style="background-image:url({{avatar}})"&gt;&lt;/div&gt;{{/if}}
