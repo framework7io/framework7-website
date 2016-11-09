@@ -7,7 +7,7 @@ block content
           .navbar
             .navbar-inner
               .left 
-              .center Form To JSON
+              .center Form To Data
               .right 
           .page-content
             form(id="my-form").list-block
@@ -48,14 +48,14 @@ block content
                         .range-slider
                           input(type="range", min="0", max="100", value="50", step="0.1", name="slider")
             .content-block
-              a(href="#").button.form-to-json Get Form Data
+              a(href="#").button.form-to-data Get Form Data
 block scripts
   script.
     var myApp = new Framework7();  
 
     var $$ = Dom7;
     
-    $$('.form-to-json').on('click', function(){
-      var formData = myApp.formToJSON('#my-form');
+    $$('.form-to-data').on('click', function(){
+      var formData = myApp.formToData('#my-form');
       alert(JSON.stringify(formData));
     });

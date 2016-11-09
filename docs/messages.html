@@ -135,7 +135,7 @@
                 </li>
                 <li><a href="accordion.html">Accordion / Collapsible</a></li>
                 <li><a href="cards.html">Cards</a></li>
-                <li><a href="chips.html">Chips</a></li>
+                <li><a href="chips.html">Chips/Tags</a></li>
                 <li><a href="buttons.html">Buttons</a></li>
                 <li><a href="floating-action-button.html">Floating Action Button</a></li>
                 <li>
@@ -165,6 +165,13 @@
               </ul>
             </li>
             <li>
+              <div class="title">Icons</div>
+              <ul>
+                <li><a href="icons.html">Icons</a></li>
+                <li><a href="/icons/">Framework7 Icons Cheatsheet</a></li>
+              </ul>
+            </li>
+            <li>
               <div class="title">Styling</div>
               <ul>
                 <li><a href="color-themes.html">Color Themes</a></li>
@@ -182,6 +189,7 @@
             <li>
               <div class="title">Fast Clicks</div>
               <ul>
+                <li><a href="fast-clicks.html">Fast Clicks</a></li>
                 <li><a href="active-state.html">Active State</a></li>
                 <li><a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
                 <li><a href="touch-ripple.html">Touch Ripple (Material)</a></li>
@@ -255,6 +263,17 @@
         &lt;!-- Message label --&gt;
         &lt;div class="message-label"&gt;Delivered 2 days ago&lt;/div&gt;
       &lt;/div&gt;
+ 
+      &lt;!-- Sent message with single message date --&gt;
+      &lt;div class="message message-sent"&gt;
+        &lt;!-- Bubble with text --&gt;
+        &lt;div class="message-text"&gt;
+          How are you?
+          &lt;div class="message-date"&gt;Nov 11, 2016&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;!-- Message label --&gt;
+        &lt;div class="message-label"&gt;Delivered 2 days ago&lt;/div&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;        
@@ -287,6 +306,9 @@
               </li>
               <li>
                 <p><code>"message-label"</code> - text label below bubble</p>
+              </li>
+              <li>
+                <p><code>"message-date"</code> - single message date inside of bubble</p>
               </li>
             </ul>
             <p> <b>Additional classes for single message container:</b></p>
@@ -395,6 +417,18 @@
                   <td>Enable if you want to use new messages on top, instead of having them on bottom</td>
                 </tr>
                 <tr>
+                  <td>scrollMessages</td>
+                  <td>boolean</td>
+                  <td>true</td>
+                  <td>Enable/disable messages autoscrolling when adding new message</td>
+                </tr>
+                <tr>
+                  <td>scrollMessagesOnlyOnEdge</td>
+                  <td>boolean</td>
+                  <td>false</td>
+                  <td>If enabled then messages autoscrolling will happen only when user is on top/bottom of the messages view</td>
+                </tr>
+                <tr>
                   <td>messages</td>
                   <td>array</td>
                   <td>
@@ -414,12 +448,12 @@
             <pre><code>{{#if day}}
 &lt;div class="messages-date"&gt;{{day}} {{#if time}}, &lt;span&gt;{{time}}&lt;/span&gt;{{/if}}&lt;/div&gt;
 {{/if}}
-&lt;div class="message message-{{type}} {{#if hasImage}}message-pic{{/if}} {{#if avatar}}message-with-avatar{{/if}} message-appear-from-{{position}}{{/if}}"&gt;
+&lt;div class="message message-{{type}} {{#if hasImage}}message-pic{{/if}} {{#if avatar}}message-with-avatar{{/if}} {{#if position}}message-appear-from-{{position}}{{/if}}"&gt;
     {{#if name}}&lt;div class="message-name"&gt;{{name}}&lt;/div&gt;{{/if}}
-    &lt;div class="message-text"&gt;{{text}}&lt;/div&gt;
+    &lt;div class="message-text"&gt;{{text}}{{#if date}}&lt;div class="message-date"&gt;{{date}}&lt;/div&gt;{{/if}}&lt;/div&gt;
     {{#if avatar}}&lt;div class="message-avatar" style="background-image:url({{avatar}})"&gt;&lt;/div&gt;{{/if}}
     {{#if label}}&lt;div class="message-label"&gt;{{label}}&lt;/div&gt;{{/if}}
-&lt;/div&gt;            </code></pre>
+&lt;/div&gt;</code></pre>
             <h2>Messages Methods & Properties</h2>
             <p>After we initialize Messages we have its initialized instance in variable (like <code>myMessages</code> variable in example above) with helpful methods and properties:</p>
             <table class="methods-table">
@@ -520,6 +554,12 @@
                   <td>string</td>
                   <td></td>
                   <td>Message text. Also could be HTML string. So if you want to add message with picture, you should pass here image's HTML: <code>&lt;img src="..."&gt;</code>. <b>Required</b></td>
+                </tr>
+                <tr>
+                  <td>date</td>
+                  <td>string</td>
+                  <td></td>
+                  <td>Single message date. <b>Optional</b></td>
                 </tr>
                 <tr>
                   <td>name</td>

@@ -453,6 +453,9 @@ block content
             td .prevAll(<span>[selector]</span>) 
             td Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector
           tr
+            td .siblings(<span>[selector]</span>) 
+            td Get the siblings of each element in the set of matched elements, optionally filtered by a selector
+          tr
             td .parent(<span>[selector]</span>) 
             td Get the first parent of each element in the current set of matched elements, optionally filtered by a selector
           tr
@@ -474,12 +477,14 @@ block content
                 code.js
                   | var redLinks = $$('a').filter(function(index, el) {
                   |     return $$(this).hasClass('red');
-                  | })                  
-          
+                  | })
+
           tr
-            td .remove() 
+            td .remove()
             td Remove/detach matched elements from the Dom
-          
+          tr
+            td .empty()
+            td Remove all child nodes of the set of matched elements from the DOM. Alias for <code>.html('')</code>
           tr
             th(colspan="2") Shortcuts
           tr
@@ -628,7 +633,7 @@ block content
       p A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties
       .method-wrap
         p
-          span.method Dom7.each(<span>object/array</span>, <span>callback</span>) 
+          span.method $$.each(<span>object/array</span>, <span>callback</span>) 
           span - iterate through object or array
         ul.method-parameters
           li
@@ -667,7 +672,7 @@ block content
       h4 Dom7.parseUrlQuery
       .method-wrap
         p
-          span.method Dom7.parseUrlQuery(<span>url</span>) 
+          span.method $$.parseUrlQuery(<span>url</span>) 
           span - parse url query get parameters
         ul.method-parameters
           li
@@ -681,7 +686,7 @@ block content
       h4 Dom7.isArray
       .method-wrap
         p
-          span.method Dom7.isArray(<span>obj</span>) 
+          span.method $$.isArray(<span>obj</span>) 
           span - Determine whether the argument is an array
         ul.method-parameters
           li
@@ -695,7 +700,7 @@ block content
       h4 Dom7.unique
       .method-wrap
         p
-          span.method Dom7.unique(<span>array</span>) 
+          span.method $$.unique(<span>array</span>) 
           span - Remove duplicates in passed array
         ul.method-parameters
           li
@@ -709,7 +714,7 @@ block content
       h4 Dom7.serializeObject
       .method-wrap
         p
-          span.method Dom7.serializeObject(<span>object</span>) 
+          span.method $$.serializeObject(<span>object</span>) 
           span - Create a serialized representation of a plain object suitable for use in a URL query string
         ul.method-parameters
           li
@@ -723,7 +728,7 @@ block content
       h4 Dom7.toCamelCase
       .method-wrap
         p
-          span.method Dom7.toCamelCase(<span>string</span>) 
+          span.method $$.toCamelCase(<span>string</span>) 
           span - Convert hypens-case string to camelCase string
         ul.method-parameters
           li
@@ -738,7 +743,7 @@ block content
       h4 Dom7.dataset
       .method-wrap
         p
-          span.method Dom7.dataset(<span>el</span>) 
+          span.method $$.dataset(<span>el</span>) 
           span - Get element's data set (set of data- attributes) as plain Object
         ul.method-parameters
           li
@@ -765,7 +770,7 @@ block content
       h4 Dom7.requestAnimationFrame
       .method-wrap
         p
-          span.method Dom7.requestAnimationFrame(<span>callback</span>) 
+          span.method $$.requestAnimationFrame(<span>callback</span>) 
           span - Cross-browser implementation on requestAnimationFrame
         ul.method-parameters
           li
@@ -784,7 +789,7 @@ block content
       h4 Dom7.cancelAnimationFrame
       .method-wrap
         p
-          span.method Dom7.cancelAnimationFrame(<span>requestID</span>) 
+          span.method $$.cancelAnimationFrame(<span>requestID</span>) 
           span - Cancels an animation frame request
         ul.method-parameters
           li
@@ -793,10 +798,24 @@ block content
       pre
         code.js
           | $.cancelAnimationFrame(animId);
+      h4 Dom7.removeDiacritics
+      .method-wrap
+        p
+          span.method $$.removeDiacritics(<span>text</span>) 
+          span - Replace diacritics in specified text string with standard latin characters
+        ul.method-parameters
+          li
+            span.parameter text
+            |  - <span class="parameter-type">string</span> - Text string
+
+      pre
+        code.js
+          | var text = $$.removeDiacritics('ÁÓL');
+          | console.log(text); //-&gt; 'AOL'
       h2 Ajax
       .method-wrap
         p
-          span.method $$.ajax(parameters) 
+          span.method $$.ajax(parameters)
           span - Load data from the server
         ul.method-parameters
           li
@@ -913,8 +932,8 @@ block content
                   |       alert('page not found');
                   |     }
                   |   }
-                  | })                  
-          
+                  | })
+
       h3 Ajax Events
       p Each Ajax request produces global Ajax events on document, so you can always intercept and handle them:
       table.events-table
@@ -951,7 +970,7 @@ block content
       h4 Dom7.get
       .method-wrap
         p
-          span.method $$.get(<span>url</span>, <span>data</span>, <span>success</span>) 
+          span.method $$.get(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>) 
           span - Load data from the server using a HTTP GET request
         ul.method-parameters
           li
@@ -963,6 +982,9 @@ block content
           li
             span.parameter success
             |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+          li
+            span.parameter error
+            |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         p.method-returns returns plain XHR object
       pre
         code.js
@@ -973,7 +995,7 @@ block content
       h4 Dom7.post
       .method-wrap
         p
-          span.method $$.post(<span>url</span>, <span>data</span>, <span>success</span>) 
+          span.method $$.post(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>) 
           span - Load data from the server using a HTTP POST request
         ul.method-parameters
           li
@@ -985,6 +1007,9 @@ block content
           li
             span.parameter success
             |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+          li
+            span.parameter error
+            |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         p.method-returns returns plain XHR object
       pre
         code.js
@@ -995,7 +1020,7 @@ block content
       h4 Dom7.getJSON
       .method-wrap
         p
-          span.method $$.getJSON(<span>url</span>, <span>data</span>, <span>success</span>) 
+          span.method $$.getJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>) 
           span - Load JSON-encoded data from the server using a GET HTTP request
         ul.method-parameters
           li
@@ -1007,12 +1032,32 @@ block content
           li
             span.parameter success
             |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+          li
+            span.parameter error
+            |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
         p.method-returns returns plain XHR object
       pre
         code.js
           | $$.getJSON('items.json', function (data) {
           |   console.log(data);
           | });
+      h3 Ajax Setup
+      .method-wrap
+        p
+          span.method $$.ajaxSetup(parameters)
+          span - Set default values for future Ajax requests. <b>Its use is not recommended</b>
+        ul.method-parameters
+          li
+            span.parameter parameters
+            |  - <span class="parameter-type">object</span> - Default requests parameters
+      pre
+        code.js
+          | // After the following setup all XHR requests will have additional 'Autorization' header
+          | $$.ajaxSetup({
+          |     headers: {
+          |         'Authorization': 'sometokenvalue'
+          |     }
+          | })
       h3 Original Request Parameters
       p Each of Ajax methods returns plain XHR object, which is also available in callbacks. This default XHR object extended with the following properties:
       table.methods-table
@@ -1021,8 +1066,74 @@ block content
             th(colspan="2") Properties
           tr
             td xhr.requestParameters
-            td Object with passed XHR request parameters 
+            td Object with passed XHR request parameters
           tr
             td xhr.requestUrl
             td String with request URL
-          
+      h2 Animation
+      .method-wrap
+        p
+          span.method .animate(properties, parameters)
+          span - Perform a custom animation of a set of CSS properties
+        ul.method-parameters
+          li
+            span.parameter properties
+            |  - <span class="parameter-type">object</span> - CSS properties to animate
+          li
+            span.parameter parameters
+            |  - <span class="parameter-type">object</span> - animation parameters
+        p.method-returns returns Dom7 collection
+      pre
+        code.js
+          | $$('#animate-me').animate(
+          |     /* CSS properties to animate, e.g.: */
+          |     {
+          |         'margin-left': 100,
+          |         'width': 200,
+          |         'height': 300,
+          |         'opacity': 0.5
+          |     },
+          |     /* Animation parameters */
+          |     {
+          |         // Animation duraion in ms, optional (default to 300)
+          |         duration: 300,
+          |         // Animation easing, optional (default to 'swing'), can be also 'linear'
+          |         easing: 'swing',
+          |         /* Callbacks */
+          |         // Animation begins, optional
+          |         begin: function (elements) {
+          |             console.log('animation began');
+          |         },
+          |         // Animation completed, optional
+          |         complete: function (elements) {
+          |             console.log('animation completed');
+          |         },
+          |         // Animation in progress, optional
+          |         progress: function (elements, complete, remaining, start) {
+          |             /* Where
+          |             complete - The call's completion percentage (as a decimal value)
+          |             remaining - How much time remains until the call completes (in ms)
+          |             start - The absolute time at which the call began (in ms)
+          |             */
+          |             console.log('animation in progress');
+          |         }
+          |     }
+          | );
+      p It also supports chaining que:
+      pre
+        code.js
+          | $$('#animate-me')
+          |     .animate(
+          |         {
+          |             'margin-left': 100,
+          |             'width': 200,
+          |             'height': 300,
+          |             'opacity': 0.5
+          |         }
+          |     )
+          |     .animate(
+          |         {
+          |             'width': 50,
+          |             'height': 50
+          |         }
+          |     );

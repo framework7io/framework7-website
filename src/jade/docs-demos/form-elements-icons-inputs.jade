@@ -1,4 +1,6 @@
 extends _layout-ios
+block vars
+  - var includeF7Icons = true;
 block content
   .views
     .view.view-main
@@ -16,21 +18,21 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-name
+                      i.icon.f7-icons person
                     .item-inner 
                       .item-input
                         input(type="text", placeholder="Your name")
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-email
+                      i.icon.f7-icons email
                     .item-inner 
                       .item-input
                         input(type="email", placeholder="E-mail")
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-gender
+                      i.icon.f7-icons persons
                     .item-inner 
                       .item-input
                         select
@@ -39,14 +41,14 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-calendar
+                      i.icon.f7-icons calendar
                     .item-inner 
                       .item-input
                         input(type="date", placeholder="Birth day", value="2014-04-30")
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-toggle
+                      i.icon.f7-icons check
                     .item-inner 
                       .item-input
                         label.label-switch
@@ -55,18 +57,11 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-settings
+                      i.icon.f7-icons filter
                     .item-inner
                       .item-input
                         .range-slider
                           input(type="range", min="0", max="100", value="50", step="0.1")
-            
-                
-
-              
-
-              
-              
 
 block scripts
   script.

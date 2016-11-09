@@ -131,7 +131,7 @@
                 </li>
                 <li><a href="accordion.html">Accordion / Collapsible</a></li>
                 <li><a href="cards.html">Cards</a></li>
-                <li><a href="chips.html">Chips</a></li>
+                <li><a href="chips.html">Chips/Tags</a></li>
                 <li><a href="buttons.html">Buttons</a></li>
                 <li><a href="floating-action-button.html">Floating Action Button</a></li>
                 <li>
@@ -161,6 +161,13 @@
               </ul>
             </li>
             <li>
+              <div class="title">Icons</div>
+              <ul>
+                <li><a href="icons.html">Icons</a></li>
+                <li><a href="/icons/">Framework7 Icons Cheatsheet</a></li>
+              </ul>
+            </li>
+            <li>
               <div class="title">Styling</div>
               <ul>
                 <li><a href="color-themes.html">Color Themes</a></li>
@@ -178,6 +185,7 @@
             <li>
               <div class="title">Fast Clicks</div>
               <ul>
+                <li><a href="fast-clicks.html">Fast Clicks</a></li>
                 <li><a href="active-state.html">Active State</a></li>
                 <li><a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
                 <li><a href="touch-ripple.html">Touch Ripple (Material)</a></li>
@@ -227,6 +235,12 @@
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td>root</td>
+                <td>string</td>
+                <td>'body'</td>
+                <td>App root element. Useful when using F7 with libraries like Vue or React that doesn't allow to mount the app to the body.</td>
+              </tr>
               <tr>
                 <th colspan="4">Material Theme (Material theme only)</th>
               </tr>
@@ -295,6 +309,12 @@
                 <td>boolean</td>
                 <td>true</td>
                 <td>Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script.</td>
+              </tr>
+              <tr>
+                <td>fastClicksExclude</td>
+                <td>string</td>
+                <td>''</td>
+                <td>This parameter allows to specify elements not handled by fast clicks by passing CSS selector of such elements</td>
               </tr>
               <tr>
                 <td>fastClicksDelayBetweenClicks</td>
@@ -420,6 +440,14 @@
                 </td>
               </tr>
               <tr>
+                <td>routerRemoveWithTimeout</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>
+                  <p>When enabled, then framework will remove element after 0 timeout instead of immediately. Useful to enable if you use another library like Vue or React to manage (remove) pages</p>
+                </td>
+              </tr>
+              <tr>
                 <th colspan="4">Push State</th>
               </tr>
               <tr>
@@ -509,13 +537,19 @@
                 <td>Fallback option for potentially better performance on old/slow devices. If you enable it, then swipeout item will not follow your finger during touch, it will be automatically opened/closed on swipe left/right. </td>
               </tr>
               <tr>
+                <td>swipeoutRemoveWithTimeout</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>When enabled, then framework will remove element after 0 timeout instead of immediately. Useful to enable if you use another library like Vue or React to manage (remove) swipeout items</td>
+              </tr>
+              <tr>
                 <th colspan="4">Side Panels</th>
               </tr>
               <tr>
                 <td>swipePanel</td>
                 <td>string</td>
                 <td>false</td>
-                <td>Disabled by default. If you want to enable ability to open side panels with swipe you can pass here "left" (for left panel) or "right" (for right panel).</td>
+                <td>Disabled by default. If you want to enable ability to open side panels with swipe you can pass here "left" (for left panel) or "right" (for right panel) or "both" (for both panels).</td>
               </tr>
               <tr>
                 <td>swipePanelCloseOpposite</td>

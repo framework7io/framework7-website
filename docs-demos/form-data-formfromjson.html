@@ -17,7 +17,7 @@
             <div class="navbar">
               <div class="navbar-inner">
                 <div class="left"> </div>
-                <div class="center">Form From JSON</div>
+                <div class="center">Form From Data</div>
                 <div class="right"> </div>
               </div>
             </div>
@@ -84,7 +84,7 @@
                   </li>
                 </ul>
               </form>
-              <div class="content-block"><a href="#" class="button form-from-json">Fill Up Form</a></div>
+              <div class="content-block"><a href="#" class="button form-from-data">Fill Up Form</a></div>
             </div>
           </div>
         </div>
@@ -96,7 +96,7 @@
       
       var $$ = Dom7;
       
-      $$('.form-from-json').on('click', function(){
+      $$('.form-from-data').on('click', function(){
       
         var formData = {
           'name': 'John',
@@ -105,7 +105,7 @@
           'switch': ['yes'],
           'slider': 10
         }
-        myApp.formFromJSON('#my-form', formData);
+        myApp.formFromData('#my-form', formData);
       });
     </script>
   </body>

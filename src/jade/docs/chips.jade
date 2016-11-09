@@ -2,20 +2,20 @@ extends ../_internal-template
 
 block vars
   - var activeLink = 'docs';
-  - var title = 'Chips | Framework7 Documentation';
+  - var title = 'Chips/Tags | Framework7 Documentation';
 
 block content
-  .docs-demo-device
+  //- .docs-demo-device
     iframe(width="320", height="548", frameborder="0", scrolling="on")
     .fade-overlay
   .docs-wrap
     .docs-nav
       include ../_docs-menu
-    .docs-content.with-device
+    .docs-content
+      //.with-device
       .full-width
         h1 Chips
-        p.material-only Chips are supported only in Material Theme
-        p Chips represent complex entities in small blocks, such as a contact. They can contain a photo, short title string, and brief information.
+        p Chips (Tags) represent complex entities in small blocks, such as a contact. They can contain a photo, short title string, and brief information.
         h2 Chips HTML Layout
         p Let's look at basic chip HTML layout
         pre
@@ -40,6 +40,13 @@ block content
                 p <code>&lt;a class="card-delete"&gt;</code> - Chip delete icon-link. Optional
 
       h2(data-device-preview="../docs-demos/chips.html") Examples
+      .row
+        .col-50
+          .docs-demo-device.docs-inline-device
+            iframe(width="320", height="548", frameborder="0", scrolling="on", src="../docs-demos/chips.html")
+        .col-50
+          .docs-demo-device.docs-inline-device
+            iframe(width="320", height="548", frameborder="0", scrolling="on", src="../docs-demos/chips-ios.html")
       pre
         code.html
           | &lt;div class="content-block-title"&gt;Chips With Text&lt;/div&gt;

@@ -231,6 +231,15 @@ block content
             td mainView.contentCache
             td Returns object with cached pages. It is available only if you use dynamically generated content
           tr
+            td mainView.pagesCache
+            td Returns object with initial cached pages (For the case with enabled domCache)
+          tr
+            td mainView.contextCache
+            td Returns object with context relevant for specific pages. It is available only if you use Template7 generated pages
+          tr
+            td mainView.pageElementsCache
+            td Returns object with page elements. It is available only if you load pages using <code>pageElement</code> parameter
+          tr
             td mainView.url
             td Returns string with url of currently active (loaded) page
           tr

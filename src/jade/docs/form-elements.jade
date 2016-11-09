@@ -42,6 +42,27 @@ block content
             p <code>item-title</code> - single-line form element label. Should have additional "<strong>label</strong>" class. <strong>Optional</strong> element
           li
             p <code>item-input</code> - just contains your form input HTML element. <strong>Required</strong> element
+
+        p.material-only With floating labels (Material Theme Only):
+        pre
+          code
+            | &lt;div class="list-block"&gt;
+            |   &lt;ul&gt;
+            |     ...
+            |     &lt;li&gt;
+            |       &lt;div class="item-content"&gt;
+            |         &lt;div class="item-media"&gt;... icon here ...&lt;/div&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title floating-label"&gt;Name&lt;/div&gt;
+            |           &lt;div class="item-input"&gt;
+            |               &lt;input type="text" name="name"&gt;
+            |           &lt;/div&gt;
+            |         &lt;/div&gt;
+            |       &lt;/div&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;
         h2 Supported form elements
         p Here are the list of form elements that you can put inside of <code>item-input</code>:
         table
@@ -148,6 +169,7 @@ block content
                     | ...
       h2 Examples
       h3(data-device-preview="../docs-demos/form-elements-full.html") Full Layout
+      .important-note Note that the following example uses Framework7 Icons font
       pre
         code
           | &lt;div class="content-block-title"&gt;Full Layout&lt;/div&gt;
@@ -156,7 +178,7 @@ block content
           |     &lt;!-- Text inputs --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-name"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;person&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-title label"&gt;Name&lt;/div&gt;
           |           &lt;div class="item-input"&gt;
@@ -167,7 +189,7 @@ block content
           |     &lt;/li&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-email"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;email&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-title label"&gt;E-mail&lt;/div&gt;
           |           &lt;div class="item-input"&gt;
@@ -180,7 +202,7 @@ block content
           |     &lt;!-- Select --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-gender"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;persons&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-title label"&gt;Gender&lt;/div&gt;
           |           &lt;div class="item-input"&gt;
@@ -195,7 +217,7 @@ block content
           |     &lt;!-- Date --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-calendar"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;calendar&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-title label"&gt;Birth date&lt;/div&gt;
           |           &lt;div class="item-input"&gt;
@@ -207,7 +229,7 @@ block content
           |     &lt;!-- Date time--&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-calendar"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;calendar&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-title label"&gt;Date time&lt;/div&gt;
           |           &lt;div class="item-input"&gt;
@@ -219,7 +241,7 @@ block content
           |     &lt;!-- Switch (Checkbox) --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-toggle"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;check&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-title label"&gt;Switch&lt;/div&gt;
           |           &lt;div class="item-input"&gt;
@@ -234,7 +256,7 @@ block content
           |     &lt;!-- Slider (Range input) --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-settings"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;filter&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-title label"&gt;Slider&lt;/div&gt;
           |           &lt;div class="item-input"&gt;
@@ -248,7 +270,7 @@ block content
           |     &lt;!-- Textarea --&gt;
           |     &lt;li class="align-top"&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-comment"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;chat&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-title label"&gt;Textarea&lt;/div&gt;
           |           &lt;div class="item-input"&gt;
@@ -260,6 +282,7 @@ block content
           |   &lt;/ul&gt;
           | &lt;/div&gt;
       h3(data-device-preview="../docs-demos/form-elements-icons-inputs.html") Icons and inputs
+      .important-note Note that the following example uses Framework7 Icons font
       p Because <code>item-title</code> is optional element, we can drop elements labels:
       pre
         code
@@ -269,7 +292,7 @@ block content
           |     &lt;!-- Text inputs --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-name"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;person&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-input"&gt;
           |             &lt;input type="text" placeholder="Your name"&gt;
@@ -279,7 +302,7 @@ block content
           |     &lt;/li&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-email"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;email&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-input"&gt;
           |             &lt;input type="email" placeholder="E-mail"&gt;
@@ -291,7 +314,7 @@ block content
           |     &lt;!-- Select --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-gender"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;persons&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-input"&gt;
           |             &lt;select&gt;
@@ -306,7 +329,7 @@ block content
           |     &lt;!-- Date --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-calendar"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;calendar&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-input"&gt;
           |             &lt;input type="date" placeholder="Birth day" value="2014-04-30"&gt;
@@ -318,7 +341,7 @@ block content
           |     &lt;!-- Switch (Checkbox) --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-toggle"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;check&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-input"&gt;
           |             &lt;label class="label-switch"&gt;
@@ -333,7 +356,7 @@ block content
           |     &lt;!-- Slider (Range input) --&gt;
           |     &lt;li&gt;
           |       &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;&lt;i class="icon icon-form-settings"&gt;&lt;/i&gt;&lt;/div&gt;
+          |         &lt;div class="item-media"&gt;&lt;i class="icon f7-icons"&gt;filter&lt;/i&gt;&lt;/div&gt;
           |         &lt;div class="item-inner"&gt;
           |           &lt;div class="item-input"&gt;
           |             &lt;div class="range-slider"&gt;

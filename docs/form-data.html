@@ -135,7 +135,7 @@
                 </li>
                 <li><a href="accordion.html">Accordion / Collapsible</a></li>
                 <li><a href="cards.html">Cards</a></li>
-                <li><a href="chips.html">Chips</a></li>
+                <li><a href="chips.html">Chips/Tags</a></li>
                 <li><a href="buttons.html">Buttons</a></li>
                 <li><a href="floating-action-button.html">Floating Action Button</a></li>
                 <li>
@@ -165,6 +165,13 @@
               </ul>
             </li>
             <li>
+              <div class="title">Icons</div>
+              <ul>
+                <li><a href="icons.html">Icons</a></li>
+                <li><a href="/icons/">Framework7 Icons Cheatsheet</a></li>
+              </ul>
+            </li>
+            <li>
               <div class="title">Styling</div>
               <ul>
                 <li><a href="color-themes.html">Color Themes</a></li>
@@ -182,6 +189,7 @@
             <li>
               <div class="title">Fast Clicks</div>
               <ul>
+                <li><a href="fast-clicks.html">Fast Clicks</a></li>
                 <li><a href="active-state.html">Active State</a></li>
                 <li><a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
                 <li><a href="touch-ripple.html">Touch Ripple (Material)</a></li>
@@ -214,12 +222,12 @@
             <h1>Form Data</h1>
             <p>Framework7 comes with few very useful methods which make work with forms as simple as possibles:</p>
           </div>
-          <h2 data-device-preview="../docs-demos/form-data-formtojson.html">Form to JSON</h2>
-          <p>Using this App's method we can easily convert all form fields values to JSON:</p>
-          <p><span class="method">myApp.formToJSON(<span>form</span>) - convert form fields valus to JSON</span></p>
+          <h2 data-device-preview="../docs-demos/form-data-formtojson.html">Form to Data</h2>
+          <p>Using this App's method we can easily convert all form fields values to data object:</p>
+          <p><span class="method">myApp.formToData(<span>form</span>) - convert form fields values to data object</span></p>
           <ul class="method-parameters">
-            <li><span class="parameter">form</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to JSON. Required.</li>
-            <li class="method-returns">Method returns JSON data</li>
+            <li><span class="parameter">form</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to data object. Required.</li>
+            <li class="method-returns">Method returns object</li>
           </ul>
           <pre><code>&lt;form id="my-form" class="list-block"&gt;
   &lt;ul&gt;
@@ -238,32 +246,32 @@
 &lt;/form&gt;
  
 &lt;div class="content-block"&gt;
-  &lt;a href="#" class="button form-to-json"&gt;Get Form Data&lt;/a&gt;
+  &lt;a href="#" class="button form-to-data"&gt;Get Form Data&lt;/a&gt;
 &lt;/div&gt;</code></pre>
           <pre><code>var myApp = new Framework7();  
  
 var $$ = Dom7;
  
-$$('.form-to-json').on('click', function(){
-  var formData = myApp.formToJSON('#my-form');
+$$('.form-to-data').on('click', function(){
+  var formData = myApp.formToData('#my-form');
   alert(JSON.stringify(formData));
 }); </code></pre>
           <div class="important-note">
             <ul>
               <li>
-                <p>Note that each input should have "name" attribute, otherwise its value will not be presented in JSON</p>
+                <p>Note that each input should have "name" attribute, otherwise its value will not be presented in data object</p>
               </li>
               <li>
-                <p>Checkboxes and "multiple" selects will be presented as Arrays in JSON</p>
+                <p>Checkboxes and "multiple" selects will be presented as Arrays</p>
               </li>
             </ul>
           </div>
-          <h2 data-device-preview="../docs-demos/form-data-formfromjson.html">Form from JSON</h2>
-          <p>Using this App's method we can easily fill up form according to JSON data:</p>
-          <p><span class="method">myApp.formFromJSON(<span>form</span>, <span>formData</span>) - fill up form according to JSON formData</span></p>
+          <h2 data-device-preview="../docs-demos/form-data-formfromjson.html">Form from Data</h2>
+          <p>Using this App's method we can easily fill up form according to specified data:</p>
+          <p><span class="method">myApp.formFromData(<span>form</span>, <span>formData</span>) - fill up form according to  formData</span></p>
           <ul class="method-parameters">
-            <li><span class="parameter">form</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to JSON. Required.</li>
-            <li><span class="parameter">formData</span> - <span class="parameter-type">object</span> with from data in JSON format. Required.</li>
+            <li><span class="parameter">form</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to data object. Required.</li>
+            <li><span class="parameter">formData</span> - <span class="parameter-type">object</span> with from data. Required.</li>
           </ul>
           <pre><code>&lt;form id="my-form" class="list-block"&gt;
   &lt;ul&gt;
@@ -282,13 +290,13 @@ $$('.form-to-json').on('click', function(){
 &lt;/form&gt;
  
 &lt;div class="content-block"&gt;
-  &lt;a href="#" class="button form-from-json"&gt;Fill Up Form&lt;/a&gt;
+  &lt;a href="#" class="button form-from-data"&gt;Fill Up Form&lt;/a&gt;
 &lt;/div&gt;</code></pre>
           <pre><code>var myApp = new Framework7();  
  
 var $$ = Dom7;
  
-$$('.form-from-json').on('click', function(){
+$$('.form-from-data').on('click', function(){
  
   var formData = {
     'name': 'John',
@@ -297,7 +305,7 @@ $$('.form-from-json').on('click', function(){
     'switch': ['yes'],
     'slider': 10
   }
-  myApp.formFromJSON('#my-form', formData);
+  myApp.formFromData('#my-form', formData);
 });                  </code></pre>
         </div>
       </div>

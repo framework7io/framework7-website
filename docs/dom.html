@@ -131,7 +131,7 @@
                 </li>
                 <li><a href="accordion.html">Accordion / Collapsible</a></li>
                 <li><a href="cards.html">Cards</a></li>
-                <li><a href="chips.html">Chips</a></li>
+                <li><a href="chips.html">Chips/Tags</a></li>
                 <li><a href="buttons.html">Buttons</a></li>
                 <li><a href="floating-action-button.html">Floating Action Button</a></li>
                 <li>
@@ -161,6 +161,13 @@
               </ul>
             </li>
             <li>
+              <div class="title">Icons</div>
+              <ul>
+                <li><a href="icons.html">Icons</a></li>
+                <li><a href="/icons/">Framework7 Icons Cheatsheet</a></li>
+              </ul>
+            </li>
+            <li>
               <div class="title">Styling</div>
               <ul>
                 <li><a href="color-themes.html">Color Themes</a></li>
@@ -178,6 +185,7 @@
             <li>
               <div class="title">Fast Clicks</div>
               <ul>
+                <li><a href="fast-clicks.html">Fast Clicks</a></li>
                 <li><a href="active-state.html">Active State</a></li>
                 <li><a href="tap-hold.html">Tap Hold Event (Long Tap)</a></li>
                 <li><a href="touch-ripple.html">Touch Ripple (Material)</a></li>
@@ -666,6 +674,10 @@ links.add(divs).addClass('red');</code></pre>
                 <td>Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector</td>
               </tr>
               <tr>
+                <td>.siblings(<span>[selector]</span>) </td>
+                <td>Get the siblings of each element in the set of matched elements, optionally filtered by a selector</td>
+              </tr>
+              <tr>
                 <td>.parent(<span>[selector]</span>) </td>
                 <td>Get the first parent of each element in the current set of matched elements, optionally filtered by a selector</td>
               </tr>
@@ -690,12 +702,16 @@ links.add(divs).addClass('red');</code></pre>
                 <td>Filter collection of elements
                   <pre><code class="js">var redLinks = $$('a').filter(function(index, el) {
     return $$(this).hasClass('red');
-})                  </code></pre>
+})</code></pre>
                 </td>
               </tr>
               <tr>
-                <td>.remove() </td>
+                <td>.remove()</td>
                 <td>Remove/detach matched elements from the Dom</td>
+              </tr>
+              <tr>
+                <td>.empty()</td>
+                <td>Remove all child nodes of the set of matched elements from the DOM. Alias for <code>.html('')</code></td>
               </tr>
               <tr>
                 <th colspan="2">Shortcuts</th>
@@ -874,7 +890,7 @@ links.add(divs).addClass('red');</code></pre>
           <h4>Dom7.each</h4>
           <p>A generic iterator function, which can be used to seamlessly iterate over both objects and arrays. Arrays and array-like objects with a length property (such as a function's arguments object) are iterated by numeric index, from 0 to length-1. Other objects are iterated via their named properties</p>
           <div class="method-wrap">
-            <p><span class="method">Dom7.each(<span>object/array</span>, <span>callback</span>) </span><span>- iterate through object or array</span></p>
+            <p><span class="method">$$.each(<span>object/array</span>, <span>callback</span>) </span><span>- iterate through object or array</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">object/array</span> - <span class="parameter-type">object</span> or <span class="parameter-type">array</span> - to iterate over. Required.</li>
               <li><span class="parameter">callback</span> - <span class="parameter-type">function</span> - callback function that will be executed on every object property, or on every array element. Required.</li>
@@ -905,7 +921,7 @@ lastName: Doe
 age: 25          </code></pre>
           <h4>Dom7.parseUrlQuery</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.parseUrlQuery(<span>url</span>) </span><span>- parse url query get parameters</span></p>
+            <p><span class="method">$$.parseUrlQuery(<span>url</span>) </span><span>- parse url query get parameters</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">url</span> - <span class="parameter-type">string</span> - url with GET parameters. Required.</li>
             </ul>
@@ -915,7 +931,7 @@ age: 25          </code></pre>
 console.log(query); //-> {id: 5, foo: 'bar'}</code></pre>
           <h4>Dom7.isArray</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.isArray(<span>obj</span>) </span><span>- Determine whether the argument is an array</span></p>
+            <p><span class="method">$$.isArray(<span>obj</span>) </span><span>- Determine whether the argument is an array</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">obj</span> - <span class="parameter-type">object</span> - Object to test whether or not it is an array</li>
             </ul>
@@ -925,7 +941,7 @@ console.log(query); //-> {id: 5, foo: 'bar'}</code></pre>
 console.log($$.isArray(fruits)); //-> true</code></pre>
           <h4>Dom7.unique</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.unique(<span>array</span>) </span><span>- Remove duplicates in passed array</span></p>
+            <p><span class="method">$$.unique(<span>array</span>) </span><span>- Remove duplicates in passed array</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">obj</span> - <span class="parameter-type">array</span> - Array to remove duplicates</li>
             </ul>
@@ -935,7 +951,7 @@ console.log($$.isArray(fruits)); //-> true</code></pre>
 console.log($$.unique(fruits)); //-> ['Apple', 'Orange'];</code></pre>
           <h4>Dom7.serializeObject</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.serializeObject(<span>object</span>) </span><span>- Create a serialized representation of a plain object suitable for use in a URL query string</span></p>
+            <p><span class="method">$$.serializeObject(<span>object</span>) </span><span>- Create a serialized representation of a plain object suitable for use in a URL query string</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">object</span> - <span class="parameter-type">object</span> - Object to serialize</li>
             </ul>
@@ -945,7 +961,7 @@ console.log($$.unique(fruits)); //-> ['Apple', 'Orange'];</code></pre>
 console.log($$.serializeObject(params)); //-> 'foo=bar&id=5'</code></pre>
           <h4>Dom7.toCamelCase</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.toCamelCase(<span>string</span>) </span><span>- Convert hypens-case string to camelCase string</span></p>
+            <p><span class="method">$$.toCamelCase(<span>string</span>) </span><span>- Convert hypens-case string to camelCase string</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">string</span> - <span class="parameter-type">string</span> - hypens-case string</li>
             </ul>
@@ -956,7 +972,7 @@ var camelCaseString = $$.toCamelCase(hypensCaseString);
 console.log(camelCaseString); //helloMyWorld</code></pre>
           <h4>Dom7.dataset</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.dataset(<span>el</span>) </span><span>- Get element's data set (set of data- attributes) as plain Object</span></p>
+            <p><span class="method">$$.dataset(<span>el</span>) </span><span>- Get element's data set (set of data- attributes) as plain Object</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">el</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS selector) - element with data- attributes to get dataset from</li>
             </ul>
@@ -977,7 +993,7 @@ dataset will create plain object with camelCase keys and with formatted boolean 
 */          </code></pre>
           <h4>Dom7.requestAnimationFrame</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.requestAnimationFrame(<span>callback</span>) </span><span>- Cross-browser implementation on requestAnimationFrame</span></p>
+            <p><span class="method">$$.requestAnimationFrame(<span>callback</span>) </span><span>- Cross-browser implementation on requestAnimationFrame</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">callback</span> - <span class="parameter-type">function</span> - A parameter specifying a function to call when it's time to update your animation for the next repaint</li>
             </ul>
@@ -992,15 +1008,24 @@ function anim() {
 animId = $.requestAnimationFrame(anim);</code></pre>
           <h4>Dom7.cancelAnimationFrame</h4>
           <div class="method-wrap">
-            <p><span class="method">Dom7.cancelAnimationFrame(<span>requestID</span>) </span><span>- Cancels an animation frame request</span></p>
+            <p><span class="method">$$.cancelAnimationFrame(<span>requestID</span>) </span><span>- Cancels an animation frame request</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">requestID</span> - <span class="parameter-type">number</span> - The ID value returned by the call to $$.requestAnimationFrame() that requested the callback</li>
             </ul>
           </div>
           <pre><code class="js">$.cancelAnimationFrame(animId);</code></pre>
+          <h4>Dom7.removeDiacritics</h4>
+          <div class="method-wrap">
+            <p><span class="method">$$.removeDiacritics(<span>text</span>) </span><span>- Replace diacritics in specified text string with standard latin characters</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">text</span> - <span class="parameter-type">string</span> - Text string</li>
+            </ul>
+          </div>
+          <pre><code class="js">var text = $$.removeDiacritics('ÁÓL');
+console.log(text); //-&gt; 'AOL'</code></pre>
           <h2>Ajax</h2>
           <div class="method-wrap">
-            <p><span class="method">$$.ajax(parameters) </span><span>- Load data from the server</span></p>
+            <p><span class="method">$$.ajax(parameters)</span><span>- Load data from the server</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - Request parameters</li>
             </ul>
@@ -1134,7 +1159,7 @@ animId = $.requestAnimationFrame(anim);</code></pre>
       alert('page not found');
     }
   }
-})                  </code></pre>
+})</code></pre>
                 </td>
               </tr>
             </tbody>
@@ -1180,11 +1205,12 @@ animId = $.requestAnimationFrame(anim);</code></pre>
           <h3>Shorthand Methods</h3>
           <h4>Dom7.get</h4>
           <div class="method-wrap">
-            <p><span class="method">$$.get(<span>url</span>, <span>data</span>, <span>success</span>) </span><span>- Load data from the server using a HTTP GET request</span></p>
+            <p><span class="method">$$.get(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>) </span><span>- Load data from the server using a HTTP GET request</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">url</span> - <span class="parameter-type">string</span> - Request url</li>
               <li><span class="parameter">data</span> - <span class="parameter-type">object</span> - A plain object or string that is sent to the server with the request. <em>Optional</em></li>
               <li><span class="parameter">success</span> - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em></li>
+              <li><span class="parameter">error</span> - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em></li>
             </ul>
             <p class="method-returns">returns plain XHR object</p>
           </div>
@@ -1194,11 +1220,12 @@ animId = $.requestAnimationFrame(anim);</code></pre>
 });</code></pre>
           <h4>Dom7.post</h4>
           <div class="method-wrap">
-            <p><span class="method">$$.post(<span>url</span>, <span>data</span>, <span>success</span>) </span><span>- Load data from the server using a HTTP POST request</span></p>
+            <p><span class="method">$$.post(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>) </span><span>- Load data from the server using a HTTP POST request</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">url</span> - <span class="parameter-type">string</span> - Request url</li>
               <li><span class="parameter">data</span> - <span class="parameter-type">object</span> - A plain object or <em>FormData</em> or string that is sent to the server with the request. <em>Optional</em></li>
               <li><span class="parameter">success</span> - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em></li>
+              <li><span class="parameter">error</span> - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em></li>
             </ul>
             <p class="method-returns">returns plain XHR object</p>
           </div>
@@ -1208,17 +1235,31 @@ animId = $.requestAnimationFrame(anim);</code></pre>
 });</code></pre>
           <h4>Dom7.getJSON</h4>
           <div class="method-wrap">
-            <p><span class="method">$$.getJSON(<span>url</span>, <span>data</span>, <span>success</span>) </span><span>- Load JSON-encoded data from the server using a GET HTTP request</span></p>
+            <p><span class="method">$$.getJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>) </span><span>- Load JSON-encoded data from the server using a GET HTTP request</span></p>
             <ul class="method-parameters">
               <li><span class="parameter">url</span> - <span class="parameter-type">string</span> - Request url</li>
               <li><span class="parameter">data</span> - <span class="parameter-type">object</span> - A plain object or <em>FormData</em> or string that is sent to the server with the request. <em>Optional</em></li>
               <li><span class="parameter">success</span> - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em></li>
+              <li><span class="parameter">error</span> - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em></li>
             </ul>
             <p class="method-returns">returns plain XHR object</p>
           </div>
           <pre><code class="js">$$.getJSON('items.json', function (data) {
   console.log(data);
 });</code></pre>
+          <h3>Ajax Setup</h3>
+          <div class="method-wrap">
+            <p><span class="method">$$.ajaxSetup(parameters)</span><span>- Set default values for future Ajax requests. <b>Its use is not recommended</b></span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - Default requests parameters</li>
+            </ul>
+          </div>
+          <pre><code class="js">// After the following setup all XHR requests will have additional 'Autorization' header
+$$.ajaxSetup({
+    headers: {
+        'Authorization': 'sometokenvalue'
+    }
+})</code></pre>
           <h3>Original Request Parameters</h3>
           <p>Each of Ajax methods returns plain XHR object, which is also available in callbacks. This default XHR object extended with the following properties:</p>
           <table class="methods-table">
@@ -1228,7 +1269,7 @@ animId = $.requestAnimationFrame(anim);</code></pre>
               </tr>
               <tr>
                 <td>xhr.requestParameters</td>
-                <td>Object with passed XHR request parameters </td>
+                <td>Object with passed XHR request parameters</td>
               </tr>
               <tr>
                 <td>xhr.requestUrl</td>
@@ -1236,6 +1277,65 @@ animId = $.requestAnimationFrame(anim);</code></pre>
               </tr>
             </tbody>
           </table>
+          <h2>Animation</h2>
+          <div class="method-wrap">
+            <p><span class="method">.animate(properties, parameters)</span><span>- Perform a custom animation of a set of CSS properties</span></p>
+            <ul class="method-parameters">
+              <li><span class="parameter">properties</span> - <span class="parameter-type">object</span> - CSS properties to animate</li>
+              <li><span class="parameter">parameters</span> - <span class="parameter-type">object</span> - animation parameters</li>
+            </ul>
+            <p class="method-returns">returns Dom7 collection</p>
+          </div>
+          <pre><code class="js">$$('#animate-me').animate(
+    /* CSS properties to animate, e.g.: */
+    {
+        'margin-left': 100,
+        'width': 200,
+        'height': 300,
+        'opacity': 0.5
+    },
+    /* Animation parameters */
+    {
+        // Animation duraion in ms, optional (default to 300)
+        duration: 300,
+        // Animation easing, optional (default to 'swing'), can be also 'linear'
+        easing: 'swing',
+        /* Callbacks */
+        // Animation begins, optional
+        begin: function (elements) {
+            console.log('animation began');
+        },
+        // Animation completed, optional
+        complete: function (elements) {
+            console.log('animation completed');
+        },
+        // Animation in progress, optional
+        progress: function (elements, complete, remaining, start) {
+            /* Where
+            complete - The call's completion percentage (as a decimal value)
+            remaining - How much time remains until the call completes (in ms)
+            start - The absolute time at which the call began (in ms)
+            */
+            console.log('animation in progress');
+        }
+    }
+);</code></pre>
+          <p>It also supports chaining que:</p>
+          <pre><code class="js">$$('#animate-me')
+    .animate(
+        {
+            'margin-left': 100,
+            'width': 200,
+            'height': 300,
+            'opacity': 0.5
+        }
+    )
+    .animate(
+        {
+            'width': 50,
+            'height': 50
+        }
+    );</code></pre>
         </div>
       </div>
     </div>

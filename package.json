@@ -10,12 +10,12 @@
     "type": "git",
     "url": "https://github.com/nolimits4web/Framework7-Website"
   },
-  "dependencies": {
-    "gulp": "~3.9.1",
-    "gulp-less": "~3.0.5",
-    "gulp-jade": "~1.1.0",
-    "gulp-connect": "~2.3.1",
-    "gulp-open": "~1.0.0",
-    "del": "~2.2.0"
+  "devDependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^2.3.1",
+    "gulp-jade": "^1.1.0",
+    "gulp-less": "^3.0.5",
+    "gulp-open": "^1.0.0"
   }
 }

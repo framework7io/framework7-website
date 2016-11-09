@@ -221,6 +221,7 @@ pre {
     overflow: hidden;
     word-wrap: break-word;
     font-size: 12px;
+    white-space: pre-wrap;
     code {
         display: block;
     }
@@ -1753,6 +1754,29 @@ table.template7-examples {
         a, & {
             color: #333;
         }
+    }
+}
+.carbon-placeholder {
+    text-align: left;
+    padding-top: 30px;
+    #carbonads + & {
+        display: none;
+    }
+}
+.f7-demo-icons {
+    overflow: hidden;
+    .f7-demo-icon-cell {
+        float: left;
+        width: 20%;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .f7-demo-icon {
+
+    }
+    .f7-demo-icon-label {
+        font-size: 11px;
+        margin-top: 10px;
     }
 }
 .clearfix {

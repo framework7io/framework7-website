@@ -16,15 +16,15 @@ block content
         h1 Form Data
         p Framework7 comes with few very useful methods which make work with forms as simple as possibles:
 
-      h2(data-device-preview="../docs-demos/form-data-formtojson.html") Form to JSON
-      p Using this App's method we can easily convert all form fields values to JSON:
+      h2(data-device-preview="../docs-demos/form-data-formtojson.html") Form to Data
+      p Using this App's method we can easily convert all form fields values to data object:
       p
-        span.method myApp.formToJSON(<span>form</span>) - convert form fields valus to JSON
+        span.method myApp.formToData(<span>form</span>) - convert form fields values to data object
       ul.method-parameters
         li
           span.parameter form
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to JSON. Required.
-        li.method-returns Method returns JSON data
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to data object. Required.
+        li.method-returns Method returns object
       pre
         code
           | &lt;form id="my-form" class="list-block"&gt;
@@ -44,7 +44,7 @@ block content
           | &lt;/form&gt;
           | 
           | &lt;div class="content-block"&gt;
-          |   &lt;a href="#" class="button form-to-json"&gt;Get Form Data&lt;/a&gt;
+          |   &lt;a href="#" class="button form-to-data"&gt;Get Form Data&lt;/a&gt;
           | &lt;/div&gt;
       pre
         code
@@ -52,27 +52,27 @@ block content
           | 
           | var $$ = Dom7;
           | 
-          | $$('.form-to-json').on('click', function(){
-          |   var formData = myApp.formToJSON('#my-form');
+          | $$('.form-to-data').on('click', function(){
+          |   var formData = myApp.formToData('#my-form');
           |   alert(JSON.stringify(formData));
           | }); 
       .important-note
         ul
           li
-            p Note that each input should have "name" attribute, otherwise its value will not be presented in JSON
+            p Note that each input should have "name" attribute, otherwise its value will not be presented in data object
           li
-            p Checkboxes and "multiple" selects will be presented as Arrays in JSON
-      h2(data-device-preview="../docs-demos/form-data-formfromjson.html") Form from JSON
-      p Using this App's method we can easily fill up form according to JSON data:
+            p Checkboxes and "multiple" selects will be presented as Arrays
+      h2(data-device-preview="../docs-demos/form-data-formfromjson.html") Form from Data
+      p Using this App's method we can easily fill up form according to specified data:
       p
-        span.method myApp.formFromJSON(<span>form</span>, <span>formData</span>) - fill up form according to JSON formData
+        span.method myApp.formFromData(<span>form</span>, <span>formData</span>) - fill up form according to  formData
       ul.method-parameters
         li
           span.parameter form
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to JSON. Required.
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to data object. Required.
         li
           span.parameter formData
-          |  - <span class="parameter-type">object</span> with from data in JSON format. Required.
+          |  - <span class="parameter-type">object</span> with from data. Required.
       pre
         code
           | &lt;form id="my-form" class="list-block"&gt;
@@ -92,7 +92,7 @@ block content
           | &lt;/form&gt;
           | 
           | &lt;div class="content-block"&gt;
-          |   &lt;a href="#" class="button form-from-json"&gt;Fill Up Form&lt;/a&gt;
+          |   &lt;a href="#" class="button form-from-data"&gt;Fill Up Form&lt;/a&gt;
           | &lt;/div&gt;
       pre
         code
@@ -100,7 +100,7 @@ block content
           | 
           | var $$ = Dom7;
           | 
-          | $$('.form-from-json').on('click', function(){
+          | $$('.form-from-data').on('click', function(){
           | 
           |   var formData = {
           |     'name': 'John',
@@ -109,5 +109,5 @@ block content
           |     'switch': ['yes'],
           |     'slider': 10
           |   }
-          |   myApp.formFromJSON('#my-form', formData);
+          |   myApp.formFromData('#my-form', formData);
           | });                  

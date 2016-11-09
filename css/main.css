@@ -113,6 +113,7 @@ pre {
   overflow: hidden;
   word-wrap: break-word;
   font-size: 12px;
+  white-space: pre-wrap;
 }
 pre code {
   display: block;
@@ -2173,6 +2174,26 @@ table.template7-examples td[colspan="3"] {
 .carbon.carbon-home a,
 .carbon.carbon-home {
   color: #333;
+}
+.carbon-placeholder {
+  text-align: left;
+  padding-top: 30px;
+}
+#carbonads + .carbon-placeholder {
+  display: none;
+}
+.f7-demo-icons {
+  overflow: hidden;
+}
+.f7-demo-icons .f7-demo-icon-cell {
+  float: left;
+  width: 20%;
+  text-align: center;
+  margin-bottom: 40px;
+}
+.f7-demo-icons .f7-demo-icon-label {
+  font-size: 11px;
+  margin-top: 10px;
 }
 .clearfix:before,
 .clearfix:after {

@@ -1,3 +1,4 @@
+block vars
 doctype
 html
   head
@@ -8,6 +9,8 @@ html
     title My App
     link(rel="stylesheet", href="../dist/css/framework7.ios.min.css")
     link(rel="stylesheet", href="../dist/css/framework7.ios.colors.min.css")
+    - if (includeF7Icons)
+        link(rel="stylesheet" href="../../../css/framework7-icons.css")
   body
     block content
 

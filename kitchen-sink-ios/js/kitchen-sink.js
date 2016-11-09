@@ -393,7 +393,7 @@ myApp.onPageInit('notifications', function (page) {
             title: 'My Awesome App',
             subtitle: 'New message from John Doe',
             message: 'Hello, how are you? Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut posuere erat. Pellentesque id elementum urna, a aliquam ante. Donec vitae volutpat orci. Aliquam sed molestie risus, quis tincidunt dui.',
-            media: '<img width="44" height="44" style="border-radius:100%" src="http://lorempixel.com/output/people-q-c-100-100-9.jpg">'
+            media: '<img width="44" height="44" style="border-radius:100%" src="http://lorempixel.com/100/100/people/9/">'
         });
     });
     $$('.ks-notification-callback').on('click', function () {
@@ -401,7 +401,7 @@ myApp.onPageInit('notifications', function (page) {
             title: 'My Awesome App',
             subtitle: 'New message from John Doe',
             message: 'Hello, how are you? Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut posuere erat. Pellentesque id elementum urna, a aliquam ante. Donec vitae volutpat orci. Aliquam sed molestie risus, quis tincidunt dui.',
-            media: '<img width="44" height="44" style="border-radius:100%" src="http://lorempixel.com/output/people-q-c-100-100-9.jpg">',
+            media: '<img width="44" height="44" style="border-radius:100%" src="http://lorempixel.com/100/100/people/9/">',
             onClose: function () {
                 myApp.alert('Notification closed');
             }
@@ -721,7 +721,16 @@ myApp.onPageInit('pickers', function (page) {
         ]
     });
 });
-
+/* ===== Chips  ===== */
+myApp.onPageInit('chips', function (page) {
+    $$(page.container).find('.chip-delete').on('click', function (e) {
+        e.preventDefault();
+        var chip = $$(this).parents('.chip');
+        myApp.confirm('Do you want to delete this tiny demo Chip?', function () {
+            chip.remove();
+        });
+    });
+});
 /* ===== Progress Bars ===== */
 myApp.onPageInit('progressbar', function (page) {
     $$('.ks-demo-progressbar-inline .button').on('click', function () {
@@ -1082,3 +1091,49 @@ function createContentPage() {
     return;
 }
 $$(document).on('click', '.ks-generate-page', createContentPage);
+
+/* ===== Animation ===== */
+myApp.onPageInit('animation', function (page) {
+    $$(page.container).find('.start').on('click', function () {
+        $$('#animate-me')
+            .animate(
+                {
+                    'width': 200,
+                    'height': 50,
+                    'margin-left': 50,
+                    'margin-top': 0,
+                },
+                {
+                    duration: 600,
+                    easing: 'swing'
+                }
+            )
+            .animate(
+                {
+                    'width': 50,
+                    'height': 200,
+                    'margin-left': 0,
+                    'margin-top': 50,
+                },
+                {
+                    duration: 600,
+                    easing: 'swing'
+                }
+            )
+            .animate(
+                {
+                    'width': 100,
+                    'height': 100,
+                    'margin-left': 0,
+                    'margin-top': 0,
+                },
+                {
+                    duration: 600,
+                    easing: 'swing',
+                    complete: function () {
+                        myApp.alert('Animation completed');
+                    }
+                }
+            );
+    });
+});

@@ -225,4 +225,23 @@
         po.src = 'https://apis.google.com/js/platform.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
     })();
+
+    // Carbon
+    function testAdBlock() {
+        var adBlockEnabled = false;
+        var testAd = document.createElement('div');
+        testAd.innerHTML = '&nbsp;';
+        testAd.className = 'adsbox';
+        document.body.appendChild(testAd);
+        window.setTimeout(function() {
+          if (testAd.offsetHeight === 0) {
+            adBlockEnabled = true;
+          }
+          testAd.remove();
+          if (adBlockEnabled) {
+            $('.carbon').append('<div class="carbon-placeholder">Support Framework7 development by disabling AdBlock for this website</div>');
+          }
+        }, 0);
+    }
+    testAdBlock();
 })();

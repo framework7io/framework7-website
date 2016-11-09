@@ -8,6 +8,7 @@
         path = require('path'),
         fs = require('fs'),
         del = require('del'),
+        iconsManifest = require('./manifest-icons.json'),
         useCDN = true,
         cdnPath = '//cdn.framework7.io',
         paths = {
@@ -35,6 +36,10 @@
             contribute: {
                 src: './src/jade/contribute/index.jade',
                 dest: './contribute/'
+            },
+            icons: {
+                src: './src/jade/icons/index.jade',
+                dest: './icons/'
             },
             docs: {
                 src: './src/jade/docs/**/*.jade',
@@ -118,6 +123,7 @@
                     pretty: true,
                     locals: {
                         cdn: useCDN ? cdnPath : '',
+                        icons: iconsManifest.icons
                     }
                 }))
                 .pipe(gulp.dest(pages[page].dest))
@@ -137,6 +143,7 @@
                     pretty: true,
                     locals: {
                         cdn: useCDN ? cdnPath : '',
+                        icons: iconsManifest.icons
                     }
                 }))
                 .pipe(gulp.dest(pages[page].dest))

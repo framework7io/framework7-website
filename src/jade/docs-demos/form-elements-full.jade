@@ -1,4 +1,6 @@
 extends _layout-ios
+block vars
+  - var includeF7Icons = true;
 block content
   .views
     .view.view-main
@@ -16,7 +18,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-name
+                      i.icon.f7-icons person
                     .item-inner 
                       .item-title.label Name
                       .item-input
@@ -24,7 +26,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-email
+                      i.icon.f7-icons email
                     .item-inner 
                       .item-title.label E-mail
                       .item-input
@@ -32,7 +34,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-url
+                      i.icon.f7-icons world
                     .item-inner 
                       .item-title.label URL
                       .item-input
@@ -40,7 +42,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-password
+                      i.icon.f7-icons lock
                     .item-inner 
                       .item-title.label Password
                       .item-input
@@ -48,7 +50,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-tel
+                      i.icon.f7-icons phone
                     .item-inner 
                       .item-title.label Phone
                       .item-input
@@ -56,7 +58,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-gender
+                      i.icon.f7-icons persons
                     .item-inner 
                       .item-title.label Gender
                       .item-input
@@ -66,7 +68,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-calendar
+                      i.icon.f7-icons calendar
                     .item-inner 
                       .item-title.label Birth date
                       .item-input
@@ -74,7 +76,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-calendar
+                      i.icon.f7-icons calendar
                     .item-inner 
                       .item-title.label Date time
                       .item-input
@@ -82,7 +84,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-toggle
+                      i.icon.f7-icons check
                     .item-inner 
                       .item-title.label Switch
                       .item-input
@@ -92,7 +94,7 @@ block content
                 li
                   .item-content
                     .item-media
-                      i.icon.icon-form-settings
+                      i.icon.f7-icons filter
                     .item-inner
                       .item-title.label Slider
                       .item-input
@@ -101,7 +103,7 @@ block content
                 li.align-top
                   .item-content
                     .item-media
-                      i.icon.icon-form-comment
+                      i.icon.f7-icons chat
                     .item-inner 
                       .item-title.label Textarea
                       .item-input
@@ -109,18 +111,11 @@ block content
                 li.align-top
                   .item-content
                     .item-media
-                      i.icon.icon-form-comment
+                      i.icon.f7-icons chat
                     .item-inner 
                       .item-title.label Resizable
                       .item-input
                         textarea.resizable
-            
-                
-
-              
-
-              
-              
 
 block scripts
   script.
