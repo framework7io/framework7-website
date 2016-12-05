@@ -160,14 +160,14 @@ block content
           | contactsCallback.remove();
           | // Or we can trigger it manually:
           | contactsCallback.trigger();          
-      h3 Callbacks for Inital Pages
+      h3 Callbacks for Initial Pages
       p Sometimes we may need such Page Callbacks for initialy loaded pages (that are already in index.html file on app load), for example for home page. But there could be a problem because when we add our .onPage callbacks the App is already initialized and our callback will not be triggered. It could be solved in a few ways:
       h4 1. Init App Manually
       p In this case we need to init App manually after we add our callbacks for initial pages:
       pre
         code
           | var myApp = new Framework7({
-          |   init: false //Disable App's automatica initialization
+          |   init: false //Disable App's automatic initialization
           | });          
           | 
           | //Now we add our callback for initial page
