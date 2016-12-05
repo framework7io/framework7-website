@@ -467,7 +467,7 @@ block content
     code  
       | function saveContact() {
       |     var contacts = JSON.parse(localStorage.getItem("f7Base"))
-      |     var newContact = app.f7.formToJSON('#contactEdit');
+      |     var newContact = app.f7.formToData('#contactEdit');
       |     if (state.isNew) {
       |         contacts.push(newContact)
       |     }
@@ -536,7 +536,7 @@ block content
   pre
     code
       | function saveContact() {
-      |     var formInput = app.f7.formToJSON('#contactEdit');
+      |     var formInput = app.f7.formToData('#contactEdit');
       |     contact.setValues(formInput);
       |     if (!contact.validate()) {
       |         app.f7.alert("First name and last name are empty");
