@@ -56,7 +56,7 @@ block content
           |   &lt;/ul&gt;
           | &lt;/form&gt;
       h2(data-device-preview="../docs-demos/form-storage-api.html") Form storage JavaScript API
-      p So how this works. Everything is simple, actually Framework7 just calls <a href="form-data.html#form-to-json">formToJSON</a> on any input change and <a href="form-data.html#form-from-json">formFromJSON</a> on 'pageInit' event
+      p So how this works. Everything is simple, actually Framework7 just calls <a href="form-data.html#form-to-data">formToData</a> on any input change and <a href="form-data.html#form-from-data">formFromData</a> on 'pageInit' event
       p All forms data stored in Local Storage and each form has its own Local Storage key which is named by the following rule: <code>localStorage.f7form-[formID]</code> where [formId] is related form's "id" attribute. Each such Local Storage key contains stringified JSON with form data.
       p So let's look at App's methods that could be helpful to manage these Local Storage keys with form data
       .method-wrap
@@ -138,10 +138,10 @@ block content
               th Description
           tbody
             tr
-              td formFromJSON
+              td formFromData
               td Form element
-              td Event will be triggered after <code>formFromJSON</code> method called on form to fill form fields
+              td Event will be triggered after <code>formFromData</code> method called on form to fill form fields
             tr
-              td formToJSON
+              td formToData
               td Form element
-              td Event will be triggered after <code>formToJSON</code> method called on form to convert form fields to JSON
+              td Event will be triggered after <code>formToData/code> method called on form to convert form fields to JSON
