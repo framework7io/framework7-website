@@ -52,15 +52,15 @@ block content
             th Description
         tbody
           tr
-            td submitted
+            td form:success
             td Form Element<span>&lt;form class="ajax-submit"&gt;</span>
             td Event will be triggered after successful Ajax request 
           tr
-            td beforeSubmit
+            td form:beforesend
             td Form Element<span>&lt;form class="ajax-submit"&gt;</span>
             td Event will be triggered right before Ajax request 
           tr
-            td submitError
+            td form:error
             td Form Element<span>&lt;form class="ajax-submit"&gt;</span>
             td Event will be triggered on Ajax request error 
       pre
@@ -69,7 +69,7 @@ block content
           | 
           | var $$ = Dom7;
           | 
-          | $$('form.ajax-submit').on('submitted', function (e) {
+          | $$('form.ajax-submit').on('form:success', function (e) {
           |   var xhr = e.detail.xhr; // actual XHR object
           | 
           |   var data = e.detail.data; // Ajax response from action file

@@ -200,19 +200,19 @@ block content
               th Description
           tbody
             tr
-              td open
+              td accordion:open
               td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
               td Event will be triggered when accordion content starts its opening animation
             tr
-              td opened
+              td accordion:opened
               td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
               td Event will be triggered after accordion content completes its opening animation
             tr
-              td close
+              td accordion:close
               td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
               td Event will be triggered when accordion content starts its closing animation
             tr
-              td closed
+              td accordion:closed
               td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
               td Event will be triggered after accordion content completes its closing animation 
         pre
@@ -221,10 +221,10 @@ block content
             | 
             | var $$ = Dom7;
             | 
-            | $$('.accordion-item').on('opened', function () {
+            | $$('.accordion-item').on('accordion:opened', function () {
             |   myApp.alert('Accordion item opened');
             | }); 
             | 
-            | $$('.accordion-item').on('closed', function (e) {
+            | $$('.accordion-item').on('accordion:closed', function (e) {
             |   myApp.alert('Accordion item closed');
             | });                   

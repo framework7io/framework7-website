@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <title>Popup | Framework7 Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
-    <link rel="stylesheet" href="//cdn.framework7.io/css/normalize.css">
-    <link rel="stylesheet" href="//cdn.framework7.io/css/highlight.css">
-    <link rel="stylesheet" href="//cdn.framework7.io/css/main.css">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//cdn.framework7.io/js/vendor/modernizr-2.7.1.min.js"></script>
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
   </head>
   <body><!-- BuySellAds Ad Code -->
     <script>
@@ -47,7 +47,7 @@
     <div class="share-line">
       <div class="center">
         <div class="share-buttons">
-          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="//cdn.framework7.io/i/support-badge.png" style="height:20px"></a></div>
+          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="/i/support-badge.png" style="height:20px"></a></div>
           <div class="share-button">
             <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
           </div>
@@ -55,7 +55,7 @@
           <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
           <div class="clearfix"></div>
         </div>
-        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="//cdn.framework7.io/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
         <div class="clearfix"></div>
       </div>
     </div>
@@ -342,22 +342,22 @@ $$('.open-services').on('click', function () {
             </thead>
             <tbody>
               <tr>
-                <td>open</td>
+                <td>popup:open</td>
                 <td>Popup Element<span>&lt;div class="popup"&gt;</span></td>
                 <td>Event will be triggered when Popup starts its opening animation</td>
               </tr>
               <tr>
-                <td>opened</td>
+                <td>popup:opened</td>
                 <td>Popup Element<span>&lt;div class="popup"&gt;</span></td>
                 <td>Event will be triggered after Popup completes its opening animation</td>
               </tr>
               <tr>
-                <td>close</td>
+                <td>popup:close</td>
                 <td>Popup Element<span>&lt;div class="popup"&gt;</span></td>
                 <td>Event will be triggered when Popup starts its closing animation</td>
               </tr>
               <tr>
-                <td>closed</td>
+                <td>popup:closed</td>
                 <td>Popup Element<span>&lt;div class="popup"&gt;</span></td>
                 <td>Event will be triggered after Popup completes its closing animation</td>
               </tr>
@@ -394,18 +394,18 @@ $$('.open-services').on('click', function () {
  
 var $$ = Dom7;
  
-$$('.popup-about').on('opened', function () {
+$$('.popup-about').on('popup:opened', function () {
   console.log('About Popup opened')
 });
-$$('.popup-about').on('close', function () {
+$$('.popup-about').on('popup:close', function () {
   console.log('About Popup is closing')
 });
-$$('.popup-services').on('open', function () {
+$$('.popup-services').on('popup:open', function () {
   console.log('Services Popup is opening')
 });
-$$('.popup-services').on('closed', function () {
+$$('.popup-services').on('popup:closed', function () {
   console.log('Services Popup is closed')
-});          </code></pre>
+});</code></pre>
           <h2 data-device-preview="../docs-demos/popup-dynamic.html">Dynamic Popup</h2>
           <p>Framework7 allows you to create Popup dynamically by passing its HTML to related App methods:</p>
           <p><span class="method">myApp.popup(<span>popupHTML</span>, <span>removeOnClose</span>)</span> - open Popup</span></p>
@@ -442,7 +442,7 @@ $$('.create-popup').on('click', function () {
     <div class="share-line">
       <div class="center">
         <div class="share-buttons">
-          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="//cdn.framework7.io/i/support-badge.png" style="height:20px"></a></div>
+          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="/i/support-badge.png" style="height:20px"></a></div>
           <div class="share-button">
             <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
           </div>
@@ -450,7 +450,7 @@ $$('.create-popup').on('click', function () {
           <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
           <div class="clearfix"></div>
         </div>
-        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="//cdn.framework7.io/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
         <div class="clearfix"></div>
       </div>
     </div>
@@ -497,15 +497,15 @@ $$('.create-popup').on('click', function () {
             <p>2016 © Framework7 is brought to you by <a href="https://twitter.com/nolimits4web" target="_blank">Vladimir Kharlampidi</a> from <a href="http://idangero.us">iDangero.us</a>. </p>
           </div>
           <div class="copy-right">
-            <p>Proudly supported by <a href="https://www.keycdn.com/" class="keycdn-link" target="_blank"><img src="//cdn.framework7.io/i/keycdn-logo.svg" alt="KeyCDN" title="KeyCDN" class="keycdn-logo"></a></p>
+            <p>Proudly supported by <a href="https://www.keycdn.com/" class="keycdn-link" target="_blank"><img src="/i/keycdn-logo.svg" alt="KeyCDN" title="KeyCDN" class="keycdn-logo"></a></p>
           </div>
           <div class="clearfix"></div>
         </div>
       </div>
     </footer>
-    <script src="//cdn.framework7.io/js/vendor/jquery-1.11.0.min.js"></script>
-    <script src="//cdn.framework7.io/js/plugins.js"></script>
-    <script src="//cdn.framework7.io/js/main.js"></script>
+    <script src="/js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/main.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

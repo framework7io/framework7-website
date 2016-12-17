@@ -174,19 +174,19 @@ block content
             th Description
         tbody
           tr
-            td open
+            td panel:open
             td Panel Element<span>&lt;div class="panel"&gt;</span>
             td Event will be triggered when Panel starts its opening animation
           tr
-            td opened
+            td panel:opened
             td Panel Element<span>&lt;div class="panel"&gt;</span>
             td Event will be triggered after Panel completes its opening animation
           tr
-            td close
+            td panel:close
             td Panel Element<span>&lt;div class="panel"&gt;</span>
             td Event will be triggered when Panel starts its closing animation
           tr
-            td closed
+            td panel:closed
             td Panel Element<span>&lt;div class="panel"&gt;</span>
             td Event will be triggered after Panel completes its closing animation
       p Here is an example:
@@ -196,16 +196,16 @@ block content
           | 
           | var $$ = Dom7;
           | 
-          | $$('.panel-left').on('opened', function () {
+          | $$('.panel-left').on('panel:opened', function () {
           |     myApp.alert('Left panel opened!');
           | });
-          | $$('.panel-left').on('close', function () {
+          | $$('.panel-left').on('panel:close', function () {
           |     myApp.alert('Left panel is closing!');
           | });
-          | $$('.panel-right').on('open', function () {
+          | $$('.panel-right').on('panel:open', function () {
           |     myApp.alert('Right panel is opening!');
           | });
-          | $$('.panel-right').on('closed', function () {
+          | $$('.panel-right').on('panel:closed', function () {
           |     myApp.alert('Right panel closed!');
           | }); 
       h2(data-device-preview="../docs-demos/panels-swipe.html") Open Panels With Swipe

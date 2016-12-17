@@ -50,7 +50,7 @@ block scripts
     // Pull to refresh content
     var ptrContent = $$('.pull-to-refresh-content');
     // Add 'refresh' listener on it
-    ptrContent.on('refresh', function (e) {
+    ptrContent.on('ptr:refresh', function (e) {
         // Emulate 2s loading
         setTimeout(function () {
             var picURL = 'http://hhhhold.com/88/d/jpg?' + Math.round(Math.random() * 100);

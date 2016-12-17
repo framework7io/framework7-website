@@ -123,25 +123,25 @@ block content
               th Description
           tbody
             tr
-              td navbarBeforeInit
+              td navbar:beforeinit
               td Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span>
               td Event will be triggered when Framework7 just inserts new navbar inner to DOM
             tr
-              td navbarInit
+              td navbar:init
               td Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span>
               td Event will be triggered after Framework7 initialize navbar
             tr
-              td navbarReinit
+              td navbar:reinit
               td Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span>
               td This event will be triggered when cached navbar inner becomes visible. It is only applicaple for Inline Pages (DOM cached pages)
             tr
-              td navbarBeforeRemove
+              td navbar:beforeremove
               td Navbar Inner element <span>&lt;div class="navbar-inner"&gt;</span>
               td Event will be triggered right before navbar inner will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
         p Each event data containes useful information with <code>navbar</code> elements and <a href="pages.html#page-data">Page Data</a> of related page. For example
         pre
           code.js
-            | $$(document).on('navbarInit', function (e) {
+            | $$(document).on('navbar:init', function (e) {
             |   var navbar = e.detail.navbar;
             |   var page = e.detail.page
             | });

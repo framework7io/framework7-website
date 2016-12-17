@@ -944,25 +944,25 @@ block content
             th Description
         tbody
           tr
-            td ajaxStart
+            td ajax:start
             td <code>document</code>
             td A pre-request event that can be used to modify the XHR object before it is sent. Use this to set custom headers
           tr
-            td ajaxError
+            td ajax:error
             td <code>document</code>
             td Event to be triggered if the request fails
           tr
-            td ajaxSuccess
+            td ajax:success
             td <code>document</code>
             td Event to be triggered if the request succeeds
           tr
-            td ajaxComplete
+            td ajax:complete
             td <code>document</code>
             td Event to be triggered when the request finishes (after success and error events are executed)
       p For example:
       pre
         code
-          | $$(document).on('ajaxComplete', function (e) {
+          | $$(document).on('ajax:complete', function (e) {
           |   var xhr = e.detail.xhr;
           |   console.log('request performed');
           | });

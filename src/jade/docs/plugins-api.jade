@@ -87,19 +87,19 @@ block content
           td The same as "navbarInit" event
         tr
           td pageInit (<span>pageData</span>)
-          td The same as "pageInit" event or same page callback. Will be triggered after Framework7 initialize page's components and navbar
+          td The same as "page:init" event or same page callback. Will be triggered after Framework7 initialize page's components and navbar
         tr
           td pageBeforeInit (<span>pageData</span>)
-          td The same as "pageBeforeInit" event or same page callback. Will be triggered before Framework7 just inserts new page to DOM
+          td The same as "page:beforeinit" event or same page callback. Will be triggered before Framework7 just inserts new page to DOM
         tr
           td pageBeforeAnimation (<span>pageData</span>)
-          td The same as "pageBeforeAnimation" event or same page callback. Will be triggered when everything initialized and page (and navbar) is ready to be animated
+          td The same as "page:beforeanimation" event or same page callback. Will be triggered when everything initialized and page (and navbar) is ready to be animated
         tr
           td pageAfterAnimation (<span>pageData</span>)
-          td The same as "pageAfterAnimation" event or same page callback. Will be triggered after page (and navbar) animation
+          td The same as "page:afteranimation" event or same page callback. Will be triggered after page (and navbar) animation
         tr
           td pageBeforeRemove (<span>pageData</span>)
-          td The same as "pageBeforeRemove" event or same page callback. Will be triggered right before Page will be removed from DOM
+          td The same as "page:beforeremove" event or same page callback. Will be triggered right before Page will be removed from DOM
         tr
           td addView (<span>view</span>)
           td Will be triggered when user adds new View by calling <code>myApp.addView</code>. As an argument it receives initialized View instance

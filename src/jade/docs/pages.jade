@@ -66,49 +66,49 @@ block content
             th Description
         tbody
           tr
-            td pageBeforeInit
+            td page:beforeinit
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered when Framework7 just inserts new page to DOM
           tr
-            td pageInit
+            td page:init
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered after Framework7 initialize required page's components and navbar
           tr
-            td pageReinit
+            td page:reinit
             td Page Element<span>&lt;div class="page"&gt;</span>
             td This event will be triggered when cached page becomes visible. It is only applicaple for Inline Pages (DOM cached pages)
           tr
-            td pageBeforeAnimation
+            td page:beforeanimation
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered when everything initialized and page (and navbar) is ready to be animated
           tr
-            td pageAfterAnimation
+            td page:afteranimation
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered after page (and navbar) animation
           tr
-            td pageBeforeRemove
+            td page:beforeremove
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
           tr
-            td pageBack
+            td page:back
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered right before "back" transition. Difference with "pageBeforeAnimation" is that this event will be triggered for the "old" page - page that slides from center to right
           tr
-            td pageAfterBack
+            td page:afterback
             td Page Element<span>&lt;div class="page"&gt;</span>
             td Event will be triggered right after "back" transition. Difference with "pageAfterAnimation" is that this event will be triggered for the "old" page - page that slides from center to right
           
       p Let's see how we can use these events. There are two ways to add page events handler:
       pre
         code
-          | // Option 1. Using one 'pageInit' handler for all pages (recommended way):
-          | $$(document).on('pageInit', function (e) {
+          | // Option 1. Using one 'page:init' handler for all pages (recommended way):
+          | $$(document).on('page:init', function (e) {
           |   // Do something here when page loaded and initialized
           |   
           | })
           |  
-          | // Option 2. Using live 'pageInit' event handlers for each page (not recommended)
-          | $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
+          | // Option 2. Using live 'page:init' event handlers for each page (not recommended)
+          | $$(document).on('page:init', '.page[data-page="about"]', function (e) {
           |   // Do something here when page with data-page="about" attribute loaded and initialized
           | })          
       p As you may see it is pretty easy, but hey, how to determine which page is loaded in first option when we use only one handler? For this case we have cool Page Dage in event details:
@@ -122,7 +122,7 @@ block content
           | })
           | 
           | // In page events:
-          | $$(document).on('pageInit', function (e) {
+          | $$(document).on('page:init', function (e) {
           |   // Page Data contains all required information about loaded and initialized page 
           |   var page = e.detail.page;
           | })
@@ -173,7 +173,7 @@ block content
       p Ok, let's look again how we can using one event handler write code for different pages
       pre
         code
-          | $$(document).on('pageInit', function (e) {
+          | $$(document).on('page:init', function (e) {
           |     var page = e.detail.page;
           |     // Code for About page
           |     if (page.name === 'about') {

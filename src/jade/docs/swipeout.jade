@@ -339,27 +339,27 @@ block content
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
             td Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage
           tr
-            td open
+            td swipeout:open
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
             td Event will be triggered when swipeout element starts its opening animation
           tr
-            td opened
+            td swipeout:opened
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
             td Event will be triggered after swipeout element completes its opening animation
           tr
-            td close
+            td swipeout:close
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
             td Event will be triggered when swipeout element starts its closing animation
           tr
-            td closed
+            td swipeout:closed
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
             td Event will be triggered after swipeout element completes its closing animation 
           tr
-            td delete
+            td swipeout:delete
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
             td Event will be triggered after swipeout element starts its delete animation 
           tr
-            td deleted
+            td swipeout:deleted
             td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
             td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
       pre
@@ -368,7 +368,7 @@ block content
           | 
           | var $$ = Dom7;
           | 
-          | $$('.swipeout').on('deleted', function () {
+          | $$('.swipeout').on('swipeout:deleted', function () {
           |   myApp.alert('Item removed');
           | }); 
           | 

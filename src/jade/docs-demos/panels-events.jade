@@ -38,15 +38,15 @@ block scripts
 
     var $$ = Dom7;
 
-    $$('.panel-left').on('opened', function () {
+    $$('.panel-left').on('panel:opened', function () {
         myApp.alert('Left panel opened!');
     });
-    $$('.panel-left').on('close', function () {
+    $$('.panel-left').on('panel:close', function () {
         myApp.alert('Left panel is closing!');
     });
-    $$('.panel-right').on('open', function () {
+    $$('.panel-right').on('panel:open', function () {
         myApp.alert('Right panel is opening!');
     });
-    $$('.panel-right').on('closed', function () {
+    $$('.panel-right').on('panel:closed', function () {
         myApp.alert('Right panel closed!');
     });

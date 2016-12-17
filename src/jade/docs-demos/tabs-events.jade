@@ -37,14 +37,14 @@ block scripts
     var myApp = new Framework7();   
     var $$ = Dom7;
 
-    $$('#tab1').on('show', function () {
+    $$('#tab1').on('tab:show', function () {
         myApp.alert('Tab 1 is visible');
     });
 
-    $$('#tab2').on('show', function () {
+    $$('#tab2').on('tab:show', function () {
         myApp.alert('Tab 2 is visible');
     });
 
-    $$('#tab3').on('show', function () {
+    $$('#tab3').on('tab:show', function () {
         myApp.alert('Tab 3 is visible');
     });

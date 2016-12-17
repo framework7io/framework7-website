@@ -344,11 +344,11 @@ block content
               th Description
           tbody
             tr
-              td show
+              td tab:show
               td Tab Element<span>&lt;div class="tab"&gt;</span>
               td Event will be triggered when Tab becomes visible/active
             tr
-              td hide
+              td tab:hide
               td Tab Element<span>&lt;div class="tab"&gt;</span>
               td Event will be triggered when Tab becomes invisible/inactive
       pre
@@ -356,15 +356,15 @@ block content
           | var myApp = new Framework7();   
           | var $$ = Dom7;
           | 
-          | $$('#tab1').on('show', function () {
+          | $$('#tab1').on('tab:show', function () {
           |     myApp.alert('Tab 1 is visible');
           | });
           | 
-          | $$('#tab2').on('show', function () {
+          | $$('#tab2').on('tab:show', function () {
           |     myApp.alert('Tab 2 is visible');
           | });
           | 
-          | $$('#tab3').on('show', function () {
+          | $$('#tab3').on('tab:show', function () {
           |     myApp.alert('Tab 3 is visible');
           | });          
       h2(data-device-preview="../docs-demos/tabs-javascript.html") Show Tab using JavaScript

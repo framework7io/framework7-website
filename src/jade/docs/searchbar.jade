@@ -81,7 +81,7 @@ block content
             |     searchList: '.list-block-search',
             |     searchIn: '.item-title'
             | });   
-        .important-note Note that Search Bar container should be in DOM on a moment of initialization. So if you use it not on home page, you need to initialize it within <b>pageInit</b> <a href="pages.html#page-events">event</a> or <a href="page-callbacks.html">callback</a>
+        .important-note Note that Search Bar container should be in DOM on a moment of initialization. So if you use it not on home page, you need to initialize it within <b>page:init</b> <a href="pages.html#page-events">event</a> or <a href="page-callbacks.html">callback</a>
         h2 Search Bar Parameters
         p Let's look on list of all available parameters:
         table.params-table
@@ -296,18 +296,18 @@ block content
               th Description
           tbody
             tr
-              td search
+              td searchbar:search
               td List View specified in "data-search-list"<span>&lt;div class="list-block"&gt;</span>
               td Event will be triggered during search (search field change). Event detail contains search query (e.detail.query) and array of found HTML elements (e.detail.foundItems)
             tr
-              td clearSearch
+              td searchbar:clear
               td List View specified in "data-search-list"<span>&lt;div class="list-block"&gt;</span>
               td Event will be triggered when user clicks on Search Bar's "clear" element (a href="#" class="searchbar-clear")
             tr
-              td enableSearch
+              td searchbar:enable
               td List View specified in "data-search-list"<span>&lt;div class="list-block"&gt;</span>
               td Event will be triggered when Search Bar becomes active
             tr
-              td disableSearch
+              td searchbar:disable
               td List View specified in "data-search-list"<span>&lt;div class="list-block"&gt;</span>
               td Event will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button (a href="searchbar-cancel") or on "searchbar-overlay" element        

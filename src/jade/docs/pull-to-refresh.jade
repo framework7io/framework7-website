@@ -53,23 +53,23 @@ block content
               th Description
           tbody
             tr
-              td pullstart
+              td ptr:pullstart
               td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
               td Event will be triggered when you start to move pull to refresh content
             tr
-              td pullmove
+              td ptr:pullmove
               td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
               td Event will be triggered during you move pull to refresh content
             tr
-              td pullend
+              td ptr:pullend
               td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
               td Event will be triggered when you release pull to refresh content
             tr
-              td refresh
+              td ptr:refresh
               td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
               td Event will be triggered when pull to refresh enters in "refreshing" state
             tr
-              td refreshdone
+              td ptr:done
               td Pull To Refresh content<span>&lt;div class="pull-to-refresh-content"&gt;</span>
               td Event will be triggered after pull to refresh is done and it is back to initial state (after calling <b>pullToRefreshDone</b> method)
         h2 Reset Pull To Refresh
@@ -132,7 +132,7 @@ block content
           | var ptrContent = $$('.pull-to-refresh-content');
           | 
           | // Add 'refresh' listener on it
-          | ptrContent.on('refresh', function (e) {
+          | ptrContent.on('ptr:refresh', function (e) {
           |     // Emulate 2s loading
           |     setTimeout(function () {
           |         // Random image
