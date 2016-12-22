@@ -23,6 +23,7 @@
             plugins: './plugins',
             examples: './examples',
             apps: './apps',
+            vue: './vue',
         },
         pages = {
             home: {
@@ -72,6 +73,10 @@
             tutorials: {
                 src: './src/jade/tutorials/**/*.jade',
                 dest: './tutorials/'
+            },
+            vue: {
+                src: './src/jade/vue/**/*.jade',
+                dest: './vue/'
             }
         },
         pageKeys = [],
