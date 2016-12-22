@@ -12,5 +12,6 @@ get-started/index.html
 vue/*.html
 plugins/index.html
 showcase/index.html
+icons/index.html
 tutorials/*.html
 ./index.html
