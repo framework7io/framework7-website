@@ -2,3 +2,15 @@
 node_modules/
 *.log
 *.DS_Store
+apps/index.html
+contribute/index.html
+docs/*.html
+docs-demos/*.html
+donate/*.html
+examples/index.html
+get-started/index.html
+vue/*.html
+plugins/index.html
+showcase/index.html
+tutorials/*.html
+./index.html
