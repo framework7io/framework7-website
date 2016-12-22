@@ -1,0 +1,41 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Badge Component | Framework7 Vue';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Badge Component
+      p Badge component represents badge element that can be used in lists, links, navigation bars, etc.
+      h2 Usage example
+      pre
+        code
+          | &lt;f7-badge&gt;5&lt;/f7-badge&gt;
+          | &lt;!--
+          | Renders to:
+          | &lt;span class="badge"&gt;5&lt;/f7-badge&gt;
+          | --&gt;
+          | 
+          | &lt;f7-badge color="red"&gt;5&lt;/f7-badge&gt;
+          | &lt;!--
+          | Renders to:
+          | &lt;span class="badge color-red"&gt;5&lt;/f7-badge&gt;
+          | --&gt;
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td color
+            td string
+            td 
+            td Badge color. One of <a href="../docs/color-themes.html">default colors</a>
