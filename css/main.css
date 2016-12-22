@@ -99,6 +99,19 @@ h4 {
   font-size: 25px;
   margin: 10px 0;
 }
+h1.code,
+h2.code,
+h3.code,
+h4.code,
+h5.code,
+h1 .code,
+h2 .code,
+h3 .code,
+h4 .code,
+h5 .code {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-weight: normal !important;
+}
 code {
   font-size: 12px;
   border: 1px solid #eee;

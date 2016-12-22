@@ -204,6 +204,12 @@ h4 {
 h3,h4 {
     // color: darken(@dark, 20%);
 }
+h1, h2, h3, h4, h5 {
+    &.code, .code {
+        .monospace();
+        font-weight: normal !important;
+    }
+}
 // Highlighting
 .monospace() {
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
