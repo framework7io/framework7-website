@@ -91,6 +91,13 @@
         if(pages.hasOwnProperty(page)) pageKeys.push(page);
     }
 
+    // Jade Filter
+    require('jade').filters['code'] = function (text) {
+        return text
+        .replace( /</g, '&lt;'   )
+        .replace( />/g, '&gt;'   )
+    }
+
     /* ==================================================================
     Check CDN
     ================================================================== */
