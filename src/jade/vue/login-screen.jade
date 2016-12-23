@@ -1,0 +1,109 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Login Screen Component | Framework7 Vue';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Login Screen Component
+      p Picker Modal is a special overlay type which is similar to Picker/Calendar's overlay. Such modal allows to create custom picker overlays with custom content.
+      p Login Screen Vue component represents <a href="../docs/login-screen.html">Login Screen</a> component.
+      h2 Usage example
+      pre
+        code
+          :code
+            <!-- Login Screen -->
+            <f7-login-screen>
+              <!-- Login Screen content goes here -->
+            </f7-login-screen>
+      p Renders to:
+      pre
+        code
+          :code
+            <!-- Login Screen -->
+            <div class="login-screen">
+              <!-- Login Screen content goes here -->
+            </div>
+      h3 Full Login Screen Layout
+      p According to <a href="../docs/login-screen.html#login-screen-layout">Login Screen Layout</a> here is the recommended Login Screen layout structure:
+      pre
+        code
+          :code
+            <f7-login-screen>
+              <f7-view>
+                <f7-pages>
+                  <f7-page login-screen>
+                    <f7-login-screen-title>My App</f7-login-screen-title>
+                    <f7-list form>
+                      <f7-list-item>
+                        <f7-label>Username</f7-label>
+                        <f7-input name="username" placeholder="Username"></f7-input>
+                      </f7-list-item>
+                      <f7-list-item>
+                        <f7-label>Password</f7-label>
+                        <f7-input name="password" type="password" placeholder="Password"></f7-input>
+                      </f7-list-item>
+                    </f7-list>
+                    <f7-list>
+                      <f7-list-button title="Sign In" close-login-screen></f7-list-button>
+                      <f7-list-label>
+                        <p>Click Sign In to close Login Screen</p>
+                      </f7-list-label>
+                    </f7-list>
+                  </f7-page>
+                </f7-pages>
+              </f7-view>
+            </f7-login-screen>
+      p Where:
+      ul
+        li <code>&lt;f7-login-screen-title&gt;My App&lt;/f7-login-screen-title&gt;</code> - additional component with Login Screen title
+        li <code>&lt;f7-page login-screen&gt;</code> - additional boolean <b>login-screen</b> property on page component to add extra styling to page form elements
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Description
+        tbody
+          tr
+            td theme
+            td string
+            td Login Screen theme color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td layout
+            td string
+            td Login Screen layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>
+          tr
+            td opened
+            td boolean
+            td Allows to open/close Login Screen and set its initial state
+      h2 Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td loginscreen:open
+            td Event will be triggered when Login Screen starts its opening animation
+          tr
+            td loginscreen:opened
+            td Event will be triggered after Login Screen completes its opening animation
+          tr
+            td loginscreen:close
+            td Event will be triggered when Login Screen starts its closing animation
+          tr
+            td loginscreen:closed
+            td Event will be triggered after Login Screen completes its closing animation
+      h2 Open and close Login Screen
+      p You can control Login Screen state, open and closing it:
+      ul
+        li using its <a href="../docs/login-screen.html#using-javascript">JavaScript API</a>
+        li by passing <b>true</b> or <b>false</b> to its <code>opened</code> prop
+        li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>open-login-screen</code> property (to open it) and <code>close-login-screen</code> property to close it

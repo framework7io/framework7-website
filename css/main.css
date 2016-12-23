@@ -1772,7 +1772,8 @@ table.params-table tbody td:nth-child(3):not(:last-child) {
 table.params-table tbody td:nth-child(2) {
   color: #006700;
 }
-table.params-table tbody th[colspan="4"] {
+table.params-table tbody th[colspan="4"],
+table.params-table tbody th[colspan="3"] {
   background: #eee;
 }
 table.params-table td:last-child pre {
