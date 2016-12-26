@@ -1,0 +1,105 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Card Vue Component | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Card Vue Component
+      p Cards, along with List View, is a one more great way to contain and orginize your information. Cards contains unique related data, for example, a photo, text, and link all about a single subject. Cards are typically an entry point to more complex and detailed information.
+      p Card Vue component represents <a href="../docs/cards.html">Cards</a> component.
+      h2 Usage examples
+      h4 Minimal layout
+      pre
+        code
+          :code
+            <f7-card title="Card Title" content="Card Content" footer="Card Footer"></f7-card>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="card">
+              <div class="card-header">Card Title</div>
+              <div class="card-content">
+                <div class="card-content-inner">Card Content</div>
+              </div>
+              <div class="card-footer">Card Footer</div>
+            </div>
+      h4 Minimal layout without Inner
+      pre
+        code.html
+          :code
+            <f7-card title="Card Title" content="Card Content" footer="Card Footer" :inner="false"></f7-card>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="card">
+              <div class="card-header">Card Title</div>
+              <div class="card-content">Card Content</div>
+              <div class="card-footer">Card Footer</div>
+            </div>
+      h4 Custom Layout
+      pre
+        code
+          :code
+            <f7-card>
+              <f7-card-header>Card header content</f7-card-header>
+              <f7-card-content>Card content</f7-card-content>
+              <f7-card-footer>Card footer content</f7-card-footer>
+            </f7-card>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="card">
+              <div class="card-header">Card header content</div>
+              <div class="card-content">
+                <div class="card-content-inner">
+                  Card content
+                </div>
+              </div>
+              <div class="card-footer">Card footer content</div>
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            th(colspan="4") &lt;f7-card&gt; properties
+          tr
+            td title
+            td string
+            td 
+            td Card header content
+          tr
+            td content
+            td string
+            td 
+            td Card content
+          tr
+            td footer
+            td string
+            td 
+            td Card footer content
+          tr
+            td inner
+            td boolean
+            td true
+            td Enables additiona inner wrapping element
+          tr
+            th(colspan="4") &lt;f7-card-content&gt; properties
+          tr
+            td inner
+            td boolean
+            td true
+            td Enables additiona inner wrapping element
