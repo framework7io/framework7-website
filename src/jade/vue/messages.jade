@@ -1,0 +1,233 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Messages Vue Component | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Messages Component
+      p Messages Vue component represents <a href="../docs/messages.html">Messages</a> component.
+      h2 Usage examples
+      pre
+        code
+          :code
+            <f7-messages>
+              <f7-message name="John" text="Hello, Kate!" type="received"></f7-message>
+              <f7-message name="Kate" text="Hi, John!" type="sent"></f7-message>
+            </f7-messages>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="messages">
+              <div class="message message-received">
+                <div class="message-name">John</div>
+                <div class="message-text">Hello, Kate!</div>
+              </div>
+              <div class="message message-sent">
+                <div class="message-name">Kate</div>
+                <div class="message-text">Hi, John!</div>
+              </div>
+            </div>
+      h4 With Messagebar
+      p Here is how it can be used in Vue component along with <a href="messagebar.html">Message Bar</a>:
+      pre
+        code
+          :code
+            <template>
+              <f7-messages>
+                <f7-message v-for="message in messages"
+                  :text="message.text"
+                  :label="message.label"
+                  :date="message.date"
+                  :name="message.name"
+                  :avatar="message.avatar"
+                  :type="message.type"
+                  :day="message.day"
+                  :time="message.time"
+                  @click="onClick"
+                  @click:text="onTextClick"
+                  @click:name="onNameClick"
+                  @click:avatar="onAvatarClick"
+                ></f7-message>
+              </f7-messages>
+              <f7-messagebar placeholder="Message" send-link="Send" @submit="onSubmit"></f7-messagebar>
+            </template>
+            <script>
+              export default {
+                data: function () {
+                  return {
+                    name: 'Vladimir',
+                    avatar: 'path/to/avatar-1.jpg',
+                    messages: [
+                      {
+                        day: 'Wendesday',
+                        time: '13:34'
+                      },
+                      {
+                        name: 'Vladimir',
+                        text: 'How are you?',
+                        label: 'Sent in good mood :)',
+                        avatar: 'path/to/avatar-1.jpg',
+                        date: 'Yesterday 13:34'
+                      },
+                      {
+                        name: 'Jane',
+                        text: 'I\'m good, thank you!',
+                        type: 'received',
+                        avatar: 'path/to/avatar-2.jpg',
+                        date: 'Yesterday at 13:50'
+                      }
+                    ]
+                  }
+                },
+                methods: {
+                  onClick: function (event) {
+                    console.log('message click');
+                  },
+                  onAvatarClick: function () {
+                    console.log('avatar-click');
+                  },
+                  onTextClick: function () {
+                    console.log('text-click');
+                  },
+                  onNameClick: function () {
+                    console.log('name-click');
+                  },
+                  onSubmit: function (text, clear) {
+                    if (text.trim().length === 0) return;
+                    this.messages.push({
+                      name: this.name,
+                      avatar: this.avatar,
+                      text: text,
+                      date: (function () {
+                        var now = new Date();
+                        var hours = now.getHours();
+                        var minutes = now.getMinutes();
+                        return hours + ':' + minutes;
+                      })()
+                    });
+                    // Clear Message Bar
+                    clear();
+                  }
+                }
+              }
+            </script>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            th(colspan="4") &lt;f7-messages&gt; properties
+          tr
+            td init
+            td boolean
+            td true
+            td Initializes Messages component
+          tr
+            td autoLayout
+            td boolean
+            td true
+            td Enable Auto Layout to add all required additional classes (like "message-pic", "message-with-avatar", "message-with-tail", etc) to each message automatically
+          tr
+            td newMessagesFirst
+            td boolean
+            td false
+            td Enable if you want to use new messages on top, instead of having them on bottom
+          tr
+            td scrollMessages
+            td boolean
+            td true
+            td Enable/disable messages autoscrolling when adding new message
+          tr
+            td scrollMessagesOnlyOnEdge
+            td boolean
+            td false
+            td If enabled then messages autoscrolling will happen only when user is on top/bottom of the messages view
+          tr
+            td messages
+            td array
+            td
+              td Array with initial messages. Each message in array should be presented as object with <a href="../docs/messages.html#single-message-parameters">message parameters</a>
+          tr
+            th(colspan="4") &lt;f7-message&gt; properties
+          tr
+            td type
+            td string
+            td "sent"
+            td Message type: "sent" (default) or "received"
+          tr
+            td text
+            td string
+            td
+            td Single message text
+          tr
+            td avatar
+            td string
+            td
+            td Single message user's avatar URL
+          tr
+            td name
+            td string
+            td
+            td Single message user's name
+          tr
+            td label
+            td string
+            td
+            td Single message label
+          tr
+            td date
+            td string
+            td
+            td Single message date
+          tr
+            td day
+            td string
+            td
+            td Conversation day
+          tr
+            td time
+            td string
+            td
+            td Conversation time
+          tr
+            td first
+            td boolean
+            td true
+            td Defines that the message is first in the conversation
+          tr
+            td last
+            td boolean
+            td true
+            td Defines that the message is last in the conversation
+      h2 Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            th(colspan="2") &lt;f7-message&gt; events
+          tr
+            td click
+            td Event will be triggered when user clicks on message bubble
+          tr
+            td click:name
+            td Event will be triggered when user clicks on message user's name
+          tr
+            td click:text
+            td Event will be triggered when user clicks on message text
+          tr
+            td click:avatar
+            td Event will be triggered when user clicks on message user's avatar
