@@ -1,0 +1,97 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Floating Action Button Vue Component | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Floating Action Button Vue Component
+      p Floating action buttons are used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.
+      p Floating Action Button Vue component represents <a href="../docs/floating-action-button.html">Floating Action Button</a> element.
+      h2 Usage examples
+      h4 Floating action button
+      pre
+        code
+          :code
+            <f7-fab color="pink" @click="doSomething">
+              <f7-icon icon="icon-plus"></f7-icon>
+            </f7-fab>
+      p Renders to:
+      pre
+        code
+          :code
+            <a href="#" class="floating-action-button color-pink">
+              <i class="icon icon-plus"></i>
+            </a>
+      h4 Speed Dial
+      pre
+        code
+          :code
+            <f7-fab-speed-dial>
+              <!-- Actions -->
+              <f7-fab-actions>
+                <f7-fab-action color="pink" @click="onActionClick">A</f7-fab-action>
+                <f7-fab-action color="orange" @click="onActionClick">B</f7-fab-action>
+                <f7-fab-action color="green" @click="onActionClick">C</f7-fab-action>
+              </f7-fab-actions>
+              <!-- FAB -->
+              <f7-fab>
+                <!-- First icon to open Actions -->
+                <f7-icon icon="icon-plus"></f7-icon>
+                <!-- Second icon to close Actions -->
+                <f7-icon icon="icon-close"></f7-icon>
+              </f7-fab>
+            </f7-fab-speed-dial>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="speed-dial">
+              <!-- Actions -->
+              <div class="speed-dial-buttons">
+                <a href="#" class="pink">A</a>
+                <a href="#" class="orange">B</a>
+                <a href="#" class="green">C</a>
+              </div>
+              <!-- FAB -->
+              <a href="#" class="floating-action-button color-pink">
+                <i class="icon icon-plus"></i>
+                <i class="icon icon-close"></i>
+              </a>
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Description
+        tbody
+          tr
+            th(colspan="3") &lt;f7-fab&gt;
+          tr
+            td color
+            td string
+            td Button color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            th(colspan="3") &lt;f7-fab-speed-dial&gt;
+          tr
+            td theme
+            td string
+            td Actions theme color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            th(colspan="3") &lt;f7-fab-actions&gt;
+          tr
+            td theme
+            td string
+            td Actions theme color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            th(colspan="3") &lt;f7-fab-action&gt;
+          tr
+            td color
+            td string
+            td Action button color. One of <a href="../docs/color-themes.html">default colors</a>
