@@ -127,10 +127,17 @@
         });
     });
     // By Sections
+    var pagesJadeTasks = {};
     pageKeys.forEach(function (page) {
-        gulp.task('jade-' + page, function (cb) {
-            checkIsLocal(process.argv.slice(3));
-            gulp.src(pages[page].src)
+        pagesJadeTasks[page] = function (file) {
+            var src = file ? file : pages[page].src;
+            var fileName = '';
+            if (file) {
+                fileName = file.split('/')[file.split('/').length - 1];
+            }
+            console.log('Starting jade:' + page + ':' + fileName);
+            var time = new Date().getTime();
+            gulp.src(src)
                 .pipe(jade({
                     pretty: true,
                     locals: {
@@ -141,8 +148,12 @@
                 .pipe(gulp.dest(pages[page].dest))
                 .on('end', function () {
                     connect.reload();
-                    cb();
+                    console.log('Finished jade:' + page + ':' + fileName + ' in ' + (new Date().getTime() - time) + 'ms');
                 });
+        }
+        gulp.task('jade-' + page, function (cb) {
+            checkIsLocal(process.argv.slice(3));
+            pagesJadeTasks[page]()
         });
     });
     // All Jade Pages
@@ -203,9 +214,13 @@
 
         gulp.watch(paths.less + '**/*.*', [ 'less' ]);
         pageKeys.forEach(function (page) {
-            gulp.watch(pages[page].src, ['jade-' + page]);
+            gulp.watch(pages[page].src, function (data) {
+                if (page === 'docs' || page === 'vue') {
+                    pagesJadeTasks[page](data.path);
+                }
+                else pagesJadeTasks[page]();
+            });
         });
-        gulp.watch(paths.jade + '/_docs-menu.jade', ['jade-docs']);
         gulp.watch([
                 paths.jade + '/_vars.jade',
                 paths.jade + '/_internal-template.jade',
