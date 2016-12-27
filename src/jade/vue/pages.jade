@@ -1,0 +1,86 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Pages Vue Component | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Pages Vue Component
+      p <b>Pages</b> - is the main container for all the <a href="page.html">pages</a> in the <a href="view.html">view</a>. It is the place where View's router manipulates with pages.
+      h2 Usage examples
+      pre
+        code
+          :code
+            <f7-pages>
+              ...
+            </f7-pages>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="pages">
+              ...
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td theme
+            td string
+            td
+            td Pages theme color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td layout
+            td string
+            td
+            td Pages layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>
+          tr
+            td navbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">navbar layout</a>
+          tr
+            td navbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">navbar layout</a>
+          tr
+            td toolbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">toolbar layout</a>
+          tr
+            td toolbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">toolbar layout</a>
+          tr
+            td tabbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-labels-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-labels-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
