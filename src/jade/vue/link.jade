@@ -1,0 +1,374 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Link Vue Component | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Link Vue Component
+      p Link is main component to create links for navigation, custom actions, switching tabs, open/close panels, etc.
+      h2 Usage examples
+      h4 Navigation Link
+      pre
+        code
+          :code
+            <f7-link href="/about/">About</f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <a href="/about/" class="link">About</a>
+
+      h4 Back Navigation Link
+      pre
+        code
+          :code
+            <f7-link back>Back</f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <a href="#" class="link back">Back</a>
+
+      h4 With Router Parameters
+      pre
+        code
+          :code
+            <f7-link href="/about/" :animate-pages="false" :ignore-cache="true">About</f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <a href="/about/" class="link" data-animate-pages="false" data-ignore-cache="true">About</a>
+
+      h4 External Link
+      pre
+        code
+          :code
+            <f7-link href="http://google.com" external>Google</f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <a href="http://google.com" class="link external">Google</a>
+
+      h4 Tab Link
+      pre
+        code
+          :code
+            <!-- Tabs -->
+            <f7-tabs>
+              <f7-tab id="tab-1" active>Tab 1</f7-tab>
+              <f7-tab id="tab-1">Tab 2</f7-tab>
+            </f7-tabs>
+            <!-- Switch Between Tabs -->
+            <f7-link tab-link="#tab-1">Show Tab 1</f7-link>
+            <f7-link tab-link="#tab-2">Show Tab 2</f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <!-- Tabs -->
+            <div class="tabs">
+              <div class="tab active" id="tab-1">Tab 1</div>
+              <div class="tab" id="tab-2">Tab 2</div>
+            </div>
+            <!-- Switch Between Tabs -->
+            <a href="#" data-tab="#tab-1" class="tab-link">Show Tab 1</a>
+            <a href="#" data-tab="#tab-2" class="tab-link">Show Tab 2</a>
+
+      h4 Tab Link
+      pre
+        code
+          :code
+            <!-- Tabs -->
+            <f7-tabs>
+              <f7-tab id="tab-1" active>Tab 1</f7-tab>
+              <f7-tab id="tab-1">Tab 2</f7-tab>
+            </f7-tabs>
+            <!-- Switch Between Tabs -->
+            <f7-link tab-link="#tab-1">Show Tab 1</f7-link>
+            <f7-link tab-link="#tab-2">Show Tab 2</f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <!-- Tabs -->
+            <div class="tabs">
+              <div class="tab active" id="tab-1">Tab 1</div>
+              <div class="tab" id="tab-2">Tab 2</div>
+            </div>
+            <!-- Switch Between Tabs -->
+            <a href="#" data-tab="#tab-1" class="tab-link">Show Tab 1</a>
+            <a href="#" data-tab="#tab-2" class="tab-link">Show Tab 2</a>
+
+      h4 Open and Close Panel
+      pre
+        code
+          :code
+            <f7-link open-panel="left">Open Left Panel</f7-link>
+            <f7-link close-panel>Close Panel</f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <a href="#" data-panel="left" class="link open-panel">Open Left Panel</a>
+            <a href="#" class="link close-panel">Close Panel</a>
+
+      h4 Open and Close Popup
+      pre
+        code
+          :code
+            <f7-link open-popup="#my-popup">Open Popup</f7-link>
+            <f7-link close-popup="#my-popup">Close Popup</f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <a href="#" data-popup="#my-popup" class="link open-popup">Open Popup</a>
+            <a href="#" data-popup="#my-popup" class="link close-popup">Close Popup</a>
+
+      h4 With Icon & Color
+      pre
+        code
+          :code
+            <f7-link icon-f7="home" text="Home" color="red"></f7-link>
+      p Renders to:
+      pre
+        code
+          :code
+            <a href="#" class="link color-red">
+              <i class="icon f7-icons">home</i>
+              <span>Home</span>
+            </a>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td no-link-class
+            td boolean
+            td
+            td Removes "link" class
+          tr
+            td color
+            td string
+            td
+            td Link color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td ripple-color
+            td string
+            td
+            td Link Touch-ripple color (affects only Material theme). One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td theme
+            td string
+            td
+            td Link color theme. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td bg
+            td string
+            td
+            td Link background color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td text
+            td string
+            td
+            td Link text
+          tr
+            th(colspan="4") <a href="badge.html">Badge</a> Properties
+          tr
+            td badge
+            td string/number
+            td
+            td Badge count
+          tr
+            td badgeColor
+            td string
+            td
+            td Badge color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            th(colspan="4") Control Links
+          tr
+            td open-panel
+            td string/boolean
+            td
+            td Defines panel to open. Can be "left" or "right"
+          tr
+            td close-panel
+            td boolean
+            td
+            td Closes panel on click
+          tr
+            td open-popup
+            td string/boolean
+            td
+            td CSS selector of the popup to open on click
+          tr
+            td close-popup
+            td string/boolean
+            td
+            td CSS selector of the popup to close on click. Or boolean property to close currently opened popup
+          tr
+            td open-popover
+            td string/boolean
+            td
+            td CSS selector of the popover to open on click
+          tr
+            td close-popover
+            td string/boolean
+            td
+            td CSS selector of the popover to close on click. Or boolean property to close currently opened popover
+          tr
+            td open-picker
+            td string/boolean
+            td
+            td CSS selector of the picker to open on click
+          tr
+            td close-picker
+            td string/boolean
+            td
+            td CSS selector of the picker to close on click. Or boolean property to close currently opened picker
+          tr
+            td open-login-screen
+            td string/boolean
+            td
+            td CSS selector of the login screen to open on click
+          tr
+            td close-login-screen
+            td string/boolean
+            td
+            td CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen
+          tr
+            td open-sortable
+            td string/boolean
+            td
+            td CSS selector of the Sortable list to open on click
+          tr
+            td close-sortable
+            td string/boolean
+            td
+            td CSS selector of the Sortable list to close on click. Or boolean property to close currently opened Sortable list
+          tr
+            td toggle-sortable
+            td string/boolean
+            td
+            td CSS selector of the Sortable list to toggle on click. Or boolean property to toggle currently opened/closed Sortable list
+          tr
+            th(colspan="4") Navigation / Router Properties
+          tr
+            td href
+            td string
+            td #
+            td URL of the page to load
+          tr
+            td view
+            td string
+            td
+            td CSS selector of the View to load the page
+          tr
+            td no-fast-click
+            td boolean
+            td
+            td Disables fast click
+          tr
+            td external
+            td boolean
+            td
+            td Enable to disable Framework7's link click handler
+          tr
+            td back
+            td boolean
+            td
+            td Enables back navigation link
+          tr
+            td force
+            td boolean
+            td
+            td Force page to load and ignore previous page in history (use together with <b>back</b> prop)
+          tr
+            td reload
+            td boolean
+            td
+            td Reloads new page instead of the currently active one
+          tr
+            td animate-pages
+            td boolean
+            td
+            td Disables pages animation
+          tr
+            td ignore-cache
+            td boolean
+            td
+            td Ignores caching
+          tr
+            td page-name
+            td string
+            td
+            td Name of the page to load
+          tr
+            td template
+            td string
+            td
+            td Template name to load
+          tr
+            th(colspan="4") <a href="icon.html">Icon</a> Properties
+          tr
+            td icon-only
+            td boolean
+            td
+            td Enable when used in navbar with icon only inside
+          tr
+            td icon-badge
+            td string/number
+            td
+            td Adds badge to the icon (intended to be used in Tabbar's icons)
+          tr
+            td icon-size
+            td string/number
+            td
+            td Icon size in px
+          tr
+            td icon
+            td string
+            td
+            td Custom icon class
+          tr
+            td icon-f7
+            td string
+            td
+            td Name of F7 Icons font icon
+          tr
+            td icon-material
+            td string
+            td
+            td Name of Material Icons font icon
+          tr
+            td icon-fa
+            td string
+            td
+            td Name of Font Awesome font icon
+          tr
+            td icon-ion
+            td string
+            td
+            td Name of Ionicons font icon
+          tr
+            td icon-if-ios
+            td string
+            td
+            td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
+          tr
+            td icon-if-material
+            td string
+            td
+            td Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
