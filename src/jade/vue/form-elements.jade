@@ -1,0 +1,321 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Form Elements Vue Component | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Form Elements Vue Components
+      p Form elements allow you to create flexible and beautiful Form layout. Form elements are just well known <a href="../docs/list-view.html">List View</a> (<b><a href="list.html">List</a> and <a href="list-item.html">List Item</a> Vue components</b>) but with few extensions.
+      p Check out Framework7's <a href="../docs/form-elements.html">Form Elements</a> for their appearance.
+      h2 Usage examples
+      pre
+        code
+          :code
+            <f7-list form>
+              <!-- Text Input -->
+              <f7-list-item>
+                <f7-label>Name</f7-label>
+                <f7-input type="text" placeholder="Name"/>
+              </f7-list-item>
+              <!-- Password -->
+              <f7-list-item>
+                <f7-label>Name</f7-label>
+                <f7-input type="password" placeholder="Password"/>
+              </f7-list-item>
+              <!-- Select -->
+              <f7-list-item>
+                <f7-label>Gender</f7-label>
+                <f7-input type="select">
+                  <option value="1">Male</option>
+                  <option value="1">Female</option>
+                </f7-input>
+              </f7-list-item>
+              <!-- Switch -->
+              <f7-list-item>
+                <f7-label>Switch</f7-label>
+                <f7-input type="switch" @change="onChange"></f7-input>
+              </f7-list-item>
+              <!-- Range -->
+              <f7-list-item>
+                <f7-label>Range</f7-label>
+                <f7-input type="range" min="0" max="100" step="1" value="90"></f7-input>
+              </f7-list-item>
+              <!-- Textarea -->
+              <f7-list-item>
+                <f7-label>Textarea</f7-label>
+                <f7-input type="textarea" placeholder="Textarea"></f7-input>
+              </f7-list-item>
+            </f7-list>
+      p Renders to:
+      pre
+        code
+          :code
+            <form class="list-block">
+              <ul>
+                <!-- Text Input -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Name</div>
+                      <div class="item-input">
+                        <input type="text" placeholder="Name"></div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Password -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Password</div>
+                      <div class="item-input">
+                        <input type="password" placeholder="Password"></div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Select -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Gender</div>
+                      <div class="item-input">
+                        <select type="select">
+                          <option value="1">Male</option>
+                          <option value="1">Female</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Switch -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Switch</div>
+                      <div class="item-input">
+                        <label class="label-switch">
+                          <input type="checkbox" value="">
+                          <div class="checkbox"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Range -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Range</div>
+                      <div class="item-input">
+                        <div class="range-slider">
+                          <input type="range" max="100" min="0" step="1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Textarea -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Textarea</div>
+                      <div class="item-input">
+                        <textarea type="textarea" placeholder="Textarea"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </form>
+      h4 Floating Labels (Material Theme only)
+      pre
+        code
+          :code
+            <f7-list form>
+              <!-- Text Input -->
+              <f7-list-item>
+                <f7-label floating>Name</f7-label>
+                <f7-input type="text" placeholder="Name"/>
+              </f7-list-item>
+              <!-- Password -->
+              <f7-list-item>
+                <f7-label floating>Name</f7-label>
+                <f7-input type="password" placeholder="Password"/>
+              </f7-list-item>
+              ...
+            </f7-list>
+      h4 Without labels
+      pre
+        code
+          :code
+            <f7-list form>
+              <!-- Text Input -->
+              <f7-list-item>
+                <f7-input type="text" placeholder="Name"/>
+              </f7-list-item>
+              <!-- Password -->
+              <f7-list-item>
+                <f7-input type="password" placeholder="Password"/>
+              </f7-list-item>
+              ...
+            </f7-list>
+      h4 With Labels and Icons
+      pre
+        code
+          :code
+            <f7-list form>
+              <!-- Text Input -->
+              <f7-list-item>
+                <f7-icon slot="media" f7="person"></f7-icon>
+                <f7-label floating>Name</f7-label>
+                <f7-input type="text" placeholder="Name"/>
+              </f7-list-item>
+              <!-- Password -->
+              <f7-list-item>
+                <f7-icon slot="media" f7="lock"></f7-icon>
+                <f7-label floating>Name</f7-label>
+                <f7-input type="password" placeholder="Password"/>
+              </f7-list-item>
+              ...
+            </f7-list>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            th(colspan="4") &lt;f7-label&gt; properties
+          tr
+            td floating
+            td boolean
+            td
+            td Enables floating label (affects Material theme only)
+          tr
+            th(colspan="4") &lt;f7-input&gt; properties
+          tr
+            td type
+            td string
+            td
+            td Input type. All default HTML5 input type, and few special ones:
+              ul
+                li <b>textarea</b> - to render textarea element
+                li <b>select</b> - to render select element
+                li <b>range</b> - to render range slider
+                li <b>switch</b> - to render switch element
+          tr
+            td name
+            td string
+            td
+            td Input name
+          tr
+            td placeholder
+            td string
+            td
+            td Input placeholder
+          tr
+            td id
+            td string
+            td
+            td Input ID attribute
+          tr
+            td value
+            td string/number
+            td
+            td Input value
+          tr
+            td size/number
+            td string
+            td
+            td Value of input's native "size" attribute
+          tr
+            td accept
+            td string/number
+            td
+            td Value of input's native "accept" attribute
+          tr
+            td autocomplete
+            td string
+            td
+            td Value of input's native "autocomplete" attribute
+          tr
+            td autofocus
+            td boolean
+            td
+            td Value of input's native "autofocus" attribute
+          tr
+            td autosave
+            td string
+            td
+            td Value of input's native "autosave" atribute
+          tr
+            td checked
+            td boolean
+            td
+            td Marks input as checked
+          tr
+            td disabled
+            td boolean
+            td
+            td Marks input as disabled
+          tr
+            td max
+            td string/number
+            td
+            td Value of input's native "max" atribute
+          tr
+            td min
+            td string/number
+            td
+            td Value of input's native "min" atribute
+          tr
+            td step
+            td string/number
+            td
+            td Value of input's native "step" atribute
+          tr
+            td maxlength
+            td string/number
+            td
+            td Value of input's native "maxlength" atribute
+          tr
+            td minlength
+            td string/number
+            td
+            td Value of input's native "minlength" atribute
+          tr
+            td multiple
+            td boolean
+            td
+            td Value of input's native "multiple" atribute
+          tr
+            td readonly
+            td boolean
+            td
+            td Marks input as readonly
+          tr
+            td required
+            td boolean
+            td
+            td Marks input as required
+          tr
+            td style
+            td string
+            td
+            td Value if input's "style" attribute
+          tr
+            td color
+            td string
+            td
+            td Input color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td wrap
+            td boolean
+            td true
+            td Defines should the input be wraped with "item-input" element or not
