@@ -1,0 +1,89 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Accordion List Vue Component | Framework7 Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Accordion List Vue Component
+      p Accordion List is not a separate component, but just a particular case of using <a href="list.html">&lt;f7-list&gt;</a>, <a href="list-item.html">&lt;f7-list-item&gt;</a> and <a href="accordion.html">&lt;f7-accordion-content&gt;</a> components.
+      h2 Usage example
+      pre
+        code
+          :code
+            <f7-list accordion>
+              <f7-list-item accordion-item title="Accordion Item 1">
+                <f7-accordion-content>
+                  <f7-block>
+                    <p>Accordion Item 1 Content</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eu felis volutpat, rutrum ex quis, lobortis ex. Curabitur quis mattis lorem. Nullam magna lacus, interdum vel maximus nec, vestibulum non quam. Phasellus ornare efficitur porttitor. Quisque neque diam, imperdiet in fermentum nec, congue vitae ante. Nullam imperdiet maximus commodo. Morbi pharetra id purus ac ultrices. Duis non posuere libero.</p>
+                  </f7-block>
+                </f7-accordion-content>
+              </f7-list-item>
+              <f7-list-item accordion-item title="Accordion Item 2">
+                <f7-accordion-content>
+                  <f7-block>
+                    <p>Accordion Item 2 Content</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eu felis volutpat, rutrum ex quis, lobortis ex. Curabitur quis mattis lorem. Nullam magna lacus, interdum vel maximus nec, vestibulum non quam. Phasellus ornare efficitur porttitor. Quisque neque diam, imperdiet in fermentum nec, congue vitae ante. Nullam imperdiet maximus commodo. Morbi pharetra id purus ac ultrices. Duis non posuere libero.</p>
+                  </f7-block>
+                </f7-accordion-content>
+              </f7-list-item>
+            </f7-list>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="list-block accordion-list">
+              <ul>
+                <li class="accordion-item">
+                  <a href="#" class="item-link">
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Accordion Item 1</div>
+                      </div>
+                    </div>
+                  </a>
+                  <div class="accordion-item-content">
+                    <p>Accordion Item 1 Content</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eu felis volutpat, rutrum ex quis, lobortis ex. Curabitur quis mattis lorem. Nullam magna lacus, interdum vel maximus nec, vestibulum non quam. Phasellus ornare efficitur porttitor. Quisque neque diam, imperdiet in fermentum nec, congue vitae ante. Nullam imperdiet maximus commodo. Morbi pharetra id purus ac ultrices. Duis non posuere libero.</p>
+                  </div>
+                </li>
+                <li class="accordion-item">
+                  <a href="#" class="item-link">
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Accordion Item 2</div>
+                      </div>
+                    </div>
+                  </a>
+                  <div class="accordion-item-content">
+                    <p>Accordion Item 2 Content</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eu felis volutpat, rutrum ex quis, lobortis ex. Curabitur quis mattis lorem. Nullam magna lacus, interdum vel maximus nec, vestibulum non quam. Phasellus ornare efficitur porttitor. Quisque neque diam, imperdiet in fermentum nec, congue vitae ante. Nullam imperdiet maximus commodo. Morbi pharetra id purus ac ultrices. Duis non posuere libero.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      h2 Events
+      p The following events are avialiable on <b>&lt;f7-list-item&gt;</b> component whith enable <b>accordion-item</b>:
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td accordion:open
+            td Event will be triggered when accordion content starts its opening animation.
+          tr
+            td accordion:opened
+            td Event will be triggered after accordion content completes its opening animation.
+          tr
+            td accordion:close
+            td Event will be triggered when accordion content starts its closing animation.
+          tr
+            td accordion:closed
+            td Event will be triggered after accordion content completes its closing animation.
