@@ -63,6 +63,10 @@ body {
 }
 a {
   color: #b72f20;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 li {
   margin: 5px 0;
@@ -98,6 +102,30 @@ h3 {
 h4 {
   font-size: 25px;
   margin: 10px 0;
+}
+h1,
+h2,
+h3,
+h4 {
+  color: #333;
+  font-weight: 400;
+}
+h1 {
+  font-size: 39px;
+  font-weight: 600;
+}
+h2 {
+  font-size: 34px;
+  font-weight: 500;
+}
+h3 {
+  font-size: 31px;
+}
+h4 {
+  font-size: 23px;
+}
+h5 {
+  font-size: 19px;
 }
 h1.code,
 h2.code,
@@ -1338,13 +1366,6 @@ footer img.keycdn-logo {
 .example .example-author {
   margin-bottom: 20px;
 }
-.example .example-author a {
-  color: #8c2418;
-  text-decoration: none;
-}
-.example .example-author a:hover {
-  text-decoration: underline;
-}
 .example h2 {
   margin-top: 0;
   margin-bottom: 20px;
@@ -1521,12 +1542,26 @@ footer img.keycdn-logo {
 }
 .docs-nav li {
   margin-bottom: 10px;
+  position: relative;
+}
+.docs-nav li.active:before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 1000px;
+  height: 100%;
+  padding: 5px 0;
+  background: rgba(30, 0, 0, 0.06);
+  top: 50%;
+  transform: translateY(-50%);
 }
 .docs-nav a {
   color: #555;
   text-decoration: none;
   display: block;
   padding-right: 10px;
+  position: relative;
 }
 .docs-nav a:hover {
   color: #b72f20;
@@ -1922,12 +1957,6 @@ ul.tutorials li {
   padding-bottom: 20px;
   border-bottom: 1px solid #eee;
 }
-ul.tutorials a {
-  text-decoration: none;
-}
-ul.tutorials a:hover {
-  text-decoration: underline;
-}
 ul.tutorials .tutorial-title {
   font-size: 27px;
   font-weight: 300;
@@ -1961,13 +1990,6 @@ ul.tutorials .tutorial-title span.video:after {
 }
 .tutorial-meta .tutorial-date {
   color: #777;
-}
-.tutorial-meta a {
-  color: #8c2418;
-  text-decoration: none;
-}
-.tutorial-meta a:hover {
-  text-decoration: underline;
 }
 a.donate-button {
   border-radius: 5px;
@@ -2088,13 +2110,6 @@ h1 + .tutorial-author {
 }
 .showcase-apps .app-author {
   margin-bottom: 15px;
-}
-.showcase-apps .app-author a {
-  color: #8c2418;
-  text-decoration: none;
-}
-.showcase-apps .app-author a:hover {
-  text-decoration: underline;
 }
 .showcase-apps .app-shots {
   background: #eee;

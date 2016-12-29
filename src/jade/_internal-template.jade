@@ -37,18 +37,12 @@ html
           .links-row
             .links-label Project:
             .links
-              a(href="https://github.com/nolimits4web/Framework7", target="_blank") Download
-
+              a(href="https://github.com/nolimits4web/Framework7/releases", target="_blank") Download
+              a(href="http://forum.framework7.io") Forum
               - if (activeLink == 'contribute')
                 a(href="../contribute/").active Contribute
               - else
                 a(href="../contribute/") Contribute
-
-              - if (activeLink == 'donate')
-                a(href="../donate/").active Donate
-              - else
-                a(href="../donate/") Donate
-
               a(href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md", target="_blank") Changelog
           .links-row
             .links-label Learn:
@@ -63,12 +57,15 @@ html
               - else
                 a(href="../docs/") Docs
 
+              - if (activeLink == 'vue')
+                a(href="../vue/").active F7 + Vue
+              - else
+                a(href="../vue/") F7 + Vue
+
               - if (activeLink == 'tutorials')
                 a(href="../tutorials/").active Tutorials
               - else
                 a(href="../tutorials/") Tutorials
-
-              a(href="http://forum.framework7.io") Forum
           .links-row
             .links-label Apps:
             .links
@@ -91,7 +88,6 @@ html
                 a(href="../showcase/").active Showcase
               - else
                 a(href="../showcase/") Showcase
-        
 
     .share-line
       .center

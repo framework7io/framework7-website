@@ -1,0 +1,94 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Initialize App | Framework7 Vue Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Initialize App
+      p After we have our <a href="app-layout.html">app layout</a> now we need to mount Vue components and initialize the app. You can read about all possible Framework7 initialization parameters in appropriate <a href="../docs/init-app.html">Framework7 App Parameters</a> section.
+      p Let's look at our script:
+      pre
+        code
+          :code
+            // First of all, we need to initialize/enable Framework7 Vue plugin:
+            Vue.use(Framework7Vue);
+
+            // Init Vue App
+            new Vue({
+                // App Root Element
+                el: '#app',
+                // Init Framework7. All Framework7 parameters should be passed in "framework7" property, e.g.:
+                framework7: {
+                    // App Root Element, should be the same as the component root "el"
+                    root: '#app',
+                    // Array with app routes
+                    routes: [...]
+                    // Any other parameters, e.g.
+                    animateNavBackIcon: true,
+                    swipePanel: 'left'
+                },
+                // App root data
+                data: {
+                    // ....
+                },
+                // App root methods
+                methods: {
+                    // ....
+                }
+            })
+      p If you use Webpack or Browserify, it may look like:
+      pre
+        code
+          :code
+            // Import Vue
+            import Vue from 'vue'
+
+            // Import F7
+            import Framework7 from 'framework7'
+
+            // Import F7 Vue Plugin
+            import Framework7Vue from 'framework7-vue'
+
+            // Import Routes
+            import Routes from './routes.js'
+
+            // Init F7 Vue Plugin
+            Vue.use(Framework7Vue)
+
+            // Init App
+            new Vue({
+              el: '#app',
+              framework7: {
+                root: '#app',
+                routes: Routes
+              },
+              // ...
+            });
+      p In the examples above we pass <a href="../docs/init-app.html">Framework7 parameters</a> to the Vue root component's <b>framework7</b> property; we must use the same Framework7's <b>root</b> parameter as the <b>el</b> property of Vue main component.
+      p We also must specify array with routes (if we have navigation between pages in the app). Check out information about router and routes in the <a href="navigation-router.html">Navigation Router</a> section.
+      h2 Initialized Instances
+      p After Vue mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all Vue components:
+      table.methods-table
+        tbody
+          tr
+            th(colspan="2") Properties
+          tr
+            td this.$f7<br>-<br>window.f7
+            td Main Framework7's initialized instance. It allows you to use any of Framework7 APIs
+          tr
+            td this.$t7<br>-<br>this.Template7<br>-<br>window.Template7
+            td Access to built-in <a href="../docs/template7.html">Template7</a> template engine
+          tr
+            td this.$$<br>-<br>this.Dom7<br>-<br>window.Dom7
+            td Access to built-in jQuery-like <a href="../docs/dom.html">Dom7</a> DOM library that utilizes most edge and high-performance methods for DOM manipulation
+          tr
+            td this.$device
+            td Access to <a href="../docs/device-api.html">Device API</a>
+          tr
+            td this.$theme
+            td Object with boolean properties with information about currently used theme (iOS or Material): <code>this.$theme.ios</code> and <code>this.$theme.material</code>
