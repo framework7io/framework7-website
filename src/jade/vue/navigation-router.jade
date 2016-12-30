@@ -10,3 +10,200 @@ block content
       include ../_docs-vue-menu
     .docs-content
       h1 Navigation Router
+      p With Framework7 & Vue.js, we are already composing our application with components. All we need to do is map our components to the routes. Here's a basic example:
+      pre
+        code
+          :code
+            <!-- Current View/Router -->
+            <f7-view>
+              <!-- All pages are rendered inside of Pages -->
+              <f7-pages>
+                <!-- Initial Page -->
+                <f7-page>
+                  ...
+                  <f7-link href="/about/">About App</f7-link>
+                  <f7-link href="/login/">Login</f7-link>
+                </f7-page>
+              </f7-pages>
+            </f7-view>
+      p Now we need to map components to routes. It should be done in <b>routes</b> parameter on <a href="init-app.html">App Initialization</a>
+      pre
+        code
+          :code
+            // Create Component for About page
+            Vue.component('page-about', {
+                template: '<f7-page name="about">...</f7-page>'
+            })
+            // Create Component for Login page
+            Vue.component('page-login', {
+                template: '<f7-page name="login">...</f7-page>'
+            })
+
+            // Init App
+            new Vue({
+                el: '#app',
+                framework7: {
+                    root: '#app',
+                    // Map routes
+                    routes: [
+                        {
+                            path: '/about/',
+                            component: 'page-about'
+                        },
+                        {
+                            path: '/login/',
+                            component: 'page-login'
+                        }
+                    ]
+                }
+            })
+      p If you use single file components (with Webpack or Browserify):
+      pre
+        code
+          :code
+            <!-- about.vue -->
+            <template>
+              <f7-page name="about">
+                <!-- Page content -->
+              </f7-page>
+            </template>
+            <script>
+              export default {}
+            </script>
+
+            <!-- login.vue -->
+            <template>
+              <f7-page name="login">
+                <!-- Page content -->
+              </f7-page>
+            </template>
+            <script>
+              export default {}
+            </script>
+      pre
+        code
+          :code
+            import AboutPage from 'about.vue'
+            import LoginPage from 'login.vue'
+
+            // Init App
+            new Vue({
+                el: '#app',
+                framework7: {
+                    root: '#app',
+                    // Map routes
+                    routes: [
+                        {
+                            path: '/about/',
+                            component: AboutPage
+                        },
+                        {
+                            path: '/login/',
+                            component: LoginPage
+                        }
+                    ]
+                }
+            })
+      .important-note
+        ul
+          li
+            p Note, that router is intended to load <a href="page.html">Page</a> as component only
+          li
+            p All pages are rendered inside of the <a href="pages.html">Pages</a> component of the current (or specified) <a href="view.html">View</a>
+          li
+            p Only one Pages component is allowed inside of one View
+          li
+            p You may have as many Views as required (e.g. in Popup, in Side Panels)
+      h2 Dynamic Route Matching
+      p Very often we will need to map routes with the given pattern to the same component. In specified <b>routes</b> we can use a dynamic segment in the path to achieve that.
+      P Let's say we have the following link:
+      pre
+        code
+          :code
+            <f7-link href="/user/45/posts/28/?sort=first#opened">Read More</f7-link>
+      p And the following pattern in specified route path:
+      pre
+        code
+          :code
+            import PostPage from 'post.vue'
+
+            // Init App
+            new Vue({
+                el: '#app',
+                framework7: {
+                    root: '#app',
+                    // Map routes
+                    routes: [
+                        {
+                            // We can use patter here:
+                            path: '/user/:userId/posts/:postId',
+                            component: PostPage
+                        }
+                    ]
+                }
+            })
+      p In this case we have access to <b>$route</b> component property that we can use, e.g. in post.vue:
+      pre
+        code
+          :code
+            <!-- post.vue -->
+            <template>
+              <f7-page>
+                <f7-navbar title="Post"></f7-navbar>
+                <ul>
+                  <li>Route: {{$route.route}}</li>
+                  <li>Url: {{$route.url}}</li>
+                  <li>Path: {{$route.path}}</li>
+                  <li>User ID: {{$route.params.userId}}</li>
+                  <li>Post ID: {{$route.params.postId}}</li>
+                  <li>Query: {{JSON.stringify($route.query)}}</li>
+                  <li>Hash: {{$route.hash}}
+                </ul>
+              </f7-page>
+            </template>
+      p And the output will be:
+      pre
+        code
+          :code
+            ...
+            <ul>
+              <li>Route: /user/:userId/posts/:postId</li>
+              <li>Url: /user/45/posts/28/?sort=first#opened</li>
+              <li>Path: /user/45/posts/28/</li>
+              <li>User ID: 45</li>
+              <li>Post ID: 28</li>
+              <li>Query: {"sort":"first"}</li>
+              <li>Hash: opened</li>
+            </ul>
+            ...
+      p <b>$route</b> has the following properties:
+      table.methods-table
+        tbody
+          tr
+            td $route.url
+            td Url of the loaded route/page
+          tr
+            td $route.params
+            td Object with route parameters (e.g. userId and postId in the example above)
+          tr
+            td $route.hash
+            td Route hash
+          tr
+            td $route.query
+            td Parsed query object
+          tr
+            td $route.path
+            td Route path (same as <b>$route.url</b> but without query and hash)
+          tr
+            td $route.route
+            td Matched route from specified <b>routes</b> parameter
+      h2 Router API
+      p To access router instance and use <a href="../docs/router-api.html">Router API</a> you can use special <b>$router</b> property of component:
+      pre
+        code
+          :code
+            <f7-link @click="$router.load({url: '/about/'})">About</f7-link>
+            <f7-link @click="$router.back()">Go Back</f7-link>
+
+
+
