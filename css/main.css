@@ -638,6 +638,13 @@ header .small-links a:hover {
 .home-block:last-child {
   margin-bottom: 0;
 }
+.home-block h1,
+.home-block h2,
+.home-block h3,
+.home-block h4 {
+  font-weight: 300;
+  color: #b72f20;
+}
 .home-intro h1 {
   font-size: 47px;
   margin-bottom: 20px;
@@ -1035,6 +1042,25 @@ img.lazy {
   -ms-flex-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
+}
+.home-vue {
+  margin-top: 0;
+  text-align: center;
+}
+.home-vue:first-child {
+  margin-top: 0;
+}
+.home-vue h1 {
+  margin-top: 0;
+  font-size: 47px;
+  text-align: center;
+}
+.home-vue .text {
+  text-align: center;
+}
+.home-vue .pic img {
+  border-radius: 3px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
 }
 .content {
   padding: 40px;
