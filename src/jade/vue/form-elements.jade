@@ -319,3 +319,49 @@ block content
             td boolean
             td true
             td Defines should the input be wraped with "item-input" element or not
+      h2 Events
+      table.params-table
+        thead
+          tr
+            th Event
+            th Params
+            th Description
+        tbody
+          tr
+            th(colspan="3") &lt;f7-input&gt; events
+          tr
+            td @focus
+            td ( FocusEvent )
+            td Triggers when user focused to input
+          tr
+            td @blur
+            td ( FocusEvent )
+            td Triggers when user lost focus from input
+          tr
+            td @input
+            td ( inputValue )
+            td Triggers immediately when input value changed. Note: Input event triggers after keypress, keyup, keydown events.
+          tr
+            td @change
+            td ( Event )
+            td Triggers when blur if value changed.
+          tr
+            td @click
+            td ( MouseEvent )
+            td Triggers when clicked to input
+          tr
+            td @keypress
+            td ( KeyboardEvent )
+            td You can use this event for prevent input. Triggers after keydown and before keyup.
+              p You can use like this too:
+                code.js @keypress.enter="alert('User pressed enter key.')"
+              p For more information:
+                a(target="_blank", href="https://vuejs.org/v2/guide/events.html#Key-Modifiers") https://vuejs.org/v2/guide/events.html#Key-Modifiers
+          tr
+            td @keyup
+            td ( KeyboardEvent )
+            td Triggers when user released the keyboard button.
+          tr
+            td @keydown
+            td ( KeyboardEvent )
+            td Triggers when user starts pressing to the keyboard button.
