@@ -235,6 +235,11 @@ block content
             td
             td Value of input's native "size" attribute
           tr
+            td pattern
+            td string
+            td
+            td Value of input's native "pattern" attribute
+          tr
             td accept
             td string/number
             td
@@ -331,37 +336,103 @@ block content
             th(colspan="3") &lt;f7-input&gt; events
           tr
             td @focus
-            td ( FocusEvent )
-            td Triggers when user focused to input
+            td FocusEvent
+            td Fired when user focused to input.
+          tr
+            td @focusin
+            td FocusEvent
+            td Fired when an element is about to receive focus. The main difference between this event and focus is that the latter doesn't bubble.
           tr
             td @blur
-            td ( FocusEvent )
-            td Triggers when user lost focus from input
+            td FocusEvent
+            td Fired when user lost focus from input.
+          tr
+            td @focusout
+            td FocusEvent
+            td Fired when an element is about to lose focus. The main difference between this event and blur is that the latter doesn't bubble.
+          tr
+            td @beforeinput
+            td InputEvent
+            td Fired before input value change.
           tr
             td @input
-            td ( inputValue )
-            td Triggers immediately when input value changed. Note: Input event triggers after keypress, keyup, keydown events.
+            td inputValue
+            td Fired immediately when input value changed. Note: Input event triggers after beforeinput, keypress, keyup, keydown events.
           tr
             td @change
-            td ( Event )
-            td Triggers when blur if value changed.
-          tr
-            td @click
-            td ( MouseEvent )
-            td Triggers when clicked to input
+            td Event
+            td Fired when blur if value changed.
           tr
             td @keypress
-            td ( KeyboardEvent )
-            td You can use this event for prevent input. Triggers after keydown and before keyup.
+            td KeyboardEvent
+            td You can use this event and @keydown event for prevent input. @keypress event fired after keydown and before keyup.
               p You can use like this too:
                 code.js @keypress.enter="alert('User pressed enter key.')"
               p For more information:
                 a(target="_blank", href="https://vuejs.org/v2/guide/events.html#Key-Modifiers") https://vuejs.org/v2/guide/events.html#Key-Modifiers
           tr
             td @keyup
-            td ( KeyboardEvent )
-            td Triggers when user released the keyboard button.
+            td KeyboardEvent
+            td Fired when user released the keyboard button.
           tr
             td @keydown
-            td ( KeyboardEvent )
-            td Triggers when user starts pressing to the keyboard button.
+            td KeyboardEvent
+            td Fired when user starts pressing to the keyboard button.
+          tr
+            td @compositionstart
+            td CompositionEvent
+            td Fired when the composition of a passage of text is prepared (similar to keydown for a keyboard input, but fires with special characters that require a sequence of keys and other inputs such as speech recognition or word suggestion on mobile).
+          tr
+            td @compositionupdate
+            td CompositionEvent
+            td Fired when a character is added to a passage of text being composed (fires with special characters that require a sequence of keys and other inputs such as speech recognition or word suggestion on mobile).
+          tr
+            td @compositionend
+            td CompositionEvent
+            td Fired when the composition of a passage of text has been completed or cancelled.
+          tr
+            td @click
+            td MouseEvent
+            td Fired when clicked to input.
+          tr
+            td @dblclick
+            td MouseEvent
+            td Fired when double clicked to input.
+          tr
+            td @mousedown
+            td MouseEvent
+            td Fired when a pointing device button (usually a mouse button) is pressed on an element.
+          tr
+            td @mouseup
+            td MouseEvent
+            td Fired when a pointing device button (usually a mouse button) is released over an element.
+          tr
+            td @mouseenter
+            td MouseEvent
+            td Fired when a pointing device (usually a mouse) is moved over the element that has the listener attached.
+              p @mouseenter and @mouseover events are different. For more info:
+                a(target="_blank", href="https://developer.mozilla.org/en-US/docs/Web/Events/mouseenter") https://developer.mozilla.org/en-US/docs/Web/Events/mouseenter
+          tr
+            td @mouseover
+            td MouseEvent
+            td Fired when a pointing device is moved onto the element that has the listener attached or onto one of its children.
+          tr
+            td @mouseleave
+            td MouseEvent
+            td Fired when a pointing device (usually a mouse) is moved off the element that has the listener attached.
+          tr
+            td @mouseout
+            td MouseEvent
+            td Fired when a pointing device (usually a mouse) is moved off the element that has the listener attached or off one of its children. Note that it is also triggered on the parent when you move onto a child element, since you move out of the visible space of the parent.
+          tr
+            td @mousemove
+            td MouseEvent
+            td Fired when a pointing device (usually a mouse) is moved while over an element.
+          tr
+            td @wheel
+            td WheelEvent
+            td Fired when a wheel button of a pointing device (usually a mouse) is rotated. This event replaces the non-standard deprecated mousewheel event.
+          tr
+            td @select
+            td Event
+            td Fired when some text is being selected. The event might not be available for all elements in all languages. For example, select events can be dispatched only on form input and textarea elements.
