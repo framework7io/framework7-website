@@ -186,7 +186,7 @@ block content
           |     contextName: 'languages.frontend.0'
           | })
       h2 Pass Custom Context
-      p Framework7 allows to pass custom context to any laoded Ajax or Dynamic page.
+      p Framework7 allows to pass custom context to any loaded Ajax or Dynamic page.
       p We may pass custom context for any page using <code>data-context</code> attribute on link, where we need to put valid stringified JSON:
       pre
         code
@@ -246,12 +246,12 @@ block content
           |     }
           | })
       p Now we need to load specified templates as pages. 
-      p For "contacts" page we already have required data in <code>template7Data</code>. So to specify required template we need to use <code>data-template</code> attribute were we need to specify template id:
+      p For "contacts" page we already have required data in <code>template7Data</code>. So to specify required template we need to use <code>data-template</code> attribute where we need to specify template id:
       pre
         code
           | &lt;!-- We need to specify template id in data-template attribute --&gt;
           | &lt;a href="#" data-template="contactsTemplate"&gt;Contacts&lt;/a&gt;
-      p For about page, we don't have any specified data, so we can do that by passing custom context:
+      p For "about" page, we don't have any specified data, so we can do that by passing custom context:
       pre
         code
           | &lt;a href="#" data-template="aboutTemplate" data-context='{"name": "John Doe", "age": "35"}'&gt;About Me&lt;/a&gt;
