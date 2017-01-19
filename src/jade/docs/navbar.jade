@@ -115,17 +115,17 @@ block content
       table.methods-table
         tbody
           tr
-            td myApp.hideNavbar(<span>navbar</span>)
-            td Hide specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
+            td myApp.hideNavbar(<span>navbar</span>, <span>isAnimated</span>)
+            td Hide specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.<br><code>isAnimated</code> - <span class="parameter-type">Boolean</span> - <span>Default: true</span>
           tr
-            td myApp.showNavbar(<span>navbar</span>)
-            td Show specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
+            td myApp.showNavbar(<span>navbar</span>, <span>isAnimated</span>)
+            td Show specified toolbar.<br><code>navbar</code> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.<br><code>isAnimated</code> - <span class="parameter-type">Boolean</span> - <span>Default: true</span>
           tr
-            td view.hideNavbar()
-            td Hide navbar in this View
+            td view.hideNavbar(<span>isAnimated</span>)
+            td Hide navbar in this View<br><code>isAnimated</code> - <span class="parameter-type">Boolean</span> - <span>Default: true</span>
           tr
-            td view.showNavbar()
-            td Show navbar in this View
+            td view.showNavbar(<span>isAnimated</span>)
+            td Show navbar in this View<br><code>isAnimated</code> - <span class="parameter-type">Boolean</span> - <span>Default: true</span>
           tr
             td myApp.sizeNavbars(<span>viewContainer</span>)
             td 
