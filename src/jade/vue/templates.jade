@@ -88,3 +88,51 @@ block content
         li <b>src/app.vue</b> - main app structure/component
         li <b>dist/css</b> - app styles, put custom app CSS styles here as well
         li <b>dist/css/build.css</b> - Vue components styles will be extracted here on <code>npm run build</code>
+      h2 Framework7 Vue Webpack Cordova App Template
+      p This is the most powerful template which includes full-featured Framework7 + Vue + Webpack setup with hot-reload, single file components (.vue) support & css extraction with super cordova support.
+      h4 Install
+      p You can read instructions from its <a href="https://github.com/centrual/cordova-template-framework7-vue-webpack" target="_blank">GitHub repository</a> you can continue reading.
+      p This template needs Node Js and Npm. You can find install instructions from <a href="https://nodejs.org/en/" target="_blank">Node Js home page</a>.
+      p If you don't have cordova or phonegap please install it with:
+      pre
+        code.bash
+          :code
+            $ npm i cordova -g
+            or
+            $ npm i phonegap -g
+      p Now you have NodeJs and Cordova-PhoneGap You can create a project with this template now:
+      pre
+        code.bash
+          :code
+            $ cordova create <project_create_dir> [com.example.projectname] [ProjectClassName] --template cordova-template-framework7-vue-webpack
+            or
+            $ phonegap create <project_create_dir> [com.example.projectname] [ProjectClassName] --template cordova-template-framework7-vue-webpack
+      h4 Run Your Code
+      p You can run every cordova-phonegap commands. You have one argument for development: -- --live-reload or -- --lr.
+      p You can find cordova cli reference from <a href="https://cordova.apache.org/docs/en/latest/reference/cordova-cli/" target="_blank">Cordova Docs</a> or phonegap cli reference from: <a href="http://docs.phonegap.com/getting-started/1-install-phonegap/cli/" target="_blank">Phonegap Docs</a>
+      p Sample Commands:
+      pre
+        code.bash
+          :code
+            $ cordova (run|emulate) [android|ios|browser] [-- --lr]
+            or
+            $ phonegap (run|emulate) [android|ios|browser] [-- --lr]
+      h4 Build for production
+      p When your app is ready you need to build it for production:
+      pre
+        code.bash
+          :code
+            $ cordova build --release
+            or
+            $ phonegap build --release
+      p For more information about build: <a href="https://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html" target="_blank">Cordova Android Platform Guide</a>
+      h4 Project Structure
+      ul
+        li <b>src</b> - Source files are here. Mostly your target is this directory.
+        li <b>src/assets/static</b> - Your static assets like images, css, fonts, json, js, sass is here.
+        li <b>src/assets/static/css</b> - put custom app CSS styles here. Don't forget to import them in main.js
+        li <b>src/assets/vue/pages</b> - app .vue pages
+        li <b>src/assets/vue/components</b> - folder with custom .vue components
+        li <b>src/main.js</b> - main app file where you include/import all required libs and init app
+        li <b>src/routes.js</b> - app routes
+        li <b>src/main.vue</b> - main app structure/component
