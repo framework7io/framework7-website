@@ -11,6 +11,9 @@
         iconsManifest = require('./manifest-icons.json'),
         useCDN = true,
         cdnPath = '//cdn.framework7.io',
+        remote = require('./remote.json'),
+        sftp = require('gulp-sftp'),
+        gutil = require( 'gulp-util' ),
         paths = {
             root: './',
             css: './css',
@@ -230,6 +233,39 @@
             ], ['jade']);
     });
     /* =================================
+    Deploy
+    ================================= */
+    gulp.task('deploy', function () {
+        gulp.src([
+            './*.html',
+            './robots.txt',
+            './*.png',
+            './framework7.json',
+            './manifest-icons.json',
+            './apps/**/*.*',
+            './contribute/**/*.*',
+            './css/**/*.*',
+            './dist/**/*.*',
+            './docs/**/*.*',
+            './docs-demos/**/*.*',
+            './donate/**/*.*',
+            './examples/**/*.*',
+            './fonts/**/*.*',
+            './forum/**/*.*',
+            './get-started/**/*.*',
+            './i/**/*.*',
+            './icons/**/*.*',
+            './js/**/*.*',
+            './kitchen-sink-ios/**/*.*',
+            './kitchen-sink-material/**/*.*',
+            './plugins/**/*.*',
+            './showcase/**/*.*',
+            './tutorials/**/*.*',
+            './vue/**/*.*',
+            ], {base: './'})
+            .pipe(sftp(remote));
+    });
+    /* =================================
     Server
     ================================= */
     gulp.task('connect', function () {
@@ -248,4 +284,6 @@
     gulp.task('default', [ 'server' ]);
 
     gulp.task('test', [ 'build' ]);
+
+
 })();
