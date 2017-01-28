@@ -236,7 +236,12 @@
     Deploy
     ================================= */
     gulp.task('deploy', function () {
-        gulp.src([
+        var folder;
+        if (process.argv.slice(3)) {
+            folder = process.argv.slice(3);
+            if (folder) folder = folder.toString().replace('-', '');
+        }
+        var src = [
             './*.html',
             './robots.txt',
             './*.png',
@@ -262,7 +267,18 @@
             './showcase/**/*.*',
             './tutorials/**/*.*',
             './vue/**/*.*',
-            ], {base: './'})
+            ];
+        var folderSrc = {
+            'dist': './dist/**/*.*',
+            'docs': './docs/**/*.*',
+            'docs-demos': './docs/**/*.*',
+            'showcase': './showcase/**/*.*',
+            'tutorials': './tutorials/**/*.*',
+            'vue': './vue/**/*.*',
+            'kitchen-sink': ['./kitchen-sink-ios/**/*.*', './kitchen-sink-material/**/*.*']
+        };
+        if (folder) src = folderSrc[folder];
+        gulp.src(src, {base: './'})
             .pipe(sftp(remote));
     });
     /* =================================
