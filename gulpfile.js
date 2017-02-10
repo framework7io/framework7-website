@@ -11,7 +11,6 @@
         iconsManifest = require('./manifest-icons.json'),
         useCDN = true,
         cdnPath = '//cdn.framework7.io',
-        remote = require('./remote.json'),
         sftp = require('gulp-sftp'),
         gutil = require( 'gulp-util' ),
         paths = {
@@ -278,6 +277,9 @@
             'kitchen-sink': ['./kitchen-sink-ios/**/*.*', './kitchen-sink-material/**/*.*']
         };
         if (folder) src = folderSrc[folder];
+
+        remote = require('./remote.json'),
+
         gulp.src(src, {base: './'})
             .pipe(sftp(remote));
     });
