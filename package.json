@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "del": "^2.2.2",
+    "framework7-vue": "^0.8.0",
     "gulp": "^3.9.1",
     "gulp-connect": "^2.3.1",
     "gulp-jade": "^1.1.0",
@@ -19,6 +20,8 @@
     "gulp-open": "^1.0.0",
     "gulp-sftp": "^0.1.5",
     "gulp-util": "^3.0.8",
-    "jade": "^1.11.0"
+    "jade": "^1.11.0",
+    "jsdom": "^9.10.0",
+    "json-fn": "^1.1.1"
   }
 }

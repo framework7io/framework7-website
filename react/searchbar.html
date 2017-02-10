@@ -1,0 +1,498 @@
+<html><head>
+    <meta charset="utf-8">
+    <title>Search Bar React Component | Framework7 React Documentation</title>
+    <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="shortcut icon" href="/favicon.png">
+    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
+  <body>{/* BuySellAds Ad Code */}
+    <script>
+      (function(){
+        var bsa = document.createElement('script');
+           bsa.type = 'text/javascript';
+           bsa.async = true;
+           bsa.src = '//s3.buysellads.com/ac/bsa.js';
+        (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+      })();
+    </script>{/* End BuySellAds Ad Code */}
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
+        <div class="carbon"><script async="" type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&amp;serve=C6AILKT&amp;placement=framework7io" id="_carbonads_js"></script></div>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7/releases" target="_blank">Download</a><a href="http://forum.framework7.io">Forum</a><a href="../contribute/">Contribute</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Layouts</a><a href="../plugins/">Plugins</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share-buttons">
+          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="/i/support-badge.png" style="height:20px"></a></div>
+          <div class="share-button">
+            <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
+          </div>
+          <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
+          <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li>
+              <div class="title">Get Started</div>
+              <ul>
+                <li><a href="introduction.html">Introduction</a></li>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="templates.html">Starter App Templates</a></li>
+                <li><a href="app-layout.html">App Layout</a></li>
+                <li><a href="init-app.html">Initialize App</a></li>
+                <li><a href="navigation-router.html">Navigation / Router</a></li>
+              </ul>
+            </li>
+            <li>
+              <div class="title">React Components</div>
+              <ul>
+                <li><a href="accordion.html">Accordion</a></li>
+                <li><a href="badge.html">Badge</a></li>
+                <li><a href="content-block-title.html">Block Title</a></li>
+                <li><a href="content-block.html">Block / Content Block</a></li>
+                <li><a href="button.html">Button</a></li>
+                <li><a href="card.html">Card</a></li>
+                <li><a href="chips.html">Chips / Tags</a></li>
+                <li><a href="fab.html">Floating Action Button</a></li>
+                <li>
+                  <div class="subtitle">Forms</div>
+                  <ul>
+                    <li><a href="checkboxes-radios.html">Checkboxes &amp; Radios</a></li>
+                    <li><a href="form-elements.html">Form Elements</a></li>
+                    <li><a href="smart-select.html">Smart Select</a></li>
+                  </ul>
+                </li>
+                <li><a href="icon.html">Icon</a></li>
+                <li><a href="grid.html">Grid / Layout Grid</a></li>
+                <li>
+                  <div class="subtitle">Lists</div>
+                  <ul>
+                    <li><a href="list.html">List</a></li>
+                    <li><a href="list-item.html">List Item</a></li>
+                    <li><a href="list-button.html">List Button</a></li>
+                    <li><a href="accordion-list.html">Accordion List</a></li>
+                    <li><a href="contacts-list.html">Contacts List</a></li>
+                    <li><a href="sortable-list.html">Sortable List</a></li>
+                    <li><a href="swipeout-list.html">Swipeout List</a></li>
+                    <li><a href="virtual-list.html">Virtual List</a></li>
+                  </ul>
+                </li>
+                <li><a href="link.html">Link</a></li>
+                <li><a href="messages.html">Messages</a></li>
+                <li><a href="messagebar.html">Message Bar</a></li>
+                <li>
+                  <div class="subtitle">Modals</div>
+                  <ul>
+                    <li><a href="action-sheet.html">Action Sheet</a></li>
+                    <li><a href="login-screen.html">Login Screen</a></li>
+                    <li><a href="picker-modal.html">Picker Modal</a></li>
+                    <li><a href="popover.html">Popover</a></li>
+                    <li><a href="popup.html">Popup</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <div class="subtitle">Navigation Bars</div>
+                  <ul>
+                    <li><a href="navbar.html">Navbar</a></li>
+                    <li><a href="toolbar.html">Toolbar/Tabbar</a></li>
+                    <li><a href="subnavbar.html">Sub Navbar</a></li>
+                  </ul>
+                </li>
+                <li><a href="pages.html">Pages</a></li>
+                <li><a href="page.html">Page</a></li>
+                <li><a href="panel.html">Panel</a></li>
+                <li><a href="photo-browser.html">Photo Browser</a></li>
+                <li><a href="preloader.html">Preloader / Spinner</a></li>
+                <li><a href="progressbar.html">Progress Bar</a></li>
+                <li><a href="searchbar.html">Search Bar</a></li>
+                <li><a href="statusbar.html">Status Bar</a></li>
+                <li><a href="swiper.html">Swiper</a></li>
+                <li><a href="tabs.html">Tabs</a></li>
+                <li><a href="template7-template.html">Template7 Template</a></li>
+                <li><a href="timeline.html">Timeline</a></li>
+                <li><a href="views.html">Views</a></li>
+                <li><a href="view.html">View</a></li>
+              </ul>
+            </li>
+          </ul>
+          <div class="toggle-docs-nav"><span></span></div>
+        </div>
+        <div class="docs-content">
+          <h1>Search Bar React Component</h1>
+          <p>Search Bar React component represents Framework7's <a href="../docs/searchbar.html">Search Bar</a> component.</p>
+          <h2>Usage example</h2>
+          <pre><code>&lt;Searchbar
+  cancel-link="Cancel"
+  placeholder="Search in items"
+  clear={"}
+&gt;&lt;/Searchbar&gt;</code></pre>
+          <p>Renders to:</p>
+          <pre><code>&lt;form class="searchbar"&gt;
+  &lt;div class="searchbar-input"&gt;
+    &lt;!-- Input --&gt;
+    &lt;input type="search" placeholder="Search in items"&gt;
+    &lt;!-- Clear button --&gt;
+    &lt;a href="#" class="searchbar-clear"&gt;&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;!-- Cancel Link --&gt;
+  &lt;div class="searchbar-cancel"&gt;Cancel&lt;/div&gt;
+&lt;/form&gt;</code></pre>
+          <p>Here is how it can be used in React component with initialization</p>
+          <pre><code class="html">&lt;template&gt;
+
+  &lt;!-- Search bar --&gt;
+  &lt;Searchbar
+    &lt;!-- Cancel link's text (affects iOS theme only) --&gt;
+    cancel-link="Cancel"
+    &lt;!-- Where to search --&gt;
+    search-list="#search-list"
+    &lt;!-- Input placeholder text --&gt;
+    placeholder="Search in items"
+    &lt;!-- Show "clear" button --&gt;
+    clear={"}
+    &lt;!-- Events --&gt;
+    @searchbarsearch={"}
+    @searchbarenable={"}
+    @searchbardisable={"}
+    @searchbarclear={"}
+  &gt;&lt;/Searchbar&gt;
+
+  &lt;!-- Will be visible if there is no any results found, defined by "searchbar-not-found" class --&gt;
+  &lt;List class="searchbar-not-found"&gt;
+    &lt;ListItem title="Nothing found"&gt;&lt;/ListItem&gt;
+  &lt;/List&gt;
+
+  &lt;!-- Search-through list --&gt;
+  &lt;List class="searchbar-found" id="search-list"&gt;
+    &lt;ListItem v-for="item in items" title={"}&gt;&lt;/ListItem&gt;
+  &lt;/List&gt;
+
+&lt;/template&gt;
+
+&lt;script&gt;
+  export default {
+    data: function () {
+      return {
+        items: (function () {
+          var it = [];
+          for (var i = 0; i &lt; 100; i++) it.push(i+1);
+          return it;
+        })()
+      }
+    },
+    methods: {
+      onSearch: function (query, found) {
+        console.log('search', query);
+      },
+      onClear: function (event) {
+        console.log('clear');
+      },
+      onEnable: function (event) {
+        console.log('enable');
+      },
+      onDisable: function (event) {
+        console.log('disable');
+      },
+    }
+  }
+&lt;/script&gt;</code></pre>
+          <h2>Slots</h2>
+          <p>Search Bar React component has additional slots for custom elements:</p>
+          <ul>
+            <li><b>before-input</b> - element will be inserted right before &lt;input type="search"&gt; element</li>
+            <li><b>after-input</b> - element will be inserted right after &lt;input type="search"&gt; element</li>
+          </ul>
+          <pre><code>&lt;Searchbar
+  cancel-link="Cancel"
+  placeholder="Search in items"
+  clear={"}
+&gt;
+  &lt;div slot="before-input"&gt;Before Input&lt;/div&gt;
+  &lt;div slot="after-input"&gt;After Input&lt;/div&gt;
+&lt;/Searchbar&gt;</code></pre>
+          <p>Renders to:</p>
+          <pre><code>&lt;form class="searchbar"&gt;
+  &lt;div class="searchbar-input"&gt;
+    &lt;div&gt;Before Input&lt;/div&gt;
+    &lt;input type="search" placeholder="Search in items"&gt;
+    &lt;div&gt;After Input&lt;/div&gt;
+    &lt;a href="#" class="searchbar-clear"&gt;&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;div class="searchbar-cancel"&gt;Cancel&lt;/div&gt;
+&lt;/form&gt;</code></pre>
+          <h2>Properties</h2>
+          <p>You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:</p>
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Prop</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>form</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Main search bar element will be used as a <code>form</code> tag instead of <code>div</code></td>
+              </tr>
+              <tr>
+                <td>placeholder</td>
+                <td>string</td>
+                <td>"Search"</td>
+                <td>Input placeholder text</td>
+              </tr>
+              <tr>
+                <td>cancel-link</td>
+                <td>string</td>
+                <td> </td>
+                <td>Cancel link text. Affects only iOS theme</td>
+              </tr>
+              <tr>
+                <td>clear</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Enables "clear" input button</td>
+              </tr>
+              <tr>
+                <td>init</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>Initializes Search Bar</td>
+              </tr>
+              <tr>
+                <td>params</td>
+                <td>Object</td>
+                <td> </td>
+                <td>Object with <a href="../docs/searchbar.html#search-bar-parameters">Search Bar API</a> parameters</td>
+              </tr>
+              <tr>
+                <th colspan="4"><code>params</code> separate props</th>
+              </tr>
+              <tr>
+                <td>searchList</td>
+                <td>string/object</td>
+                <td> </td>
+                <td>CSS selector or HTML element of list block to search</td>
+              </tr>
+              <tr>
+                <td>searchIn</td>
+                <td>string</td>
+                <td>'.item-title'</td>
+                <td>CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <b>'.item-title, .item-text'</b></td>
+              </tr>
+              <tr>
+                <td>found</td>
+                <td>string/object</td>
+                <td> </td>
+                <td>CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page</td>
+              </tr>
+              <tr>
+                <td>notFoud</td>
+                <td>string/object</td>
+                <td> </td>
+                <td>CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page</td>
+              </tr>
+              <tr>
+                <td>overlay</td>
+                <td>string/object</td>
+                <td> </td>
+                <td>CSS selector or HTMLElement of searchbar overlay. If not specified, searchbar will look for <code>.searchbar-overlay</code> element on page</td>
+              </tr>
+              <tr>
+                <td>ignore</td>
+                <td>string</td>
+                <td>'.searchbar-ignore'</td>
+                <td>CSS selector for items to be ignored by searchbar and always present in search results</td>
+              </tr>
+              <tr>
+                <td>customSearch</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>When enabled searchbar will not search through any of list blocks specified by `searchList` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually</td>
+              </tr>
+              <tr>
+                <td>removeDiacritics</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>Enable to remove/replace diacritics (á, í, ó, etc.) during search</td>
+              </tr>
+              <tr>
+                <td>hideDividers</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them</td>
+              </tr>
+              <tr>
+                <td>hideGroups</td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>If enabled, then search will consider list view groups hide them if there are no found items inside of these groups</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Events</h2>
+          <table class="events-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>searchbar:search</td>
+                <td>Event will be triggered during search (search field change). Event detail contains search query (e.detail.query) and array of found HTML elements (e.detail.foundItems)</td>
+              </tr>
+              <tr>
+                <td>searchbar:clear</td>
+                <td>Event will be triggered when user clicks on Search Bar's "clear" element (a href="#" class="searchbar-clear")</td>
+              </tr>
+              <tr>
+                <td>searchbar:enable</td>
+                <td>Event will be triggered when Search Bar becomes active</td>
+              </tr>
+              <tr>
+                <td>searchbar:disable</td>
+                <td>Event will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button (a href="searchbar-cancel") or on "searchbar-overlay" element</td>
+              </tr>
+              <tr>
+                <td>change</td>
+                <td>Event will be triggered when "change" event occurs on search bar input element</td>
+              </tr>
+              <tr>
+                <td>input</td>
+                <td>Event will be triggered when "input" event occurs on search bar input element</td>
+              </tr>
+              <tr>
+                <td>focus</td>
+                <td>Event will be triggered when "focus" event occurs on search bar input element</td>
+              </tr>
+              <tr>
+                <td>blur</td>
+                <td>Event will be triggered when "blur" event occurs on search bar input element</td>
+              </tr>
+              <tr>
+                <td>click:clear</td>
+                <td>Event will be triggered when user clicks on input "clear" button</td>
+              </tr>
+              <tr>
+                <td>click:cancel</td>
+                <td>Event will be triggered when user clicks on "cancel" link</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Access To Initialized Instance</h2>
+          <p>If you use automatic initalization to init Search Bar (with <code>init:true</code> prop) and need to use its <a href="../docs/searchbar.html#search-bar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Searchbar</b></code> component's property.</p>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share-buttons">
+          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="/i/support-badge.png" style="height:20px"></a></div>
+          <div class="share-button">
+            <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
+          </div>
+          <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
+          <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links">
+          <div class="links-block">
+            <div class="links-block-title">Project</div>
+            <ul>
+              <li><a href="https://github.com/nolimits4web/Framework7/releases" target="_blank">Download</a></li>
+              <li><a href="/contribute/">Contribute</a></li>
+              <li><a href="/donate/">Donate</a></li>
+              <li><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a></li>
+            </ul>
+          </div>
+          <div class="links-block">
+            <div class="links-block-title">Learn</div>
+            <ul>
+              <li><a href="/get-started/">Get Started</a></li>
+              <li><a href="/docs/">Docs</a></li>
+              <li><a href="/tutorials/">Tutorials</a></li>
+              <li><a href="http://forum.framework7.io" target="_blank">Forum</a></li>
+            </ul>
+          </div>
+          <div class="links-block">
+            <div class="links-block-title">Apps</div>
+            <ul>
+              <li><a href="/examples/">Layouts</a></li>
+              <li><a href="/plugins/">Plugins</a></li>
+              <li><a href="/apps/">Demo Apps</a></li>
+              <li><a href="/showcase/">Showcase</a></li>
+            </ul>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="sponsors">
+          <div class="sponsors-title">Sponsored by</div>
+          <div id="bsap_1306028" class="bsarocks bsap_692e54a1f79f00fb913f5a1c3ec9eaa5"></div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="copy">
+          <div class="copy-left">
+            <p>Code licensed under <a href="https://github.com/nolimits4web/Framework7/blob/master/LICENSE" target="_blank">MIT</a></p>
+            <p>2016 © Framework7 is brought to you by <a href="https://twitter.com/nolimits4web" target="_blank">Vladimir Kharlampidi</a> from <a href="http://idangero.us">iDangero.us</a>. </p>
+          </div>
+          <div class="copy-right">
+            <p>Proudly supported by <a href="https://www.keycdn.com/" class="keycdn-link" target="_blank"><img src="/i/keycdn-logo.svg" alt="KeyCDN" title="KeyCDN" class="keycdn-logo"></a></p>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </footer>
+    <script src="/js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-74282934-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+</body></html>

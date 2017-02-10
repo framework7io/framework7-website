@@ -1,0 +1,394 @@
+<html><head>
+    <meta charset="utf-8">
+    <title>App Layout | Framework7 React Documentation</title>
+    <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="shortcut icon" href="/favicon.png">
+    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
+  <body>{/* BuySellAds Ad Code */}
+    <script>
+      (function(){
+        var bsa = document.createElement('script');
+           bsa.type = 'text/javascript';
+           bsa.async = true;
+           bsa.src = '//s3.buysellads.com/ac/bsa.js';
+        (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
+      })();
+    </script>{/* End BuySellAds Ad Code */}
+    <header class="inner-header">
+      <div class="center"><a href="../" class="logo"></a>
+        <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
+        <div class="carbon"><script async="" type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&amp;serve=C6AILKT&amp;placement=framework7io" id="_carbonads_js"></script></div>
+        <div class="title-links">
+          <div class="title">Framework7</div>
+          <div class="links-row">
+            <div class="links-label">Project:</div>
+            <div class="links"><a href="https://github.com/nolimits4web/Framework7/releases" target="_blank">Download</a><a href="http://forum.framework7.io">Forum</a><a href="../contribute/">Contribute</a><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Learn:</div>
+            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            </div>
+          </div>
+          <div class="links-row">
+            <div class="links-label">Apps:</div>
+            <div class="links"><a href="../examples/">Layouts</a><a href="../plugins/">Plugins</a><a href="../apps/">Demo Apps</a><a href="../showcase/">Showcase</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="share-line">
+      <div class="center">
+        <div class="share-buttons">
+          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="/i/support-badge.png" style="height:20px"></a></div>
+          <div class="share-button">
+            <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
+          </div>
+          <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
+          <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div class="content center">
+      <div class="docs-wrap">
+        <div class="docs-nav">
+          <ul>
+            <li>
+              <div class="title">Get Started</div>
+              <ul>
+                <li><a href="introduction.html">Introduction</a></li>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="templates.html">Starter App Templates</a></li>
+                <li><a href="app-layout.html">App Layout</a></li>
+                <li><a href="init-app.html">Initialize App</a></li>
+                <li><a href="navigation-router.html">Navigation / Router</a></li>
+              </ul>
+            </li>
+            <li>
+              <div class="title">React Components</div>
+              <ul>
+                <li><a href="accordion.html">Accordion</a></li>
+                <li><a href="badge.html">Badge</a></li>
+                <li><a href="content-block-title.html">Block Title</a></li>
+                <li><a href="content-block.html">Block / Content Block</a></li>
+                <li><a href="button.html">Button</a></li>
+                <li><a href="card.html">Card</a></li>
+                <li><a href="chips.html">Chips / Tags</a></li>
+                <li><a href="fab.html">Floating Action Button</a></li>
+                <li>
+                  <div class="subtitle">Forms</div>
+                  <ul>
+                    <li><a href="checkboxes-radios.html">Checkboxes &amp; Radios</a></li>
+                    <li><a href="form-elements.html">Form Elements</a></li>
+                    <li><a href="smart-select.html">Smart Select</a></li>
+                  </ul>
+                </li>
+                <li><a href="icon.html">Icon</a></li>
+                <li><a href="grid.html">Grid / Layout Grid</a></li>
+                <li>
+                  <div class="subtitle">Lists</div>
+                  <ul>
+                    <li><a href="list.html">List</a></li>
+                    <li><a href="list-item.html">List Item</a></li>
+                    <li><a href="list-button.html">List Button</a></li>
+                    <li><a href="accordion-list.html">Accordion List</a></li>
+                    <li><a href="contacts-list.html">Contacts List</a></li>
+                    <li><a href="sortable-list.html">Sortable List</a></li>
+                    <li><a href="swipeout-list.html">Swipeout List</a></li>
+                    <li><a href="virtual-list.html">Virtual List</a></li>
+                  </ul>
+                </li>
+                <li><a href="link.html">Link</a></li>
+                <li><a href="messages.html">Messages</a></li>
+                <li><a href="messagebar.html">Message Bar</a></li>
+                <li>
+                  <div class="subtitle">Modals</div>
+                  <ul>
+                    <li><a href="action-sheet.html">Action Sheet</a></li>
+                    <li><a href="login-screen.html">Login Screen</a></li>
+                    <li><a href="picker-modal.html">Picker Modal</a></li>
+                    <li><a href="popover.html">Popover</a></li>
+                    <li><a href="popup.html">Popup</a></li>
+                  </ul>
+                </li>
+                <li>
+                  <div class="subtitle">Navigation Bars</div>
+                  <ul>
+                    <li><a href="navbar.html">Navbar</a></li>
+                    <li><a href="toolbar.html">Toolbar/Tabbar</a></li>
+                    <li><a href="subnavbar.html">Sub Navbar</a></li>
+                  </ul>
+                </li>
+                <li><a href="pages.html">Pages</a></li>
+                <li><a href="page.html">Page</a></li>
+                <li><a href="panel.html">Panel</a></li>
+                <li><a href="photo-browser.html">Photo Browser</a></li>
+                <li><a href="preloader.html">Preloader / Spinner</a></li>
+                <li><a href="progressbar.html">Progress Bar</a></li>
+                <li><a href="searchbar.html">Search Bar</a></li>
+                <li><a href="statusbar.html">Status Bar</a></li>
+                <li><a href="swiper.html">Swiper</a></li>
+                <li><a href="tabs.html">Tabs</a></li>
+                <li><a href="template7-template.html">Template7 Template</a></li>
+                <li><a href="timeline.html">Timeline</a></li>
+                <li><a href="views.html">Views</a></li>
+                <li><a href="view.html">View</a></li>
+              </ul>
+            </li>
+          </ul>
+          <div class="toggle-docs-nav"><span></span></div>
+        </div>
+        <div class="docs-content">
+          <h1>App Layout</h1>
+          <p>First thing we should do for our App is to create index.html file with app's skeleton.</p>
+          <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;!-- Required meta tags--&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"&gt;
+    &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
+    &lt;meta name="apple-mobile-web-app-status-bar-style" content="black"&gt;
+    &lt;!-- Your app title --&gt;
+    &lt;title&gt;My App&lt;/title&gt;
+    &lt;!-- Path to Framework7 Library CSS, iOS Theme --&gt;
+    &lt;link rel="stylesheet" href="path/to/framework7.ios.min.css"&gt;
+    &lt;!-- Path to Framework7 color related styles, iOS Theme --&gt;
+    &lt;link rel="stylesheet" href="path/to/framework7.ios.colors.min.css"&gt;
+    &lt;!-- Path to your custom app styles--&gt;
+    &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- App Root Element --&gt;
+    &lt;div id="app"&gt;&lt;/div&gt;
+
+    &lt;!-- Path to React js --&gt;
+    &lt;script type="text/javascript" src="path/to/vue.min.js"&gt;&lt;/script&gt;
+    &lt;!-- Path to Framework7 Library JS--&gt;
+    &lt;script type="text/javascript" src="path/to/framework7.min.js"&gt;&lt;/script&gt;
+    &lt;!-- Path to Framework7 React Plugin --&gt;
+    &lt;script type="text/javascript" src="path/to/framework7-vue.min.js"&gt;&lt;/script&gt;
+    &lt;!-- Path to your app js where you init your app--&gt;
+    &lt;script type="text/javascript" src="path/to/my-app.js"&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+          <p>The <code>&lt;div id="app"&gt;&lt;/div&gt;</code> is where your main app skeleton should be. You can mount its content as a component or (just for example) we can start to write app skeleton right inside of this div:</p>
+          <h2>Basic Layout</h2>
+          <p>Let's look at the very basic app layout:</p>
+          <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;!-- ... metas and styles ... --&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- App Root Element --&gt;
+    &lt;div id="app"&gt;
+      &lt;!-- Status bar overlay for full screen mode (Cordova or PhoneGap) --&gt;
+      &lt;StatusBar&gt;&lt;/StatusBar&gt;
+      &lt;!-- Views --&gt;
+      &lt;Views&gt;
+        &lt;!-- Your main view, should have "main" prop --&gt;
+        &lt;View main&gt;
+          &lt;!-- Pages container, because we use fixed navbar and toolbar, it has additional appropriate props --&gt;
+          &lt;Pages navbar-fixed toolbar-fixed&gt;
+            &lt;!-- Initial Page --&gt;
+            &lt;Page&gt;
+              &lt;!-- Top Navbar--&gt;
+              &lt;Navbar title="Awesome App"&gt;&lt;/Navbar&gt;
+              &lt;!-- Toolbar--&gt;
+              &lt;Toolbar&gt;
+                &lt;Link&gt;Link 1&lt;/Link&gt;
+                &lt;Link&gt;Link 2&lt;/Link&gt;
+              &lt;/Toolbar&gt;
+              &lt;!-- Page Content --&gt;
+              &lt;p&gt;Page content goes here&lt;/p&gt;
+              &lt;Link href="/about/"&gt;About App&lt;/Link&gt;
+            &lt;/Page&gt;
+          &lt;/Pages&gt;
+        &lt;/View&gt;
+      &lt;/Views&gt;
+    &lt;/div&gt;
+    &lt;!-- ... scripts ... --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+          <h2>Advanced Layout</h2>
+          <p>Now, let's look on more advanced layout where we will also add side panels with views, popup and will use different <a href="../docs/navbar-toolbar-layouts.html">Navbar/Toolbar Layout types</a> for iOS and Material themes.</p>
+          <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;!-- ... metas and styles ... --&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- App Root Element --&gt;
+    &lt;div id="app"&gt;
+      &lt;!-- Status bar overlay for full screen mode (Cordova or PhoneGap) --&gt;
+      &lt;StatusBar&gt;&lt;/StatusBar&gt;
+      &lt;!-- Left Panel with "cover" effect --&gt;
+      &lt;Panel left cover&gt;
+        &lt;View&gt;
+          &lt;Pages navbar-fixed&gt;
+            &lt;Page&gt;
+              &lt;Navbar title="Left Panel"&gt;&lt;/Navbar&gt;
+              &lt;ContentBlock&gt;
+                &lt;p&gt;Here comes the left panel text&lt;/p&gt;
+              &lt;/ContentBlock&gt;
+            &lt;/Page&gt;
+          &lt;/Pages&gt;
+        &lt;/View&gt;
+      &lt;/Panel&gt;
+      &lt;!-- Right Panel with "reveal" effect --&gt;
+      &lt;Panel right reveal&gt;
+        &lt;View&gt;
+          &lt;Pages navbar-fixed&gt;
+            &lt;Page&gt;
+              &lt;Navbar title="Right Panel"&gt;&lt;/Navbar&gt;
+              &lt;ContentBlock&gt;
+                &lt;p&gt;Here comes the right panel text&lt;/p&gt;
+              &lt;/ContentBlock&gt;
+            &lt;/Page&gt;
+          &lt;/Pages&gt;
+        &lt;/View&gt;
+      &lt;/Panel&gt;
+      &lt;!-- Views --&gt;
+      &lt;Views&gt;
+        &lt;!-- Main view--&gt;
+        &lt;View main navbar-through toolbar-fixed&gt;
+          &lt;!-- For iOS theme we use navbar-through layout so the navbar should be a child of the View --&gt;
+          &lt;Navbar v-if="$theme.ios" title="Awesome App"&gt;&lt;/Navbar&gt;
+          &lt;Pages navbar-fixed toolbar-fixed&gt;
+            &lt;Page&gt;
+              &lt;!-- For Material theme we use navbar-fixed layout so the navbar should be a child of the Page --&gt;
+              &lt;Navbar v-if="$theme.material" title="Awesome App"&gt;&lt;/Navbar&gt;
+              &lt;!-- Page content --&gt;
+              &lt;ContentBlock&gt;
+                &lt;p&gt;Here comes main view page text&lt;/p&gt;
+              &lt;/ContentBlock&gt;
+              &lt;!-- Buttons to open panels --&gt;
+              &lt;GridRow&gt;
+                &lt;GridCol&gt;
+                  &lt;Button open-panel="left"&gt;Left Panel&lt;/Button&gt;
+                &lt;/GridCol&gt;
+                &lt;GridCol&gt;
+                  &lt;Button open-panel="right"&gt;Right Panel&lt;/Button&gt;
+                &lt;/GridCol&gt;
+              &lt;/GridRow&gt;
+              &lt;!-- Button to open popup --&gt;
+              &lt;Button open-popup="#my-popup"&gt;Open Popup&lt;/Button&gt;
+            &lt;/Page&gt;
+          &lt;/Pages&gt;
+        &lt;/View&gt;
+      &lt;/Views&gt;
+      &lt;!-- Popup. All modals should be outside of Views --&gt;
+      &lt;Popup id="my-popup"&gt;
+        &lt;View&gt;
+          &lt;Pages navbar-fixed&gt;
+            &lt;Page&gt;
+              &lt;Navbar title="Popup"&gt;
+                &lt;!-- Link to close popup --&gt;
+                &lt;NavRight&gt;
+                  &lt;Link close-popup&gt;Close&lt;/Link&gt;
+                &lt;/NavRight&gt;
+              &lt;/Navbar&gt;
+              &lt;ContentBlock&gt;
+                &lt;p&gt;Here comes popup text&lt;/p&gt;
+              &lt;/ContentBlock&gt;
+            &lt;/Page&gt;
+          &lt;/Pages&gt;
+        &lt;/View&gt;
+      &lt;/Popup&gt;
+    &lt;/div&gt;
+    &lt;!-- ... scripts ... --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+          <p>You can read more about statusbar overlay, views, navbar, toolbar, pages, panels and other components in appropriate sections.</p>
+          <h2>Initialize App</h2>
+          <p>Now when we have basic template, we need to <a href="init-app.html">initialize our app</a> in (for example) <code>my-app.js</code></p>
+        </div>
+      </div>
+    </div>
+    <div class="share-line">
+      <div class="center">
+        <div class="share-buttons">
+          <div class="share-button"><a href="https://www.patreon.com/vladimirkharlampidi" target="_blank"><img src="/i/support-badge.png" style="height:20px"></a></div>
+          <div class="share-button">
+            <div data-href="http://framework7.io" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true" class="fb-like"></div>
+          </div>
+          <div class="share-button"><a href="https://twitter.com/share" class="twitter-share-button"></a></div>
+          <div class="share-button"><a href="https://twitter.com/idangerous" data-show-count="true" class="twitter-follow-button"></a></div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="github-buttons"><a href="https://github.com/nolimits4web/framework7/" target="_blank"><img src="/i/gh-logo.png"></a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-stars"><span></span> stars</a><a href="https://github.com/nolimits4web/framework7/" target="_blank" class="gh-forks"><span></span> forks</a></div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <footer>
+      <div class="center">
+        <div class="links">
+          <div class="links-block">
+            <div class="links-block-title">Project</div>
+            <ul>
+              <li><a href="https://github.com/nolimits4web/Framework7/releases" target="_blank">Download</a></li>
+              <li><a href="/contribute/">Contribute</a></li>
+              <li><a href="/donate/">Donate</a></li>
+              <li><a href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md" target="_blank">Changelog</a></li>
+            </ul>
+          </div>
+          <div class="links-block">
+            <div class="links-block-title">Learn</div>
+            <ul>
+              <li><a href="/get-started/">Get Started</a></li>
+              <li><a href="/docs/">Docs</a></li>
+              <li><a href="/tutorials/">Tutorials</a></li>
+              <li><a href="http://forum.framework7.io" target="_blank">Forum</a></li>
+            </ul>
+          </div>
+          <div class="links-block">
+            <div class="links-block-title">Apps</div>
+            <ul>
+              <li><a href="/examples/">Layouts</a></li>
+              <li><a href="/plugins/">Plugins</a></li>
+              <li><a href="/apps/">Demo Apps</a></li>
+              <li><a href="/showcase/">Showcase</a></li>
+            </ul>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="sponsors">
+          <div class="sponsors-title">Sponsored by</div>
+          <div id="bsap_1306028" class="bsarocks bsap_692e54a1f79f00fb913f5a1c3ec9eaa5"></div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="copy">
+          <div class="copy-left">
+            <p>Code licensed under <a href="https://github.com/nolimits4web/Framework7/blob/master/LICENSE" target="_blank">MIT</a></p>
+            <p>2016 © Framework7 is brought to you by <a href="https://twitter.com/nolimits4web" target="_blank">Vladimir Kharlampidi</a> from <a href="http://idangero.us">iDangero.us</a>. </p>
+          </div>
+          <div class="copy-right">
+            <p>Proudly supported by <a href="https://www.keycdn.com/" class="keycdn-link" target="_blank"><img src="/i/keycdn-logo.svg" alt="KeyCDN" title="KeyCDN" class="keycdn-logo"></a></p>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </footer>
+    <script src="/js/vendor/jquery-1.11.0.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      
+      ga('create', 'UA-74282934-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+</body></html>

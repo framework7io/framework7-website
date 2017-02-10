@@ -1,0 +1,27 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Framework7 React';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      .home-block.home-vue
+        .text
+          h1 Framework7 React
+          p Bring components-syntax, structured data and data bindings to Framework7 with power and simplicity of React
+        .pic
+          img(src="#{cdn}/i/vue-intro.png", width="700")
+      .home-block.home-free
+        .text
+          h2 Starter App Templates
+          p There are some ready to use templates to start your app developement immediately using Framework7 React.
+          p
+            a(href="https://github.com/centrual/cordova-template-framework7-vue-webpack", target="_blank") Cordova + Webpack
+            a(href="https://github.com/nolimits4web/Framework7-Vue-Webpack-Template", target="_blank") Webpack
+            a(href="https://github.com/nolimits4web/Framework7-Vue-Browserify-Template", target="_blank") Browserify
+            a(href="https://github.com/nolimits4web/Framework7-Vue-Simple-Template", target="_blank") Static
+      

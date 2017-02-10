@@ -11,9 +11,10 @@
         iconsManifest = require('./manifest-icons.json'),
         useCDN = true,
         cdnPath = '//cdn.framework7.io',
-        remote = require('./remote.json'),
+        //remote = require('./remote.json'),
         sftp = require('gulp-sftp'),
         gutil = require( 'gulp-util' ),
+        generateReactDocs = require('./generate-react-docs'),
         paths = {
             root: './',
             css: './css',
@@ -27,6 +28,7 @@
             examples: './examples',
             apps: './apps',
             vue: './vue',
+            react: './react'
         },
         pages = {
             home: {
@@ -80,6 +82,10 @@
             vue: {
                 src: './src/jade/vue/**/*.jade',
                 dest: './vue/'
+            },
+            react: {
+                src: './src/jade/react/**/*.jade',
+                dest: './react/'
             }
         },
         pageKeys = [],
@@ -89,6 +95,8 @@
                 dest: './css/'
             }
         ];
+
+    generateReactDocs();
 
     for (var page in pages) {
         if(pages.hasOwnProperty(page)) pageKeys.push(page);
