@@ -18,7 +18,7 @@ block content
             <f7-searchbar
               cancel-link="Cancel"
               placeholder="Search in items"
-              :clear="true"
+              :clear-button="true"
             ></f7-searchbar>
       p Renders to:
       pre
@@ -49,7 +49,7 @@ block content
                 <!-- Input placeholder text -->
                 placeholder="Search in items"
                 <!-- Show "clear" button -->
-                :clear="true"
+                :clear-button="true"
                 <!-- Events -->
                 @searchbar:search="onSearch"
                 @searchbar:enable="onEnable"
@@ -107,7 +107,7 @@ block content
             <f7-searchbar
               cancel-link="Cancel"
               placeholder="Search in items"
-              :clear="true"
+              :clear-button="true"
             >
               <div slot="before-input">Before Input</div>
               <div slot="after-input">After Input</div>
@@ -151,7 +151,7 @@ block content
             td 
             td Cancel link text. Affects only iOS theme
           tr
-            td clear
+            td clear-button
             td boolean
             td true
             td Enables "clear" input button
@@ -218,6 +218,21 @@ block content
             td boolean
             td true
             td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups
+      h2 Methods
+      table.methods-table
+        tr
+          td .empty()
+          td Clear search query and update results
+        tr
+          td .search(<span>query</span>)
+          td Force searchbar to search passed query
+        tr
+          td .enable()
+          td Enable/activate searchbar
+        tr
+          td .disable()
+          td Disable/deactivate searchbar
+        
       h2 Events
       table.events-table
         thead

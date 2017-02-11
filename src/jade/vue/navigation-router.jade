@@ -135,7 +135,7 @@ block content
                     // Map routes
                     routes: [
                         {
-                            // We can use patter here:
+                            // We can use pattern here:
                             path: '/user/:userId/posts/:postId',
                             component: PostPage
                         }
@@ -159,8 +159,17 @@ block content
                   <li>Query: {{JSON.stringify($route.query)}}</li>
                   <li>Hash: {{$route.hash}}
                 </ul>
+                <!-- $route.params are also passed as component props: -->
+                <p>User ID: {{userId}}</p>
+                <p>Post ID: {{postId}}</p>
               </f7-page>
             </template>
+            <script>
+              <!-- $route.params are also passed as component props: -->
+              export default {
+                props: ['userId', 'postId']
+              }
+            </script>
       p And the output will be:
       pre
         code
@@ -175,6 +184,8 @@ block content
               <li>Query: {"sort":"first"}</li>
               <li>Hash: opened</li>
             </ul>
+            <p>User ID: 45</p>
+            <p>Post ID: 28</p>
             ...
       p <b>$route</b> has the following properties:
       table.methods-table
@@ -197,8 +208,7 @@ block content
           tr
             td $route.route
             td Matched route from specified <b>routes</b> parameter
-      a(name="nested-routes")
-        h2 Nested Routes
+      h2 Nested Routes
       p Child components within a page can be controlled via routes. Currently, this is only supported for tabs, but other components may be added in the future.
       h4 Tabs
       p The child components that render within a tab on a page can be controlled via routes. For example, consider these Vue components:
@@ -367,6 +377,8 @@ block content
           :code
             <f7-link @click="$router.load({url: '/about/'})">About</f7-link>
             <f7-link @click="$router.back()">Go Back</f7-link>
+      .important-note
+        p Please note, that <b>$route</b> and <b>$router</b> component properties are only available inside of custom page components (and their child components) that you load according to routes. In parent components (like in View, or where you init your Vue app instance) they are not accessible as your app may have few routers (Views) at a time. So in this case use access to initialized <a href="view.html#access-to-initialized-instance">View Instance</a>, e.g. <code>$f7.views.main.router</code> or <code>$f7.mainView.router</code>
 
 
 

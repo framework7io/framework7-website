@@ -210,6 +210,64 @@ block content
             td boolean
             td true
             td Defines that the message is last in the conversation
+      h2 Methods
+      table.methods-table
+        tr
+          td .addMessage(<span>messageParameters</span>, <span>method</span>, <span>animate</span>);
+          td
+            p Add new message to the end or to the beginning depending on <b>method</b> parameter
+            ul.method-parameters
+              li
+                span.parameter messageParameters
+                |  - <span class="parameter-type">object</span> <a href="../docs/messages.html#single-message-parameters">parameters of message</a> to add. Required.
+              li
+                span.parameter method
+                |  - <span class="parameter-type">string</span> - ('append' or 'prepend') dictates to add new message in the end or in the beginning of messages container. Optional, if not specified, then it will add message depending on <code>newMessagesFirst</code> parameter
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> - (by default <b>true</b>) You may pass here <b>false</b> and message will be added immediately without any transiton and scrolling animation. Optional.
+              
+              li.method-returns Method returns HTMLElement of added messsage
+        tr
+          td .appendMessage(<span>messageParameters</span>, <span>animate</span>);
+          td Add new message to the end (to the bottom)
+        tr
+          td .prependMessage(<span>messageParameters</span>, <span>animate</span>);
+          td Add new message to the beginning (to the top)
+        tr
+          td .addMessages(<span>messages</span>, <span>method</span>, <span>animate</span>);
+          td Add multiple messages per once. 
+            ul.method-parameters
+              li
+                span.parameter messages
+                |  - <span class="parameter-type">array</span> with messages to add. Each message in array should be presented as object with <a href="../docs/messages.html#single-message-parameters">message parameters</a> Required.
+              li.method-returns Method returns array of HTMLElements with added messsages
+        tr
+          td .removeMessage(<span>message</span>);
+          td Remove message
+            ul.method-parameters
+              li
+                span.parameter message
+                |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of message element to remove. Required
+              li.method-returns Method returns <b>true</b> if specified message was removed
+        tr
+          td .removeMessages(<span>messages</span>);
+          td Remove multiple messages
+            ul.method-parameters
+              li
+                span.parameter messages
+                |  - <span class="parameter-type">array</span> (with HTMLElements) or <span class="parameter-type">string</span> (with CSS Selector) of messages to remove. Required
+              li.method-returns Method returns <b>true</b> if specified messages was removed
+        tr
+          td .scroll();
+          td Scroll messages to top/bottom depending on newMessagesFirst parameter
+        tr
+          td .layout();
+          td Apply messages auto layout
+        tr
+          td .clean();
+          td Clean/remove all the messages
+        
       h2 Events
       table.events-table
         thead
