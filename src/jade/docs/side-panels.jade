@@ -108,15 +108,22 @@ block content
       h3(data-device-preview="../docs-demos/panels-js.html") Using JavaScript
       p We can also open and close Panels with JavaScript, for this we need to look at related App methods:
       p
-        span.method myApp.openPanel(<span>position</span>)</span>
+        span.method myApp.openPanel(<span>position</span>, <span>animated</span>)</span>
         |  - open Panel.
       ul.method-parameters
         li
           span.parameter position
           |  - <span class="parameter-type">string</span> - Position of panel to open: <strong>"left"</strong> or <strong>"right"</strong>. Required. 
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it be opened with animation or not. Optional. 
       p
-        span.method myApp.closePanel()</span>
+        span.method myApp.closePanel(animated)</span>
         |  - close currently opened Panel.
+      ul.method-parameters
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it be closed with animation or not. Optional. 
       pre
         code
           | &lt;body&gt;
@@ -193,6 +200,10 @@ block content
             td panel:overlay-click
             td Panel Overlay Element<span>&lt;div class="panel-overlay"&gt;</span></td>
             td Event will be triggered when the panel overlay is clicked            
+          tr
+            td panel:swipe
+            td Panel Element<span>&lt;div class="panel"&gt;</span>
+            td Event will be triggered for swipe panel during touch swipe action
       p Here is an example:
       pre
         code

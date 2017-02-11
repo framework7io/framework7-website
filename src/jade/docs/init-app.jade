@@ -322,6 +322,11 @@ block content
             td Enable/disable ability to close panel by clicking outside of panel (on panel's  overlay)
           tr
             th(colspan="4") Modals
+          tr 
+            td modalsMoveToRoot
+            td boolean
+            td true
+            td When enabled it will move opened modal to the app root element (or body) if it is not there on the moment of opening and move back after modal closed. It allows to use/load modals on demand inside of loaded pages
           tr
             td modalTitle
             td string

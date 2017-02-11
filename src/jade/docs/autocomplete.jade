@@ -85,6 +85,11 @@ block content
             tr
               th(colspan="4") Standalone Autocomplete Parameters
             tr
+              td requestSourceOnOpen
+              td boolean
+              td false
+              td If enabled, then it will request <b>source</b> on autocomplete open
+            tr
               td opener
               td string or HTMLElement
               td
@@ -146,6 +151,11 @@ block content
               td string or HTMLElement
               td
               td String with CSS selector or HTMLElement of related text input
+            tr
+              td highlightMatches
+              td boolean
+              td true
+              td Highlight matches in autcomplete results
             tr
               td dropdownPlaceholderText
               td string

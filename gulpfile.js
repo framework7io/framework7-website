@@ -278,7 +278,7 @@
         };
         if (folder) src = folderSrc[folder];
 
-        remote = require('./remote.json'),
+        var remote = require('./remote.json');
 
         gulp.src(src, {base: './'})
             .pipe(sftp(remote));

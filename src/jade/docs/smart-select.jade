@@ -242,6 +242,33 @@ block content
           |         &lt;/div&gt;&lt;/a&gt;&lt;/li&gt;
           |   &lt;/ul&gt;
           | &lt;/div&gt;
+      h2(data-device-preview="../docs-demos/smart-select-display-as.html") Different display value
+      p Using <code>data-display-as</code> <b>option</b> attribute we can show selected value in different way:
+      pre
+        code
+          :code
+            <div class="list-block">
+              <ul>
+                <li>
+                  <a href="#" class="item-link smart-select">
+                    <select name="days">
+                      <option value="monday" selected data-display-as="Mon">Monday</option>
+                      <option value="tuesday" data-display-as="Tue">Tuesday</option>
+                      <option value="wednesday" data-display-as="Wed">Wednesday</option>
+                      <option value="thursday" data-display-as="Thu">Thursday</option>
+                      <option value="friday" data-display-as="Fri">Friday</option>
+                      <option value="saturday" data-display-as="Sat">Saturday</option>
+                      <option value="sunday" data-display-as="Sun">Sunday</option>
+                    </select>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Day</div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
       .full-width.stop-scroll-device
         h2 Close Smart Select On User Select
         p It is possible to close Smart Select page automatically after user selects any option. We need to add special <b>data-back-on-select</b> attribute to make it work:
@@ -389,9 +416,4 @@ block content
             | myApp.smartSelectAddOption('.smart-select select', '&lt;option value="apple" selected&gt;Apple&lt;/option&gt;', 0);
             | 
             | // Append new option to second &lt;optgroup&gt;
-            | myApp.smartSelectAddOption($$('.smart-select select optigroup').eq(1), '&lt;option value="apple"&gt;Apple&lt;/option&gt;', 0);            
-
-          
-
-          
-          
+            | myApp.smartSelectAddOption($$('.smart-select select optigroup').eq(1), '&lt;option value="apple"&gt;Apple&lt;/option&gt;', 0);
