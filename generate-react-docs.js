@@ -2,9 +2,12 @@ var fs = require('fs');
 var path = require('path');
 var jsdom = require('jsdom').jsdom;
 var stringify = require('json-fn').stringify;
+var camelCase = require('to-case').camel;
 
-var VUE_DOCS_PATH = './vue/';
-var REACT_DOCS_OUTPUT_PATH = 'react';
+var VUE_HTML_DOCS_PATH = './vue/';
+var VUE_JADE_DOCS_PATH = './src/jade/vue/';
+var REACT_HTML_OUTPUT_PATH = 'react';
+var REACT_JADE_OUTPUT_PATH = './src/jade/react/';
 
 function ensureDirectoryExistence(filePath) {
     if (!fs.existsSync(filePath)) {
@@ -32,35 +35,51 @@ function getReactToVueComponentMap() {
     return reactToVueComponentMap;
 }
 
-function renameEventHeader(jsdomDoc) {
-    jsdomDoc.documentElement.querySelectorAll('.events-table').forEach(function (element) {
-        console.log(element.parentNode.outerHTML);
-        if (element.previousSibling.tagName.toLowerCase() === 'h2') {
-            let eventHeader = element.previousSibling;
-            eventHeader.innerHTML = eventHeader.innerHTML.replace('Event', 'Event Props');
-        }
-    });
+function replaceVueTemplateAndScriptExamplesWithReactComponent(jade) {
+    return jade.replace(/<template>((.|\n)*)<\/template>/gm, '...\nrender() {\nreturn (\n$1)\n}\n...');
 }
 
-function convertEventsToReactEvents(jsdomDoc) {
-    //renameEventHeader(jsdomDoc);
+function renameEventHeader(jade) {
+    return jade.replace('h2 Events', 'h2 Event Properties');
+}
+
+function convertEventsToReactEvents(jade) {
+    return renameEventHeader(jade);
     //jsdomDoc.querySelectorAll('.events-table tbody td:')
 }
 
-function replaceEventProps(html) {
-
+function renameSlotsHeader(jade) {
+    return jade.replace('h2 Slots', 'h2 Slot Properties');
 }
 
-function replaceDynamicProps(html) {
-    return html.replace(/:([A-Za-z0-9-]+)=(")(.*)(")/g, '$1={$2}');
+function convertSlotsToProps(jade) {
+    return renameSlotsHeader(jade);
 }
 
-function replaceVueCommentsWithJsxComments(html) {
-     return html.replace(new RegExp('<!--', 'g'), '{/*')
-        .replace(new RegExp('-->', 'g'), '*/}');
+function convertEventPropName(vueEventPropName) {
+    return camelCase('on-' + vueEventPropName.replace(/:/g, '-'));
 }
 
-function replaceVueComponentNamesWithReactComponentNames(html) {
+function replaceEventProps(jade) {
+    return jade.replace(/\@([A-Za-z0-9-]+)="(.*)"/g, function (match, p1, p2) {
+        return convertEventPropName(p1) + '=' + '{' + p2 + '}';
+    });
+}
+
+function convertKebabCasePropsToCamelCase(jade) {
+    var componentList = getReactToVueComponentMap().map(function() { return map.react; }).join('|');
+    var regex = new RegExp('<(' + componentList + ').*( ([a-z]+-[a-z]+)[ >=\/]).*\/?>', 'gm');
+
+    return jade.replace(regex, function (match, p1, p2, p3) {
+        return match.replace(p3, camelCase(p3));
+    });
+}
+
+function replaceDynamicProps(jade) {
+    return jade.replace(/:([A-Za-z0-9-]+)="(.*)"/g, '$1={$2}');
+}
+
+function replaceVueComponentNamesWithReactComponentNames(jade) {
     var reactToVueComponentMap = getReactToVueComponentMap();
 
     reactToVueComponentMap.sort(function(x, y) {
@@ -71,35 +90,47 @@ function replaceVueComponentNamesWithReactComponentNames(html) {
         var vueComponentName = reactToVueComponentMap[i].vue;
         var reactComponentName = reactToVueComponentMap[i].react;
 
-        html = html.replace(new RegExp(vueComponentName, 'g'), reactComponentName);
+        jade = jade.replace(new RegExp(vueComponentName, 'g'), reactComponentName);
     }
 
-    return html;
+    return jade;
 }
 
-function replaceVueWithReact(html) {
-    return html.replace(/Vue/g, 'React');
+function replaceVueWithReact(jade) {
+    return jade.replace(/Vue/g, 'React');
 }
 
-function convertVueDocsToReactDocs(htmlFileContents, jsdomDoc) {
-    convertEventsToReactEvents(jsdomDoc);
+function convertVueDocsToReactDocs(jadeFileContents) {
+    var jade = jadeFileContents.contents;
+    jade = replaceVueWithReact(jade);
+    jade = replaceVueComponentNamesWithReactComponentNames(jade);    
+    jade = replaceDynamicProps(jade);
+    jade = replaceEventProps(jade);
+    jade = convertKebabCasePropsToCamelCase(jade);
+    jade = replaceVueTemplateAndScriptExamplesWithReactComponent(jade);
+    jade = convertEventsToReactEvents(jade);
+    jade = convertSlotsToProps(jade);
 
-    var html = jsdomDoc.documentElement.outerHTML;
-    html = replaceVueWithReact(html);
-    html = replaceVueComponentNamesWithReactComponentNames(html);
-    html = replaceVueCommentsWithJsxComments(html);
-    html = replaceDynamicProps(html);
-
-    return html;
+    return jade;
 }
 
 function getVueHtmlFiles() {    
-    var files = fs.readdirSync(VUE_DOCS_PATH);
+    var files = fs.readdirSync(VUE_HTML_DOCS_PATH);
 
     return files.map(function (fileName) {        
-        var fileContents = fs.readFileSync(VUE_DOCS_PATH + fileName, 'utf8');
+        var fileContents = fs.readFileSync(VUE_HTML_DOCS_PATH + fileName, 'utf8');
         return { name: fileName, contents: fileContents };
     });
+}
+
+function getVueJadeFiles() {
+    var files = fs.readdirSync(VUE_JADE_DOCS_PATH);
+
+    return files.map(function (fileName) {        
+        var fileContents = fs.readFileSync(VUE_JADE_DOCS_PATH + fileName, 'utf8');
+        return { name: fileName, contents: fileContents };
+    });
+
 }
 
 function getJsDomDocuments(htmlFileNamesAndContents) {
@@ -115,13 +146,10 @@ function getJsDomDocuments(htmlFileNamesAndContents) {
 }
 
 module.exports = function () {
-    var htmlFileNamesAndContents = getVueHtmlFiles();
-    var jsdomDocs = getJsDomDocuments(htmlFileNamesAndContents);
+    var jadeFileNamesAndContents = getVueJadeFiles();    
 
-    ensureDirectoryExistence(REACT_DOCS_OUTPUT_PATH);
-
-    for (var i = 0; i < htmlFileNamesAndContents.length; i++) {        
-        var convertedContent = convertVueDocsToReactDocs(htmlFileNamesAndContents[i].contents, jsdomDocs[i].document);
-        fs.writeFileSync(REACT_DOCS_OUTPUT_PATH + '/' + htmlFileNamesAndContents[i].name, convertedContent);
+    for (var i = 0; i < jadeFileNamesAndContents.length; i++) {
+        var jade = convertVueDocsToReactDocs(jadeFileNamesAndContents[i]);
+        fs.writeFileSync(REACT_JADE_OUTPUT_PATH + '/' + jadeFileNamesAndContents[i].name, jade);
     }
 };
