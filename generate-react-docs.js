@@ -44,8 +44,7 @@ function renameEventHeader(jade) {
 }
 
 function convertEventsToReactEvents(jade) {
-    return renameEventHeader(jade);
-    //jsdomDoc.querySelectorAll('.events-table tbody td:')
+    return renameEventHeader(jade);    
 }
 
 function renameSlotsHeader(jade) {
@@ -61,17 +60,33 @@ function convertEventPropName(vueEventPropName) {
 }
 
 function replaceEventProps(jade) {
-    return jade.replace(/\@([A-Za-z0-9-]+)="(.*)"/g, function (match, p1, p2) {
+    return jade.replace(/\@([A-Za-z0-9-]+)=["{](.*)["}]/g, function (match, p1, p2) {
         return convertEventPropName(p1) + '=' + '{' + p2 + '}';
     });
 }
 
-function convertKebabCasePropsToCamelCase(jade) {
-    var componentList = getReactToVueComponentMap().map(function() { return map.react; }).join('|');
-    var regex = new RegExp('<(' + componentList + ').*( ([a-z]+-[a-z]+)[ >=\/]).*\/?>', 'gm');
+function replacePropsTable(jade, jsDomDoc) {
+    jsDomDoc.querySelectorAll('#properties + table tbody td:first-child').forEach(function (node) {
+        var propText = node.innerHTML;
+        console.log(propText);
+        jade = jade.replace('td ' + propText, 'td ' + camelCase(propText));
+    });
 
-    return jade.replace(regex, function (match, p1, p2, p3) {
-        return match.replace(p3, camelCase(p3));
+    return jade;
+}
+
+function replaceEventsTable(jade, jsDomDoc) {
+    return jade;
+}
+
+function convertKebabCasePropsToCamelCase(jade) {
+    var componentList = getReactToVueComponentMap().map(function(map) { return map.react; }).join('|');
+    var regex = new RegExp('<(' + componentList + ').*( ([a-z]+-[a-z]+(-[a-z]+)?(-[a-z]+)?)[ =\/]?).*\/?>', 'gm');
+
+    return jade.replace(regex, function (match) {
+        return match.replace(/([a-z]+-[a-z]+(-[a-z]+)?(-[a-z]+)?(-[a-z]+)?(-[a-z]+)?(-[a-z]+)?)/gm, function (match) {
+            return camelCase(match);
+        });        
     });
 }
 
@@ -100,12 +115,21 @@ function replaceVueWithReact(jade) {
     return jade.replace(/Vue/g, 'React');
 }
 
+function getJadeAst(jadeFileName, jadeFileContents) {
+    var tokens = pugLexer(jadeFileContents, { filename: jadeFileName });
+    return pugParser(tokens, { filename: jadeFileName, src: jadeFileContents });
+}
+
 function convertVueDocsToReactDocs(jadeFileContents) {
     var jade = jadeFileContents.contents;
+    var jsDomDocument = jadeFileContents.jsDomDocument;    
+
     jade = replaceVueWithReact(jade);
     jade = replaceVueComponentNamesWithReactComponentNames(jade);    
     jade = replaceDynamicProps(jade);
     jade = replaceEventProps(jade);
+    jade = replacePropsTable(jade, jsDomDocument);
+    jade = replaceEventsTable(jade, jsDomDocument);
     jade = convertKebabCasePropsToCamelCase(jade);
     jade = replaceVueTemplateAndScriptExamplesWithReactComponent(jade);
     jade = convertEventsToReactEvents(jade);
@@ -123,26 +147,34 @@ function getVueHtmlFiles() {
     });
 }
 
-function getVueJadeFiles() {
-    var files = fs.readdirSync(VUE_JADE_DOCS_PATH);
-
-    return files.map(function (fileName) {        
-        var fileContents = fs.readFileSync(VUE_JADE_DOCS_PATH + fileName, 'utf8');
-        return { name: fileName, contents: fileContents };
-    });
-
-}
-
 function getJsDomDocuments(htmlFileNamesAndContents) {
     return htmlFileNamesAndContents.map(function (htmlFileNamesAndContents) {
         var document = jsdom(htmlFileNamesAndContents.contents, {
             features: {
-                FetchExternalResources: false
+                FetchExternalResources: true,
+                QuerySelector: true
             }
-        });
+        }).defaultView.window.document.documentElement;        
 
         return { name: htmlFileNamesAndContents.name, document: document };
     });
+}
+
+function getVueJadeFiles() {
+    var files = fs.readdirSync(VUE_JADE_DOCS_PATH);
+    var jsDomDocuments = getJsDomDocuments(getVueHtmlFiles());
+
+    return files.map(function (fileName) {
+        var fileContents = fs.readFileSync(VUE_JADE_DOCS_PATH + fileName, 'utf8');
+        var jsDomDocument = jsDomDocuments
+            .filter(function (nameAndDocument) {                 
+                return nameAndDocument.name.replace('.html', '') === fileName.replace('.jade', '');                 
+            })
+            .map(function (nameAndDocument) { return nameAndDocument.document })[0];        
+
+        return { name: fileName, contents: fileContents, jsDomDocument };
+    });
+
 }
 
 module.exports = function () {
