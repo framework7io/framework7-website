@@ -14,7 +14,8 @@
         //remote = require('./remote.json'),
         sftp = require('gulp-sftp'),
         gutil = require( 'gulp-util' ),
-        generateReactDocs = require('./generate-react-docs'),
+        processVueJadeFiles = require('./src/react-doc-generation/vue-jade-file-processing').processVueJadeFiles,
+        processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles,
         paths = {
             root: './',
             css: './css',
@@ -84,7 +85,7 @@
                 dest: './vue/'
             },
             react: {
-                src: './src/jade/react/**/*.jade',
+                src: './react-jade-temp/**/*.jade',
                 dest: './react/'
             }
         },
@@ -95,8 +96,6 @@
                 dest: './css/'
             }
         ];
-
-    generateReactDocs();
 
     for (var page in pages) {
         if(pages.hasOwnProperty(page)) pageKeys.push(page);
@@ -169,6 +168,7 @@
     });
     // All Jade Pages
     gulp.task('jade', function (cb) {
+        processVueJadeFiles();
         checkIsLocal(process.argv.slice(3));
         var cbs = 0;
         pageKeys.forEach(function (page) {
@@ -185,11 +185,16 @@
                     cbs ++;
                     if (cbs === pageKeys.length) {
                         connect.reload();
-                        cb();
+                        processReactHtmlFiles(cb);
                     }
                 });
         });
     });
+
+    gulp.task('process-html', function (cb) {
+        processReactHtmlFiles(cb);
+    });
+
     // Build All
     gulp.task('build', ['jade', 'less'], function (cb) {
         cb();
