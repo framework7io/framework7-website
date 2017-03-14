@@ -5,15 +5,15 @@ const camelCase = require('to-case').camel;
 const REACT_HTML_PATH = './react';
 
 const replacePropsTable = (jsDomDoc) => {
-    const nodes = jsDomDoc.querySelectorAll('.params-table tbody td:first-child')
+    const nodes = jsDomDoc.querySelectorAll('.params-table tbody td:first-child');
 
     nodes.forEach(node => {
         node.innerHTML = camelCase(node.innerHTML);
     });
-}
+};
 
 const replaceEventsTable = (jsDomDoc) => {
-    const nodes = jsDomDoc.querySelectorAll('.events-table tbody td:first-child')
+    const nodes = jsDomDoc.querySelectorAll('.events-table tbody td:first-child');
 
     nodes.forEach(node => {
         node.innerHTML = camelCase(('on-' + node.innerHTML).replace(/:/g, '-'));

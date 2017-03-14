@@ -1,0 +1,40 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Installation | Framework7 Vue Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Installation
+      p It is really easy to build your app with Framework7 and <a href="https://vuejs.org/" target="_blank">Vue</a>. To get started we need to install Framework7, Vue, Framework7 Vue plugin. You can skip this step and use one of the ready to use <a href="templates.html">starter app templates</a>.
+      h4 1. Install Framework7
+      p There are few ways to install Framework7:
+      ul
+        li Download it from <a href="https://github.com/nolimits4web/Framework7/releases">Framework7 GitHub repository</a>
+        li Using <a href="https://npmjs.com">NPM</a>:
+          pre
+            code
+              :code
+                $ npm install framework7
+        li Using <a href="https://bower.io/">Bower</a>:
+          pre
+            code
+              :code
+                $ bower install framework7
+      p In the downloaded/installed package we need files from the <b>dist/</b> folder.
+      h4 2. Install Vue
+      p Read about how to install Vue on the official <a href="https://vuejs.org/v2/guide/installation.html" target="_blank">Vue Installation Guide</a>.
+      h4 3. Install Framework7 Vue Plugin
+      p Now we need the Framework7 plugin for Vue:
+      ul
+        li Download it from <a href="https://github.com/nolimits4web/Framework7-Vue/releases">Framework7 Vue GitHub repository</a>
+        li Using <a href="https://npmjs.com">NPM</a>:
+          pre
+            code
+              :code
+                $ npm install framework7-vue
+      p In the downloaded/installed package we need files from the <b>dist/</b> folder.

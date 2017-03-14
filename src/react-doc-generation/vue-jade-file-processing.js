@@ -100,15 +100,20 @@ const replaceVueWithReact = (jade) => {
 
 const replaceImportPaths = (jade) => {
     jade = jade.replace('extends ../_internal-template', 'extends ../src/jade/_internal-template');
-    jade = jade.replace('include ../_docs-vue-menu', 'include ../src/jade/_docs-vue-menu');
+    jade = jade.replace('include ../_docs-vue-menu', 'include ./_docs-react-menu');
 
     return jade;
+}
+
+const replaceActiveLink = (jade) => {
+    return jade.replace('var activeLink = \'vue\'', 'var activeLink = \'react\'');
 }
 
 const convertVueDocsToReactDocs = (jadeFileContents) => {
     let jade = jadeFileContents.contents;
 
     jade = replaceImportPaths(jade);
+    jade = replaceActiveLink(jade);
     jade = replaceVueWithReact(jade);
     jade = replaceVueComponentNamesWithReactComponentNames(jade);    
     jade = replaceDynamicProps(jade);
@@ -132,13 +137,39 @@ const getVueJadeFiles = () => {
 
 }
 
-module.exports.processVueJadeFiles = () => {
-    console.log('Processing jade files...')
+const processMenuJadeFile = () => {
+    let menuJadeFile = fs.readFileSync('./src/jade/_docs-vue-menu.jade', 'utf8');
+    menuJadeFile = replaceVueWithReact(menuJadeFile);
+    fs.writeFileSync(REACT_JADE_OUTPUT_PATH + '/' + '_docs-react-menu.jade', menuJadeFile);
+};
 
+const copyIntroductoryFiles = () => {
+    fs.readdirSync('./src/jade/react/').forEach(jadeFile => {
+        const jadeFileContents = fs.readFileSync('./src/jade/react/' + jadeFile, 'utf8');
+        fs.writeFileSync(REACT_JADE_OUTPUT_PATH + '/' + jadeFile, jadeFileContents);
+    });
+};
+
+const cleanJadeFiles = () => {
+    const files = fs.readdirSync(REACT_JADE_OUTPUT_PATH);
+
+    files.forEach(file => {
+        fs.unlinkSync(REACT_JADE_OUTPUT_PATH + '/' + file);
+    });
+}
+
+module.exports.processVueJadeFiles = () => {
     ensureDirectoryExistence(REACT_JADE_OUTPUT_PATH);
+    cleanJadeFiles();
+    processMenuJadeFile();
+    copyIntroductoryFiles();
 
     getVueJadeFiles().forEach(jadeFileInfo => {
-        const jade = convertVueDocsToReactDocs(jadeFileInfo);
-        fs.writeFileSync(REACT_JADE_OUTPUT_PATH + '/' + jadeFileInfo.name, jade);
+        const destinationFileName = REACT_JADE_OUTPUT_PATH + '/' + jadeFileInfo.name;
+
+        if (!fs.existsSync(destinationFileName)) {
+            const jade = convertVueDocsToReactDocs(jadeFileInfo);
+            fs.writeFileSync(destinationFileName, jade);
+        }
     });
 };

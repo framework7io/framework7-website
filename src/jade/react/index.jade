@@ -1,4 +1,4 @@
-extends ../_internal-template
+extends ../src/jade/_internal-template
 
 block vars
   - var activeLink = 'react';
@@ -7,7 +7,7 @@ block vars
 block content
   .docs-wrap
     .docs-nav
-      include ../_docs-vue-menu
+      include ./_docs-react-menu
     .docs-content
       .home-block.home-vue
         .text
