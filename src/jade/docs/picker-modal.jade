@@ -102,18 +102,27 @@ block content
       h3(data-device-preview="../docs-demos/picker-modal-js.html") Using JavaScript
       p We can also open and close Picker Modal with JavaScript, for this we need to look at related App methods:
       p
-        span.method myApp.pickerModal(<span>picker</span>)</span> - open specified Picker Modal
+        span.method myApp.pickerModal(<span>picker</span>, <span>removeOnClose</span>, <span>animated</span>) - open specified Picker Modal
       ul.method-parameters
         li
           span.parameter picker
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Picker to open. Requred
+        li
+          span.parameter removeOnClose
+          |  - <span class="parameter-type">boolean</span> - Defines whether picker modal should be removed from DOM on close or not. Optional. By default is <b>false</b>
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it be opened with animation or not. Optional. By default is <b>true</b>
         li.method-returns This method returns Picker's HTMLElement
       p
-        span.method myApp.closeModal(<span>picker</span>)</span> - close Picker
+        span.method myApp.closeModal(<span>picker</span>, <span>animated</span>) - close Picker
       ul.method-parameters
         li
           span.parameter picker
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Picker will be closed
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it be closed with animation or not. Optional. By default is <b>true</b>
       pre
         code
           | &lt;body&gt;

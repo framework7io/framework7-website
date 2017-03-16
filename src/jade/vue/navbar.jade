@@ -201,6 +201,10 @@ block content
             td boolean/string
             td Adds back-link with text (if string value is specified)
           tr
+            td back-link-url
+            td string
+            td Custom back link URL
+          tr
             td sliding
             td boolean
             td Enables "sliding" effect for nav elements. Affects only for back-link and title elements when they are specified via props
@@ -218,6 +222,10 @@ block content
             td back-link
             td boolean/string
             td Adds back-link with text (if string value is specified)
+          tr
+            td back-link-url
+            td string
+            td Custom back link URL
           tr
             td sliding
             td boolean
@@ -238,6 +246,28 @@ block content
             td sliding
             td boolean
             td Enables "sliding" effect
+      h2 Methods
+      table.methods-table
+        tr
+          td .hide(<span>animated</span>)
+          td Hide navbar
+        tr
+          td .show(<span>animated</span>)
+          td Show navbar
+        tr
+          td .size()
+          td Size navbar
+        
+      h2 Navbar Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td back-click
+            td Event will be triggered when click on navbar back link
       h2 Dynamic Navbar Events
       p.ios-only Dynamic Navbar is supported only in iOS Theme
       p If you use <a href="../docs/dynamic-navbar.html">Dynamic Navbar</a> in your app then it will also have useful special events:

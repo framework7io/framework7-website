@@ -1,0 +1,36 @@
+extends _layout-ios
+block content
+  .views
+    .view.view-main
+      .navbar
+        .navbar-inner
+          .left 
+          .center.sliding Different display value
+          .right 
+      .pages.navbar-through
+        .page(data-page="home")
+          .page-content
+            .list-block
+              ul
+                li
+                  a(href="#").item-link.smart-select
+                    select(name="days")
+                      option(value="monday", selected=true, data-display-as="Mon") Monday
+                      option(value="tuesday", data-display-as="Tue") Tuesday
+                      option(value="wednesday", data-display-as="Wed") Wednesday
+                      option(value="thursday", data-display-as="Thu") Thursday
+                      option(value="friday", data-display-as="Fri") Friday
+                      option(value="saturday", data-display-as="Sat") Saturday
+                      option(value="sunday", data-display-as="Sun") Sunday
+                    .item-content
+                      .item-inner
+                        .item-title Day
+
+block scripts
+  script.
+    var myApp = new Framework7({
+      animateNavBackIcon:true
+    }); 
+    var mainView = myApp.addView('.view-main', {
+      dynamicNavbar: true,
+    });

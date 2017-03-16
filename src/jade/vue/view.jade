@@ -74,6 +74,11 @@ block content
             td
             td Defines this View as the <a href="../docs/views.html#main-view">main View</a>
           tr
+            td name
+            td string
+            td
+            td Defines View name to allow access View instance by same named prop of <code>$f7.views</code>
+          tr
             td tab
             td boolean
             td
@@ -246,4 +251,8 @@ block content
             td swipeback:afterreset
             td Event will be triggered after swipe back animation to current page when you release it
       h2 Access To Initialized Instance
-      p If you use automatic initalization to init the View (with <code>init:true</code> prop) and need to use its <a href="../docs/views.html#view-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7View</b></code> component's property.
+      p If you use automatic initalization to init the View (with <code>init:true</code> prop) and need to use its <a href="../docs/views.html#view-methods-properties">Methods and Properties</a> (like router) you can access its initialized instance: 
+      ul
+        li by accessing <code><b>.f7View</b></code> component's property
+        li if you have passed <b>name</b> property (e.g. "left") you can access it like <code>this.$f7.views.left</code> or <code>this.$f7.leftView</code>
+        li main view (with <b>main="true"</b> prop) is always accessible via <code>this.$f7.views.main</code> or <code>this.$f7.mainView</code>

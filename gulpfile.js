@@ -11,7 +11,6 @@
         iconsManifest = require('./manifest-icons.json'),
         useCDN = true,
         cdnPath = '//cdn.framework7.io',
-        //remote = require('./remote.json'),
         sftp = require('gulp-sftp'),
         gutil = require( 'gulp-util' ),
         processVueJadeFiles = require('./src/react-doc-generation/vue-jade-file-processing').processVueJadeFiles,
@@ -291,6 +290,9 @@
             'kitchen-sink': ['./kitchen-sink-ios/**/*.*', './kitchen-sink-material/**/*.*']
         };
         if (folder) src = folderSrc[folder];
+
+        var remote = require('./remote.json');
+
         gulp.src(src, {base: './'})
             .pipe(sftp(remote));
     });
@@ -313,6 +315,4 @@
     gulp.task('default', [ 'server' ]);
 
     gulp.task('test', [ 'build' ]);
-
-
 })();

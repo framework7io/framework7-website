@@ -158,5 +158,24 @@ block content
             td function(index, item)
             td
             td This optional function allows to use custom function to render item HTML. It could be used instead of <b>template</b> parameter
+      h2 Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td virtual:itemsbeforeinsert
+            td Event will be triggered after current DOM list will be removed and before new document will be inserted
+          tr
+            td virtual:itemsafterinsert
+            td Event will be triggered after new document fragment with items inserted
+          tr
+            td virtual:itembeforeinsert
+            td Event will be triggered before item will be added to virtual document fragment
+          tr
+            td virtual:beforeclear
+            td Event will be triggered before current DOM list will be removed and replaced with new document fragment
       h2 Access To Virtual List Initialized Instance
       p If you use automatic initalization to init the Virtual List (with <code>virtual-init:true</code> prop) and need to use its <a href="../docs/virtual-list.html#virtual-list-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7VirtualList</b></code> component's property.

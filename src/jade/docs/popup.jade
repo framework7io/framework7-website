@@ -80,17 +80,27 @@ block content
       h3(data-device-preview="../docs-demos/popup-js.html") Using JavaScript
       p We can also open and close Popups with JavaScript, for this we need to look at related App methods:
       p
-        span.method myApp.popup(<span>popup</span>)</span> - open Popup
+        span.method myApp.popup(<span>popup</span>, <span>removeOnClose</span>, <span>animated</span>) - open Popup
       ul.method-parameters
         li
           span.parameter popup
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Popup to open. Requred
+        li
+          span.parameter removeOnClose
+          |  - <span class="parameter-type">boolean</span> - Defines whether popup should be removed from DOM on close or not. Optional. By default is <b>false</b>
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it be opened with animation or not. Optional. By default is <b>true</b>
+        li.method-returns This method returns Popup's HTMLElement
       p
-        span.method myApp.closeModal(<span>popup</span>)</span> - close Popup
+        span.method myApp.closeModal(<span>popup</span>, <span>animated</span>) - close Popup
       ul.method-parameters
         li
           span.parameter popup
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Popup/Modal will be closed
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it be opened with animation or not. Optional. By default is <b>true</b>
       pre
         code
           | &lt;body&gt;
