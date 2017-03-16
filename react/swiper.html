@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Navbar React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -166,7 +166,7 @@
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
           <h4>With all controls</h4>
-          <pre><code>&lt;Swiper pagination next-button prev-button scrollbar&gt;
+          <pre><code>&lt;Swiper pagination nextButton prevButton scrollbar&gt;
   &lt;SwiperSlide&gt;Slide 1&lt;/SwiperSlide&gt;
   &lt;SwiperSlide&gt;Slide 2&lt;/SwiperSlide&gt;
   &lt;SwiperSlide&gt;Slide 3&lt;/SwiperSlide&gt;
@@ -185,14 +185,14 @@
 &lt;/div&gt;</code></pre>
           <h4>With additional parameters</h4>
           <p>You can pass any additional <a href="http://idangero.us/swiper/api" target="_blank">Swiper API</a> parameters using <code>params</code> property:</p>
-          <pre><code>&lt;Swiper next-button prev-button params={"}&gt;
+          <pre><code>&lt;Swiper nextButton prevButton params={{speed:500, slidesPerView: 3, spaceBetween: 20}}&gt;
   &lt;SwiperSlide&gt;Slide 1&lt;/SwiperSlide&gt;
   &lt;SwiperSlide&gt;Slide 2&lt;/SwiperSlide&gt;
   &lt;SwiperSlide&gt;Slide 3&lt;/SwiperSlide&gt;
 &lt;/Swiper&gt;</code></pre>
           <h4>With manual initializatiin</h4>
           <p>In all the examples above Swiper will be initialized automatically. If you don't need it and need to init it manually then pass <code>init: false</code> prop:</p>
-          <pre><code>&lt;Swiper init={"}&gt;
+          <pre><code>&lt;Swiper init={false}&gt;
   &lt;SwiperSlide&gt;Slide 1&lt;/SwiperSlide&gt;
   &lt;SwiperSlide&gt;Slide 2&lt;/SwiperSlide&gt;
   &lt;SwiperSlide&gt;Slide 3&lt;/SwiperSlide&gt;
@@ -236,13 +236,13 @@
                 <td>Enables scrollbar</td>
               </tr>
               <tr>
-                <td>next-button</td>
+                <td>nextButton</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Enables next navigation button</td>
               </tr>
               <tr>
-                <td>prev-button</td>
+                <td>prevButton</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Enables previous navigation button</td>

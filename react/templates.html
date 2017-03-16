@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Starter App Templates | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -148,18 +148,18 @@
         </div>
         <div class="docs-content">
           <h1>Starter App Templates</h1>
-          <p>There are three ready to use templates to start your app developement using Framework7 and React.</p>
-          <h2>Framework7 React Simple Template</h2>
+          <p>There are three ready to use templates to start your app developement using Framework7 and Vue.</p>
+          <h2>Framework7 Vue Simple Template</h2>
           <p>This is the most simple static template without any builder and development server. It provides setup in a single HTML file</p>
-          <p>This template is targeted at beginners who want to start exploring Framework7 + React without the distraction of a complicated development environment.</p>
-          <p>For advanced features such as asset compilation, hot-reload and CSS extraction, we recommend that more experienced developers use one of the other templates: Framework7 React Webpack Template or Framework7 React Browserify Template.</p>
-          <p>Download template from its <a href="https://github.com/nolimits4web/Framework7-React-Simple-Template" target="_blank">GitHub repository</a> or</p>
-          <pre><code class="bash">$ git clone https://github.com/nolimits4web/Framework7-React-Simple-Template my-app</code></pre>
-          <h2>Framework7 React Webpack App Template</h2>
-          <p>This is the most powerful template which includes full-featured Framework7 + React + Webpack setup with hot-reload, single file components (.vue) support &amp; css extraction.</p>
+          <p>This template is targeted at beginners who want to start exploring Framework7 + Vue without the distraction of a complicated development environment.</p>
+          <p>For advanced features such as asset compilation, hot-reload and CSS extraction, we recommend that more experienced developers use one of the other templates: Framework7 Vue Webpack Template or Framework7 Vue Browserify Template.</p>
+          <p>Download template from its <a href="https://github.com/nolimits4web/Framework7-Vue-Simple-Template" target="_blank">GitHub repository</a> or</p>
+          <pre><code class="bash">$ git clone https://github.com/nolimits4web/Framework7-Vue-Simple-Template my-app</code></pre>
+          <h2>Framework7 Vue Webpack App Template</h2>
+          <p>This is the most powerful template which includes full-featured Framework7 + Vue + Webpack setup with hot-reload, single file components (.vue) support &amp; css extraction.</p>
           <h4>Install</h4>
-          <p>Download template from its <a href="https://github.com/nolimits4web/Framework7-React-Webpack-Template" target="_blank">GitHub repository</a> or</p>
-          <pre><code class="bash">$ git clone https://github.com/nolimits4web/Framework7-React-Webpack-Template my-app</code></pre>
+          <p>Download template from its <a href="https://github.com/nolimits4web/Framework7-Vue-Webpack-Template" target="_blank">GitHub repository</a> or</p>
+          <pre><code class="bash">$ git clone https://github.com/nolimits4web/Framework7-Vue-Webpack-Template my-app</code></pre>
           <p>Go to the downloaded project folder and install dependencies:</p>
           <pre><code class="bash">$ npm install</code></pre>
           <h4>Run development environment</h4>
@@ -178,11 +178,11 @@
             <li><b>src/routes</b>.js - app routes</li>
             <li><b>src/app</b>.vue - main app structure/component</li>
           </ul>
-          <h2>Framework7 React Browserify App Template</h2>
-          <p>Another powerful template which includes Framework7 + React + Browserify setup with hot-reload, single file components (.vue) support &amp; css extraction.</p>
+          <h2>Framework7 Vue Browserify App Template</h2>
+          <p>Another powerful template which includes Framework7 + Vue + Browserify setup with hot-reload, single file components (.vue) support &amp; css extraction.</p>
           <h4>Install</h4>
-          <p>Download template from its <a href="https://github.com/nolimits4web/Framework7-React-Browserify-Template" target="_blank">GitHub repository</a> or</p>
-          <pre><code class="bash">$ git clone https://github.com/nolimits4web/Framework7-React-Browserify-Template my-app</code></pre>
+          <p>Download template from its <a href="https://github.com/nolimits4web/Framework7-Vue-Browserify-Template" target="_blank">GitHub repository</a> or</p>
+          <pre><code class="bash">$ git clone https://github.com/nolimits4web/Framework7-Vue-Browserify-Template my-app</code></pre>
           <p>Go to the downloaded project folder and install dependencies:</p>
           <pre><code class="bash">$ npm install</code></pre>
           <h4>Run development environment</h4>
@@ -199,10 +199,10 @@
             <li><b>src/routes.js</b> - app routes</li>
             <li><b>src/app.vue</b> - main app structure/component</li>
             <li><b>dist/css</b> - app styles, put custom app CSS styles here as well</li>
-            <li><b>dist/css/build.css</b> - React components styles will be extracted here on <code>npm run build</code></li>
+            <li><b>dist/css/build.css</b> - Vue components styles will be extracted here on <code>npm run build</code></li>
           </ul>
-          <h2>Framework7 React Webpack Cordova App Template</h2>
-          <p>This is the most powerful template which includes full-featured Framework7 + React + Webpack setup with hot-reload, single file components (.vue) support &amp; css extraction with super cordova support.</p>
+          <h2>Framework7 Vue Webpack Cordova App Template</h2>
+          <p>This is the most powerful template which includes full-featured Framework7 + Vue + Webpack setup with hot-reload, single file components (.vue) support &amp; css extraction with super cordova support.</p>
           <h4>Install</h4>
           <p>You can read instructions from its <a href="https://github.com/centrual/cordova-template-framework7-vue-webpack" target="_blank">GitHub repository</a> you can continue reading.</p>
           <p>This template needs Node Js and Npm. You can find install instructions from <a href="https://nodejs.org/en/" target="_blank">Node Js home page</a>.</p>

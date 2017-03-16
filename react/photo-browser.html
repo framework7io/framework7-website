@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Photo Browser React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -162,15 +162,15 @@
     &lt;!-- Reference --&gt;
     ref="pb"
     &lt;!-- Array with photos --&gt;
-    photos={"}
+    photos={photos}
     &lt;!-- Array Theme --&gt;
     theme="dark"
     &lt;!-- Open Callback/Event --&gt;
-    @open="onOpen"
+    onOpen={onOpen}
   &gt;&lt;/PhotoBrowser&gt;
 
   &lt;!-- Link To Open PB --&gt;
-  &lt;Link @click="openPhotoBrowser"&gt;Photos&lt;/Link&gt;
+  &lt;Link onClick={openPhotoBrowser}&gt;Photos&lt;/Link&gt;
 
 &lt;/template&gt;
 
@@ -355,7 +355,7 @@
               </tr>
             </tbody>
           </table>
-          <h2>Events</h2>
+          <h2>Event Properties</h2>
           <table class="events-table">
             <thead>
               <tr>
@@ -365,51 +365,51 @@
             </thead>
             <tbody>
               <tr>
-                <td>open</td>
+                <td>onOpen</td>
                 <td>Event will be triggered on photo browser open.</td>
               </tr>
               <tr>
-                <td>close</td>
+                <td>onClose</td>
                 <td>Event will be triggered on photo browser close.</td>
               </tr>
               <tr>
-                <td>swipeToClose</td>
+                <td>onSwipetoclose</td>
                 <td>This event will be triggered when user close photo browser with swipe up/down.</td>
               </tr>
               <tr>
-                <td>slideChangeStart</td>
+                <td>onSlidechangestart</td>
                 <td>Event will be triggered in the beginning of animation to other slide (next or previous). Receives Swiper instance as an argument.</td>
               </tr>
               <tr>
-                <td>slideChangeEnd</td>
+                <td>onSlidechangeend</td>
                 <td>Event will be triggered after animation to other slide (next or previous). Receives Swiper instance as an argument.</td>
               </tr>
               <tr>
-                <td>transitionStart</td>
+                <td>onTransitionstart</td>
                 <td>Event will be triggered in the beginning of transition. Receives swiper instance as an argument..</td>
               </tr>
               <tr>
-                <td>transitionEnd</td>
+                <td>onTransitionend</td>
                 <td>Event will be triggered right before navbar inner will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory</td>
               </tr>
               <tr>
-                <td>click</td>
+                <td>onClick</td>
                 <td>Event will be triggered when user click/tap on slider after 300ms delay. Receives Swiper instance and 'touchend' event as an arguments.</td>
               </tr>
               <tr>
-                <td>tap</td>
+                <td>onTap</td>
                 <td>Event will be triggered when user click/tap on slider. Receives Swiper instance and 'touchend' event as an arguments.</td>
               </tr>
               <tr>
-                <td>doubleTap</td>
+                <td>onDoubletap</td>
                 <td>Event will be triggered when user double tap on slider's container. Receives Swiper instance and 'touchend' event as an arguments.</td>
               </tr>
               <tr>
-                <td>lazyImageLoad</td>
+                <td>onLazyimageload</td>
                 <td>Event will be triggered when Photo Browser begins to load lazy loading photo.</td>
               </tr>
               <tr>
-                <td>lazyImageReady</td>
+                <td>onLazyimageready</td>
                 <td>Event will be triggered after lazy loading photo will be loaded.</td>
               </tr>
             </tbody>

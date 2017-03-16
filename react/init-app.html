@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Initialize App | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -148,13 +148,13 @@
         </div>
         <div class="docs-content">
           <h1>Initialize App</h1>
-          <p>After we have our <a href="app-layout.html">app layout</a> now we need to mount React components and initialize the app. You can read about all possible Framework7 initialization parameters in appropriate <a href="../docs/init-app.html">Framework7 App Parameters</a> section.</p>
+          <p>After we have our <a href="app-layout.html">app layout</a> now we need to mount Vue components and initialize the app. You can read about all possible Framework7 initialization parameters in appropriate <a href="../docs/init-app.html">Framework7 App Parameters</a> section.</p>
           <p>Let's look at our script:</p>
-          <pre><code>// First of all, we need to initialize/enable Framework7 React plugin:
-React.use(Framework7React);
+          <pre><code>// First of all, we need to initialize/enable Framework7 Vue plugin:
+Vue.use(Framework7Vue);
 
-// Init React App
-new React({
+// Init Vue App
+new Vue({
     // App Root Element
     el: '#app',
     // Init Framework7. All Framework7 parameters should be passed in "framework7" property, e.g.:
@@ -176,24 +176,24 @@ new React({
         // ....
     }
 })</code></pre>
-          <p>If you use Webpack or Browserify, it may look like:</p>
-          <pre><code>// Import React
-import React from 'vue'
+          <p>If you use Create React App, Webpack or Browserify, it may look like:</p>
+          <pre><code>// Import Vue
+import Vue from 'vue'
 
 // Import F7
 import Framework7 from 'framework7'
 
-// Import F7 React Plugin
-import Framework7React from 'framework7-vue'
+// Import F7 Vue Plugin
+import Framework7Vue from 'framework7-vue'
 
 // Import Routes
 import Routes from './routes.js'
 
-// Init F7 React Plugin
-React.use(Framework7React)
+// Init F7 Vue Plugin
+Vue.use(Framework7Vue)
 
 // Init App
-new React({
+new Vue({
   el: '#app',
   framework7: {
     root: '#app',
@@ -201,10 +201,10 @@ new React({
   },
   // ...
 });</code></pre>
-          <p>In the examples above we pass <a href="../docs/init-app.html">Framework7 parameters</a> to the React root component's <b>framework7</b> property; we must use the same Framework7's <b>root</b> parameter as the <b>el</b> property of React main component.</p>
+          <p>In the examples above we pass <a href="../docs/init-app.html">Framework7 parameters</a> to the Vue root component's <b>framework7</b> property; we must use the same Framework7's <b>root</b> parameter as the <b>el</b> property of Vue main component.</p>
           <p>We also must specify array with routes (if we have navigation between pages in the app). Check out information about router and routes in the <a href="navigation-router.html">Navigation Router</a> section.</p>
           <h2>Initialized Instances</h2>
-          <p>After React mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all React components:</p>
+          <p>After Vue mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all Vue components:</p>
           <table class="methods-table">
             <tbody>
               <tr>

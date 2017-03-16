@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Link React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -161,7 +161,7 @@
           <pre><code>&lt;a href="#" class="link back"&gt;Back&lt;/a&gt;
 </code></pre>
           <h4>With Router Parameters</h4>
-          <pre><code>&lt;Link href="/about/" animate-pages={"}&gt;About&lt;/Link&gt;</code></pre>
+          <pre><code>&lt;Link href="/about/" animatePages={false" :ignoreCache="true}&gt;About&lt;/Link&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;a href="/about/" class="link" data-animate-pages="false" data-ignore-cache="true"&gt;About&lt;/a&gt;
 </code></pre>
@@ -177,8 +177,8 @@
   &lt;Tab id="tab-1"&gt;Tab 2&lt;/Tab&gt;
 &lt;/Tabs&gt;
 &lt;!-- Switch Between Tabs --&gt;
-&lt;Link tab-link="#tab-1"&gt;Show Tab 1&lt;/Link&gt;
-&lt;Link tab-link="#tab-2"&gt;Show Tab 2&lt;/Link&gt;</code></pre>
+&lt;Link tabLink="#tab-1"&gt;Show Tab 1&lt;/Link&gt;
+&lt;Link tabLink="#tab-2"&gt;Show Tab 2&lt;/Link&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;!-- Tabs --&gt;
 &lt;div class="tabs"&gt;
@@ -196,8 +196,8 @@
   &lt;Tab id="tab-1"&gt;Tab 2&lt;/Tab&gt;
 &lt;/Tabs&gt;
 &lt;!-- Switch Between Tabs --&gt;
-&lt;Link tab-link="#tab-1"&gt;Show Tab 1&lt;/Link&gt;
-&lt;Link tab-link="#tab-2"&gt;Show Tab 2&lt;/Link&gt;</code></pre>
+&lt;Link tabLink="#tab-1"&gt;Show Tab 1&lt;/Link&gt;
+&lt;Link tabLink="#tab-2"&gt;Show Tab 2&lt;/Link&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;!-- Tabs --&gt;
 &lt;div class="tabs"&gt;
@@ -209,21 +209,21 @@
 &lt;a href="#" data-tab="#tab-2" class="tab-link"&gt;Show Tab 2&lt;/a&gt;
 </code></pre>
           <h4>Open and Close Panel</h4>
-          <pre><code>&lt;Link open-panel="left"&gt;Open Left Panel&lt;/Link&gt;
-&lt;Link close-panel&gt;Close Panel&lt;/Link&gt;</code></pre>
+          <pre><code>&lt;Link openPanel="left"&gt;Open Left Panel&lt;/Link&gt;
+&lt;Link closePanel&gt;Close Panel&lt;/Link&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;a href="#" data-panel="left" class="link open-panel"&gt;Open Left Panel&lt;/a&gt;
 &lt;a href="#" class="link close-panel"&gt;Close Panel&lt;/a&gt;
 </code></pre>
           <h4>Open and Close Popup</h4>
-          <pre><code>&lt;Link open-popup="#my-popup"&gt;Open Popup&lt;/Link&gt;
-&lt;Link close-popup="#my-popup"&gt;Close Popup&lt;/Link&gt;</code></pre>
+          <pre><code>&lt;Link openPopup="#myPopup"&gt;Open Popup&lt;/Link&gt;
+&lt;Link closePopup="#myPopup"&gt;Close Popup&lt;/Link&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;a href="#" data-popup="#my-popup" class="link open-popup"&gt;Open Popup&lt;/a&gt;
 &lt;a href="#" data-popup="#my-popup" class="link close-popup"&gt;Close Popup&lt;/a&gt;
 </code></pre>
           <h4>With Icon &amp; Color</h4>
-          <pre><code>&lt;Link icon-f7="home" text="Home" color="red"&gt;&lt;/Link&gt;</code></pre>
+          <pre><code>&lt;Link iconF7="home" text="Home" color="red"&gt;&lt;/Link&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;a href="#" class="link color-red"&gt;
   &lt;i class="icon Icons"&gt;home&lt;/i&gt;
@@ -241,7 +241,7 @@
             </thead>
             <tbody>
               <tr>
-                <td>no-link-class</td>
+                <td>noLinkClass</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Removes "link" class</td>
@@ -253,7 +253,7 @@
                 <td>Link color. One of <a href="../docs/color-themes.html">default colors</a></td>
               </tr>
               <tr>
-                <td>ripple-color</td>
+                <td>rippleColor</td>
                 <td>string</td>
                 <td></td>
                 <td>Link Touch-ripple color (affects only Material theme). One of <a href="../docs/color-themes.html">default colors</a></td>
@@ -295,85 +295,85 @@
                 <th colspan="4">Control Links</th>
               </tr>
               <tr>
-                <td>tab-link</td>
+                <td>tabLink</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>Enables tab link and specify CSS selector of the target tab (if specified as a string)</td>
               </tr>
               <tr>
-                <td>open-panel</td>
+                <td>openPanel</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>Defines panel to open. Can be "left" or "right"</td>
               </tr>
               <tr>
-                <td>close-panel</td>
+                <td>closePanel</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Closes panel on click</td>
               </tr>
               <tr>
-                <td>open-popup</td>
+                <td>openPopup</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popup to open on click</td>
               </tr>
               <tr>
-                <td>close-popup</td>
+                <td>closePopup</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popup to close on click. Or boolean property to close currently opened popup</td>
               </tr>
               <tr>
-                <td>open-popover</td>
+                <td>openPopover</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popover to open on click</td>
               </tr>
               <tr>
-                <td>close-popover</td>
+                <td>closePopover</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popover to close on click. Or boolean property to close currently opened popover</td>
               </tr>
               <tr>
-                <td>open-picker</td>
+                <td>openPicker</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the picker to open on click</td>
               </tr>
               <tr>
-                <td>close-picker</td>
+                <td>closePicker</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the picker to close on click. Or boolean property to close currently opened picker</td>
               </tr>
               <tr>
-                <td>open-login-screen</td>
+                <td>openLoginScreen</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the login screen to open on click</td>
               </tr>
               <tr>
-                <td>close-login-screen</td>
+                <td>closeLoginScreen</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen</td>
               </tr>
               <tr>
-                <td>open-sortable</td>
+                <td>openSortable</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the Sortable list to open on click</td>
               </tr>
               <tr>
-                <td>close-sortable</td>
+                <td>closeSortable</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the Sortable list to close on click. Or boolean property to close currently opened Sortable list</td>
               </tr>
               <tr>
-                <td>toggle-sortable</td>
+                <td>toggleSortable</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the Sortable list to toggle on click. Or boolean property to toggle currently opened/closed Sortable list</td>
@@ -394,7 +394,7 @@
                 <td>CSS selector of the View to load the page</td>
               </tr>
               <tr>
-                <td>no-fast-click</td>
+                <td>noFastClick</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Disables fast click</td>
@@ -424,19 +424,19 @@
                 <td>Reloads new page instead of the currently active one</td>
               </tr>
               <tr>
-                <td>animate-pages</td>
+                <td>animatePages</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Disables pages animation</td>
               </tr>
               <tr>
-                <td>ignore-cache</td>
+                <td>ignoreCache</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Ignores caching</td>
               </tr>
               <tr>
-                <td>page-name</td>
+                <td>pageName</td>
                 <td>string</td>
                 <td></td>
                 <td>Name of the page to load</td>
@@ -451,19 +451,19 @@
                 <th colspan="4"><a href="icon.html">Icon</a> Properties</th>
               </tr>
               <tr>
-                <td>icon-only</td>
+                <td>iconOnly</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Enable when used in navbar with icon only inside</td>
               </tr>
               <tr>
-                <td>icon-badge</td>
+                <td>iconBadge</td>
                 <td>string/number</td>
                 <td></td>
                 <td>Adds badge to the icon (intended to be used in Tabbar's icons)</td>
               </tr>
               <tr>
-                <td>icon-size</td>
+                <td>iconSize</td>
                 <td>string/number</td>
                 <td></td>
                 <td>Icon size in px</td>
@@ -475,37 +475,37 @@
                 <td>Custom icon class</td>
               </tr>
               <tr>
-                <td>icon-f7</td>
+                <td>iconF7</td>
                 <td>string</td>
                 <td></td>
                 <td>Name of F7 Icons font icon</td>
               </tr>
               <tr>
-                <td>icon-material</td>
+                <td>iconMaterial</td>
                 <td>string</td>
                 <td></td>
                 <td>Name of Material Icons font icon</td>
               </tr>
               <tr>
-                <td>icon-fa</td>
+                <td>iconFa</td>
                 <td>string</td>
                 <td></td>
                 <td>Name of Font Awesome font icon</td>
               </tr>
               <tr>
-                <td>icon-ion</td>
+                <td>iconIon</td>
                 <td>string</td>
                 <td></td>
                 <td>Name of Ionicons font icon</td>
               </tr>
               <tr>
-                <td>icon-if-ios</td>
+                <td>iconIfIos</td>
                 <td>string</td>
                 <td></td>
                 <td>Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code></td>
               </tr>
               <tr>
-                <td>icon-if-material</td>
+                <td>iconIfMaterial</td>
                 <td>string</td>
                 <td></td>
                 <td>Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code></td>

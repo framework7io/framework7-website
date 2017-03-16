@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>List Button React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -174,8 +174,8 @@
 &lt;/List&gt;</code></pre>
           <h4>Control Buttons in Inset List</h4>
           <pre><code>&lt;List inset&gt;
-  &lt;ListButton open-panel="left"&gt;Open Panel&lt;/ListButton&gt;
-  &lt;ListButton open-popup="#my-popup"&gt;Open Popup&lt;/ListButton&gt;
+  &lt;ListButton openPanel="left"&gt;Open Panel&lt;/ListButton&gt;
+  &lt;ListButton openPopup="#myPopup"&gt;Open Popup&lt;/ListButton&gt;
 &lt;/List&gt;</code></pre>
           <h2>Properties</h2>
           <table class="params-table">
@@ -204,85 +204,85 @@
                 <th colspan="4">Control Links</th>
               </tr>
               <tr>
-                <td>tab-link</td>
+                <td>tabLink</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>Enables tab link and specify CSS selector of the target tab (if specified as a string)</td>
               </tr>
               <tr>
-                <td>open-panel</td>
+                <td>openPanel</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>Defines panel to open. Can be "left" or "right"</td>
               </tr>
               <tr>
-                <td>close-panel</td>
+                <td>closePanel</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Closes panel on click</td>
               </tr>
               <tr>
-                <td>open-popup</td>
+                <td>openPopup</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popup to open on click</td>
               </tr>
               <tr>
-                <td>close-popup</td>
+                <td>closePopup</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popup to close on click. Or boolean property to close currently opened popup</td>
               </tr>
               <tr>
-                <td>open-popover</td>
+                <td>openPopover</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popover to open on click</td>
               </tr>
               <tr>
-                <td>close-popover</td>
+                <td>closePopover</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popover to close on click. Or boolean property to close currently opened popover</td>
               </tr>
               <tr>
-                <td>open-picker</td>
+                <td>openPicker</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the picker to open on click</td>
               </tr>
               <tr>
-                <td>close-picker</td>
+                <td>closePicker</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the picker to close on click. Or boolean property to close currently opened picker</td>
               </tr>
               <tr>
-                <td>open-login-screen</td>
+                <td>openLoginScreen</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the login screen to open on click</td>
               </tr>
               <tr>
-                <td>close-login-screen</td>
+                <td>closeLoginScreen</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen</td>
               </tr>
               <tr>
-                <td>open-sortable</td>
+                <td>openSortable</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the Sortable list to open on click</td>
               </tr>
               <tr>
-                <td>close-sortable</td>
+                <td>closeSortable</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the Sortable list to close on click. Or boolean property to close currently opened Sortable list</td>
               </tr>
               <tr>
-                <td>toggle-sortable</td>
+                <td>toggleSortable</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the Sortable list to toggle on click. Or boolean property to toggle currently opened/closed Sortable list</td>
@@ -303,7 +303,7 @@
                 <td>CSS selector of the View to load the page</td>
               </tr>
               <tr>
-                <td>no-fast-click</td>
+                <td>noFastClick</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Disables fast click</td>
