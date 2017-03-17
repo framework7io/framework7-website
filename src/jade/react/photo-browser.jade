@@ -1,0 +1,270 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Photo Browser React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Photo Browser React Component
+      p Photo Browser is an photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).
+      p Photo Browser React component represents Framework7's <a href="../docs/photo-browser.html">Photo Browser</a> component.
+      .important-note
+        p Photo Browser React component doesn't render any output. It can be used to create JS Photo Browser instance and control it inside of your React component.
+      h2 Usage example
+      p Here is how it can be used in React component and how to control it:
+      pre
+        code.html
+          :code
+            export const PhotoBrowserPageDefaultState = [{
+                url: 'http://lorempixel.com/400/400/nature/1/',
+                caption: 'Ants on grass'
+              },
+                'http://placekitten.com/600/600',
+                'http://lorempixel.com/400/400/nature/2/',
+              {
+                url: 'http://lorempixel.com/400/400/nature/3/',
+                caption: 'Beautiful mountains in Zhangjiajie, China'
+              }, {
+                url: 'http://lorempixel.com/400/400/nature/4/',
+                caption: 'Trees in the Fall'
+              }
+            ];
+
+            const photoStyle = {
+              height: "20vw",
+              width: "20%"
+            };
+
+            export class PhotoBrowserPage extends Component {
+                constructor() {
+                  super();
+
+                  this.state = {
+                      photos: PhotoBrowserPageDefaultState
+                  };
+
+                  this.fw7 = getFramework7();
+                }
+
+                render() {
+                  return (
+                    <Page>
+                      <Navbar backLink="Back" title="Photo Browser" sliding />                        
+                      {
+                        this.state.photos.map((photo, index) => {
+                          return (
+                            <Link key={index} onClick={() => {this.openPhotoBrowser(index)}}>
+                            {
+                              this.getImage(photo, index)     
+                            }                  
+                            </Link>
+                          );
+                        })
+                      }
+                    </Page>
+                  ); 
+                }
+
+                openPhotoBrowser(index:number) {
+                    let photoBrowser = this.fw7.photoBrowser({
+                        photos: this.state.photos,
+                        theme: "dark",
+                        onOpen: this.onOpen,
+                        onClose: this.onClose
+                    });
+
+                    photoBrowser.open(index);
+                }
+
+                onOpen(index:number) {
+                  console.log('Photo Browser opened');
+                }
+
+                onClose(index:number) {
+                  console.log('Photo Browser closed');
+                }
+
+                getImage(photo: any, index: number ) {
+                  let imageSrc = '';
+
+                  if (typeof photo === 'string') {
+                    return <img src={photo} style={photoStyle} />;
+                  } else if (typeof photo === 'object') {
+                    return <img src={photo.url} style={photoStyle} />;
+                  }                        
+                }   
+            }
+      h2 Properties
+      p You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td init
+            td boolean
+            td true
+            td Initializes Photo Browser
+          tr
+            td params
+            td Object
+            td 
+            td Object with <a href="../docs/photo-browser.html#photo-browser-parameters">Photo Browser API</a> parameters
+          tr
+            th(colspan="4") <code>params</code> separate props
+          tr
+            td photos
+            td array
+            td []
+            td Array with URLs of photos or array of objects with "url" (or "html") and "caption" properties.
+          tr
+            td initialSlide
+            td number
+            td 0
+            td Index number of initial photo slide.
+          tr
+            td spaceBetween
+            td number
+            td 20
+            td Distance between photo slides in px.
+          tr
+            td speed
+            td number
+            td 300
+            td Duration of transition between photo slides (in ms).
+          tr
+            td zoom
+            td boolean
+            td true
+            td Enable/disable ability to zoom and pan photos.
+          tr
+            td zoomMax
+            td number
+            td 3
+            td Max zoom ratio.
+          tr
+            td zoomMin
+            td number
+            td 1
+            td Minimal zoom ratio.
+          tr
+            td exposition
+            td boolean
+            td true
+            td Enable disable exposition mode when clicking on Photo Browser.
+          tr
+            td expositionHideCaptions
+            td boolean
+            td false
+            td Set to true if you also want to hide captions in exposition mode
+          tr
+            td swipeToClose
+            td boolean
+            td true
+            td You can close Photo Browser with swipe up/down when this parameter is enabled
+          tr
+            td type
+            td string
+            td 'standalone'
+            td Define how Photo Browser should be opened. Could be 'standalone' (will be opened as an overlay with custom transition effect), 'popup' (will be opened as <a href="popup.html">popup</a>), 'page' (will be injected to View and loaded as a new page).
+          tr
+            td loop
+            td boolean
+            td false
+            td Set to "true" to enable continuous loop mode
+          tr
+            td theme
+            td string
+            td 'light'
+            td Photo Browser color theme, could be 'light' or 'dark'
+          tr
+            td captionsTheme
+            td string
+            td 
+            td Captions color theme, could be also "dark" or "light". By default, equal to "theme" parameter
+          tr
+            td navbar
+            td boolean
+            td true
+            td Set to false to remove Photo Browser's Navbar
+          tr
+            td toolbar
+            td boolean
+            td true
+            td Set to false to remove Photo Browser's Toolbar
+          tr
+            td backLinkText
+            td string
+            td 'Close'
+            td Text on back link in Photo Browser's Navbar
+          tr
+            td ofText
+            td string
+            td 'of'
+            td Text of "of" in photos counter: "3 of 5"
+          tr
+            td lazyLoading
+            td boolean
+            td false
+            td Set to "true" to enable images lazy loading
+          tr
+            td lazyLoadingInPrevNext
+            td boolean
+            td false
+            td Set to "true" to enable lazy loading for the closest photos (for previous and next photos)
+          tr
+            td lazyLoadingOnTransitionStart
+            td boolean
+            td false
+            td By default, Photo Browser will load lazy photos after transition to this photo, so you may enable this parameter if you need it to load new photo in the beginning of transition
+      h2 Event Properties
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td open
+            td Event will be triggered on photo browser open.
+          tr
+            td close
+            td Event will be triggered on photo browser close.
+          tr
+            td swipeToClose
+            td This event will be triggered when user close photo browser with swipe up/down.
+          tr
+            td slideChangeStart
+            td Event will be triggered in the beginning of animation to other slide (next or previous). Receives Swiper instance as an argument.
+          tr
+            td slideChangeEnd
+            td Event will be triggered after animation to other slide (next or previous). Receives Swiper instance as an argument.
+          tr
+            td transitionStart
+            td Event will be triggered in the beginning of transition. Receives swiper instance as an argument..
+          tr
+            td transitionEnd
+            td Event will be triggered right before navbar inner will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          tr
+            td click
+            td Event will be triggered when user click/tap on slider after 300ms delay. Receives Swiper instance and 'touchend' event as an arguments.
+          tr
+            td tap
+            td Event will be triggered when user click/tap on slider. Receives Swiper instance and 'touchend' event as an arguments.
+          tr
+            td doubleTap
+            td Event will be triggered when user double tap on slider's container. Receives Swiper instance and 'touchend' event as an arguments.
+          tr
+            td lazyImageLoad
+            td Event will be triggered when Photo Browser begins to load lazy loading photo.
+          tr
+            td lazyImageReady
+            td Event will be triggered after lazy loading photo will be loaded.  

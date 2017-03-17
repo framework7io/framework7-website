@@ -4,7 +4,7 @@
         connect = require('gulp-connect'),
         open = require('gulp-open'),
         less = require('gulp-less'),
-        jade = require('gulp-jade'),
+        jade = require('gulp-pug'),
         path = require('path'),
         fs = require('fs'),
         del = require('del'),
@@ -296,6 +296,7 @@
         gulp.src(src, {base: './'})
             .pipe(sftp(remote));
     });
+
     /* =================================
     Server
     ================================= */
@@ -306,6 +307,7 @@
             port:'3000'
         });
     });
+
     gulp.task('open', function () {
         return gulp.src('./index.html').pipe(open({ uri: 'http://localhost:3000/index.html'}));
     });

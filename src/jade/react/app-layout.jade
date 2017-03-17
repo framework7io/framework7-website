@@ -10,40 +10,30 @@ block content
       include ./_docs-react-menu
     .docs-content
       h1 App Layout
-      p First thing we should do for our App is to create index.html file with app's skeleton.
+      p First thing we should do for our App is to create index.html file with the app's skeleton.
       pre
         code
           :code
             <!DOCTYPE html>
             <html>
-              <head>
-                <!-- Required meta tags-->
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-                <meta name="apple-mobile-web-app-capable" content="yes">
-                <meta name="apple-mobile-web-app-status-bar-style" content="black">
-                <!-- Your app title -->
+            <head>
+                <meta charset="utf-8" />    
+                <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="black" />
                 <title>My App</title>
-                <!-- Path to Framework7 Library CSS, iOS Theme -->
-                <link rel="stylesheet" href="path/to/framework7.ios.min.css">
-                <!-- Path to Framework7 color related styles, iOS Theme -->
-                <link rel="stylesheet" href="path/to/framework7.ios.colors.min.css">
-                <!-- Path to your custom app styles-->
-                <link rel="stylesheet" href="path/to/my-app.css">
-              </head>
-              <body>
-                <!-- App Root Element -->
-                <div id="app"></div>
-
-                <!-- Path to Vue js -->
-                <script type="text/javascript" src="path/to/vue.min.js"></script>
-                <!-- Path to Framework7 Library JS-->
-                <script type="text/javascript" src="path/to/framework7.min.js"></script>
-                <!-- Path to Framework7 Vue Plugin -->
-                <script type="text/javascript" src="path/to/framework7-vue.min.js"></script>
-                <!-- Path to your app js where you init your app-->
-                <script type="text/javascript" src="path/to/my-app.js"></script>
-              </body>
+                <link rel="stylesheet" href="css/framework7.ios.min.css" />
+                <link rel="stylesheet" href="css/framework7.ios.colors.min.css" />
+                <link rel="stylesheet" href="css/app.css" />
+            </head>
+            <body>
+                <span id="root"></span>
+                <script src="js/react.js"></script>
+                <script src="js/react-dom.js"></script>    
+                <script src="js/framework7-react.min.js"></script>
+                <script src="js/app.js"></script>    
+            </body>
             </html>
       p The <code>&lt;div id="app"&gt;&lt;/div&gt;</code> is where your main app skeleton should be. You can mount its content as a component or (just for example) we can start to write app skeleton right inside of this div:
       h2 Basic Layout

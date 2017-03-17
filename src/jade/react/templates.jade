@@ -10,129 +10,39 @@ block content
       include ./_docs-react-menu
     .docs-content
       h1 Starter App Templates
-      p There are three ready to use templates to start your app developement using Framework7 and Vue.
-      h2 Framework7 Vue Simple Template
-      p This is the most simple static template without any builder and development server. It provides setup in a single HTML file
-      p This template is targeted at beginners who want to start exploring Framework7 + Vue without the distraction of a complicated development environment.
-      p For advanced features such as asset compilation, hot-reload and CSS extraction, we recommend that more experienced developers use one of the other templates: Framework7 Vue Webpack Template or Framework7 Vue Browserify Template.
-      p Download template from its <a href="https://github.com/nolimits4web/Framework7-Vue-Simple-Template" target="_blank">GitHub repository</a> or
+      
+      h2 Framework7 React App Template
+      p This is the template recommended for most apps. It was generated with <a href="https://github.com/facebookincubator/create-react-app">Create React App</a> (which is the recommended starting point for most React apps), and then customized for Framework7 React.
+      p This template allows apps to be written with ES6 + JSX, and in general, it "just works." Here is how to get started:
       pre
         code.bash
           :code
-            $ git clone https://github.com/nolimits4web/Framework7-Vue-Simple-Template my-app
-      h2 Framework7 Vue Webpack App Template
-      p This is the most powerful template which includes full-featured Framework7 + Vue + Webpack setup with hot-reload, single file components (.vue) support & css extraction.
-      h4 Install
-      p Download template from its <a href="https://github.com/nolimits4web/Framework7-Vue-Webpack-Template" target="_blank">GitHub repository</a> or
-      pre
-        code.bash
-          :code
-            $ git clone https://github.com/nolimits4web/Framework7-Vue-Webpack-Template my-app
-      p Go to the downloaded project folder and install dependencies:
-      pre
-        code.bash
-          :code
+            $ git clone https://github.com/bencompton/framework7-react-app-template my-app
             $ npm install
-      h4 Run development environment
+      p To run and launch your a development version of your app in your default web browser, run:
+      pre
+        code.bash
+          :code            
+            $ npm start
+      p As you change code, the browser will automatically refresh and show the latest version of your app.
+      p Once your app is ready for deployment, simply run:
+      pre
+        code.bash
+          :code            
+            $ npm run build      
+      p The build folder will then contain all of your app's files, optimized and ready for deployment.
+      p If you would prefer to have more control over your build pipeline and configure Webpack directly, you can "eject" Create React App:
+      pre
+        code.bash
+          :code            
+            $ npm run eject      
+      p For a more thorough understanding of Create React App and all of its capabilities, checkout the <a href="https://github.com/facebookincubator/create-react-app">docs</a>.      
+      
+      h2 Framework7 React Static Template
+      p This template is useful for cases where the complexity of a build pipeline is not desired or is not supported (e.g., JSFiddle or CodePen). This template is ideal for quick examples, or perhaps small, toy apps.
       pre
         code.bash
           :code
-            $ npm run dev
-      p App will run server with hot reload at <code>localhost:8080</code>
-      h4 Build for production
-      p When your app is ready you need to build it for production:
-      pre
-        code.bash
-          :code
-            $ npm run build
-      h4 Project Structure
-      ul
-        li <b>src/assets</b> - folder with static assets (images)
-        li <b>src/components</b> - folder with custom .vue components
-        li <b>src/css</b> - put custom app CSS styles here. Don't forget to import them in main.js
-        li <b>src/pages</b> - app .vue pages
-        li <b>src/main</b>.js - main app file where you include/import all required libs and init app
-        li <b>src/routes</b>.js - app routes
-        li <b>src/app</b>.vue - main app structure/component
-      h2 Framework7 Vue Browserify App Template
-      p Another powerful template which includes Framework7 + Vue + Browserify setup with hot-reload, single file components (.vue) support & css extraction.
-      h4 Install
-      p Download template from its <a href="https://github.com/nolimits4web/Framework7-Vue-Browserify-Template" target="_blank">GitHub repository</a> or
-      pre
-        code.bash
-          :code
-            $ git clone https://github.com/nolimits4web/Framework7-Vue-Browserify-Template my-app
-      p Go to the downloaded project folder and install dependencies:
-      pre
-        code.bash
-          :code
-            $ npm install
-      h4 Run development environment
-      pre
-        code.bash
-          :code
-            $ npm run dev
-      p App will run server with hot reload at <code>localhost:8080</code>
-      h4 Build for production
-      p When your app is ready you need to build it for production:
-      pre
-        code.bash
-          :code
-            $ npm run build
-      h4 Project Structure
-      ul
-        li <b>src/components</b> - folder with custom .vue components
-        li <b>src/pages</b> - app .vue pages
-        li <b>src/main.js</b> - main app file where you include/import all required libs and init app
-        li <b>src/routes.js</b> - app routes
-        li <b>src/app.vue</b> - main app structure/component
-        li <b>dist/css</b> - app styles, put custom app CSS styles here as well
-        li <b>dist/css/build.css</b> - Vue components styles will be extracted here on <code>npm run build</code>
-      h2 Framework7 Vue Webpack Cordova App Template
-      p This is the most powerful template which includes full-featured Framework7 + Vue + Webpack setup with hot-reload, single file components (.vue) support & css extraction with super cordova support.
-      h4 Install
-      p You can read instructions from its <a href="https://github.com/centrual/cordova-template-framework7-vue-webpack" target="_blank">GitHub repository</a> you can continue reading.
-      p This template needs Node Js and Npm. You can find install instructions from <a href="https://nodejs.org/en/" target="_blank">Node Js home page</a>.
-      p If you don't have cordova or phonegap please install it with:
-      pre
-        code.bash
-          :code
-            $ npm i cordova -g
-            or
-            $ npm i phonegap -g
-      p Now you have NodeJs and Cordova-PhoneGap You can create a project with this template now:
-      pre
-        code.bash
-          :code
-            $ cordova create <project_create_dir> [com.example.projectname] [ProjectClassName] --template cordova-template-framework7-vue-webpack
-            or
-            $ phonegap create <project_create_dir> [com.example.projectname] [ProjectClassName] --template cordova-template-framework7-vue-webpack
-      h4 Run Your Code
-      p You can run every cordova-phonegap commands. You have one argument for development: -- --live-reload or -- --lr.
-      p You can find cordova cli reference from <a href="https://cordova.apache.org/docs/en/latest/reference/cordova-cli/" target="_blank">Cordova Docs</a> or phonegap cli reference from: <a href="http://docs.phonegap.com/getting-started/1-install-phonegap/cli/" target="_blank">Phonegap Docs</a>
-      p Sample Commands:
-      pre
-        code.bash
-          :code
-            $ cordova (run|emulate) [android|ios|browser] [-- --lr]
-            or
-            $ phonegap (run|emulate) [android|ios|browser] [-- --lr]
-      h4 Build for production
-      p When your app is ready you need to build it for production:
-      pre
-        code.bash
-          :code
-            $ cordova build --release
-            or
-            $ phonegap build --release
-      p For more information about build: <a href="https://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html" target="_blank">Cordova Android Platform Guide</a>
-      h4 Project Structure
-      ul
-        li <b>src</b> - Source files are here. Mostly your target is this directory.
-        li <b>src/assets/static</b> - Your static assets like images, css, fonts, json, js, sass is here.
-        li <b>src/assets/static/css</b> - put custom app CSS styles here. Don't forget to import them in main.js
-        li <b>src/assets/vue/pages</b> - app .vue pages
-        li <b>src/assets/vue/components</b> - folder with custom .vue components
-        li <b>src/main.js</b> - main app file where you include/import all required libs and init app
-        li <b>src/routes.js</b> - app routes
-        li <b>src/main.vue</b> - main app structure/component
+            $ git clone https://github.com/bencompton/framework7-react-static-template my-app            
+      p From there, simply launch the index.html file in a browser from either the file system or a web server of your choice
+      p This template uses ES5 with no JSX. If you would prefer ES6 + JSX, you can also run Babel in the browser. Check out <a href="https://facebook.github.io/react/downloads/single-file-example.html">this example</a> for more insight.
