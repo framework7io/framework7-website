@@ -4,7 +4,7 @@
         connect = require('gulp-connect'),
         open = require('gulp-open'),
         less = require('gulp-less'),
-        jade = require('gulp-pug'),
+        jade = require('gulp-jade'),
         path = require('path'),
         fs = require('fs'),
         del = require('del'),

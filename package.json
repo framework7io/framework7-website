@@ -15,14 +15,14 @@
     "framework7-vue": "^0.8.0",
     "gulp": "^3.9.1",
     "gulp-connect": "^2.3.1",
+    "gulp-jade": "^1.1.0",
     "gulp-less": "^3.0.5",
     "gulp-open": "^1.0.0",
-    "gulp-pug": "^3.3.0",
     "gulp-sftp": "^0.1.5",
     "gulp-util": "^3.0.8",
+    "jade": "^1.11.0",
     "jsdom": "^9.11.0",
     "json-fn": "^1.1.1",
-    "pug": "^2.0.0-beta11",
     "to-case": "^2.0.0"
   }
 }

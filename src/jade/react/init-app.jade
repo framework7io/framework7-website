@@ -10,85 +10,53 @@ block content
       include ./_docs-react-menu
     .docs-content
       h1 Initialize App
-      p After we have our <a href="app-layout.html">app layout</a> now we need to mount Vue components and initialize the app. You can read about all possible Framework7 initialization parameters in appropriate <a href="../docs/init-app.html">Framework7 App Parameters</a> section.
-      p Let's look at our script:
+      p As briefly shown in the <a href="app-layout.html">app layout</a> section, your root App.jsx component will typically have a top-level Framework7App component. This component is used to initialize your app, and you can pass in any Framework7 initialization parameter as a prop, along with props specific to Framework7 React.
       pre
-        code
-          :code
-            // First of all, we need to initialize/enable Framework7 Vue plugin:
-            Vue.use(Framework7Vue);
+        code.
+          import {routes} from './routes';
 
-            // Init Vue App
-            new Vue({
-                // App Root Element
-                el: '#app',
-                // Init Framework7. All Framework7 parameters should be passed in "framework7" property, e.g.:
-                framework7: {
-                    // App Root Element, should be the same as the component root "el"
-                    root: '#app',
-                    // Array with app routes
-                    routes: [...]
-                    // Any other parameters, e.g.
-                    animateNavBackIcon: true,
-                    swipePanel: 'left'
-                },
-                // App root data
-                data: {
-                    // ....
-                },
-                // App root methods
-                methods: {
-                    // ....
-                }
-            })
-      p If you use Create React App, Webpack or Browserify, it may look like:
+          //App.jsx
+          const App = () => (
+            <Framework7App routes={routes} themeType="ios">
+              ...
+            </Framework7App>
+          );
+
+      p In addition, if you're using Create React App, Webpack or Browserify, you might typically have an root-level app.js or index.js file that mounts your root app component:
       pre
-        code
-          :code
-            // Import Vue
-            import Vue from 'vue'
+        code.
+          import React from 'react';
+          import ReactDOM from 'react-dom';
+          import {App} from './components/App';
 
-            // Import F7
-            import Framework7 from 'framework7'
+          ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+          );
 
-            // Import F7 Vue Plugin
-            import Framework7Vue from 'framework7-vue'
-
-            // Import Routes
-            import Routes from './routes.js'
-
-            // Init F7 Vue Plugin
-            Vue.use(Framework7Vue)
-
-            // Init App
-            new Vue({
-              el: '#app',
-              framework7: {
-                root: '#app',
-                routes: Routes
-              },
-              // ...
-            });
-      p In the examples above we pass <a href="../docs/init-app.html">Framework7 parameters</a> to the Vue root component's <b>framework7</b> property; we must use the same Framework7's <b>root</b> parameter as the <b>el</b> property of Vue main component.
-      p We also must specify array with routes (if we have navigation between pages in the app). Check out information about router and routes in the <a href="navigation-router.html">Navigation Router</a> section.
-      h2 Initialized Instances
-      p After Vue mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all Vue components:
-      table.methods-table
+     h2 Framework7App Props
+      p In addition to passing Framework7 initialization parameters as props, you can also pass the following props:
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
         tbody
           tr
-            th(colspan="2") Properties
+            td routes
+            td array
+            td null
+            td An array of route objects that make up the pages of the app
           tr
-            td this.$f7<br>-<br>window.f7
-            td Main Framework7's initialized instance. It allows you to use any of Framework7 APIs
+            td themeType
+            td string
+            td null
+            td Either "ios" or "material", depending on the desired theme of your app
           tr
-            td this.$t7<br>-<br>this.Template7<br>-<br>window.Template7
-            td Access to built-in <a href="../docs/template7.html">Template7</a> template engine
-          tr
-            td this.$$<br>-<br>this.Dom7<br>-<br>window.Dom7
-            td Access to built-in jQuery-like <a href="../docs/dom.html">Dom7</a> DOM library that utilizes most edge and high-performance methods for DOM manipulation
-          tr
-            td this.$device
-            td Access to <a href="../docs/device-api.html">Device API</a>
-          tr
-            td this.$theme
-            td Object with boolean properties with information about currently used theme (iOS or Material): <code>this.$theme.ios</code> and <code>this.$theme.material</code>
+            td stateKernel
+            td object
+            td null
+            td An instance of a Framework7 state kernel from <a href="https://github.com/bencompton/framework7-redux">Framework7 Redux</a>
+      
