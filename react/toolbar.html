@@ -219,12 +219,13 @@
           <h2>Slot Properties</h2>
           <p>Toolbar React component (&lt;Toolbar&gt;) has additional slots for custom elements:</p>
           <ul>
-            <li><b>before-inner</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element</li>
-            <li><b>after-inner</b> - element will be inserted right after &lt;div class="toolbar-inner"&gt; element</li>
+            <li><b>beforeInnerSlot</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element</li>
+            <li><b>afterInnerSlot</b> - element will be inserted right after &lt;div class="toolbar-inner"&gt; element</li>
           </ul>
-          <pre><code>&lt;Toolbar&gt;
-  &lt;div slot="before-inner"&gt;Before Inner&lt;/div&gt;
-  &lt;div slot="after-inner"&gt;After Inner&lt;/div&gt;
+          <pre><code>&lt;Toolbar
+  beforeInnerSlot={&lt;div&gt;Before Inner&lt;/div&gt;}
+  afterInnerSlot={&lt;div&gt;After Inner&lt;/div&gt;}
+&gt; 
   &lt;Link&gt;Left Link&lt;/Link&gt;
   &lt;Link&gt;Right Link&lt;/Link&gt;
 &lt;/Toolbar&gt;</code></pre>

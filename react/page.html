@@ -242,12 +242,10 @@
 &lt;/div&gt;</code></pre>
           <h2>Slot Properties</h2>
           <p>Page React component (&lt;Page&gt;) has additional slots for custom elements:</p>
-          <ul>
-            <li><b>static/default</b> - element will be inserted right in the beginning of "page-content"</li>
+          <ul>       
             <li><b>fixed</b> - element will be inserted right in the beginning of "page" before "before-content"</li>
           </ul>
-          <pre><code>&lt;Page&gt;
-  &lt;div slot="fixed"&gt;Fixed element&lt;/div&gt;
+          <pre><code>&lt;Page fixedSlot={&lt;div slot="fixed"&gt;Fixed element&lt;/div&gt;}&gt;              
   &lt;p&gt;Page content goes here&lt;/p&gt;
 &lt;/Page&gt;</code></pre>
           <p>Renders to:</p>

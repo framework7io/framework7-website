@@ -155,51 +155,85 @@
           </div>
           <h2>Usage example</h2>
           <p>Here is how it can be used in React component and how to control it:</p>
-          <pre><code class="html">&lt;template&gt;
-
-  &lt;!-- Photo Browser --&gt;
-  &lt;PhotoBrowser
-    &lt;!-- Reference --&gt;
-    ref="pb"
-    &lt;!-- Array with photos --&gt;
-    photos={photos}
-    &lt;!-- Array Theme --&gt;
-    theme="dark"
-    &lt;!-- Open Callback/Event --&gt;
-    onOpen={onOpen}
-  &gt;&lt;/PhotoBrowser&gt;
-
-  &lt;!-- Link To Open PB --&gt;
-  &lt;Link onClick={openPhotoBrowser}&gt;Photos&lt;/Link&gt;
-
-&lt;/template&gt;
-
-&lt;script&gt;
-  export default {
-    data: function () {
-      return {
-        photos: [
-          {
-            url: 'path/to/picture-1.jpg',
-            caption: 'Picture 1'
-          },
-          {
-            url: 'path/to/picture-2.jpg',
-            caption: 'Picture 2'
-          }
-        ]
-      }
-    },
-    methods: {
-      openPhotoBrowser: function () {
-        this.$refs.pb.open();
-      },
-      onOpen: function () {
-        console.log('Photo Browser is opened')
-      }
-    }
+          <pre><code class="html">export const PhotoBrowserPageDefaultState = [{
+    url: 'http://lorempixel.com/400/400/nature/1/',
+    caption: 'Ants on grass'
+  },
+    'http://placekitten.com/600/600',
+    'http://lorempixel.com/400/400/nature/2/',
+  {
+    url: 'http://lorempixel.com/400/400/nature/3/',
+    caption: 'Beautiful mountains in Zhangjiajie, China'
+  }, {
+    url: 'http://lorempixel.com/400/400/nature/4/',
+    caption: 'Trees in the Fall'
   }
-&lt;/script&gt;</code></pre>
+];
+
+const photoStyle = {
+  height: "20vw",
+  width: "20%"
+};
+
+export class PhotoBrowserPage extends Component {
+    constructor() {
+      super();
+
+      this.state = {
+          photos: PhotoBrowserPageDefaultState
+      };
+
+      this.fw7 = getFramework7();
+    }
+
+    render() {
+      return (
+        &lt;Page&gt;
+          &lt;Navbar backLink="Back" title="Photo Browser" sliding /&gt;                        
+          {
+            this.state.photos.map((photo, index) =&gt; {
+              return (
+                &lt;Link key={index} onClick={() =&gt; {this.openPhotoBrowser(index)}}&gt;
+                {
+                  this.getImage(photo, index)     
+                }                  
+                &lt;/Link&gt;
+              );
+            })
+          }
+        &lt;/Page&gt;
+      ); 
+    }
+
+    openPhotoBrowser(index:number) {
+        let photoBrowser = this.fw7.photoBrowser({
+            photos: this.state.photos,
+            theme: "dark",
+            onOpen: this.onOpen,
+            onClose: this.onClose
+        });
+
+        photoBrowser.open(index);
+    }
+
+    onOpen(index:number) {
+      console.log('Photo Browser opened');
+    }
+
+    onClose(index:number) {
+      console.log('Photo Browser closed');
+    }
+
+    getImage(photo: any, index: number ) {
+      let imageSrc = '';
+
+      if (typeof photo === 'string') {
+        return &lt;img src={photo} style={photoStyle} /&gt;;
+      } else if (typeof photo === 'object') {
+        return &lt;img src={photo.url} style={photoStyle} /&gt;;
+      }                        
+    }   
+}</code></pre>
           <h2>Properties</h2>
           <p>You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:</p>
           <table class="params-table">
@@ -410,42 +444,10 @@
               </tr>
               <tr>
                 <td>onLazyimageready</td>
-                <td>Event will be triggered after lazy loading photo will be loaded.</td>
+                <td>Event will be triggered after lazy loading photo will be loaded.  </td>
               </tr>
             </tbody>
           </table>
-          <h2>Methods</h2>
-          <p>The following Photo Browser components methods are available (e.g. by accesing it via <b>$refs</b>):</p>
-          <table class="methods-table">
-            <tbody>
-              <tr>
-                <td>.open(<span>index</span>);</td>
-                <td>Open Photo Browser on photo with index number equal to "index" parameter. If "index" parameter is not specified, it will be opened on last closed photo.</td>
-              </tr>
-              <tr>
-                <td>.close();</td>
-                <td>Close Photo Browser</td>
-              </tr>
-              <tr>
-                <td>.toggleZoom();</td>
-                <td>Toggle zoom of currently active photo/slide</td>
-              </tr>
-              <tr>
-                <td>.toggleExposition();</td>
-                <td>Toggle exposition mode</td>
-              </tr>
-              <tr>
-                <td>.enableExposition();</td>
-                <td>Enable exposition mode</td>
-              </tr>
-              <tr>
-                <td>.disableExposition();</td>
-                <td>Disable exposition mode</td>
-              </tr>
-            </tbody>
-          </table>
-          <h2>Access To Initialized Instance</h2>
-          <p>You can access Photo Browser initialized instance by accessing <code><b>.f7PhotoBrowser</b></code> component's property.</p>
         </div>
       </div>
     </div>

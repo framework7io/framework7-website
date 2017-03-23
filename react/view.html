@@ -194,6 +194,12 @@
                 <td>Defines this View as the <a href="../docs/views.html#main-view">main View</a></td>
               </tr>
               <tr>
+                <td>name</td>
+                <td>string</td>
+                <td></td>
+                <td>Defines View name to allow access View instance by same named prop of <code>$f7.views</code></td>
+              </tr>
+              <tr>
                 <td>tab</td>
                 <td>boolean</td>
                 <td></td>
@@ -408,7 +414,12 @@
             </tbody>
           </table>
           <h2>Access To Initialized Instance</h2>
-          <p>If you use automatic initalization to init the View (with <code>init:true</code> prop) and need to use its <a href="../docs/views.html#view-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7View</b></code> component's property.</p>
+          <p>If you use automatic initalization to init the View (with <code>init:true</code> prop) and need to use its <a href="../docs/views.html#view-methods-properties">Methods and Properties</a> (like router) you can access its initialized instance: </p>
+          <ul>
+            <li>by accessing <code><b>.f7View</b></code> component's property</li>
+            <li>if you have passed <b>name</b> property (e.g. "left") you can access it like <code>this.$f7.views.left</code> or <code>this.$f7.leftView</code></li>
+            <li>main view (with <b>main="true"</b> prop) is always accessible via <code>this.$f7.views.main</code> or <code>this.$f7.mainView</code></li>
+          </ul>
         </div>
       </div>
     </div>

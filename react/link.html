@@ -187,26 +187,27 @@
 &lt;/div&gt;
 &lt;!-- Switch Between Tabs --&gt;
 &lt;a href="#" data-tab="#tab-1" class="tab-link"&gt;Show Tab 1&lt;/a&gt;
-&lt;a href="#" data-tab="#tab-2" class="tab-link"&gt;Show Tab 2&lt;/a&gt;
-</code></pre>
-          <h4>Tab Link</h4>
+&lt;a href="#" data-tab="#tab-2" class="tab-link"&gt;Show Tab 2&lt;/a&gt;</code></pre>
+          <h4>Route Tab Link </h4>
+          <p>Note, this requires <a href="navigation-router.html#nested-routes">tab routes</a> to be configured.</p>
           <pre><code>&lt;!-- Tabs --&gt;
 &lt;Tabs&gt;
-  &lt;Tab id="tab-1" active&gt;Tab 1&lt;/Tab&gt;
-  &lt;Tab id="tab-1"&gt;Tab 2&lt;/Tab&gt;
+  &lt;Tab routeTabId="tab-1"&gt;Tab 1&lt;/Tab&gt;
+  &lt;Tab routeTabId="tab-1"&gt;Tab 2&lt;/Tab&gt;
 &lt;/Tabs&gt;
 &lt;!-- Switch Between Tabs --&gt;
-&lt;Link tabLink="#tab-1"&gt;Show Tab 1&lt;/Link&gt;
-&lt;Link tabLink="#tab-2"&gt;Show Tab 2&lt;/Link&gt;</code></pre>
+&lt;Link routeTabLink="#tab-1" href="/tabs/"&gt;Show Tab 1&lt;/Link&gt;
+&lt;Link routeTabLink="#tab-2" href="/tabs/tab-2/"&gt;Show Tab 2&lt;/Link&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;!-- Tabs --&gt;
 &lt;div class="tabs"&gt;
-  &lt;div class="tab active" id="tab-1"&gt;Tab 1&lt;/div&gt;
-  &lt;div class="tab" id="tab-2"&gt;Tab 2&lt;/div&gt;
+  &lt;div class="tab active"&gt;Tab 1&lt;/div&gt;
+  &lt;div class="tab"&gt;Tab 2&lt;/div&gt;
 &lt;/div&gt;
 &lt;!-- Switch Between Tabs --&gt;
-&lt;a href="#" data-tab="#tab-1" class="tab-link"&gt;Show Tab 1&lt;/a&gt;
-&lt;a href="#" data-tab="#tab-2" class="tab-link"&gt;Show Tab 2&lt;/a&gt;
+&lt;a href="#" class="tab-link"&gt;Show Tab 1&lt;/a&gt;
+&lt;a href="#" class="tab-link"&gt;Show Tab 2&lt;/a&gt;
+
 </code></pre>
           <h4>Open and Close Panel</h4>
           <pre><code>&lt;Link openPanel="left"&gt;Open Left Panel&lt;/Link&gt;
@@ -446,6 +447,12 @@
                 <td>string</td>
                 <td></td>
                 <td>Template name to load</td>
+              </tr>
+              <tr>
+                <td>routeTabLink</td>
+                <td>string</td>
+                <td></td>
+                <td>Used for <a href="navigation-router.html#nested-routes">tab routes</a>. Connects the link to a tab with the same value in its <code>route-tab-id</code> so that when the tab is active, the link appears as active too</td>
               </tr>
               <tr>
                 <th colspan="4"><a href="icon.html">Icon</a> Properties</th>

@@ -151,77 +151,92 @@
           <p>Virtual List is not a separate component, but just a particular case of using <a href="list.html">&lt;List&gt;</a>, <a href="list-item.html">&lt;ListItem&gt;</a> React components and special Framework7's <a href="../docs/virtual-list.html">Virtual List</a> component.</p>
           <h2>Usage example</h2>
           <p>Here is the full page example with Virtual List and Search Bar to search through Virtual List items:</p>
-          <pre><code>&lt;template&gt;
+          <pre><code>...
+...
+
+constructor() {
+  super();
+  let defaultItems = this.getVirtualListPageDefaultState();
+
+  this.state = {
+    items: defaultItems
+  };
+}
+
+render() {
+  return (
     &lt;Page&gt;
-      &lt;Navbar backLink="Back" title="Virtual List" sliding&gt;
+      &lt;Navbar backLink="Back" title="Searchbar" sliding&gt;
         &lt;NavRight&gt;
-          &lt;!-- Add new VL item on click --&gt;
-          &lt;Link onClick={addNewItem}&gt;New Item&lt;/Link&gt;
+          &lt;Link onClick={this.addNewItem.bind(this)}&gt;New Item&lt;/Link&gt;
         &lt;/NavRight&gt;
       &lt;/Navbar&gt;
-      &lt;!--
-        Searchbar to search thorugh VL Items
-        List to search specified in "search-list" prop
-      --&gt;
-      &lt;Searchbar cancelLink="Cancel" searchList="#searchList"&gt;&lt;/Searchbar&gt;
-
-      &lt;!-- This block will become visible when there is nothing found --&gt;
-      &lt;List class="searchbar-not-found"&gt;
-        &lt;ListItem title="Nothing found"&gt;&lt;/ListItem&gt;
+      &lt;Searchbar cancelLink="Cancel" searchList="#search-list"&gt;&lt;/Searchbar&gt;
+      &lt;ContentBlock&gt;
+        &lt;p&gt;Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.&lt;/p&gt;
+        &lt;p&gt;{`Here is the example of virtual list with 10,000 items: ${this.state.items.length}`}&lt;/p&gt;
+      &lt;/ContentBlock&gt;
+      &lt;List className="searchbar-not-found"&gt;
+        &lt;ListItem title="Nothing found" /&gt;
       &lt;/List&gt;
-
-      &lt;!-- Search through this list --&gt;
       &lt;List
         id="search-list"
-        class="searchbar-found"
-        media-list
+        className="searchbar-found"
+        mediaList
         virtual
-        virtual-items={items}
-        virtual-height={63}
-        virtual-search-all={searchAll}
-        &gt;
-        &lt;!-- Templte 7 Virtual List Item Template --&gt;
-        &lt;t7-template&gt;
-          &lt;ListItem mediaItem link="#" title={'{{title}}'" :subtitle="'{{subtitle}}' }&gt;&lt;/ListItem&gt;
-        &lt;/t7-template&gt;
+        virtualItems={this.state.items}
+        virtualHeight={63}
+        virtualSearchAll={this.searchAll}&gt;
+        &lt;Template7Template&gt;
+          &lt;ListItem mediaItem link="#" title={"{{title}}"} subtitle={"{{subtitle}}"} /&gt;
+        &lt;/Template7Template&gt;
       &lt;/List&gt;
     &lt;/Page&gt;
-  &lt;/template&gt;
-  &lt;script&gt;
-    export default {
-      data: function () {
-        var items = [];
-        for (var i = 1; i &lt;= 10000; i++) {
-          items.push({
-            title: 'Item ' + i,
-            subtitle: 'Subtitle ' + i
-          })
-        }
-        return {
-          items: items
-        }
-      },
-      methods: {
-        // Method to add new item
-        addNewItem: function () {
-          var self = this;
-          self.items.push({
-            title: 'Item ' + (self.items.length + 1),
-            subtitle: 'Subtitle ' + (self.items.length + 1),
-          })
-        },
-        // Function to proceed search results
-        searchAll: function (query) {
-          var self = this;
-          var found = [];
-          for (var i = 0; i &lt; self.items.length; i++) {
-              if (self.items[i].title.indexOf(query) &gt;= 0 || query.trim() === '') found.push(i);
-          }
-          return found;
-        }
-      }
+  );
+}
+
+private addNewItem() {
+  let newItem: IVirtualListItem = {
+    title: `Item ${this.state.items.length +1 }`,
+    subtitle: `Subtitle ${this.state.items.length + 1}`
+  };
+
+  this.setState({
+    items: [
+      ...this.state.items,
+      newItem
+    ]
+  });
+}
+
+private searchAll(query, items) {
+  let found = [];
+
+  for (let i = 0; i &lt; items.length; i++) {
+    if (items[i].title.indexOf(query) &gt;= 0 || query.trim() === '') {
+      found.push(i);
     }
-  &lt;/script&gt;</code></pre>
+  }
+
+  return found;
+}
+
+private getVirtualListPageDefaultState() {
+  let items: IVirtualListItem[] = [];
+
+  for (let i = 1; i &lt;= 10000; i++) {
+    items.push({
+      title: 'Item ' + i,
+      subtitle: 'Subtitle ' + i
+    })
+  }       
+
+  return items;
+}
+
+...
+...
+</code></pre>
           <h2>Properties</h2>
           <table class="params-table">
             <thead>
@@ -310,8 +325,33 @@
               </tr>
             </tbody>
           </table>
-          <h2>Access To Virtual List Initialized Instance</h2>
-          <p>If you use automatic initalization to init the Virtual List (with <code>virtual-init:true</code> prop) and need to use its <a href="../docs/virtual-list.html#virtual-list-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7VirtualList</b></code> component's property.</p>
+          <h2>Event Properties</h2>
+          <table class="events-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>onVirtualItemsbeforeinsert</td>
+                <td>Event will be triggered after current DOM list will be removed and before new document will be inserted</td>
+              </tr>
+              <tr>
+                <td>onVirtualItemsafterinsert</td>
+                <td>Event will be triggered after new document fragment with items inserted</td>
+              </tr>
+              <tr>
+                <td>onVirtualItembeforeinsert</td>
+                <td>Event will be triggered before item will be added to virtual document fragment</td>
+              </tr>
+              <tr>
+                <td>onVirtualBeforeclear</td>
+                <td>Event will be triggered before current DOM list will be removed and replaced with new document fragment</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

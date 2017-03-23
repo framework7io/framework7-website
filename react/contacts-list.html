@@ -151,59 +151,58 @@
           <p>Contacts List is not a separate component, but just a particular case of using <a href="list.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.</p>
           <h2>Usage example</h2>
           <p>Here is the full contacts list page example:</p>
-          <pre><code>&lt;template&gt;
-  &lt;Page&gt;
-    &lt;Navbar backLink="Back" title="Contacts" sliding&gt;&lt;/Navbar&gt;
+          <pre><code>const contacts = {
+  'A': [
+    'Aaron',
+    'Abbie',
+    'Adam',
+    'Adele',
+    'Agatha',
+    'Agnes',
+    'Albert',
+    'Alexander'
+  ],
+  'B': [
+    'Bailey',
+    'Barclay',
+    'Bartolo',
+    'Bellamy',
+    'Belle',
+    'Benjamin'
+  ],
+  'C': [
+    'Caiden',
+    'Calvin',
+    'Candy',
+    'Carl',
+    'Cherilyn',
+    'Chester',
+    'Chloe'
+  ],
+  'V': [
+    'Vladimir'
+  ]
+};
 
-    &lt;List contacts&gt;
-      &lt;ListGroup vFor="(group, key) in contacts"&gt;
-        &lt;ListItem title={key} groupTitle&gt;&lt;/ListItem&gt;
-        &lt;ListItem vFor="name in group" title={name}&gt;&lt;/ListItem&gt;
-      &lt;/ListGroup&gt;
-    &lt;/List&gt;
+const ContactsList = () =&gt; (
+  <page>
+    <navbar backlink="Back" title="Contacts" sliding=""></navbar>
 
-  &lt;/Page&gt;
-&lt;/template&gt;
-&lt;script&gt;
-  export default {
-    data: function () {
-      return {
-        contacts: {
-          'A': [
-            'Aaron',
-            'Abbie',
-            'Adam',
-            'Adele',
-            'Agatha',
-            'Agnes',
-            'Albert',
-            'Alexander'
-          ],
-          'B': [
-            'Bailey',
-            'Barclay',
-            'Bartolo',
-            'Bellamy',
-            'Belle',
-            'Benjamin'
-          ],
-          'C': [
-            'Caiden',
-            'Calvin',
-            'Candy',
-            'Carl',
-            'Cherilyn',
-            'Chester',
-            'Chloe'
-          ],
-          'V': [
-            'Vladimir'
-          ]
-        }
-      }
-    }
-  }
-&lt;/script&gt;</code></pre>
+    <list contacts="">
+      {Object.keys(contacts).reduce((listGroups, nextGroupName) =&gt; {
+        return [
+          ...listGroups,
+          <listgroup key="{nextGroupName}">
+          <listitem title="{nextGroupName}" grouptitle="">
+            {contacts[nextGroupName].map(contactName =&gt; {
+              return <listitem key="{contactName}" title="{contactName}">;
+            })}
+          </listitem></listitem></listgroup>
+        ];
+      }, [])}
+    </list>
+  </page>
+);</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="page"&gt;
   &lt;div class="navbar"&gt;

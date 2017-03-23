@@ -267,16 +267,16 @@
   &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
           <h2>Slot Properties</h2>
-          <p>List Item React component (&lt;ListItem&gt;) has additional slots for custom elements:</p>
+          <p>List Item React component (&lt;ListItem&gt;) has additional slot properties for custom elements:</p>
           <ul>
-            <li><b>root-start</b> - element will be inserted in the beginning of &lt;li&gt; element</li>
-            <li><b>root</b> - element will be inserted in the end of &lt;li&gt; element</li>
-            <li><b>content-start</b> - element will be inserted in the beginning of &lt;div class="item-content"&gt; element</li>
-            <li><b>content</b> - element will be inserted in the end of &lt;div class="item-content"&gt; element</li>
-            <li><b>media-start</b> - element will be inserted in the beginning of &lt;div class="item-media"&gt; element</li>
-            <li><b>media</b> - element will be inserted in the end of &lt;div class="item-media"&gt; element</li>
-            <li><b>inner-start</b> - element will be inserted in the beginning of &lt;div class="item-inner"&gt; element</li>
-            <li><b>inner/default</b> - element will be inserted in the end of &lt;div class="item-inner"&gt; element</li>
+            <li><b>rootStartSlot</b> - element will be inserted in the beginning of &lt;li&gt; element</li>
+            <li><b>rootSlot</b> - element will be inserted in the end of &lt;li&gt; element</li>
+            <li><b>contentStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-content"&gt; element</li>
+            <li><b>contentSlot</b> - element will be inserted in the end of &lt;div class="item-content"&gt; element</li>
+            <li><b>mediaStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-media"&gt; element</li>
+            <li><b>mediaSlot</b> - element will be inserted in the end of &lt;div class="item-media"&gt; element</li>
+            <li><b>innerStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-inner"&gt; element</li>
+            <li><b>innerSlot</b> - element will be inserted in the end of &lt;div class="item-inner"&gt; element</li>
           </ul>
           <pre><code>&lt;List mediaList&gt;
   &lt;ListItem
@@ -286,17 +286,18 @@
     subtitle="Item Subtitle"
     text="Text"
     after="Read more"
-    &gt;
-      &lt;div slot="root-start"&gt;Root Start&lt;/div&gt;
-      &lt;div slot="root"&gt;Root&lt;/div&gt;
-      &lt;div slot="content-start"&gt;Content Start&lt;/div&gt;
-      &lt;div slot="content"&gt;Content&lt;/div&gt;
-      &lt;div slot="media-start"&gt;Media Start&lt;/div&gt;
-      &lt;div slot="media"&gt;Media&lt;/div&gt;
-      &lt;span slot="after-start"&gt;After Start&lt;/span&gt;
-      &lt;span slot="after"&gt;After&lt;/span&gt;
-      &lt;div slot="inner-start"&gt;Inner Start&lt;/div&gt;
-      &lt;div slot="inner"&gt;Inner&lt;/div&gt;
+
+    rootStartSlot={&lt;div&gt;Root Start&lt;/div&gt;}
+    rootSlot={&lt;div&gt;Root&lt;/div&gt;}
+    contentStartSlot={&lt;div&gt;Content Start&lt;/div&gt;}
+    contentSlot={&lt;div&gt;Content&lt;/div&gt;}
+    mediaStartSlot={&lt;div&gt;Media Start&lt;/div&gt;}
+    mediaSlot={&lt;div&gt;Media&lt;/div&gt;}
+    afterStartSlot={&lt;span&gt;After Start&lt;/span&gt;}
+    afterSlot={&lt;span&gt;After&lt;/span&gt;}
+    innerStartSlot={&lt;div&gt;Inner Start&lt;/div&gt;}
+    innerSlot={&lt;div&gt;Inner&lt;/div&gt;}
+  &gt;
   &lt;/ListItem&gt;
 &lt;/List&gt;</code></pre>
           <p>Renders to:</p>

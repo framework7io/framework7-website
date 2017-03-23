@@ -148,167 +148,56 @@
         </div>
         <div class="docs-content">
           <h1>App Layout</h1>
-          <p>First thing we should do for our App is to create index.html file with app's skeleton.</p>
+          <p>First thing we should do for our App is to create index.html file with the app's skeleton:</p>
           <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
-  &lt;head&gt;
-    &lt;!-- Required meta tags--&gt;
-    &lt;meta charset="utf-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"&gt;
-    &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
-    &lt;meta name="apple-mobile-web-app-status-bar-style" content="black"&gt;
-    &lt;!-- Your app title --&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;    
+    &lt;meta http-equiv="Content-Type" content="text/html;charset=UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui" /&gt;
+    &lt;meta name="apple-mobile-web-app-capable" content="yes" /&gt;
+    &lt;meta name="apple-mobile-web-app-status-bar-style" content="black" /&gt;
     &lt;title&gt;My App&lt;/title&gt;
-    &lt;!-- Path to Framework7 Library CSS, iOS Theme --&gt;
-    &lt;link rel="stylesheet" href="path/to/framework7.ios.min.css"&gt;
-    &lt;!-- Path to Framework7 color related styles, iOS Theme --&gt;
-    &lt;link rel="stylesheet" href="path/to/framework7.ios.colors.min.css"&gt;
-    &lt;!-- Path to your custom app styles--&gt;
-    &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;!-- App Root Element --&gt;
-    &lt;div id="app"&gt;&lt;/div&gt;
-
-    &lt;!-- Path to Vue js --&gt;
-    &lt;script type="text/javascript" src="path/to/vue.min.js"&gt;&lt;/script&gt;
-    &lt;!-- Path to Framework7 Library JS--&gt;
-    &lt;script type="text/javascript" src="path/to/framework7.min.js"&gt;&lt;/script&gt;
-    &lt;!-- Path to Framework7 Vue Plugin --&gt;
-    &lt;script type="text/javascript" src="path/to/framework7-vue.min.js"&gt;&lt;/script&gt;
-    &lt;!-- Path to your app js where you init your app--&gt;
-    &lt;script type="text/javascript" src="path/to/my-app.js"&gt;&lt;/script&gt;
-  &lt;/body&gt;
+    &lt;link rel="stylesheet" href="css/framework7.ios.min.css" /&gt;
+    &lt;link rel="stylesheet" href="css/framework7.ios.colors.min.css" /&gt;
+    &lt;link rel="stylesheet" href="css/app.css" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;span id="root"&gt;&lt;/span&gt;
+    &lt;script src="dist/app.js"&gt;&lt;/script&gt;    
+&lt;/body&gt;
 &lt;/html&gt;</code></pre>
-          <p>The <code>&lt;div id="app"&gt;&lt;/div&gt;</code> is where your main app skeleton should be. You can mount its content as a component or (just for example) we can start to write app skeleton right inside of this div:</p>
+          <p>The <code>&lt;span id="app"&gt;&lt;/span&gt;</code> is where your main app skeleton should be. For most apps, it is recommended that you use Create React App, Webpack, or Babel to compile your app JSX and other JavaScript into a single file, and then load your JavaScript in the body tag so it loads after the browser has initialized your app skeleton.</p>
           <h2>Basic Layout</h2>
-          <p>Let's look at the very basic app layout:</p>
-          <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;!-- ... metas and styles ... --&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;!-- App Root Element --&gt;
-    &lt;div id="app"&gt;
-      &lt;!-- Status bar overlay for full screen mode (Cordova or PhoneGap) --&gt;
-      &lt;f7-statusbar&gt;&lt;/f7-statusbar&gt;
-      &lt;!-- Views --&gt;
-      &lt;f7-views&gt;
-        &lt;!-- Your main view, should have "main" prop --&gt;
-        &lt;f7-view main&gt;
-          &lt;!-- Pages container, because we use fixed navbar and toolbar, it has additional appropriate props --&gt;
-          &lt;f7-pages navbar-fixed toolbar-fixed&gt;
-            &lt;!-- Initial Page --&gt;
-            &lt;f7-page&gt;
-              &lt;!-- Top Navbar--&gt;
-              &lt;f7-navbar title="Awesome App"&gt;&lt;/f7-navbar&gt;
-              &lt;!-- Toolbar--&gt;
-              &lt;f7-toolbar&gt;
-                &lt;f7-link&gt;Link 1&lt;/f7-link&gt;
-                &lt;f7-link&gt;Link 2&lt;/f7-link&gt;
-              &lt;/f7-toolbar&gt;
-              &lt;!-- Page Content --&gt;
-              &lt;p&gt;Page content goes here&lt;/p&gt;
-              &lt;f7-link href="/about/"&gt;About App&lt;/f7-link&gt;
-            &lt;/f7-page&gt;
-          &lt;/f7-pages&gt;
-        &lt;/f7-view&gt;
-      &lt;/f7-views&gt;
-    &lt;/div&gt;
-    &lt;!-- ... scripts ... --&gt;
-  &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-          <h2>Advanced Layout</h2>
-          <p>Now, let's look on more advanced layout where we will also add side panels with views, popup and will use different <a href="../docs/navbar-toolbar-layouts.html">Navbar/Toolbar Layout types</a> for iOS and Material themes.</p>
-          <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;!-- ... metas and styles ... --&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;!-- App Root Element --&gt;
-    &lt;div id="app"&gt;
-      &lt;!-- Status bar overlay for full screen mode (Cordova or PhoneGap) --&gt;
-      &lt;f7-statusbar&gt;&lt;/f7-statusbar&gt;
-      &lt;!-- Left Panel with "cover" effect --&gt;
-      &lt;f7-panel left cover&gt;
-        &lt;f7-view&gt;
-          &lt;f7-pages navbar-fixed&gt;
-            &lt;f7-page&gt;
-              &lt;f7-navbar title="Left Panel"&gt;&lt;/f7-navbar&gt;
-              &lt;f7-block&gt;
-                &lt;p&gt;Here comes the left panel text&lt;/p&gt;
-              &lt;/f7-block&gt;
-            &lt;/f7-page&gt;
-          &lt;/f7-pages&gt;
-        &lt;/f7-view&gt;
-      &lt;/f7-panel&gt;
-      &lt;!-- Right Panel with "reveal" effect --&gt;
-      &lt;f7-panel right reveal&gt;
-        &lt;f7-view&gt;
-          &lt;f7-pages navbar-fixed&gt;
-            &lt;f7-page&gt;
-              &lt;f7-navbar title="Right Panel"&gt;&lt;/f7-navbar&gt;
-              &lt;f7-block&gt;
-                &lt;p&gt;Here comes the right panel text&lt;/p&gt;
-              &lt;/f7-block&gt;
-            &lt;/f7-page&gt;
-          &lt;/f7-pages&gt;
-        &lt;/f7-view&gt;
-      &lt;/f7-panel&gt;
-      &lt;!-- Views --&gt;
-      &lt;f7-views&gt;
-        &lt;!-- Main view--&gt;
-        &lt;f7-view main navbar-through toolbar-fixed&gt;
-          &lt;!-- For iOS theme we use navbar-through layout so the navbar should be a child of the View --&gt;
-          &lt;f7-navbar v-if="$theme.ios" title="Awesome App"&gt;&lt;/f7-navbar&gt;
-          &lt;f7-pages navbar-fixed toolbar-fixed&gt;
-            &lt;f7-page&gt;
-              &lt;!-- For Material theme we use navbar-fixed layout so the navbar should be a child of the Page --&gt;
-              &lt;f7-navbar v-if="$theme.material" title="Awesome App"&gt;&lt;/f7-navbar&gt;
-              &lt;!-- Page content --&gt;
-              &lt;f7-block&gt;
-                &lt;p&gt;Here comes main view page text&lt;/p&gt;
-              &lt;/f7-block&gt;
-              &lt;!-- Buttons to open panels --&gt;
-              &lt;f7-grid&gt;
-                &lt;f7-col&gt;
-                  &lt;f7-button open-panel="left"&gt;Left Panel&lt;/f7-button&gt;
-                &lt;/f7-col&gt;
-                &lt;f7-col&gt;
-                  &lt;f7-button open-panel="right"&gt;Right Panel&lt;/f7-button&gt;
-                &lt;/f7-col&gt;
-              &lt;/f7-grid&gt;
-              &lt;!-- Button to open popup --&gt;
-              &lt;f7-button open-popup="#my-popup"&gt;Open Popup&lt;/f7-button&gt;
-            &lt;/f7-page&gt;
-          &lt;/f7-pages&gt;
-        &lt;/f7-view&gt;
-      &lt;/f7-views&gt;
-      &lt;!-- Popup. All modals should be outside of Views --&gt;
-      &lt;f7-popup id="my-popup"&gt;
-        &lt;f7-view&gt;
-          &lt;f7-pages navbar-fixed&gt;
-            &lt;f7-page&gt;
-              &lt;f7-navbar title="Popup"&gt;
-                &lt;!-- Link to close popup --&gt;
-                &lt;f7-nav-right&gt;
-                  &lt;f7-link close-popup&gt;Close&lt;/f7-link&gt;
-                &lt;/f7-nav-right&gt;
-              &lt;/f7-navbar&gt;
-              &lt;f7-block&gt;
-                &lt;p&gt;Here comes popup text&lt;/p&gt;
-              &lt;/f7-block&gt;
-            &lt;/f7-page&gt;
-          &lt;/f7-pages&gt;
-        &lt;/f7-view&gt;
-      &lt;/f7-popup&gt;
-    &lt;/div&gt;
-    &lt;!-- ... scripts ... --&gt;
-  &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-          <p>You can read more about statusbar overlay, views, navbar, toolbar, pages, panels and other components in appropriate sections.</p>
+          <p>Most apps will have a central App.jsx file that contains the basic layout of your app, and then other page components will be loaded into the app via the <a href="navigation-router.html">router</a>. Here is an example:</p>
+          <pre><code>//App.jsx
+const App = () =&gt; (
+  &lt;Framework7App ...&gt;
+    &lt;Statusbar /&gt;
+    {/* Views */}
+    &lt;Views&gt;
+      {/* Your main view, should have "main" prop */}	
+      &lt;View main&gt;
+        {/* Pages container, because we use fixed navbar and toolbar, it has additional appropriate props */}		  
+        &lt;Pages navbarFixed toolbarFixed&gt;		
+          {/* Initial Page /*}
+          &lt;Page&gt;
+            {/* Top Navbar /*}
+            &lt;Navbar title="Awesome App" /&gt;
+            {/* Toolbar */}
+            &lt;Toolbar&gt;
+              &lt;Link&gt;Link 1&lt;/Link&gt;
+              &lt;Link&gt;Link 2&lt;/Link&gt;
+            &lt;/Toolbar&gt;
+            {/* Page Content */}
+            &lt;p&gt;Page content goes here&lt;/p&gt;
+            &lt;Link href="/about/"&gt;About App&lt;/Link&gt;
+          &lt;/Page&gt;
+        &lt;/Pages&gt;
+      &lt;/View&gt;
+    &lt;/Views&gt;
+  &lt;/Framework7App&gt;);</code></pre>
+          <p>You can read more about statusbar overlay, views, navbar, toolbar, pages, and other components in appropriate sections.</p>
           <h2>Initialize App</h2>
           <p>Now when we have basic template, we need to <a href="init-app.html">initialize our app</a> in (for example) <code>my-app.js</code></p>
         </div>

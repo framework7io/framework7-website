@@ -10,100 +10,57 @@ block content
       include ./_docs-react-menu
     .docs-content
       h1 Navigation Router
-      p With Framework7 & Vue.js, we are already composing our application with components. All we need to do is map our components to the routes. Here's a basic example:
+      p With Framework7 & React.js, we are already composing our application with components. All we need to do is map our components to the routes. Here's a basic example:
       pre
         code
           :code
-            <!-- Current View/Router -->
-            <f7-view>
-              <!-- All pages are rendered inside of Pages -->
-              <f7-pages>
-                <!-- Initial Page -->
-                <f7-page>
-                  ...
-                  <f7-link href="/about/">About App</f7-link>
-                  <f7-link href="/login/">Login</f7-link>
-                </f7-page>
-              </f7-pages>
-            </f7-view>
+            //components.jsx
+            export const MainViews = () => (
+              <Views>
+                {/* Current View/Router */}
+                <View>
+                  {/* All pages are rendered inside of Pages */}
+                  <Pages>
+                    {/* Initial Page /*}
+                    <Page>
+                      ...
+                      <Link href="/about/">About App</Link>
+                      <Link href="/login/">Login</Link>
+                    </Page>
+                  </Pages>
+                </View>
+              </Views>              
+            );
+
+            // Create Component for About page
+            export const About = () => (
+              <Page name="about>...</Page>
+            );
+
+            // Create Component for Login page
+            export const Login = () => (
+              <Page name="login">...</Page>
+            );            
       p Now we need to map components to routes. It should be done in <b>routes</b> parameter on <a href="init-app.html">App Initialization</a>
       pre
         code
           :code
-            // Create Component for About page
-            Vue.component('page-about', {
-                template: '<f7-page name="about">...</f7-page>'
-            })
-            // Create Component for Login page
-            Vue.component('page-login', {
-                template: '<f7-page name="login">...</f7-page>'
-            })
+            import {MainViews, About, Login} from './components.jsx';
 
-            // Init App
-            new Vue({
-                el: '#app',
-                framework7: {
-                    root: '#app',
-                    // Map routes
-                    routes: [
-                        {
-                            path: '/about/',
-                            component: 'page-about'
-                        },
-                        {
-                            path: '/login/',
-                            component: 'page-login'
-                        }
-                    ]
+            const App = () => (
+              <Framework7App routes={[
+                {
+                    path: '/about/',
+                    component: About
+                },
+                {
+                    path: '/login/',
+                    component: Login
                 }
-            })
-      p If you use single file components (with Webpack or Browserify):
-      pre
-        code
-          :code
-            <!-- about.vue -->
-            <template>
-              <f7-page name="about">
-                <!-- Page content -->
-              </f7-page>
-            </template>
-            <script>
-              export default {}
-            </script>
-
-            <!-- login.vue -->
-            <template>
-              <f7-page name="login">
-                <!-- Page content -->
-              </f7-page>
-            </template>
-            <script>
-              export default {}
-            </script>
-      pre
-        code
-          :code
-            import AboutPage from 'about.vue'
-            import LoginPage from 'login.vue'
-
-            // Init App
-            new Vue({
-                el: '#app',
-                framework7: {
-                    root: '#app',
-                    // Map routes
-                    routes: [
-                        {
-                            path: '/about/',
-                            component: AboutPage
-                        },
-                        {
-                            path: '/login/',
-                            component: LoginPage
-                        }
-                    ]
-                }
-            })
+              ]}>
+                <MainViews />
+              </Framework7App>
+            );
       .important-note
         ul
           li

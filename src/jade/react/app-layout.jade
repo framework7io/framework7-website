@@ -10,7 +10,7 @@ block content
       include ./_docs-react-menu
     .docs-content
       h1 App Layout
-      p First thing we should do for our App is to create index.html file with the app's skeleton.
+      p First thing we should do for our App is to create index.html file with the app's skeleton:
       pre
         code
           :code
@@ -34,36 +34,37 @@ block content
             </html>
       p The <code>&lt;span id="app"&gt;&lt;/span&gt;</code> is where your main app skeleton should be. For most apps, it is recommended that you use Create React App, Webpack, or Babel to compile your app JSX and other JavaScript into a single file, and then load your JavaScript in the body tag so it loads after the browser has initialized your app skeleton.
       h2 Basic Layout
-      p Most apps will have a central App.jsx file that contains the basic layout of your app, and then other page components will be loaded into the app via the <a href="navigation-router.html">router</a>. Here is a basic example:
+      p Most apps will have a central App.jsx file that contains the basic layout of your app, and then other page components will be loaded into the app via the <a href="navigation-router.html">router</a>. Here is an example:
       pre
-        code.
-          //App.jsx
-          const App = () => (
-            <Framework7App ...>
-              <Statusbar />
-              {/* Views */}
-              <Views>
-                {/* Your main view, should have "main" prop */}	
-                <View main>
-                  {/* Pages container, because we use fixed navbar and toolbar, it has additional appropriate props */}		  
-                  <Pages navbarFixed toolbarFixed>		
-                    {/* Initial Page /*}
-                    <Page>
-                      {/* Top Navbar /*}
-                      <Navbar title="Awesome App" />
-                      {/* Toolbar */}
-                      <Toolbar>
-                        <Link>Link 1</Link>
-                        <Link>Link 2</Link>
-                      </Toolbar>
-                      {/* Page Content */}
-                      <p>Page content goes here</p>
-                      <Link href="/about/">About App</Link>
-                    </Page>
-                  </Pages>
-                </View>
-              </Views>
-            </Framework7App>
+        code
+          :code
+            //App.jsx
+            const App = () => (
+              <Framework7App ...>
+                <Statusbar />
+                {/* Views */}
+                <Views>
+                  {/* Your main view, should have "main" prop */}	
+                  <View main>
+                    {/* Pages container, because we use fixed navbar and toolbar, it has additional appropriate props */}		  
+                    <Pages navbarFixed toolbarFixed>		
+                      {/* Initial Page /*}
+                      <Page>
+                        {/* Top Navbar /*}
+                        <Navbar title="Awesome App" />
+                        {/* Toolbar */}
+                        <Toolbar>
+                          <Link>Link 1</Link>
+                          <Link>Link 2</Link>
+                        </Toolbar>
+                        {/* Page Content */}
+                        <p>Page content goes here</p>
+                        <Link href="/about/">About App</Link>
+                      </Page>
+                    </Pages>
+                  </View>
+                </Views>
+              </Framework7App>
           );
       p You can read more about statusbar overlay, views, navbar, toolbar, pages, and other components in appropriate sections.
       h2 Initialize App

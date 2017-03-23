@@ -153,7 +153,7 @@
           <pre><code>&lt;Searchbar
   cancel-link="Cancel"
   placeholder="Search in items"
-  clear={true}
+  clear-button={true}
 &gt;&lt;/Searchbar&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;form class="searchbar"&gt;
@@ -167,78 +167,66 @@
   &lt;div class="searchbar-cancel"&gt;Cancel&lt;/div&gt;
 &lt;/form&gt;</code></pre>
           <p>Here is how it can be used in React component with initialization</p>
-          <pre><code class="html">&lt;template&gt;
+          <pre><code>const items = (function () {
+  var it = [];
+  for (var i = 0; i &lt; 100; i++) it.push(i+1);
+  return it;
+})();
 
-  &lt;!-- Search bar --&gt;
-  &lt;Searchbar
-    &lt;!-- Cancel link's text (affects iOS theme only) --&gt;
-    cancel-link="Cancel"
-    &lt;!-- Where to search --&gt;
-    search-list="#search-list"
-    &lt;!-- Input placeholder text --&gt;
-    placeholder="Search in items"
-    &lt;!-- Show "clear" button --&gt;
-    clear={true}
-    &lt;!-- Events --&gt;
-    onSearchbarsearch={onSearch}
-    onSearchbarenable={onEnable}
-    onSearchbardisable={onDisable}
-    onSearchbarclear={onClear}
-  &gt;&lt;/Searchbar&gt;
+...
+render() {
+  return (
+    {/* Search bar */}
+    <searchbar {="" *="" cancel="" link's="" text="" (affects="" ios="" theme="" only)="" }="" cancellink="Cancel" where="" to="" search="" searchlist="#search-list" input="" placeholder="" show="" "clear"="" button="" clearbutton="{true}" events="" onsearchbarsearch="{this.onSearch}" onsearchbarenable="{this.onEnable}" onsearchbardisable="{this.onDisable}" onsearchbarclear="{this.onClear}"></searchbar>
 
-  &lt;!-- Will be visible if there is no any results found, defined by "searchbar-not-found" class --&gt;
-  &lt;List class="searchbar-not-found"&gt;
-    &lt;ListItem title="Nothing found"&gt;&lt;/ListItem&gt;
-  &lt;/List&gt;
+    {/* Will be visible if there is no any results found, defined by "searchbar-not-found" class */}
+    <list classname="searchbar-not-found">
+      <listitem title="Nothing found"></listitem>
+    </list>
 
-  &lt;!-- Search-through list --&gt;
-  &lt;List class="searchbar-found" id="search-list"&gt;
-    &lt;ListItem vFor="item in items" title={'Item ' + item}&gt;&lt;/ListItem&gt;
-  &lt;/List&gt;
+    {/* Search-through list  */}
+    <list classname="searchbar-found" id="search-list">
+      {items.map((item) =&gt; (
+        <listitem title="{'Item" '="" +="" item}=""></listitem>
+      ))}                    
+    </list>
+  );
+}
 
-&lt;/template&gt;
+...
+...
 
-&lt;script&gt;
-  export default {
-    data: function () {
-      return {
-        items: (function () {
-          var it = [];
-          for (var i = 0; i &lt; 100; i++) it.push(i+1);
-          return it;
-        })()
-      }
-    },
-    methods: {
-      onSearch: function (query, found) {
-        console.log('search', query);
-      },
-      onClear: function (event) {
-        console.log('clear');
-      },
-      onEnable: function (event) {
-        console.log('enable');
-      },
-      onDisable: function (event) {
-        console.log('disable');
-      },
-    }
-  }
-&lt;/script&gt;</code></pre>
+onSearch(query, found) {
+  console.log('search', query);
+}
+
+onClear(event) {
+  console.log('clear');
+}
+
+onEnable(event) {
+  console.log('enable');
+}
+
+onDisable(event) {
+  console.log('disable');
+}
+
+...</code></pre>
           <h2>Slot Properties</h2>
           <p>Search Bar React component has additional slots for custom elements:</p>
           <ul>
-            <li><b>before-input</b> - element will be inserted right before &lt;input type="search"&gt; element</li>
-            <li><b>after-input</b> - element will be inserted right after &lt;input type="search"&gt; element</li>
+            <li><b>beforeInputSlot</b> - element will be inserted right before &lt;input type="search"&gt; element</li>
+            <li><b>afterInputSlot</b> - element will be inserted right after &lt;input type="search"&gt; element</li>
           </ul>
           <pre><code>&lt;Searchbar
-  cancel-link="Cancel"
+  cancelLink="Cancel"
   placeholder="Search in items"
-  clear={true}
-&gt;
-  &lt;div slot="before-input"&gt;Before Input&lt;/div&gt;
-  &lt;div slot="after-input"&gt;After Input&lt;/div&gt;
-&lt;/Searchbar&gt;</code></pre>
+  clearButton={true}
+
+  beforeInputSlot={&lt;div&gt;Before Input&lt;/div&gt;}
+  afterInputSlot={&lt;div&gt;After Input&lt;/div&gt;}
+/&gt;             </code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;form class="searchbar"&gt;
   &lt;div class="searchbar-input"&gt;
@@ -280,7 +268,7 @@
                 <td>Cancel link text. Affects only iOS theme</td>
               </tr>
               <tr>
-                <td>clear</td>
+                <td>clearButton</td>
                 <td>boolean</td>
                 <td>true</td>
                 <td>Enables "clear" input button</td>
@@ -358,7 +346,7 @@
                 <td>hideGroups</td>
                 <td>boolean</td>
                 <td>true</td>
-                <td>If enabled, then search will consider list view groups hide them if there are no found items inside of these groups</td>
+                <td>If enabled, then search will consider list view groups hide them if there are no found items inside of these groups        </td>
               </tr>
             </tbody>
           </table>
@@ -413,8 +401,6 @@
               </tr>
             </tbody>
           </table>
-          <h2>Access To Initialized Instance</h2>
-          <p>If you use automatic initalization to init Search Bar (with <code>init:true</code> prop) and need to use its <a href="../docs/searchbar.html#search-bar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Searchbar</b></code> component's property.</p>
         </div>
       </div>
     </div>

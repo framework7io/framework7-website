@@ -167,85 +167,125 @@
 &lt;/div&gt;</code></pre>
           <h4>With Messagebar</h4>
           <p>Here is how it can be used in React component along with <a href="messagebar.html">Message Bar</a>:</p>
-          <pre><code>&lt;template&gt;
-  &lt;Messages&gt;
-    &lt;Message v-for="message in messages"
-      text={message.text}
-      label={message.label}
-      date={message.date}
-      name={message.name}
-      avatar={message.avatar}
-      type={message.type}
-      day={message.day}
-      time={message.time}
-      onClick={onClick}
-      onClicktext={onTextClick}
-      onClickname={onNameClick}
-      onClickavatar={onAvatarClick}
-    &gt;&lt;/Message&gt;
-  &lt;/Messages&gt;
-  &lt;Messagebar placeholder="Message" sendLink="Send" onSubmit={onSubmit}&gt;&lt;/Messagebar&gt;
-&lt;/template&gt;
-&lt;script&gt;
-  export default {
-    data: function () {
-      return {
-        name: 'Vladimir',
-        avatar: 'path/to/avatar-1.jpg',
-        messages: [
-          {
-            day: 'Wendesday',
-            time: '13:34'
-          },
-          {
-            name: 'Vladimir',
-            text: 'How are you?',
-            label: 'Sent in good mood :)',
-            avatar: 'path/to/avatar-1.jpg',
-            date: 'Yesterday 13:34'
-          },
-          {
-            name: 'Jane',
-            text: 'I\'m good, thank you!',
-            type: 'received',
-            avatar: 'path/to/avatar-2.jpg',
-            date: 'Yesterday at 13:50'
-          }
-        ]
-      }
-    },
-    methods: {
-      onClick: function (event) {
-        console.log('message click');
-      },
-      onAvatarClick: function () {
-        console.log('avatar-click');
-      },
-      onTextClick: function () {
-        console.log('text-click');
-      },
-      onNameClick: function () {
-        console.log('name-click');
-      },
-      onSubmit: function (text, clear) {
-        if (text.trim().length === 0) return;
-        this.messages.push({
-          name: this.name,
-          avatar: this.avatar,
+          <pre><code>const MessagesPageDefaultState = {
+  name: 'Vladimir',
+  messages: [{
+      day: 'Wendesday',
+      time: '13:34'
+    }, {
+      name: 'Vladimir',
+      text: 'How are you?',
+      label: 'Sent in good mood :)',
+      avatar: 'http://lorempixel.com/100/100/people/3',
+      date: 'Yesterday 13:34'
+    }, {
+      name: 'Jane',
+      text: 'I\'m good, thank you!',
+      type: 'received',
+      avatar: 'http://lorempixel.com/100/100/people/9',
+      date: 'Yesterday at 13:50'
+    }
+  ]
+}
+
+class MessagesPage extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      name: MessagesPageDefaultState.name,
+      messages: MessagesPageDefaultState.messages
+    };
+  }
+
+  getMessage(props, index) {
+    let messageProps = {}
+
+    if (props) {
+      messageProps = props;
+    }
+
+    return (
+      &lt;Message
+        {...messageProps}
+        key={index}
+        onClick={this.onClick.bind(this)}
+        onClickText={this.onTextClick.bind(this)}
+        onClickName={this.onNameClick.bind(this)}
+        onClickAvatar={this.onAvatarClick.bind(this)}&gt;
+      &lt;/Message&gt;
+    );
+  }
+
+  render() {
+    return (
+      &lt;Page toolbar-fixed&gt;
+        &lt;Navbar backLink="Back" title="Messages" sliding&gt;&lt;/Navbar&gt;
+        &lt;Subnavbar&gt;
+          &lt;input type="text" placeholder="Your name" defaultValue={this.state.name} onChange={this.onNameChange.bind(this)}/&gt;
+        &lt;/Subnavbar&gt;
+        &lt;Messages&gt;
+        {
+          this.state.messages.map((message, index) =&gt; {
+            return this.getMessage(message, index);
+          })
+        }
+        &lt;/Messages&gt;
+        &lt;Messagebar placeholder="Message" sendLink="Send" onSubmit={this.onSubmit.bind(this)} /&gt;
+      &lt;/Page&gt;
+    );
+  }
+
+  onClick() {
+    console.log('click');
+  }
+  
+  onTextClick() {
+    console.log('text click');
+  }
+  
+  onNameClick() {
+    console.log('name click');
+  }
+  
+  onAvatarClick() {
+    console.log('avatar click');
+  }
+      
+  onSubmit(text, clear) {              
+    if (text.trim().length === 0) return;
+
+    this.setState({
+      ...this.state,
+      messages: [
+        ...this.state.messages,
+        {
+          name: this.state.name,
+          avatar: 'http://lorempixel.com/100/100/people/3',
           text: text,
           date: (function () {
-            var now = new Date();
-            var hours = now.getHours();
-            var minutes = now.getMinutes();
-            return hours + ':' + minutes;
+              let now = new Date();
+              let hours = now.getHours();
+              let hoursString = hours &lt; 10 ? `0${hours}` : `${hours}`; 
+              let minutes = now.getMinutes();
+              let minutesString = minutes &lt; 10 ? `0${minutes}` : `${minutes}`;    
+              return `${hours}:${minutesString}`;
           })()
-        });
-        // Clear Message Bar
-        clear();
-      }
+        }]
+      });
+
+      clear();
     }
   }
-&lt;/script&gt;</code></pre>
+
+  onNameChange(event) {
+    this.setState({
+      ...this.state,
+      name: event.target.value
+    });
+  }                
+};
+</code></pre>
           <h2>Properties</h2>
           <table class="params-table">
             <thead>
@@ -392,8 +432,6 @@
               </tr>
             </tbody>
           </table>
-          <h2>Access To Initialized Instance</h2>
-          <p>If you use automatic initalization to init Messages (with <code>init:true</code> prop) and need to use its <a href="../docs/messages.html#messages-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messages</b></code> component's property.</p>
         </div>
       </div>
     </div>

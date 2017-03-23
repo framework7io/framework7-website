@@ -264,8 +264,8 @@
           <h2>Slot Properties</h2>
           <p>Navbar React component (&lt;Navbar&gt;) has additional slots for custom elements:</p>
           <ul>
-            <li><b>before-inner</b> - element will be inserted right before &lt;div class="navbar-inner"&gt; element</li>
-            <li><b>after-inner</b> - element will be inserted right after &lt;div class="navbar-inner"&gt; element</li>
+            <li><b>beforeInnerSlot</b> - element will be inserted right before &lt;div class="navbar-inner"&gt; element</li>
+            <li><b>afterInnerSlot</b> - element will be inserted right after &lt;div class="navbar-inner"&gt; element</li>
           </ul>
           <pre><code>&lt;Navbar title="My App"&gt;
   &lt;div slot="before-inner"&gt;Before Inner&lt;/div&gt;
@@ -303,6 +303,11 @@
                 <td>Adds back-link with text (if string value is specified)</td>
               </tr>
               <tr>
+                <td>backLinkUrl</td>
+                <td>string</td>
+                <td>Custom back link URL</td>
+              </tr>
+              <tr>
                 <td>sliding</td>
                 <td>boolean</td>
                 <td>Enables "sliding" effect for nav elements. Affects only for back-link and title elements when they are specified via props</td>
@@ -324,6 +329,11 @@
                 <td>backLink</td>
                 <td>boolean/string</td>
                 <td>Adds back-link with text (if string value is specified)</td>
+              </tr>
+              <tr>
+                <td>backLinkUrl</td>
+                <td>string</td>
+                <td>Custom back link URL</td>
               </tr>
               <tr>
                 <td>sliding</td>
@@ -350,6 +360,36 @@
                 <td>sliding</td>
                 <td>boolean</td>
                 <td>Enables "sliding" effect</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Methods</h2>
+          <table class="methods-table">
+            <tbody><tr>
+              <td>.hide(<span>animated</span>)</td>
+              <td>Hide navbar</td>
+            </tr>
+            <tr>
+              <td>.show(<span>animated</span>)</td>
+              <td>Show navbar</td>
+            </tr>
+            <tr>
+              <td>.size()</td>
+              <td>Size navbar</td>
+            </tr>
+          </tbody></table>
+          <h2>Navbar Events</h2>
+          <table class="events-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>onBackClick</td>
+                <td>Event will be triggered when click on navbar back link</td>
               </tr>
             </tbody>
           </table>

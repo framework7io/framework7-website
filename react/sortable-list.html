@@ -151,41 +151,55 @@
           <p>Sortable List is not a separate component, but just a particular case of using <a href="list.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.</p>
           <h2>Usage example</h2>
           <p>Here is the full sortable list page example:</p>
-          <pre><code>&lt;template&gt;
-  &lt;Page&gt;
-    &lt;Navbar backLink="Back" title="Sortable" sliding&gt;
-      &lt;NavRight&gt;
-        &lt;!-- Link to enable/disable sortable --&gt;
-        &lt;Link toggleSortable="#sortable"&gt;{{sorting ? 'Done' : 'Open'}}&lt;/Link&gt;
-      &lt;/NavRight&gt;
-    &lt;/Navbar&gt;
+          <pre><code>...
+constructor() {
+  this.state = {
+    sorting: false,
+    items: [1, 2, 3, 4, 5]                  
+  };
+}
 
-    &lt;List id="sortable" sortable onSortablesort={onSort" @sortable:open="onOpen" @sortable:close="onClose}&gt;
-      &lt;ListItem vFor="item in items" title={'Item ' + item}&gt;&lt;/ListItem&gt;
-    &lt;/List&gt;
-  &lt;/Page&gt;
-&lt;/template&gt;
-&lt;script&gt;
-  export default {
-    data: function () {
-      return {
-        sorting: false,
-        items: [1, 2, 3, 4, 5]
-      }
-    },
-    methods: {
-      onOpen: function () {
-        this.sorting = !this.sorting;
-      },
-      onClose: function () {
-        this.sorting = !this.sorting;
-      },
-      onSort: function (event, indexes) {
-          console.log('sort', indexes);
-      },
-    }
-  }
-&lt;/script&gt;</code></pre>
+...
+...
+render() {
+  return (
+    &lt;Page&gt;
+      &lt;Navbar backLink="Back" title="Sortable" sliding&gt;
+        &lt;NavRight&gt;
+          &lt;!-- Link to enable/disable sortable --&gt;
+          &lt;Link toggleSortable="#sortable"&gt;{{sorting ? 'Done' : 'Open'}}&lt;/Link&gt;
+        &lt;/NavRight&gt;
+      &lt;/Navbar&gt;
+
+      &lt;List id="sortable" sortable onSortablesort={this.onSort} onSortableOpen={this.this.onSortableOpen} onSortableClose={this.onClose}&gt;
+        {this.state.items.map((item) =&gt; (
+          &lt;ListItem title={'Item ' + item}&gt;&lt;/ListItem&gt;
+        ))}                  
+      &lt;/List&gt;
+    &lt;/Page&gt;
+  );
+}
+
+...
+...
+
+onOpen() {
+  this.setState({
+    sorting: !this.state.sorting,
+    ...this.state
+  });                
+}
+
+onClose: function () {
+  this.setState({
+    sorting: !this.state.sorting,
+    ...this.state
+  });
+}
+
+onSort(event, indexes) {
+    console.log('sort', indexes);
+}</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="page"&gt;
   &lt;div class="navbar"&gt;

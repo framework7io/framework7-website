@@ -161,18 +161,24 @@
           <h2>Slot Properties</h2>
           <p>Message Bar React component has additional slots for custom elements:</p>
           <ul>
-            <li><b>before-input</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element</li>
-            <li><b>after-input</b> - element will be inserted right after &lt;div type="toolbar-inner"&gt; element</li>
-            <li><b>before-textarea</b> - element will be inserted right before textarea</li>
-            <li><b>after-textarea</b> - element will be inserted right after textarea</li>
+            <li><b>beforeInputSlot</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element</li>
+            <li><b>afterInputSlot</b> - element will be inserted right after &lt;div type="toolbar-inner"&gt; element</li>
+            <li><b>beforeTextareaSlot</b> - element will be inserted right before textarea</li>
+            <li><b>afterTextareaSlot</b> - element will be inserted right after textarea</li>
+            <li><b>sendLinkSlot</b> - element will be inserted inside of send link</li>
           </ul>
-          <pre><code>&lt;Messagebar placeholder="Message" sendLink="Send" onSubmit={onSubmit}&gt;
-  &lt;div slot="before-inner"&gt;Before inner&lt;/div&gt;
-  &lt;div slot="after-inner"&gt;After inner&lt;/div&gt;
-  &lt;div slot="before-textarea"&gt;Before textarea&lt;/div&gt;
-  &lt;div slot="after-textarea"&gt;After textarea&lt;/div&gt;
-  &lt;div&gt;Default slot&lt;/div&gt;
-&lt;/Messagebar&gt;</code></pre>
+          <pre><code>&lt;Messagebar 
+  placeholder="Message"
+  onSubmit={onSubmit}
+  beforeInnerSlot={&lt;div&gt;Before inner&lt;/div&gt;}
+  afterInnerSlot={&lt;div&gt;After inner&lt;/div&gt;}
+  beforeTextareaSlot={&lt;div&gt;Before textarea&lt;/div&gt;}
+  afterTextareaSlot={&lt;div&gt;After textarea&lt;/div&gt;}
+  sendLinkSlot={&lt;span&gt;Send&lt;/span&gt;}              
+&gt;
+  Text goes here
+&lt;/Messagebar&gt;
+</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="toolbar messagebar"&gt;
   &lt;div&gt;Before inner&lt;/div&gt;
@@ -180,7 +186,7 @@
     &lt;div&gt;Before textarea&lt;/div&gt;
     &lt;textarea placeholder="Message"&gt;&lt;/textarea&gt;
     &lt;div&gt;After textarea&lt;/div&gt;
-    &lt;a href="#" class="link"&gt;Send&lt;/a&gt;
+    &lt;a href="#" class="link"&gt;&lt;span&gt;Send&lt;/span&gt;&lt;/a&gt;
     &lt;div&gt;Default slot&lt;/div&gt;
   &lt;/div&gt;
   &lt;div&gt;After inner&lt;/div&gt;
@@ -236,7 +242,7 @@
                 <td>sendLink</td>
                 <td>string</td>
                 <td></td>
-                <td>Enables Send link and specifies its text</td>
+                <td>Enables Send link and specifies its text or its inner HTML. This property will be ignored in case you use "send-link" slot</td>
               </tr>
               <tr>
                 <td>maxHeight</td>
@@ -277,8 +283,6 @@
               </tr>
             </tbody>
           </table>
-          <h2>Access To Initialized Instance</h2>
-          <p>If you use automatic initalization to init Message Bar (with <code>init:true</code> prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messagebar</b></code> component's property.</p>
         </div>
       </div>
     </div>
