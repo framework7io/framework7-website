@@ -25,7 +25,7 @@ const removeMethodsTable = (jsDomDoc) => {
         node.parentNode.removeChild(node);
     });    
 
-    jsDomDoc.querySelectorAll('*').forEach(node => {
+    jsDomDoc.querySelectorAll('h2').forEach(node => {
         if (node.innerHTML === 'Methods') {
             node.parentNode.removeChild(node);
         }
