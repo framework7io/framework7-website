@@ -1,0 +1,252 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'View React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 View React Component
+      p <b>View</b> - is a separate visual part of app with its own settings, navigation and history. Each view also may have different navbar and toolbar layouts, different styles. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app.
+      p View React component represents Framework7's <a href="../docs/views.html">View</a> component.
+      h2 Usage examples
+      h4 Minimal layout
+      pre
+        code
+          :code
+            <View main>
+              ...
+            </View>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="view view-main">
+              ...
+            </div>
+      h4 As a Tab
+      pre
+        code
+          :code
+            <View id="tab-1" main tab active>...</View>
+            <View id="tab-2" tab>...</View>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="view view-main tab active" id="tab-1">...</div>
+            <div class="view tab" id="tab-2">...</div>
+      h4 Empty
+      pre
+        code
+          :code
+            <View main navbarThrough></View>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="view view-main navbar-through">
+              <!-- Navbar will be added automatically as it is needed for through-type layout -->
+              <div class="navbar"></div>
+              <!-- Pages will be added automatically as it is required for routing -->
+              <div class="pages"></div>
+            </div>
+      h4 With parameters
+      pre
+        code
+          :code
+            <View dynamicNavbar={true} url={/home/} animatePages={false}>...</View>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td main
+            td boolean
+            td
+            td Defines this View as the <a href="../docs/views.html#main-view">main View</a>
+          tr
+            td name
+            td string
+            td
+            td Defines View name to allow access View instance by same named prop of <code>$f7.views</code>
+          tr
+            td tab
+            td boolean
+            td
+            td Uses View as <a href="tabs.html">Tab</a>
+          tr
+            td active
+            td boolean
+            td
+            td Defines View-Tab as currently active <a href="tabs.html">Tab</a>
+          tr
+            td theme
+            td string
+            td
+            td View theme color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td layout
+            td string
+            td
+            td View layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>
+          tr
+            td navbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">navbar layout</a>
+          tr
+            td navbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">navbar layout</a>
+          tr
+            td toolbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">toolbar layout</a>
+          tr
+            td toolbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">toolbar layout</a>
+          tr
+            td tabbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-labels-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-labels-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            th(colspan="4") View Instance Properties
+          tr
+            td init
+            td boolean
+            td true
+            td Initializes View automatically
+          tr
+            td params
+            td object
+            td 
+            td Object with <a href="../docs/views.html#view-initialization-parameters">View API</a> parameters
+          tr
+            th(colspan="4") View API Separate Props
+          tr
+            td dynamicNavbar
+            td boolean
+            td false
+            td Set to true to enable Dynamic Navbar in this View <span class="ios-only">iOS theme only</span>
+          tr
+            td url
+            td string
+            td undefined
+            td Default (initial) View's url. If not specified, then it is equal to document url
+          tr
+            td domCache
+            td boolean
+            td true
+            td If enabled then all previous pages in navigation chain will not be removed from DOM when you navigate deeper and deeper. It could be useful, for example, if you have some Form from 5 steps (5 pages) and when you are on last 5th page you need access to form that was on 1st page.
+          tr
+            td linksView
+            td string / View instance
+            td undefined
+            td CSS Selector of another view or initialized View instance. By defaul all links in initialized (only) view will load pages in this view. You can change this logic on the fly by changing this paremeter. This tell links to load pages in other view.
+          tr
+            td uniqueHistory
+            td boolean
+            td 
+            td Set to true and App will keep View's navigation history unique, it will also remove duplicated pages. By default, equal to the same App's parameter. Allows to override global <a href="../docs/init-app.html">App parameter</a> for current View
+          tr
+            td uniqueHistoryIgnoreGetParameters
+            td boolean
+            td false
+            td Use this parameter in addition to <code>uniqueHistory</code>. Set to true and App will ignore URL GET parameters when cheking its uniqueness. So the URLs like "page.html" and "page.html?id=3" will be treated as the same. By default, equal to the same App's parameter. Allows to override global <a href="../docs/init-app.html">App parameter</a> for current View
+          tr
+            td allowDuplicateUrls
+            td boolean
+            td 
+            td You may enable this parameter to allow loading of new pages that have same url as currently "active" page in View. By default, equal to the same App's parameter. Allows to override global <a href="../docs/init-app.html">App parameter</a> for current View
+          tr 
+            td animatePages
+            td boolean
+            td 
+            td Set to false if you want to disable animated transitions between pages. By default, equal to the same App's parameter. Allows to override global <a href="../docs/init-app.html">App parameter</a> for current View
+          tr
+            td preloadPreviousPage
+            td boolean
+            td 
+            td Enable/disable preloading of previous page when you go deep in navigation. Should be enabled for correct work of "swipe back page" feature. By default, equal to the same App's parameter. Allows to override global <a href="./docs/init-app.html">App parameter</a> for current View
+          tr
+            td reloadPages
+            td boolean
+            td false
+            td When enabled, View will always reload currently active page without loading new one
+          tr
+            td swipeBackPage
+            td boolean
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="./docs/init-app.html">App parameter</a> but for the current View
+          tr
+            td swipeBackPageThreshold
+            td number
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="./docs/init-app.html">App parameter</a> but for the current View
+          tr
+            td swipeBackPageActiveArea
+            td number
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="./docs/init-app.html">App parameter</a> but for the current View
+          tr
+            td swipeBackPageAnimateShadow
+            td boolean
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="./docs/init-app.html">App parameter</a> but for the current View
+          tr
+            td swipeBackPageAnimateOpacity
+            td boolean
+            td 
+            td By default, equal to the same App's parameter. Allows to override the same <a href="i./docs/nit-app.html">App parameter</a> but for the current View
+      h2 Event Properties
+      p.ios-only These events are available only in iOS theme
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td swipeback:move
+            td Event will be triggered during swipe back move
+          tr
+            td swipeback:beforechange
+            td Event will be triggered right before swipe back animation to previous page when you release it
+          tr
+            td swipeback:afterchange
+            td Event will be triggered after swipe back animation to previous page when you release it
+          tr
+            td swipeback:beforereset
+            td Event will be triggered right before swipe back animation to current page when you release it
+          tr
+            td swipeback:afterreset
+            td Event will be triggered after swipe back animation to current page when you release it
