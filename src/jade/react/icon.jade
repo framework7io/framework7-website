@@ -1,42 +1,42 @@
-extends ../_internal-template
+extends ../src/jade/_internal-template
 
 block vars
-  - var activeLink = 'vue';
-  - var title = 'Icon Vue Component | Framework7 Vue Documentation';
+  - var activeLink = 'react';
+  - var title = 'Icon React Component | Framework7 React Documentation';
 
 block content
   .docs-wrap
     .docs-nav
-      include ../_docs-vue-menu
+      include ./_docs-react-menu
     .docs-content
-      h1 Icon Vue Component
-      p Icon Vue component represents Icon element. It is ready to be used with custom icons, <a href="../icons/" target="_blank">Framework7 Icons</a>, <a href="https://material.io/icons/" target="_blank">Material Icons</a>, <a href="http://fontawesome.io/" target="_blank">Font Awesome</a>, <a href="http://ionicons.com/" target="_blank">Ionicons</a>.
+      h1 Icon React Component
+      p Icon React component represents Icon element. It is ready to be used with custom icons, <a href="../icons/" target="_blank">Framework7 Icons</a>, <a href="https://material.io/icons/" target="_blank">Material Icons</a>, <a href="http://fontawesome.io/" target="_blank">Font Awesome</a>, <a href="http://ionicons.com/" target="_blank">Ionicons</a>.
       h2 Usage example
       pre
         code
           | &lt;!-- Default back icon --&gt;
-          | &lt;f7-icon icon="icon-back"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon icon="icon-back"&gt;&lt;/Icon&gt;
           | 
           | &lt;!-- Some custom icon --&gt;
-          | &lt;f7-icon icon="icon-home"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon icon="icon-home"&gt;&lt;/Icon&gt;
           | 
           | &lt;!-- F7 Icons font icon --&gt;
-          | &lt;f7-icon f7="home"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon f7="home"&gt;&lt;/Icon&gt;
           | 
           | &lt;!-- Material Icons font icon --&gt;
-          | &lt;f7-icon material="home"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon material="home"&gt;&lt;/Icon&gt;
           | 
           | &lt;!-- Font Awesome icons font icon --&gt;
-          | &lt;f7-icon fa="home"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon fa="home"&gt;&lt;/Icon&gt;
           | 
           | &lt;!-- Ionicons icons font icon --&gt;
-          | &lt;f7-icon ion="home"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon ion="home"&gt;&lt;/Icon&gt;
           | 
           | &lt;!-- F7 icons font icon with custom size and color --&gt;
-          | &lt;f7-icon f7="home" size="44px" color="blue"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon f7="home" size="44px" color="blue"&gt;&lt;/Icon&gt;
           | 
           | &lt;!-- Conditional icon --&gt;
-          | &lt;f7-icon ifIos="f7:home" ifMaterial="material:home"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon ifIos="f7:home" ifMaterial="material:home"&gt;&lt;/Icon&gt;
       p Renders to:
       pre
         code
@@ -47,7 +47,7 @@ block content
           | &lt;i class="icon icon-home"&gt;&lt;/i&gt;
           | 
           | &lt;!-- F7 Icons font icon --&gt;
-          | &lt;i class="icon f7-icons"&gt;home&lt;/i&gt;
+          | &lt;i class="icon Icons"&gt;home&lt;/i&gt;
           | 
           | &lt;!-- Material Icons font icon --&gt;
           | &lt;i class="icon material-icons"&gt;home&lt;/i&gt;
@@ -56,15 +56,15 @@ block content
           | &lt;i class="icon fa fa-home"&gt;&lt;/i&gt;
           | 
           | &lt;!-- Ionicons icons font icon --&gt;
-          | &lt;f7-icon ion="home"&gt;&lt;/f7-icon&gt;
+          | &lt;Icon ion="home"&gt;&lt;/Icon&gt;
           | &lt;i class="icon ion-home"&gt;&lt;/i&gt;
           | 
           | &lt;!-- F7 icons font icon with custom size and color --&gt;
-          | &lt;i class="icon f7-icons color-blue" style="font-size:44px"&gt;home&lt;/i&gt;
+          | &lt;i class="icon Icons color-blue" style="font-size:44px"&gt;home&lt;/i&gt;
           | 
           | &lt;!-- Conditional icon --&gt;
           | &lt;!-- In case of iOS theme is used/active --&gt;
-          | &lt;i class="icon f7-icons"&gt;home&lt;/i&gt;
+          | &lt;i class="icon Icons"&gt;home&lt;/i&gt;
           | &lt;!-- In case of Material theme is used/active --&gt;
           | &lt;i class="icon material-icons"&gt;home&lt;/i&gt;
       h2 Properties
