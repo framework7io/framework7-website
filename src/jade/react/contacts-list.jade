@@ -14,37 +14,38 @@ block content
       h2 Usage example
       p Here is the full contacts list page example:
       pre
-        code.          
+        code
+          :code
             const contacts = {
               'A': [
-                'Aaron',
-                'Abbie',
-                'Adam',
-                'Adele',
-                'Agatha',
-                'Agnes',
-                'Albert',
-                'Alexander'
+              'Aaron',
+              'Abbie',
+              'Adam',
+              'Adele',
+              'Agatha',
+              'Agnes',
+              'Albert',
+              'Alexander'
               ],
               'B': [
-                'Bailey',
-                'Barclay',
-                'Bartolo',
-                'Bellamy',
-                'Belle',
-                'Benjamin'
+              'Bailey',
+              'Barclay',
+              'Bartolo',
+              'Bellamy',
+              'Belle',
+              'Benjamin'
               ],
               'C': [
-                'Caiden',
-                'Calvin',
-                'Candy',
-                'Carl',
-                'Cherilyn',
-                'Chester',
-                'Chloe'
+              'Caiden',
+              'Calvin',
+              'Candy',
+              'Carl',
+              'Cherilyn',
+              'Chester',
+              'Chloe'
               ],
               'V': [
-                'Vladimir'
+              'Vladimir'
               ]
             };
             
@@ -57,7 +58,7 @@ block content
                     return [
                       ...listGroups,
                       <ListGroup key={nextGroupName}>
-                      <ListItem title={nextGroupName} groupTitle />
+                        <ListItem title={nextGroupName} groupTitle />
                         {contacts[nextGroupName].map(contactName => {
                           return <ListItem key={contactName} title={contactName} />;
                         })}

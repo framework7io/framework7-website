@@ -74,7 +74,7 @@ const convertKebabCasePropsToCamelCase = (jade) => {
 }
 
 const replaceDynamicProps = (jade) => {
-    return jade.replace(/:([A-Za-z0-9-]+)="(.*)"/g, '$1={$2}');
+    return jade.replace(/\h:([A-Za-z0-9-]+)="([^"]+)"/g, '$1={$2}');
 }
 
 const replaceVueComponentNamesWithReactComponentNames = (jade) => {
@@ -119,7 +119,6 @@ const convertVueDocsToReactDocs = (jadeFileContents) => {
     jade = replaceDynamicProps(jade);
     jade = replaceEventProps(jade);
     jade = convertKebabCasePropsToCamelCase(jade);
-    //jade = replaceVueTemplateAndScriptExamplesWithReactComponent(jade);
     jade = convertEventsToReactEvents(jade);
     jade = convertSlotsToProps(jade);
 

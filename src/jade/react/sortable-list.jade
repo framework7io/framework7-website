@@ -36,7 +36,13 @@ block content
                       </NavRight>
                     </Navbar>
 
-                    <List id="sortable" sortable onSortablesort={this.onSort} onSortableOpen={this.this.onSortableOpen} onSortableClose={this.onClose}>
+                    <List 
+                      id="sortable" 
+                      sortable 
+                      onSortableSort={this.onSort} 
+                      onSortableOpen={this.this.onSortableOpen} 
+                      onSortableClose={this.onClose}
+                    >
                       {this.state.items.map((item) => (
                         <ListItem title={'Item ' + item}></ListItem>
                       ))}                  
@@ -55,7 +61,7 @@ block content
                 });                
               }
 
-              onClose: function () {
+              onClose() {
                 this.setState({
                   sorting: !this.state.sorting,
                   ...this.state
