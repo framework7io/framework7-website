@@ -20,11 +20,24 @@ const replaceEventsTable = (jsDomDoc) => {
     });
 }
 
+const removeMethodsTable = (jsDomDoc) => {    
+    jsDomDoc.querySelectorAll('.methods-table').forEach(node => {        
+        node.parentNode.removeChild(node);
+    });    
+
+    jsDomDoc.querySelectorAll('*').forEach(node => {
+        if (node.innerHTML === 'Methods') {
+            node.parentNode.removeChild(node);
+        }
+    });    
+}
+
 const processReactHtmlFile = (htmlFileInfo) => {
     const jsDomDoc = htmlFileInfo.jsDomDocument;
 
     replaceEventsTable(jsDomDoc);
     replacePropsTable(jsDomDoc);
+    removeMethodsTable(jsDomDoc);
 };
 
 const getReactHtmlFiles = (callback) => {
@@ -51,8 +64,6 @@ const getReactHtmlFiles = (callback) => {
 }
 
 module.exports.processReactHtmlFiles = (callback) => {
-    console.log('Processing react html files...')
-
     const reactHtmlFiles = getReactHtmlFiles(reactHtmlFiles => {
         reactHtmlFiles.forEach(reactHtmlFileInfo => {
             processReactHtmlFile(reactHtmlFileInfo);
@@ -61,5 +72,5 @@ module.exports.processReactHtmlFiles = (callback) => {
         });
 
         callback();
-    });
+    });    
 };
