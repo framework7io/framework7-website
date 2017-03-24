@@ -16,10 +16,10 @@ block content
         code
           :code
             <Searchbar
-              cancel-link="Cancel"
+              cancelLink="Cancel"
               placeholder="Search in items"
-              clear-button={true}
-            ></Searchbar>
+              clearButton={true}
+            />
       p Renders to:
       pre
         code
@@ -36,72 +36,38 @@ block content
             </form>
       p Here is how it can be used in React component with initialization
       pre
-        code.                
-              const items = (function () {
-                var it = [];
-                for (var i = 0; i < 100; i++) it.push(i+1);
-                return it;
-              })();
-
-              ...
-              render() {
-                return (
-                  {/* Search bar */}
+        code
+          :code
+            const SearchbarPage = () => {
+              return (
+                <Page>
+                  <Navbar backLink="Back" title="Searchbar" sliding />
                   <Searchbar
-                    {/* Cancel link's text (affects iOS theme only)  */}
                     cancelLink="Cancel"
-                    {/* Where to search */}
                     searchList="#search-list"
-                    {/* Input placeholder text */}
-                    placeholder="Search in items"
-                    {/* Show "clear" button */}
-                    clearButton={true}
-                    {/* Events */}
-                    onSearchbarsearch={this.onSearch}
-                    onSearchbarenable={this.onEnable}
-                    onSearchbardisable={this.onDisable}
-                    onSearchbarclear={this.onClear}
-                  ></Searchbar>
-
-                  {/* Will be visible if there is no any results found, defined by "searchbar-not-found" class */}
+                    onSearchbarSearch={onSearchFunction}
+                    onSearchbarEnable={onEnableFunction}
+                    onSearchbarDisable={onDisableFunction}
+                    onSearchbarClear={onClearFunction}
+                  />
                   <List className="searchbar-not-found">
-                    <ListItem title="Nothing found"></ListItem>
+                    <ListItem title="Nothing found" />
                   </List>
-
-                  {/* Search-through list  */}
                   <List className="searchbar-found" id="search-list">
-                    {items.map((item) => (
-                      <ListItem title={'Item ' + item}></ListItem>
-                    ))}                    
+                  {
+                    Array.apply(null, Array(100)).map((item, index) => {
+                      return (<ListItem  key={index} title={`Item ${index + 1}`} />);
+                    })
+                  }
                   </List>
-                );
-              }
-
-              ...
-              ...
-
-              onSearch(query, found) {
-                console.log('search', query);
-              }
-
-              onClear(event) {
-                console.log('clear');
-              }
-
-              onEnable(event) {
-                console.log('enable');
-              }
-
-              onDisable(event) {
-                console.log('disable');
-              }
-
-              ...
+                </Page>
+              );
+            };
       h2 Slot Properties
       p Search Bar React component has additional slots for custom elements:
       ul
-        li <b>beforeInputSlot</b> - element will be inserted right before &lt;input type="search"&gt; element
-        li <b>afterInputSlot</b> - element will be inserted right after &lt;input type="search"&gt; element
+        li<b>beforeInputSlot</b> - element will be inserted right before &lt;input type="search"&gt; element
+        li<b>afterInputSlot</b> - element will be inserted right after &lt;input type="search"&gt; element
       pre
         code
           :code

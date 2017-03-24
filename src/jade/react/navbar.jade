@@ -167,10 +167,11 @@ block content
       pre
         code
           :code
-            <Navbar title="My App">
-              <div slot="before-inner">Before Inner</div>
-              <div slot="after-inner">After Inner</div>
-            </Navbar>
+            <Navbar 
+              title="My App" 
+              beforeInnerSlot={<div>Before Inner</div>}
+              afterInnerSlot={<div>After Inner</div>}
+            />
       p Renders to:
       pre
         code
