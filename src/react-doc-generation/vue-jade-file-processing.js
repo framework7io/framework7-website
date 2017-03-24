@@ -57,7 +57,7 @@ const convertEventPropName = (vueEventPropName) => {
 }
 
 const replaceEventProps = (jade) => {
-    return jade.replace(/\@([A-Za-z0-9-]+)=["{](.*)["}]/g, (match, p1, p2) => {
+    return jade.replace(/\@([A-Za-z0-9-:]+)=["{](.*)["}]/g, (match, p1, p2) => {
         return convertEventPropName(p1) + '=' + '{' + p2 + '}';
     });
 }
@@ -74,7 +74,7 @@ const convertKebabCasePropsToCamelCase = (jade) => {
 }
 
 const replaceDynamicProps = (jade) => {
-    return jade.replace(/\h:([A-Za-z0-9-]+)="([^"]+)"/g, '$1={$2}');
+    return jade.replace(/\s:([A-Za-z0-9-]+)="([^"]+)"/g, ' $1={$2}');
 }
 
 const replaceVueComponentNamesWithReactComponentNames = (jade) => {
