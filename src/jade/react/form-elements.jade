@@ -1,0 +1,409 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Form Elements React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Form Elements React Components
+      p Form elements allow you to create flexible and beautiful Form layout. Form elements are just well known <a href="../docs/list-view.html">List View</a> (<b><a href="list.html">List</a> and <a href="list-item.html">List Item</a> React components</b>) but with few extensions.
+      p Check out Framework7's <a href="../docs/form-elements.html">Form Elements</a> for their appearance.
+      h2 Usage examples
+      pre
+        code
+          :code
+            <List form>
+              <!-- Text Input -->
+              <ListItem>
+                <FormLabel>Name</FormLabel>
+                <FormInput type="text" placeholder="Name"/>
+              </ListItem>
+              <!-- Password -->
+              <ListItem>
+                <FormLabel>Name</FormLabel>
+                <FormInput type="password" placeholder="Password"/>
+              </ListItem>
+              <!-- Select -->
+              <ListItem>
+                <FormLabel>Gender</FormLabel>
+                <FormInput type="select">
+                  <option value="1">Male</option>
+                  <option value="1">Female</option>
+                </FormInput>
+              </ListItem>
+              <!-- Switch -->
+              <ListItem>
+                <FormLabel>Switch</FormLabel>
+                <FormInput type="switch" onChange={onChange}></FormInput>
+              </ListItem>
+              <!-- Range -->
+              <ListItem>
+                <FormLabel>Range</FormLabel>
+                <FormInput type="range" min="0" max="100" step="1" value="90"></FormInput>
+              </ListItem>
+              <!-- Textarea -->
+              <ListItem>
+                <FormLabel>Textarea</FormLabel>
+                <FormInput type="textarea" placeholder="Textarea"></FormInput>
+              </ListItem>
+            </List>
+      p Renders to:
+      pre
+        code
+          :code
+            <form class="list-block">
+              <ul>
+                <!-- Text Input -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Name</div>
+                      <div class="item-input">
+                        <input type="text" placeholder="Name"></div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Password -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Password</div>
+                      <div class="item-input">
+                        <input type="password" placeholder="Password"></div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Select -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Gender</div>
+                      <div class="item-input">
+                        <select type="select">
+                          <option value="1">Male</option>
+                          <option value="1">Female</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Switch -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Switch</div>
+                      <div class="item-input">
+                        <label class="label-switch">
+                          <input type="checkbox" value="">
+                          <div class="checkbox"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Range -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Range</div>
+                      <div class="item-input">
+                        <div class="range-slider">
+                          <input type="range" max="100" min="0" step="1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- Textarea -->
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title label">Textarea</div>
+                      <div class="item-input">
+                        <textarea type="textarea" placeholder="Textarea"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </form>
+      h4 Floating Labels (Material Theme only)
+      pre
+        code
+          :code
+            <List form>
+              <!-- Text Input -->
+              <ListItem>
+                <FormLabel floating>Name</FormLabel>
+                <FormInput type="text" placeholder="Name"/>
+              </ListItem>
+              <!-- Password -->
+              <ListItem>
+                <FormLabel floating>Name</FormLabel>
+                <FormInput type="password" placeholder="Password"/>
+              </ListItem>
+              ...
+            </List>
+      h4 Without labels
+      pre
+        code
+          :code
+            <List form>
+              <!-- Text Input -->
+              <ListItem>
+                <FormInput type="text" placeholder="Name"/>
+              </ListItem>
+              <!-- Password -->
+              <ListItem>
+                <FormInput type="password" placeholder="Password"/>
+              </ListItem>
+              ...
+            </List>
+      h4 With Labels and Icons
+      pre
+        code
+          :code
+            <List form>
+              <!-- Text Input -->
+              <ListItem>
+                <Icon slot="media" f7="person"></Icon>
+                <FormLabel floating>Name</FormLabel>
+                <FormInput type="text" placeholder="Name"/>
+              </ListItem>
+              <!-- Password -->
+              <ListItem>
+                <Icon slot="media" f7="lock"></Icon>
+                <FormLabel floating>Name</FormLabel>
+                <FormInput type="password" placeholder="Password"/>
+              </ListItem>
+              ...
+            </List>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            th(colspan="4") &lt;FormLabel&gt; properties
+          tr
+            td floating
+            td boolean
+            td
+            td Enables floating label (affects Material theme only)
+          tr
+            th(colspan="4") &lt;FormInput&gt; properties
+          tr
+            td type
+            td string
+            td
+            td Input type. All default HTML5 input type, and few special ones:
+              ul
+                li <b>textarea</b> - to render textarea element
+                li <b>select</b> - to render select element
+                li <b>range</b> - to render range slider
+                li <b>switch</b> - to render switch element
+          tr
+            td name
+            td string
+            td
+            td Input name
+          tr
+            td placeholder
+            td string
+            td
+            td Input placeholder
+          tr
+            td id
+            td string
+            td
+            td Input ID attribute
+          tr
+            td value
+            td string/number
+            td
+            td Input value
+          tr
+            td size/number
+            td string
+            td
+            td Value of input's native "size" attribute
+          tr
+            td pattern
+            td string
+            td
+            td Value of input's native "pattern" attribute
+          tr
+            td accept
+            td string/number
+            td
+            td Value of input's native "accept" attribute
+          tr
+            td autocomplete
+            td string
+            td
+            td Value of input's native "autocomplete" attribute
+          tr
+            td autofocus
+            td boolean
+            td
+            td Value of input's native "autofocus" attribute
+          tr
+            td autosave
+            td string
+            td
+            td Value of input's native "autosave" atribute
+          tr
+            td checked
+            td boolean
+            td
+            td Marks input as checked
+          tr
+            td disabled
+            td boolean
+            td
+            td Marks input as disabled
+          tr
+            td max
+            td string/number
+            td
+            td Value of input's native "max" atribute
+          tr
+            td min
+            td string/number
+            td
+            td Value of input's native "min" atribute
+          tr
+            td step
+            td string/number
+            td
+            td Value of input's native "step" atribute
+          tr
+            td maxlength
+            td string/number
+            td
+            td Value of input's native "maxlength" atribute
+          tr
+            td minlength
+            td string/number
+            td
+            td Value of input's native "minlength" atribute
+          tr
+            td multiple
+            td boolean
+            td
+            td Value of input's native "multiple" atribute
+          tr
+            td readonly
+            td boolean
+            td
+            td Marks input as readonly
+          tr
+            td required
+            td boolean
+            td
+            td Marks input as required
+          tr
+            td style
+            td string
+            td
+            td Value if input's "style" attribute
+          tr
+            td color
+            td string
+            td
+            td Input color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td wrap
+            td boolean
+            td true
+            td Defines should the input be wraped with "item-input" element or not
+      h2 Event Properties
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            th(colspan="3") &lt;FormInput&gt; events
+          tr
+            td focus
+            td Fired when user focused to input.
+          tr
+            td focusin
+            td Fired when an element is about to receive focus. The main difference between this event and focus is that the latter doesn't bubble.
+          tr
+            td blur
+            td Fired when user lost focus from input.
+          tr
+            td focusout
+            td Fired when an element is about to lose focus. The main difference between this event and blur is that the latter doesn't bubble.
+          tr
+            td beforeinput
+            td Fired before input value change.
+          tr
+            td input
+            td Fired immediately when input value changed. Note: Input event triggers after beforeinput, keypress, keyup, keydown events.
+          tr
+            td change
+            td Fired when blur if value changed.
+          tr
+            td onKeypress
+            td You can use this event and onKeydown event for prevent input. onKeypress event fired after keydown and before keyup.
+          tr
+            td keyup
+            td Fired when user released the keyboard button.
+          tr
+            td keydown
+            td Fired when user starts pressing to the keyboard button.
+          tr
+            td compositionstart
+            td Fired when the composition of a passage of text is prepared (similar to keydown for a keyboard input, but fires with special characters that require a sequence of keys and other inputs such as speech recognition or word suggestion on mobile).
+          tr
+            td compositionupdate
+            td Fired when a character is added to a passage of text being composed (fires with special characters that require a sequence of keys and other inputs such as speech recognition or word suggestion on mobile).
+          tr
+            td compositionend
+            td Fired when the composition of a passage of text has been completed or cancelled.
+          tr
+            td click
+            td Fired when clicked to input.
+          tr
+            td dblclick
+            td Fired when double clicked to input.
+          tr
+            td mousedown
+            td Fired when a pointing device button (usually a mouse button) is pressed on an element.
+          tr
+            td mouseup
+            td Fired when a pointing device button (usually a mouse button) is released over an element.
+          tr
+            td mouseenter
+            td Fired when a pointing device (usually a mouse) is moved over the element that has the listener attached.
+              p onMouseenter and onMouseover events are different. For more info:
+                a(target="_blank", href="https://developer.mozilla.org/en-US/docs/Web/Events/mouseenter") https://developer.mozilla.org/en-US/docs/Web/Events/mouseenter
+          tr
+            td mouseover
+            td Fired when a pointing device is moved onto the element that has the listener attached or onto one of its children.
+          tr
+            td mouseleave
+            td Fired when a pointing device (usually a mouse) is moved off the element that has the listener attached.
+          tr
+            td mouseout
+            td Fired when a pointing device (usually a mouse) is moved off the element that has the listener attached or off one of its children. Note that it is also triggered on the parent when you move onto a child element, since you move out of the visible space of the parent.
+          tr
+            td mousemove
+            td Fired when a pointing device (usually a mouse) is moved while over an element.
+          tr
+            td wheel
+            td Fired when a wheel button of a pointing device (usually a mouse) is rotated. This event replaces the non-standard deprecated mousewheel event.
+          tr
+            td select
+            td Fired when some text is being selected. The event might not be available for all elements in all languages. For example, select events can be dispatched only on form input and textarea elements.
