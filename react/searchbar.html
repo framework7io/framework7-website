@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Search Bar React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -153,7 +153,7 @@
           <pre><code>&lt;Searchbar
   cancel-link="Cancel"
   placeholder="Search in items"
-  clear={"}
+  clear-button={true}
 &gt;&lt;/Searchbar&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;form class="searchbar"&gt;
@@ -167,78 +167,66 @@
   &lt;div class="searchbar-cancel"&gt;Cancel&lt;/div&gt;
 &lt;/form&gt;</code></pre>
           <p>Here is how it can be used in React component with initialization</p>
-          <pre><code class="html">&lt;template&gt;
+          <pre><code>const items = (function () {
+  var it = [];
+  for (var i = 0; i &lt; 100; i++) it.push(i+1);
+  return it;
+})();
 
-  &lt;!-- Search bar --&gt;
-  &lt;Searchbar
-    &lt;!-- Cancel link's text (affects iOS theme only) --&gt;
-    cancel-link="Cancel"
-    &lt;!-- Where to search --&gt;
-    search-list="#search-list"
-    &lt;!-- Input placeholder text --&gt;
-    placeholder="Search in items"
-    &lt;!-- Show "clear" button --&gt;
-    clear={"}
-    &lt;!-- Events --&gt;
-    @searchbarsearch={"}
-    @searchbarenable={"}
-    @searchbardisable={"}
-    @searchbarclear={"}
-  &gt;&lt;/Searchbar&gt;
+...
+render() {
+  return (
+    {/* Search bar */}
+    <searchbar {="" *="" cancel="" link's="" text="" (affects="" ios="" theme="" only)="" }="" cancellink="Cancel" where="" to="" search="" searchlist="#search-list" input="" placeholder="" show="" "clear"="" button="" clearbutton="{true}" events="" onsearchbarsearch="{this.onSearch}" onsearchbarenable="{this.onEnable}" onsearchbardisable="{this.onDisable}" onsearchbarclear="{this.onClear}"></searchbar>
 
-  &lt;!-- Will be visible if there is no any results found, defined by "searchbar-not-found" class --&gt;
-  &lt;List class="searchbar-not-found"&gt;
-    &lt;ListItem title="Nothing found"&gt;&lt;/ListItem&gt;
-  &lt;/List&gt;
+    {/* Will be visible if there is no any results found, defined by "searchbar-not-found" class */}
+    <list classname="searchbar-not-found">
+      <listitem title="Nothing found"></listitem>
+    </list>
 
-  &lt;!-- Search-through list --&gt;
-  &lt;List class="searchbar-found" id="search-list"&gt;
-    &lt;ListItem v-for="item in items" title={"}&gt;&lt;/ListItem&gt;
-  &lt;/List&gt;
+    {/* Search-through list  */}
+    <list classname="searchbar-found" id="search-list">
+      {items.map((item) =&gt; (
+        <listitem title="{'Item" '="" +="" item}=""></listitem>
+      ))}                    
+    </list>
+  );
+}
 
-&lt;/template&gt;
+...
+...
 
-&lt;script&gt;
-  export default {
-    data: function () {
-      return {
-        items: (function () {
-          var it = [];
-          for (var i = 0; i &lt; 100; i++) it.push(i+1);
-          return it;
-        })()
-      }
-    },
-    methods: {
-      onSearch: function (query, found) {
-        console.log('search', query);
-      },
-      onClear: function (event) {
-        console.log('clear');
-      },
-      onEnable: function (event) {
-        console.log('enable');
-      },
-      onDisable: function (event) {
-        console.log('disable');
-      },
-    }
-  }
-&lt;/script&gt;</code></pre>
-          <h2>Slots</h2>
+onSearch(query, found) {
+  console.log('search', query);
+}
+
+onClear(event) {
+  console.log('clear');
+}
+
+onEnable(event) {
+  console.log('enable');
+}
+
+onDisable(event) {
+  console.log('disable');
+}
+
+...</code></pre>
+          <h2>Slot Properties</h2>
           <p>Search Bar React component has additional slots for custom elements:</p>
           <ul>
-            <li><b>before-input</b> - element will be inserted right before &lt;input type="search"&gt; element</li>
-            <li><b>after-input</b> - element will be inserted right after &lt;input type="search"&gt; element</li>
+            <li><b>beforeInputSlot</b> - element will be inserted right before &lt;input type="search"&gt; element</li>
+            <li><b>afterInputSlot</b> - element will be inserted right after &lt;input type="search"&gt; element</li>
           </ul>
           <pre><code>&lt;Searchbar
-  cancel-link="Cancel"
+  cancelLink="Cancel"
   placeholder="Search in items"
-  clear={"}
-&gt;
-  &lt;div slot="before-input"&gt;Before Input&lt;/div&gt;
-  &lt;div slot="after-input"&gt;After Input&lt;/div&gt;
-&lt;/Searchbar&gt;</code></pre>
+  clearButton={true}
+
+  beforeInputSlot={&lt;div&gt;Before Input&lt;/div&gt;}
+  afterInputSlot={&lt;div&gt;After Input&lt;/div&gt;}
+/&gt;             </code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;form class="searchbar"&gt;
   &lt;div class="searchbar-input"&gt;
@@ -274,13 +262,13 @@
                 <td>Input placeholder text</td>
               </tr>
               <tr>
-                <td>cancel-link</td>
+                <td>cancelLink</td>
                 <td>string</td>
                 <td> </td>
                 <td>Cancel link text. Affects only iOS theme</td>
               </tr>
               <tr>
-                <td>clear</td>
+                <td>clearButton</td>
                 <td>boolean</td>
                 <td>true</td>
                 <td>Enables "clear" input button</td>
@@ -358,11 +346,11 @@
                 <td>hideGroups</td>
                 <td>boolean</td>
                 <td>true</td>
-                <td>If enabled, then search will consider list view groups hide them if there are no found items inside of these groups</td>
+                <td>If enabled, then search will consider list view groups hide them if there are no found items inside of these groups        </td>
               </tr>
             </tbody>
           </table>
-          <h2>Events</h2>
+          <h2>Event Properties</h2>
           <table class="events-table">
             <thead>
               <tr>
@@ -372,49 +360,47 @@
             </thead>
             <tbody>
               <tr>
-                <td>searchbar:search</td>
+                <td>onSearchbarSearch</td>
                 <td>Event will be triggered during search (search field change). Event detail contains search query (e.detail.query) and array of found HTML elements (e.detail.foundItems)</td>
               </tr>
               <tr>
-                <td>searchbar:clear</td>
+                <td>onSearchbarClear</td>
                 <td>Event will be triggered when user clicks on Search Bar's "clear" element (a href="#" class="searchbar-clear")</td>
               </tr>
               <tr>
-                <td>searchbar:enable</td>
+                <td>onSearchbarEnable</td>
                 <td>Event will be triggered when Search Bar becomes active</td>
               </tr>
               <tr>
-                <td>searchbar:disable</td>
+                <td>onSearchbarDisable</td>
                 <td>Event will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button (a href="searchbar-cancel") or on "searchbar-overlay" element</td>
               </tr>
               <tr>
-                <td>change</td>
+                <td>onChange</td>
                 <td>Event will be triggered when "change" event occurs on search bar input element</td>
               </tr>
               <tr>
-                <td>input</td>
+                <td>onInput</td>
                 <td>Event will be triggered when "input" event occurs on search bar input element</td>
               </tr>
               <tr>
-                <td>focus</td>
+                <td>onFocus</td>
                 <td>Event will be triggered when "focus" event occurs on search bar input element</td>
               </tr>
               <tr>
-                <td>blur</td>
+                <td>onBlur</td>
                 <td>Event will be triggered when "blur" event occurs on search bar input element</td>
               </tr>
               <tr>
-                <td>click:clear</td>
+                <td>onClickClear</td>
                 <td>Event will be triggered when user clicks on input "clear" button</td>
               </tr>
               <tr>
-                <td>click:cancel</td>
+                <td>onClickCancel</td>
                 <td>Event will be triggered when user clicks on "cancel" link</td>
               </tr>
             </tbody>
           </table>
-          <h2>Access To Initialized Instance</h2>
-          <p>If you use automatic initalization to init Search Bar (with <code>init:true</code> prop) and need to use its <a href="../docs/searchbar.html#search-bar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Searchbar</b></code> component's property.</p>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Installation | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -148,30 +148,25 @@
         </div>
         <div class="docs-content">
           <h1>Installation</h1>
-          <p>It is really easy to build your app with Framework7 and <a href="https://vuejs.org/" target="_blank">React</a>. To get started we need to install Framework7, React, Framework7 React plugin. You can skip this step and use one of the ready to use <a href="templates.html">starter app templates</a>.</p>
-          <h4>1. Install Framework7</h4>
-          <p>There are few ways to install Framework7:</p>
-          <ul>
-            <li>Download it from <a href="https://github.com/nolimits4web/Framework7/releases">Framework7 GitHub repository</a></li>
-            <li>Using <a href="https://npmjs.com">NPM</a>:
-              <pre><code>$ npm install framework7</code></pre>
-            </li>
-            <li>Using <a href="https://bower.io/">Bower</a>:
-              <pre><code>$ bower install framework7</code></pre>
-            </li>
-          </ul>
-          <p>In the downloaded/installed package we need files from the <b>dist/</b> folder.</p>
-          <h4>2. Install React</h4>
-          <p>Read about how to install React on the official <a href="https://vuejs.org/v2/guide/installation.html" target="_blank">React Installation Guide</a>.</p>
-          <h4>3. Install Framework7 React Plugin</h4>
-          <p>Now we need the Framework7 plugin for React:</p>
-          <ul>
-            <li>Download it from <a href="https://github.com/nolimits4web/Framework7-React/releases">Framework7 React GitHub repository</a></li>
-            <li>Using <a href="https://npmjs.com">NPM</a>:
-              <pre><code>$ npm install framework7-vue</code></pre>
-            </li>
-          </ul>
-          <p>In the downloaded/installed package we need files from the <b>dist/</b> folder.</p>
+          <p>The recommended way to get started with React is to use <a href="https://github.com/facebookincubator/create-react-app" target="_blank">Create React App</a>, which is a quick and easy way to get a build pipeline in place to support ES6 and JSX compilation. Framework7 React already has a <a href="https://github.com/bencompton/framework7-react-app-template">template built with Create React App</a> for you to use, and this is recommended for most users.</p>
+          <h4>Installing in an App with a Build Pipeline</h4>
+          <p>If your needs exceed what Create React App provides, or you prefer to create your own custom build pipeline leveraging Babel, Webpack, Rollup, etc., here are the steps to get started:</p>
+          <h5>1. Install React      
+            <pre><code>npm install react --save
+</code></pre>
+          </h5>
+          <h5>2. Install Framework7 React      
+            <pre><code>npm install framework7-react --save
+</code></pre>
+          </h5>
+          <h4>Using Without a Build Pipeline</h4>
+          <p>Although not recommended for production apps, if you need to use Framework7 React without a build pipeline (just static JavaScript), this is possible as well. Framework7 React already has a <a href="https://github.com/bencompton/framework7-react-static-template">pre-built static template</a>. This can be especially useful when creating quick examples on JSFiddle, CodePen, etc. Here are the steps:</p>
+          <h5>1. Add Framework7 React</h5>
+          <p>Add a script tag in your HTML for either the Framework7 React <a href="https://github.com/bencompton/framework7-react/blob/master/dist/static/js/framework7-react.min.js">minified build</a> or the <a href="https://raw.githubusercontent.com/bencompton/framework7-react/master/dist/static/js/framework7-react.js">unminified build</a> from GitHub</p>
+          <h5>2. Add React and ReactDOM</h5>
+          <p>Add script tags in your HTML for <a href="https://unpkg.com/react@latest/dist/react.js">React</a> and <a href="https://unpkg.com/react-dom@latest/dist/react-dom.js">React DOM</a></p>
+          <h5>3. (optional) Add the Browser Version of Babel</h5>
+          <p>Add a script tag in your HTML for the <a href="https://unpkg.com/babel-standalone@6.15.0/babel.min.js">browser version</a> of the Babel compiler so you can use ES6 and JSX without having a build pipeline</p>
         </div>
       </div>
     </div>

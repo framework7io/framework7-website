@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Timeline React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -309,7 +309,7 @@
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
           <h4>Horizontal Timeline</h4>
-          <pre><code>&lt;Timeline horizontal col="33" tablet-col="20"&gt;
+          <pre><code>&lt;Timeline horizontal col="33" tabletCol="20"&gt;
   &lt;TimelineItem day="21" month="DEC"&gt;
     &lt;TimelineItemChild inner time="12:56" text="Task 1" &gt;&lt;/TimelineItemChild&gt;
     &lt;TimelineItemChild inner time="13:15" text="Task 2" &gt;&lt;/TimelineItemChild&gt;
@@ -345,7 +345,7 @@
   ...
 &lt;/div&gt;</code></pre>
           <h4>Calendar Timeline</h4>
-          <pre><code>&lt;Timeline horizontal col="33" tablet-col="15"&gt;
+          <pre><code>&lt;Timeline horizontal col="33" tabletCol="15"&gt;
   &lt;!-- Year --&gt;
   &lt;TimelineYear title="2016"&gt;
     &lt;!-- Month --&gt;
@@ -443,7 +443,7 @@
                 <td>Enables Side by Side vertical timeline</td>
               </tr>
               <tr>
-                <td>tablet-sides</td>
+                <td>tabletSides</td>
                 <td>boolean</td>
                 <td>Enables Side by Side vertical timeline for tablet screens only</td>
               </tr>
@@ -458,7 +458,7 @@
                 <td>Horizontal timeline column width (in %). According to <a href="../docs/grid.html">Layout Grid</a> available columns</td>
               </tr>
               <tr>
-                <td>tablet-col</td>
+                <td>tabletCol</td>
                 <td>string/number</td>
                 <td>Horizontal timeline column width (in %) for tabelt screens only. According to <a href="../docs/grid.html">Layout Grid</a> available columns</td>
               </tr>

@@ -10,7 +10,7 @@ const ensureDirectoryExistence = (filePath) => {
     if (!fs.existsSync(filePath)) {
         fs.mkdirSync(filePath);    
     }
-}
+};
 
 const getReactToVueComponentMap = () => {
     const framework7Vue = fs.readFileSync('./node_modules/framework7-vue/src/framework7-vue.js', 'utf8');
@@ -30,37 +30,33 @@ const getReactToVueComponentMap = () => {
     }
 
     return reactToVueComponentMap;
-}
-
-//function replaceVueTemplateAndScriptExamplesWithReactComponent(jade) {
-//    return jade.replace(/<template>((.|\n)*)<\/template>/gm, '...\nrender() {\nreturn (\n$1)\n}\n...');
-//}
+};
 
 const renameEventHeader = (jade) => {
     return jade.replace('h2 Events', 'h2 Event Properties');
-}
+};
 
 const convertEventsToReactEvents = (jade) => {
     return renameEventHeader(jade);    
-}
+};
 
 const renameSlotsHeader = (jade) => {
     return jade.replace('h2 Slots', 'h2 Slot Properties');
-}
+};
 
 const convertSlotsToProps = (jade) => {
     return renameSlotsHeader(jade);
-}
+};
 
 const convertEventPropName = (vueEventPropName) => {
     return camelCase('on-' + vueEventPropName.replace(/:/g, '-'));
-}
+};
 
 const replaceEventProps = (jade) => {
-    return jade.replace(/\@([A-Za-z0-9-]+)=["{](.*)["}]/g, (match, p1, p2) => {
+    return jade.replace(/\@([A-Za-z0-9-:]+)=["{](.*)["}]/g, (match, p1, p2) => {
         return convertEventPropName(p1) + '=' + '{' + p2 + '}';
     });
-}
+};
 
 const convertKebabCasePropsToCamelCase = (jade) => {
     const componentList = getReactToVueComponentMap().map(map => map.react).join('|');
@@ -71,11 +67,23 @@ const convertKebabCasePropsToCamelCase = (jade) => {
             return camelCase(match);
         });        
     });
-}
+};
 
 const replaceDynamicProps = (jade) => {
-    return jade.replace(/:([A-Za-z0-9-]+)="(.*)"/g, '$1={$2}');
-}
+    return jade.replace(/\s:([A-Za-z0-9-]+)="([^"]+)"/g, ' $1={$2}');
+};
+
+const convertCodeBlockPropsToCamelCase = (jade) => {
+    return jade.replace(/<code>(&lt;[A-Z][[a-z]+)?([a-z- ]+)(&gt;)?<\/code>/g, (match, g1, g2) => {
+        g2.split(' ').forEach((prop) => {
+            const trimmedProp = prop.trim();
+            const camelCaseProp = camelCase(trimmedProp);
+            match = match.replace(trimmedProp, camelCaseProp);
+        });
+
+        return match;
+    });    
+};
 
 const replaceVueComponentNamesWithReactComponentNames = (jade) => {
     let reactToVueComponentMap = getReactToVueComponentMap();
@@ -92,22 +100,22 @@ const replaceVueComponentNamesWithReactComponentNames = (jade) => {
     }
 
     return jade;
-}
+};
 
 const replaceVueWithReact = (jade) => {
     return jade.replace(/Vue/g, 'React');
-}
+};
 
 const replaceImportPaths = (jade) => {
     jade = jade.replace('extends ../_internal-template', 'extends ../src/jade/_internal-template');
     jade = jade.replace('include ../_docs-vue-menu', 'include ./_docs-react-menu');
 
     return jade;
-}
+};
 
 const replaceActiveLink = (jade) => {
     return jade.replace('var activeLink = \'vue\'', 'var activeLink = \'react\'');
-}
+};
 
 const convertVueDocsToReactDocs = (jadeFileContents) => {
     let jade = jadeFileContents.contents;
@@ -117,14 +125,14 @@ const convertVueDocsToReactDocs = (jadeFileContents) => {
     jade = replaceVueWithReact(jade);
     jade = replaceVueComponentNamesWithReactComponentNames(jade);    
     jade = replaceDynamicProps(jade);
-    jade = replaceEventProps(jade);
+    jade = replaceEventProps(jade);    
     jade = convertKebabCasePropsToCamelCase(jade);
-    //jade = replaceVueTemplateAndScriptExamplesWithReactComponent(jade);
+    jade = convertCodeBlockPropsToCamelCase(jade);
     jade = convertEventsToReactEvents(jade);
     jade = convertSlotsToProps(jade);
 
     return jade;
-}
+};
 
 const getVueJadeFiles = () => {
     const files = fs.readdirSync(VUE_JADE_DOCS_PATH);
@@ -135,7 +143,7 @@ const getVueJadeFiles = () => {
         return { name: fileName, contents: fileContents };
     });
 
-}
+};
 
 const processMenuJadeFile = () => {
     let menuJadeFile = fs.readFileSync('./src/jade/_docs-vue-menu.jade', 'utf8');
@@ -156,7 +164,7 @@ const cleanJadeFiles = () => {
     files.forEach(file => {
         fs.unlinkSync(REACT_JADE_OUTPUT_PATH + '/' + file);
     });
-}
+};
 
 module.exports.processVueJadeFiles = () => {
     ensureDirectoryExistence(REACT_JADE_OUTPUT_PATH);

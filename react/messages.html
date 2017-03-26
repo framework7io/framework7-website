@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Messages React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -167,85 +167,125 @@
 &lt;/div&gt;</code></pre>
           <h4>With Messagebar</h4>
           <p>Here is how it can be used in React component along with <a href="messagebar.html">Message Bar</a>:</p>
-          <pre><code>&lt;template&gt;
-  &lt;Messages&gt;
-    &lt;Message v-for="message in messages"
-      text={"}
-      label={"}
-      date={"}
-      name={"}
-      avatar={"}
-      type={"}
-      day={"}
-      time={"}
-      @click="onClick"
-      @clicktext={"}
-      @clickname={"}
-      @clickavatar={"}
-    &gt;&lt;/Message&gt;
-  &lt;/Messages&gt;
-  &lt;Messagebar placeholder="Message" send-link="Send" @submit="onSubmit"&gt;&lt;/Messagebar&gt;
-&lt;/template&gt;
-&lt;script&gt;
-  export default {
-    data: function () {
-      return {
-        name: 'Vladimir',
-        avatar: 'path/to/avatar-1.jpg',
-        messages: [
-          {
-            day: 'Wendesday',
-            time: '13:34'
-          },
-          {
-            name: 'Vladimir',
-            text: 'How are you?',
-            label: 'Sent in good mood :)',
-            avatar: 'path/to/avatar-1.jpg',
-            date: 'Yesterday 13:34'
-          },
-          {
-            name: 'Jane',
-            text: 'I\'m good, thank you!',
-            type: 'received',
-            avatar: 'path/to/avatar-2.jpg',
-            date: 'Yesterday at 13:50'
-          }
-        ]
-      }
-    },
-    methods: {
-      onClick: function (event) {
-        console.log('message click');
-      },
-      onAvatarClick: function () {
-        console.log('avatar-click');
-      },
-      onTextClick: function () {
-        console.log('text-click');
-      },
-      onNameClick: function () {
-        console.log('name-click');
-      },
-      onSubmit: function (text, clear) {
-        if (text.trim().length === 0) return;
-        this.messages.push({
-          name: this.name,
-          avatar: this.avatar,
+          <pre><code>const MessagesPageDefaultState = {
+  name: 'Vladimir',
+  messages: [{
+      day: 'Wendesday',
+      time: '13:34'
+    }, {
+      name: 'Vladimir',
+      text: 'How are you?',
+      label: 'Sent in good mood :)',
+      avatar: 'http://lorempixel.com/100/100/people/3',
+      date: 'Yesterday 13:34'
+    }, {
+      name: 'Jane',
+      text: 'I\'m good, thank you!',
+      type: 'received',
+      avatar: 'http://lorempixel.com/100/100/people/9',
+      date: 'Yesterday at 13:50'
+    }
+  ]
+}
+
+class MessagesPage extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      name: MessagesPageDefaultState.name,
+      messages: MessagesPageDefaultState.messages
+    };
+  }
+
+  getMessage(props, index) {
+    let messageProps = {}
+
+    if (props) {
+      messageProps = props;
+    }
+
+    return (
+      &lt;Message
+        {...messageProps}
+        key={index}
+        onClick={this.onClick.bind(this)}
+        onClickText={this.onTextClick.bind(this)}
+        onClickName={this.onNameClick.bind(this)}
+        onClickAvatar={this.onAvatarClick.bind(this)}&gt;
+      &lt;/Message&gt;
+    );
+  }
+
+  render() {
+    return (
+      &lt;Page toolbar-fixed&gt;
+        &lt;Navbar backLink="Back" title="Messages" sliding&gt;&lt;/Navbar&gt;
+        &lt;Subnavbar&gt;
+          &lt;input type="text" placeholder="Your name" defaultValue={this.state.name} onChange={this.onNameChange.bind(this)}/&gt;
+        &lt;/Subnavbar&gt;
+        &lt;Messages&gt;
+        {
+          this.state.messages.map((message, index) =&gt; {
+            return this.getMessage(message, index);
+          })
+        }
+        &lt;/Messages&gt;
+        &lt;Messagebar placeholder="Message" sendLink="Send" onSubmit={this.onSubmit.bind(this)} /&gt;
+      &lt;/Page&gt;
+    );
+  }
+
+  onClick() {
+    console.log('click');
+  }
+  
+  onTextClick() {
+    console.log('text click');
+  }
+  
+  onNameClick() {
+    console.log('name click');
+  }
+  
+  onAvatarClick() {
+    console.log('avatar click');
+  }
+      
+  onSubmit(text, clear) {              
+    if (text.trim().length === 0) return;
+
+    this.setState({
+      ...this.state,
+      messages: [
+        ...this.state.messages,
+        {
+          name: this.state.name,
+          avatar: 'http://lorempixel.com/100/100/people/3',
           text: text,
           date: (function () {
-            var now = new Date();
-            var hours = now.getHours();
-            var minutes = now.getMinutes();
-            return hours + ':' + minutes;
+              let now = new Date();
+              let hours = now.getHours();
+              let hoursString = hours &lt; 10 ? `0${hours}` : `${hours}`; 
+              let minutes = now.getMinutes();
+              let minutesString = minutes &lt; 10 ? `0${minutes}` : `${minutes}`;    
+              return `${hours}:${minutesString}`;
           })()
-        });
-        // Clear Message Bar
-        clear();
-      }
+        }]
+      });
+
+      clear();
     }
   }
-&lt;/script&gt;</code></pre>
+
+  onNameChange(event) {
+    this.setState({
+      ...this.state,
+      name: event.target.value
+    });
+  }                
+};
+</code></pre>
           <h2>Properties</h2>
           <table class="params-table">
             <thead>
@@ -362,7 +402,7 @@
               </tr>
             </tbody>
           </table>
-          <h2>Events</h2>
+          <h2>Event Properties</h2>
           <table class="events-table">
             <thead>
               <tr>
@@ -375,25 +415,23 @@
                 <th colspan="2">&lt;Message&gt; events</th>
               </tr>
               <tr>
-                <td>click</td>
+                <td>onClick</td>
                 <td>Event will be triggered when user clicks on message bubble</td>
               </tr>
               <tr>
-                <td>click:name</td>
+                <td>onClickName</td>
                 <td>Event will be triggered when user clicks on message user's name</td>
               </tr>
               <tr>
-                <td>click:text</td>
+                <td>onClickText</td>
                 <td>Event will be triggered when user clicks on message text</td>
               </tr>
               <tr>
-                <td>click:avatar</td>
+                <td>onClickAvatar</td>
                 <td>Event will be triggered when user clicks on message user's avatar</td>
               </tr>
             </tbody>
           </table>
-          <h2>Access To Initialized Instance</h2>
-          <p>If you use automatic initalization to init Messages (with <code>init:true</code> prop) and need to use its <a href="../docs/messages.html#messages-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messages</b></code> component's property.</p>
         </div>
       </div>
     </div>

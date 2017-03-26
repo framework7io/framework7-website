@@ -296,6 +296,7 @@
         gulp.src(src, {base: './'})
             .pipe(sftp(remote));
     });
+
     /* =================================
     Server
     ================================= */
@@ -306,6 +307,7 @@
             port:'3000'
         });
     });
+
     gulp.task('open', function () {
         return gulp.src('./index.html').pipe(open({ uri: 'http://localhost:3000/index.html'}));
     });
@@ -315,6 +317,4 @@
     gulp.task('default', [ 'server' ]);
 
     gulp.task('test', [ 'build' ]);
-
-
 })();

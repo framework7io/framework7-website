@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Message Bar React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -150,7 +150,7 @@
           <h1>Message Bar React Component</h1>
           <p>Message Bar React component represents Framework7's <a href="../docs/messagebar.html">Message Bar</a> component.</p>
           <h2>Usage example</h2>
-          <pre><code>&lt;Messagebar placeholder="Message" send-link="Send" @submit="onSubmit"&gt;&lt;/Messagebar&gt;</code></pre>
+          <pre><code>&lt;Messagebar placeholder="Message" sendLink="Send" onSubmit={onSubmit}&gt;&lt;/Messagebar&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="toolbar messagebar"&gt;
   &lt;div class="toolbar-inner"&gt;
@@ -158,21 +158,27 @@
     &lt;a href="#" class="link"&gt;Send&lt;/a&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
-          <h2>Slots</h2>
+          <h2>Slot Properties</h2>
           <p>Message Bar React component has additional slots for custom elements:</p>
           <ul>
-            <li><b>before-input</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element</li>
-            <li><b>after-input</b> - element will be inserted right after &lt;div type="toolbar-inner"&gt; element</li>
-            <li><b>before-textarea</b> - element will be inserted right before textarea</li>
-            <li><b>after-textarea</b> - element will be inserted right after textarea</li>
+            <li><b>beforeInputSlot</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element</li>
+            <li><b>afterInputSlot</b> - element will be inserted right after &lt;div type="toolbar-inner"&gt; element</li>
+            <li><b>beforeTextareaSlot</b> - element will be inserted right before textarea</li>
+            <li><b>afterTextareaSlot</b> - element will be inserted right after textarea</li>
+            <li><b>sendLinkSlot</b> - element will be inserted inside of send link</li>
           </ul>
-          <pre><code>&lt;Messagebar placeholder="Message" send-link="Send" @submit="onSubmit"&gt;
-  &lt;div slot="before-inner"&gt;Before inner&lt;/div&gt;
-  &lt;div slot="after-inner"&gt;After inner&lt;/div&gt;
-  &lt;div slot="before-textarea"&gt;Before textarea&lt;/div&gt;
-  &lt;div slot="after-textarea"&gt;After textarea&lt;/div&gt;
-  &lt;div&gt;Default slot&lt;/div&gt;
-&lt;/Messagebar&gt;</code></pre>
+          <pre><code>&lt;Messagebar 
+  placeholder="Message"
+  onSubmit={onSubmit}
+  beforeInnerSlot={&lt;div&gt;Before inner&lt;/div&gt;}
+  afterInnerSlot={&lt;div&gt;After inner&lt;/div&gt;}
+  beforeTextareaSlot={&lt;div&gt;Before textarea&lt;/div&gt;}
+  afterTextareaSlot={&lt;div&gt;After textarea&lt;/div&gt;}
+  sendLinkSlot={&lt;span&gt;Send&lt;/span&gt;}              
+&gt;
+  Text goes here
+&lt;/Messagebar&gt;
+</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="toolbar messagebar"&gt;
   &lt;div&gt;Before inner&lt;/div&gt;
@@ -180,7 +186,7 @@
     &lt;div&gt;Before textarea&lt;/div&gt;
     &lt;textarea placeholder="Message"&gt;&lt;/textarea&gt;
     &lt;div&gt;After textarea&lt;/div&gt;
-    &lt;a href="#" class="link"&gt;Send&lt;/a&gt;
+    &lt;a href="#" class="link"&gt;&lt;span&gt;Send&lt;/span&gt;&lt;/a&gt;
     &lt;div&gt;Default slot&lt;/div&gt;
   &lt;/div&gt;
   &lt;div&gt;After inner&lt;/div&gt;
@@ -233,20 +239,20 @@
                 <td>Sets "disbled" textarea attribute</td>
               </tr>
               <tr>
-                <td>send-link</td>
+                <td>sendLink</td>
                 <td>string</td>
                 <td></td>
-                <td>Enables Send link and specifies its text</td>
+                <td>Enables Send link and specifies its text or its inner HTML. This property will be ignored in case you use "send-link" slot</td>
               </tr>
               <tr>
-                <td>max-height</td>
+                <td>maxHeight</td>
                 <td>number</td>
                 <td></td>
                 <td>Defines resizeable textarea max height</td>
               </tr>
             </tbody>
           </table>
-          <h2>Events</h2>
+          <h2>Event Properties</h2>
           <table class="events-table">
             <thead>
               <tr>
@@ -256,29 +262,27 @@
             </thead>
             <tbody>
               <tr>
-                <td>change</td>
+                <td>onChange</td>
                 <td>Event will be triggered when "change" event occurs on message bar textarea element</td>
               </tr>
               <tr>
-                <td>input</td>
+                <td>onInput</td>
                 <td>Event will be triggered when "input" event occurs on message bar textarea element</td>
               </tr>
               <tr>
-                <td>focus</td>
+                <td>onFocus</td>
                 <td>Event will be triggered when "focus" event occurs on message bar textarea element</td>
               </tr>
               <tr>
-                <td>blur</td>
+                <td>onBlur</td>
                 <td>Event will be triggered when "blur" event occurs on message bar textarea element</td>
               </tr>
               <tr>
-                <td>submit</td>
+                <td>onSubmit</td>
                 <td>Event will be triggered when user clicks on message bar "send link"</td>
               </tr>
             </tbody>
           </table>
-          <h2>Access To Initialized Instance</h2>
-          <p>If you use automatic initalization to init Message Bar (with <code>init:true</code> prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messagebar</b></code> component's property.</p>
         </div>
       </div>
     </div>

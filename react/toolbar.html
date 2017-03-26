@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Toolbar React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -176,8 +176,8 @@
 &lt;/div&gt;</code></pre>
           <h4>Tabbar</h4>
           <pre><code>&lt;Toolbar tabbar&gt;
-  &lt;Link tab-link="#tab1"&gt;Tab 1&lt;/Link&gt;
-  &lt;Link tab-link="#tab2"&gt;Tab 2&lt;/Link&gt;
+  &lt;Link tabLink="#tab1"&gt;Tab 1&lt;/Link&gt;
+  &lt;Link tabLink="#tab2"&gt;Tab 2&lt;/Link&gt;
 &lt;/Toolbar&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="toolbar tabbar"&gt;
@@ -188,8 +188,8 @@
 &lt;/div&gt;</code></pre>
           <h4>Tabbar With Labels</h4>
           <pre><code>&lt;Toolbar tabbar labels&gt;
-  &lt;Link icon="icon-1" text="Tab 1" tab-link="#tab1"&gt;&lt;/Link&gt;
-  &lt;Link icon="icon-2" text="Tab 2" tab-link="#tab2"&gt;&lt;/Link&gt;
+  &lt;Link icon="icon-1" text="Tab 1" tabLink="#tab1"&gt;&lt;/Link&gt;
+  &lt;Link icon="icon-2" text="Tab 2" tabLink="#tab2"&gt;&lt;/Link&gt;
 &lt;/Toolbar&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="toolbar tabbar tabbar-labels"&gt;
@@ -206,8 +206,8 @@
 &lt;/div&gt;</code></pre>
           <h4>Scrollable Tabbar</h4>
           <pre><code>&lt;Toolbar tabbar scrollable&gt;
-  &lt;Link tab-link="#tab1"&gt;Tab 1&lt;/Link&gt;
-  &lt;Link tab-link="#tab2"&gt;Tab 2&lt;/Link&gt;
+  &lt;Link tabLink="#tab1"&gt;Tab 1&lt;/Link&gt;
+  &lt;Link tabLink="#tab2"&gt;Tab 2&lt;/Link&gt;
 &lt;/Toolbar&gt;</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="toolbar tabbar tabbar-scrollable"&gt;
@@ -216,15 +216,16 @@
     &lt;a href="#" class="tab-link" data-tab="#tab2"&gt;Tab 2&lt;/a&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
-          <h2>Slots</h2>
+          <h2>Slot Properties</h2>
           <p>Toolbar React component (&lt;Toolbar&gt;) has additional slots for custom elements:</p>
           <ul>
-            <li><b>before-inner</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element</li>
-            <li><b>after-inner</b> - element will be inserted right after &lt;div class="toolbar-inner"&gt; element</li>
+            <li><b>beforeInnerSlot</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element</li>
+            <li><b>afterInnerSlot</b> - element will be inserted right after &lt;div class="toolbar-inner"&gt; element</li>
           </ul>
-          <pre><code>&lt;Toolbar&gt;
-  &lt;div slot="before-inner"&gt;Before Inner&lt;/div&gt;
-  &lt;div slot="after-inner"&gt;After Inner&lt;/div&gt;
+          <pre><code>&lt;Toolbar
+  beforeInnerSlot={&lt;div&gt;Before Inner&lt;/div&gt;}
+  afterInnerSlot={&lt;div&gt;After Inner&lt;/div&gt;}
+&gt; 
   &lt;Link&gt;Left Link&lt;/Link&gt;
   &lt;Link&gt;Right Link&lt;/Link&gt;
 &lt;/Toolbar&gt;</code></pre>

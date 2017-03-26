@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Action Sheet React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -159,7 +159,7 @@
     &lt;ActionsLabel&gt;Hello&lt;/ActionsLabel&gt;
     &lt;!-- Actions Buttons --&gt;
     &lt;ActionsButton&gt;Button 1&lt;/ActionsButton&gt;
-    &lt;ActionsButton @click="doSomething"&gt;Button 2&lt;/ActionsButton&gt;
+    &lt;ActionsButton onClick={doSomething}&gt;Button 2&lt;/ActionsButton&gt;
   &lt;/ActionsGroup&gt;
   &lt;!-- Another Group --&gt;
   &lt;ActionsGroup&gt;
@@ -236,7 +236,7 @@
               </tr>
             </tbody>
           </table>
-          <h2>Events</h2>
+          <h2>Event Properties</h2>
           <table class="events-table">
             <thead>
               <tr>
@@ -246,23 +246,34 @@
             </thead>
             <tbody>
               <tr>
-                <td>actions:open</td>
+                <td>onActionsOpen</td>
                 <td>Event will be triggered when Action Sheet starts its opening animation</td>
               </tr>
               <tr>
-                <td>actions:opened</td>
+                <td>onActionsOpened</td>
                 <td>Event will be triggered after Action Sheet completes its opening animation</td>
               </tr>
               <tr>
-                <td>actions:close</td>
+                <td>onActionsClose</td>
                 <td>Event will be triggered when Action Sheet starts its closing animation</td>
               </tr>
               <tr>
-                <td>actions:closed</td>
+                <td>onActionsClosed</td>
                 <td>Event will be triggered after Action Sheet completes its closing animation</td>
               </tr>
             </tbody>
           </table>
+          <h2>Methods</h2>
+          <table class="methods-table">
+            <tbody><tr>
+              <td>.open(<span>animated</span>)</td>
+              <td>Open Action Sheet</td>
+            </tr>
+            <tr>
+              <td>.close(<span>animated</span>)</td>
+              <td>Close Action Sheet</td>
+            </tr>
+          </tbody></table>
           <h2>Open and close Action Sheet</h2>
           <p>You can control Action Sheet state, open and closing it:</p>
           <ul>

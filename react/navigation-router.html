@@ -1,14 +1,14 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
-    <title>Navigation Router | Framework7 React Documentation</title>
+    <title>Navigation Router | Framework7 Vue Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
     <link rel="stylesheet" href="/css/normalize.css">
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -148,31 +148,31 @@
         </div>
         <div class="docs-content">
           <h1>Navigation Router</h1>
-          <p>With Framework7 &amp; React.js, we are already composing our application with components. All we need to do is map our components to the routes. Here's a basic example:</p>
+          <p>With Framework7 &amp; Vue.js, we are already composing our application with components. All we need to do is map our components to the routes. Here's a basic example:</p>
           <pre><code>&lt;!-- Current View/Router --&gt;
-&lt;View&gt;
+&lt;f7-view&gt;
   &lt;!-- All pages are rendered inside of Pages --&gt;
-  &lt;Pages&gt;
+  &lt;f7-pages&gt;
     &lt;!-- Initial Page --&gt;
-    &lt;Page&gt;
+    &lt;f7-page&gt;
       ...
-      &lt;Link href="/about/"&gt;About App&lt;/Link&gt;
-      &lt;Link href="/login/"&gt;Login&lt;/Link&gt;
-    &lt;/Page&gt;
-  &lt;/Pages&gt;
-&lt;/View&gt;</code></pre>
+      &lt;f7-link href="/about/"&gt;About App&lt;/f7-link&gt;
+      &lt;f7-link href="/login/"&gt;Login&lt;/f7-link&gt;
+    &lt;/f7-page&gt;
+  &lt;/f7-pages&gt;
+&lt;/f7-view&gt;</code></pre>
           <p>Now we need to map components to routes. It should be done in <b>routes</b> parameter on <a href="init-app.html">App Initialization</a></p>
           <pre><code>// Create Component for About page
-React.component('page-about', {
-    template: '&lt;Page name="about"&gt;...&lt;/Page&gt;'
+Vue.component('page-about', {
+    template: '&lt;f7-page name="about"&gt;...&lt;/f7-page&gt;'
 })
 // Create Component for Login page
-React.component('page-login', {
-    template: '&lt;Page name="login"&gt;...&lt;/Page&gt;'
+Vue.component('page-login', {
+    template: '&lt;f7-page name="login"&gt;...&lt;/f7-page&gt;'
 })
 
 // Init App
-new React({
+new Vue({
     el: '#app',
     framework7: {
         root: '#app',
@@ -192,9 +192,9 @@ new React({
           <p>If you use single file components (with Webpack or Browserify):</p>
           <pre><code>&lt;!-- about.vue --&gt;
 &lt;template&gt;
-  &lt;Page name="about"&gt;
+  &lt;f7-page name="about"&gt;
     &lt;!-- Page content --&gt;
-  &lt;/Page&gt;
+  &lt;/f7-page&gt;
 &lt;/template&gt;
 &lt;script&gt;
   export default {}
@@ -202,9 +202,9 @@ new React({
 
 &lt;!-- login.vue --&gt;
 &lt;template&gt;
-  &lt;Page name="login"&gt;
+  &lt;f7-page name="login"&gt;
     &lt;!-- Page content --&gt;
-  &lt;/Page&gt;
+  &lt;/f7-page&gt;
 &lt;/template&gt;
 &lt;script&gt;
   export default {}
@@ -213,7 +213,7 @@ new React({
 import LoginPage from 'login.vue'
 
 // Init App
-new React({
+new Vue({
     el: '#app',
     framework7: {
         root: '#app',
@@ -249,12 +249,12 @@ new React({
           <h2>Dynamic Route Matching</h2>
           <p>Very often we will need to map routes with the given pattern to the same component. In specified <b>routes</b> we can use a dynamic segment in the path to achieve that.</p>
           <p>Let's say we have the following link:</p>
-          <pre><code>&lt;Link href="/user/45/posts/28/?sort=first#opened"&gt;Read More&lt;/Link&gt;</code></pre>
+          <pre><code>&lt;f7-link href="/user/45/posts/28/?sort=first#opened"&gt;Read More&lt;/f7-link&gt;</code></pre>
           <p>And the following pattern in specified route path:</p>
           <pre><code>import PostPage from 'post.vue'
 
 // Init App
-new React({
+new Vue({
     el: '#app',
     framework7: {
         root: '#app',
@@ -271,8 +271,8 @@ new React({
           <p>In this case we have access to <b>$route</b> component property that we can use, e.g. in post.vue:</p>
           <pre><code>&lt;!-- post.vue --&gt;
 &lt;template&gt;
-  &lt;Page&gt;
-    &lt;Navbar title="Post"&gt;&lt;/Navbar&gt;
+  &lt;f7-page&gt;
+    &lt;f7-navbar title="Post"&gt;&lt;/f7-navbar&gt;
     &lt;ul&gt;
       &lt;li&gt;Route: {{$route.route}}&lt;/li&gt;
       &lt;li&gt;Url: {{$route.url}}&lt;/li&gt;
@@ -282,7 +282,7 @@ new React({
       &lt;li&gt;Query: {{JSON.stringify($route.query)}}&lt;/li&gt;
       &lt;li&gt;Hash: {{$route.hash}}
     &lt;/ul&gt;
-  &lt;/Page&gt;
+  &lt;/f7-page&gt;
 &lt;/template&gt;</code></pre>
           <p>And the output will be:</p>
           <pre><code>...
@@ -327,8 +327,8 @@ new React({
           </table>
           <h2>Router API</h2>
           <p>To access router instance and use <a href="../docs/router-api.html">Router API</a> you can use special <b>$router</b> property of component:</p>
-          <pre><code>&lt;Link @click="$router.load({url: '/about/'})"&gt;About&lt;/Link&gt;
-&lt;Link @click="$router.back()"&gt;Go Back&lt;/Link&gt;</code></pre>
+          <pre><code>&lt;f7-link @click="$router.load({url: '/about/'})"&gt;About&lt;/f7-link&gt;
+&lt;f7-link @click="$router.back()"&gt;Go Back&lt;/f7-link&gt;</code></pre>
         </div>
       </div>
     </div>

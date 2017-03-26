@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Form Elements React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -173,7 +173,7 @@
   &lt;!-- Switch --&gt;
   &lt;ListItem&gt;
     &lt;FormLabel&gt;Switch&lt;/FormLabel&gt;
-    &lt;FormInput type="switch" @change="onChange"&gt;&lt;/FormInput&gt;
+    &lt;FormInput type="switch" onChange={onChange}&gt;&lt;/FormInput&gt;
   &lt;/ListItem&gt;
   &lt;!-- Range --&gt;
   &lt;ListItem&gt;
@@ -365,7 +365,7 @@
                 <td>Input value</td>
               </tr>
               <tr>
-                <td>size/number</td>
+                <td>sizeNumber</td>
                 <td>string</td>
                 <td></td>
                 <td>Value of input's native "size" attribute</td>
@@ -480,8 +480,8 @@
               </tr>
             </tbody>
           </table>
-          <h2>Events</h2>
-          <table class="params-table">
+          <h2>Event Properties</h2>
+          <table class="events-table">
             <thead>
               <tr>
                 <th>Event</th>
@@ -493,104 +493,104 @@
                 <th colspan="3">&lt;FormInput&gt; events</th>
               </tr>
               <tr>
-                <td>focus</td>
+                <td>onFocus</td>
                 <td>Fired when user focused to input.</td>
               </tr>
               <tr>
-                <td>focusin</td>
+                <td>onFocusin</td>
                 <td>Fired when an element is about to receive focus. The main difference between this event and focus is that the latter doesn't bubble.</td>
               </tr>
               <tr>
-                <td>blur</td>
+                <td>onBlur</td>
                 <td>Fired when user lost focus from input.</td>
               </tr>
               <tr>
-                <td>focusout</td>
+                <td>onFocusout</td>
                 <td>Fired when an element is about to lose focus. The main difference between this event and blur is that the latter doesn't bubble.</td>
               </tr>
               <tr>
-                <td>beforeinput</td>
+                <td>onBeforeinput</td>
                 <td>Fired before input value change.</td>
               </tr>
               <tr>
-                <td>input</td>
+                <td>onInput</td>
                 <td>Fired immediately when input value changed. Note: Input event triggers after beforeinput, keypress, keyup, keydown events.</td>
               </tr>
               <tr>
-                <td>change</td>
+                <td>onChange</td>
                 <td>Fired when blur if value changed.</td>
               </tr>
               <tr>
-                <td>keypress</td>
+                <td>onKeypress</td>
                 <td>You can use this event and @keydown event for prevent input. @keypress event fired after keydown and before keyup.
                   <p>You can use like this too:<code class="js">@keypress.enter="alert('User pressed enter key.')"</code></p>
                   <p>For more information:<a target="_blank" href="https://vuejs.org/v2/guide/events.html#Key-Modifiers">https://vuejs.org/v2/guide/events.html#Key-Modifiers</a></p>
                 </td>
               </tr>
               <tr>
-                <td>keyup</td>
+                <td>onKeyup</td>
                 <td>Fired when user released the keyboard button.</td>
               </tr>
               <tr>
-                <td>keydown</td>
+                <td>onKeydown</td>
                 <td>Fired when user starts pressing to the keyboard button.</td>
               </tr>
               <tr>
-                <td>compositionstart</td>
+                <td>onCompositionstart</td>
                 <td>Fired when the composition of a passage of text is prepared (similar to keydown for a keyboard input, but fires with special characters that require a sequence of keys and other inputs such as speech recognition or word suggestion on mobile).</td>
               </tr>
               <tr>
-                <td>compositionupdate</td>
+                <td>onCompositionupdate</td>
                 <td>Fired when a character is added to a passage of text being composed (fires with special characters that require a sequence of keys and other inputs such as speech recognition or word suggestion on mobile).</td>
               </tr>
               <tr>
-                <td>compositionend</td>
+                <td>onCompositionend</td>
                 <td>Fired when the composition of a passage of text has been completed or cancelled.</td>
               </tr>
               <tr>
-                <td>click</td>
+                <td>onClick</td>
                 <td>Fired when clicked to input.</td>
               </tr>
               <tr>
-                <td>dblclick</td>
+                <td>onDblclick</td>
                 <td>Fired when double clicked to input.</td>
               </tr>
               <tr>
-                <td>mousedown</td>
+                <td>onMousedown</td>
                 <td>Fired when a pointing device button (usually a mouse button) is pressed on an element.</td>
               </tr>
               <tr>
-                <td>mouseup</td>
+                <td>onMouseup</td>
                 <td>Fired when a pointing device button (usually a mouse button) is released over an element.</td>
               </tr>
               <tr>
-                <td>mouseenter</td>
+                <td>onMouseenter</td>
                 <td>Fired when a pointing device (usually a mouse) is moved over the element that has the listener attached.
                   <p>@mouseenter and @mouseover events are different. For more info:<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Events/mouseenter">https://developer.mozilla.org/en-US/docs/Web/Events/mouseenter</a></p>
                 </td>
               </tr>
               <tr>
-                <td>mouseover</td>
+                <td>onMouseover</td>
                 <td>Fired when a pointing device is moved onto the element that has the listener attached or onto one of its children.</td>
               </tr>
               <tr>
-                <td>mouseleave</td>
+                <td>onMouseleave</td>
                 <td>Fired when a pointing device (usually a mouse) is moved off the element that has the listener attached.</td>
               </tr>
               <tr>
-                <td>mouseout</td>
+                <td>onMouseout</td>
                 <td>Fired when a pointing device (usually a mouse) is moved off the element that has the listener attached or off one of its children. Note that it is also triggered on the parent when you move onto a child element, since you move out of the visible space of the parent.</td>
               </tr>
               <tr>
-                <td>mousemove</td>
+                <td>onMousemove</td>
                 <td>Fired when a pointing device (usually a mouse) is moved while over an element.</td>
               </tr>
               <tr>
-                <td>wheel</td>
+                <td>onWheel</td>
                 <td>Fired when a wheel button of a pointing device (usually a mouse) is rotated. This event replaces the non-standard deprecated mousewheel event.</td>
               </tr>
               <tr>
-                <td>select</td>
+                <td>onSelect</td>
                 <td>Fired when some text is being selected. The event might not be available for all elements in all languages. For example, select events can be dispatched only on form input and textarea elements.</td>
               </tr>
             </tbody>

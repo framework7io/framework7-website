@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>List Item React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -172,8 +172,8 @@
 </code></pre>
           <h4>With Badges And Divider</h4>
           <pre><code>&lt;List&gt;
-  &lt;ListItem title="Item 1" badge="5" badge-color="red"&gt;&lt;/ListItem&gt;
-  &lt;ListItem title="Item 2" badge="3" badge-color="red"&gt;&lt;/ListItem&gt;
+  &lt;ListItem title="Item 1" badge="5" badgeColor="red"&gt;&lt;/ListItem&gt;
+  &lt;ListItem title="Item 2" badge="3" badgeColor="red"&gt;&lt;/ListItem&gt;
   &lt;ListItem title="Items Divider" divider&gt;&lt;/ListItem&gt;
   &lt;ListItem title="Item 3"&gt;&lt;/ListItem&gt;
   ...
@@ -234,7 +234,7 @@
   &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
           <h4>Media List Items</h4>
-          <pre><code>&lt;List media-list&gt;
+          <pre><code>&lt;List mediaList&gt;
   &lt;ListItem
     link="/item/"
     media="&lt;img src='image.jpg'&gt;"
@@ -266,19 +266,19 @@
     &lt;/li&gt;
   &lt;/ul&gt;
 &lt;/div&gt;</code></pre>
-          <h2>Slots</h2>
-          <p>List Item React component (&lt;ListItem&gt;) has additional slots for custom elements:</p>
+          <h2>Slot Properties</h2>
+          <p>List Item React component (&lt;ListItem&gt;) has additional slot properties for custom elements:</p>
           <ul>
-            <li><b>root-start</b> - element will be inserted in the beginning of &lt;li&gt; element</li>
-            <li><b>root</b> - element will be inserted in the end of &lt;li&gt; element</li>
-            <li><b>content-start</b> - element will be inserted in the beginning of &lt;div class="item-content"&gt; element</li>
-            <li><b>content</b> - element will be inserted in the end of &lt;div class="item-content"&gt; element</li>
-            <li><b>media-start</b> - element will be inserted in the beginning of &lt;div class="item-media"&gt; element</li>
-            <li><b>media</b> - element will be inserted in the end of &lt;div class="item-media"&gt; element</li>
-            <li><b>inner-start</b> - element will be inserted in the beginning of &lt;div class="item-inner"&gt; element</li>
-            <li><b>inner/default</b> - element will be inserted in the end of &lt;div class="item-inner"&gt; element</li>
+            <li><b>rootStartSlot</b> - element will be inserted in the beginning of &lt;li&gt; element</li>
+            <li><b>rootSlot</b> - element will be inserted in the end of &lt;li&gt; element</li>
+            <li><b>contentStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-content"&gt; element</li>
+            <li><b>contentSlot</b> - element will be inserted in the end of &lt;div class="item-content"&gt; element</li>
+            <li><b>mediaStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-media"&gt; element</li>
+            <li><b>mediaSlot</b> - element will be inserted in the end of &lt;div class="item-media"&gt; element</li>
+            <li><b>innerStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-inner"&gt; element</li>
+            <li><b>innerSlot</b> - element will be inserted in the end of &lt;div class="item-inner"&gt; element</li>
           </ul>
-          <pre><code>&lt;List media-list&gt;
+          <pre><code>&lt;List mediaList&gt;
   &lt;ListItem
     link="/home/"
     media="&lt;img src='image.jpg'&gt;"
@@ -286,17 +286,18 @@
     subtitle="Item Subtitle"
     text="Text"
     after="Read more"
-    &gt;
-      &lt;div slot="root-start"&gt;Root Start&lt;/div&gt;
-      &lt;div slot="root"&gt;Root&lt;/div&gt;
-      &lt;div slot="content-start"&gt;Content Start&lt;/div&gt;
-      &lt;div slot="content"&gt;Content&lt;/div&gt;
-      &lt;div slot="media-start"&gt;Media Start&lt;/div&gt;
-      &lt;div slot="media"&gt;Media&lt;/div&gt;
-      &lt;span slot="after-start"&gt;After Start&lt;/span&gt;
-      &lt;span slot="after"&gt;After&lt;/span&gt;
-      &lt;div slot="inner-start"&gt;Inner Start&lt;/div&gt;
-      &lt;div slot="inner"&gt;Inner&lt;/div&gt;
+
+    rootStartSlot={&lt;div&gt;Root Start&lt;/div&gt;}
+    rootSlot={&lt;div&gt;Root&lt;/div&gt;}
+    contentStartSlot={&lt;div&gt;Content Start&lt;/div&gt;}
+    contentSlot={&lt;div&gt;Content&lt;/div&gt;}
+    mediaStartSlot={&lt;div&gt;Media Start&lt;/div&gt;}
+    mediaSlot={&lt;div&gt;Media&lt;/div&gt;}
+    afterStartSlot={&lt;span&gt;After Start&lt;/span&gt;}
+    afterSlot={&lt;span&gt;After&lt;/span&gt;}
+    innerStartSlot={&lt;div&gt;Inner Start&lt;/div&gt;}
+    innerSlot={&lt;div&gt;Inner&lt;/div&gt;}
+  &gt;
   &lt;/ListItem&gt;
 &lt;/List&gt;</code></pre>
           <p>Renders to:</p>
@@ -381,13 +382,13 @@
                 <td>List item Badge</td>
               </tr>
               <tr>
-                <td>badge-color</td>
+                <td>badgeColor</td>
                 <td>string</td>
                 <td></td>
                 <td>List item Badge color. One of <a href="../docs/color-themes.html">default colors</a></td>
               </tr>
               <tr>
-                <td>media-item</td>
+                <td>mediaItem</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Enables Media list item for the current list item</td>
@@ -399,7 +400,7 @@
                 <td>Converts list item to list item divider</td>
               </tr>
               <tr>
-                <td>group-title</td>
+                <td>groupTitle</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Converts list item to list group title</td>
@@ -411,7 +412,7 @@
                 <td>Converts list item to <a href="swipeout-list.html">swipeout list item</a></td>
               </tr>
               <tr>
-                <td>accordion-item</td>
+                <td>accordionItem</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Converts list item to <a href="accordion-list.html">accordion list item</a></td>
@@ -420,73 +421,73 @@
                 <th colspan="4"><a href="smart-select.html">Smart Select</a> properties</th>
               </tr>
               <tr>
-                <td>smart-select</td>
+                <td>smartSelect</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Converts list item to smart select list item</td>
               </tr>
               <tr>
-                <td>smart-select-searchbar</td>
+                <td>smartSelectSearchbar</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Enables search bar for smart select page</td>
               </tr>
               <tr>
-                <td>smart-select-searchnar-placeholder</td>
+                <td>smartSelectSearchnarPlaceholder</td>
                 <td>string</td>
                 <td>"Search"</td>
                 <td>Smart select search bar search field placeholder text</td>
               </tr>
               <tr>
-                <td>smart-select-searchbar-cancel</td>
+                <td>smartSelectSearchbarCancel</td>
                 <td>string</td>
                 <td>"Cancel"</td>
                 <td>Smart select search bar Cancel button text</td>
               </tr>
               <tr>
-                <td>smart-select-page-title</td>
+                <td>smartSelectPageTitle</td>
                 <td>string</td>
                 <td></td>
                 <td>Smart select page title. Defaults to <code>title</code> prop</td>
               </tr>
               <tr>
-                <td>smart-select-back-text</td>
+                <td>smartSelectBackText</td>
                 <td>boolean</td>
                 <td>"Back"</td>
                 <td>Smart select page back-link text.</td>
               </tr>
               <tr>
-                <td>smart-select-back-on-select</td>
+                <td>smartSelectBackOnSelect</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Will close Smart Select page automatically after user selects any option</td>
               </tr>
               <tr>
-                <td>smart-select-open-in</td>
+                <td>smartSelectOpenIn</td>
                 <td>string</td>
                 <td>"page"</td>
                 <td>Defines how to open smart select: "page", "popup" or "picker"</td>
               </tr>
               <tr>
-                <td>smart-select-virtual-list</td>
+                <td>smartSelectVirtualList</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Enables Virtual list for smart select</td>
               </tr>
               <tr>
-                <td>smart-select-virtual-list-height</td>
+                <td>smartSelectVirtualListHeight</td>
                 <td>number</td>
                 <td></td>
                 <td>Allows to specify virtual list item height</td>
               </tr>
               <tr>
-                <td>smart-select-navbar-theme</td>
+                <td>smartSelectNavbarTheme</td>
                 <td>string</td>
                 <td></td>
                 <td>Smart select navbar color theme. One of <a href="../docs/color-themes.html">default colors</a></td>
               </tr>
               <tr>
-                <td>smart-select-form-theme</td>
+                <td>smartSelectFormTheme</td>
                 <td>string</td>
                 <td></td>
                 <td>Smart select form color theme. One of <a href="../docs/color-themes.html">default colors</a></td>
@@ -552,128 +553,128 @@
                 <td>Enables link and link URL if specified as string</td>
               </tr>
               <tr>
-                <td>link-open-panel</td>
+                <td>linkOpenPanel</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>Defines panel to open. Can be "left" or "right"</td>
               </tr>
               <tr>
-                <td>link-close-panel</td>
+                <td>linkClosePanel</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Closes panel on click</td>
               </tr>
               <tr>
-                <td>link-open-popup</td>
+                <td>linkOpenPopup</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popup to open on click</td>
               </tr>
               <tr>
-                <td>link-close-popup</td>
+                <td>linkClosePopup</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popup to close on click. Or boolean property to close currently opened popup</td>
               </tr>
               <tr>
-                <td>link-open-popover</td>
+                <td>linkOpenPopover</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popover to open on click</td>
               </tr>
               <tr>
-                <td>link-close-popover</td>
+                <td>linkClosePopover</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the popover to close on click. Or boolean property to close currently opened popover</td>
               </tr>
               <tr>
-                <td>link-open-picker</td>
+                <td>linkOpenPicker</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the picker to open on click</td>
               </tr>
               <tr>
-                <td>link-close-picker</td>
+                <td>linkClosePicker</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the picker to close on click. Or boolean property to close currently opened picker</td>
               </tr>
               <tr>
-                <td>link-open-login-screen</td>
+                <td>linkOpenLoginScreen</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the login screen to open on click</td>
               </tr>
               <tr>
-                <td>link-close-login-screen</td>
+                <td>linkCloseLoginScreen</td>
                 <td>string/boolean</td>
                 <td></td>
                 <td>CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen</td>
               </tr>
               <tr>
-                <td>link-view</td>
+                <td>linkView</td>
                 <td>string</td>
                 <td></td>
                 <td>CSS selector of the View to load the page</td>
               </tr>
               <tr>
-                <td>link-no-fastclick</td>
+                <td>linkNoFastclick</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Disables fast click</td>
               </tr>
               <tr>
-                <td>link-external</td>
+                <td>linkExternal</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Enable to bypass Framework7's link click handler</td>
               </tr>
               <tr>
-                <td>link-back</td>
+                <td>linkBack</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Enables back navigation link</td>
               </tr>
               <tr>
-                <td>link-force</td>
+                <td>linkForce</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Force page to load and ignore previous page in history (use together with <b>back</b> prop)</td>
               </tr>
               <tr>
-                <td>link-reload</td>
+                <td>linkReload</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Reloads new page instead of the currently active one</td>
               </tr>
               <tr>
-                <td>link-animate-pages</td>
+                <td>linkAnimatePages</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Disables pages animation</td>
               </tr>
               <tr>
-                <td>link-ignore-cache</td>
+                <td>linkIgnoreCache</td>
                 <td>boolean</td>
                 <td></td>
                 <td>Ignores caching</td>
               </tr>
               <tr>
-                <td>link-page-name</td>
+                <td>linkPageName</td>
                 <td>string</td>
                 <td></td>
                 <td>Name of the page to load</td>
               </tr>
               <tr>
-                <td>link-template</td>
+                <td>linkTemplate</td>
                 <td>string</td>
                 <td></td>
                 <td>Template name to load</td>
               </tr>
             </tbody>
           </table>
-          <h2>Events</h2>
+          <h2>Event Properties</h2>
           <table class="events-table">
             <thead>
               <tr>
@@ -683,55 +684,55 @@
             </thead>
             <tbody>
               <tr>
-                <td>click</td>
+                <td>onClick</td>
                 <td>Event will be triggeres when user clicks on list item</td>
               </tr>
               <tr>
-                <td>change</td>
+                <td>onChange</td>
                 <td>Event will be triggeres when "change" event occurs on list item input (radio or checkbox)</td>
               </tr>
               <tr>
-                <td>swipeout</td>
+                <td>onSwipeout</td>
                 <td>Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage</td>
               </tr>
               <tr>
-                <td>swipeout:open</td>
+                <td>onSwipeoutOpen</td>
                 <td>Event will be triggered when swipeout element starts its opening animation</td>
               </tr>
               <tr>
-                <td>swipeout:opened</td>
+                <td>onSwipeoutOpened</td>
                 <td>Event will be triggered after swipeout element completes its opening animation</td>
               </tr>
               <tr>
-                <td>swipeout:close</td>
+                <td>onSwipeoutClose</td>
                 <td>Event will be triggered when swipeout element starts its closing animation</td>
               </tr>
               <tr>
-                <td>swipeout:closed</td>
+                <td>onSwipeoutClosed</td>
                 <td>Event will be triggered after swipeout element completes its closing animation </td>
               </tr>
               <tr>
-                <td>swipeout:delete</td>
+                <td>onSwipeoutDelete</td>
                 <td>Event will be triggered after swipeout element starts its delete animation </td>
               </tr>
               <tr>
-                <td>swipeout:deleted</td>
+                <td>onSwipeoutDeleted</td>
                 <td>Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM</td>
               </tr>
               <tr>
-                <td>accordion:open</td>
+                <td>onAccordionOpen</td>
                 <td>Event will be triggered when accordion content starts its opening animation.</td>
               </tr>
               <tr>
-                <td>accordion:opened</td>
+                <td>onAccordionOpened</td>
                 <td>Event will be triggered after accordion content completes its opening animation.</td>
               </tr>
               <tr>
-                <td>accordion:close</td>
+                <td>onAccordionClose</td>
                 <td>Event will be triggered when accordion content starts its closing animation.</td>
               </tr>
               <tr>
-                <td>accordion:closed</td>
+                <td>onAccordionClosed</td>
                 <td>Event will be triggered after accordion content completes its closing animation.</td>
               </tr>
             </tbody>

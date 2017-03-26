@@ -1,4 +1,4 @@
-<html><head>
+<!DOCTYPE html><html><head>
     <meta charset="utf-8">
     <title>Contacts List React Component | Framework7 React Documentation</title>
     <meta property="og:image" content="http://framework7.io/i/f7-banner.jpg">
@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="/css/highlight.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="shortcut icon" href="/favicon.png">
-    <script src="//www.google-analytics.com/analytics.js"></script><script src="/js/vendor/modernizr-2.7.1.min.js"></script>
-  <script type="text/javascript" src="//s3.buysellads.com/ac/bsa.js"></script></head>
-  <body>{/* BuySellAds Ad Code */}
+    <script src="/js/vendor/modernizr-2.7.1.min.js"></script>
+  </head>
+  <body><!-- BuySellAds Ad Code -->
     <script>
       (function(){
         var bsa = document.createElement('script');
@@ -17,7 +17,7 @@
            bsa.src = '//s3.buysellads.com/ac/bsa.js';
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
-    </script>{/* End BuySellAds Ad Code */}
+    </script><!-- End BuySellAds Ad Code -->
     <header class="inner-header">
       <div class="center"><a href="../" class="logo"></a>
         <div class="langs"><span>Language: </span><a href="http://framework7.io">EN</a><a href="http://framework7.cn/">CN</a></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="links-row">
             <div class="links-label">Learn:</div>
-            <div class="links"><a href="../get-started/">Get Started</a><a href="../docs/">Docs</a><a href="../vue/" class="active">F7 + React</a><a href="../react/">F7 +  React</a><a href="../tutorials/">Tutorials</a>
+            <div class="links"><a href="../docs/">Docs</a><a href="../vue/">F7 +  Vue</a><a href="../react/" class="active">F7 +  React</a><a href="../tutorials/">Tutorials</a>
             </div>
           </div>
           <div class="links-row">
@@ -151,59 +151,58 @@
           <p>Contacts List is not a separate component, but just a particular case of using <a href="list.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.</p>
           <h2>Usage example</h2>
           <p>Here is the full contacts list page example:</p>
-          <pre><code>&lt;template&gt;
-  &lt;Page&gt;
-    &lt;Navbar back-link="Back" title="Contacts" sliding&gt;&lt;/Navbar&gt;
+          <pre><code>const contacts = {
+  'A': [
+    'Aaron',
+    'Abbie',
+    'Adam',
+    'Adele',
+    'Agatha',
+    'Agnes',
+    'Albert',
+    'Alexander'
+  ],
+  'B': [
+    'Bailey',
+    'Barclay',
+    'Bartolo',
+    'Bellamy',
+    'Belle',
+    'Benjamin'
+  ],
+  'C': [
+    'Caiden',
+    'Calvin',
+    'Candy',
+    'Carl',
+    'Cherilyn',
+    'Chester',
+    'Chloe'
+  ],
+  'V': [
+    'Vladimir'
+  ]
+};
 
-    &lt;List contacts&gt;
-      &lt;ListGroup v-for="(group, key) in contacts"&gt;
-        &lt;ListItem title={"} group-title&gt;&lt;/ListItem&gt;
-        &lt;ListItem v-for="name in group" title={"}&gt;&lt;/ListItem&gt;
-      &lt;/ListGroup&gt;
-    &lt;/List&gt;
+const ContactsList = () =&gt; (
+  <page>
+    <navbar backlink="Back" title="Contacts" sliding=""></navbar>
 
-  &lt;/Page&gt;
-&lt;/template&gt;
-&lt;script&gt;
-  export default {
-    data: function () {
-      return {
-        contacts: {
-          'A': [
-            'Aaron',
-            'Abbie',
-            'Adam',
-            'Adele',
-            'Agatha',
-            'Agnes',
-            'Albert',
-            'Alexander'
-          ],
-          'B': [
-            'Bailey',
-            'Barclay',
-            'Bartolo',
-            'Bellamy',
-            'Belle',
-            'Benjamin'
-          ],
-          'C': [
-            'Caiden',
-            'Calvin',
-            'Candy',
-            'Carl',
-            'Cherilyn',
-            'Chester',
-            'Chloe'
-          ],
-          'V': [
-            'Vladimir'
-          ]
-        }
-      }
-    }
-  }
-&lt;/script&gt;</code></pre>
+    <list contacts="">
+      {Object.keys(contacts).reduce((listGroups, nextGroupName) =&gt; {
+        return [
+          ...listGroups,
+          <listgroup key="{nextGroupName}">
+          <listitem title="{nextGroupName}" grouptitle="">
+            {contacts[nextGroupName].map(contactName =&gt; {
+              return <listitem key="{contactName}" title="{contactName}">;
+            })}
+          </listitem></listitem></listgroup>
+        ];
+      }, [])}
+    </list>
+  </page>
+);</code></pre>
           <p>Renders to:</p>
           <pre><code>&lt;div class="page"&gt;
   &lt;div class="navbar"&gt;
