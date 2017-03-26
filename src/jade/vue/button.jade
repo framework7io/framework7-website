@@ -48,7 +48,7 @@ block content
             <!-- Tabs -->
             <f7-tabs>
               <f7-tab id="tab-1" active>Tab 1</f7-tab>
-              <f7-tab id="tab-1">Tab 2</f7-tab>
+              <f7-tab id="tab-2">Tab 2</f7-tab>
             </f7-tabs>
             <!-- Switch Between Tabs -->
             <f7-buttons>
@@ -71,6 +71,35 @@ block content
               <a href="#" data-tab="#tab-1" class="button active">Button 1</a>
               <a href="#" data-tab="#tab-2" class="button">Button 2</a>
             </div>
+
+      h4 Route Tab Links
+      p Note, this requires <a href="navigation-router.html#nested-routes">tab routes</a> to be configured.
+      pre
+        code
+          :code
+            <!-- Tabs -->
+            <f7-tabs>
+              <f7-tab route-tab-id="tab-1">Tab 1</f7-tab>
+              <f7-tab route-tab-id="tab-2">Tab 2</f7-tab>
+            </f7-tabs>
+            <!-- Switch Between Tabs -->
+            <f7-buttons>
+              <f7-button route-tab-link="#tab-1" href="/tabs/">Button 1</f7-button>
+              <f7-button route-tab-link="#tab-2" href="/tabs/tab-2/">Button 2</f7-button>
+            </f7-buttons>
+      p Renders to:
+      pre
+        code
+          :code
+            <!-- Tabs -->
+            <div class="tabs">
+              <div class="tab active">Tab 1</div>
+              <div class="tab">Tab 2</div>
+            </div>
+            <div class="buttons-row">
+              <a href="#" class="button active">Button 1</a>
+              <a href="#" class="button">Button 2</a>
+            </div>            
 
       h4 Colors
       pre
@@ -327,6 +356,11 @@ block content
             td string
             td
             td Template name to load
+          tr
+            td route-tab-link
+            td string
+            td
+            td Used for <a href="navigation-router.html#nested-routes">tab routes</a>. Connects the button to a tab with the same value in its <code>route-tab-id</code> so that when the tab is active, the button appears as active too
           tr
             th(colspan="4") <a href="icon.html">Icon</a> Properties
           tr

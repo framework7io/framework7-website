@@ -370,11 +370,14 @@ block content
       h2(data-device-preview="../docs-demos/tabs-javascript.html") Show Tab using JavaScript
       p It is also possible to show tab (switch tabs) using JavaScript. We should call the following App method:
       p
-        span.method myApp.showTab(<span>tab</span>)</span>
+        span.method myApp.showTab(<span>tab</span>, <span>animated</span>)</span>
       ul.method-parameters
         li
           span.parameter tab
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Tab to open. Requred
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it become visible with animation or not. Actual for animated and swipeable tabs. Optional. 
         li.method-returns This method returns <strong>true</strong> if tab has been changed, otherwise it returns <strong>false</strong>
       pre
         code

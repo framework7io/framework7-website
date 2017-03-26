@@ -89,7 +89,7 @@ block content
         li <b>dist/css</b> - app styles, put custom app CSS styles here as well
         li <b>dist/css/build.css</b> - Vue components styles will be extracted here on <code>npm run build</code>
       h2 Framework7 Vue Webpack Cordova App Template
-      p This is the most powerful template which includes full-featured Framework7 + Vue + Webpack setup with hot-reload, single file components (.vue) support & css extraction with super cordova support.
+      p This template includes full-featured Framework7 + Vue + Webpack setup with hot-reload, single file components (.vue) support & css extraction with super cordova support.
       h4 Install
       p You can read instructions from its <a href="https://github.com/centrual/cordova-template-framework7-vue-webpack" target="_blank">GitHub repository</a> you can continue reading.
       p This template needs Node Js and Npm. You can find install instructions from <a href="https://nodejs.org/en/" target="_blank">Node Js home page</a>.
@@ -136,3 +136,70 @@ block content
         li <b>src/main.js</b> - main app file where you include/import all required libs and init app
         li <b>src/routes.js</b> - app routes
         li <b>src/main.vue</b> - main app structure/component
+
+      h2 App Framework
+      p <b>iOS and Android Apps with HTML & JavaScript - develop, build and deploy - free and open source!</b>
+      p Visit the <a href="https://github.com/scriptPilot/app-framework" target="_blank">GitHub repository</a>
+      img(src='https://raw.githubusercontent.com/scriptPilot/app-framework/master/media/process.png')
+      h3 Features
+      h4 Setup your development environment:
+      ul
+        li Creation of a lightweight and well-organized project folder, ready for GitHub
+        li Demo App to use as base for your own application with typical use cases
+      h4 Design your application:
+      ul
+        li Printable template to design your application with paper and pencil
+        li Template for your icon design - as PDF for sketching and PPTX for drawing
+      h4 Develop your application:
+      ul
+        li Realize beautiful user interfaces with all well-known components and transitions, based on Framework7
+        li Easy to maintain single file components with reusable UI elements
+        li One code base for all devices with HTML, CSS and JavaScript - realized with Cordova, supporting ES2015
+        li Use comprehensive icon fonts like FontAwesome, Framework7, Ion and Material Icons out of the box
+        li Well prepared to use Firebase authentication, realtime database and storage services
+        li State kept for history, tabs, scroll positions, focus, panels, modals, form inputs and page component data
+        li Offline capability, flexible routing and multi-language support out of the box
+      h4 Test your application:
+      ul
+        li Integrated code check for correctness and automatic fix for standard conformity
+        li Local development server with live reload, perfectly to use together with Chrome DevTools
+        li Test your application on any iOS or Android device with an emulator or on your own device
+        li Use a development Firebase project with automatic database and storage rule update
+      h4 Build your application:
+      ul
+        li Build process with version bump and compression of all HTML, CSS, JavaScript and image files
+        li Generation of favicons, touch icons and splash screens out of a single image file
+        li Phone frame around your application on big screens, so you can offer desktop access with charm
+        li Automatic build as web application, to be used online and offline in the browser
+        li Automatic Apple Xcode project build with Cordova
+        li Automatic Android Studio project build with Cordova
+      h4 Deploy your application:
+      ul
+        li Deployment without downtime
+          ul
+            li to any FTP server as Web App
+            li to the Firebase Hosting service as Web App
+            li to the Apple App Store as native iOS App
+            li to the Google Play Store as native Android App
+        li Easy rollback solutions
+      h4 Backup your application:
+      ul
+        li Download your Firebase database content and user list to local JSON files
+        li Snapshot creation of all important project files to backup on any external drive or cloud service
+      h3 Quick start
+      ol
+        li Install <a href="https://docs.npmjs.com/getting-started/what-is-npm" target="_blank">Node.js with npm</a>
+        li Create a <b>package.json</b> file in an empty project folder with the following content:
+          pre
+            code.bash
+              :code
+                {
+                  "name": "my-app",
+                  "version": "1.0.0",
+                  "devDependencies": {
+                    "app-framework": "*"
+                  }
+                }
+        li Run <code>npm install</code> to install App Framework and setup the project folder
+        li Run <code>npm run dev</code> to start the Demo App at localhost:8080
+        li Read our <a href="https://github.com/scriptPilot/app-framework/blob/master/DOCUMENTATION.md" target="_blank">Documentation</a>

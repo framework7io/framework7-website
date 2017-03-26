@@ -132,13 +132,24 @@ block content
       h3(data-device-preview="../docs-demos/login-screen-js.html") Using JavaScript
       p We can also open and close Login Screen with JavaScript, we need to look at related App methods:
       p
-        span.method myApp.loginScreen()</span> - open Login Screen
+        span.method myApp.loginScreen(<span>loginScreen</span>, <span>animated</span>) - open Login Screen
+      ul.method-parameters
+        li
+          span.parameter loginScreen
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Login Screen to open. Optional
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it be opened with animation or not. Optional. By default is <b>true</b>
+        li.method-returns This method returns Login Screen's HTMLElement
       p
-        span.method myApp.closeModal(<span>loginScreen</span>)</span> - close Login Screen
+        span.method myApp.closeModal(<span>loginScreen</span>, <span>animated</span>) - close Login Screen
       ul.method-parameters
         li
           span.parameter loginScreen
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Login Screen/Popup/Modal will be closed
+        li
+          span.parameter animated
+          |  - <span class="parameter-type">boolean</span> - Should it be closed with animation or not. Optional. By default is <b>true</b>
       pre
         code
           | &lt;body&gt;

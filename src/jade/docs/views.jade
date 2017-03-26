@@ -75,6 +75,11 @@ block content
             th Description
         tbody
           tr
+            td name
+            td string
+            td 
+            td Set to true to enable Dynamic Navbar in this View <span class="ios-only">iOS theme only</span>
+          tr
             td dynamicNavbar
             td boolean
             td false
@@ -326,6 +331,38 @@ block content
               |  - <span class="parameter-type">number</span> - If there are few currently active views (as in Split View layout), then you need to specify index number of View. Optional
             
             li.method-returns Method returns initialized View instance or array with View instances if there are few currently active views
+      h2 Access to View's instance
+      p In case you init(added) views without assignment (anonymous) you can always access them by named property of global app instance (<code>myApp</code>), e.g. <code>myApp.views.[name]</code> or <code>myApp.[name]View</code>:
+      pre
+        code
+          :code
+            myApp = new Framework7();
+            // Main view
+            myApp.addView('.view-main', {
+                main: true,
+                //...
+            });
+            // Another view
+            myApp.addView('.view-left', {
+                name: 'left',
+                //...
+            });
+            // One more view
+            myApp.addView('.view-right', {
+                name: 'right',
+                //...
+            });
+            // Access left view
+            myApp.views.left /* or */ myApp.leftView
+            
+            // Access right view
+            myApp.views.right /* or */ myApp.rightView
+
+            // Access main view
+            myApp.views.main /* or */ myApp.mainView
+            
+      .important-note
+        p Note that <b>name</b> parameter for main view will be ignored, it will be always accessible via <code>myApp.views.main</code> or <code>myApp.mainView</code>.
       h2 Access to View's instance from DOM
       p Sometimes it could be useful to know or to get View's instance from HTML element. It is easy, right after we iniitalize view, Framework7 adds special property-link to our <code>&lt;div class="view"&gt;</code> element so we can access it any time in our JavaScript:
       pre

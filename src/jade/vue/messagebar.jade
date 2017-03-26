@@ -33,14 +33,16 @@ block content
         li <b>after-input</b> - element will be inserted right after &lt;div type="toolbar-inner"&gt; element
         li <b>before-textarea</b> - element will be inserted right before textarea
         li <b>after-textarea</b> - element will be inserted right after textarea
+        li <b>send-link</b> - element will be inserted inside of send link
       pre
         code
           :code
-            <f7-messagebar placeholder="Message" send-link="Send" @submit="onSubmit">
+            <f7-messagebar placeholder="Message" @submit="onSubmit">
               <div slot="before-inner">Before inner</div>
               <div slot="after-inner">After inner</div>
               <div slot="before-textarea">Before textarea</div>
               <div slot="after-textarea">After textarea</div>
+              <span slot="send-link">Send</span>
               <div>Default slot</div>
             </f7-messagebar>
       p Renders to:
@@ -53,7 +55,7 @@ block content
                 <div>Before textarea</div>
                 <textarea placeholder="Message"></textarea>
                 <div>After textarea</div>
-                <a href="#" class="link">Send</a>
+                <a href="#" class="link"><span>Send</span></a>
                 <div>Default slot</div>
               </div>
               <div>After inner</div>
@@ -101,12 +103,23 @@ block content
             td send-link
             td string
             td
-            td Enables Send link and specifies its text
+            td Enables Send link and specifies its text or its inner HTML. This property will be ignored in case you use "send-link" slot
           tr
             td max-height
             td number
             td
             td Defines resizeable textarea max height
+      h2 Methods
+      table.methods-table
+        tr
+          td .clear()
+          td Clear textarea and update/reset its size
+        tr
+          td .setValue(<span>newValue</span>)
+          td Set messagebar textarea value/text
+        tr
+          td .getValue()
+          td Return messagebar textarea value
       h2 Events
       table.events-table
         thead
