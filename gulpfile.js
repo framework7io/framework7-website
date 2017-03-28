@@ -279,6 +279,7 @@
             './showcase/**/*.*',
             './tutorials/**/*.*',
             './vue/**/*.*',
+            './react/**/*.*'
             ];
         var folderSrc = {
             'dist': './dist/**/*.*',
@@ -287,6 +288,7 @@
             'showcase': './showcase/**/*.*',
             'tutorials': './tutorials/**/*.*',
             'vue': './vue/**/*.*',
+            'react': './react/**/*.*',
             'kitchen-sink': ['./kitchen-sink-ios/**/*.*', './kitchen-sink-material/**/*.*']
         };
         if (folder) src = folderSrc[folder];
