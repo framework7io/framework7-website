@@ -1,0 +1,346 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Navigation Router | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Navigation Router
+      p With Framework7 & React.js, we are already composing our application with components. All we need to do is map our components to the routes. Here's a basic example:
+        pre
+          code
+            :code
+              //Components.jsx
+              export const MainViews = () => (
+                <Views>
+                  {/* Current View/Router */}
+                  <View>
+                    {/* All pages are rendered inside of Pages */}
+                    <Pages>
+                      {/* Initial Page /*}
+                      <Page>
+                        ...
+                        <Link href="/about/">About App</Link>
+                        <Link href="/login/">Login</Link>
+                      </Page>
+                    </Pages>
+                  </View>
+                </Views>              
+              );
+
+              // Create Component for About page
+              export const About = () => (
+                <Page name="about">...</Page>
+              );
+
+              // Create Component for Login page
+              export const Login = () => (
+                <Page name="login">...</Page>
+              );
+      p Now we need to map components to routes. It should be done in <b>routes</b> parameter on <a href="init-app.html">App Initialization</a>
+      pre
+        code
+          :code
+            import {MainViews, About, Login} from './Components';
+
+            const App = () => (
+              <Framework7App routes={[
+                {
+                    path: '/about/',
+                    component: About
+                },
+                {
+                    path: '/login/',
+                    component: Login
+                }
+              ]}>
+                <MainViews />
+              </Framework7App>
+            );
+      .important-note
+        ul
+          li
+            p Note that route components are intended to load <a href="page.html">Page</a> components only. If you want to load other components in a route, they must be added as <a href="#nested-routes">nested routes</a> within a page route.
+          li
+            p All pages are rendered inside of the <a href="pages.html">Pages</a> component of the current (or specified) <a href="view.html">View</a>
+          li
+            p Only one Pages component is allowed inside of one View
+          li
+            p You may have as many Views as required (e.g. in Popup, in Side Panels)
+      h2 Dynamic Route Matching
+      p Very often we will need to map routes with the given pattern to the same component. In specified <b>routes</b> we can use a dynamic segment in the path to achieve that.
+      P Let's say we have the following link:
+      pre
+        code
+          :code
+            <Link href="/user/45/posts/28/?sort=first#opened">Read More</Link>
+      p And the following pattern in specified route path:
+      pre
+        code
+          :code
+            import {PostPage} from './Post';
+
+            let currentRoute;
+
+            export const getCurrentRoute = () => currentRoute;
+
+            const App = () => (
+              <Framework7App onRouteChange={route => currentRoute = route} routes={[
+                {
+                  // We can use pattern here:
+                  path: '/user/:userId/posts/:postId',
+                  component: PostPage
+                }
+              ]}>
+                <MainViews />
+              </Framework7App>
+            );
+      p We can now access these route parameters in our PostPage component:
+      pre
+        code
+          :code
+            //Post.jsx
+            import {getCurrentRoute} from './App'
+
+            const Post = (props) => {
+              const route = getCurrentRoute();
+
+              return (
+                <Page>
+                  <Navbar title="Post" />
+                  <ul>
+                    <li>Route: {route.route}</li>
+                    <li>Url: {route.url}</li>
+                    <li>Path: {route.path}</li>
+                    <li>User ID: {route.params.userId}</li>
+                    <li>Post ID: {route.params.postId}</li>
+                    <li>Query: {JSON.stringify(route.query)}</li>
+                    <li>Hash: {route.hash}
+                  </ul>
+                  {/* Route params are also passed as component props: */}
+                  <p>User ID: {props.userId}</p>
+                  <p>Post ID: {props.postId}</p>
+                </Page>
+              );
+            };
+      p And the output will be:
+      pre
+        code
+          :code
+            ...
+            <ul>
+              <li>Route: /user/:userId/posts/:postId</li>
+              <li>Url: /user/45/posts/28/?sort=first#opened</li>
+              <li>Path: /user/45/posts/28/</li>
+              <li>User ID: 45</li>
+              <li>Post ID: 28</li>
+              <li>Query: {"sort":"first"}</li>
+              <li>Hash: opened</li>
+            </ul>
+            <p>User ID: 45</p>
+            <p>Post ID: 28</p>
+            ...
+      p The current route has the following properties:
+      table.methods-table
+        tbody
+          tr
+            td .url
+            td Url of the loaded route/page
+          tr
+            td .params
+            td Object with route parameters (e.g. userId and postId in the example above)
+          tr
+            td .hash
+            td Route hash
+          tr
+            td .query
+            td Parsed query object
+          tr
+            td .path
+            td Route path (same as <b>route.url</b> but without query and hash)
+          tr
+            td .route
+            td Matched route from specified <b>routes</b> parameter
+      h2 Nested Routes
+      p Child components within a page can be controlled via routes. Currently, this is only supported for tabs, but other components may be added in the future.
+      h4 Tabs
+      p The child components that render within a tab on a page can be controlled via routes. For example, consider these Vue components:
+      pre
+        code
+          :code
+            {/* Tabs.jsx /*}
+            export const Tabs = () => (
+              <Page withSubnavbar>
+                <Navbar backLink="Back" title="Tab Routes" sliding />
+                  <Subnavbar sliding>
+                    <Buttons>
+                      <Button routeTabLink="#tab1" href="/tabs/">Tab 1</Button>
+                      <Button routeTabLink="#tab2" href="/tabs/tab-2/">Tab 2</Button>
+                      <Button routeTabLink="#tab3" href="/tabs/tab-3/">Tab 3</Button>
+                    </Buttons>
+                  </Subnavbar>
+                </Navbar>
+
+                <Tabs>
+                  <Tab routeTabId="tab1" />
+                  <Tab routeTabId="tab2" />
+                  <Tab routeTabId="tab3" />      
+                </Tabs>
+              </Page>
+            );                       
+
+            {/* Tab1Content.jsx /*}
+            export const Tab1Content = () => (
+              <p>Tab 1 Content</p>
+            );
+            
+
+            {/* Tab2Content.jsx /*}
+            export const Tab2Content = () => (
+              <p>Tab 2 Content</p>
+            );
+
+            {/* Tab3Content.jsx /*}
+            export const Tab3Content = () => (
+              <p>Tab 3 Content</p>
+            );      
+
+      p With the route definitions below, the URL can control which tab content component gets rendered:
+      pre
+        code
+          :code
+            var routes = [
+              ...
+              {
+                path: '/tabs/',
+                component: Tabs,
+                tabs: [
+                  {
+                    path: '/',
+                    tabId: 'tab1',
+                    component: Tab1Content
+                  },
+                  {
+                    path: '/tab-2/',
+                    tabId: 'tab2',
+                    component: Tab2Content
+                  },
+                  {
+                    path: '/tab-3/',
+                    tabId: 'tab3',
+                    component: Tab3Content
+                  }
+                ]
+              }
+              ...
+            ];
+      p Here are the results for different URL paths beneath the Tabs page URL:
+      table.methods-table
+          thead
+            tr
+              th Url
+              th Result              
+          tbody
+            tr
+              td /tabs/
+              td Go to the tabs page (or stay on it if already there), show tab 1 as the selected tab f7-button, have the Tab1Content component rendered within the tab1 f7-tab, and make that the visible tab.
+            tr
+              td /tabs/tab-2/
+              td Go to the tabs page (or stay on it if already there), show tab 2 as the selected tab f7-button, have the Tab1Content component rendered within the tab2 f7-tab, and make that the visible tab.
+            tr
+              td /tabs/tab-3/
+              td Go to the tabs page (or stay on it if already there), show tab 2 as the selected tab f7-button, have the Tab1Content component rendered within the tab3 f7-tab, and make that the visible tab.
+      p It is also possible to have multiple child routes for a tab route:
+      pre
+        code
+          :code
+            var routes = [
+              ...
+              {
+                path: '/tabs/',
+                component: Tabs,
+                tabs: [
+                  {
+                    path: '/',
+                    tabId: 'tab1',
+                    component: Tab1Content
+                  },
+                  {
+                    path: '/tab-2/',
+                    tabId: 'tab2',
+                    component: Tab2Content
+                  },
+                  {
+                    path: '/tab-3/',
+                    tabId: 'tab3',
+                    routes: [
+                      {
+                        path: '/',
+                        component: Tab3Content
+                      },
+                      {
+                        path: '/tab3-alternate-content/',
+                        component: Tab3AlternateContent
+                      }
+                    ]
+                  }
+                ]                                  
+              }
+              ...
+            ];
+      p Here are the results for URL paths that target the different child routes of the tab3 route:
+      table.methods-table
+          thead
+            tr
+              th Url
+              th Result              
+          tbody
+            tr
+              td /tabs/tab3/
+              td Go to the tabs page and show the tab 3 as the selected tab and have the Tab3Content component rendered within it.
+            tr
+              td /tabs/tab-3/tab-3-alternate-content/
+              td Go to the tabs page and show tab 3 as the selected tab and have the Tab3AlternateContent component rendered within it. If already on the tabs page with different tab content showing, replace the current tab3 content with Tab3AlternateContent.
+      p Tab routes are also supported on Tabbars:
+      pre
+        code
+          :code
+            {/* Tabbar.jsx */}
+            const Tabbar = () => (
+              <Page tabbar-fixed>
+                <Navbar backLink="Back" title="Tabbar Routes" sliding />
+
+                <Block tabs>
+                  <Tab routeTabId="tab1" />
+                  <Tab routeTabId="tab2" />
+                  <Tab routeTabId="tab3" />
+                </Block>
+
+                <Toolbar tabbar labels>
+                  <Link href="/tabbar/" routeTabLink="#tab1" text="Tab 1" />
+                  <Link href="/tabbar/tab-2/" routeTabLink="#tab2" text="Tab 2" />
+                  <Link href="/tabbar/tab-3/" routeTabLink="#tab3" text="Tab 3" />
+                </Toolbar>
+
+              </Page>
+            );
+      h2 Router API
+      p It is also possible to programatically control routing via the <a href="../docs/router-api.html">Router API</a>. For more info about accessing the Framework7 instance, see the <a href="init-app.html">Initialize App</a> section
+      pre
+        code
+          :code
+            import {getFramework7} from './App';
+
+            <Link onClick={() => getFramework7().mainView.router.loadPage('/about/')}>About</Link>
+            <Link onClick={() => getFramework7().mainView.router.back()}>Go Back</Link>
+      h2 Framework7 Redux
+      p If your app uses Redux, you should consider using the routing functionality in <a href="https://github.com/bencompton/framework7-redux" target="_blank">Framework7 Redux</a>, which allows routing to be controlled via actions like so:
+      pre
+        code
+          :code
+            store.dispatch(navigateTo('/about/'));
+            store.dispatch(goBack());

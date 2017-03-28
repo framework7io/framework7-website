@@ -1,0 +1,25 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Framework7 React';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      .home-block.home-vue
+        .text
+          h1 Framework7 React
+          p Framework7 with the power and simplicity of React
+        .pic
+          img(src="#{cdn}/i/react-intro.png")
+      .home-block.home-free
+        .text
+          h2 Starter App Templates
+          p There are some ready to use templates to start your app developement immediately using Framework7 React.
+          p
+            a(href="https://github.com/bencompton/framework7-react-app-template", target="_blank") Create React App
+            a(href="https://github.com/bencompton/framework7-react-static-template", target="_blank") Static HTML + CSS + JavaScript
+      

@@ -1,0 +1,19 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Introduction | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Introduction to Framework7 React
+      .important-note
+        p It is highly recommended for you to be familiar with basics of both Framework7 and React.js before getting started.
+      p Framework7 React combines the power and simplicity of <a href="https://reactjs.org">React.js</a> with the flexibility and UI of the Framework7 mobile framework to build mobile apps in even more easy and quick way.
+      p Framework7 React helps to keep data and content in more structured way and simplify layout difference for iOS and Material themes (or handle this difference easier).
+      p Framework7 React provides a set of almost all Framework7 elements and components with integration of Framework7 Router to render pages in the "React-way".
+      .important-note
+        p This documentation provides reference for Framework7 React components (their usage examples and properties). For their appearance and how do they work it is recommended to check <a href="../docs/">Framework7 Documentation</a>.
