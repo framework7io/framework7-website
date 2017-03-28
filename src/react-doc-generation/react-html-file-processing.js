@@ -44,7 +44,8 @@ const getReactHtmlFiles = (callback) => {
     const files = fs.readdirSync(REACT_HTML_PATH);
     const htmlFileInfoArray = [];
 
-    return files.map(function (fileName) {   
+    return files.map(function (fileName) {
+        if (fileName.indexOf('.gitkeep') >= 0) return;
         const fileContents = fs.readFileSync(REACT_HTML_PATH + '/' + fileName, 'utf8');
         const htmlFileInfo = { name: fileName, contents: fileContents, jsDomDocument: null };
 
