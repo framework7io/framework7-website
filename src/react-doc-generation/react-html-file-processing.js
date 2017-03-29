@@ -41,11 +41,12 @@ const processReactHtmlFile = (htmlFileInfo) => {
 };
 
 const getReactHtmlFiles = (callback) => {
-    const files = fs.readdirSync(REACT_HTML_PATH);
+    const files = fs.readdirSync(REACT_HTML_PATH).filter(function (fileName) {
+        return fileName.indexOf('.') !== 0;
+    });
     const htmlFileInfoArray = [];
 
     return files.map(function (fileName) {
-        if (fileName.indexOf('.gitkeep') >= 0) return;
         const fileContents = fs.readFileSync(REACT_HTML_PATH + '/' + fileName, 'utf8');
         const htmlFileInfo = { name: fileName, contents: fileContents, jsDomDocument: null };
 
