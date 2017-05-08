@@ -39,6 +39,10 @@ block content
             th Description
         tbody
           tr
+            td overlay
+            td boolean
+            td Enable to render additional picker modal overlay when required
+          tr
             td theme
             td string
             td Picker Modal theme color. One of <a href="../docs/color-themes.html">default colors</a>
@@ -50,6 +54,14 @@ block content
             td opened
             td boolean
             td Allows to open/close Picker Modal and set its initial state
+      h2 Methods
+      table.methods-table
+        tr
+          td .open(<span>animated</span>)
+          td Open picker modal
+        tr
+          td .close(<span>animated</span>)
+          td Close picker modal
       h2 Events
       table.events-table
         thead

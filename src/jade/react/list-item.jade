@@ -1,0 +1,554 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'List Item React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 List Item React Component
+      h2 Usage examples
+      h4 Minimal Layout
+      pre
+        code
+          :code
+            <List>
+              <ListItem title="Item 1"></ListItem>
+              <ListItem title="Item 2"></ListItem>
+            </List>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="list-block">
+              <ul>
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Item 1</div>
+                  </div>
+                </li>
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Item 2</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+      h4 With Badges And Divider
+      pre
+        code
+          :code
+            <List>
+              <ListItem title="Item 1" badge="5" badgeColor="red"></ListItem>
+              <ListItem title="Item 2" badge="3" badgeColor="red"></ListItem>
+              <ListItem title="Items Divider" divider></ListItem>
+              <ListItem title="Item 3"></ListItem>
+              ...
+            </List>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="list-block">
+              <ul>
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Item 1</div>
+                    <div class="item-after">
+                      <span class="badge bg-red">5</span>
+                    </div>
+                  </div>
+                </li>
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Item 2</div>
+                    <div class="item-after">
+                      <span class="badge bg-red">3</span>
+                    </div>
+                  </div>
+                </li>
+                <li class="item-divider"><span>Items Divider</span></li>
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Item 3</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      h4 Links Items
+      pre
+        code
+          :code
+            <List>
+              <ListItem link="/about/" title="About"></ListItem>
+              <ListItem link="/contacts/" title="Contacts"></ListItem>
+            </List>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="list-block">
+              <ul>
+                <li>
+                  <a href="/about/" class="item-link">
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">About</div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="/contacts/" class="item-link">
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Contacts</div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h4 Media List Items
+      pre
+        code
+          :code
+            <List mediaList>
+              <ListItem
+                link="/item/"
+                media="<img src='image.jpg'>"
+                title="Item Title"
+                subtitle="Item Subtitle"
+                text="Some text"
+                after="Read more"
+              ></ListItem>
+            </List>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="list-block media-list">
+              <ul>
+                <li>
+                  <a href="/item/" class="item-link">
+                    <div class="item-content">
+                      <div class="item-media">
+                        <img src='image.jpg'>
+                      </div>
+                      <div class="item-inner">
+                        <div class="item-title-row">
+                          <div class="item-title">Item Title</div>
+                          <div class="item-after">Read more</div>
+                        </div>
+                        <div class="item-subtitle">Item Subtitle</div>
+                        <div class="item-text">Some text</div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h2 Slot Properties
+      p List Item React component (&lt;ListItem&gt;) has additional slot properties for custom elements:
+      ul
+        li <b>rootStartSlot</b> - element will be inserted in the beginning of &lt;li&gt; element
+        li <b>rootSlot</b> - element will be inserted in the end of &lt;li&gt; element
+        li <b>contentStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-content"&gt; element
+        li <b>contentSlot</b> - element will be inserted in the end of &lt;div class="item-content"&gt; element
+        li <b>mediaStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-media"&gt; element
+        li <b>mediaSlot</b> - element will be inserted in the end of &lt;div class="item-media"&gt; element
+        li <b>innerStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-inner"&gt; element
+        li <b>innerSlot</b> - element will be inserted in the end of &lt;div class="item-inner"&gt; element
+      pre
+        code
+          :code
+            <List mediaList>
+              <ListItem
+                link="/home/"
+                media="<img src='image.jpg'>"
+                title="Item Title"
+                subtitle="Item Subtitle"
+                text="Text"
+                after="Read more"
+
+                rootStartSlot={<div>Root Start</div>}
+                rootSlot={<div>Root</div>}
+                contentStartSlot={<div>Content Start</div>}
+                contentSlot={<div>Content</div>}
+                mediaStartSlot={<div>Media Start</div>}
+                mediaSlot={<div>Media</div>}
+                afterStartSlot={<span>After Start</span>}
+                afterSlot={<span>After</span>}
+                innerStartSlot={<div>Inner Start</div>}
+                innerSlot={<div>Inner</div>}
+              >
+              </ListItem>
+            </List>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="list-block media-list">
+              <ul>
+                <li>
+                  <div>Root Start</div>
+                  <a href="/home/" class="item-link">
+                    <div class="item-content">
+                      <div>Content Start</div>
+                      <div class="item-media">
+                        <div>Media Start</div>
+                        <img src="image.jpg">
+                        <div>Media</div>
+                      </div>
+                      <div class="item-inner">
+                        <div>Inner Start</div>
+                        <div class="item-title-row">
+                          <div class="item-title">Item Title</div>
+                          <div class="item-after">
+                            <span>After Start</span>
+                            <span>Read more</span>
+                            <span>After</span>
+                          </div>
+                        </div>
+                        <div class="item-subtitle">Item Subtitle</div>
+                        <div class="item-text">Text</div>
+                        <div>Inner</div>
+                      </div>
+                      <div>Content</div>
+                    </div>
+                  </a>
+                  <div>Root</div>
+                </li>
+              </ul>
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td title
+            td string
+            td
+            td List item title
+          tr
+            td subtitle
+            td string
+            td
+            td List item subtitle (only for Media List)
+          tr
+            td text
+            td string
+            td
+            td List item text (only for Media List)
+          tr
+            td media
+            td string
+            td
+            td List item media (icon, image, etc)
+          tr
+            td after
+            td string
+            td
+            td List item label
+          tr
+            td badge
+            td string/number
+            td
+            td List item Badge
+          tr
+            td badge-color
+            td string
+            td
+            td List item Badge color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td media-item
+            td boolean
+            td
+            td Enables Media list item for the current list item
+          tr
+            td divider
+            td boolean
+            td
+            td Converts list item to list item divider
+          tr
+            td group-title
+            td boolean
+            td
+            td Converts list item to list group title
+          tr
+            td swipeout
+            td boolean
+            td
+            td Converts list item to <a href="swipeout-list.html">swipeout list item</a>
+          tr
+            td accordion-item
+            td boolean
+            td
+            td Converts list item to <a href="accordion-list.html">accordion list item</a>
+          tr
+            th(colspan="4") <a href="smart-select.html">Smart Select</a> properties
+          tr
+            td smart-select
+            td boolean
+            td
+            td Converts list item to smart select list item
+          tr
+            td smart-select-searchbar
+            td boolean
+            td
+            td Enables search bar for smart select page
+          tr
+            td smart-select-searchnar-placeholder
+            td string
+            td "Search"
+            td Smart select search bar search field placeholder text
+          tr
+            td smart-select-searchbar-cancel
+            td string
+            td "Cancel"
+            td Smart select search bar Cancel button text
+          tr
+            td smart-select-page-title
+            td string
+            td
+            td Smart select page title. Defaults to <code>title</code> prop
+          tr
+            td smart-select-back-text
+            td boolean
+            td "Back"
+            td Smart select page back-link text.
+          tr
+            td smart-select-back-on-select
+            td boolean
+            td
+            td Will close Smart Select page automatically after user selects any option
+          tr
+            td smart-select-open-in
+            td string
+            td "page"
+            td Defines how to open smart select: "page", "popup" or "picker"
+          tr
+            td smart-select-virtual-list
+            td boolean
+            td
+            td Enables Virtual list for smart select
+          tr
+            td smart-select-virtual-list-height
+            td number
+            td
+            td Allows to specify virtual list item height
+          tr
+            td smart-select-navbar-theme
+            td string
+            td
+            td Smart select navbar color theme. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td smart-select-form-theme
+            td string
+            td
+            td Smart select form color theme. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            th(colspan="4") <a href="checkboxes-radios.html">Checkboxes & Radios</a> properties
+          tr
+            td checkbox
+            td boolean
+            td
+            td Enables checkbox-item
+          tr
+            td radio
+            td boolean
+            td
+            td Enables radio-item
+          tr
+            td checked
+            td boolean
+            td
+            td Whether the checkbox/radio input is checked
+          tr
+            td name
+            td string
+            td
+            td Checkbox/radio input name
+          tr
+            td value
+            td string/number
+            td
+            td Checkbox/radio input value
+          tr
+            td readonly
+            td boolean
+            td
+            td Whether the checkbox/radio input is readonly
+          tr
+            td disabled
+            td boolean
+            td
+            td Whether the checkbox/radio input is disabled
+          tr
+            td required
+            td boolean
+            td
+            td Whether the checkbox/radio input is required
+          tr
+            th(colspan="4") <a href="link.html">Link</a> properties
+          tr
+            td link
+            td boolean/string
+            td
+            td Enables link and link URL if specified as string
+          tr
+            td link-open-panel
+            td string/boolean
+            td
+            td Defines panel to open. Can be "left" or "right"
+          tr
+            td link-close-panel
+            td boolean
+            td
+            td Closes panel on click
+          tr
+            td link-open-popup
+            td string/boolean
+            td
+            td CSS selector of the popup to open on click
+          tr
+            td link-close-popup
+            td string/boolean
+            td
+            td CSS selector of the popup to close on click. Or boolean property to close currently opened popup
+          tr
+            td link-open-popover
+            td string/boolean
+            td
+            td CSS selector of the popover to open on click
+          tr
+            td link-close-popover
+            td string/boolean
+            td
+            td CSS selector of the popover to close on click. Or boolean property to close currently opened popover
+          tr
+            td link-open-picker
+            td string/boolean
+            td
+            td CSS selector of the picker to open on click
+          tr
+            td link-close-picker
+            td string/boolean
+            td
+            td CSS selector of the picker to close on click. Or boolean property to close currently opened picker
+          tr
+            td link-open-login-screen
+            td string/boolean
+            td
+            td CSS selector of the login screen to open on click
+          tr
+            td link-close-login-screen
+            td string/boolean
+            td
+            td CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen
+          tr
+            td link-view
+            td string
+            td
+            td CSS selector of the View to load the page
+          tr
+            td link-no-fastclick
+            td boolean
+            td
+            td Disables fast click
+          tr
+            td link-external
+            td boolean
+            td
+            td Enable to bypass Framework7's link click handler
+          tr
+            td link-back
+            td boolean
+            td
+            td Enables back navigation link
+          tr
+            td link-force
+            td boolean
+            td
+            td Force page to load and ignore previous page in history (use together with <b>back</b> prop)
+          tr
+            td link-reload
+            td boolean
+            td
+            td Reloads new page instead of the currently active one
+          tr
+            td link-animate-pages
+            td boolean
+            td
+            td Disables pages animation
+          tr
+            td link-ignore-cache
+            td boolean
+            td
+            td Ignores caching
+          tr
+            td link-page-name
+            td string
+            td
+            td Name of the page to load
+          tr
+            td link-template
+            td string
+            td
+            td Template name to load
+
+      h2 Event Properties
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td click
+            td Event will be triggeres when user clicks on list item
+          tr
+            td change
+            td Event will be triggeres when "change" event occurs on list item input (radio or checkbox)
+          tr
+            td swipeout
+            td Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage
+          tr
+            td swipeout:open
+            td Event will be triggered when swipeout element starts its opening animation
+          tr
+            td swipeout:opened
+            td Event will be triggered after swipeout element completes its opening animation
+          tr
+            td swipeout:close
+            td Event will be triggered when swipeout element starts its closing animation
+          tr
+            td swipeout:closed
+            td Event will be triggered after swipeout element completes its closing animation 
+          tr
+            td swipeout:delete
+            td Event will be triggered after swipeout element starts its delete animation 
+          tr
+            td swipeout:deleted
+            td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+          tr
+            td accordion:open
+            td Event will be triggered when accordion content starts its opening animation.
+          tr
+            td accordion:opened
+            td Event will be triggered after accordion content completes its opening animation.
+          tr
+            td accordion:close
+            td Event will be triggered when accordion content starts its closing animation.
+          tr
+            td accordion:closed
+            td Event will be triggered after accordion content completes its closing animation.

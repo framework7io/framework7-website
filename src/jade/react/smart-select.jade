@@ -1,0 +1,136 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Smart Select React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Smart Select React Component
+      p Smart Select allows you to easily convert your usual form selects to dynamic pages with grouped radio inputs. You can see such feature in many native apps.
+      p Smart Select is not a separate component, but just a particular case of using <a href="list.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
+      h2 Usage example
+      pre
+        code
+          :code
+            <List form>
+              <!-- Enables Smart Select behavior by adding "smart-select" prop -->
+              <ListItem smartSelect title="Fruit">
+                <!-- Select with values inside. Note how defaultValues are set in React on the actual select element as opposed to setting 'selected' on the option tag. -->
+                <select name="fruits" defaultValue="apple">
+                  <option value="apple">Apple</option>
+                  <option value="pineapple">Pineapple</option>
+                  <option value="pear">Pear</option>
+                  <option value="orange">Orange</option>
+                  <option value="melon">Melon</option>
+                  <option value="peach">Peach</option>
+                  <option value="banana">Banana</option>
+                </select>
+              </ListItem>
+              <!-- Multiple Smart Select With Searchbar -->
+              <ListItem smartSelect smartSelectSearchbar title="Car">
+                <select name="car" multiple="multiple" defaultValue={['honda', 'audi', 'ford']}>
+                  <optgroup label="Japanese">
+                    <option value="honda">Honda</option>
+                    <option value="lexus">Lexus</option>
+                    <option value="mazda">Mazda</option>
+                    <option value="nissan">Nissan</option>
+                    <option value="toyota">Toyota</option>
+                  </optgroup>
+                  <optgroup label="German">
+                    <option value="audi">Audi</option>
+                    <option value="bmw">BMW</option>
+                    <option value="mercedes">Mercedes</option>
+                    <option value="vw">Volkswagen</option>
+                    <option value="volvo">Volvo</option>
+                  </optgroup>
+                  <optgroup label="American">
+                    <option value="cadillac">Cadillac</option>
+                    <option value="chrysler">Chrysler</option>
+                    <option value="dodge">Dodge</option>
+                    <option value="ford">Ford</option>
+                  </optgroup>
+                </select>
+              </ListItem>
+              <!-- With back on select -->
+              <ListItem smartSelect smartSelectBackOnSelect title="Mac or Windows">
+                <select name="mac-windows">
+                  <option value="mac">Mac</option>
+                  <option value="windows">Windows</option>
+                </select>
+              </ListItem>
+            </List>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            th(colspan="4") <a href="list-item.html">&lt;ListItem&gt;</a>'s Smart Select specific properties
+          tr
+            td smart-select
+            td boolean
+            td
+            td Converts list item to smart select list item
+          tr
+            td smart-select-searchbar
+            td boolean
+            td
+            td Enables search bar for smart select page
+          tr
+            td smart-select-searchbar-placeholder
+            td string
+            td "Search"
+            td Smart select search bar search field placeholder text
+          tr
+            td smart-select-searchbar-cancel
+            td string
+            td "Cancel"
+            td Smart select search bar Cancel button text
+          tr
+            td smart-select-page-title
+            td string
+            td
+            td Smart select page title. Defaults to <code>title</code> prop
+          tr
+            td smart-select-back-text
+            td boolean
+            td "Back"
+            td Smart select page back-link text.
+          tr
+            td smart-select-back-on-select
+            td boolean
+            td
+            td Will close Smart Select page automatically after user selects any option
+          tr
+            td smart-select-open-in
+            td string
+            td "page"
+            td Defines how to open smart select: "page", "popup" or "picker"
+          tr
+            td smart-select-virtual-list
+            td boolean
+            td
+            td Enables Virtual list for smart select
+          tr
+            td smart-select-virtual-list-height
+            td number
+            td
+            td Allows to specify virtual list item height
+          tr
+            td smart-select-navbar-theme
+            td string
+            td
+            td Smart select navbar color theme. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td smart-select-form-theme
+            td string
+            td
+            td Smart select form color theme. One of <a href="../docs/color-themes.html">default colors</a>

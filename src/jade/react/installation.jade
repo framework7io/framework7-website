@@ -1,0 +1,40 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Installation | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Installation
+      p The recommended way to get started with React is to use <a href="https://github.com/facebookincubator/create-react-app" target="_blank">Create React App</a>, which is a quick and easy way to get a build pipeline in place to support ES6 and JSX compilation. Framework7 React already has a <a href="https://github.com/bencompton/framework7-react-app-template" target="_blank">template built with Create React App</a> for you to use, and this is recommended for most users.
+
+      h4 Installing in an App with a Build Pipeline
+
+      p If your needs exceed what Create React App provides, or you prefer to create your own custom build pipeline leveraging Babel, Webpack, Rollup, etc., here are the steps to get started:
+      
+      h5 1. Install React      
+        pre
+          code
+            :code
+              npm install react --save
+
+      h5 2. Install Framework7 React      
+        pre
+          code
+            :code
+              npm install framework7-react --save
+
+      h4 Using Without a Build Pipeline
+
+      p Although not recommended for production apps, if you need to use Framework7 React without a build pipeline (just static JavaScript), this is possible as well. Framework7 React already has a <a href="https://github.com/bencompton/framework7-react-static-template" target="_blank">pre-built static template</a>. This can be especially useful when creating quick examples on JSFiddle, CodePen, etc. Here are the steps:
+
+      h5 1. Add Framework7 React
+      p Add a script tag in your HTML for either the Framework7 React <a href="https://github.com/bencompton/framework7-react/blob/master/dist/static/js/framework7-react.min.js" target="_blank">minified build</a> or the <a href="https://raw.githubusercontent.com/bencompton/framework7-react/master/dist/static/js/framework7-react.js" target="_blank">unminified build</a> from GitHub
+      h5 2. Add React and ReactDOM
+      p Add script tags in your HTML for <a href="https://unpkg.com/react@latest/dist/react.js" target="_blank">React</a> and <a href="https://unpkg.com/react-dom@latest/dist/react-dom.js" target="_blank">React DOM</a>
+      h5 3. (optional) Add the Browser Version of Babel
+      p Add a script tag in your HTML for the <a href="https://unpkg.com/babel-standalone@6.15.0/babel.min.js" target="_blank">browser version</a> of the Babel compiler so you can use ES6 and JSX without having a build pipeline

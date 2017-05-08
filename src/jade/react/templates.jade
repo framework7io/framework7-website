@@ -1,0 +1,44 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Starter App Templates | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Starter App Templates
+      
+      h2 Framework7 React App Template
+      p This is the template recommended for most apps. It was generated with <a href="https://github.com/facebookincubator/create-react-app" target="_blank">Create React App</a> (which is the recommended starting point for most React apps), and then customized for Framework7 React.
+      p This template allows apps to be written with ES6 + JSX, and in general, it "just works." Here is how to get started:
+      pre
+        code.bash
+          :code
+            $ git clone https://github.com/bencompton/framework7-react-app-template my-app
+            $ npm install
+      p To run and launch your a development version of your app in your default web browser, run:
+      pre
+        code.bash.                  
+          $ npm start
+      p As you change code, the browser will automatically refresh and show the latest version of your app.
+      p Once your app is ready for deployment, simply run:
+      pre
+        code.bash.                    
+          $ npm run build      
+      p The build folder will then contain all of your app's files, optimized and ready for deployment.
+      p If you would prefer to have more control over your build pipeline and configure Webpack directly, you can "eject" Create React App:
+      pre
+        code.bash.                
+          $ npm run eject      
+      p For a more thorough understanding of Create React App and all of its capabilities, checkout the <a href="https://github.com/facebookincubator/create-react-app" target="_blank">docs</a>.      
+      
+      h2 Framework7 React Static Template
+      p This template is useful for cases where the complexity of a build pipeline is not desired or is not supported (e.g., JSFiddle or CodePen). This template is ideal for quick examples, or perhaps small, toy apps.
+      pre
+        code.bash.          
+          $ git clone https://github.com/bencompton/framework7-react-static-template my-app            
+      p From there, simply launch the index.html file in a browser from either the file system or a web server of your choice
+      p This template uses ES5 with no JSX. If you would prefer ES6 + JSX, you can also run Babel in the browser. Check out <a href="https://facebook.github.io/react/downloads/single-file-example.html" target="_blank">this example</a> for more insight.

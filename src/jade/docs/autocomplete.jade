@@ -85,6 +85,11 @@ block content
             tr
               th(colspan="4") Standalone Autocomplete Parameters
             tr
+              td requestSourceOnOpen
+              td boolean
+              td false
+              td If enabled, then it will request <b>source</b> on autocomplete open
+            tr
               td opener
               td string or HTMLElement
               td
@@ -130,6 +135,16 @@ block content
               td false
               td Set to <b>true</b> and autocomplete will be closed when user picks value. Not available if <b>multiple</b> is enabled
             tr
+              td autoFocus
+              td boolean
+              td false
+              td Set to <b>true</b> to enable search field auto focus on autocomplete open
+            tr
+              td openWithAnimation
+              td boolean
+              td true
+              td Set to <b>false</b> to open standalone autocomplete without animation
+            tr
               td navbarTheme
               td string
               td
@@ -146,6 +161,11 @@ block content
               td string or HTMLElement
               td
               td String with CSS selector or HTMLElement of related text input
+            tr
+              td highlightMatches
+              td boolean
+              td true
+              td Highlight matches in autcomplete results
             tr
               td dropdownPlaceholderText
               td string
