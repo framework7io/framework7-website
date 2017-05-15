@@ -1,0 +1,137 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Message Bar React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Message Bar React Component
+      p Message Bar React component represents Framework7's <a href="../docs/messagebar.html">Message Bar</a> component.
+      h2 Usage example
+      pre
+        code
+          :code
+            <Messagebar placeholder="Message" sendLink="Send" onSubmit={onSubmit}></Messagebar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="toolbar messagebar">
+              <div class="toolbar-inner">
+                <textarea placeholder="Message"></textarea>
+                <a href="#" class="link">Send</a>
+              </div>
+            </div>
+      h2 Slot Properties
+      p Message Bar React component has additional slots for custom elements:
+      ul
+        li <b>beforeInnerSlot</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element
+        li <b>afterInnerSlot</b> - element will be inserted right after &lt;div type="toolbar-inner"&gt; element
+        li <b>beforeTextareaSlot</b> - element will be inserted right before textarea
+        li <b>afterTextareaSlot</b> - element will be inserted right after textarea
+        li <b>sendLinkSlot</b> - element will be inserted inside of send link
+      pre
+        code
+          :code
+            <Messagebar 
+              placeholder="Message"
+              onSubmit={onSubmit}
+              beforeInnerSlot={<div>Before inner</div>}
+              afterInnerSlot={<div>After inner</div>}
+              beforeTextareaSlot={<div>Before textarea</div>}
+              afterTextareaSlot={<div>After textarea</div>}
+              sendLinkSlot={<span>Send</span>}              
+            >
+              Text goes here
+            </Messagebar>
+            
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="toolbar messagebar">
+              <div>Before inner</div>
+              <div class="toolbar-inner">
+                <div>Before textarea</div>
+                <textarea placeholder="Message"></textarea>
+                <div>After textarea</div>
+                <a href="#" class="link"><span>Send</span></a>
+                <div>Default slot</div>
+              </div>
+              <div>After inner</div>
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td init
+            td boolean
+            td true
+            td Initializes Message Bar
+          tr
+            td name
+            td string
+            td 
+            td Textarea "name" attribute
+          tr
+            td placeholder
+            td string
+            td "Message"
+            td Textarea placeholder text
+          tr
+            td value
+            td string/number
+            td 
+            td Textarea value
+          tr
+            td readonly
+            td boolean
+            td 
+            td Sets "readonly" textarea attribute
+          tr
+            td disabled
+            td boolean
+            td 
+            td Sets "disbled" textarea attribute
+          tr
+            td send-link
+            td string
+            td
+            td Enables Send link and specifies its text or its inner HTML. This property will be ignored in case you use "send-link" slot
+          tr
+            td max-height
+            td number
+            td
+            td Defines resizeable textarea max height
+      h2 Event Properties
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td change
+            td Event will be triggered when "change" event occurs on message bar textarea element
+          tr
+            td input
+            td Event will be triggered when "input" event occurs on message bar textarea element
+          tr
+            td focus
+            td Event will be triggered when "focus" event occurs on message bar textarea element
+          tr
+            td blur
+            td Event will be triggered when "blur" event occurs on message bar textarea element
+          tr
+            td submit
+            td Event will be triggered when user clicks on message bar "send link"

@@ -1,0 +1,175 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Contacts List React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Contacts List React Component
+      p Contacts List is not a separate component, but just a particular case of using <a href="list.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
+      h2 Usage example
+      p Here is the full contacts list page example:
+      pre
+        code
+          :code
+            const contacts = {
+              'A': [
+              'Aaron',
+              'Abbie',
+              'Adam',
+              'Adele',
+              'Agatha',
+              'Agnes',
+              'Albert',
+              'Alexander'
+              ],
+              'B': [
+              'Bailey',
+              'Barclay',
+              'Bartolo',
+              'Bellamy',
+              'Belle',
+              'Benjamin'
+              ],
+              'C': [
+              'Caiden',
+              'Calvin',
+              'Candy',
+              'Carl',
+              'Cherilyn',
+              'Chester',
+              'Chloe'
+              ],
+              'V': [
+              'Vladimir'
+              ]
+            };
+            
+            const ContactsList = () => (
+              <Page>
+                <Navbar backLink="Back" title="Contacts" sliding></Navbar>
+
+                <List contacts>
+                  {Object.keys(contacts).reduce((listGroups, nextGroupName) => {
+                    return [
+                      ...listGroups,
+                      <ListGroup key={nextGroupName}>
+                        <ListItem title={nextGroupName} groupTitle />
+                        {contacts[nextGroupName].map(contactName => {
+                          return <ListItem key={contactName} title={contactName} />;
+                        })}
+                      </ListGroup>
+                    ];
+                  }, [])}
+                </List>
+              </Page>
+            );
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="left sliding">
+                    <a href="#" class="back link">Back</a>
+                  </div>
+                  <div class="center sliding">Contacts</div>
+                </div>
+              </div>
+              <div class="page-content">
+                <div class="list-block contacts-block">
+                  <div class="list-block-group">
+                    <ul>
+                      <li class="list-group-title">
+                        <span>A</span>
+                      </li>
+                      <li class="">
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">Aaron</div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="">
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">Abbie</div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="">
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">Adam</div>
+                          </div>
+                        </div>
+                      </li>
+                      ...
+                    </ul>
+                  </div>
+                  <div class="list-block-group">
+                    <ul>
+                      <li class="list-group-title">
+                        <span>B</span>
+                      </li>
+                      <li class="">
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">Bailey</div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="">
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">Barclay</div>
+                          </div>
+                        </div>
+                      </li>
+                      ...
+                    </ul>
+                  </div>
+                  <div class="list-block-group">
+                    <ul>
+                      <li class="list-group-title">
+                        <span>C</span>
+                      </li>
+                      <li class="">
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">Caiden</div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="">
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">Calvin</div>
+                          </div>
+                        </div>
+                      </li>
+                      ...
+                    </ul>
+                  </div>
+                  <div class="list-block-group">
+                    <ul>
+                      <li class="list-group-title">
+                        <span>V</span>
+                      </li>
+                      <li class="">
+                        <div class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title">Vladimir</div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>

@@ -13,6 +13,8 @@
         cdnPath = '//cdn.framework7.io',
         sftp = require('gulp-sftp'),
         gutil = require( 'gulp-util' ),
+        processVueJadeFiles = require('./src/react-doc-generation/vue-jade-file-processing').processVueJadeFiles,
+        processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles,
         paths = {
             root: './',
             css: './css',
@@ -26,6 +28,7 @@
             examples: './examples',
             apps: './apps',
             vue: './vue',
+            react: './react'
         },
         pages = {
             home: {
@@ -79,6 +82,10 @@
             vue: {
                 src: './src/jade/vue/**/*.jade',
                 dest: './vue/'
+            },
+            react: {
+                src: './react-jade-temp/**/*.jade',
+                dest: './react/'
             }
         },
         pageKeys = [],
@@ -160,6 +167,7 @@
     });
     // All Jade Pages
     gulp.task('jade', function (cb) {
+        processVueJadeFiles();
         checkIsLocal(process.argv.slice(3));
         var cbs = 0;
         pageKeys.forEach(function (page) {
@@ -176,11 +184,16 @@
                     cbs ++;
                     if (cbs === pageKeys.length) {
                         connect.reload();
-                        cb();
+                        processReactHtmlFiles(cb);
                     }
                 });
         });
     });
+
+    gulp.task('process-html', function (cb) {
+        processReactHtmlFiles(cb);
+    });
+
     // Build All
     gulp.task('build', ['jade', 'less'], function (cb) {
         cb();
@@ -266,6 +279,7 @@
             './showcase/**/*.*',
             './tutorials/**/*.*',
             './vue/**/*.*',
+            './react/**/*.*'
             ];
         var folderSrc = {
             'dist': './dist/**/*.*',
@@ -274,6 +288,7 @@
             'showcase': './showcase/**/*.*',
             'tutorials': './tutorials/**/*.*',
             'vue': './vue/**/*.*',
+            'react': './react/**/*.*',
             'kitchen-sink': ['./kitchen-sink-ios/**/*.*', './kitchen-sink-material/**/*.*']
         };
         if (folder) src = folderSrc[folder];
@@ -283,6 +298,7 @@
         gulp.src(src, {base: './'})
             .pipe(sftp(remote));
     });
+
     /* =================================
     Server
     ================================= */
@@ -293,6 +309,7 @@
             port:'3000'
         });
     });
+
     gulp.task('open', function () {
         return gulp.src('./index.html').pipe(open({ uri: 'http://localhost:3000/index.html'}));
     });
@@ -302,6 +319,4 @@
     gulp.task('default', [ 'server' ]);
 
     gulp.task('test', [ 'build' ]);
-
-
 })();

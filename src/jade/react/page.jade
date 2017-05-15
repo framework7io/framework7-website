@@ -1,0 +1,377 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Page React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Page React Component
+      p Page in Framework7 has the same meaning as when you think about web pages. Page is the main component to display and operate content.
+      p Page React component represents Framework7's <a href="../docs/pages.html">Page</a>.
+      h2 Usage examples
+      h4 Minimal layout
+      pre
+        code
+          :code
+            <Page name="home">
+              <p>Page content</p>
+            </Page>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="page" data-page="home">
+              <div class="page-content">
+                <p>Page content</p>
+              </div>
+            </div>
+      h4 With Navbar
+      pre
+        code
+          :code
+            <Page name="home">
+              <Navbar title="My App"></Navbar>
+              <p>Page content</p>
+            </Page>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="page" data-page="home">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="center">My App</div>
+                </div>
+              </div>
+              <div class="page-content">
+                <p>Page content</p>
+              </div>
+            </div>
+      h4 Pull To Refresh
+      pre
+        code
+          :code
+            <Page pullToRefresh onPtrrefresh={onRefresh}>
+              <Navbar title="My App"></Navbar>
+              <p>Page content</p>
+            </Page>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="center">My App</div>
+                </div>
+              </div>
+              <div class="page-content pull-to-refresh-content">
+                <div class="pull-to-refresh-layer">
+                  <div class="preloader"></div>
+                  <div class="pull-to-refresh-arrow"></div>
+                </div>
+                <p>Page content</p>
+              </div>
+            </div>
+      h4 Infinite Scroll
+      pre
+        code
+          :code
+            <Page infiniteScroll onInfinite={onInfiniteScroll}>
+              <Navbar title="My App"></Navbar>
+              <p>Page content</p>
+            </Page>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="center">My App</div>
+                </div>
+              </div>
+              <div class="page-content infinite-scroll">
+                <p>Page content</p>
+                <div class="infinite-scroll-preloader">
+                  <div class="preloader"></div>
+                </div>
+              </div>
+            </div>
+      h4 Page Content as Tabs
+      pre
+        code
+          :code
+            <Page tabs noPageContent>
+              <Navbar title="My App"></Navbar>
+              <PageContent tab active id="tab-1">Tab 1 Content ...</PageContent>
+              <PageContent tab id="tab-2">Tab 2 Content ...</PageContent>
+              <PageContent tab id="tab-3">Tab 3 Content ...</PageContent>
+            </Page>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="center">My App</div>
+                </div>
+              </div>
+              <div id="tab-1" class="page-content tab active">
+                Tab 1 Content ...
+              </div>
+              <div id="tab-2" class="page-content tab">
+                Tab 2 Content ...
+              </div>
+              <div id="tab-3" class="page-content tab">
+                Tab 3 Content ...
+              </div>
+            </div>
+      h2 Slot Properties
+      p Page React component (&lt;Page&gt;) has additional slots for custom elements:
+      ul        
+        li <b>fixed</b> - element will be inserted right in the beginning of "page" before "before-content"
+      pre
+        code
+          :code
+            <Page fixedSlot={<div>Fixed element</div>}>              
+              <p>Page content goes here</p>
+            </Page>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="page">
+              <div>Fixed element</div>
+              <div class="page-content">
+                <p>Page content goes here</p>
+              </div>
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td name
+            td string
+            td
+            td Page name
+          tr
+            td cached
+            td boolean
+            td
+            td Enable if you use domCache and <a href="../docs/pages-inline.html">Inline Pages Navigation</a>
+          tr
+            td messages
+            td boolean
+            td
+            td Enable if you use <a href="messages.html">Messages</a> component inside to add required extra styling
+          tr
+            td no-page-content
+            td boolean
+            td
+            td Enable to disable automatically added <b>page-content</b> element inside (e.g. when you need to use few page-content elements for tabs)
+          tr
+            td tabs
+            td boolean
+            td
+            td Enable if you use Page as <a href="tabs.html">Tabs</a> wrapper
+          tr
+            td login-screen
+            td boolean
+            td
+            td Enable if you use <a href="login-screen.html">Login Screen</a> inside of the page to add required extra styling
+          tr
+            td no-swipeback
+            td boolean
+            td
+            td Disables swipeback feature for the current page (affects iOS only)
+          tr
+            td theme
+            td string
+            td
+            td Page theme color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td layout
+            td string
+            td
+            td Page layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>
+          tr
+            th(colspan="4") Navbar & Toolbars layout
+          tr
+            td with-subnavbar
+            td boolean
+            td
+            td Enable if you have Sub Navbar inside of the page
+          tr
+            td no-navbar
+            td boolean
+            td
+            td Enable if you use Navbar's through-type layout and need to hide Navbar (or use another one) for this page
+          tr
+            td no-toolbar
+            td boolean
+            td
+            td Enable if you use Toolbar's through-type layout and need to hide Toolbar (or use another one) for this page
+          tr
+            td no-tabbar
+            td boolean
+            td
+            td Enable if you use Tabbar's through-type layout and need to hide Tabbar (or use another one) for this page
+          tr
+            td navbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">navbar layout</a>
+          tr
+            td navbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">navbar layout</a>
+          tr
+            td toolbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">toolbar layout</a>
+          tr
+            td toolbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">toolbar layout</a>
+          tr
+            td tabbar-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-labels-fixed
+            td boolean
+            td
+            td Enable when you use <b>fixed</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            td tabbar-labels-through
+            td boolean
+            td
+            td Enable when you use <b>through</b> <a href="../docs/navbar-toolbar-layouts.html">tabbar layout</a>
+          tr
+            th(colspan="4") <a href="../docs/hide-bars-on-scroll.html">Hide Bars On Scroll</a>
+          tr
+            td hide-bars-on-scroll
+            td boolean
+            td
+            td Hide Navbar & Toolbar on page scroll
+          tr
+            td hide-navbar-on-scroll
+            td boolean
+            td
+            td Hide Navbar on page scroll
+          tr
+            td hide-toolbar-on-scroll
+            td boolean
+            td
+            td Hide Toolbar on page scroll
+          tr
+            td hide-tabbar-on-scroll
+            td boolean
+            td
+            td Hide Tabbar on page scroll
+          tr
+            th(colspan="4") <a href="../docs/pull-to-refresh.html">Pull To Refresh</a>
+          tr
+            td pull-to-refresh
+            td boolean
+            td
+            td Enables <a href="../docs/pull-to-refresh.html">Pull To Refresh</a>
+          tr
+            td pull-to-refresh-distance
+            td Number
+            td
+            td Custom pull to refresh trigger distance. By default (if not specified) it is 44px.
+          tr
+            td pull-to-refresh-layer
+            td boolean
+            td true
+            td Disable if you want to use custom pull to refresh layer (preloader) element
+          tr
+            th(colspan="4") <a href="../docs/infinite-scroll.html">Infinite Scroll</a>
+          tr
+            td infinite-scroll
+            td boolean/string
+            td
+            td Enables <a href="../docs/infinite-scroll.html">Infinite Scroll</a> (if <b>true</b>). Or pass <b>"top"</b> to enable and use infinite scroll on top
+          tr
+            td infinite-scroll-distance
+            td boolean
+            td true
+            td Distance from the bottom of page (in px) to trigger infinite scroll event. By default (if not specified), it is 50 (px)
+          tr
+            td infinite-scroll-preloader
+            td boolean
+            td true
+            td Disable if you want to use custom infinite-scroll preloader
+
+
+      h2 Event Properties
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td page:beforeinit
+            td Event will be triggered when Framework7 just inserts new page to DOM
+          tr
+            td page:init
+            td Event will be triggered after Framework7 initialize required page's components and navbar
+          tr
+            td page:reinit
+            td This event will be triggered when cached page becomes visible. It is only applicaple for Inline Pages (DOM cached pages)
+          tr
+            td page:beforeanimation
+            td Event will be triggered when everything initialized and page (and navbar) is ready to be animated
+          tr
+            td page:afteranimation
+            td Event will be triggered after page (and navbar) animation
+          tr
+            td page:beforeremove
+            td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          tr
+            td page:back
+            td Event will be triggered right before "back" transition. Difference with "pageBeforeAnimation" is that this event will be triggered for the "old" page - page that slides from center to right
+          tr
+            td page:afterback
+            td Event will be triggered right after "back" transition. Difference with "pageAfterAnimation" is that this event will be triggered for the "old" page - page that slides from center to right
+          tr
+            td ptr:pullstart
+            td Event will be triggered when you start to move pull to refresh content
+          tr
+            td ptr:pullmove
+            td Event will be triggered during you move pull to refresh content
+          tr
+            td ptr:pullend
+            td Event will be triggered when you release pull to refresh content
+          tr
+            td ptr:refresh
+            td Event will be triggered when pull to refresh enters in "refreshing" state
+          tr
+            td ptr:done
+            td Event will be triggered after pull to refresh is done and it is back to initial state (after calling <b>pullToRefreshDone</b> method)
+          tr
+            td infinite
+            td Event will be triggered when page scroll reaches specified (in data-distance attribute) distance to the bottom.

@@ -1,0 +1,274 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Messages React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Messages Component
+      p Messages React component represents <a href="../docs/messages.html">Messages</a> component.
+      h2 Usage examples
+      pre
+        code
+          :code
+            <Messages>
+              <Message name="John" text="Hello, Kate!" type="received"></Message>
+              <Message name="Kate" text="Hi, John!" type="sent"></Message>
+            </Messages>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="messages">
+              <div class="message message-received">
+                <div class="message-name">John</div>
+                <div class="message-text">Hello, Kate!</div>
+              </div>
+              <div class="message message-sent">
+                <div class="message-name">Kate</div>
+                <div class="message-text">Hi, John!</div>
+              </div>
+            </div>
+      h4 With Messagebar
+      p Here is how it can be used in React component along with <a href="messagebar.html">Message Bar</a>:
+      pre
+        code
+          :code
+            const MessagesPageDefaultState = {
+              name: 'Vladimir',
+              messages: [{
+                  day: 'Wendesday',
+                  time: '13:34'
+                }, {
+                  name: 'Vladimir',
+                  text: 'How are you?',
+                  label: 'Sent in good mood :)',
+                  avatar: 'http://lorempixel.com/100/100/people/3',
+                  date: 'Yesterday 13:34'
+                }, {
+                  name: 'Jane',
+                  text: 'I\'m good, thank you!',
+                  type: 'received',
+                  avatar: 'http://lorempixel.com/100/100/people/9',
+                  date: 'Yesterday at 13:50'
+                }
+              ]
+            }
+
+            class MessagesPage extends Component {
+              constructor() {
+                super();
+
+                this.state = {
+                  name: MessagesPageDefaultState.name,
+                  messages: MessagesPageDefaultState.messages
+                };
+              }
+
+              getMessage(props, index) {
+                let messageProps = {}
+
+                if (props) {
+                  messageProps = props;
+                }
+
+                return (
+                  <Message
+                    {...messageProps}
+                    key={index}
+                    onClick={this.onClick.bind(this)}
+                    onClickText={this.onTextClick.bind(this)}
+                    onClickName={this.onNameClick.bind(this)}
+                    onClickAvatar={this.onAvatarClick.bind(this)}>
+                  </Message>
+                );
+              }
+
+              render() {
+                return (
+                  <Page toolbarFixed>
+                    <Navbar backLink="Back" title="Messages" sliding></Navbar>
+                    <Subnavbar>
+                      <input type="text" placeholder="Your name" defaultValue={this.state.name} onChange={this.onNameChange.bind(this)}/>
+                    </Subnavbar>
+                    <Messages>
+                    {
+                      this.state.messages.map((message, index) => {
+                        return this.getMessage(message, index);
+                      })
+                    }
+                    </Messages>
+                    <Messagebar placeholder="Message" sendLink="Send" onSubmit={this.onSubmit.bind(this)} />
+                  </Page>
+                );
+              }
+
+              onClick() {
+                console.log('click');
+              }
+              
+              onTextClick() {
+                console.log('text click');
+              }
+              
+              onNameClick() {
+                console.log('name click');
+              }
+              
+              onAvatarClick() {
+                console.log('avatar click');
+              }
+                  
+              onSubmit(text, clear) {              
+                if (text.trim().length === 0) return;
+
+                this.setState({
+                  ...this.state,
+                  messages: [
+                    ...this.state.messages,
+                    {
+                      name: this.state.name,
+                      avatar: 'http://lorempixel.com/100/100/people/3',
+                      text: text,
+                      date: (function () {
+                          let now = new Date();
+                          let hours = now.getHours();
+                          let hoursString = hours < 10 ? `0${hours}` : `${hours}`; 
+                          let minutes = now.getMinutes();
+                          let minutesString = minutes < 10 ? `0${minutes}` : `${minutes}`;    
+                          return `${hours}:${minutesString}`;
+                      })()
+                    }]
+                  });
+
+                  clear();
+                }
+              }
+
+              onNameChange(event) {
+                this.setState({
+                  ...this.state,
+                  name: event.target.value
+                });
+              }                
+            };
+
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            th(colspan="4") &lt;Messages&gt; properties
+          tr
+            td init
+            td boolean
+            td true
+            td Initializes Messages component
+          tr
+            td autoLayout
+            td boolean
+            td true
+            td Enable Auto Layout to add all required additional classes (like "message-pic", "message-with-avatar", "message-with-tail", etc) to each message automatically
+          tr
+            td newMessagesFirst
+            td boolean
+            td false
+            td Enable if you want to use new messages on top, instead of having them on bottom
+          tr
+            td scrollMessages
+            td boolean
+            td true
+            td Enable/disable messages autoscrolling when adding new message
+          tr
+            td scrollMessagesOnlyOnEdge
+            td boolean
+            td false
+            td If enabled then messages autoscrolling will happen only when user is on top/bottom of the messages view
+          tr
+            td messages
+            td array
+            td
+              td Array with initial messages. Each message in array should be presented as object with <a href="../docs/messages.html#single-message-parameters">message parameters</a>
+          tr
+            th(colspan="4") &lt;Message&gt; properties
+          tr
+            td type
+            td string
+            td "sent"
+            td Message type: "sent" (default) or "received"
+          tr
+            td text
+            td string
+            td
+            td Single message text
+          tr
+            td avatar
+            td string
+            td
+            td Single message user's avatar URL
+          tr
+            td name
+            td string
+            td
+            td Single message user's name
+          tr
+            td label
+            td string
+            td
+            td Single message label
+          tr
+            td date
+            td string
+            td
+            td Single message date
+          tr
+            td day
+            td string
+            td
+            td Conversation day
+          tr
+            td time
+            td string
+            td
+            td Conversation time
+          tr
+            td first
+            td boolean
+            td true
+            td Defines that the message is first in the conversation
+          tr
+            td last
+            td boolean
+            td true
+            td Defines that the message is last in the conversation
+        
+      h2 Event Properties
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            th(colspan="2") &lt;Message&gt; events
+          tr
+            td click
+            td Event will be triggered when user clicks on message bubble
+          tr
+            td click:name
+            td Event will be triggered when user clicks on message user's name
+          tr
+            td click:text
+            td Event will be triggered when user clicks on message text
+          tr
+            td click:avatar
+            td Event will be triggered when user clicks on message user's avatar

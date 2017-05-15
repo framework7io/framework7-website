@@ -10,6 +10,7 @@ donate/*.html
 examples/index.html
 get-started/index.html
 vue/*.html
+react/*.html
 plugins/index.html
 showcase/index.html
 icons/index.html
@@ -17,3 +18,4 @@ tutorials/*.html
 index.html
 remote.json
 nbproject
+react-jade-temp/

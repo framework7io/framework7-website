@@ -1,0 +1,185 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Initialize App | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Initialize App
+      p As briefly shown in the <a href="app-layout.html">app layout</a> section, your root App.jsx component will typically have a top-level Framework7App component. This component is used to configure your app:
+      pre
+        code
+          :code
+            import {routes} from './routes';
+
+            //App.jsx
+            const App = () => (
+              <Framework7App routes={routes} themeType="ios">
+                ...
+              </Framework7App>
+            );
+
+      p In addition, if you're using Create React App, Webpack or Browserify, you might typically have an root-level app.js or index.js file that mounts your root app component:
+      pre
+        code
+          :code
+            import React from 'react';
+            import ReactDOM from 'react-dom';
+            import {App} from './components/App';
+
+            ReactDOM.render(
+              <App />,
+              document.getElementById('root')
+            );
+
+      h2 Framework7App Props
+      p Framework7App supports passing any Framework7 <a href="../docs/init-app.html">initialization parameter</a> as a prop. It also supports the following props that are specific to Framework7 React:
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td routes
+            td array
+            td null
+            td An array of route objects that make up the pages of the app
+          tr
+            td themeType
+            td string
+            td null
+            td Either "ios" or "material", depending on the desired theme of your app
+          tr
+            td stateKernel
+            td object
+            td null
+            td An instance of a Framework7 state kernel from <a href="https://github.com/bencompton/framework7-redux" target="_blank">Framework7 Redux</a>
+      
+      h2 Framework7App Event Props
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td framework7:init
+            td Event will be triggered when Framework7App's internal instance of Framework7 is created. If a callback function is passed, the callback will be called with the Framework7 instance as the first argument.
+          tr
+            td route:change
+            td Called whenever a route change occurs. If a callback function is passed, the callback will be called with the current route as the first argument. See the <a href="navigation-router.html">Navigation / Router</a> docs for more info about routes.
+
+      p One potential use for these two events is to make the current route and Framework7App's instance of Framework7 available throughout your app:
+      pre
+        code
+          :code
+            //App.jsx
+            export const App = () => {
+              let framework7;
+              let currentRoute;
+
+              export const getFramework7 = () => framework7;
+              export const getCurrentRoute = () => currentRoute;
+
+              <Framework7App ... onFramework7Init={f7 => framework7 = f7} onRouteChange={route => currentRoute = route}>
+                ...
+              </Framework7App>
+            };
+
+            //MainViews.jsx
+            import {getFramework7, getCurrentRoute} from './App';          
+
+            const MainViews = () => (            
+              <Views>
+                <View navbarThrough dynamicNavbar={true} main url="/">
+                  {/* iOS navbar gets rendered under the view */}
+                  {!getFramework7().params.material ?
+                    <Navbar title="My App" />
+                  ) : null}
+                  <Pages>
+                    <Page>
+                      {/* Material navbar gets rendered under the page */}
+                      {getFramework7().params.material ?
+                        <Navbar title="My App" />
+                      ) : null}
+                      <ContentBlock>
+                        <ul>                      
+                        {
+                            Object.keys(getCurrentRoute().params).map((paramName, index) => (
+                                <li key={index}><b>{`${paramName}: `}</b>{getCurrentRoute().params[paramName]}</li>;
+                            ))
+                        }                            
+                        </ul>
+                      </ContentBlock>
+                    </Page>
+                  </Pages>
+                </View>
+              </Views>
+            );          
+
+      h2 Framework7App Context
+      p Child components under Framework7App (in most cases, all of your app's components) can access certain properties via <a href="https://facebook.github.io/react/docs/context.html" target="_blank">React context</a>. Context is considered to be an advanced feature, and it is recommended to use it sparingly because it makes React components more difficult to understand. In most cases, your components will not need to access context, but it is useful in some cases. For example, the app theme type can be accessed via context instead of the method above:
+      pre
+        code
+          :code
+            const MainViews = (props, context) => (            
+              <Views>
+                <View navbarThrough dynamicNavbar={true} main url="/">
+                  {/* iOS navbar gets rendered under the view */}
+                  {context.framework7AppContext.theme.ios ?
+                    <Navbar title="My App" />
+                  ) : null}
+                  <Pages>
+                    <Page>
+                      {/* Material navbar gets rendered under the page */}
+                      {context.framework7AppContext.theme.material ?
+                        <Navbar title="My App" />
+                      ) : null}
+                    </Page>
+                  </Pages>
+                </View>
+              </Views>
+            );
+            
+            MainViews.contextTypes = {
+              framework7AppContext: PropTypes.object
+            };
+
+      h4 Context Props
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td routes
+            td array
+            td null
+            td the array of route objects passed into the app's Framework7App component
+          tr
+            td theme
+            td object
+            td null
+            td Has two boolean properties: ios and material. Depending on the themeType prop passed into Framework7App ("ios" or "material"), the respective ios or material property will be true and the other will be false.
+      
+      h4 Context Methods
+      table
+        tr
+          td .getCurrentRoute()
+          td Get the currently active route. For more info about routes, see the <a href="navigation-router.html">Navigation / Router</a> section.
+        tr
+          td .getRouter()
+          td Get the Framework7 React router. For more info about routes, see the <a href="navigation-router.html">Navigation / Router</a> section.
+        tr
+          td .getFramework7()
+          td Get Framework7App's internal instance of Framework7

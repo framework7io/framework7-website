@@ -223,7 +223,7 @@ block content
                     <f7-buttons>
                       <f7-button route-tab-link="#tab1" href="/tabs/">Tab 1</f7-button>
                       <f7-button route-tab-link="#tab2" href="/tabs/tab-2/">Tab 2</f7-button>
-                      <f7-button route-tab-link="#tab3" href="/tabs/tab-3/">Tab 3</f7-button>          
+                      <f7-button route-tab-link="#tab3" href="/tabs/tab-3/">Tab 3</f7-button>
                     </f7-buttons>
                   </f7-subnavbar>
                 </f7-navbar>
@@ -231,10 +231,10 @@ block content
                 <f7-tabs>
                   <f7-tab route-tab-id="tab1" />
                   <f7-tab route-tab-id="tab2" />
-                  <f7-tab route-tab-id="tab3" />      
+                  <f7-tab route-tab-id="tab3" />
                 </f7-tabs>
               </f7-page>
-            </template>            
+            </template>
 
             <!-- Tab1Content.vue -->
             <template>
@@ -249,7 +249,7 @@ block content
             <!-- Tab3Content.vue -->
             <template>
                 <p>Tab 3 Content</p>
-            </template>            
+            </template>
 
       p With the route definitions below, the URL can control which tab content component gets rendered:
       pre
@@ -263,17 +263,17 @@ block content
                 tabs: [
                   {
                     path: '/',
-                    tab: 'tab1',
+                    tabId: 'tab1',
                     component: Tab1Content
                   },
                   {
                     path: '/tab-2/',
-                    tab: 'tab2',
+                    tabId: 'tab2',
                     component: Tab2Content
                   },
                   {
                     path: '/tab-3/',
-                    tab: 'tab3',
+                    tabId: 'tab3',
                     component: Tab3Content
                   }
                 ]
@@ -285,7 +285,7 @@ block content
           thead
             tr
               th Url
-              th Result              
+              th Result
           tbody
             tr
               td /tabs/
@@ -308,17 +308,17 @@ block content
                 tabs: [
                   {
                     path: '/',
-                    tab: 'tab1',
+                    tabId: 'tab1',
                     component: Tab1Content
                   },
                   {
                     path: '/tab-2/',
-                    tab: 'tab2',
+                    tabId: 'tab2',
                     component: Tab2Content
                   },
                   {
                     path: '/tab-3/',
-                    tab: 'tab3',
+                    tabId: 'tab3',
                     routes: [
                       {
                         path: '/',
@@ -330,7 +330,7 @@ block content
                       }
                     ]
                   }
-                ]                                  
+                ]
               }
               ...
             ];
@@ -339,7 +339,7 @@ block content
           thead
             tr
               th Url
-              th Result              
+              th Result
           tbody
             tr
               td /tabs/tab3/
@@ -369,7 +369,7 @@ block content
                 </f7-toolbar>
 
               </f7-page>
-            </template>            
+            </template>
       h2 Router API
       p To access router instance and use <a href="../docs/router-api.html">Router API</a> you can use special <b>$router</b> property of component:
       pre
@@ -379,6 +379,3 @@ block content
             <f7-link @click="$router.back()">Go Back</f7-link>
       .important-note
         p Please note, that <b>$route</b> and <b>$router</b> component properties are only available inside of custom page components (and their child components) that you load according to routes. In parent components (like in View, or where you init your Vue app instance) they are not accessible as your app may have few routers (Views) at a time. So in this case use access to initialized <a href="view.html#access-to-initialized-instance">View Instance</a>, e.g. <code>$f7.views.main.router</code> or <code>$f7.mainView.router</code>
-
-
-
