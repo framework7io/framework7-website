@@ -1,0 +1,113 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Icon React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Icon React Component
+      p Icon React component represents Icon element. It is ready to be used with custom icons, <a href="../icons/" target="_blank">Framework7 Icons</a>, <a href="https://material.io/icons/" target="_blank">Material Icons</a>, <a href="http://fontawesome.io/" target="_blank">Font Awesome</a>, <a href="http://ionicons.com/" target="_blank">Ionicons</a>.
+      h2 Usage example
+      pre
+        code
+          | &lt;!-- Default back icon --&gt;
+          | &lt;Icon icon="icon-back"&gt;&lt;/Icon&gt;
+          | 
+          | &lt;!-- Some custom icon --&gt;
+          | &lt;Icon icon="icon-home"&gt;&lt;/Icon&gt;
+          | 
+          | &lt;!-- F7 Icons font icon --&gt;
+          | &lt;Icon f7="home"&gt;&lt;/Icon&gt;
+          | 
+          | &lt;!-- Material Icons font icon --&gt;
+          | &lt;Icon material="home"&gt;&lt;/Icon&gt;
+          | 
+          | &lt;!-- Font Awesome icons font icon --&gt;
+          | &lt;Icon fa="home"&gt;&lt;/Icon&gt;
+          | 
+          | &lt;!-- Ionicons icons font icon --&gt;
+          | &lt;Icon ion="home"&gt;&lt;/Icon&gt;
+          | 
+          | &lt;!-- F7 icons font icon with custom size and color --&gt;
+          | &lt;Icon f7="home" size="44px" color="blue"&gt;&lt;/Icon&gt;
+          | 
+          | &lt;!-- Conditional icon --&gt;
+          | &lt;Icon ifIos="f7:home" ifMaterial="material:home"&gt;&lt;/Icon&gt;
+      p Renders to:
+      pre
+        code
+          | &lt;!-- Default back icon --&gt;
+          | &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+          | 
+          | &lt;!-- Some custom icon --&gt;
+          | &lt;i class="icon icon-home"&gt;&lt;/i&gt;
+          | 
+          | &lt;!-- F7 Icons font icon --&gt;
+          | &lt;i class="icon Icons"&gt;home&lt;/i&gt;
+          | 
+          | &lt;!-- Material Icons font icon --&gt;
+          | &lt;i class="icon material-icons"&gt;home&lt;/i&gt;
+          | 
+          | &lt;!-- Font Awesome icons font icon --&gt;
+          | &lt;i class="icon fa fa-home"&gt;&lt;/i&gt;
+          | 
+          | &lt;!-- Ionicons icons font icon --&gt;
+          | &lt;Icon ion="home"&gt;&lt;/Icon&gt;
+          | &lt;i class="icon ion-home"&gt;&lt;/i&gt;
+          | 
+          | &lt;!-- F7 icons font icon with custom size and color --&gt;
+          | &lt;i class="icon Icons color-blue" style="font-size:44px"&gt;home&lt;/i&gt;
+          | 
+          | &lt;!-- Conditional icon --&gt;
+          | &lt;!-- In case of iOS theme is used/active --&gt;
+          | &lt;i class="icon Icons"&gt;home&lt;/i&gt;
+          | &lt;!-- In case of Material theme is used/active --&gt;
+          | &lt;i class="icon material-icons"&gt;home&lt;/i&gt;
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Description
+        tbody
+          tr
+            td color
+            td string
+            td Icon color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td size
+            td string/number
+            td Icon size in px
+          tr
+            td icon
+            td string
+            td Custom icon class
+          tr
+            td f7
+            td string
+            td Name of F7 Icons font icon
+          tr
+            td material
+            td string
+            td Name of Material Icons font icon
+          tr
+            td fa
+            td string
+            td Name of Font Awesome font icon
+          tr
+            td ion
+            td string
+            td Name of Ionicons font icon
+          tr
+            td if-ios
+            td string
+            td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
+          tr
+            td if-material
+            td string
+            td Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>

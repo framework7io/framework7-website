@@ -1,0 +1,72 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'App Layout | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 App Layout
+      p First thing we should do for our App is to create index.html file with the app's skeleton:
+      pre
+        code
+          :code
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8" />    
+                <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui" />
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+                <title>My App</title>
+                <link rel="stylesheet" href="css/framework7.ios.min.css" />
+                <link rel="stylesheet" href="css/framework7.ios.colors.min.css" />
+                <link rel="stylesheet" href="css/app.css" />
+            </head>
+            <body>
+                <span id="root"></span>
+                <script src="dist/app.js"></script>    
+            </body>
+            </html>
+      p The <code>&lt;span id="root"&gt;&lt;/span&gt;</code> is where your main app skeleton should be. For most apps, it is recommended that you use Create React App, Webpack, or Babel to compile your app JSX and other JavaScript into a single file, and then load your JavaScript in the body tag so it loads after the browser has initialized your app skeleton.
+      h2 Basic Layout
+      p Most apps will have a central App.jsx file that contains the basic layout of your app, and then other page components will be loaded into the app via the <a href="navigation-router.html">router</a>. Here is an example:
+      pre
+        code
+          :code
+            //App.jsx
+            const App = () => (
+              <Framework7App ...>
+                <Statusbar />
+                {/* Views */}
+                <Views>
+                  {/* Your main view, should have "main" prop */}	
+                  <View main>
+                    {/* Pages container, because we use fixed navbar and toolbar, it has additional appropriate props */}		  
+                    <Pages navbarFixed toolbarFixed>		
+                      {/* Initial Page /*}
+                      <Page>
+                        {/* Top Navbar /*}
+                        <Navbar title="Awesome App" />
+                        {/* Toolbar */}
+                        <Toolbar>
+                          <Link>Link 1</Link>
+                          <Link>Link 2</Link>
+                        </Toolbar>
+                        {/* Page Content */}
+                        <p>Page content goes here</p>
+                        <Link href="/about/">About App</Link>
+                      </Page>
+                    </Pages>
+                  </View>
+                </Views>
+              </Framework7App>
+          );
+      p You can read more about statusbar overlay, views, navbar, toolbar, pages, and other components in appropriate sections.
+      h2 Initialize App
+      p Now when we have basic template, we need to <a href="init-app.html">initialize our app</a> in (for example) <code>my-app.js</code>
+

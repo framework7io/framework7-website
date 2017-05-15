@@ -1,0 +1,224 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Search Bar React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Search Bar React Component
+      p Search Bar React component represents Framework7's <a href="../docs/searchbar.html">Search Bar</a> component.
+      h2 Usage example
+      pre
+        code
+          :code
+            <Searchbar
+              cancelLink="Cancel"
+              placeholder="Search in items"
+              clearButton={true}
+            />
+      p Renders to:
+      pre
+        code
+          :code
+            <form class="searchbar">
+              <div class="searchbar-input">
+                <!-- Input -->
+                <input type="search" placeholder="Search in items">
+                <!-- Clear button -->
+                <a href="#" class="searchbar-clear"></a>
+              </div>
+              <!-- Cancel Link -->
+              <div class="searchbar-cancel">Cancel</div>
+            </form>
+      p Here is how it can be used in React component with initialization
+      pre
+        code
+          :code
+            const SearchbarPage = () => {
+              return (
+                <Page>
+                  <Navbar backLink="Back" title="Searchbar" sliding />
+                  <Searchbar
+                    cancelLink="Cancel"
+                    searchList="#search-list"
+                    onSearchbarSearch={onSearchFunction}
+                    onSearchbarEnable={onEnableFunction}
+                    onSearchbarDisable={onDisableFunction}
+                    onSearchbarClear={onClearFunction}
+                  />
+                  <List className="searchbar-not-found">
+                    <ListItem title="Nothing found" />
+                  </List>
+                  <List className="searchbar-found" id="search-list">
+                  {
+                    Array.apply(null, Array(100)).map((item, index) => {
+                      return (<ListItem  key={index} title={`Item ${index + 1}`} />);
+                    })
+                  }
+                  </List>
+                </Page>
+              );
+            };
+      h2 Slot Properties
+      p Search Bar React component has additional slots for custom elements:
+      ul
+        li<b>beforeInputSlot</b> - element will be inserted right before &lt;input type="search"&gt; element
+        li<b>afterInputSlot</b> - element will be inserted right after &lt;input type="search"&gt; element
+      pre
+        code
+          :code
+            <Searchbar
+              cancelLink="Cancel"
+              placeholder="Search in items"
+              clearButton={true}
+
+              beforeInputSlot={<div>Before Input</div>}
+              afterInputSlot={<div>After Input</div>}
+            />             
+      p Renders to:
+      pre
+        code
+          :code
+            <form class="searchbar">
+              <div class="searchbar-input">
+                <div>Before Input</div>
+                <input type="search" placeholder="Search in items">
+                <div>After Input</div>
+                <a href="#" class="searchbar-clear"></a>
+              </div>
+              <div class="searchbar-cancel">Cancel</div>
+            </form>
+      h2 Properties
+      p You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td form
+            td boolean
+            td true
+            td Main search bar element will be used as a <code>form</code> tag instead of <code>div</code>
+          tr
+            td placeholder
+            td string
+            td "Search"
+            td Input placeholder text
+          tr
+            td cancel-link
+            td string
+            td 
+            td Cancel link text. Affects only iOS theme
+          tr
+            td clear-button
+            td boolean
+            td true
+            td Enables "clear" input button
+
+          tr
+            td init
+            td boolean
+            td true
+            td Initializes Search Bar
+          tr
+            td params
+            td Object
+            td 
+            td Object with <a href="../docs/searchbar.html#search-bar-parameters">Search Bar API</a> parameters
+          tr
+            th(colspan="4") <code>params</code> separate props
+          tr
+            td searchList
+            td string/object
+            td 
+            td CSS selector or HTML element of list block to search
+          tr
+            td searchIn
+            td string
+            td '.item-title'
+            td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <b>'.item-title, .item-text'</b>
+          tr
+            td found
+            td string/object
+            td 
+            td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page
+          tr
+            td notFoud
+            td string/object
+            td 
+            td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page
+          tr
+            td overlay
+            td string/object
+            td 
+            td CSS selector or HTMLElement of searchbar overlay. If not specified, searchbar will look for <code>.searchbar-overlay</code> element on page
+          tr
+            td ignore
+            td string
+            td '.searchbar-ignore'
+            td CSS selector for items to be ignored by searchbar and always present in search results
+          tr
+            td customSearch
+            td boolean
+            td false
+            td When enabled searchbar will not search through any of list blocks specified by `searchList` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
+          tr
+            td removeDiacritics
+            td boolean
+            td false
+            td Enable to remove/replace diacritics (á, í, ó, etc.) during search
+          tr
+            td hideDividers
+            td boolean
+            td true
+            td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
+          tr
+            td hideGroups
+            td boolean
+            td true
+            td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups        
+      h2 Event Properties
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td searchbar:search
+            td Event will be triggered during search (search field change). Event detail contains search query (e.detail.query) and array of found HTML elements (e.detail.foundItems)
+          tr
+            td searchbar:clear
+            td Event will be triggered when user clicks on Search Bar's "clear" element (a href="#" class="searchbar-clear")
+          tr
+            td searchbar:enable
+            td Event will be triggered when Search Bar becomes active
+          tr
+            td searchbar:disable
+            td Event will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button (a href="searchbar-cancel") or on "searchbar-overlay" element
+          tr
+            td change
+            td Event will be triggered when "change" event occurs on search bar input element
+          tr
+            td input
+            td Event will be triggered when "input" event occurs on search bar input element
+          tr
+            td focus
+            td Event will be triggered when "focus" event occurs on search bar input element
+          tr
+            td blur
+            td Event will be triggered when "blur" event occurs on search bar input element
+          tr
+            td click:clear
+            td Event will be triggered when user clicks on input "clear" button
+          tr
+            td click:cancel
+            td Event will be triggered when user clicks on "cancel" link

@@ -1,0 +1,33 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Template7 Template React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Template7 Template React Component
+      p Sometimes you may need to use <a href="http://idangero.us/template7/" target="_blank">Template7</a> templates, like in Virtual List component. For this case there is a special React component.
+      h2 Usage example
+      pre
+        code
+          :code
+            <Template7Template>
+              <Card title="Title" content={'Hello, {{name}}'} footer="Footer"></Card>
+            </Template7Template>
+      p Renders to:
+      pre
+        code.html
+          :code
+            <script type="text/template7">
+              <div class="card">
+                <div class="card-header">Title</div>
+                <div class="card-content">
+                  <div class="card-content-inner">Hello, {{name}}</div>
+                </div>
+                <div class="card-footer">Footer</div>
+              </div>
+            </script>

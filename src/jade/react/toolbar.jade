@@ -1,0 +1,169 @@
+extends ../src/jade/_internal-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Toolbar React Component | Framework7 React Documentation';
+
+block content
+  .docs-wrap
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Toolbar React Component
+      p Toolbar is a fixed (with Fixed and Through layout types) area at the bottom of a screen that contains navigation elements. Toolbar does not have any parts, just plain links inside
+      p Toolbar React component represents <a href="../docs/toolbar.html">Toolbar</a> component.
+      h2 Usage examples
+      pre
+        code
+          :code
+            <Toolbar>
+              <Link>Left Link</Link>
+              <Link>Right Link</Link>
+            </Toolbar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="toolbar">
+              <div class="toolbar-inner">
+                <a href="#" class="link">Left Link</a>
+                <a href="#" class="link">Right Link</a>
+              </div>
+            </div>
+      h4 Bottom Toolbar (Affects Material Theme only)
+      pre
+        code
+          :code
+            <Toolbar bottom>
+              <Link>Left Link</Link>
+              <Link>Right Link</Link>
+            </Toolbar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="toolbar toolbar-bottom">
+              <div class="toolbar-inner">
+                <a href="#" class="link">Left Link</a>
+                <a href="#" class="link">Right Link</a>
+              </div>
+            </div>
+      h4 Tabbar
+      pre
+        code
+          :code
+            <Toolbar tabbar>
+              <Link tabLink="#tab1">Tab 1</Link>
+              <Link tabLink="#tab2">Tab 2</Link>
+            </Toolbar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="toolbar tabbar">
+              <div class="toolbar-inner">
+                <a href="#" class="tab-link" data-tab="#tab1">Tab 1</a>
+                <a href="#" class="tab-link" data-tab="#tab2">Tab 2</a>
+              </div>
+            </div>
+      h4 Tabbar With Labels
+      pre
+        code
+          :code
+            <Toolbar tabbar labels>
+              <Link icon="icon-1" text="Tab 1" tabLink="#tab1"></Link>
+              <Link icon="icon-2" text="Tab 2" tabLink="#tab2"></Link>
+            </Toolbar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="toolbar tabbar tabbar-labels">
+              <div class="toolbar-inner">
+                <a href="#" class="tab-link" data-tab="#tab1">
+                  <i class="icon icon-1"></i>
+                  <span class="tabbar-label">Tab 1</span>
+                </a>
+                <a href="#" class="tab-link" data-tab="#tab1">
+                  <i class="icon icon-2"></i>
+                  <span class="tabbar-label">Tab 2</span>
+                </a>
+              </div>
+            </div>
+      h4 Scrollable Tabbar
+      pre
+        code
+          :code
+            <Toolbar tabbar scrollable>
+              <Link tabLink="#tab1">Tab 1</Link>
+              <Link tabLink="#tab2">Tab 2</Link>
+            </Toolbar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="toolbar tabbar tabbar-scrollable">
+              <div class="toolbar-inner">
+                <a href="#" class="tab-link" data-tab="#tab1">Tab 1</a>
+                <a href="#" class="tab-link" data-tab="#tab2">Tab 2</a>
+              </div>
+            </div>
+      h2 Slot Properties
+      p Toolbar React component (&lt;Toolbar&gt;) has additional slots for custom elements:
+      ul
+        li <b>beforeInnerSlot</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element
+        li <b>afterInnerSlot</b> - element will be inserted right after &lt;div class="toolbar-inner"&gt; element
+      pre
+        code
+          :code
+            <Toolbar
+              beforeInnerSlot={<div>Before Inner</div>}
+              afterInnerSlot={<div>After Inner</div>}
+            > 
+              <Link>Left Link</Link>
+              <Link>Right Link</Link>
+            </Toolbar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="toolbar">
+              <div>Before Inner</div>
+              <div class="toolbar-inner">
+                <a href="#" class="link">Left Link</a>
+                <a href="#" class="link">Right Link</a>
+              </div>
+              <div>After Inner</div>
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Description
+        tbody
+          tr
+            td bottom
+            td boolean
+            td Defines whether the Toolbar should be on bottom or not (Material theme only)
+          tr
+            td tabbar
+            td boolean
+            td Defines whether the Toolbar is also a <a href="../docs/tabbar.html">Tab Bar</a>
+          tr
+            td labels
+            td boolean
+            td Enables Tab Bar with labels (affects only when <code>tabbar: true</code>)
+          tr
+            td scrollable
+            td boolean
+            td Enables scrollable Tab Bar (affects only when <code>tabbar: true</code>)
+          tr
+            td theme
+            td string
+            td Toolbar theme color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td layout
+            td string
+            td Toolbar layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>

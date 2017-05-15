@@ -1,12 +1,12 @@
 {
   "framework": "Framework7",
   "url": "http://framework7.io",
-  "framework_current_version" : "1.5.3",
-  "comparison_data_last_update" : "13.01.2017",
+  "framework_current_version" : "1.5.4",
+  "comparison_data_last_update" : "13.03.2017",
 
   "tutorial_url": "http://framework7.io/tutorials/",
   "license": "mit-license",
-  "documentation_url": "http://idangero.us/framework7/docs/",
+  "documentation_url": "http://framework7.io/docs/",
 
   "ios": "true",
   "android": "partially",
