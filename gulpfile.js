@@ -285,6 +285,7 @@
             'dist': './dist/**/*.*',
             'docs': './docs/**/*.*',
             'docs-demos': './docs/**/*.*',
+            'plugins': './plugins/**/*.*',
             'showcase': './showcase/**/*.*',
             'tutorials': './tutorials/**/*.*',
             'vue': './vue/**/*.*',
