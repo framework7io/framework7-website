@@ -158,6 +158,11 @@ block content
             td function(index, item)
             td
             td This optional function allows to use custom function to render item HTML. It could be used instead of <b>template</b> parameter
+          tr
+            td virtual-render-external
+            td function(vlInstance, renderParameters)
+            td
+            td This optional function allows to render DOM items using some custom method. Useful in case it is used (e.g.) with Vue/React plugin to pass DOM rendering and manipulation to Vue/React. <code>renderParameters</code> conaints object with the following properties: <code>fromIndex</code>, <code>toIndex</code>, <code>listHeight</code>, <code>topPosition</code>, <code>items</code>
       h2 Events
       table.events-table
         thead
