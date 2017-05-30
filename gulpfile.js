@@ -282,6 +282,7 @@
             './react/**/*.*'
             ];
         var folderSrc = {
+            'index': './index.html',
             'dist': './dist/**/*.*',
             'docs': './docs/**/*.*',
             'docs-demos': './docs/**/*.*',
