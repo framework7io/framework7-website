@@ -32,7 +32,7 @@ block content
                     <Navbar backLink="Back" title="Sortable" sliding>
                       <NavRight>
                         <!-- Link to enable/disable sortable -->
-                        <Link toggleSortable="#sortable">{{sorting ? 'Done' : 'Open'}}</Link>
+                        <Link toggleSortable="#sortable">{sorting ? 'Done' : 'Open'}</Link>
                       </NavRight>
                     </Navbar>
 
@@ -40,7 +40,7 @@ block content
                       id="sortable" 
                       sortable 
                       onSortableSort={this.onSort} 
-                      onSortableOpen={this.this.onSortableOpen} 
+                      onSortableOpen={this.onOpen} 
                       onSortableClose={this.onClose}
                     >
                       {this.state.items.map((item) => (
