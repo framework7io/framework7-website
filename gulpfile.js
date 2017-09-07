@@ -283,9 +283,11 @@
             ];
         var folderSrc = {
             'index': './index.html',
+            'apps': './apps/**/*.*',
             'dist': './dist/**/*.*',
             'docs': './docs/**/*.*',
             'docs-demos': './docs/**/*.*',
+            'examples': './examples/**/*.*',
             'plugins': './plugins/**/*.*',
             'showcase': './showcase/**/*.*',
             'tutorials': './tutorials/**/*.*',
