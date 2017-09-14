@@ -8,7 +8,7 @@
   "author": "Vladimir Kharlampidi",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nolimits4web/Framework7-Website"
+    "url": "https://github.com/framework7io/framework7-website"
   },
   "devDependencies": {
     "del": "^2.2.2",
