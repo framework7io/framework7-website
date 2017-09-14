@@ -184,9 +184,8 @@
         }
         $.ajax({
             dataType: 'jsonp',
-            url: 'https://api.github.com/repos/nolimits4web/framework7',
+            url: 'https://api.github.com/repos/framework7io/framework7',
             success: function(data){
-                console.log(data);
                 if (data) {
                     localStorage.setItem('f7-git-stats-date', new Date().getTime());
                     if(data.data.stargazers_count){
