@@ -3,14 +3,13 @@ body {
   background: url(../i/bg.jpg) no-repeat center top fixed;
   -webkit-background-size: cover;
   background-size: cover;
-  padding-top: 44px;
+  padding-top: 88px;
 }
 body .moot {
   color: #000;
 }
 .forum-header {
-  height: 44px;
-  line-height: 44px;
+  min-height: 44px;
   position: fixed;
   z-index: 100;
   left: 0;
@@ -19,11 +18,29 @@ body .moot {
   background: rgba(139, 25, 12, 0.9);
   font-size: 14px;
   text-align: center;
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+.forum-subheader {
+  height: 44px;
+  line-height: 44px;
+  position: fixed;
+  top: 44px;
+  text-align: center;
+  background: #d41011;
+  width: 100%;
+  z-index: 100;
+}
+.forum-subheader a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
 }
 .forum-header a {
   color: #ea795a;
   color: #fff;
   text-decoration: none;
+  text-transform: uppercase;
 }
 .forum-header a.active,
 .forum-header a:hover {
@@ -51,7 +68,7 @@ body .moot {
   margin-bottom: 5px;
 }
 .forum-header h1 {
-  font-weight: 300;
+  font-weight: 400;
   font-size: 21px;
   padding-right: 30px;
   margin: 0;
@@ -61,16 +78,6 @@ body .moot {
 .forum-header .title {
   display: inline-block;
   position: relative;
-}
-.forum-header .title:after {
-  content: 'l';
-  font-family: icon;
-  position: absolute;
-  right: 0;
-  top: 0%;
-  font-size: 20px;
-  color: #fff;
-  pointer-events: none;
 }
 .m-list .m-moot {
   margin-bottom: 4px;
@@ -273,4 +280,13 @@ img.m-face {
 .moot a.m-ban:hover {
   opacity: 0.7;
   color: #fff;
+}
+.m-form.m-create,
+.m-form.m-replyform,
+.m-nav-account {
+  display: none !important;
+  visibility: hidden !important;
+}
+.moot .m-search {
+  width: 100% !important;
 }
