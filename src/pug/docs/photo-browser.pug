@@ -14,20 +14,20 @@ block content
     .docs-content.with-device
       .full-width
         h1 Photo Browser
-        p Photo Browser is an iOS like photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional). 
+        p Photo Browser is an iOS like photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).
         p Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.
 
         h2 Create Photo Browser Instance
         p Photo Browser can be created and initialized only using JavaScript. We need to use related App's method:
         .method-wrap
           p
-            span.method myApp.photoBrowser(<span>parameters</span>) 
+            span.method myApp.photoBrowser(<span>parameters</span>)
             span - initialize Photo Browser with parameters
           ul.method-parameters
             li
               span.parameter parameters
               |  - <span class="parameter-type">object</span> - object with Photo Browser parameters. Required.
-            
+
             li.method-returns Method returns initialized Photo Browser instance
         p For example:
         pre
@@ -35,7 +35,7 @@ block content
             | var myPhotoBrowser = app.photoBrowser({
             |     zoom: 400,
             |     photos: ['path/to/image1.jpg', 'path/to/image2.jpg']
-            | });   
+            | });
             | myPhotoBrowser.open(); // open photo browser
         h2 Photo Browser Parameters
         p Let's look on list of all available parameters:
@@ -120,7 +120,7 @@ block content
             tr
               td captionsTheme
               td string
-              td 
+              td
               td Captions color theme, could be also "dark" or "light". By default, equal to "theme" parameter
             tr
               td navbar
@@ -196,66 +196,66 @@ block content
             tr
               td onOpen(photobrowser)
               td function
-              td 
+              td
               td Callback function, will be executed on photo browser open.
             tr
               td onClose(photobrowser)
               td function
-              td 
+              td
               td Callback function, will be executed when user close photo browser.
             tr
               td onSwipeToClose(photobrowser)
               td function
-              td 
+              td
               td Callback function, will be executed when user close photo browser with swipe up/down.
             tr
               th(colspan="4") Swiper Callbacks
             tr
               td onSlideChangeStart(swiper)
               td function
-              td 
+              td
               td Callback function, will be executed in the beginning of animation to other slide (next or previous). Receives Swiper instance as an argument.
             tr
               td onSlideChangeEnd(swiper)
               td function
-              td 
+              td
               td Callback function, will be executed after animation to other slide (next or previous). Receives Swiper instance as an argument.
             tr
               td onTransitionStart(swiper)
               td function
-              td 
+              td
               td Callback function, will be executed in the beginning of transition. Receives swiper instance as an argument.
             tr
               td onTransitionEnd(swiper)
               td function
-              td 
+              td
               td Callback function, will be executed after transition. Receives slider instance as an argument.
             tr
               td onClick(swiper, event)
               td function
-              td 
+              td
               td Callback function, will be executed when user click/tap on slider after 300ms delay. Receives Swiper instance and 'touchend' event as an arguments.
             tr
               td onTap(swiper, event)
               td function
-              td 
+              td
               td Callback function, will be executed when user click/tap on slider. Receives Swiper instance and 'touchend' event as an arguments.
             tr
               td onDoubleTap(swiper, event)
               td function
-              td 
+              td
               td Callback function, will be executed when user double tap on slider's container. Receives Swiper instance and 'touchend' event as an arguments.
             tr
               td onLazyImageLoad(swiper, slide, image)
               td function
-              td 
+              td
               td Callback function, will be executed when Photo Browser begins to load lazy loading photo
             tr
               td onLazyImageReady(swiper, slide, image)
               td function
-              td 
+              td
               td Callback function, will be executed after lazy loading photo will be loaded
-            
+
         h2 Photo Browser Methods & Properties
         p After we initialize Photo Browser we have its initialized instance in variable (like <code>myPhotoBrowser</code> variable in example above) with helpful methods and properties:
         table.methods-table
@@ -308,7 +308,7 @@ block content
             |     'image3.jpg',
             |     'image4.jpg',
             | ];
-            | 
+            |
             | //If we need to use caption for some of photos then each photo should be presented as object:
             | var photos = [
             |     {
@@ -326,7 +326,7 @@ block content
             |     // This one will be also without caption
             |     'image4.jpg'
             | ];
-            | 
+            |
             | //If we need to use videos in some slides we need to pass HTML element of video element or iframe within "html" property:
             | var photos = [
             |     {
@@ -344,7 +344,7 @@ block content
             |     },
             |     // This one will be also video without caption
             |     '&lt;video src="video2.mp4"&gt;&lt;/video&gt;'
-            | ];        
+            | ];
       h2(data-device-preview="../docs-demos/photo-browser.html") Examples
 
       pre
@@ -361,17 +361,17 @@ block content
           |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-standalone-dark"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
           |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-popup-dark"&gt;Popup&lt;/a&gt;&lt;/div&gt;
           |   &lt;/div&gt;
-          | &lt;/div&gt; 
+          | &lt;/div&gt;
       pre
-        code           
-          | var myApp = new Framework7(); 
-          | 
+        code
+          | var myApp = new Framework7();
+          |
           | var $$ = Dom7;
-          | 
+          |
           | var mainView = myApp.addView('.view-main', {
           |   dynamicNavbar: true
           | });
-          | 
+          |
           | /*=== Default standalone ===*/
           | var myPhotoBrowserStandalone = myApp.photoBrowser({
           |     photos : [
@@ -384,7 +384,7 @@ block content
           | $$('.pb-standalone').on('click', function () {
           |     myPhotoBrowserStandalone.open();
           | });
-          | 
+          |
           | /*=== Popup ===*/
           | var myPhotoBrowserPopup = myApp.photoBrowser({
           |     photos : [
@@ -397,7 +397,7 @@ block content
           | $$('.pb-popup').on('click', function () {
           |     myPhotoBrowserPopup.open();
           | });
-          | 
+          |
           | /*=== As Page ===*/
           | var myPhotoBrowserPage = myApp.photoBrowser({
           |     photos : [
@@ -411,7 +411,7 @@ block content
           | $$('.pb-page').on('click', function () {
           |     myPhotoBrowserPage.open();
           | });
-          | 
+          |
           | /*=== Standalone Dark ===*/
           | var myPhotoBrowserDark = myApp.photoBrowser({
           |     photos : [
@@ -424,7 +424,7 @@ block content
           | $$('.pb-standalone-dark').on('click', function () {
           |     myPhotoBrowserDark.open();
           | });
-          | 
+          |
           | /*=== Popup Dark ===*/
           | var myPhotoBrowserPopupDark = myApp.photoBrowser({
           |     photos : [
@@ -437,8 +437,8 @@ block content
           | });
           | $$('.pb-popup-dark').on('click', function () {
           |     myPhotoBrowserPopupDark.open();
-          | }); 
-          | 
+          | });
+          |
           | /*=== With Captions ===*/
           | var myPhotoBrowserPopupDark = myApp.photoBrowser({
           |     photos : [
@@ -461,7 +461,7 @@ block content
           | $$('.pb-standalone-captions').on('click', function () {
           |     myPhotoBrowserPopupDark.open();
           | });
-          | 
+          |
           | /*=== With Video ===*/
           | var myPhotoBrowserPopupDark = myApp.photoBrowser({
           |     photos : [
@@ -484,13 +484,13 @@ block content
           |     myPhotoBrowserPopupDark.open();
           | });
       .full-width.stop-scroll-device
-        h2 Photo Browser Templates 
+        h2 Photo Browser Templates
         p Let's look at Photo Browser templates which you can pass on Photo Browser initialization
         h3 Navbar Template
         p Here is an example of Navbar template that you can pass in <code>navbarTemplate</code> parameter:
         pre
           code
-            &lt;div class="navbar"&gt;
+            | &lt;div class="navbar"&gt;
             |     &lt;div class="navbar-inner"&gt;
             |         &lt;div class="left sliding"&gt;
             |             &lt;a href="#" class="link close-popup photo-browser-close-link {{#unless backLinkText}}icon-only{{/unless}} {{js "this.type === \'page\' ? \'back\' : \'\'"}}"&gt;
@@ -499,16 +499,16 @@ block content
             |             &lt;/a&gt;
             |         &lt;/div&gt;
             |         &lt;div class="center sliding"&gt;
-            |             &lt;span class="photo-browser-current"&gt;&lt;/span&gt; 
-            |             &lt;span class="photo-browser-of"&gt;{{ofText}}&lt;/span&gt; 
+            |             &lt;span class="photo-browser-current"&gt;&lt;/span&gt;
+            |             &lt;span class="photo-browser-of"&gt;{{ofText}}&lt;/span&gt;
             |             &lt;span class="photo-browser-total"&gt;&lt;/span&gt;
             |         &lt;/div&gt;
             |         &lt;div class="right"&gt;&lt;/div&gt;
             |     &lt;/div&gt;
-            | &lt;/div&gt;  
+            | &lt;/div&gt;
         p Where:
         ul
-          li    
+          li
             p <code>&lt;a class="photo-browser-close-link"&gt;</code> - link that will close Photo Browser on click. Not just close popup or page, but also detach all events listeners
           li
             p <code>&lt;span class="photo-browser-current"&gt;</code>. Photo Browser will insert index number currently active slide into element with <b>photo-browser-current</b> class
@@ -566,7 +566,7 @@ block content
             |     {{caption}}
             | &lt;/div&gt;
 
-          
+
 
 
 

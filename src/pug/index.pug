@@ -4,10 +4,10 @@ html
     meta(charset="utf-8")
     title Framework7 - Full Featured Mobile HTML Framework For Building iOS & Android Apps
     meta(property="og:image", content="http://framework7.io/framework7/i/f7-banner.jpg")
-    link(rel="stylesheet", href="#{cdn}/css/normalize.css")
-    link(rel="stylesheet", href="#{cdn}/css/main.css")
+    link(rel="stylesheet", href=cdn + "/css/normalize.css")
+    link(rel="stylesheet", href=cdn + "/css/main.css")
     link(rel="shortcut icon" href="favicon.png")
-    script(src="#{cdn}/js/vendor/modernizr-2.7.1.min.js")
+    script(src=cdn + "/js/vendor/modernizr-2.7.1.min.js")
   body
     | <!-- BuySellAds Ad Code -->
     script.
@@ -28,7 +28,7 @@ html
           .buttons
             a(href="https://github.com/nolimits4web/Framework7/releases/", target="_blank") Download
             a(href="/get-started/") Get Started
-          .release-info MIT Licensed, v1.6.5 released on September 7, 2017 | 
+          .release-info MIT Licensed, v1.6.5 released on September 7, 2017 |
             a(href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md", target="_blank") Changelog
           .links
             a(href="/docs/") Docs
@@ -72,7 +72,7 @@ html
 
       .home-block.home-easy-to-use
         .pic
-            img(src="#{cdn}/i/feats/html.jpg", alt="", height="310")
+            img(src=cdn + "/i/feats/html.jpg", alt="", height="310")
         .text
           h2 Ultra Easy To Use.<br>Not Harder Than Website!
           p To create iOS apps using Framework7 is so easy as website creation. Try to start and you will be surprised how easy is it. All you need to make it work is a simple HTML layout and attached framework's CSS and JS files! Framework7 doesn't force you to write some custom tags that will be converted by JavaScript to something else. It doesn't force you to write and describe all your content in JavaScript (or JSON). Just plain HTML and you always get exactly the same that you expect to get when you write this HTML.
@@ -82,21 +82,21 @@ html
           h2 iOS Specific
           p As said above Framework7 is iOS specific framework. From the very beginning it was carefully thought-out to give you easy ways to realize all incredible features from all necessary UI elements visualization to complicated animation and touch interactions that characterize the platform. That is why Framework7 is the only solution to realize precisely pixel-perfect iOS native app's interface.
         .pic
-            img(src="#{cdn}/i/feats/ios.jpg", alt="")
+            img(src=cdn + "/i/feats/ios.jpg", alt="")
         .clearfix
       .home-block.home-ios
         .text
           h2 Material Theme
           p Framework7 Material theme was designed according to the official Google Material design specification to bring pixel-perfect Material features - from visual design and colors to interactions and effects. And now, Framework7 will be a great solution to create Android apps with native Material look and feel.
         .pic
-            img(src="#{cdn}/i/feats/material.jpg", alt="")
+            img(src=cdn + "/i/feats/material.jpg", alt="")
         .clearfix
       .home-block.home-ui
         .text
           h2 UI Components
           p Framework7 comes with a bunch of ready to use UI elements and widgets like modals, popup, action sheet, popover, list views, media lists, tabs, side panels, layout grid, preloader (activity indicator), form elements, etc. The awesome point is that you don't need JavaScript at all for the most of mentioned widgets.
         .pic
-          img(data-src="#{cdn}/i/feats/ui.jpg", alt="").lazy
+          img(data-src=cdn + "/i/feats/ui.jpg", alt="").lazy
         .clearfix
       .home-block.home-killer
         h2 Killer Features
@@ -109,44 +109,44 @@ html
         .tabs
           .tab.active
             .pic
-              video(src="#{cdn}/i/feats/swipeback.mp4", loop, autoplay)
+              video(src=cdn + "/i/feats/swipeback.mp4", loop, autoplay)
             .text
               h3 Swipe Back
               p One of Framework7' killing feature is supporting of iOS well known swipe back gesture from left border of screen when you want to get to the previous page. It simply works, and works perfectly as you expect it to do. Just swipe from left (or drag with mouse) area of the page to see smooth transition to the previous page. It is not just A-B transition. It really follows your finger with parallax animation while touch!
           .tab
             .pic
-              video(src="#{cdn}/i/feats/swipeout.mp4", loop)
+              video(src=cdn + "/i/feats/swipeout.mp4", loop)
             .text
               h3 Swipe Actions
               p Do you remember how you swipe left on the message in the Mail app if you want to delete it or mark as read? Yep, Framework7 has totally the same functionality for any list elements, with the same smooth animation and touch interaction!
           .tab
             .pic
-              video(src="#{cdn}/i/feats/navbar.mp4", loop)
+              video(src=cdn + "/i/feats/navbar.mp4", loop)
             .text
               h3 Dynamic Navbar
               p As was mentioned already Framework7 makes everything to give you a feel of native iOS app. And one of the significant feature that improves this feeling is the dynamic navigation bar (navbar). You can see how its elements sliding and fading during pages transition and when you swipe back.
           .tab
             .pic
-              video(src="#{cdn}/i/feats/ptr.mp4", loop)
+              video(src=cdn + "/i/feats/ptr.mp4", loop)
             .text
               h3 Pull To Refresh
               p Framework7 is probably the first and only framework that has this great feature realized on pure native scrolling! That is why pull to refresh behavior is perfect as possible and works totally equal in many native iOS apps!
           .tab
             .pic
-              video(src="#{cdn}/i/feats/messages.mp4", loop)
+              video(src=cdn + "/i/feats/messages.mp4", loop)
             .text
               h3 Messages
-              p Framework7 comes with great realized "messages" widget that you can easily customize and integrate into your app for messaging between users or devices using some realtime sync data service like Pusher or PubNub. 
+              p Framework7 comes with great realized "messages" widget that you can easily customize and integrate into your app for messaging between users or devices using some realtime sync data service like Pusher or PubNub.
       .home-block.home-styles
         .text
           h2 Easy To Customize
           p With Framework7 everything is simple, all styles are divided by parts into small <b>.less</b> files, so you can really easy bring your own custom styles to your app.
           p Check out Framework7 iOS & Android apps in <a href="showcase/">Showcase</a> section:
         .pic
-          img(src="#{cdn}/i/showcase/delights1.jpeg")
-          img(src="#{cdn}/i/showcase/series72.png")
-          img(src="#{cdn}/i/showcase/zebra1.jpeg")
-          img(src="#{cdn}/i/showcase/aquasella1.jpeg")
+          img(src=cdn + "/i/showcase/delights1.jpeg")
+          img(src=cdn + "/i/showcase/series72.png")
+          img(src=cdn + "/i/showcase/zebra1.jpeg")
+          img(src=cdn + "/i/showcase/aquasella1.jpeg")
       .home-block.home-more
         .text
           h2 Many More Features...
@@ -180,48 +180,48 @@ html
           h1 Framework7 Vue
           p Bring components-syntax, structured data and data bindings to Framework7 with power and simplicity of Vue.js
         .pic
-          img(src="#{cdn}/i/vue-intro.png", width="700")
+          img(src=cdn + "/i/vue-intro.png", width="700")
       .home-block.home-featured
         .center
           h2 Featured iOS Apps Made With Framework7
           .feat-apps
             .feat-app
               a(href="https://itunes.apple.com/app/pixel-pusher/id978292186", target="_blank").feat-app-icon.feat-app-icon-rounded
-                img(src="#{cdn}/i/showcase/pixelpusher.jpeg")
+                img(src=cdn + "/i/showcase/pixelpusher.jpeg")
               a(href="https://itunes.apple.com/app/pixel-pusher/id978292186", target="_blank").feat-app-title PIXEL-PUSHER
-              .feat-app-author by 
+              .feat-app-author by
                 a(href="https://itunes.apple.com/artist/brett-gregson/id820233075?uo=8&at=1l3voeJ", target="_blank") Brett Gregson
             .feat-app
               a(href="https://itunes.apple.com/app/sprint-social/id975135816", target="_blank").feat-app-icon.feat-app-icon-rounded
-                img(src="#{cdn}/i/showcase/sprintsocial.png")
+                img(src=cdn + "/i/showcase/sprintsocial.png")
               a(href="https://itunes.apple.com/app/sprint-social/id975135816", target="_blank").feat-app-title Sprint Social
-              .feat-app-author by 
+              .feat-app-author by
                 a(href="https://itunes.apple.com/artist/click-innovate-ltd/id545084415", target="_blank") Click Innovate Ltd
             .feat-app
               a(href="https://itunes.apple.com/app/prsm/id989164526?mt=8&uo=8&at=1l3voeJ", target="_blank").feat-app-icon.feat-app-icon-rounded
-                img(src="#{cdn}/i/showcase/prism.png")
+                img(src=cdn + "/i/showcase/prism.png")
               a(href="https://itunes.apple.com/app/prsm/id989164526?mt=8&uo=8&at=1l3voeJ", target="_blank").feat-app-title PRSM
-              .feat-app-author by 
+              .feat-app-author by
                 a(href="https://itunes.apple.com/artist/brett-gregson/id820233075?uo=8&at=1l3voeJ", target="_blank") Brett Gregson
 
             .feat-app
               a(href="https://itunes.apple.com/us/app/series-seven/id888005622", target="_blank").feat-app-icon
-                img(src="#{cdn}/i/showcase/series7.png")
+                img(src=cdn + "/i/showcase/series7.png")
               a(href="https://itunes.apple.com/us/app/series-seven/id888005622", target="_blank").feat-app-title Series Seven
-              .feat-app-author by 
+              .feat-app-author by
                 a(href="http://idangero.us/", target="_blank") iDangero.us
 
             .feat-app
               a(href="https://itunes.apple.com/app/monday-delights/id797451618", target="_blank").feat-app-icon.feat-app-icon-rounded
-                img(src="#{cdn}/i/showcase/delights.jpg")
+                img(src=cdn + "/i/showcase/delights.jpg")
               a(href="https://itunes.apple.com/app/monday-delights/id797451618", target="_blank").feat-app-title Monday Delights
-              .feat-app-author by 
+              .feat-app-author by
                 a(href="https://itunes.apple.com/us/artist/yevart/id797451621", target="_blank") Yevart
             .feat-app
               a(href="https://itunes.apple.com/us/app/polygen-polygon-wallpaper/id896479944", target="_blank").feat-app-icon.feat-app-icon-rounded
-                img(src="#{cdn}/i/showcase/polygen.jpg")
+                img(src=cdn + "/i/showcase/polygen.jpg")
               a(href="https://itunes.apple.com/us/app/polygen-polygon-wallpaper/id896479944", target="_blank").feat-app-title PolyGen
-              .feat-app-author by 
+              .feat-app-author by
                 a(href="https://itunes.apple.com/us/artist/bartlomiej-niemtur/id873021586", target="_blank") Bartlomiej Niemtur
           p More apps in <a href="showcase/">Showcase</a>
       .home-block.home-free
@@ -237,12 +237,12 @@ html
         h2 More Great Products By iDangero.us
         .more-products
           a(href="http://idangero.us/swiper/").product
-            img(src="#{cdn}/i/logo-swiper.png")
+            img(src=cdn + "/i/logo-swiper.png")
             .title
               span Swiper
             .text Most Modern Mobile Touch Slider
           a(href="http://idangero.us/template7/").product
-            img(src="#{cdn}/i/logo-t7.png")
+            img(src=cdn + "/i/logo-t7.png")
             .title
               span Template7
             .text Mobile-first JavaScript Template Engine
@@ -256,9 +256,9 @@ html
       .center
         include _footer
     script.
-    script(src="#{cdn}/js/vendor/jquery-1.11.0.min.js")
-    script(src="#{cdn}/js/plugins.js")
-    script(src="#{cdn}/js/main.js")
+    script(src=cdn + "/js/vendor/jquery-1.11.0.min.js")
+    script(src=cdn + "/js/plugins.js")
+    script(src=cdn + "/js/main.js")
     script.
       var _merchantSettings=_merchantSettings || [];_merchantSettings.push(['AT', '1l3voeJ']);(function(){var autolink=document.createElement('script');autolink.type='text/javascript';autolink.async=true; autolink.src= ('https:' == document.location.protocol) ? 'https://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js' : 'http://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(autolink, s);})();
     script.

@@ -5,13 +5,13 @@ html
     meta(charset="utf-8")
     title=title
     meta(property="og:image", content="http://framework7.io/i/f7-banner.jpg")
-    - if (includeF7Icons)
-      link(rel="stylesheet" href="#{cdn}/css/framework7-icons.css")
-    link(rel="stylesheet", href="#{cdn}/css/normalize.css")
-    link(rel="stylesheet", href="#{cdn}/css/highlight.css")
-    link(rel="stylesheet", href="#{cdn}/css/main.css")
+    if (includeF7Icons)
+      link(rel="stylesheet" href=cdn + "/css/framework7-icons.css")
+    link(rel="stylesheet", href=cdn + "/css/normalize.css")
+    link(rel="stylesheet", href=cdn + "/css/highlight.css")
+    link(rel="stylesheet", href=cdn + "/css/main.css")
     link(rel="shortcut icon" href="/favicon.png")
-    script(src="#{cdn}/js/vendor/modernizr-2.7.1.min.js")
+    script(src=cdn + "/js/vendor/modernizr-2.7.1.min.js")
   body
     | <!-- BuySellAds Ad Code -->
     script.
@@ -27,7 +27,7 @@ html
       .center
         a(href="../").logo
         .langs
-          span Language: 
+          span Language:
           a(href="http://framework7.io") EN
           a(href="http://framework7.cn/") CN
         .carbon
@@ -89,11 +89,6 @@ html
               - else
                 a(href="../showcase/") Showcase
 
-    .share-line
-      .center
-        include _share-buttons
-        include _github-buttons
-        .clearfix
     script(src="//m.servedby-buysellads.com/monetization.js", type="text/javascript")
     .bsa-cpc
     script.
@@ -106,20 +101,16 @@ html
         });
           }
       })();
-    .content.center
-      block content
-    .share-line
+    .content
       .center
-        include _share-buttons
-        include _github-buttons
-        .clearfix
+        block content
     footer
       .center
         include _footer
     block footer
-    script(src="#{cdn}/js/vendor/jquery-1.11.0.min.js")
-    script(src="#{cdn}/js/plugins.js")
-    script(src="#{cdn}/js/main.js")
+    script(src=cdn + "/js/vendor/jquery-1.11.0.min.js")
+    script(src=cdn + "/js/plugins.js")
+    script(src=cdn + "/js/main.js")
     script.
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

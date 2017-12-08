@@ -18,7 +18,7 @@ block content
       p So it is seems to be simple and if we want to create link to page which is in <code>about.html</code> file we just need to write usual <code>&lt;a&gt;</code> tag:
       pre
         code
-          &lt;a href="about.html"&gt;Go to About page&lt;/a&gt;
+          | &lt;a href="about.html"&gt;Go to About page&lt;/a&gt;
       p When we click on this link, Framework7 will send Ajax request to <code>about.html</code>, parse it, insert to DOM and run animated transition to this new page.
       h2 Internal file structure with Page
       p Because Framework7 has pretty smart parser we don't need full HTML layout (with HTML head, body, views, pages, etc.) in internal pages. Let's look on the structure of this internal <code>about.html</code> file:
@@ -50,7 +50,7 @@ block content
           |       &lt;!-- Pages --&gt;
           |         &lt;a href="about.html"&gt; About &lt;/a&gt;
           |       &lt;!-- Toolbar--&gt;
-          |     &lt;/div&gt;          
+          |     &lt;/div&gt;
           |   &lt;/div&gt;
           |   ...
           | &lt;/body&gt;
@@ -62,14 +62,14 @@ block content
           | &lt;div class="view view-main left-view"&gt;
           |   &lt;div class="page" data-page="about-right"&gt;
           |     ... This page will be loaded when you click about.html link from Left view ...
-          |   &lt;/div&gt;          
+          |   &lt;/div&gt;
           | &lt;/div&gt;
           | &lt;!-- Right view --&gt;
           | &lt;div class="view right-view"&gt;
           |   &lt;div class="page" data-page="about-right"&gt;
           |     ... This page will be loaded when you click about.html link from Right view ...
-          |   &lt;/div&gt;          
-          | &lt;/div&gt; 
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
       p The main point here is that page for speific View should be wrapped with <code>&lt;div class="view"&gt;</code> with the same classes as in main layout. It will help Framework7 to recognize which page is for which view.
       h2 Internal file structure with Dynamic Navbar
       p.ios-only Such structure is supported only in iOS Theme
@@ -79,7 +79,7 @@ block content
           | &lt;div class="navbar"&gt;
           |   ... Navbar content goes here
           | &lt;/div&gt;
-          | 
+          |
           | &lt;div class="page" data-page="about"&gt;
           |   ... About page content goes here
           | &lt;/div&gt;
@@ -109,16 +109,16 @@ block content
         code
           | &lt;div class="page no-swipeback"&gt;
           |     ...
-          | &lt;/div&gt;             
+          | &lt;/div&gt;
       h2 Load pages / Go back with/out animation
-      p Sometimes we may need to load new page or go back immediately, without animated page transition. For this case we may set "noAnimate" global View or App parameter. 
+      p Sometimes we may need to load new page or go back immediately, without animated page transition. For this case we may set "noAnimate" global View or App parameter.
       p But if we need it in some particular case then we may just add addional "no-animation" class to link (or back link):
       pre
         code
           | &lt;div class="page" data-page="about"&gt;
           |   &lt;!-- Add additional "no-anmation" class to link to disable animated page transition --&gt;
           |   &lt;a href="about.html" class="no-animation"&gt; Load About page immediately &lt;/a&gt;
-          | 
+          |
           |   &lt;!-- The same rule for back link --&gt;
           |   &lt;a href="index.html" class="back no-animation"&gt; Go back immediately &lt;/a&gt;
           | &lt;/div&gt;
@@ -128,7 +128,7 @@ block content
           | &lt;div class="page" data-page="about"&gt;
           |   &lt;!-- Add additional "with-anmation" class to link to enable animated page transition --&gt;
           |   &lt;a href="about.html" class="with-animation"&gt; Load About page with animation &lt;/a&gt;
-          | 
+          |
           |   &lt;!-- The same rule for back link --&gt;
           |   &lt;a href="index.html" class="back with-animation"&gt; Go back with animation &lt;/a&gt;
           | &lt;/div&gt;
@@ -138,14 +138,14 @@ block content
         code
           | &lt;!-- Refresh currently active page (reload from server) --&gt;
           | &lt;a href="about.html" data-reload="true" data-ignore-cache="true"&gt;Refresh page&lt;/a&gt;
-          | 
+          |
           | &lt;!-- Go back but to another page, not to actual previous page in history. Such method also allows to jump back in history: --&gt;
           | &lt;a href="about.html" class="back" data-force="true"&gt;Back to About&lt;/a&gt;
-          | 
+          |
           | &lt;!-- Load new page without animation --&gt;
-          | &lt;a href="about.html" data-animate-pages="false"&gt;&lt;/a&gt;          
+          | &lt;a href="about.html" data-animate-pages="false"&gt;&lt;/a&gt;
       .important-note
-        p Note that such attributes should be used in hypens-case instead of camelCase: 
+        p Note that such attributes should be used in hypens-case instead of camelCase:
         ul
           li animatePages - data-animate-pages
           li ignoreCache - data-ignore-cache
@@ -155,12 +155,12 @@ block content
       p It is possible to load page from HTML files using JavaScript API, not only using <code>&lt;a&gt;</code> tags. For this case we may use <code>.router.loadPage(url)</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:
       pre
         code
-          | // Initialize App  
+          | // Initialize App
           | var myApp = new Framework7();
-          |         
-          | // Initialize View          
-          | var mainView = myApp.addView('.view-main')          
-          |         
+          |
+          | // Initialize View
+          | var mainView = myApp.addView('.view-main')
+          |
           | // Load page from about.html file to main View:
           | mainView.router.loadPage('about.html');
       p Note, that it is only possible for Views that were initialized
@@ -168,12 +168,12 @@ block content
       p You can also get the same as when you click "back" link but with JavaScript using <code>.router.back()</code> <a href="router-api.html#view-navigation-methods">View Navigation Methods</a>:
       pre
         code
-          | // Initialize App  
+          | // Initialize App
           | var myApp = new Framework7();
-          |         
-          | // Initialize View          
-          | var mainView = myApp.addView('.view-main')          
-          |         
+          |
+          | // Initialize View
+          | var mainView = myApp.addView('.view-main')
+          |
           | // Go back on main View
           | mainView.router.back();
       p It is also possible only for Views that were initialized
