@@ -1,0 +1,425 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Range Slider | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Range Slider
+    .docs-index
+    h2 Range Slider Layout
+    h3 Single Range
+    p Single range slider layout is pretty simple:
+    pre
+      code.html
+        :code
+          <!-- Range Slider element -->
+          <div class="range-slider">
+            <!-- range input -->
+            <input type="range" min="0" max="100" step="1" value="10">
+          </label>
+    h3 Dual Range
+    p Dual range slider is more simpler as it doesn't require input element because input:range doesn't support dual range:
+    pre
+      code.html
+        :code
+          <!-- Range Slider element -->
+          <div class="range-slider"></div>
+    h2 Range Slider Colors
+    p Range Slider supports all <a href="color-themes.html">default colors</a>. So to change its color just add color-[color] class to range slider element.
+    pre
+      code.html
+        :code
+          <!-- red range -->
+          <div class="range-slider color-red">...</div>
+
+          <!-- orange range -->
+          <div class="range-slider color-orange">...</div>
+    h2 Range Slider App Methods
+    p Let's look at related App methods to work with Range Slider:
+    .method-wrap
+      p
+        span.method app.range.create(<span>parameters</span>)
+        | - create Range Slider instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with range slider parameters
+      p.method-returns Method returns created Range Slider's instance
+
+    .method-wrap
+      p
+        span.method app.range.destroy(<span>el</span>)
+        | - destroy Range Slider instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Range Slider element or Range Slider instance to destroy.
+    .method-wrap
+      p
+        span.method app.range.get(<span>el</span>)
+        | - get Range Slider instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Range Slider element.
+      p.method-returns Method returns Range Slider's instance
+    .method-wrap
+      p
+        span.method app.range.getValue(<span>el</span>)
+        | - get Range Slider value
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Range Slider element.
+      p.method-returns Method returns range slider value
+    .method-wrap
+      p
+        span.method app.range.setValue(<span>el</span>, <span>value</span>)
+        | - set new Range Slider value
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Range Slider element.
+        li
+          span.parameter value
+          |  - <span class="parameter-type">number</span> (in case of single range) or <span class="parameter-type">array</span> of values (in case of dual range)
+      p.method-returns Method returns Range Slider's instance
+    h2 Range Slider Parameters
+    p Now let's look at list of available parameters we need to create Range Slider:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement<br>string
+          td
+          td Range Slider element. HTMLElement or string with CSS selector of range slider element
+        tr
+          td inputEl
+          td HTMLElement<br>string
+          td
+          td Range Slider input element or CSS selector of input element. If not specified, will try to look for <code>input type="range"</code> inside of range slider element
+        tr
+          td dual
+          td boolean
+          td false
+          td Enable dual range slider
+        tr
+          td step
+          td number
+          td 1
+          td Minimal step between values
+        tr
+          td label
+          td boolean
+          td false
+          td Enables additional label around range slider knob
+        tr
+          td min
+          td number
+          td
+          td Minimum value
+        tr
+          td min
+          td number
+          td
+          td Maximum value
+        tr
+          td value
+          td number<br>array
+          td
+          td Initial value. Number in case of single range, and array of values in case of dual range
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var range = app.range.create({
+                    el: '.range-slider'
+                    on: {
+                      change: function () {
+                        console.log('Range Slider value changed')
+                      }
+                    }
+                  })
+
+    h2 Range Slider Methods & Properties
+    p So to create Range Slider we have to call:
+    pre
+      code
+        :code
+          var range = app.range.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>range</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td range.app
+          td Link to global app instance
+        tr
+          td range.el
+          td Range Slider HTML element
+        tr
+          td range.$el
+          td Dom7 instance with range slider HTML element
+        tr
+          td range.inputEl
+          td Range Slider input HTML element
+        tr
+          td range.$inputEl
+          td Dom7 instance with range slider input HTML element
+        tr
+          td range.rangeWidth
+          td Range slider width (in px)
+        tr
+          td range.dual
+          td Boolean proprty indication whether it is dual or not
+        tr
+          td range.min
+          td Range min value
+        tr
+          td range.max
+          td Range max value
+        tr
+          td range.value
+          td Range value
+        tr
+          td range.knobs
+          td Array where each element represents HTMLElement of created range knob (2 knobs in case of dual slider)
+        tr
+          td range.labels
+          td Array where each element represent HTMLElement of created range knob label (2 labels in case of dual slider)
+        tr
+          td range.params
+          td Range Slider parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td range.getValue()
+          td Returns range value
+        tr
+          td range.setValue(value)
+          td Set new range value
+        tr
+          td range.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td range.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td range.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td range.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+
+    h2 Range Slider Events
+    p Range Slider will fire the following DOM events on range element and events on app and range instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td range:change
+          td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
+          td Event will be triggered when Range Slider value has been changed
+        tr
+          td range:beforedestroy
+          td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
+          td Event will be triggered right before Range Slider instance will be destroyed
+    h3 App and Range Slider Instance Events
+    p Range Slider instance emit events on both self instance and app instance. App instance events has same names prefixed with <code>range</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td change
+          td <span>range</span>
+          td range
+          td(rowspan="2") Event will be triggered when range value has been changed. As an argument event handler receives range instance
+        tr
+          td rangeChange
+          td <span>range</span>
+          td app
+        tr
+          td rangeDestroy
+          td <span>range</span>
+          td range
+          td(rowspan="2") Event will be triggered right before Range Slider instance will be destroyed. As an argument event handler receives range instance
+        tr
+          td rangeBeforeDestroy
+          td <span>range</span>
+          td app
+    h2 Range Slider Auto Initialization
+    p If you don't need to use Range Slider API and your Range Slider is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>range-slider-init</code> class:
+    pre
+      code.html
+        :code
+          <!-- Add range-slider-init class -->
+          <div class="range-slider range-slider-init">
+            <input type="range" min="0" max="100" step="1" value="10">
+          </div>
+    p In this case if you need to access created Range Slider instance you can use the <code>app.toggle.get</code> app method:
+    pre
+      code.js
+        :code
+          var range = app.range.get('.range-slider');
+
+          if (range.value > 50) {
+            // do something
+          }
+    p When using auto init you may need to pass additional parameters. It can be done with two ways:
+    ul
+      li
+        p In you case you use single-range slider and you have input:range inside, then <code>step</code>, <code>min</code>, <code>max</code>, <code>value</code> parameters can be set from same input attributes:
+        pre
+          code.html
+            :code
+              <!-- min, max, step, value parameters will be set for same input attributes -->
+              <div class="range-slider range-slider-init">
+                <input type="range" min="0" max="100" step="1" value="10">
+              </div>
+      li
+        p Otherwise, if you don't have input:range inside or you use dual range input you can set all available parameters via <code>data-</code> attributes on range slider element.
+        pre
+          code.html
+            :code
+              <!-- parameters set via data- attributes -->
+              <div
+                class="range-slider range-slider-init"
+                data-min="0"
+                data-max="100"
+                data-step="10"
+                data-label="true"
+                data-value="50"
+              ></div>
+        p In case you have dual range slider, then you need to pass to values using <code>data-value-left</code> and <code>data-value-right</code> attributes:
+        pre
+          code.html
+            :code
+              <!-- parameters set via data- attributes -->
+              <div
+                class="range-slider range-slider-init"
+                data-dual="true"
+                data-min="0"
+                data-max="100"
+                data-step="10"
+                data-label="true"
+                data-value-left="30"
+                data-value-right="60"
+              ></div>
+
+    .with-device
+      h2(data-device-preview="../docs-demos/range-slider.html") Examples
+      pre
+        code.html
+          :code
+            <div class="block-title">Volume</div>
+            <div class="list simple-list">
+              <ul>
+                <li>
+                  <div class="item-cell width-auto flex-shrink-0">
+                    <i class="icon f7-icons ios-only">volume_mute_fill</i>
+                    <i class="icon material-icons md-only">volume_mute</i>
+                  </div>
+                  <div class="item-cell flex-shrink-3">
+                    <!-- range slider -->
+                    <div class="range-slider range-slider-init">
+                      <input type="range" min="0" max="100" step="1" value="10">
+                    </div>
+                  </div>
+                  <div class="item-cell width-auto flex-shrink-0">
+                    <i class="icon f7-icons ios-only">volume_fill</i>
+                    <i class="icon material-icons md-only">volume_up</i>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+      pre
+        code.html
+          :code
+            <div class="block-title">Brightness</div>
+            <div class="list simple-list">
+              <ul>
+                <li>
+                  <div class="item-cell width-auto flex-shrink-0">
+                    <i class="icon f7-icons ios-only">circle</i>
+                    <i class="icon material-icons md-only">brightness_low</i>
+                  </div>
+                  <div class="item-cell flex-shrink-3">
+                    <!-- range slider, enable labels -->
+                    <div class="range-slider range-slider-init color-orange" data-label="true">
+                      <input type="range" min="0" max="100" step="1" value="50">
+                    </div>
+                  </div>
+                  <div class="item-cell width-auto flex-shrink-0">
+                    <i class="icon f7-icons ios-only">circle_half</i>
+                    <i class="icon material-icons md-only">brightness_high</i>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      pre
+        code.html
+          :code
+            <div class="block-title display-flex justify-content-space-between">Price Filter <span class="price-value">$200 - $400</span></div>
+            <div class="list simple-list">
+              <ul>
+                <li class="item-row">
+                  <div class="item-cell width-auto flex-shrink-0">
+                    <i class="icon f7-icons ios-only">money_dollar</i>
+                    <i class="icon material-icons md-only">attach_money</i>
+                  </div>
+                  <div class="item-cell item-cell-shrink-3">
+                    <!-- Dual range slider with all the parameters passed via data- attributes -->
+                    <div
+                      id="price-filter"
+                      class="range-slider range-slider-init color-green"
+                      data-label="true"
+                      data-dual="true"
+                      data-min="0"
+                      data-max="500"
+                      data-step="1"
+                      data-value-left="200"
+                      data-value-right="400"
+                    ></div>
+                  </div>
+                  <div class="item-cell width-auto flex-shrink-0">
+                    <i class="icon f7-icons ios-only">money_dollar_fill</i>
+                    <i class="icon material-icons md-only">monetization_on</i>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      p Handle price change
+      pre
+        code.js
+          :code
+            $$('#price-filter').on('range:change', function (e, range) {
+              $$('.price-value').text('$'+(range.value[0])+' - $'+(range.value[1]));
+            });

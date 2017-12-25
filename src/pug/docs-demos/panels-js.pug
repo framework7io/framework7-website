@@ -1,8 +1,8 @@
-extends _layout-ios
+extends _layout
 block content
   .panel-overlay
   .panel.panel-left.panel-reveal
-    .content-block
+    .block
       p Left Panel content here
       p
         a(href="#").panel-close Close me
@@ -10,7 +10,7 @@ block content
         a(href="#").open-right-panel Open Right Panel
     
   .panel.panel-right.panel-cover
-    .content-block
+    .block
       p Right Panel content here
       p
         a(href="#").panel-close Close me
@@ -26,7 +26,7 @@ block content
               .center Panels
               .right 
           .page-content
-            .content-block
+            .block
               p Open Panels with JavaScript
               p 
                 a(href="#").open-left-panel Open Left Panel

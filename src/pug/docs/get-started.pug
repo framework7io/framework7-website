@@ -1,29 +1,29 @@
-extends ../_internal-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'docs';
   - var title = 'Getting Started With Framework7';
 
 block content
-  .docs-wrap
+
     .docs-nav
       include ../_docs-menu
     .docs-content
       h1 Getting Started With Framework7
-      p It is really easy to build your app with Framework7. There are two ways to start. 
-      p You can start building your app from changing one of <a href="/examples/">example</a> app layouts or one of open source <a href="/apps/">demo apps</a> or start from scratch. 
+      p It is really easy to build your app with Framework7. There are two ways to start.
+      p You can start building your app from changing one of <a href="/examples/">example</a> app layouts or one of open source <a href="/apps/">demo apps</a> or start from scratch.
       p Let's create our first app from scratch:
       h3 Download and install Framework7
-      p First of all we need to download required Framework7 files: 
+      p First of all we need to download required Framework7 files:
       ul
-        li We can download them from <a href="https://github.com/nolimits4web/Framework7/" target="_blank">Framework7 GitHub repository</a> 
+        li We can download them from <a href="https://github.com/nolimits4web/Framework7/" target="_blank">Framework7 GitHub repository</a>
         li Or we can install them via Bower, enter in terminal:
           pre
             code
               | $ bower install framework7
       p In the downloaded/installed package we need files from the <code>dist/</code> folder.
       h3 Basic App layout
-      p 
+      p
         em In this basic app we will use iOS theme layout. For Android/Material app layout check out <a href="/docs/app-layout.html">App Layout</a> docs section.
       p Now we need to create our <code>index.html</code> file with our app layout.<br>This will be an iOS app with single view, left panel and dynamic through navbar and through toolbar:
 
@@ -67,7 +67,7 @@ block content
           |             &lt;!-- We need cool sliding animation on title element, so we have additional "sliding" class --&gt;
           |             &lt;div class="center sliding"&gt;Awesome App&lt;/div&gt;
           |             &lt;div class="right"&gt;
-          |               &lt;!-- 
+          |               &lt;!--
           |                 Right link contains only icon - additional "icon-only" class
           |                 Additional "open-panel" class tells app to open panel when we click on this link
           |               --&gt;
@@ -102,18 +102,18 @@ block content
           |     &lt;!-- Path to your app js--&gt;
           |     &lt;script type="text/javascript" src="path/to/my-app.js"&gt;&lt;/script&gt;
           |   &lt;/body&gt;
-          | &lt;/html&gt;              
-      
+          | &lt;/html&gt;
+
       h3 Initialize App
       p After we have our app layout with attached Framework7 JS and CSS files we need to initialize app and views.<br>In our custom <code>my-app.js</code> file:
       pre
         code
           | // Initialize app
           | var myApp = new Framework7();
-          | 
+          |
           | // If we need to use custom DOM library, let's save it to $$ variable:
           | var $$ = Dom7;
-          | 
+          |
           | // Add view
           | var mainView = myApp.addView('.view-main', {
           |   // Because we want to use dynamic navbar, we need to enable it for this view:
@@ -124,7 +124,7 @@ block content
       pre
         code
           | &lt;!-- We don't need full layout in this file because this page will be parsed with Ajax. It is just enough to put here .navbar and .page--&gt;
-          | 
+          |
           | &lt;!-- Top Navbar--&gt;
           | &lt;div class="navbar"&gt;
           |   &lt;div class="navbar-inner"&gt;
@@ -149,49 +149,49 @@ block content
           |       &lt;/div&gt;
           |     &lt;/div&gt;
           |   &lt;/div&gt;
-          | &lt;/div&gt;          
+          | &lt;/div&gt;
       h3 Scripts for specific page
       p Let's say that we need JavaScript code that should be executed only for "About" page. Because <code>about.html</code> file will be loaded using Ajax, we can't put there JavaScript in &lt;script&gt; tags, it just will be ignored. So for this case Framework7 provides simple callbacks that we can use in our <code>my-app.js</code> file. Now we need to extend my-app.js file with script for About page:
       pre
         code
           | // Initialize app and store it to myApp variable for futher access to its methods
           | var myApp = new Framework7();
-          | 
+          |
           | // We need to use custom DOM library, let's save it to $$ variable:
           | var $$ = Dom7;
-          | 
+          |
           | // Add view
           | var mainView = myApp.addView('.view-main', {
           |   // Because we want to use dynamic navbar, we need to enable it for this view:
           |   dynamicNavbar: true
           | });
-          | 
+          |
           | // Now we need to run the code that will be executed only for About page.
-          | 
+          |
           | // Option 1. Using page callback for page (for "about" page in this case) (recommended way):
           | myApp.onPageInit('about', function (page) {
           |   // Do something here for "about" page
-          |   
+          |
           | })
-          | 
+          |
           | // Option 2. Using one 'pageInit' event handler for all pages:
           | $$(document).on('pageInit', function (e) {
           |   // Get page data from event data
           |   var page = e.detail.page;
-          |   
+          |
           |   if (page.name === 'about') {
           |     // Following code will be executed for page with data-page attribute equal to "about"
           |     myApp.alert('Here comes About page');
           |   }
           | })
-          | 
+          |
           | // Option 2. Using live 'pageInit' event handlers for each page
           | $$(document).on('pageInit', '.page[data-page="about"]', function (e) {
           |   // Following code will be executed for page with data-page attribute equal to "about"
           |   myApp.alert('Here comes About page');
           | })
 
-      h3 Launch App 
+      h3 Launch App
       p To launch our App we just need to enter path to <code>index.html</code> file in browser.<br>Because Framework7 uses Ajax for navigation between pages make sure that you have http server running (not required for PhoneGap)!
       h3 What next?
       p As you see it is really easy to create basic iOS or Android app with Framework7. But hey, this app is pretty simple and you want to learn more? So here are your next steps:

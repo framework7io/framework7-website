@@ -1,16 +1,16 @@
-extends ../_internal-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'docs';
   - var title = 'Hairlines | Framework7 Documentation';
 
 block content
-  .docs-wrap
+
     .docs-nav
       include ../_docs-menu
     .docs-content
       h1 Hairlines / Borders
-      p Since 1.x release all hairlines (borders) reworked to <code>:after</code> and <code>:before</code> pseudo elements instead of usual CSS borders. This method allows to have true 0.5px (for iOS Retina) and 0.33px (for iPhone 6 Plus) hairlines
+      p All hairlines (thin borders) are made with <code>:after</code> and <code>:before</code> pseudo elements instead of usual CSS borders. This method allows to have true 0.5px (for iOS Retina) and 0.33px (for iPhone X/Plus) hairlines
       p The rule is simple:
       ul
         li "bottom" and "right" hairlines are made using <code>:after</code> pseudo elements
@@ -27,20 +27,48 @@ block content
           | .navbar:after {
           |   display:none;
           | }
-          | 
+          |
           | .toolbar:before {
           |   display:none;
           | }
-      h2 "no-border" class
-      p There is also helper <b>"no-border"</b> class that can be used to remove hairlines. Currently it is supported on Navbar, Toolbar, Card and its elements (card header, footer).
+      h2 no-hairline Class
+      p This helper class can be used to remove hairline. Currently it is supported on Navbar, Toolbar, Subnavbar, Searchbar, Card and its elements (card header, footer).
       P To remove hairline from navbar:
       pre
         code
-          | &lt;div class="navbar no-border"&gt;
+          | &lt;div class="navbar no-hairline"&gt;
           |     ...
           | &lt;/div&gt;
-      h2 "no-hairlines" and "no-hairlines-between"
-      p Use additional <b>"no-hairlines"</b> class on List Block and Content Block to remove outer hairlines
-      p Use additional <b>"no-hairlines-between"</b> class on List Block to remove hairlines between list items
+      h2 no-hairlines Classes
+      ul
+        li <code>no-hairlines</code> class on List View and Content Block to remove outer hairlines.
+        li <code>no-hairlines-md</code> does the same but only for MD theme.
+        li <code>no-hairlines-ios</code> does the same but only for iOS theme.
+        li <code>no-hairlines-between</code> class on List View to remove hairlines between list items.
+        li <code>no-hairlines-between-md</code> does the same but only for MD theme.
+        li <code>no-hairlines-between-ios</code> does the same but only for MD theme.
 
-        
+      pre
+        code
+          :code
+            <!-- remove outer hairlines -->
+            <div class="list no-hairlines">
+              ...
+            </div>
+
+            <!-- remove hairlines between items -->
+            <div class="list no-hairlines-between">
+              ...
+            </div>
+
+            <!-- remove hairlines between items -->
+            <div class="list no-hairlines-between">
+              ...
+            </div>
+
+            <!-- remove hairlines between items only for MD theme -->
+            <div class="list no-hairlines-between-md">
+              ...
+            </div>
+
+

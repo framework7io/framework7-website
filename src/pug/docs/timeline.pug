@@ -1,56 +1,56 @@
-extends ../_internal-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'docs';
   - var title = 'Timeline | Framework7 Documentation';
 
 block content
-  .docs-demo-device
-    iframe(width="320", height="548", frameborder="0", scrolling="on")
-    .fade-overlay
-  .docs-wrap
-    .docs-nav
-      include ../_docs-menu
-    .docs-content.with-device
-      .full-width
-        h1 Timeline
-        h2 Vertical Timeline
-        p Common Vertical Timeline layout could be treat as the following:
-        pre
-          code
-            | &lt;div class="timeline"&gt;
-            |   &lt;div class="timeline-item"&gt;
-            |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
-            |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
-            |     &lt;div class="timeline-item-content"&gt;
-            |       &lt;div class="timeline-item-inner"&gt;
-            |         &lt;div class="timeline-item-time"&gt;12:30&lt;/div&gt;
-            |         &lt;div class="timeline-item-title"&gt;Title&lt;/div&gt;
-            |         &lt;div class="timeline-item-subtitle"&gt;Subtitle&lt;/div&gt;
-            |         &lt;div class="timeline-item-text"&gt;Text&lt;/div&gt;
-            |       &lt;/div&gt;
-            |     &lt;/div&gt;
-            |   &lt;/div&gt;
-            |   &lt;div class="timeline-item"&gt;
-            |     ... another timeline item ...
-            |   &lt;/div&gt;
-            | &lt;/div&gt;
-        p Where
-        ul
-          li <code>timeline</code> - main timeline wrapping element. Required
-            ul
-              li <code>timeline-item</code> - single timeline item. Required
-                ul
-                  li <code>timeline-item-date</code> - timeline item date. Required
-                  li <code>timeline-item-divider</code> - timeline item decorative divider. Required for vertical timeline
-                  li <code>timeline-item-content</code> - timeline item content wrapping. You can put any content here: text, cards, list block, custom HTML or special temeline elements. Required
-                    ul
-                      li <code>timeline-item-inner</code> - item content additional decorative wrapping. Optional
-                      li <code>timeline-item-time</code> - item time. Optional
-                      li <code>timeline-item-title</code> - item title. Optional
-                      li <code>timeline-item-subtitle</code> - item subtitle. Optional
-                      li <code>timeline-item-text</code> - item text. Optional
-      h3(data-device-preview="../docs-demos/timeline-vertical.html") Vertical Timeline Example
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Timeline
+    .docs-index
+    p Framework7 comes with Timeline component that allows to display both Vertical & Horizontal timeline layouts.
+    .with-device
+      h2(data-device-preview="../docs-demos/timeline-vertical.html") Vertical Timeline
+      p Common Vertical Timeline layout could be treated as the following:
+      pre
+        code
+          | &lt;div class="timeline"&gt;
+          |   &lt;div class="timeline-item"&gt;
+          |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
+          |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
+          |     &lt;div class="timeline-item-content"&gt;
+          |       &lt;div class="timeline-item-inner"&gt;
+          |         &lt;div class="timeline-item-time"&gt;12:30&lt;/div&gt;
+          |         &lt;div class="timeline-item-title"&gt;Title&lt;/div&gt;
+          |         &lt;div class="timeline-item-subtitle"&gt;Subtitle&lt;/div&gt;
+          |         &lt;div class="timeline-item-text"&gt;Text&lt;/div&gt;
+          |       &lt;/div&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="timeline-item"&gt;
+          |     ... another timeline item ...
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      p Where
+      ul
+        li <code>timeline</code> - main timeline wrapping element. Required
+          ul
+            li <code>timeline-item</code> - single timeline item. Required
+              ul
+                li <code>timeline-item-date</code> - timeline item date. Required
+                li <code>timeline-item-divider</code> - timeline item decorative divider. Required for vertical timeline
+                li <code>timeline-item-content</code> - timeline item content wrapping. You can put any content here: text, cards, list block, custom HTML or special temeline elements. Required
+                  ul
+                    li <code>timeline-item-inner</code> - item content additional decorative wrapping. Optional
+                    li <code>timeline-item-time</code> - item time. Optional
+                    li <code>timeline-item-title</code> - item title. Optional
+                    li <code>timeline-item-subtitle</code> - item subtitle. Optional
+                    li <code>timeline-item-text</code> - item text. Optional
+      h3 Vertical Timeline Example
       pre
         code
           | &lt;!-- Timeline --&gt;
@@ -127,9 +127,7 @@ block content
           |     &lt;div class="timeline-item-divider"&gt;&lt;/div&gt;
           |     &lt;div class="timeline-item-content card"&gt;
           |       &lt;div class="card-header"&gt;Card header&lt;/div&gt;
-          |       &lt;div class="card-content"&gt;
-          |         &lt;div class="card-content-inner"&gt;Card content&lt;/div&gt;
-          |       &lt;/div&gt;
+          |       &lt;div class="card-content card-content-padding"&gt;Card content&lt;/div&gt;
           |       &lt;div class="card-footer"&gt;Card footer&lt;/div&gt;
           |     &lt;/div&gt;
           |   &lt;/div&gt;
@@ -140,7 +138,7 @@ block content
       pre
         code
           | &lt;!-- Each next item will on different side --&gt;
-          | &lt;div class="content-block-title"&gt;Side By Side&lt;/div&gt;
+          | &lt;div class="block-title"&gt;Side By Side&lt;/div&gt;
           | &lt;div class="timeline timeline-sides"&gt;
           |   &lt;div class="timeline-item"&gt;
           |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
@@ -172,7 +170,7 @@ block content
           |   &lt;/div&gt;
           | &lt;/div&gt;
           | &lt;!-- Each next item will on different side only on large tablet screens (iPad) --&gt;
-          | &lt;div class="content-block-title"&gt;Only Tablet Side By Side&lt;/div&gt;
+          | &lt;div class="block-title"&gt;Only Tablet Side By Side&lt;/div&gt;
           | &lt;div class="timeline tablet-sides"&gt;
           |   &lt;div class="timeline-item"&gt;
           |     &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
@@ -192,7 +190,7 @@ block content
           |   &lt;/div&gt;
           | &lt;/div&gt;
           | &lt;!-- Forced sides --&gt;
-          | &lt;div class="content-block-title"&gt;Forced Sides&lt;/div&gt;
+          | &lt;div class="block-title"&gt;Forced Sides&lt;/div&gt;
           | &lt;div class="timeline timeline-sides"&gt;
           |   &lt;!-- Force to right side by additional "timeline-item-right" class --&gt;
           |   &lt;div class="timeline-item timeline-item-right"&gt;
@@ -262,7 +260,7 @@ block content
           |   &lt;div class="timeline-item"&gt;
           |     &lt;div class="timeline-item-date"&gt;24 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
           |     &lt;div class="timeline-item-content"&gt;
-          |       &lt;div class="list-block inset"&gt;
+          |       &lt;div class="list inset"&gt;
           |         &lt;ul&gt;
           |           ...
           |         &lt;/ul&gt;

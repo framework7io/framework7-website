@@ -1,102 +1,100 @@
-extends _layout-ios
+extends _layout
 block content
-  .views
-    .view.view-main
-      .pages
-        .page(data-page="home").navbar-fixed
-          .navbar
-            .navbar-inner
-              .left 
-              .center Accordion
-              .right 
-          .page-content
-            .content-block-title List View Accordion
-            .list-block.accordion-list
-              ul
-                li.accordion-item
-                  a(href="#").item-content.item-link
-                    .item-inner
-                      .item-title Item 1
-                  .accordion-item-content
-                    .content-block 
-                      p Item 1 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-                li.accordion-item
-                  a(href="#").item-content.item-link
-                    .item-inner
-                      .item-title Item 2
-                  .accordion-item-content
-                    .content-block 
-                      p Item 2 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-                li.accordion-item
-                  a(href="#").item-content.item-link
-                    .item-inner
-                      .item-title Item 3
-                  .accordion-item-content
-                    .content-block 
-                      p Item 3 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-                li.accordion-item
-                  a(href="#").item-content.item-link
-                    .item-inner
-                      .item-title Item 4
-                  .accordion-item-content
-                    .content-block 
-                      p Item 4 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-
-            // Separate collapsibles - omit "accordion-list" class
-            .content-block-title Separate Collapsibles
-            .list-block
-              ul
-                li.accordion-item
-                  a(href="#").item-content.item-link
-                    .item-inner
-                      .item-title Item 1
-                  .accordion-item-content
-                    .content-block 
-                      p Item 1 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-                li.accordion-item
-                  a(href="#").item-content.item-link
-                    .item-inner
-                      .item-title Item 2
-                  .accordion-item-content
-                    .content-block 
-                      p Item 2 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-                li.accordion-item
-                  a(href="#").item-content.item-link
-                    .item-inner
-                      .item-title Item 3
-                  .accordion-item-content
-                    .content-block 
-                      p Item 3 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-                li.accordion-item
-                  a(href="#").item-content.item-link
-                    .item-inner
-                      .item-title Item 4
-                  .accordion-item-content
-                    .content-block 
-                      p Item 4 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-            .content-block-title Custom Accordion
-            .content-block.accordion-list.custom-accordion
-              .accordion-item
-                .accordion-item-toggle
-                  i.icon.icon-plus +
-                  i.icon.icon-minus -
-                  span Item 1
-                .accordion-item-content
+  .view.view-main
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Accordion
+          .right
+      .page-content
+        .block-title List View Accordion
+        .list.accordion-list
+          ul
+            li.accordion-item
+              a(href="#").item-content.item-link
+                .item-inner
+                  .item-title Item 1
+              .accordion-item-content
+                .block
                   p Item 1 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-              .accordion-item
-                .accordion-item-toggle
-                  i.icon.icon-plus +
-                  i.icon.icon-minus -
-                  span Item 2
-                .accordion-item-content
+            li.accordion-item
+              a(href="#").item-content.item-link
+                .item-inner
+                  .item-title Item 2
+              .accordion-item-content
+                .block
                   p Item 2 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
-              .accordion-item
-                .accordion-item-toggle
-                  i.icon.icon-plus +
-                  i.icon.icon-minus -
-                  span Item 3
-                .accordion-item-content
+            li.accordion-item
+              a(href="#").item-content.item-link
+                .item-inner
+                  .item-title Item 3
+              .accordion-item-content
+                .block
                   p Item 3 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
+            li.accordion-item
+              a(href="#").item-content.item-link
+                .item-inner
+                  .item-title Item 4
+              .accordion-item-content
+                .block
+                  p Item 4 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
+
+        // Separate collapsibles - omit "accordion-list" class
+        .block-title Separate Collapsibles
+        .list
+          ul
+            li.accordion-item
+              a(href="#").item-content.item-link
+                .item-inner
+                  .item-title Item 1
+              .accordion-item-content
+                .block
+                  p Item 1 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
+            li.accordion-item
+              a(href="#").item-content.item-link
+                .item-inner
+                  .item-title Item 2
+              .accordion-item-content
+                .block
+                  p Item 2 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
+            li.accordion-item
+              a(href="#").item-content.item-link
+                .item-inner
+                  .item-title Item 3
+              .accordion-item-content
+                .block
+                  p Item 3 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
+            li.accordion-item
+              a(href="#").item-content.item-link
+                .item-inner
+                  .item-title Item 4
+              .accordion-item-content
+                .block
+                  p Item 4 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
+        .block-title Custom Accordion
+        .block.accordion-list.custom-accordion
+          .accordion-item
+            .accordion-item-toggle
+              i.icon.icon-plus +
+              i.icon.icon-minus -
+              span Item 1
+            .accordion-item-content
+              p Item 1 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
+          .accordion-item
+            .accordion-item-toggle
+              i.icon.icon-plus +
+              i.icon.icon-minus -
+              span Item 2
+            .accordion-item-content
+              p Item 2 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
+          .accordion-item
+            .accordion-item-toggle
+              i.icon.icon-plus +
+              i.icon.icon-minus -
+              span Item 3
+            .accordion-item-content
+              p Item 3 content. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla dignissim viverra velit sed euismod. Mauris sed quam vehicula, dapibus ante a, aliquet augue.
 
 
 block scripts
@@ -137,10 +135,10 @@ block scripts
     .custom-accordion .icon-minus {
       display: none;
     }
-    .custom-accordion .accordion-item-expanded .icon-minus {
+    .custom-accordion .accordion-item-opened .icon-minus {
       display: inline-block;
     }
-    .custom-accordion .accordion-item-expanded .icon-plus {
+    .custom-accordion .accordion-item-opened .icon-plus {
       display: none;
     }
     .custom-accordion .accordion-item-content {

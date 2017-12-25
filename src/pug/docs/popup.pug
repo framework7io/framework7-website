@@ -1,255 +1,411 @@
-extends ../_internal-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'docs';
   - var title = 'Popup | Framework7 Documentation';
 
 block content
-  .docs-demo-device
-    iframe(width="320", height="548", frameborder="0", scrolling="on")
-    .fade-overlay
-  .docs-wrap
-    .docs-nav
-      include ../_docs-menu
-    .docs-content.with-device
-      .full-width
-        h1 Popup
-        p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
-        h2 Popup Layout
-        p Popup layout is pretty simple. All you need to do is to put <code>&lt;div class="popup"&gt; Any popup content here &lt;/div&gt;</code> right in the body:
-        pre
-          code
-            | &lt;body&gt;
-            |   ...
-            |   &lt;div class="popup"&gt;
-            |     Any HTML content goes here
-            |   &lt;/div&gt;
-            | &lt;/body&gt;            
-        h2 Popup Size
-        p By default Popup has a bit different size on phones and tablets (iPad). On phones it is fullscreen while on tablets it is 630px width and height. If you want to make it fullscreen size on tablets, you should add additional "tablet-fullscreen" class to the required popup:
-        pre
-          code
-            | &lt;body&gt;
-            |   ...
-            |   &lt;!-- This popup has fullscreen size on tablets --&gt;
-            |   &lt;div class="popup tablet-fullscreen"&gt;
-            |     Any HTML content goes here
-            |   &lt;/div&gt;
-            | &lt;/body&gt;            
-        h2 Open and close Popup
-      h3(data-device-preview="../docs-demos/popup.html") From HTML
-      p It is possible to open and close required popups using special classes and data attributes on links:
-      .important-note
-        ul
-          li
-            p To open popup we need to add <strong>"open-popup"</strong> class to any HTML element (prefered to link)
-          li
-            p To close popup we need to add <strong>"close-popup"</strong> class to any HTML element (prefered to link)
-          li
-            p If you have more than one popups in app, you need to specify appropriate popup via additional <strong>data-popup=".my-popup"</strong> attribute on this HTML element
-      p According to above note:
-      pre
-        code
-          | &lt;body&gt;
-          |   ...
-          |     &lt;div class="page-content"&gt;
-          |       &lt;div class="content-block"&gt;
-          |         &lt;!-- In data-popup attribute we specify CSS selector of popup we need to open --&gt;
-          |         &lt;p&gt;&lt;a href="#" data-popup=".popup-about" class="open-popup"&gt;Open About Popup &lt;/a&gt;&lt;/p&gt;
-          |         &lt;p&gt;&lt;a href="#" data-popup=".popup-services" class="open-popup"&gt;Open Services Popup &lt;/a&gt;&lt;/p&gt;
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   ...
-          |   &lt;!-- About Popup --&gt;
-          |   &lt;div class="popup popup-about"&gt;
-          |     &lt;div class="content-block"&gt;
-          |       &lt;p&gt;About&lt;/p&gt;
-          |       &lt;p&gt;&lt;a href="#" class="close-popup"&gt;Close popup&lt;/a&gt;&lt;/p&gt;
-          |       &lt;p&gt;Lorem ipsum dolor ...&lt;/p&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Services Popup --&gt;
-          |   &lt;div class="popup popup-services"&gt;
-          |     &lt;div class="content-block"&gt;
-          |       &lt;p&gt;Services&lt;/p&gt;
-          |       &lt;p&gt;&lt;a href="#" class="close-popup"&gt;Close popup&lt;/a&gt;&lt;/p&gt;
-          |       &lt;p&gt;Lorem ipsum dolor ...&lt;/p&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/body&gt;                    
-      h3(data-device-preview="../docs-demos/popup-js.html") Using JavaScript
-      p We can also open and close Popups with JavaScript, for this we need to look at related App methods:
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Popup
+    .docs-index
+    p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
+    h2 Popup Layout
+    p Popup layout is pretty simple:
+    pre
+      code.xml
+        | &lt;body&gt;
+        |   ...
+        |   &lt;div class="popup"&gt;
+        |     Any HTML content goes here
+        |   &lt;/div&gt;
+        | &lt;/body&gt;
+    h2 Popup Size
+    p By default Popup has a bit different size on phones and tablets (iPad). On phones it is fullscreen while on tablets it is 630px width and height. If you want to make it fullscreen size on tablets, you should add additional "<b>popup-tablet-fullscreen</b>" class to the required popup:
+    pre
+      code.xml
+        | &lt;body&gt;
+        |   ...
+        |   &lt;!-- This popup has fullscreen size on tablets --&gt;
+        |   &lt;div class="popup popup-tablet-fullscreen"&gt;
+        |     Any HTML content goes here
+        |   &lt;/div&gt;
+        | &lt;/body&gt;
+    h2 Popup App Methods
+    p Let's look at related App methods to work with Popup:
+    .method-wrap
       p
-        span.method myApp.popup(<span>popup</span>, <span>removeOnClose</span>, <span>animated</span>) - open Popup
+        span.method app.popup.create(<span>parameters</span>)
+        | - create Popup instance
       ul.method-parameters
         li
-          span.parameter popup
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Popup to open. Requred
-        li
-          span.parameter removeOnClose
-          |  - <span class="parameter-type">boolean</span> - Defines whether popup should be removed from DOM on close or not. Optional. By default is <b>false</b>
-        li
-          span.parameter animated
-          |  - <span class="parameter-type">boolean</span> - Should it be opened with animation or not. Optional. By default is <b>true</b>
-        li.method-returns This method returns Popup's HTMLElement
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with popup parameters
+      p.method-returns Method returns created Popup's instance
+
+    .method-wrap
       p
-        span.method myApp.closeModal(<span>popup</span>, <span>animated</span>) - close Popup
+        span.method app.popup.destroy(<span>el</span>)
+        | - destroy Popup instance
       ul.method-parameters
         li
-          span.parameter popup
-          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Optional. If not specified, any opened Popup/Modal will be closed
-        li
-          span.parameter animated
-          |  - <span class="parameter-type">boolean</span> - Should it be opened with animation or not. Optional. By default is <b>true</b>
-      pre
-        code
-          | &lt;body&gt;
-          |   ...
-          |     &lt;div class="page-content"&gt;
-          |       &lt;div class="content-block"&gt;
-          |         &lt;p&gt;&lt;a href="#" class="open-about"&gt;Open About Popup &lt;/a&gt;&lt;/p&gt;
-          |         &lt;p&gt;&lt;a href="#" class="open-services"&gt;Open Services Popup &lt;/a&gt;&lt;/p&gt;
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   ...
-          |   &lt;!-- About Popup --&gt;
-          |   &lt;div class="popup popup-about"&gt;
-          |     &lt;div class="content-block"&gt;
-          |       &lt;p&gt;About&lt;/p&gt;
-          |       &lt;p&gt;&lt;a href="#" class="close-popup"&gt;Close popup&lt;/a&gt;&lt;/p&gt;
-          |       &lt;p&gt;Lorem ipsum dolor ...&lt;/p&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Services Popup --&gt;
-          |   &lt;div class="popup popup-services"&gt;
-          |     &lt;div class="content-block"&gt;
-          |       &lt;p&gt;Services&lt;/p&gt;
-          |       &lt;p&gt;&lt;a href="#" class="close-popup"&gt;Close popup&lt;/a&gt;&lt;/p&gt;
-          |       &lt;p&gt;Lorem ipsum dolor ...&lt;/p&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/body&gt;
-      pre
-        code
-          | var myApp = new Framework7();
-          | 
-          | var $$ = Dom7;
-          | 
-          | $$('.open-about').on('click', function () {
-          |   myApp.popup('.popup-about');
-          | });
-          | 
-          | $$('.open-services').on('click', function () {
-          |   myApp.popup('.popup-services');
-          | });          
-      h2(data-device-preview="../docs-demos/popup-events.html") Popup Events
-      p Popup has the same events as Modals, they could be useful when you need to do something in JavaScript when Popup opened/closed
-      table.events-table
-        thead
-          tr
-            th Event
-            th Target
-            th Description
-        tbody
-          tr
-            td popup:open
-            td Popup Element<span>&lt;div class="popup"&gt;</span>
-            td Event will be triggered when Popup starts its opening animation
-          tr
-            td popup:opened
-            td Popup Element<span>&lt;div class="popup"&gt;</span>
-            td Event will be triggered after Popup completes its opening animation
-          tr
-            td popup:close
-            td Popup Element<span>&lt;div class="popup"&gt;</span>
-            td Event will be triggered when Popup starts its closing animation
-          tr
-            td popup:closed
-            td Popup Element<span>&lt;div class="popup"&gt;</span>
-            td Event will be triggered after Popup completes its closing animation
-      pre
-        code
-          | &lt;body&gt;
-          |   ...
-          |     &lt;div class="page-content"&gt;
-          |       &lt;div class="content-block"&gt;
-          |         &lt;!-- In data-popup attribute we specify CSS selector of popup we need to open --&gt;
-          |         &lt;p&gt;&lt;a href="#" data-popup=".popup-about" class="open-popup"&gt;Open About Popup &lt;/a&gt;&lt;/p&gt;
-          |         &lt;p&gt;&lt;a href="#" data-popup=".popup-services" class="open-popup"&gt;Open Services Popup &lt;/a&gt;&lt;/p&gt;
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   ...
-          |   &lt;!-- About Popup --&gt;
-          |   &lt;div class="popup popup-about"&gt;
-          |     &lt;div class="content-block"&gt;
-          |       &lt;p&gt;About&lt;/p&gt;
-          |       &lt;p&gt;&lt;a href="#" class="close-popup"&gt;Close popup&lt;/a&gt;&lt;/p&gt;
-          |       &lt;p&gt;Lorem ipsum dolor ...&lt;/p&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;!-- Services Popup --&gt;
-          |   &lt;div class="popup popup-services"&gt;
-          |     &lt;div class="content-block"&gt;
-          |       &lt;p&gt;Services&lt;/p&gt;
-          |       &lt;p&gt;&lt;a href="#" class="close-popup"&gt;Close popup&lt;/a&gt;&lt;/p&gt;
-          |       &lt;p&gt;Lorem ipsum dolor ...&lt;/p&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/body&gt; 
-      pre
-        code
-          | var myApp = new Framework7();
-          | 
-          | var $$ = Dom7;
-          | 
-          | $$('.popup-about').on('popup:opened', function () {
-          |   console.log('About Popup opened')
-          | });
-          | $$('.popup-about').on('popup:close', function () {
-          |   console.log('About Popup is closing')
-          | });
-          | $$('.popup-services').on('popup:open', function () {
-          |   console.log('Services Popup is opening')
-          | });
-          | $$('.popup-services').on('popup:closed', function () {
-          |   console.log('Services Popup is closed')
-          | });
-      h2(data-device-preview="../docs-demos/popup-dynamic.html") Dynamic Popup
-      p Framework7 allows you to create Popup dynamically by passing its HTML to related App methods:
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Popup element or Popup instance to destroy.
+    .method-wrap
       p
-        span.method myApp.popup(<span>popupHTML</span>, <span>removeOnClose</span>)</span> - open Popup
+        span.method app.popup.get(<span>el</span>)
+        | - get Popup instance by HTML element
       ul.method-parameters
         li
-          span.parameter popupHTML
-          |  - <span class="parameter-type">string</span>. HTML string of popup content
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Popup element.
+      p.method-returns Method returns Popup's instance
+    .method-wrap
+      p
+        span.method app.popup.open(<span>el</span>, <span>animate</span>)
+        | - opens Popup
+      ul.method-parameters
         li
-          span.parameter removeOnClose
-          |  - <span class="parameter-type">boolean</span>. Optional, by default - true. If true then Popup will be removed from DOM when closed
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Popup element to open.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Open Popup with animation.
+      p.method-returns Method returns Popup's instance
+    .method-wrap
+      p
+        span.method app.popup.close(<span>el</span>, <span>animate</span>)
+        | - closes Popup
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Popup element to close.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Close Popup with animation.
+      p.method-returns Method returns Popup's instance
+
+    h2 Popup Parameters
+    p Now let's look at list of available parameters we need to create Popup:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement
+          td
+          td Popup element. Can be useful if you already have Popup element in your HTML and want to create new instance using this element
+        tr
+          td content
+          td string
+          td
+          td Full Popup HTML layout string. Can be useful if you want to create Popup element dynamically
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables Popup backdrop (dark semi transparent layer behind)
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td When enabled, popup will be closed on backdrop click
+        tr
+          td animate
+          td boolean
+          td true
+          td Whether the Popup should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var popup = app.popup.create({
+                    content: '<div class="popup">...</div>',
+                    on: {
+                      opened: function () {
+                        console.log('Popup opened')
+                      }
+                    }
+                  })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>popup</code> property to set defaults for all popups. For example:
       pre
         code
-          | &lt;body&gt;
-          |   ...
-          |     &lt;div class="page-content"&gt;
-          |       &lt;div class="content-block"&gt;
-          |         &lt;p&gt;&lt;a href="#" class="create-popup"&gt;Create Popup&lt;/a&gt;&lt;/p&gt;
-          |       &lt;/div&gt;
-          |     &lt;/div&gt;
-          |   ...
-          | &lt;/body&gt; 
+          :code
+            var app = new Framework7({
+              popup: {
+                closeByBackdropClick: false,
+              }
+            });
+    h2 Popup Methods & Properties
+    p So to create Popup we have to call:
+    pre
+      code
+        :code
+          var popup = app.popup.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>popup</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td popup.app
+          td Link to global app instance
+        tr
+          td popup.el
+          td Popup HTML element
+        tr
+          td popup.$el
+          td Dom7 instance with popup HTML element
+        tr
+          td popup.backdropEl
+          td Backdrop HTML element
+        tr
+          td popup.$backdropEl
+          td Dom7 instance with backdrop HTML element
+        tr
+          td popup.params
+          td Popup parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td popup.open(<span>animate</span>)
+          td Open popup. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+        tr
+          td popup.close(<span>animate</span>)
+          td Close popup. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+        tr
+          td popup.destroy()
+          td Destroy popup
+        tr
+          td popup.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td popup.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td popup.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td popup.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Control Popup With Links
+    p It is possible to open and close required popup (if you have them in DOM) using special classes and data attributes on links:
+    .important-note
+      ul
+        li
+          p To open popup we need to add "<b>popup-open</b>" class to any HTML element (prefered to link)
+        li
+          p To close popup we need to add "<b>popup-close</b>" class to any HTML element (prefered to link)
+        li
+          p If you have more than one popup in DOM, you need to specify appropriate popup via additional <b>data-popup=".my-popup"</b> attribute on this HTML element
+    p According to above note:
+    pre
+      code.xml
+        :code
+          <!-- In data-popup attribute we specify CSS selector of popup we need to open -->
+          <p><a href="#" data-popup=".my-popup" class="popup-open">Open Popup</a></p>
+
+          <!-- And somewhere in DOM -->
+          <div class="popup my-popup">
+            <div class="view">
+              <div class="page">
+                <div class="navbar">
+                  <div class="navbar-inner">
+                    <div class="title">Popup</div>
+                    <div class="right">
+                      <!-- Link to close popup -->
+                      <a class="link popup-close">Close</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="page-content">
+                ...
+              </div>
+            </div>
+            ...
+          </div>
+
+
+    h2 Popup Events
+    p Popup will fire the following DOM events on popup element and events on app and popup instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td popup:open
+          td Popup Element<span>&lt;div class="popup"&gt;</span>
+          td Event will be triggered when Popup starts its opening animation
+        tr
+          td popup:opened
+          td Popup Element<span>&lt;div class="popup"&gt;</span>
+          td Event will be triggered after Popup completes its opening animation
+        tr
+          td popup:close
+          td Popup Element<span>&lt;div class="popup"&gt;</span>
+          td Event will be triggered when Popup starts its closing animation
+        tr
+          td popup:closed
+          td Popup Element<span>&lt;div class="popup"&gt;</span>
+          td Event will be triggered after Popup completes its closing animation
+    h3 App and Popup Instance Events
+    p Popup instance emit events on both self instance and app instance. App instance events has same names prefixed with <code>popup</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td open
+          td <span>popup</span>
+          td popup
+          td(rowspan="2") Event will be triggered when Popup starts its opening animation. As an argument event handler receives popup instance
+        tr
+          td popupOpen
+          td <span>popup</span>
+          td app
+        tr
+          td opened
+          td <span>popup</span>
+          td popup
+          td(rowspan="2") Event will be triggered after Popup completes its opening animation. As an argument event handler receives popup instance
+        tr
+          td popupOpened
+          td <span>popup</span>
+          td app
+        tr
+          td close
+          td <span>popup</span>
+          td popup
+          td(rowspan="2") Event will be triggered when Popup starts its closing animation. As an argument event handler receives popup instance
+        tr
+          td popupClose
+          td <span>popup</span>
+          td app
+        tr
+          td closed
+          td <span>popup</span>
+          td popup
+          td(rowspan="2") Event will be triggered after Popup completes its closing animation. As an argument event handler receives popup instance
+        tr
+          td popupClosed
+          td <span>popup</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>popup</span>
+          td popup
+          td(rowspan="2") Event will be triggered right before Popup instance will be destroyed. As an argument event handler receives popup instance
+        tr
+          td popupBeforeDestroy
+          td <span>popup</span>
+          td app
+    .with-device
+      h2(data-device-preview="../docs-demos/popup.html") Examples
       pre
-        code
-          | var myApp = new Framework7();
-          | 
-          | var $$ = Dom7;
-          | 
-          | $$('.create-popup').on('click', function () {
-          |   var popupHTML = '&lt;div class="popup"&gt;'+
-          |                     '&lt;div class="content-block"&gt;'+
-          |                       '&lt;p&gt;Popup created dynamically.&lt;/p&gt;'+
-          |                       '&lt;p&gt;&lt;a href="#" class="close-popup"&gt;Close me&lt;/a&gt;&lt;/p&gt;'+
-          |                     '&lt;/div&gt;'+
-          |                   '&lt;/div&gt;'
-          |   myApp.popup(popupHTML);
-          | });          
-      div(style="height:100px")
+        code.xml
+          :code
+            <body>
+              ...
+                <div class="page-content">
+                  <div class="block">
+                    <!-- Open About Popup -->
+                    <p><a class="link popup-open" href="#" data-popup=".popup-about">Open About Popup</a></p>
+                    <!-- Open Services Popup -->
+                    <p><a class="link popup-open" href="#" data-popup=".popup-services">Open Services Popup</a></p>
+                    <p><a class="link dynamic-popup" href="#">Create Dynamic Popup</a></p>
+                  </div>
+                </div>
+              ...
+              <div class="popup popup-about">
+                <div class="block">
+                  <p>About</p>
+                  <!-- Close Popup -->
+                  <p><a class="link popup-close" href="#">Close popup</a></p>
+                  <p>Lorem ipsum dolor sit amet...</p>
+                </div>
+              </div>
+              <div class="popup popup-services">
+                <div class="block">
+                  <p>Services</p>
+                  <!-- Close Popup -->
+                  <p><a class="link popup-close" href="#">Close popup</a></p>
+                  <p>Lorem ipsum dolor sit amet...</p>
+                </div>
+              </div>
+            </body>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            // DOM events for About popup
+            $$('.popup-about').on('popup:open', function (e, popup) {
+              console.log('About popup open');
+            });
+            $$('.popup-about').on('popup:opened', function (e, popup) {
+              console.log('About popup opened');
+            });
+
+            // Create dynamic Popup
+            var dynamicPopup = app.popup.create({
+              content: '<div class="popup">'+
+                          '<div class="block">'+
+                            '<p>Popup created dynamically.</p>'+
+                            '<p><a href="#" class="link popup-close">Close me</a></p>'+
+                          '</div>'+
+                        '</div>',
+              // Events
+              on: {
+                open: function (popup) {
+                  console.log('Popup open');
+                },
+                opened: function (popup) {
+                  console.log('Popup opened');
+                },
+              }
+            });
+            // Events also can be assigned on instance later
+            dynamicPopup.on('close', function (popup) {
+              console.log('Popup close');
+            });
+            dynamicPopup.on('closed', function (popup) {
+              console.log('Popup closed');
+            });
+
+            // Open dynamic popup
+            $$('.dynamic-popup').on('click', function () {
+              dynamicPopup.open();
+            });
 

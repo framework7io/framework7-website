@@ -3,11 +3,12 @@ html
   head
     meta(charset="utf-8")
     title Framework7 - Full Featured Mobile HTML Framework For Building iOS & Android Apps
-    meta(property="og:image", content="http://framework7.io/framework7/i/f7-banner.jpg")
+    meta(property="og:image", content="http://framework7.io/i/f7-banner.jpg")
+    meta(name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover")
     link(rel="stylesheet", href=cdn + "/css/normalize.css")
     link(rel="stylesheet", href=cdn + "/css/main.css")
     link(rel="shortcut icon" href="favicon.png")
-    script(src=cdn + "/js/vendor/modernizr-2.7.1.min.js")
+    script(src=cdn + "/js/modernizr-2.7.1.min.js")
   body
     | <!-- BuySellAds Ad Code -->
     script.
@@ -19,24 +20,33 @@ html
         (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
       })();
     | <!-- End BuySellAds Ad Code -->
-    header
+    header.home-header
       .center
         .left
-          a(href="./").logo
-          .title Framework7
-          .slogan Full Featured HTML Framework<br>For Building iOS & Android Apps
-          .buttons
-            a(href="https://github.com/nolimits4web/Framework7/releases/", target="_blank") Download
-            a(href="/get-started/") Get Started
-          .release-info MIT Licensed, v1.6.5 released on September 7, 2017 |
-            a(href="https://github.com/nolimits4web/Framework7/blob/master/CHANGELOG.md", target="_blank") Changelog
-          .links
-            a(href="/docs/") Docs
-            a(href="http://forum.framework7.io") Forum
-            a(href="/examples/") Layouts
-            a(href="/apps/") Demo Apps
-            a(href="/showcase/") Showcase
-          include _github-buttons
+          .logo-title
+            .title Framework
+            .logo-holder
+              .triangle.triangle-1
+              .triangle.triangle-2
+              .triangle.triangle-3
+              .triangle.triangle-4
+              a(href="./").logo
+          .slogan Full featured HTML framework<br>for building iOS & Android apps
+          .buttons-links
+            .buttons
+              a(href="https://github.com/nolimits4web/Framework7/releases/", target="_blank") Download
+              a(href="/get-started/") Get Started
+            .links
+              a(href="/docs/") Docs
+              a(href="http://forum.framework7.io") Forum
+              a(href="/examples/") Layouts
+              a(href="/apps/") Demo Apps
+              a(href="/showcase/") Showcase
+          include _carbon
+          .release-info MIT Licensed, v1.6.5 released on September 7, 2017
+          .patreon-github
+            include _github-buttons
+            include _patreon
         .phone
           iframe(src="kitchen-sink-ios/", frameborder="0", scrolling="no")
           .statusbar
@@ -47,22 +57,14 @@ html
                 span iOS
               .fullscreen
                 i
-                span Fullscreen<br>Preview
             a(href="kitchen-sink-material/", target="_blank")
               .theme-icon
                 .logo-android
-                span Material
+                span MD
               .fullscreen
                 i
-                span Fullscreen<br>Preview
 
-    .share-line
-      .center
-        include _share-buttons
-        .clearfix
-    .content.center
-      .carbon.carbon-home
-          <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=framework7io" id="_carbonads_js"></script>
+    main.center
       .home-block.home-intro
         h1 Framework7
         p Framework7 - is a free and open source mobile HTML framework to develop hybrid mobile apps or web apps with iOS & Android native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to.
@@ -137,6 +139,7 @@ html
             .text
               h3 Messages
               p Framework7 comes with great realized "messages" widget that you can easily customize and integrate into your app for messaging between users or devices using some realtime sync data service like Pusher or PubNub.
+        .clearfix
       .home-block.home-styles
         .text
           h2 Easy To Customize
@@ -247,17 +250,12 @@ html
               span Template7
             .text Mobile-first JavaScript Template Engine
           .clearfix
-    .share-line
-      .center
-        include _share-buttons
-        include _github-buttons
-        .clearfix
     footer
       .center
         include _footer
     script.
-    script(src=cdn + "/js/vendor/jquery-1.11.0.min.js")
-    script(src=cdn + "/js/plugins.js")
+    script(src=cdn + "/js/jquery-1.11.0.min.js")
+    script(src=cdn + "/js/highlight.min.js")
     script(src=cdn + "/js/main.js")
     script.
       var _merchantSettings=_merchantSettings || [];_merchantSettings.push(['AT', '1l3voeJ']);(function(){var autolink=document.createElement('script');autolink.type='text/javascript';autolink.async=true; autolink.src= ('https:' == document.location.protocol) ? 'https://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js' : 'http://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(autolink, s);})();

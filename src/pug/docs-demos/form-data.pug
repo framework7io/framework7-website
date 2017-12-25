@@ -1,0 +1,65 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Form To Data
+          .right
+      .page-content
+        form(id="my-form").list
+          ul
+            li
+              .item-content.item-input
+                .item-inner
+                  .item-title.item-label Name
+                  .item-input-wrap
+                    input(type="text", name="name", placeholder="Your name")
+            li
+              .item-content.item-input
+                .item-inner
+                  .item-title.item-label E-mail
+                  .item-input-wrap
+                    input(type="email", name="email", placeholder="E-mail")
+            li
+              .item-content.item-input
+                .item-inner
+                  .item-title.item-label Gender
+                  .item-input-wrap
+                    select(name="gender")
+                      option(value="male", selected) Male
+                      option(value="female") Female
+            li
+              .item-content
+                .item-inner
+                  .item-title Toggle
+                  .item-after
+                    label.toggle.toggle-init
+                      input(type="checkbox", name="toggle", value="yes")
+                      i.toggle-icon
+        .block.block-strong.row
+          .col
+            a(href="#").button.convert-form-to-data Get Data
+          .col
+            a(href="#").button.fill-form-from-data Fill Form
+block scripts
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    $$('.convert-form-to-data').on('click', function(){
+      var formData = app.form.convertToData('#my-form');
+      alert(JSON.stringify(formData));
+    });
+
+    $$('.fill-form-from-data').on('click', function(){
+      var formData = {
+        'name': 'John',
+        'email': 'john@doe.com',
+        'gender': 'female',
+        'toggle': ['yes'],
+      }
+      app.form.fillFromData('#my-form', formData);
+    });

@@ -1,0 +1,183 @@
+table {
+  width: 100%;
+  color: #333;
+  font-size: 13px;
+  margin: 1em 0 2em;
+  th,td {
+    padding: 8px 5px;
+  }
+  thead {
+    text-align: left;
+    font-size: 16px;
+  }
+  tbody {
+    th, td {
+      border-top: 1px solid #e4e4e4;
+    }
+  }
+  thead + tbody tr:first-child {
+    th, td {
+      border-top-width: 2px;
+    }
+  }
+  pre {
+    white-space: pre-wrap;
+  }
+}
+.heading-cell() {
+  background: #fff;
+  text-align: left;
+  font-size: 14px;
+  background: #f6f6f6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+table.params-table {
+  line-height: 1.4;
+  th, td {
+    vertical-align: top;
+  }
+  tbody {
+    td:first-child, td:nth-child(2), td:nth-child(3):not(:last-child) {
+      font-size: 13px;
+      color: @darkColor;
+      .monospace();
+      font-weight: 500;
+    }
+    td:nth-child(2) {
+      color: @greenColor;
+    }
+    td:nth-child(n + 3) {
+      word-break: break-word;
+    }
+    th[colspan="4"], th[colspan="3"] {
+      .heading-cell();
+    }
+    td:last-child {
+      &:nth-child(3), &:nth-child(4) {
+        width: 50%;
+      }
+    }
+  }
+  td p:first-child {
+    margin-top: 0;
+  }
+  td p:last-child {
+    margin-bottom: 0;
+  }
+  tr.subparam-open-row, tr.subparam-close-row {
+    td {
+      font-weight: 700;
+    }
+  }
+  tr.subparam-open-row + tr td {
+    border-top: none;
+  }
+  tr.subparam-close-row td {
+    border-top: none;
+  }
+  tr.subparam-row td:first-child {
+    padding-left: 2em;
+  }
+}
+
+table.methods-table {
+  line-height: 1.4;
+  th, td {
+    vertical-align: top;
+  }
+  tbody td:first-child:not(:last-child) {
+    .monospace();
+    color:#000;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    span {
+      color: @darkColor;
+    }
+  }
+  .parameter-type {
+    .monospace();
+    color: @greenColor;
+  }
+  ul.method-parameters {
+    margin: 0;
+    padding-left: 20px;
+  }
+  th[colspan="2"] {
+    .heading-cell();
+  }
+  td p:first-child {
+    margin-top: 0;
+  }
+  td p:last-child {
+    margin-bottom: 0;
+  }
+  &.dom7-table {
+    td {
+      vertical-align: top;
+    }
+    tbody td:first-child:not(:last-child) {
+      .monospace();
+      color:#000;
+      white-space: normal;
+      font-weight: 500;
+      span {
+        color: @darkColor;
+      }
+    }
+  }
+}
+table.methods-table, table.params-table {
+  code {
+    white-space: pre-wrap;
+  }
+}
+table.events-table {
+
+  tbody td:nth-child(2) span, tbody td:nth-child(3) span {
+    white-space: nowrap;
+    .monospace();
+    color: @darkColor;
+    font-weight: 500;
+    display: block;
+  }
+  tbody td:nth-child(3) span {
+    display: inline-block;
+    white-space: normal;
+  }
+  tbody td:first-child {
+    .monospace();
+    color:#000;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+}
+
+table.props-table {
+  tbody td:first-child {
+    .monospace();
+    color:#000;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+}
+
+table.double-events-table {
+  tr:nth-child(4n - 6) {
+    td {
+      border: none;
+    }
+
+  }
+  tr:nth-child(4n - 5) {
+    background: #fafafa;
+
+  }
+  tr:nth-child(4n - 4) {
+    background: #fafafa;
+    td {
+      border: none;
+    }
+  }
+}

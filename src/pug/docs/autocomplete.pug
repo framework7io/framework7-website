@@ -1,749 +1,1038 @@
-extends ../_internal-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'docs';
   - var title = 'Autocomplete | Framework7 Documentation';
 
 block content
-  .docs-demo-device
-    iframe(width="320", height="548", frameborder="0", scrolling="on")
-    .fade-overlay
-  .docs-wrap
-    .docs-nav
-      include ../_docs-menu
-    .docs-content.with-device
-      .full-width
-        h1 Autocomplete
-        p Framework7 comes with mobile-friendly and touch optimized Autocomplete component.
-        p Autocomplete could be used in standalone mode or as a dropdown.
-        h2 Create Autocomplete Instance
-        p Autocomplete can be created and initialized only using JavaScript. We need to use related App's method:
-        .method-wrap
-          p
-            span.method myApp.autocomplete(<span>parameters</span>)
-            span - initialize Autocomplete with parameters
-          ul.method-parameters
-            li
-              span.parameter parameters
-              |  - <span class="parameter-type">object</span> - object with Autocomplete parameters. Required.
+  include _docs-demo-device
 
-            li.method-returns Method returns initialized Autocomplete instance
-        p For example:
-        pre
-          code
-            | var myAutocomplete = app.autocomplete();
-        h2 Autocomplete Parameters
-        p Let's look on list of all available parameters:
-        table.params-table
-          thead
-            tr
-              th Parameter
-              th Type
-              th Default
-              th Description
-          tbody
-            tr
-              td openIn
-              td string
-              td 'page'
-              td Defines how to open Autocomplete, can be "page" or "popup" (for Standalone) or "dropdown"
-            tr
-              td source
-              td function (autocomplete, query, render)
-              td
-              td Function which accepts <b>autocomplete</b> instance, search <b>query</b> and <b>render</b> function where you need to pass array with matched items
-            tr
-              td limit
-              td number
-              td
-              td Limit number of maximum displayed items in autocomplete per query
-            tr
-              td preloader
-              td boolean
-              td false
-              td Set to <b>true</b> to include Preloader to autocomplete layout
-            tr
-              td preloaderColor
-              td string
-              td
-              td Preloader color, can be "white" or "black". By default is "black"
-            tr
-              td value
-              td array
-              td
-              td Array with defaul selected values
-            tr
-              td valueProperty
-              td string
-              td 'id'
-              td Name of matched item object's key that represents item value
-            tr
-              td textProperty
-              td string
-              td 'text'
-              td Name of matched item object's key that represents item display value which is used as title of displayed options
-            tr
-              th(colspan="4") Standalone Autocomplete Parameters
-            tr
-              td requestSourceOnOpen
-              td boolean
-              td false
-              td If enabled, then it will request <b>source</b> on autocomplete open
-            tr
-              td opener
-              td string or HTMLElement
-              td
-              td String with CSS selector or HTMLElement of link which will open standalone autocomplete page or popup
-            tr
-              td popupCloseText
-              td string
-              td 'Close'
-              td Default text for "Close" button when opened as Popup
-            tr
-              td backText
-              td string
-              td 'Back'
-              td Default text for "Back" link when opened as Page
-            tr
-              td pageTitle
-              td string
-              td
-              td Autocomplete page title. If nothing is specified and passed <b>opener</b> is an item of List View, then text value of <b>item-title</b> will be used
-            tr
-              td searchbarPlaceholderText
-              td string
-              td 'Search...'
-              td Search Bar placeholder text
-            tr
-              td searchbarCancelText
-              td string
-              td 'Cancel'
-              td Search Bar cancel button text
-            tr
-              td notFoundText
-              td string
-              td 'Nothing found'
-              td Text that displayed when no matches found
-            tr
-              td multiple
-              td boolean
-              td false
-              td Set to <b>true</b> to allow multiple selections
-            tr
-              td backOnSelect
-              td boolean
-              td false
-              td Set to <b>true</b> and autocomplete will be closed when user picks value. Not available if <b>multiple</b> is enabled
-            tr
-              td autoFocus
-              td boolean
-              td false
-              td Set to <b>true</b> to enable search field auto focus on autocomplete open
-            tr
-              td openWithAnimation
-              td boolean
-              td true
-              td Set to <b>false</b> to open standalone autocomplete without animation
-            tr
-              td navbarTheme
-              td string
-              td
-              td Navbar color theme. One of available <a href="color-themes.html">color themes</a>
-            tr
-              td formTheme
-              td string
-              td
-              td Form (checkboxes or radios) color theme. One of available <a href="color-themes.html">color themes</a>
-            tr
-              th(colspan="4") Dropdown Autocomplete Parameters
-            tr
-              td input
-              td string or HTMLElement
-              td
-              td String with CSS selector or HTMLElement of related text input
-            tr
-              td highlightMatches
-              td boolean
-              td true
-              td Highlight matches in autcomplete results
-            tr
-              td dropdownPlaceholderText
-              td string
-              td
-              td Specify dropdown placeholder text
-            tr
-              td updateInputValueOnSelect
-              td boolean
-              td true
-              td If <b>true</b> then value of related input will be update as well
-            tr
-              td expandInput
-              td boolean
-              td false
-              td If <b>true</b> then input which is used as <b>item-input</b> in List View will be expanded to full screen wide during dropdown visible. <span class="ios-only">iOS Only</span>
-            tr
-              th(colspan="4") Callbacks
-            tr
-              td onChange
-              td function (autocomplete, value)
-              td
-              td Callback function that will be executed when autocomplete value changed. Returned <b>value</b> is an array with selected items
-            tr
-              td onOpen
-              td function (autocomplete)
-              td
-              td Callback function that will be executed when Autocomplete is opened
-            tr
-              td onClose
-              td function (autocomplete)
-              td
-              td Callback function that will be executed when Autocomplete is closed
-            tr
-              th(colspan="4") Templates
-            tr
-              td navbarTemplate
-              td string
-              td * Look below
-              td Standalone autocomplete navbar Template7 template
-            tr
-              td itemTemplate
-              td string
-              td * Look below
-              td Standalone form item (radio or checkbox) Template7 template
-            tr
-              td dropdownTemplate
-              td string
-              td * Look below
-              td Dropdown Template7 template
-            tr
-              td dropdownItemTemplate
-              td string
-              td * Look below
-              td Dropdown list item Template7 template
-            tr
-              td dropdownPlaceholderTemplate
-              td string
-              td * Look below
-              td Dropdown placeholder item Template7 template
-        h3 Default Templates
-        h4 navbarTemplate
-        pre
-          code
-            | &lt;div class="navbar {{#if navbarTheme}}theme-{{navbarTheme}}{{/if}}"&gt;
-            |     &lt;div class="navbar-inner"&gt;
-            |         &lt;div class="left sliding"&gt;
-            |             {{#if material}}
-            |             &lt;a href="#" class="link {{#if inPopup}}close-popup{{else}}back{{/if}} icon-only"&gt;
-            |               &lt;i class="icon icon-back"&gt;&lt;/i&gt;
-            |             &lt;/a&gt;
-            |             {{else}}
-            |             &lt;a href="#" class="link {{#if inPopup}}close-popup{{else}}back{{/if}}"&gt;
-            |                 &lt;i class="icon icon-back"&gt;&lt;/i&gt;
-            |                 {{#if inPopup}}
-            |                 &lt;span&gt;{{popupCloseText}}&lt;/span&gt;
-            |                 {{else}}
-            |                 &lt;span&gt;{{backText}}&lt;/span&gt;
-            |                 {{/if}}
-            |             &lt;/a&gt;
-            |             {{/if}}
-            |         &lt;/div&gt;
-            |         &lt;div class="center sliding"&gt;{{pageTitle}}&lt;/div&gt;
-            |         {{#if preloader}}
-            |         &lt;div class="right"&gt;
-            |             &lt;div class="autocomplete-preloader preloader {{#if preloaderColor}}preloader-{{preloaderColor}}{{/if}}"&gt;&lt;/div&gt;
-            |         &lt;/div&gt;
-            |         {{/if}}
-            |     &lt;/div&gt;
-            | &lt;/div&gt;
-        h4 itemTemplate
-        pre
-          code
-            | &lt;li&gt;
-            |     &lt;label class="label-{{inputType}} item-content"&gt;
-            |         &lt;input type="{{inputType}}" name="{{inputName}}" value="{{value}}" {{#if selected}}checked{{/if}}&gt;
-            |         {{#if material}}
-            |             &lt;div class="item-media"&gt;
-            |                 &lt;i class="icon icon-form-{{inputType}}"&gt;&lt;/i&gt;
-            |             &lt;/div&gt;
-            |             &lt;div class="item-inner"&gt;
-            |                 &lt;div class="item-title"&gt;{{text}}&lt;/div&gt;
-            |             &lt;/div&gt;
-            |         {{else}}
-            |             {{#if checkbox}}
-            |             &lt;div class="item-media"&gt;
-            |                 &lt;i class="icon icon-form-checkbox"&gt;&lt;/i&gt;
-            |             &lt;/div&gt;
-            |             {{/if}}
-            |             &lt;div class="item-inner"&gt;
-            |                 &lt;div class="item-title"&gt;{{text}}&lt;/div&gt;
-            |             &lt;/div&gt;
-            |         {{/if}}
-            |     &lt;/label&gt;
-            | &lt;/li&gt;'
-        h4 dropdownTemplate
-        pre
-          code
-            | &lt;div class="autocomplete-dropdown"&gt;
-            |     &lt;div class="autocomplete-dropdown-inner"&gt;
-            |         &lt;div class="list-block"&gt;
-            |             &lt;ul&gt;&lt;/ul&gt;
-            |         &lt;/div&gt;
-            |     &lt;/div&gt;
-            |     {{#if preloader}}
-            |     &lt;div class="autocomplete-preloader preloader {{#if preloaderColor}}preloader-{{preloaderColor}}{{/if}}"&gt;
-            |       {{#if material}}{{materialPreloaderHtml}}{{/if}}
-            |     &lt;/div&gt;
-            |     {{/if}}
-            | &lt;/div&gt;
-        h4 dropdownItemTemplate
-        pre
-          code
-            | &lt;li&gt;
-            |     &lt;label class="{{#unless placeholder}}label-radio{{/unless}} item-content" data-value="{{value}}"&gt;
-            |         &lt;div class="item-inner"&gt;
-            |             &lt;div class="item-title"&gt;{{text}}&lt;/div&gt;
-            |         &lt;/div&gt;
-            |     &lt;/label&gt;
-            | &lt;/li&gt;
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Autocomplete
+    .docs-index
+    p Framework7 comes with mobile-friendly and touch optimized Autocomplete component.
+    p Autocomplete could be used in standalone mode or as a dropdown.
+    h2 Autocomplete App Methods
+    p Autocomplete can be created and initialized only using JavaScript. We need to use related App's method:
+    .method-wrap
+      p
+        span.method app.autocomplete.create(<span>parameters</span>)
+        | - create Autocomplete instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with autocomplete parameters
+      p.method-returns Method returns created Autocomplete's instance
 
-        h4 dropdownPlaceholderTemplate
-        pre
-          code
-            | &lt;li class="autocomplete-dropdown-placeholder"&gt;
-            |     &lt;div class="item-content"&gt;
-            |         &lt;div class="item-inner"&gt;
-            |             &lt;div class="item-title"&gt;{{text}}&lt;/div&gt;
-            |         &lt;/div&gt;
-            |     &lt;/label&gt;
-            | &lt;/li&gt;
-
-        
-
-        
-
-        h2 Autocomplete Methods & Properties
-        p After we initialize Autocomplete we have its initialized instance in variable (like <code>myAutocomplete</code> variable in example above) with helpful methods and properties:
-        table.methods-table
-          tbody
-            tr
-              th(colspan="2") Properties
-            tr
-              td myAutocomplete.params
-              td Object with passed initialization parameters
-            tr
-              td myAutocomplete.value
-              td Array with selected items
-            tr
-              td myAutocomplete.opened
-              td <b>true</b> if Autocomplete is currently opened
-            tr
-              td myAutocomplete.dropdown
-              td Dom7 instance of Autcomplete dropdown
-            tr
-              td myAutocomplete.popup
-              td Dom7 instance of Autcomplete popup (if opened)
-            tr
-              td myAutocomplete.page
-              td Dom7 instance of Autcomplete page (if opened)
-            tr
-              td myAutocomplete.pageData
-              td Autcomplete page data (if opened)
-            tr
-              td myAutocomplete.searchbar
-              td Autcomplete page Searchbar instance
-            tr
-              th(colspan="2") Methods
-            tr
-              td myAutocomplete.open()
-              td Open Autocomplete (Dropdown, Page or Popup)
-            tr
-              td myAutocomplete.close()
-              td Close Autcomplete
-            tr
-              td myAutocomplete.showPreloader()
-              td Show autocomplete preloader
-            tr
-              td myAutocomplete.hidePreloader()
-              td Hide autocomplete preloader
-            tr
-              td myAutocomplete.destroy()
-              td Destroy Autocomplete instance and remove all events
+    .method-wrap
+      p
+        span.method app.autocomplete.destroy(<span>el</span>)
+        | - destroy Autocomplete instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Autocomplete instance to destroy.
+    .method-wrap
+      p
+        span.method app.autocomplete.get(<span>el</span>)
+        | - get Autocomplete instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Autocomplete element.
+      p.method-returns Method returns Autocomplete's instance
+    .method-wrap
+      p
+        span.method app.autocomplete.open(<span>el</span>)
+        | - open Autocomplete
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Autocomplete element to open.
+      p.method-returns Method returns Autocomplete's instance
+    .method-wrap
+      p
+        span.method app.autocomplete.close(<span>el</span>)
+        | - closes Autocomplete
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Autocomplete element to close.
+      p.method-returns Method returns Autocomplete's instance
+    p For example:
+    pre
+      code.js
+        :code
+          var autocomplete = app.autocomplete.create({
+            inputEl: '#autocomplete-dropdown',
+            openIn: 'dropdown',
+            source: function (query, render) {
+              ...
+            }
+          });
+    h2 Autocomplete Parameters
+    p Let's look on list of all available parameters:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td openIn
+          td string
+          td <code>page</code>
+          td Defines how to open Autocomplete, can be <code>page</code> or <code>popup</code> (for Standalone) or <code>dropdown</code>
+        tr
+          td source
+          td function (query, render)
+          td
+          td Function which accepts search <code>query</code> and <code>render</code> function where you need to pass array with matched items
+        tr
+          td limit
+          td number
+          td
+          td Limit number of maximum displayed items in autocomplete per query
+        tr
+          td preloader
+          td boolean
+          td false
+          td Set to <code>true</code> to include Preloader to autocomplete layout
+        tr
+          td preloaderColor
+          td string
+          td
+          td Preloader color, one of the <a href="color-themes.html">default colors</a>
+        tr
+          td value
+          td array
+          td
+          td Array with default selected values
+        tr
+          td valueProperty
+          td string
+          td id
+          td Name of matched item object's key that represents item value
+        tr
+          td textProperty
+          td string
+          td text
+          td Name of matched item object's key that represents item display value which is used as title of displayed options
+        tr
+          th(colspan="4") Standalone Autocomplete Parameters
+        tr
+          td requestSourceOnOpen
+          td boolean
+          td false
+          td If enabled, then it will request passed to <code>source</code> function on autocomplete open
+        tr
+          td openerEl
+          td string<br>HTMLElement
+          td
+          td String with CSS selector or HTMLElement of link which will open standalone autocomplete page or popup on click
+        tr
+          td popupCloseLinkText
+          td string
+          td Close
+          td Default text for "Close" button when opened as Popup
+        tr
+          td pageBackLinkText
+          td string
+          td Back
+          td Default text for "Back" link when opened as Page
+        tr
+          td pageTitle
+          td string
+          td
+          td Autocomplete page title. If nothing is specified and passed <code>openerEl</code> is an item of List View, then text value of <code>item-title</code> element will be used
+        tr
+          td searchbarPlaceholder
+          td string
+          td Search...
+          td Searchbar placeholder text
+        tr
+          td searchbarDisableText
+          td string
+          td Cancel
+          td Searchbar "Cancel" button text
+        tr
+          td notFoundText
+          td string
+          td Nothing found
+          td Text which is displayed when no matches found
+        tr
+          td multiple
+          td boolean
+          td false
+          td Set to <code>true</code> to allow multiple selections
+        tr
+          td closeOnSelect
+          td boolean
+          td false
+          td Set to <code>true</code> and autocomplete will be closed when user picks value. Not available if <code>multiple</code> is enabled
+        tr
+          td autoFocus
+          td boolean
+          td false
+          td Set to <code>true</code> to auto focus search field on autocomplete open
+        tr
+          td animate
+          td boolean
+          td true
+          td Set to <code>false</code> to open standalone autocomplete without animation
+        tr
+          td navbarColorTheme
+          td string
+          td
+          td Navbar color theme. One of the default <a href="color-themes.html">color themes</a>
+        tr
+          td formColorTheme
+          td string
+          td
+          td Form (checkboxes or radios) color theme. One of the default <a href="color-themes.html">color themes</a>
+        tr
+          td routableModals
+          td boolean
+          td true
+          td Will add opened autocomplete modal (when <code>openIn: 'popup'</code>) to router history which gives ability to close autocomplete by going back in router history and set current route to the autocomplete modal
+        tr
+          td url
+          td string
+          td select/
+          td Standalone autocomplete URL that will be set as a current route
+        tr
+          td view
+          td object
+          td
+          td Link to initialized View instance if you want use standalone Autcomplete. By default, if not specified, it will be opened in Main View.
+        tr
+          th(colspan="4") Dropdown Autocomplete Parameters
+        tr
+          td inputEl
+          td string<br>HTMLElement
+          td
+          td String with CSS selector or HTMLElement of related text input
+        tr
+          td highlightMatches
+          td boolean
+          td true
+          td Highlight matches in autcomplete results
+        tr
+          td typeahead
+          td boolean
+          td false
+          td Enables type ahead, will prefill input value with first item in match
+        tr
+          td dropdownPlaceholderText
+          td string
+          td
+          td Specify dropdown placeholder text
+        tr
+          td updateInputValueOnSelect
+          td boolean
+          td true
+          td If <code>true</code> then value of related input will be update as well
+        tr
+          td expandInput
+          td boolean
+          td false
+          td If <code>true</code> then input which is used as <b>item-input</b> in List View will be expanded to full screen wide during dropdown visible.
+        tr
+          th(colspan="4") Render functions
+        tr
+          td renderDropdown
+          td function(items)
+          td
+          td Function to render autocomplete dropdown, must return dropdown HTML string
+        tr
+          td renderPage
+          td function(items)
+          td
+          td Function to render autocomplete page, must return page HTML string
+        tr
+          td renderPopup
+          td function(items)
+          td
+          td Function to render autocomplete popup, must return popup HTML string
+        tr
+          td renderItem
+          td function(item, index)
+          td
+          td Function to render single autocomplete, must return item HTML string
+        tr
+          td renderSearchbar
+          td function
+          td
+          td Function to render searchbar, must return searchbar HTML string
+        tr
+          td renderNavbar
+          td function
+          td
+          td Function to render navbar, must return navbar HTML string
+        tr
+          th(colspan="4") Events
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var autocomplete = app.autocomplete.create({
+                    ...
+                    on: {
+                      opened: function () {
+                        console.log('Autocomplete opened')
+                      }
+                    }
+                  })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>autocomplete</code> property to set defaults for all autcompletes. For example:
+      pre
+        code
+          :code
+            var app = new Framework7({
+              autocomplete: {
+                openIn: 'popup',
+                animate: false,
+              }
+            });
+    h2 Autocomplete Methods & Properties
+    p After we initialize Autocomplete we have its initialized instance in variable (like <code>autocomplete</code> variable in example above) with helpful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td autocomplete.params
+          td Object with passed initialization parameters
+        tr
+          td autocomplete.value
+          td Array with selected items
+        tr
+          td autocomplete.opened
+          td <b>true</b> if Autocomplete is currently opened
+        tr
+          td autocomplete.openerEl
+          td HTML element of Autcomplete opener element (if passed on init)
+        tr
+          td autocomplete.$openerEl
+          td Dom7 instance of of Autcomplete opener element (if passed on init)
+        tr
+          td autocomplete.inputEl
+          td HTML element of Autcomplete input (if passed on init)
+        tr
+          td autocomplete.$inputEl
+          td Dom7 instance of of Autcomplete input (if passed on init)
+        tr
+          td autocomplete.$dropdownEl
+          td Dom7 instance of Autcomplete dropdown
+        tr
+          td autocomplete.url
+          td Autcomplete URL (that was passed in <code>url</code> parameter)
+        tr
+          td autocomplete.view
+          td Autcomplete View (that was passed in <code>view</code> parameter) or found parent view
+        tr
+          td autocomplete.el
+          td HTML element of Autcomplete container: dropdown element, or popup element, or page element. Available when Autocomplete opened
+        tr
+          td autocomplete.$el
+          td Dom7 instance of Autcomplete container: dropdown element, or popup element, or page element. Available when Autocomplete opened
+        tr
+          td autocomplete.searchbar
+          td Autcomplete page Searchbar instance
+        tr
+          th(colspan="2") Methods
+        tr
+          td autocomplete.open()
+          td Open Autocomplete (Dropdown, Page or Popup)
+        tr
+          td autocomplete.close()
+          td Close Autcomplete
+        tr
+          td autocomplete.preloaderShow()
+          td Show autocomplete preloader
+        tr
+          td autocomplete.preloaderHide()
+          td Hide autocomplete preloader
+        tr
+          td autocomplete.destroy()
+          td Destroy Autocomplete instance and remove all events
+        tr
+          td autocomplete.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td autocomplete.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td autocomplete.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td autocomplete.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Autocomplete Events
+    p Autocomplete instance emit events on both self instance and app instance. App instance events has same names prefixed with <code>autocomplete</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td change
+          td autocomplete
+          td(rowspan="2") <span>autocomplete, value</span>
+          td(rowspan="2") Event will be triggered when Autocomplete value changed. Returned <code>value</code> is an array with selected items
+        tr
+          td autocompleteChange
+          td app
+        tr
+          td open
+          td autocomplete
+          td(rowspan="2") <span>autocomplete</span>
+          td(rowspan="2") Event will be triggered when Autocomplete starts its opening animation. As an argument event handler receives autocomplete instance
+        tr
+          td autocompleteOpen
+          td app
+        tr
+          td opened
+          td autocomplete
+          td(rowspan="2") <span>autocomplete</span>
+          td(rowspan="2") Event will be triggered after Autocomplete completes its opening animation. As an argument event handler receives autocomplete instance
+        tr
+          td autocompleteOpened
+          td app
+        tr
+          td close
+          td autocomplete
+          td(rowspan="2") <span>autocomplete</span>
+          td(rowspan="2") Event will be triggered when Autocomplete starts its closing animation. As an argument event handler receives autocomplete instance
+        tr
+          td autocompleteClose
+          td app
+        tr
+          td closed
+          td autocomplete
+          td(rowspan="2") <span>autocomplete</span>
+          td(rowspan="2") Event will be triggered after Autocomplete completes its closing animation. As an argument event handler receives autocomplete instance
+        tr
+          td autocompleteClosed
+          td app
+        tr
+          td beforeDestroy
+          td autocomplete
+          td(rowspan="2") <span>autocomplete</span>
+          td(rowspan="2") Event will be triggered right before Autocomplete instance will be destroyed. As an argument event handler receives autocomplete instance
+        tr
+          td autocompleteBeforeDestroy
+          td app
+    .with-device
       h2(data-device-preview="../docs-demos/autocomplete.html") Examples
       pre
-        code
-          | var myApp = new Framework7();
-          | var $$ = Dom7;
-          | 
-          | var mainView = myApp.addView('.view-main');
-          | 
-          | // Fruits data demo array
-          | var fruits = ('Apple Apricot Avocado Banana Melon Orange Peach Pear Pineapple').split(' ');
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            // Fruits data demo array
+            var fruits = ('Apple Apricot Avocado Banana Melon Orange Peach Pear Pineapple').split(' ');
       h4 Simple Dropdown Autocomplete
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li class="item-content"&gt;
-          |       &lt;div class="item-title label"&gt;Fruit&lt;/div&gt;
-          |       &lt;div class="item-input"&gt;
-          |         &lt;input type="text" placeholder="Fruit" id="autocomplete-dropdown"&gt;&lt;/div&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            <div class="list no-hairlines-md">
+              <div class="block-header">Simple Dropdown Autocomplete</div>
+              <ul>
+                <li class="item-content item-input inline-label">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Fruit</div>
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown" type="text" placeholder="Fruit">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
       pre
-        code
-          | var autocompleteDropdownSimple = myApp.autocomplete({
-          |     input: '#autocomplete-dropdown',
-          |     openIn: 'dropdown',
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         if (query.length === 0) {
-          |             render(results);
-          |             return;
-          |         }
-          |         // Find matched items
-          |         for (var i = 0; i &lt; fruits.length; i++) {
-          |             if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
-          |         }
-          |         // Render items by passing array with result items
-          |         render(results);
-          |     }
-          | });
-      h4 Dropdown With Input Expanded
+        code.js
+          :code
+            var autocompleteDropdownSimple = app.autocomplete.create({
+              inputEl: '#autocomplete-dropdown',
+              openIn: 'dropdown',
+              source: function (query, render) {
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              }
+            });
+
+      h4 Dropdown With Input Expand
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li class="item-content"&gt;
-          |       &lt;div class="item-title label"&gt;Fruit&lt;/div&gt;
-          |       &lt;div class="item-input"&gt;
-          |         &lt;input type="text" placeholder="Fruit" id="autocomplete-dropdown-expand"&gt;&lt;/div&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            <div class="list no-hairlines-md">
+              <div class="block-header">Dropdown With Input Expand</div>
+              <ul>
+                <li class="item-content item-input inline-label">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Fruit</div>
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown-expand" type="text" placeholder="Fruit">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
       pre
-        code
-          | var autocompleteDropdownExpand = myApp.autocomplete({
-          |     input: '#autocomplete-dropdown-expand',
-          |     openIn: 'dropdown',
-          |     expandInput: true, // expand input
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         if (query.length === 0) {
-          |             render(results);
-          |             return;
-          |         }
-          |         // Find matched items
-          |         for (var i = 0; i &lt; fruits.length; i++) {
-          |             if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
-          |         }
-          |         // Render items by passing array with result items
-          |         render(results);
-          |     }
-          | });
+        code.js
+          :code
+            var autocompleteDropdownExpand = app.autocomplete.create({
+              inputEl: '#autocomplete-dropdown-expand',
+              openIn: 'dropdown',
+              expandInput: true, // expand input
+              source: function (query, render) {
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              }
+            });
+
       h4 Dropdown With All Values
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li class="item-content"&gt;
-          |       &lt;div class="item-title label"&gt;Fruit&lt;/div&gt;
-          |       &lt;div class="item-input"&gt;
-          |         &lt;input type="text" placeholder="Fruit" id="autocomplete-dropdown-all"&gt;&lt;/div&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            <div class="list no-hairlines-md">
+              <div class="block-header">Dropdown With All Values</div>
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Fruit</div>
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown-all" type="text" placeholder="Fruit">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
       pre
-        code
-          | var autocompleteDropdownAll = myApp.autocomplete({
-          |     input: '#autocomplete-dropdown-all',
-          |     openIn: 'dropdown',
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         // Find matched items
-          |         for (var i = 0; i &lt; fruits.length; i++) {
-          |             if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
-          |         }
-          |         // Render items by passing array with result items
-          |         render(results);
-          |     }
-          | });
+        code.js
+          :code
+            var autocompleteDropdownAll = app.autocomplete.create({
+              inputEl: '#autocomplete-dropdown-all',
+              openIn: 'dropdown',
+              source: function (query, render) {
+                var results = [];
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              }
+            });
       h4 Dropdown With Placeholder
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li class="item-content"&gt;
-          |       &lt;div class="item-title label"&gt;Fruit&lt;/div&gt;
-          |       &lt;div class="item-input"&gt;
-          |         &lt;input type="text" placeholder="Fruit" id="autocomplete-dropdown-placeholder"&gt;&lt;/div&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            <div class="list no-hairlines-md">
+              <div class="block-header">Dropdown With Placeholder</div>
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Fruit</div>
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown-placeholder" type="text" placeholder="Fruit">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
       pre
-        code
-          | var autocompleteDropdownPlaceholder = myApp.autocomplete({
-          |     input: '#autocomplete-dropdown-placeholder',
-          |     openIn: 'dropdown',
-          |     dropdownPlaceholderText: 'Try to type "Apple"',
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         if (query.length === 0) {
-          |             render(results);
-          |             return;
-          |         }
-          |         // Find matched items
-          |         for (var i = 0; i &lt; fruits.length; i++) {
-          |             if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
-          |         }
-          |         // Render items by passing array with result items
-          |         render(results);
-          |     }
-          | });
-      h4 Dropdown With Ajax Data
+        code.js
+          :code
+            var autocompleteDropdownPlaceholder = app.autocomplete.create({
+              inputEl: '#autocomplete-dropdown-placeholder',
+              openIn: 'dropdown',
+              dropdownPlaceholderText: 'Try to type "Apple"',
+              source: function (query, render) {
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              }
+            });
+
+      h4 Dropdown With Typeahead
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li class="item-content"&gt;
-          |       &lt;div class="item-title label"&gt;Language&lt;/div&gt;
-          |       &lt;div class="item-input"&gt;
-          |         &lt;input type="text" placeholder="Language" id="autocomplete-dropdown-ajax"&gt;&lt;/div&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            <div class="list no-hairlines-md">
+              <div class="block-header">Dropdown With Typeahead</div>
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Fruit</div>
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown-typeahead" type="text" placeholder="Fruit">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
       pre
-        code
-          | var autocompleteDropdownAjax = myApp.autocomplete({
-          |     input: '#autocomplete-dropdown-ajax',
-          |     openIn: 'dropdown',
-          |     preloader: true, //enable preloader
-          |     valueProperty: 'id', //object's "value" property name
-          |     textProperty: 'name', //object's "text" property name
-          |     limit: 20, //limit to 20 results
-          |     dropdownPlaceholderText: 'Try "JavaScript"',
-          |     expandInput: true, // expand input
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         if (query.length === 0) {
-          |             render(results);
-          |             return;
-          |         }
-          |         // Show Preloader
-          |         autocomplete.showPreloader();
-          |         // Do Ajax request to Autocomplete data
-          |         $$.ajax({
-          |             url: 'autocomplete-languages.json',
-          |             method: 'GET',
-          |             dataType: 'json',
-          |             //send "query" to server. Useful in case you generate response dynamically
-          |             data: {
-          |                 query: query
-          |             },
-          |             success: function (data) {
-          |                 // Find matched items
-          |                 for (var i = 0; i &lt; data.length; i++) {
-          |                     if (data[i].name.toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(data[i]);
-          |                 }
-          |                 // Hide Preoloader
-          |                 autocomplete.hidePreloader();
-          |                 // Render items by passing array with result items
-          |                 render(results);
-          |             }
-          |         });
-          |     }
-          | });
+        code.js
+          :code
+            var autocompleteDropdownTypeahead = app.autocomplete.create({
+              inputEl: '#autocomplete-dropdown-typeahead',
+              openIn: 'dropdown',
+              dropdownPlaceholderText: 'Try to type "Pineapple"',
+              typeahead: true,
+              source: function (query, render) {
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) === 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              }
+            });
+
+      h4 Dropdown With Ajax-Data
+      pre
+        code.html
+          :code
+            <div class="list no-hairlines-md">
+              <div class="block-header">Dropdown With Ajax-Data</div>
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Language</div>
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown-ajax" type="text" placeholder="Language">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      pre
+        code.js
+          :code
+            var autocompleteDropdownAjax = app.autocomplete.create({
+              inputEl: '#autocomplete-dropdown-ajax',
+              openIn: 'dropdown',
+              preloader: true, //enable preloader
+              /* If we set valueProperty to "id" then input value on select will be set according to this property */
+              valueProperty: 'name', //object's "value" property name
+              textProperty: 'name', //object's "text" property name
+              limit: 20, //limit to 20 results
+              dropdownPlaceholderText: 'Try "JavaScript"',
+              source: function (query, render) {
+                var autocomplete = this;
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Show Preloader
+                autocomplete.preloaderShow();
+
+                // Do Ajax request to Autocomplete data
+                app.request({
+                  url: 'autocomplete-languages.json',
+                  method: 'GET',
+                  dataType: 'json',
+                  //send "query" to server. Useful in case you generate response dynamically
+                  data: {
+                    query: query,
+                  },
+                  success: function (data) {
+                    // Find matched items
+                    for (var i = 0; i < data.length; i++) {
+                      if (data[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(data[i]);
+                    }
+                    // Hide Preoloader
+                    autocomplete.preloaderHide();
+                    // Render items by passing array with result items
+                    render(results);
+                  }
+                });
+              }
+            });
+
+      h4 Dropdown With Ajax-Data + Typeahead
+      pre
+        code.html
+          :code
+            <div class="list no-hairlines-md">
+              <div class="block-header">Dropdown With Ajax-Data + Typeahead</div>
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-title item-label">Language</div>
+                    <div class="item-input-wrap">
+                      <input id="autocomplete-dropdown-ajax-typeahead" type="text" placeholder="Language">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      pre
+        code.js
+          :code
+            var autocompleteDropdownAjaxTypeahead = app.autocomplete.create({
+              inputEl: '#autocomplete-dropdown-ajax-typeahead',
+              openIn: 'dropdown',
+              preloader: true, //enable preloader
+              /* If we set valueProperty to "id" then input value on select will be set according to this property */
+              valueProperty: 'name', //object's "value" property name
+              textProperty: 'name', //object's "text" property name
+              limit: 20, //limit to 20 results
+              typeahead: true,
+              dropdownPlaceholderText: 'Try "JavaScript"',
+              source: function (query, render) {
+                var autocomplete = this;
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Show Preloader
+                autocomplete.preloaderShow();
+
+                // Do Ajax request to Autocomplete data
+                app.request({
+                  url: 'autocomplete-languages.json',
+                  method: 'GET',
+                  dataType: 'json',
+                  //send "query" to server. Useful in case you generate response dynamically
+                  data: {
+                    query: query,
+                  },
+                  success: function (data) {
+                    // Find matched items
+                    for (var i = 0; i < data.length; i++) {
+                      if (data[i].name.toLowerCase().indexOf(query.toLowerCase()) === 0) results.push(data[i]);
+                    }
+                    // Hide Preoloader
+                    autocomplete.preloaderHide();
+                    // Render items by passing array with result items
+                    render(results);
+                  }
+                });
+              }
+            });
+      h4 Searchbar Dropdown
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner sliding">
+                  ...
+                  <!-- Put searchbar in subnavbar -->
+                  <div class="subnavbar">
+                    <form class="searchbar" id="searchbar-autocomplete">
+                      <div class="searchbar-inner">
+                        <div class="searchbar-input-wrap">
+                          <input type="search" placeholder="Search">
+                          <i class="searchbar-icon"></i>
+                          <span class="input-clear-button"></span>
+                        </div>
+                        <span class="searchbar-disable-button">Cancel</span>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              ...
+            </div>
+      pre
+        code.js
+          :code
+            var searchbar = app.searchbar.create({
+              el: '#searchbar-autocomplete',
+              customSearch: true,
+              on: {
+                search: function (query) {
+                  console.log(query);
+                }
+              }
+            });
+            var autocompleteSearchbar = app.autocomplete.create({
+              openIn: 'dropdown',
+              inputEl: '#searchbar-autocomplete input[type="search"]',
+              dropdownPlaceholderText: 'Type "Apple"',
+              source: function (query, render) {
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              }
+            })
       h4 Simple Standalone Autocomplete
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" id="autocomplete-standalone" class="item-link item-content autocomplete-opener"&gt;
-          |         &lt;input type="hidden"&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Favorite Fruite&lt;/div&gt;
-          |           &lt;div class="item-after"&gt;&lt;/div&gt;
-          |         &lt;/div&gt;
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            div class="list">
+              <div class="block-header">Simple Standalone Autocomplete</div>
+              <ul>
+                <li>
+                  <a class="item-link item-content" href="#" id="autocomplete-standalone">
+                    <input type="hidden">
+                    <div class="item-inner">
+                      <div class="item-title">Favorite Fruite</div>
+                      <div class="item-after"></div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
       pre
-        code
-          | var autocompleteStandaloneSimple = myApp.autocomplete({
-          |     openIn: 'page', //open in page
-          |     opener: $$('#autocomplete-standalone'), //link that opens autocomplete
-          |     backOnSelect: true, //go back after we select something
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         if (query.length === 0) {
-          |             render(results);
-          |             return;
-          |         }
-          |         // Find matched items
-          |         for (var i = 0; i &lt; fruits.length; i++) {
-          |             if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
-          |         }
-          |         // Render items by passing array with result items
-          |         render(results);
-          |     },
-          |     onChange: function (autocomplete, value) {
-          |         // Add item text value to item-after
-          |         $$('#autocomplete-standalone').find('.item-after').text(value[0]);
-          |         // Add item value to input value
-          |         $$('#autocomplete-standalone').find('input').val(value[0]);
-          |     }
-          | });
-      h4 Popup Standalone Autocomplete
+        code.js
+          :code
+            var autocompleteStandaloneSimple = app.autocomplete.create({
+              openIn: 'page', //open in page
+              openerEl: '#autocomplete-standalone', //link that opens autocomplete
+              closeOnSelect: true, //go back after we select something
+              source: function (query, render) {
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              },
+              on: {
+                change: function (value) {
+                  console.log(value);
+                  // Add item text value to item-after
+                  $$('#autocomplete-standalone').find('.item-after').text(value[0]);
+                  // Add item value to input value
+                  $$('#autocomplete-standalone').find('input').val(value[0]);
+                },
+              },
+            });
+
+      h4 Popup Autocomplete
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" id="autocomplete-standalone-popup" class="item-link item-content autocomplete-opener"&gt;
-          |         &lt;input type="hidden"&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Favorite Fruite&lt;/div&gt;
-          |           &lt;div class="item-after"&gt;&lt;/div&gt;
-          |         &lt;/div&gt;
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            <div class="list">
+              <div class="block-header">Popup Autocomplete</div>
+              <ul>
+                <li>
+                  <a class="item-link item-content" href="#" id="autocomplete-standalone-popup">
+                    <input type="hidden">
+                    <div class="item-inner">
+                      <div class="item-title">Favorite Fruite</div>
+                      <div class="item-after"></div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
       pre
-        code
-          | var autocompleteStandalonePopup = myApp.autocomplete({
-          |     openIn: 'popup', //open in popup
-          |     opener: $$('#autocomplete-standalone-popup'), //link that opens autocomplete
-          |     backOnSelect: true, //go back after we select something
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         if (query.length === 0) {
-          |             render(results);
-          |             return;
-          |         }
-          |         // Find matched items
-          |         for (var i = 0; i &lt; fruits.length; i++) {
-          |             if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
-          |         }
-          |         // Render items by passing array with result items
-          |         render(results);
-          |     },
-          |     onChange: function (autocomplete, value) {
-          |         // Add item text value to item-after
-          |         $$('#autocomplete-standalone-popup').find('.item-after').text(value[0]);
-          |         // Add item value to input value
-          |         $$('#autocomplete-standalone-popup').find('input').val(value[0]);
-          |     }
-          | });
-      h4 Multiple Values Dropdown Autocomplete
+        code.js
+          :code
+            var autocompleteStandalonePopup = app.autocomplete.create({
+              openIn: 'popup', //open in page
+              openerEl: '#autocomplete-standalone-popup', //link that opens autocomplete
+              closeOnSelect: true, //go back after we select something
+              source: function (query, render) {
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              },
+              on: {
+                change: function (value) {
+                  // Add item text value to item-after
+                  $$('#autocomplete-standalone-popup').find('.item-after').text(value[0]);
+                  // Add item value to input value
+                  $$('#autocomplete-standalone-popup').find('input').val(value[0]);
+                },
+              },
+            });
+
+      h4 Multiple Values
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" id="autocomplete-standalone-multiple" class="item-link item-content autocomplete-opener"&gt;
-          |         &lt;input type="hidden"&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Favorite Fruite&lt;/div&gt;
-          |           &lt;div class="item-after"&gt;&lt;/div&gt;
-          |         &lt;/div&gt;
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            <div class="list">
+              <div class="block-header">Multiple Values</div>
+              <ul>
+                <li>
+                  <a class="item-link item-content" href="#" id="autocomplete-standalone-multiple">
+                    <input type="hidden">
+                    <div class="item-inner">
+                      <div class="item-title">Favorite Fruite</div>
+                      <div class="item-after"></div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
       pre
-        code
-          | var autocompleteStandaloneMultiple = myApp.autocomplete({
-          |     openIn: 'page', //open in page
-          |     opener: $$('#autocomplete-standalone-multiple'), //link that opens autocomplete
-          |     multiple: true, //allow multiple values
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         if (query.length === 0) {
-          |             render(results);
-          |             return;
-          |         }
-          |         // Find matched items
-          |         for (var i = 0; i &lt; fruits.length; i++) {
-          |             if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(fruits[i]);
-          |         }
-          |         // Render items by passing array with result items
-          |         render(results);
-          |     },
-          |     onChange: function (autocomplete, value) {
-          |         // Add item text value to item-after
-          |         $$('#autocomplete-standalone-multiple').find('.item-after').text(value.join(', '));
-          |         // Add item value to input value
-          |         $$('#autocomplete-standalone-multiple').find('input').val(value.join(', '));
-          |     }
-          | });
-      h4 Standalone With Ajax Data
+        code.js
+          :code
+            var autocompleteStandaloneMultiple = app.autocomplete.create({
+              openIn: 'page', //open in page
+              openerEl: '#autocomplete-standalone-multiple', //link that opens autocomplete
+              multiple: true, //allow multiple values
+              source: function (query, render) {
+                var autocomplete = this;
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Find matched items
+                for (var i = 0; i < fruits.length; i++) {
+                  if (fruits[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(fruits[i]);
+                }
+                // Render items by passing array with result items
+                render(results);
+              },
+              on: {
+                change: function (value) {
+                  // Add item text value to item-after
+                  $$('#autocomplete-standalone-multiple').find('.item-after').text(value.join(', '));
+                  // Add item value to input value
+                  $$('#autocomplete-standalone-multiple').find('input').val(value.join(', '));
+                }
+              }
+            });
+
+      h4 Standalone With Ajax-Data
       pre
-        code
-          | &lt;div class="list-block"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li&gt;
-          |       &lt;a href="#" id="autocomplete-standalone-ajax" class="item-link item-content autocomplete-opener"&gt;
-          |         &lt;input type="hidden"&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Language&lt;/div&gt;
-          |           &lt;div class="item-after"&gt;&lt;/div&gt;
-          |         &lt;/div&gt;
-          |       &lt;/a&gt;
-          |     &lt;/li&gt;
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
+        code.html
+          :code
+            <div class="list">
+              <div class="block-header">With Ajax-Data</div>
+              <ul>
+                <li>
+                  <a class="item-link item-content" href="#" id="autocomplete-standalone-ajax">
+                    <input type="hidden">
+                    <div class="item-inner">
+                      <div class="item-title">Language</div>
+                      <div class="item-after"></div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
       pre
-        code
-          | var autocompleteStandaloneAjax = myApp.autocomplete({
-          |     openIn: 'page', //open in page
-          |     opener: $$('#autocomplete-standalone-ajax'), //link that opens autocomplete
-          |     multiple: true, //allow multiple values
-          |     valueProperty: 'id', //object's "value" property name
-          |     textProperty: 'name', //object's "text" property name
-          |     limit: 50,
-          |     preloader: true, //enable preloader
-          |     source: function (autocomplete, query, render) {
-          |         var results = [];
-          |         if (query.length === 0) {
-          |             render(results);
-          |             return;
-          |         }
-          |         // Show Preloader
-          |         autocomplete.showPreloader();
-          |         // Do Ajax request to Autocomplete data
-          |         $$.ajax({
-          |             url: 'autocomplete-languages.json',
-          |             method: 'GET',
-          |             dataType: 'json',
-          |             //send "query" to server. Useful in case you generate response dynamically
-          |             data: {
-          |                 query: query
-          |             },
-          |             success: function (data) {
-          |                 // Find matched items
-          |                 for (var i = 0; i &lt; data.length; i++) {
-          |                     if (data[i].name.toLowerCase().indexOf(query.toLowerCase()) &gt;= 0) results.push(data[i]);
-          |                 }
-          |                 // Hide Preoloader
-          |                 autocomplete.hidePreloader();
-          |                 // Render items by passing array with result items
-          |                 render(results);
-          |             }
-          |         });
-          |     },
-          |     onChange: function (autocomplete, value) {
-          |         var itemText = [],
-          |             inputValue = [];
-          |         for (var i = 0; i &lt; value.length; i++) {
-          |             itemText.push(value[i].name);
-          |             inputValue.push(value[i].id);
-          |         }
-          |         // Add item text value to item-after
-          |         $$('#autocomplete-standalone-ajax').find('.item-after').text(itemText.join(', '));
-          |         // Add item value to input value
-          |         $$('#autocomplete-standalone-ajax').find('input').val(inputValue.join(', '));
-          |     }
-          | });
+        code.js
+          :code
+            var autocompleteStandaloneAjax = app.autocomplete.create({
+              openIn: 'page', //open in page
+              openerEl: '#autocomplete-standalone-ajax', //link that opens autocomplete
+              multiple: true, //allow multiple values
+              valueProperty: 'id', //object's "value" property name
+              textProperty: 'name', //object's "text" property name
+              limit: 50,
+              preloader: true, //enable preloader
+              source: function (query, render) {
+                var autocomplete = this;
+                var results = [];
+                if (query.length === 0) {
+                  render(results);
+                  return;
+                }
+                // Show Preloader
+                autocomplete.preloaderShow();
+                // Do Ajax request to Autocomplete data
+                app.request({
+                  url: 'autocomplete-languages.json',
+                  method: 'GET',
+                  dataType: 'json',
+                  //send "query" to server. Useful in case you generate response dynamically
+                  data: {
+                    query: query
+                  },
+                  success: function (data) {
+                    // Find matched items
+                    for (var i = 0; i < data.length; i++) {
+                      if (data[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(data[i]);
+                    }
+                    // Hide Preoloader
+                    autocomplete.preloaderHide();
+                    // Render items by passing array with result items
+                    render(results);
+                  }
+                });
+              },
+              on: {
+                change: function (value) {
+                  var itemText = [],
+                      inputValue = [];
+                  for (var i = 0; i < value.length; i++) {
+                    itemText.push(value[i].name);
+                    inputValue.push(value[i].id);
+                  }
+                  // Add item text value to item-after
+                  $$('#autocomplete-standalone-ajax').find('.item-after').text(itemText.join(', '));
+                  // Add item value to input value
+                  $$('#autocomplete-standalone-ajax').find('input').val(inputValue.join(', '));
+                },
+              },
+            });
+
+

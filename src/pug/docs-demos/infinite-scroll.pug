@@ -1,70 +1,53 @@
-extends _layout-ios
+extends _layout
 block content
-  .views
-    .view.view-main
+  .view.view-main.view-init
+    .page(data-page="home")
       .navbar
         .navbar-inner
-          .left 
-          .center.sliding Infinite Scroll
-          .right 
-      .pages.navbar-through
-        .page(data-page="home")
-          .page-content.infinite-scroll
-            .list-block
-              ul
-                - for (var i = 1; i <= 20; i++)
-                  li.item-content
-                    .item-inner
-                      .item-title Item #{i}
-            .infinite-scroll-preloader
-              .preloader
-
+          .left
+          .title.sliding Infinite Scroll
+          .right
+      .page-content.infinite-scroll-content
+        .list.simple-list
+          ul
+            - for (var i = 1; i <= 20; i++)
+              li Item #{i}
+        .preloader.infinite-scroll-preloader
 
 block scripts
-  style.
-    .infinite-scroll-preloader {
-      margin-top:-20px;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    .infinite-scroll-preloader .preloader {
-      width:34px;
-      height:34px;
-    }
   script.
-    var myApp = new Framework7(); 
+    var app = new Framework7();
 
     var $$ = Dom7;
 
     // Loading flag
-    var loading = false;
+    var allowInfinite = true;
 
     // Last loaded index
-    var lastIndex = $$('.list-block li').length;
+    var lastItemIndex = $$('.list li').length;
 
     // Max items to load
-    var maxItems = 60;
+    var maxItems = 200;
 
     // Append items per load
     var itemsPerLoad = 20;
 
     // Attach 'infinite' event handler
-    $$('.infinite-scroll').on('infinite', function () {
-
+    $$('.infinite-scroll-content').on('infinite', function () {
       // Exit, if loading in progress
-      if (loading) return;
+      if (!allowInfinite) return;
 
       // Set loading flag
-      loading = true;
+      allowInfinite = false;
 
       // Emulate 1s loading
       setTimeout(function () {
         // Reset loading flag
-        loading = false;
+        allowInfinite = true;
 
-        if (lastIndex >= maxItems) {
+        if (lastItemIndex >= maxItems) {
           // Nothing more to load, detach infinite scroll events to prevent unnecessary loadings
-          myApp.detachInfiniteScroll($$('.infinite-scroll'));
+          app.infiniteScroll.destroy('.infinite-scroll-content');
           // Remove preloader
           $$('.infinite-scroll-preloader').remove();
           return;
@@ -72,16 +55,14 @@ block scripts
 
         // Generate new items HTML
         var html = '';
-        for (var i = lastIndex + 1; i <= lastIndex + itemsPerLoad; i++) {
-          html += '<li class="item-content"><div class="item-inner"><div class="item-title">Item ' + i + '</div></div></li>';
+        for (var i = lastItemIndex + 1; i <= lastItemIndex + itemsPerLoad; i++) {
+          html += '<li>Item ' + i + '</li>';
         }
 
         // Append new items
-        $$('.list-block ul').append(html);
+        $$('.list ul').append(html);
 
         // Update last loaded index
-        lastIndex = $$('.list-block li').length;
+        lastItemIndex = $$('.list li').length;
       }, 1000);
     });
-
-    

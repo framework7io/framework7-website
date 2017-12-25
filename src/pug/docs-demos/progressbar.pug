@@ -1,0 +1,153 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Progressbar
+          .right
+      .page-content
+        <div class="block-title">Determinate Progress Bar</div>
+        <div class="block block-strong">
+          <p>Inline determinate progress bar:</p>
+          <div>
+            <p><span data-progress="10" class="progressbar" id="demo-inline-progressbar"></span></p>
+            <p class="segmented segmented-raised">
+              <a href="#" data-progress="10" class="button set-inline-progress">10%</a>
+              <a href="#" data-progress="30" class="button set-inline-progress">30%</a>
+              <a href="#" data-progress="50" class="button set-inline-progress">50%</a>
+              <a href="#" data-progress="100" class="button set-inline-progress">100%</a>
+            </p>
+          </div>
+          <div>
+            <p>Inline determinate load & hide:</p>
+            <p id="demo-determinate-container"></p>
+            <p>
+              <a href="#" class="button button-raised show-determinate">Start Loading</a>
+            </p>
+          </div>
+          <div>
+            <p>Overlay with determinate progress bar on top of the app:</p>
+            <p>
+              <a href="#" class="button button-raised show-determinate-root">Start Loading</a>
+            </p>
+          </div>
+        </div>
+        <div class="block-title">Infinite Progress Bar</div>
+        <div class="block block-strong">
+          <p>Inline infinite progress bar</p>
+          <p>
+            <span class="progressbar-infinite"></span>
+          </p>
+          <p>Multi-color infinite progress bar</p>
+          <p>
+            <span class="progressbar-infinite color-multi"></span>
+          </p>
+          <div>
+            <p>Overlay with infinite progress bar on top of the app</p>
+            <p id="demo-infinite-container"></p>
+            <p>
+              <a href="#" class="button button-raised show-infinite">Start Loading</a>
+            </p>
+          </div>
+          <div>
+            <p>Overlay with infinite multi-color progress bar on top of the app</p>
+            <p>
+              <a href="#" class="button button-raised show-infinite-root">Start Loading</a>
+            </p>
+          </div>
+        </div>
+        <div class="block-title">Colors</div>
+        <div class="list simple-list">
+          <ul>
+            <li>
+              <div class="progressbar color-blue" data-progress="10"></div>
+            </li>
+            <li>
+              <div class="progressbar color-red" data-progress="20"></div>
+            </li>
+            <li>
+              <div class="progressbar color-pink" data-progress="30"></div>
+            </li>
+            <li>
+              <div class="progressbar color-green" data-progress="80"></div>
+            </li>
+            <li>
+              <div class="progressbar color-yellow" data-progress="90"></div>
+            </li>
+            <li>
+              <div class="progressbar color-orange" data-progress="100"></div>
+            </li>
+          </ul>
+        </div>
+block scripts
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    // Set progress on inline progressbar
+    $$('.set-inline-progress').on('click', function (e) {
+      var progress = $$(this).attr('data-progress');
+      app.progressbar.set('#demo-inline-progressbar', progress);
+    });
+
+
+    // Function show determinate progressbar and emulate loading
+    determinateLoading = false;
+    function showDeterminate(inline) {
+      determinateLoading = true;
+      var progressBarEl;
+      if (inline) {
+        // inline progressbar
+        progressBarEl = app.progressbar.show('#demo-determinate-container', 0);
+      } else {
+        // root progressbar
+        progressBarEl = app.progressbar.show(0, app.theme === 'md' ? 'yellow' : 'blue');
+      }
+      var progress = 0;
+      function simulateLoading() {
+        setTimeout(function () {
+          var progressBefore = progress;
+          progress += Math.random() * 20;
+          app.progressbar.set(progressBarEl, progress);
+          if (progressBefore < 100) {
+            simulateLoading(); //keep "loading"
+          }
+          else {
+            determinateLoading = false;
+            app.progressbar.hide(progressBarEl); //hide
+          }
+        }, Math.random() * 200 + 200);
+      }
+      simulateLoading();
+    }
+    // show inline determinate progressbar
+    $$('.show-determinate').on('click', function (e) {
+      showDeterminate(true);
+    });
+
+    // show root determinate progressbar
+    $$('.show-determinate-root').on('click', function (e) {
+      showDeterminate(false);
+    });
+
+    var infiniteLoading = false;
+    // show inline infinite progressbar
+    $$('.show-infinite').on('click', function () {
+      app.progressbar.show(app.theme === 'md' ? 'yellow' : 'blue');
+      setTimeout(function () {
+        infiniteLoading = false;
+        app.progressbar.hide();
+      }, 3000);
+    });
+
+    // show root infinite progressbar
+    $$('.show-infinite-root').on('click', function () {
+      app.progressbar.show('multi');
+      setTimeout(function () {
+        infiniteLoading = false;
+        app.progressbar.hide();
+      }, 3000);
+    });

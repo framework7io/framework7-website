@@ -1,0 +1,278 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Toggle | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Toggle
+    .docs-index
+    h2 Toggle Layout
+    p Layout is pretty simple:
+    pre
+      code.html
+        :code
+          <!-- Toggle element -->
+          <label class="toggle">
+            <!-- Toggle input -->
+            <input type="checkbox">
+            <!-- Toggle icon -->
+            <span class="toggle-icon"></span>
+          </label>
+    h2 Toggle Colors
+    p Toggle supports all <a href="color-themes.html">default colors</a>. So to change its color just add color-[color] class to toggle element.
+    pre
+      code.html
+        :code
+          <!-- red toggle -->
+          <label class="toggle color-red">...</label>
+
+          <!-- orange toggle -->
+          <label class="toggle color-orange">...</label>
+    h2 Toggle App Methods
+    p Let's look at related App methods to work with Toggle:
+    .method-wrap
+      p
+        span.method app.toggle.create(<span>parameters</span>)
+        | - create Toggle instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with toggle parameters
+      p.method-returns Method returns created Toggle's instance
+
+    .method-wrap
+      p
+        span.method app.toggle.destroy(<span>el</span>)
+        | - destroy Toggle instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Toggle element or Toggle instance to destroy.
+    .method-wrap
+      p
+        span.method app.toggle.get(<span>el</span>)
+        | - get Toggle instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Toggle element.
+      p.method-returns Method returns Toggle's instance
+    h2 Toggle Parameters
+    p Now let's look at list of available parameters we need to create Toggle:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement<br>string
+          td
+          td Toggle element. HTMLElement or string with CSS selector of toggle element
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var toggle = app.toggle.create({
+                    el: '.toggle'
+                    on: {
+                      change: function () {
+                        console.log('Toggle changed')
+                      }
+                    }
+                  })
+
+    h2 Toggle Methods & Properties
+    p So to create Toggle we have to call:
+    pre
+      code
+        :code
+          var toggle = app.toggle.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>toggle</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td toggle.app
+          td Link to global app instance
+        tr
+          td toggle.el
+          td Toggle HTML element
+        tr
+          td toggle.$el
+          td Dom7 instance with toggle HTML element
+        tr
+          td toggle.inputEl
+          td Toggle input HTML element
+        tr
+          td toggle.$inputEl
+          td Dom7 instance with toggle input HTML element
+        tr
+          td toggle.checked
+          td Boolean property indicating whether it is input is checked or not
+        tr
+          td toggle.params
+          td Toggle parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td toggle.toggle()
+          td Toggle input state
+        tr
+          td toggle.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td toggle.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td toggle.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td toggle.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+
+    h2 Toggle Events
+    p Toggle will fire the following DOM events on toggle element and events on app and toggle instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td toggle:change
+          td Toggle Element<span>&lt;div class="toggle"&gt;</span>
+          td Event will be triggered when Toggle state has been changed
+        tr
+          td toggle:beforedestroy
+          td Toggle Element<span>&lt;div class="toggle"&gt;</span>
+          td Event will be triggered right before Toggle instance will be destroyed
+    h3 App and Toggle Instance Events
+    p Toggle instance emit events on both self instance and app instance. App instance events has same names prefixed with <code>toggle</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td change
+          td <span>toggle</span>
+          td toggle
+          td(rowspan="2") Event will be triggered when toggle state has been changed. As an argument event handler receives toggle instance
+        tr
+          td toggleChange
+          td <span>toggle</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>toggle</span>
+          td toggle
+          td(rowspan="2") Event will be triggered right before Toggle instance will be destroyed. As an argument event handler receives toggle instance
+        tr
+          td toggleBeforeDestroy
+          td <span>toggle</span>
+          td app
+    h2 Toggle Auto Initialization
+    p If you don't need to use toggle API and your toggle is inside of page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>toggle-init</code> class:
+    pre
+      code.html
+        :code
+          <!-- Add toggle-init class -->
+          <label class="toggle toggle-init">
+            <input type="checkbox">
+            <span class="toggle-icon"></span>
+          </label>
+    p In this case if you need to access created Toggle instance you can use the <code>app.toggle.get</code> app method:
+    pre
+      code.js
+        :code
+          var toggle = app.toggle.get('.toggle');
+
+          if (toggle.checked) {
+            // do something
+          }
+    .with-device
+      h2(data-device-preview="../docs-demos/toggle.html") Examples
+      pre
+        code
+          :code
+            <div class="block-title">Super Heroes</div>
+            <div class="list simple-list">
+              <ul>
+                <li>
+                  <span>Batman</span>
+                  <label class="toggle toggle-init color-black">
+                    <input type="checkbox" checked>
+                    <span class="toggle-icon"></span>
+                  </label>
+                </li>
+                <li>
+                  <span>Aquaman</span>
+                  <label class="toggle toggle-init color-blue">
+                    <input type="checkbox" checked>
+                    <span class="toggle-icon"></span>
+                  </label>
+                </li>
+                <li>
+                  <span>Superman</span>
+                  <label class="toggle toggle-init color-red">
+                    <input type="checkbox" checked>
+                    <span class="toggle-icon"></span>
+                  </label>
+                </li>
+                <li>
+                  <span>Hulk</span>
+                  <label class="toggle toggle-init color-green">
+                    <input type="checkbox">
+                    <span class="toggle-icon"></span>
+                  </label>
+                </li>
+                <li>
+                  <span>Spiderman (Disabled)</span>
+                  <label class="toggle toggle-init disabled">
+                    <input type="checkbox">
+                    <span class="toggle-icon"></span>
+                  </label>
+                </li>
+                <li>
+                  <span>Ironman (Disabled)</span>
+                  <label class="toggle toggle-init toggle-init">
+                    <input type="checkbox" checked disabled>
+                    <span class="toggle-icon"></span>
+                  </label>
+                </li>
+                <li>
+                  <span>Thor</span>
+                  <label class="toggle toggle-init color-orange">
+                    <input type="checkbox" checked>
+                    <span class="toggle-icon"></span>
+                  </label>
+                </li>
+                <li>
+                  <span>Wonder Woman</span>
+                  <label class="toggle toggle-init color-pink">
+                    <input type="checkbox">
+                    <span class="toggle-icon"></span>
+                  </label>
+                </li>
+              </ul>
+            </div>

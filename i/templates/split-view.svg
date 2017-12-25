@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300px" height="300px" viewBox="0 0 300 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 40.1 (33804) - http://www.bohemiancoding.com/sketch -->
+    <title>Split View</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Split-View">
+            <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="300" height="300"></rect>
+            <g id="Lines" transform="translate(0.000000, 45.000000)" fill="#DBDBDB">
+                <rect id="Rectangle-2" x="0" y="0" width="300" height="4"></rect>
+                <rect id="Rectangle-2-Copy" x="0" y="44" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy-2" x="0" y="88" width="90" height="4"></rect>
+            </g>
+            <g id="Lines-Copy" transform="translate(0.000000, 133.000000)" fill="#DBDBDB">
+                <rect id="Rectangle-2" x="0" y="0" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy" x="0" y="44" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy-2" x="0" y="88" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy-4" x="0" y="132" width="90" height="4"></rect>
+            </g>
+            <rect id="Rectangle-2-Copy-3" fill="#DBDBDB" transform="translate(88.500000, 172.500000) rotate(-90.000000) translate(-88.500000, -172.500000) " x="-39" y="170" width="255" height="5"></rect>
+            <rect id="Rectangle-3" fill="#EE350F" x="0" y="93" width="86" height="40"></rect>
+        </g>
+    </g>
+</svg>

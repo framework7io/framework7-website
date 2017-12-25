@@ -1,23 +1,23 @@
-extends ../_internal-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'docs';
   - var title = 'Data Table | Framework7 Documentation';
 
 block content
-  .docs-demo-device
-    iframe(width="320", height="548", frameborder="0", scrolling="on")
-    .fade-overlay
-  .docs-wrap
-    .docs-nav
-      include ../_docs-menu
-    .docs-content.with-device
-      h1 Data Table
-      p Data tables display sets of raw data. They usually appear in desktop enterprise products
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Data Table
+    .docs-index
+    p Data tables display sets of raw data. They usually appear in desktop enterprise products
+    .with-device
       h2(data-device-preview="../docs-demos/data-table.html") Data Table Layout
-      p Common Data Table layout could be treat as the following:
+      p Common Data Table layout could be treated as the following:
       pre
-        code
+        code.html
           :code
             <div class="data-table">
               <table>
@@ -42,7 +42,7 @@ block content
             </div>
       p Within <a href="./cards.html">Card</a>:
       pre
-        code
+        code.html
           :code
             <div class="data-table card">
               <table>
@@ -66,15 +66,16 @@ block content
                 li <code>tablet-only</code> - additional class to show this cell/column only on wide tablet devices (iPad)
       h2(data-device-preview="../docs-demos/data-table-selectable.html") Selectable Rows
       pre
-        code
+        code.html
           :code
             <div class="data-table data-table-init card">
               <table>
                 <thead>
                   <tr>
                     <th class="checkbox-cell">
-                      <label class="form-checkbox">
-                        <input type="checkbox"/><i></i>
+                      <label class="checkbox">
+                        <input type="checkbox"/>
+                        <i class="icon-checkbox"></i>
                       </label>
                     </th>
                     <th class="label-cell">Desert (100g serving)</th>
@@ -86,8 +87,9 @@ block content
                 <tbody>
                   <tr>
                     <td class="checkbox-cell">
-                      <label class="form-checkbox">
-                        <input type="checkbox"/><i></i>
+                      <label class="checkbox">
+                        <input type="checkbox"/>
+                        <i class="icon-checkbox"></i>
                       </label>
                     </td>
                     <td class="label-cell">Frozen yogurt</td>
@@ -105,18 +107,19 @@ block content
         li
           p Checkbox cell. Such cell in table header will select/deselect all rows in table body:
           pre
-            code
+            code.html
               :code
                 <td class="checkbox-cell">
-                  <label class="form-checkbox">
-                    <input type="checkbox"/><i></i>
+                  <label class="checkbox">
+                    <input type="checkbox"/>
+                    <i class="icon-checkbox"></i>
                   </label>
                 </td>
       h2(data-device-preview="../docs-demos/data-table-title.html") Table Title/Header
       p When data table is used within <a href="./cards.html">Card</a> it is possible to use additional data table title with actions in card header.
       h4 With title and actions
       pre
-        code
+        code.html
           :code
             <div class="data-table data-table-init card">
               <!-- Card Header -->
@@ -125,8 +128,14 @@ block content
                 <div class="data-table-title">Nutrition</div>
                 <!-- Table actions -->
                 <div class="data-table-actions">
-                  <a class="link icon-only"><i class="icon f7-icons">sort</i></a>
-                  <a class="link icon-only"><i class="icon f7-icons">more_vertical_round</i></a>
+                  <a class="link icon-only">
+                    <i class="icon f7-icons ios-only">sort</i>
+                    <i class="icon material-icons md-only">sort</i>
+                  </a>
+                  <a class="link icon-only">
+                    <i class="icon f7-icons ios-only">more_vertical_round</i>
+                    <i class="icon material-icons md-only">more_vert</i>
+                  </a>
                 </div>
               </div>
               <!-- Card Content -->
@@ -135,8 +144,9 @@ block content
                   <thead>
                     <tr>
                       <th class="checkbox-cell">
-                        <label class="form-checkbox">
-                          <input type="checkbox"><i></i>
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          <i class="icon-checkbox"></i>
                         </label>
                       </th>
                       <th class="label-cell">Desert (100g serving)</th>
@@ -147,8 +157,9 @@ block content
                   <tbody>
                     <tr>
                       <td class="checkbox-cell">
-                        <label class="form-checkbox">
-                          <input type="checkbox"><i></i>
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          <i class="icon-checkbox"></i>
                         </label>
                       </td>
                       <td class="label-cell">Frozen yogurt</td>
@@ -166,7 +177,7 @@ block content
         li <code>data-table-actions</code> - main table actions
       h4 Different actions on select
       pre
-        code
+        code.html
           :code
             <div class="data-table data-table-init card">
               <!-- Card header -->
@@ -177,8 +188,14 @@ block content
                   <div class="data-table-title">Nutrition</div>
                   <!-- Default table actions -->
                   <div class="data-table-actions">
-                    <a class="link icon-only"><i class="icon f7-icons">sort</i></a>
-                    <a class="link icon-only"><i class="icon f7-icons">more_vertical_round</i></a>
+                    <a class="link icon-only">
+                      <i class="icon f7-icons ios-only">sort</i>
+                      <i class="icon material-icons md-only">sort</i>
+                    </a>
+                    <a class="link icon-only">
+                      <i class="icon f7-icons ios-only">more_vertical_round</i>
+                      <i class="icon material-icons md-only">more_vert</i>
+                    </a>
                   </div>
                 </div>
                 <!-- Selected table header -->
@@ -187,8 +204,14 @@ block content
                   <div class="data-table-title-selected"><span class="data-table-selected-count"></span> items selected</div>
                   <!-- Selected table actions -->
                   <div class="data-table-actions">
-                    <a class="link icon-only"><i class="icon f7-icons">trash</i></a>
-                    <a class="link icon-only"><i class="icon f7-icons">more_vertical_round</i></a>
+                    <a class="link icon-only">
+                      <i class="icon f7-icons ios-only">trash</i>
+                      <i class="icon material-icons md-only">delete</i>
+                    </a>
+                    <a class="link icon-only">
+                      <i class="icon f7-icons ios-only">more_vertical_round</i>
+                      <i class="icon material-icons md-only">more_vert</i>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -197,8 +220,9 @@ block content
                   <thead>
                     <tr>
                       <th class="checkbox-cell">
-                        <label class="form-checkbox">
-                          <input type="checkbox"><i></i>
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          <i class="icon-checkbox"></i>
                         </label>
                       </th>
                       <th class="label-cell">Desert (100g serving)</th>
@@ -209,8 +233,9 @@ block content
                   <tbody>
                     <tr>
                       <td class="checkbox-cell">
-                        <label class="form-checkbox">
-                          <input type="checkbox"><i></i>
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          <i class="icon-checkbox"></i>
                         </label>
                       </td>
                       <td class="label-cell">Frozen yogurt</td>
@@ -229,7 +254,7 @@ block content
         li <code>data-table-selected-count</code> - count of selected table rows. Number will be placed here by JavaScript
       h3 Alternate header with row actions
       pre
-        code
+        code.html
           :code
             <div class="data-table data-table-init card">
               <div class="card-header">
@@ -240,8 +265,14 @@ block content
                 </div>
                 <!-- Table actions -->
                 <div class="data-table-actions">
-                  <a class="link icon-only"><i class="icon f7-icons">sort</i></a>
-                  <a class="link icon-only"><i class="icon f7-icons">more_vertical_round</i></a>
+                  <a class="link icon-only">
+                    <i class="icon f7-icons ios-only">sort</i>
+                    <i class="icon material-icons md-only">sort</i>
+                  </a>
+                  <a class="link icon-only">
+                    <i class="icon f7-icons ios-only">more_vertical_round</i>
+                    <i class="icon material-icons md-only">more_vert</i>
+                  </a>
                 </div>
               </div>
               <div class="card-content">
@@ -249,8 +280,9 @@ block content
                   <thead>
                     <tr>
                       <th class="checkbox-cell">
-                        <label class="form-checkbox">
-                          <input type="checkbox"><i></i>
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          <i class="icon-checkbox"></i>
                         </label>
                       </th>
                       <th class="label-cell">Desert (100g serving)</th>
@@ -262,16 +294,23 @@ block content
                   <tbody>
                     <tr>
                       <td class="checkbox-cell">
-                        <label class="form-checkbox">
-                          <input type="checkbox"><i></i>
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          <i class="icon-checkbox"></i>
                         </label>
                       </td>
                       <td class="label-cell">Frozen yogurt</td>
                       <td class="numeric-cell">159</td>
                       ...
                       <td class="actions-cell">
-                        <a class="link icon-only"><i class="icon f7-icons">compose</i></a>
-                        <a class="link icon-only"><i class="icon f7-icons">trash</i></a>
+                        <a class="link icon-only">
+                          <i class="icon f7-icons ios-only">compose</i>
+                          <i class="icon material-icons md-only">edit</i>
+                        </a>
+                        <a class="link icon-only">
+                          <i class="icon f7-icons ios-only">trash</i>
+                          <i class="icon material-icons md-only">delete</i>
+                        </a>
                       </td>
                     </tr>
                     ...
@@ -286,14 +325,20 @@ block content
 
       h2(data-device-preview="../docs-demos/data-table-sortable.html") Sortable
       pre
-        code
+        code.html
           :code
             <div class="data-table data-table-init card">
               <div class="card-header">
                 <div class="data-table-title">Nutrition</div>
                 <div class="data-table-actions">
-                  <a class="link icon-only"><i class="icon f7-icons">sort</i></a>
-                  <a class="link icon-only"><i class="icon f7-icons">more_vertical_round</i></a>
+                  <a class="link icon-only">
+                    <i class="icon f7-icons ios-only">sort</i>
+                    <i class="icon material-icons md-only">sort</i>
+                  </a>
+                  <a class="link icon-only">
+                    <i class="icon f7-icons ios-only">more_vertical_round</i>
+                    <i class="icon material-icons md-only">more_vert</i>
+                  </a>
                 </div>
               </div>
               <div class="card-content">
@@ -301,8 +346,9 @@ block content
                   <thead>
                     <tr>
                       <th class="checkbox-cell">
-                        <label class="form-checkbox">
-                          <input type="checkbox"><i></i>
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          <i class="icon-checkbox"></i>
                         </label>
                       </th>
                       <th class="label-cell sortable-cell sortable-active">Desert (100g serving)</th>
@@ -315,8 +361,9 @@ block content
                   <tbody>
                     <tr>
                       <td class="checkbox-cell">
-                        <label class="form-checkbox">
-                          <input type="checkbox"><i></i>
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          <i class="icon-checkbox"></i>
                         </label>
                       </td>
                       <td class="label-cell">Frozen yogurt</td>
@@ -342,14 +389,20 @@ block content
       h2(data-device-preview="../docs-demos/data-table-collapsible.html") Collapsible
       p The following table will be collapsed to kind of List View on small screens:
       pre
-        code
+        code.html
           :code
             <div class="card data-table data-table-collapsible data-table-init">
               <div class="card-header">
                 <div class="data-table-title">Nutrition</div>
                 <div class="data-table-actions">
-                  <a class="link icon-only"><i class="icon f7-icons">sort</i></a>
-                  <a class="link icon-only"><i class="icon f7-icons">more_vertical_round</i></a>
+                  <a class="link icon-only">
+                    <i class="icon f7-icons ios-only">sort</i>
+                    <i class="icon material-icons md-only">sort</i>
+                  </a>
+                  <a class="link icon-only">
+                    <i class="icon f7-icons ios-only">more_vertical_round</i>
+                    <i class="icon material-icons md-only">more_vert</i>
+                  </a>
                 </div>
               </div>
               <div class="card-content">
@@ -377,3 +430,47 @@ block content
       p Where
       ul
         li <code>data-table-collapsible</code> - additional table class to enable collapsible logic. Note that "data-table-init" class is also required for this.
+    h2 Data Table App Methods
+    p In case you add data table dynamically and you need such selecting rows or switching headers logic you need to init it manually. Let's look at related app methods to work with data table:
+    .method-wrap
+      p
+        span.method app.dataTable.create(<span>parameters</span>)
+        | - create Data Table instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with data table parameters
+      p.method-returns Method returns created Data Table's instance
+
+    .method-wrap
+      p
+        span.method app.dataTable.destroy(<span>el</span>)
+        | - destroy Data Table instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Data Table element or Data Table instance to destroy.
+    .method-wrap
+      p
+        span.method app.dataTable.get(<span>el</span>)
+        | - get Data Table instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Data Table element.
+      p.method-returns Method returns Data Table's instance
+    h2 Data Table Parameters
+    p Now let's look at list of available parameters we need to create Data Table:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement
+          td
+          td Data Table element. Can be useful if you already have Data Table element in your HTML and want to create new instance using this element
