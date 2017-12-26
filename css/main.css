@@ -1994,19 +1994,19 @@ table.double-events-table tr:nth-child(4n - 4) {
 table.double-events-table tr:nth-child(4n - 4) td {
   border: none;
 }
-.templates {
+.apps {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-top: 40px;
 }
-.templates .app {
+.apps .app {
   width: 25%;
   text-align: center;
   margin-bottom: 50px;
   position: relative;
 }
-.templates .app-icon {
+.apps .app-icon {
   width: 200px;
   height: 200px;
   margin-left: auto;
@@ -2018,11 +2018,11 @@ table.double-events-table tr:nth-child(4n - 4) td {
   display: block;
   text-decoration: none;
 }
-.templates .app-icon img {
+.apps .app-icon img {
   max-width: 100%;
   border-radius: inherit;
 }
-.templates .app-icon .img {
+.apps .app-icon .img {
   height: 100%;
   width: 100%;
   color: #fff;
@@ -2036,7 +2036,7 @@ table.double-events-table tr:nth-child(4n - 4) td {
   border-radius: inherit;
   line-height: 1.1;
 }
-.templates .app-icon:after {
+.apps .app-icon:after {
   position: absolute;
   bottom: 10px;
   font-size: 12px;
@@ -2048,28 +2048,28 @@ table.double-events-table tr:nth-child(4n - 4) td {
   opacity: 0;
   left: 50%;
   transform: translate3d(-50%, 10px, 0);
-  content: 'Download';
+  content: attr(data-hover-text);
 }
-.templates .app-icon:hover {
+.apps .app-icon:hover {
   box-shadow: 0px 40px 80px rgba(0, 0, 0, 0.1);
   transform: translate3d(0, 0, 0) scale(1.05);
 }
-.templates .app-icon:hover ~ .app-info {
+.apps .app-icon:hover ~ .app-info {
   transform: translate3d(0, 10px, 0);
 }
-.templates .app-icon:hover:after {
+.apps .app-icon:hover:after {
   opacity: 1;
   transform: translate3d(-50%, 0px, 0);
 }
-.templates .app-icon,
-.templates .app-icon:after,
-.templates .app-info {
+.apps .app-icon,
+.apps .app-icon:after,
+.apps .app-info {
   transition: 400ms;
 }
-.templates .app-info {
+.apps .app-info {
   margin-top: 20px;
 }
-.templates .app-title {
+.apps .app-title {
   font-weight: 500;
   font-size: 20px;
   margin: 10px 0;
@@ -2078,17 +2078,17 @@ table.double-events-table tr:nth-child(4n - 4) td {
   margin-top: 0px;
   line-height: 1.2;
 }
-.templates .app-description {
+.apps .app-description {
   margin-top: 10px;
   padding: 0 10px;
 }
-.templates .app-badges {
+.apps .app-badges {
   position: absolute;
   right: 5px;
   top: 5px;
   white-space: nowrap;
 }
-.templates .app-badges span {
+.apps .app-badges span {
   background: #0D9EF1;
   display: inline-block;
   text-align: center;
@@ -2102,15 +2102,15 @@ table.double-events-table tr:nth-child(4n - 4) td {
   padding: 0 5px;
   border-radius: 10px;
 }
-.templates .app-badges span + span {
+.apps .app-badges span + span {
   margin-left: 5px;
 }
-.templates .app-buttons {
+.apps .app-buttons {
   z-index: 10;
   white-space: nowrap;
   margin-top: 10px;
 }
-.templates .app-buttons a {
+.apps .app-buttons a {
   border-radius: 10em;
   display: inline-block;
   transition: 200ms;
@@ -2120,40 +2120,40 @@ table.double-events-table tr:nth-child(4n - 4) td {
   font-weight: 500;
   padding: 0 15px;
 }
-.templates .app-buttons a:hover {
+.apps .app-buttons a:hover {
   background: #EE350F;
   color: #fff;
 }
-.templates .app-buttons a:active {
+.apps .app-buttons a:active {
   background: #EE350F;
   color: #fff;
 }
-.templates .app-buttons a + a {
+.apps .app-buttons a + a {
   margin-left: 5px;
 }
 @media (max-width: 1023px) {
-  .templates .app {
+  .apps .app {
     width: 33.33333333%;
   }
 }
 @media (max-width: 768px) {
-  .templates .app-icon {
+  .apps .app-icon {
     width: 150px;
     height: 150px;
   }
-  .templates .app-icon {
+  .apps .app-icon {
     border-radius: 35px;
   }
 }
 @media (max-width: 640px) {
-  .templates .app {
+  .apps .app {
     width: 50%;
   }
-  .templates .app-icon {
+  .apps .app-icon {
     width: 120px;
     height: 120px;
   }
-  .templates .app-icon {
+  .apps .app-icon {
     border-radius: 23px;
   }
 }
@@ -2727,6 +2727,30 @@ a.donate-button:hover {
 h1 + .tutorial-author {
   margin-top: -20px;
   margin-bottom: 25px;
+}
+.tutorial-badges {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  white-space: nowrap;
+}
+.tutorial-badges span {
+  background: #0D9EF1;
+  display: inline-block;
+  text-align: center;
+  box-sizing: border-box;
+  min-width: 24px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: #aaa;
+}
+.tutorial-badges span + span {
+  margin-left: 5px;
 }
 pre,
 code {

@@ -1,0 +1,55 @@
+@primaryColor: #EE350F;
+@redColor: #EE350F;
+@brightColor: #FB3E17;
+@darkColor: #b72f20;
+@greenColor: darken(green, 5%);
+@buttonBg: #f3f3f3;
+@footerBg: #f4f4f4;
+@blueColor: #0D9EF1;
+
+.monospace() {
+  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+.badge() {
+  background: @blueColor;
+  display: inline-block;
+  text-align: center;
+  box-sizing: border-box;
+  min-width: 24px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 10px;
+  + span {
+    margin-left: 5px;
+  }
+}
+.button() {
+  border-radius: 10em;
+  display: inline-block;
+  transition: 200ms;
+  background-color: @buttonBg;
+  color: #333;
+  text-decoration: none;
+  &:hover {
+    background: @primaryColor;
+    color: #fff;
+  }
+  &:active {
+    background: @primaryColor;
+    color: #fff;
+  }
+}
+.clearfix() {
+  &:before,
+  &:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+  }
+  &:after {
+    clear: both;
+  }
+}

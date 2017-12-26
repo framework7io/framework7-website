@@ -1,4 +1,4 @@
-.templates {
+.apps {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -50,7 +50,7 @@
       opacity: 0;
       left: 50%;
       transform: translate3d(-50%, 10px, 0);
-      content: 'Download';
+      content: attr(data-hover-text);
     }
     &:hover {
       box-shadow: 0px 40px 80px rgba(0,0,0,0.1);
@@ -88,21 +88,7 @@
     top: 5px;
     white-space: nowrap;
     span {
-      background: @blueColor;
-      display: inline-block;
-      text-align: center;
-      box-sizing: border-box;
-      min-width: 24px;
-      color: #fff;
-      font-size: 12px;
-      font-weight: bold;
-      line-height: 18px;
-      height: 18px;
-      padding: 0 5px;
-      border-radius: 10px;
-      + span {
-        margin-left: 5px;
-      }
+      .badge();
     }
   }
   .app-buttons {
