@@ -272,6 +272,18 @@ block content
         tr
           td panel.destroy()
           td Destroy panel instance
+        tr
+          td panel.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td panel.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td panel.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td panel.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
     h2 Control Panel With Links
     p It is possible to open and close required panel (if you have them in DOM) using special classes and data attributes on links:
     .important-note
