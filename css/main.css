@@ -73,7 +73,7 @@ body {
     margin-left: -30px;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: 800px) {
   .center {
     padding-left: 20px;
     padding-right: 20px;
@@ -512,6 +512,11 @@ header .carbon a {
   padding: 105px 25px;
   transform: translateY(-50%);
 }
+@media (max-width: 960px) {
+  .home-header .phone {
+    right: 5px;
+  }
+}
 .home-header .phone:after {
   content: '';
   position: absolute;
@@ -554,9 +559,9 @@ header .carbon a {
   margin-top: 20px;
 }
 .home-header .phone.phone-android {
-  border-radius: 20px;
+  border-radius: 30px;
   width: 360px;
-  padding: 60px 20px;
+  padding: 60px 10px;
   height: 640px;
 }
 .home-header .phone.phone-android .theme-switch {
@@ -587,6 +592,7 @@ header .carbon a {
   width: 360px;
   height: 615px;
   margin-top: 25px;
+  border-radius: 12px;
 }
 .home-header .phone.phone-android .statusbar {
   width: 360px;
@@ -700,6 +706,24 @@ header .carbon a {
 }
 .home-header .github-buttons {
   margin-right: 20px;
+}
+@media (max-width: 900px) {
+  .home-header .title {
+    font-size: 46px;
+  }
+  .home-header .logo-holder {
+    width: 80px;
+    height: 80px;
+  }
+  .home-header .logo {
+    border-width: 3px;
+  }
+  .home-header .slogan {
+    font-size: 24px;
+  }
+  .home-header .buttons a {
+    width: 160px;
+  }
 }
 .internal-header {
   height: 160px;
@@ -1014,27 +1038,27 @@ header .carbon a {
   margin-bottom: 20px;
 }
 .home-featured {
-  background: #f3f3f3;
   text-align: center;
   padding: 40px 0px 40px;
   margin-top: 0;
   position: relative;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  left: 50%;
-  width: 100vw;
-  margin-left: -50vw;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
   margin-top: -50px;
   margin-bottom: -50px;
 }
-@media (max-width: 960px) {
-  .home-featured {
-    width: 960px;
-    margin-left: -40px;
-    left: 0;
-  }
+.home-featured:before {
+  border-top: 1px solid #eee;
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: #f3f3f3;
+  top: 0;
+  height: 100%;
+  min-width: 800px;
+  border-bottom: 1px solid #eee;
 }
 .home-featured h2 {
   font-size: 35px;
@@ -1046,10 +1070,8 @@ header .carbon a {
 }
 .home-featured .feat-apps {
   display: flex;
+  justify-content: space-between;
   margin-bottom: 30px;
-}
-.home-featured .feat-app {
-  width: 20%;
 }
 .home-featured .feat-app:hover .feat-app-icon img {
   transform: scale(1.1);
@@ -1205,7 +1227,8 @@ header .carbon a {
 }
 .home-killer .tab-links a {
   display: inline-block;
-  width: 160px;
+  width: 20%;
+  max-width: 160px;
   text-align: center;
   text-decoration: none;
   box-sizing: border-box;

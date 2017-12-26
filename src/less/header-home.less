@@ -170,6 +170,9 @@
     height: 568px;
     padding: 105px 25px;
     transform: translateY(-50%);
+    @media (max-width: 960px) {
+      right: 5px;
+    }
     &:after {
       content: '';
       position: absolute;
@@ -213,9 +216,9 @@
       margin-top: 20px;
     }
     &.phone-android {
-      border-radius: 20px;
+      border-radius: 30px;
       width: 360px;
-      padding: 60px 20px;
+      padding: 60px 10px;
       height: 640px;
       .theme-switch {
         margin-top: -9px;
@@ -245,6 +248,7 @@
         width: 360px;
         height: 640px - 25;
         margin-top: 25px;
+        border-radius: 12px;
 
       }
       .statusbar {
@@ -364,6 +368,26 @@
   }
   .github-buttons {
     margin-right: 20px;
+  }
+
+
+  @media (max-width: 900px) {
+    .title {
+      font-size: 46px;
+    }
+    .logo-holder {
+      width: 80px;
+      height: 80px;
+    }
+    .logo {
+      border-width: 3px;
+    }
+    .slogan {
+      font-size: 24px;
+    }
+    .buttons a {
+      width: 160px;
+    }
   }
 
 }
