@@ -5,130 +5,51 @@ block vars
   - var title = 'Ready To Use Framework7 App Templates';
 
 block content
+  - var templates = getYamlData('templates/data.yml');
+
   h1.text-align-center Official Starter Templates
-  .templates
-    .app
-      a.app-icon(href="https://github.com/framework7io/framework7-template-single-view", target="_blank")
-        img(src=cdn + "/i/templates/single-view.svg")
-        .app-badges
-          span v2
-      .app-info
-        .app-title Single view app template
-        .app-buttons
-          a(href="https://github.com/framework7io/framework7-template-single-view", target="_blank") Download
-          a(href="https://framework7io.github.io/framework7-template-single-view/", target="_blank") Preview
-    .app
-      a.app-icon(href="https://github.com/framework7io/framework7-template-single-view", target="_blank")
-        img(src=cdn + "/i/templates/tabs.svg")
-        .app-badges
-          span v2
-      .app-info
-        .app-title Tabbed views app template
-        .app-buttons
-          a(href="https://github.com/framework7io/framework7-template-tabs", target="_blank") Download
-          a(href="https://framework7io.github.io/framework7-template-tabs/", target="_blank") Preview
-    .app
-      a.app-icon(href="https://github.com/framework7io/framework7-template-split-view", target="_blank")
-        img(src=cdn + "/i/templates/split-view.svg")
-        .app-badges
-          span v2
-      .app-info
-        .app-title Split view app template
-        .app-buttons
-          a(href="https://github.com/framework7io/framework7-template-split-view", target="_blank") Download
-          a(href="https://framework7io.github.io/framework7-template-split-view/", target="_blank") Preview
+  .apps.templates
+    each app in templates.official
+      .app
+        a.app-icon(href=app.url, target="_blank", data-hover-text="Download")
+          if (app.iconUrl)
+            img(src=app.iconUrl.replace('#{cdn}', cdn))
+          else if (app.icon)
+            .img(style='background-color: ' + app.icon.bgColor + '; color: ' + app.icon.textColor) #{app.icon.text}
+
+          if app.badges
+            .app-badges
+              each badge in app.badges
+                span #{badge}
+        .app-info
+          .app-title #{app.title}
+          if app.author
+            .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
+          .app-buttons
+            a(href=app.url, target="_blank") Download
+            if app.previewUrl
+              a(href=app.previewUrl, target="_blank") Preview
+          .app-description #{app.description}
   h2.text-align-center Community Starter Apps & Templates
-  .templates
-    .app
-      a.app-icon(href="https://github.com/scriptPilot/app-framework", target="_blank")
-        img(src="http://is3.mzstatic.com/image/thumb/Purple127/v4/a5/13/be/a513bea8-7382-589f-dc30-3c032068df0c/source/350x350bb.jpg")
-        .app-badges
-          span Cordova
-          span Vue
-          span v1
-      .app-info
-        .app-title App Framework
-        .app-author by <a href="https://github.com/scriptPilot/" target="_blank">Dennis Scheffel</a>
-        .app-buttons
-          a(href="https://github.com/scriptPilot/app-framework", target="_blank") Download
-          a(href="https://demo.app-framework.com/", target="_blank") Preview
-        .app-description App Framework combines great pieces of open source code to support your whole workflow with useful scripts and your app with powerful plugins
-    .app
-      a.app-icon(href="https://github.com/centrual/cordova-template-framework7-vue-webpack", target="_blank")
-        .img(style="background-color: #333; color: #fff") F7 Vue Webpack Cordova
-        .app-badges
-          span Cordova
-          span Vue
-          span v1
-      .app-info
-        .app-title F7 - Vue - Webpack - Cordova
-        .app-author by <a href="https://github.com/centrual" target="_blank">Oğuz Özcan</a>
-        .app-buttons
-          a(href="https://github.com/centrual/cordova-template-framework7-vue-webpack", target="_blank") Download
-        .app-description Framework7 - Vue - Webpack Cordova Template with Webpack Dev Server and Hot Module Replacement
-    .app
-      a.app-icon(href="https://github.com/valnub/pgchat", target="_blank")
-        .img(style="background-color: #fff; color: #333") PGChat
-        .app-badges
-          span PubNub
-          span Vue
-          span v1
-      .app-info
-        .app-title PGChat
-        .app-author by <a href="http://www.timo-ernst.net/" target="_blank">Timo Ernst</a>
-        .app-buttons
-          a(href="https://github.com/valnub/pgchat", target="_blank") Download
-          a(href="https://www.timo-ernst.net/misc/pgchat/", target="_blank") Preview
-        .app-description A real-time chat application built on top of Vue.js, Framework7 and PubNub Service.
-    .app
-      a.app-icon(href="https://github.com/valnub/Framework7-with-AngularJS-demo-app", target="_blank")
-        .img(style="background-color: #3a9425") Fresh Tomatoes
-        .app-badges
-          span Angular 1.x
-          span v1
-      .app-info
-        .app-title Fresh Tomatoes
-        .app-author by <a href="http://www.timo-ernst.net/" target="_blank">Timo Ernst</a>
-        .app-buttons
-          a(href="https://github.com/valnub/Framework7-with-AngularJS-demo-app", target="_blank") Download
-          a(href="http://www.timo-ernst.net/misc/f7angulardemo/", target="_blank") Preview
-        .app-description This is a demo application will list upcoming and current movies from theaters and give you detailed information.
-    .app
-      a.app-icon(href="https://github.com/GuillaumeBiton/HackerNews7", target="_blank")
-        img(src="http://guillaumebiton.github.io/HackerNews7/apple-touch-icon.png")
-        .app-badges
-          span v1
-      .app-info
-        .app-title HackerNews7
-        .app-author by <a href="https://github.com/GuillaumeBiton" target="_blank">Guillaume Biton</a>
-        .app-buttons
-          a(href="https://github.com/GuillaumeBiton/HackerNews7", target="_blank") Download
-          a(href="http://guillaumebiton.github.io/HackerNews7/", target="_blank") Preview
-        .app-description Hacker News Reader powered by Framework7 which is based on the Official Hacker News API
-    .app
-      a.app-icon(href="https://github.com/perehnbom/canjs-framework7-issuetracker", target="_blank")
-        .img(style="background-color: #4eb2cf") CanJS Issue Tracker
-        .app-badges
-          span CanJS
-          span v1
-      .app-info
-        .app-title CanJS Issue Tracker
-        .app-author by <a href="http://www.perehnbom.se/" target="_blank">Per Ehnbom</a>
-        .app-buttons
-          a(href="https://github.com/perehnbom/canjs-framework7-issuetracker", target="_blank") Download
-          a(href="http://perehnbom.github.io/canjs-framework7-issuetracker/", target="_blank") Preview
-        .app-description Example project with CanJS and Framework7. The project highlights how the 2 frameworks can be combined.
+  .apps.templates
+    each app in templates.community
+      .app
+        a.app-icon(href=app.url, target="_blank", data-hover-text="Download")
+          if (app.iconUrl)
+            img(src=app.iconUrl.replace('#{cdn}', cdn))
+          else if (app.icon)
+            .img(style='background-color: ' + app.icon.bgColor + '; color: ' + app.icon.textColor) #{app.icon.text}
 
-    .app
-      a.app-icon(href="https://github.com/BelinChung/HiApp", target="_blank")
-        img(src="https://hi.dearb.me/images/logo.png")
-        .app-badges
-          span v1
-      .app-info
-        .app-title hiApp
-        .app-author by <a href="http://dearb.me/" target="_blank">Belin Chung</a>
-        .app-buttons
-          a(href="https://github.com/BelinChung/HiApp", target="_blank") Download
-          a(href="http://dearb.me/hi/build/", target="_blank") Preview
-        .app-description HiApp is a demo app to show how to use Framework 7 to build a hybrid app. HiApp is also a part of Hiliao, which is a real working web app.
-
+          if app.badges
+            .app-badges
+              each badge in app.badges
+                span #{badge}
+        .app-info
+          .app-title #{app.title}
+          if app.author
+            .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
+          .app-buttons
+            a(href=app.url, target="_blank") Download
+            if app.previewUrl
+              a(href=app.previewUrl, target="_blank") Preview
+          .app-description #{app.description}

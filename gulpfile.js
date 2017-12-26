@@ -1,21 +1,23 @@
 (function(){
   'use strict';
   var gulp = require('gulp'),
-    connect = require('gulp-connect'),
-    open = require('gulp-open'),
-    less = require('gulp-less'),
-    gulpPug = require('gulp-pug'),
-    pug = require('pug'),
-    path = require('path'),
-    fs = require('fs'),
-    del = require('del'),
-    iconsManifest = require('./manifest-icons.json'),
-    useCDN = true,
-    cdnPath = '//cdn.framework7.io',
-    sftp = require('gulp-sftp'),
-    gutil = require( 'gulp-util' ),
-    processVuePugFiles = require('./src/react-doc-generation/vue-pug-file-processing').processVuePugFiles,
-    processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles;
+      connect = require('gulp-connect'),
+      open = require('gulp-open'),
+      less = require('gulp-less'),
+      gulpPug = require('gulp-pug'),
+      pug = require('pug'),
+      path = require('path'),
+      fs = require('fs'),
+      del = require('del'),
+      iconsManifest = require('./manifest-icons.json'),
+      useCDN = true,
+      cdnPath = '//cdn.framework7.io',
+      sftp = require('gulp-sftp'),
+      gutil = require( 'gulp-util' ),
+      processVuePugFiles = require('./src/react-doc-generation/vue-pug-file-processing').processVuePugFiles,
+      processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles,
+      yaml = require('js-yaml');
+
 
 
   // Pug Filter
@@ -23,6 +25,11 @@
     return text
     .replace( /</g, '&lt;'   )
     .replace( />/g, '&gt;'   )
+  }
+  // Pug YAML Data
+  function getYamlData(ymlPath) {
+    var doc = yaml.safeLoad(fs.readFileSync(`./src/pug/${ymlPath}`, 'utf8'));
+    return doc;
   }
 
   /* ==================================================================
@@ -64,9 +71,13 @@
         pretty: true,
         locals: {
           cdn: useCDN ? cdnPath : '',
-          icons: iconsManifest.icons
+          icons: iconsManifest.icons,
+          getYamlData,
         }
       }))
+      .on('error', (err) => {
+        console.log(err);
+      })
       .pipe(gulp.dest('./'))
       .on('end', () => {
         console.log(`Finished pug in ${Date.now() - time}ms`);
@@ -122,9 +133,13 @@
           pretty: true,
           locals: {
             cdn: useCDN ? cdnPath : '',
-            icons: iconsManifest.icons
+            icons: iconsManifest.icons,
+            getYamlData,
           }
         }))
+        .on('error', (err) => {
+          console.log(err);
+        })
         .pipe(gulp.dest(filePath.split('/')[0] === filePath ? './' : filePath.split('/')[0]))
         .on('end', () => {
           console.log(`Finished pug "${src}" in ${Date.now() - time}ms`);

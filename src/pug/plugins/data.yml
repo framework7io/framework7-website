@@ -1,0 +1,135 @@
+---
+-
+  title: Tour Guide
+  icon:
+    text: Tour Guide
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://www.cesarteixeira.pt
+    name: César Teixeira
+  url: https://github.com/razekteixeira/Framework7-Plugin-Tour-Guide
+  previewUrl: http://razekcloudserver.no-ip.org/Framework7TourGuide/example/
+  description: Display a tour guide through your application
+  badges:
+  - v1
+
+-
+  title: Up scroller
+  icon:
+    text: Up scroller
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://www.timo-ernst.net/
+    name: Timo Ernst
+  url: https://github.com/valnub/Framework7-Upscroller-Plugin
+  previewUrl: http://www.timo-ernst.net/misc/upscrollerdemo/
+  description: Plugin shows a small blue button at the top of the screen once the user has started scrolling down a bit
+  badges:
+  - v1
+
+-
+  title: Welcome Screen / Intro Tutorial
+  icon:
+    text: Welcome Screen
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://www.timo-ernst.net/
+    name: Timo Ernst
+  url: https://github.com/valnub/Framework7-Plugin-Welcomescreen
+  previewUrl: http://www.timo-ernst.net/misc/f7-plugin-welcomescreen/
+  description: Plugin will display a fullscreen swipeable modal window to guide the user through a welcome screen / tutorial
+  badges:
+  - v1
+
+-
+  title: Toast for Framework7
+  icon:
+    text: Toast
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://www.timo-ernst.net/
+    name: Timo Ernst
+  url: https://github.com/valnub/Toast-for-Framework7
+  previewUrl: http://www.timo-ernst.net/misc/toastdemo/
+  description: Plugin to show little black iOS-like toasts
+  badges:
+  - v1
+
+-
+  title: WatchUI for Framework7
+  icon:
+    text: WatchUI
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: https://github.com/SniperGER
+    name: Janik Schmidt
+  url: https://github.com/SniperGER/Framework7-WatchUI
+  previewUrl: http://sniperger.github.io/Framework7-WatchUI/
+  description: Apple Watch UI (including optional Home Screen) for Framework7
+  badges:
+  - v1
+
+-
+  title: Keypad
+  icon:
+    text: Keypad
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://www.idangero.us
+    name: iDangero.us
+  url: https://github.com/nolimits4web/Framework7-Keypad
+  previewUrl: ./keypad/demo/index.html
+  description: Keypad plugin extends Framework7 with additional custom keyboards
+  badges:
+  - v1
+
+-
+  title: Indexed List
+  icon:
+    text: Indexed List
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: https://github.com/boynet
+    name: boynet
+  url: https://github.com/boynet/Framework7-Indexed-List-plugin
+  previewUrl: http://boynet.github.io/boynet/
+  description: This plugin is for indexed scroll list like in iOS (and Android), currently works only with Contacts List
+  badges:
+  - v1
+
+-
+  title: Feeds
+  icon:
+    text: Feeds
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://www.idangero.us
+    name: iDangero.us
+  url: https://github.com/nolimits4web/Framework7-Feeds
+  previewUrl: ./feeds/demo/
+  description: Brings easy RSS feeds integration into Framework7 app
+  badges:
+  - v1
+
+-
+  title: 3D Panels
+  icon:
+    text: 3D Panels
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://www.idangero.us
+    name: iDangero.us
+  url: https://github.com/nolimits4web/Framework7-3D-Panels
+  previewUrl: ./3dpanels/demo/
+  description: 3D Panels plugin converts "reveal"-effect panels to great looking 3D panels
+  badges:
+  - v1
