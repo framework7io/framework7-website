@@ -86,7 +86,7 @@
         indexHtml += '</ul>';
         hasNested = false;
       }
-      indexHtml += '<li><a href="#' + $(this).attr('id') + '">' + $(this).text() + '</a></li>'
+      indexHtml += '<li><a href="#' + $(this).attr('id') + '">' + $(this).text().replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</a></li>'
       if (hasNested && index === headings.length - 1) {
         indexHtml += '</ul>';
       }
