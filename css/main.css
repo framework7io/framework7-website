@@ -1951,6 +1951,10 @@ table.methods-table ul.method-parameters {
   margin: 0;
   padding-left: 20px;
 }
+table.methods-table .method-returns {
+  font-style: normal;
+  font-style: italic;
+}
 table.methods-table th[colspan="2"] {
   background: #fff;
   text-align: left;
