@@ -67,14 +67,14 @@ block content
             </div>
           </div>
     h3 Fixed Toolbar
-    p Fixed toolbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed navbar then it must be AFTER the navbar:
+    p Fixed toolbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed Navbar then it must be <b>AFTER Navbar</b>:
     pre
       code.html
         :code
           <div class="page">
             <!-- Fixed navbar goes first -->
             <div class="navbar">...</div>
-            <!-- Fixed toolbar goes ALWAYS after navbar -->
+            <!-- Fixed toolbar goes ALWAYS after Navbar -->
             <div class="toolbar">...</div>
 
             <!-- Scrollable page content -->
@@ -84,7 +84,7 @@ block content
           </div>
     .important-note
       p
-        strong Fixed Toolbar/Tabbar must always be a direct child of a page and AFTER the navbar (if fixed navbar is used on this page)
+        strong Fixed Toolbar/Tabbar must always be a direct child of a page and AFTER the Navbar (if fixed navbar is used on this page)
     h3 Common Toolbar
     p If we need only one common toolbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
     pre
@@ -97,7 +97,7 @@ block content
             <!-- Pages -->
             <div class="page">...</div>
           </div>
-    p If we need only one common toolbar / tabbar for all views then it must be a direct child of Views element and be BEFORE all views. Such layout mainly used in multiple views/tabbed app layout with toolbar
+    p If we need only one common toolbar / tabbar for all views then it must be a direct child of Views element and be <b>BEFORE all views</b>. Such layout mainly used in multiple views/tabbed app layout with toolbar
     pre
       code.html
         :code
@@ -111,7 +111,7 @@ block content
           </div>
     .important-note
       p
-        strong Common Toolbar/Tabbar must always be a direct child of Views/View and AFTER the navbar (if same positioned navbar is used)
+        strong Common Toolbar/Tabbar must always be a direct child of Views/View and placed <b>AFTER Navbar</b> (if same positioned navbar is used)
     h2 Toolbar App Methods
     p We can use following app methods available for Toolbars:
     table.methods-table
