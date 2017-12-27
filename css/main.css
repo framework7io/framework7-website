@@ -1755,21 +1755,10 @@ ul.method-parameters .parameter-type {
   transition: 400ms;
   margin-right: 30px;
 }
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .docs-nav {
     display: none;
   }
-}
-.docs-nav.collapsed {
-  margin-left: -220px;
-}
-.docs-nav.collapsed ul {
-  pointer-events: none;
-  visibility: hidden;
-  opacity: 0;
-}
-.docs-nav.collapsed + .docs-content {
-  width: 100%;
 }
 .docs-nav:before {
   content: '';
