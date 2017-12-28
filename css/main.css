@@ -1389,6 +1389,7 @@ body.body-docs main > .center {
   position: relative;
   transition: 400ms;
   min-width: 0;
+  width: 100%;
 }
 .docs-content .with-device {
   padding-right: 360px;
@@ -1752,7 +1753,6 @@ ul.method-parameters .parameter-type {
   padding-bottom: 40px;
   margin-top: -40px;
   margin-bottom: -40px;
-  transition: 400ms;
   margin-right: 30px;
 }
 @media (max-width: 860px) {
@@ -2152,25 +2152,13 @@ table.double-events-table tr:nth-child(4n - 4) td {
     width: 33.33333333%;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .apps .app-icon {
     width: 150px;
     height: 150px;
   }
   .apps .app-icon {
     border-radius: 35px;
-  }
-}
-@media (max-width: 640px) {
-  .apps .app {
-    width: 50%;
-  }
-  .apps .app-icon {
-    width: 120px;
-    height: 120px;
-  }
-  .apps .app-icon {
-    border-radius: 23px;
   }
 }
 .example {
@@ -2419,34 +2407,13 @@ table.double-events-table tr:nth-child(4n - 4) td {
     width: 33.33333333%;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .showcase-apps .app-icon {
     width: 150px;
     height: 150px;
   }
   .showcase-apps .app-icon.app-icon-rounded img {
     border-radius: 35px;
-  }
-}
-@media (max-width: 640px) {
-  .showcase-apps .app {
-    width: 50%;
-  }
-  .showcase-apps .app-icon {
-    width: 120px;
-    height: 120px;
-  }
-  .showcase-apps .app-icon.app-icon-rounded img {
-    border-radius: 23px;
-  }
-}
-@media (max-width: 480px) {
-  .showcase-apps .app {
-    margin-top: 30px;
-  }
-  .showcase-apps h4,
-  .showcase-apps .app-author {
-    display: none;
   }
 }
 .showcase-app-preview-backdrop {
@@ -2464,7 +2431,7 @@ table.double-events-table tr:nth-child(4n - 4) td {
   top: 50%;
   z-index: 1000;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 45px;
   transform: translate3d(-50%, -50%, 0);
   width: 800px;
   padding: 20px;
@@ -2472,41 +2439,48 @@ table.double-events-table tr:nth-child(4n - 4) td {
   height: 600px;
   max-height: 90%;
   max-width: 90%;
+  box-shadow: 0px 30px 60px rgba(0, 0, 0, 0.4);
 }
 .showcase-app-preview .showcase-app-preview-close {
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  right: 10px;
-  top: 10px;
+  right: 0px;
+  top: 0px;
   transform: rotate(45deg);
-  opacity: 0.5;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: #EE350F;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
 }
-.showcase-app-preview .showcase-app-preview-close:hover {
-  opacity: 0.8;
+.showcase-app-preview .showcase-app-preview-close:hover:after,
+.showcase-app-preview .showcase-app-preview-close:hover:before {
+  transform: scale(1.2);
 }
 .showcase-app-preview .showcase-app-preview-close:after {
   content: '';
   position: absolute;
   left: 50%;
-  top: 0;
+  top: 20%;
   margin-left: -2px;
   width: 4px;
-  height: 100%;
-  background: #000;
+  height: 60%;
+  background: #fff;
   border-radius: 2px;
+  transition: 200ms;
 }
 .showcase-app-preview .showcase-app-preview-close:before {
   content: '';
   position: absolute;
-  left: 0;
+  left: 20%;
   top: 50%;
   margin-top: -2px;
   height: 4px;
-  width: 100%;
-  background: #000;
+  width: 60%;
+  background: #fff;
   border-radius: 2px;
+  transition: 200ms;
 }
 .showcase-app-preview .app-icon {
   width: 200px;
@@ -2552,6 +2526,7 @@ table.double-events-table tr:nth-child(4n - 4) td {
   width: 150px;
   padding: 0;
   text-align: center;
+  font-weight: bold;
 }
 .showcase-app-preview .app-links .button:hover {
   background: #EE350F;

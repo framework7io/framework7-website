@@ -19,7 +19,7 @@ block content
           h4 #{app.title}
           .app-author by&nbsp;
             if (app.author.url)
-              a(href=app.author.url) #{app.author.name}
+              a(href=app.author.url, target="_blank") #{app.author.name}
             else
               | app.author.name
           .app-links

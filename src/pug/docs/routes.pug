@@ -1,0 +1,198 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Routes | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Routes
+    .docs-index
+    h2 Specify Routes
+    p First of all, when we init the Framework7 app we should pass default routes using <code>routes</code> array parameter:
+    pre
+      code.js
+        :code
+          var app = new Framework7({
+            routes: [
+              {
+                name: 'about',
+                path: '/about/',
+                url: './pages/about.html',
+              },
+              {
+                name: 'news',
+                path: '/news/',
+                url: './pages/news.html',
+                options: {
+                  animate: false,
+                },
+              },
+              {
+                name: 'users',
+                path: '/users/',
+                templateUrl: './pages/users.html',
+                options: {
+                  context: {
+                    users: ['John Doe', 'Vladimir Kharlampidi', 'Timo Ernst'],
+                  },
+                },
+                on: {
+                  pageAfterIn: function (e, page) {
+                    // do something after page gets into the view
+                  },
+                  pageInit: function (e, page) {
+                    // do something when page initialized
+                  },
+                }
+              },
+              // Default route, match to all pages (e.g. 404 page)
+              {
+                path: '(.*)',
+                url: './pages/404.html',
+              },
+            ],
+          });
+    p Well, it was pretty easy. Routes defined on app init are default routes, they will be available for any View/Router in the app.
+    p If you have a multi-view/router app and you want to have some View/Router to have <b>own strict routes</b> and don’t want default routes be available in this <a href="view.html">View</a>, then you may specify the same <code>routes</code> parameter on View init:
+    pre
+      code.js
+        :code
+          var view1 = app.views.create('.view-1', {
+            routes: [
+              {
+                path: '/users/',
+                url: './pages/users.html',
+              },
+              {
+                path: '/user/',
+                url: './pages/user.html',
+              },
+            ],
+          });
+    p If you have a multi-view/router app and you want to have some View/Router to have <b>additional routes</b> and don’t want these additional routes are available in other Views, then you may specify the <code>routesAdd</code> parameter on View init:
+    pre
+      code.js
+        :code
+          // This view will support all global routes + own additional routes
+          var view2 = app.views.create('.view-2', {
+            // These routes are only available in this view
+            routesAdd: [
+              {
+                path: '/blog/',
+                url: './pages/blog.html',
+              },
+              {
+                path: '/post/',
+                url: './pages/post.html',
+              },
+            ],
+          })
+    h2 Route Properties
+    p Ok, now will see what each route property means:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Description
+      tbody
+        tr
+          td name
+          td string
+          td
+        tr
+          td path
+          td string
+          td
+        tr
+          td options
+          td object
+          td
+        tr
+          td routes
+          td array
+          td
+        tr
+          th(colspan="4") Content Type Parameters
+        tr
+          td el
+          td HTMLElement
+          td
+        tr
+          td pageName
+          td string
+          td
+        tr
+          td content
+          td string
+          td
+        tr
+          td url
+          td string
+          td
+        tr
+          td template
+          td string<br>function
+          td
+        tr
+          td templateUrl
+          td string
+          td
+        tr
+          td component
+          td object
+          td
+        tr
+          td componentUrl
+          td string
+          td
+        tr
+          td async
+          td function
+          td
+        tr
+          th(colspan="4") Routable Tabs
+        tr
+          td tabs
+          td array
+          td
+        tr
+          th(colspan="4") Routable Modals
+        tr
+          td popup
+          td object
+          td
+        tr
+          td loginScreen
+          td object
+          td
+        tr
+          td popover
+          td object
+          td
+        tr
+          td sheet
+          td object
+          td
+        tr
+          th(colspan="4") Events
+        tr
+          td on
+          td object
+          td
+        tr
+          th(colspan="4") Alias & Redirect
+        tr
+          td alias
+          td string
+          td
+        tr
+          td redirect
+          td string
+          td
+
+
+

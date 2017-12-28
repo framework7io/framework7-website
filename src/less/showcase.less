@@ -64,7 +64,7 @@
       width: 100% / 3;
     }
   }
-  @media (max-width: 768px) {
+  @media (max-width: 800px) {
     .app-icon {
       width: 150px;
       height: 150px;
@@ -73,26 +73,26 @@
       border-radius: 35px;
     }
   }
-  @media (max-width: 640px) {
-    .app {
-      width: 50%;
-    }
-    .app-icon {
-      width: 120px;
-      height: 120px;
-    }
-    .app-icon.app-icon-rounded img {
-      border-radius: 23px;
-    }
-  }
-  @media (max-width: 480px) {
-    .app {
-      margin-top: 30px;
-    }
-    h4, .app-author {
-      display: none;
-    }
-  }
+  // @media (max-width: 640px) {
+  //   .app {
+  //     width: 50%;
+  //   }
+  //   .app-icon {
+  //     width: 120px;
+  //     height: 120px;
+  //   }
+  //   .app-icon.app-icon-rounded img {
+  //     border-radius: 23px;
+  //   }
+  // }
+  // @media (max-width: 480px) {
+  //   .app {
+  //     margin-top: 30px;
+  //   }
+  //   h4, .app-author {
+  //     display: none;
+  //   }
+  // }
 }
 .showcase-app-preview-backdrop {
   position: fixed;
@@ -109,7 +109,7 @@
   top: 50%;
   z-index: 1000;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 45px;
   transform: translate3d(-50%, -50%, 0);
   width: 800px;
   padding: 20px;
@@ -117,39 +117,48 @@
   height: 600px;
   max-height: 90%;
   max-width: 90%;
+  box-shadow: 0px 30px 60px rgba(0,0,0,0.4);
   .showcase-app-preview-close {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
-    right: 10px;
-    top: 10px;
+    right: 0px;
+    top: 0px;
     transform: rotate(45deg);
-    opacity: 0.5;
+    border-radius: 50%;
+    box-sizing: border-box;
+    background: @primaryColor;
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
     &:hover {
-      opacity: 0.8;
+      &:after, &:before {
+        transform: scale(1.2);
+      }
+
     }
     &:after {
       content: '';
       position: absolute;
       left: 50%;
-      top: 0;
+      top: 20%;
       margin-left: -2px;
       width: 4px;
-      height: 100%;
-      background: #000;
+      height: 60%;
+      background: #fff;
       border-radius: 2px;
+      transition: 200ms;
     }
     &:before {
       content: '';
       position: absolute;
-      left: 0;
+      left: 20%;
       top: 50%;
       margin-top: -2px;
       height: 4px;
-      width: 100%;
-      background: #000;
+      width: 60%;
+      background: #fff;
       border-radius: 2px;
+      transition: 200ms;
     }
   }
   .app-icon {
@@ -194,6 +203,7 @@
       width: 600px/4;
       padding: 0;
       text-align: center;
+      font-weight: bold;
     }
   }
   .appstore-button, .firefox-button, .googleplay-button, .amazon-button, .chrome-button {
