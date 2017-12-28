@@ -2563,7 +2563,7 @@ table.double-events-table tr:nth-child(4n - 4) td {
 }
 .showcase-app-preview .appstore-button,
 .showcase-app-preview .firefox-button,
-.showcase-app-preview .google-button,
+.showcase-app-preview .googleplay-button,
 .showcase-app-preview .amazon-button,
 .showcase-app-preview .chrome-button {
   width: 150px;
@@ -2582,8 +2582,8 @@ table.double-events-table tr:nth-child(4n - 4) td {
 .showcase-app-preview .amazon-button {
   background-image: url(../i/amazon-button.png);
 }
-.showcase-app-preview .google-button {
-  background-image: url(../i/google-button.png);
+.showcase-app-preview .googleplay-button {
+  background-image: url(../i/googleplay-button.png);
 }
 .showcase-app-preview .chrome-button {
   background-image: url(../i/chrome-button.png);
