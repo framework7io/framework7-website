@@ -10,11 +10,13 @@
     googleplay: https://play.google.com/store/apps/details?id=net.banakin.pricepoint
     website: https://banakin.net/projects/pricepoint/
   description: |
-    Person Do Thing is the game of small words and big ideas! Using only the 36 simple words in the PDT wordbank (such as Person, Do, Thing, Go, Place), you need to describe a target word for your friends to guess.
+    Price Point is an easy to use, lightweight application/website used for checking cryptocurrency exchange rates, Live!
   screenshots:
-  - "#{cdn}/i/showcase/persondothing-ios-1.png"
-  - "#{cdn}/i/showcase/persondothing-ios-2.png"
-  - "#{cdn}/i/showcase/persondothing-ios-3.png"
+  - "#{cdn}/i/showcase/pricepoint-1.png"
+  - "#{cdn}/i/showcase/pricepoint-2.png"
+  - "#{cdn}/i/showcase/pricepoint-3.png"
+  - "#{cdn}/i/showcase/pricepoint-4.png"
+  - "#{cdn}/i/showcase/pricepoint-5.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/persondothing.png"
