@@ -1,6 +1,6 @@
 ##########
 -
-  iconUrl: "#{cdn}/i/showcase/pricepoint.png"
+  iconUrl: "#{cdn}/i/showcase/pricepoint.jpg"
   iconRounded: true
   title: "Price Point"
   author:
@@ -12,11 +12,11 @@
   description: |
     Price Point is an easy to use, lightweight application/website used for checking cryptocurrency exchange rates, Live!
   screenshots:
-  - "#{cdn}/i/showcase/pricepoint-1.png"
-  - "#{cdn}/i/showcase/pricepoint-2.png"
-  - "#{cdn}/i/showcase/pricepoint-3.png"
-  - "#{cdn}/i/showcase/pricepoint-4.png"
-  - "#{cdn}/i/showcase/pricepoint-5.png"
+  - "#{cdn}/i/showcase/pricepoint-1.jpg"
+  - "#{cdn}/i/showcase/pricepoint-2.jpg"
+  - "#{cdn}/i/showcase/pricepoint-3.jpg"
+  - "#{cdn}/i/showcase/pricepoint-4.jpg"
+  - "#{cdn}/i/showcase/pricepoint-5.jpg"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/persondothing.png"
