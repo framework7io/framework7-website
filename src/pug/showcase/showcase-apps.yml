@@ -7,8 +7,8 @@
     url: https://banakin.net/
     name: Banakin
   links:
-    appstore: https://itunes.apple.com/us/app/person-do-thing/id1222415461
-    website: https://banakin.net/
+    googleplay: https://play.google.com/store/apps/details?id=net.banakin.pricepoint
+    website: https://banakin.net/projects/pricepoint/
   description: |
     Person Do Thing is the game of small words and big ideas! Using only the 36 simple words in the PDT wordbank (such as Person, Do, Thing, Go, Place), you need to describe a target word for your friends to guess.
   screenshots:
