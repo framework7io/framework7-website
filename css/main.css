@@ -661,9 +661,10 @@ header .small-links a:hover {
   position: relative;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  left: 50%;
-  width: 100vw;
-  margin-left: -50vw;
+  border-radius: 6px;
+  /*left: 50%;*/
+  /*width: 100vw;*/
+  /*margin-left: -50vw;*/
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   margin-top: -50px;
