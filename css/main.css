@@ -1801,6 +1801,9 @@ ul.method-parameters .parameter-type {
 .docs-nav > ul > li:first-child {
   margin-top: 0;
 }
+.docs-nav.docs-nav-with-search > ul > li {
+  margin-top: 10px;
+}
 .docs-nav ul {
   margin: 0;
   padding: 0;

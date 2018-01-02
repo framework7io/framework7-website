@@ -115,6 +115,22 @@
     $('.docs-nav-toggle').click(function (e) {
       $('.docs-nav').toggleClass('docs-nav-visible');
     });
+    $('.docs-nav-searchbar input').on('input', function (e) {
+      var query = e.target.value.trim().toLowerCase();
+      $('.docs-nav a').each(function (index, el) {
+        var text = $(el).text().trim();
+        var match = text.toLowerCase().indexOf(query) >= 0;
+        if (!match) $(el).parent('li').hide();
+        else $(el).parent('li').css('display', '');
+      });
+      if (query.length) {
+        $('.docs-nav').addClass('docs-nav-with-search');
+        $('.docs-nav .title').hide();
+      } else {
+        $('.docs-nav').removeClass('docs-nav-with-search');
+        $('.docs-nav .title').css('display', '');
+      }
+    });
   }
   // Docs scroll spy
   var demoDevicePreviewLink;
