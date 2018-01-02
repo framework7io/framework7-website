@@ -1,0 +1,358 @@
+extends _layout
+block vars
+  - var includeF7Icons = true;
+  - var includeMaterialIcons = true;
+block content
+    .view.view-main.view-init
+      .page
+        .navbar
+          .navbar-inner.sliding
+            .title Toolbar / Tabbar
+        .page-content
+          .list.links-list
+            ul
+              li
+                a(href="/static/") Static Toolbar
+              li
+                a(href="/fixed/") Fixed Toolbar
+              li
+                a(href="/api/") Toolbar API
+              li
+                a(href="/hide-on-scroll/") Hide On Scroll
+              li
+                a(href="/tabbar/") Tabbar
+              li
+                a(href="/tabbar-labels/") Tabbar With Labels
+              li
+                a(href="/tabbar-scrollable/") Scrollable Tabbar
+
+
+
+
+
+block scripts
+  script(type="text/template7", id="static")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Static Toolbar
+      .page-content
+        .block
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+        .toolbar.no-shadow
+          .toolbar-inner
+            a.link Link 1
+            a.link Link 2
+            a.link Link 3
+  script(type="text/template7", id="fixed")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Fixed Toolbar
+      .toolbar
+        .toolbar-inner
+          a.link Link 1
+          a.link Link 2
+          a.link Link 3
+      .page-content
+        .block
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+  script(type="text/template7", id="api")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Toolbar API
+      .toolbar.toolbar-bottom-md
+        .toolbar-inner
+          a.link Link 1
+          a.link Link 2
+          a.link Link 3
+      .page-content
+        .block
+          p
+            a.button.button-raised.hide-toolbar Hide Toolbar
+          p
+            a.button.button-raised.show-toolbar Show Toolbar
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+  script(type="text/template7", id="hide-on-scroll")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Hide On Scroll
+      .toolbar.toolbar-bottom-md
+        .toolbar-inner
+          a.link Link 1
+          a.link Link 2
+          a.link Link 3
+      .page-content.hide-toolbar-on-scroll
+        .block
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+  script(type="text/template7", id="tabbar")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Tabbar
+      .toolbar.tabbar
+        .toolbar-inner
+          <a href="#tab-1" class="tab-link tab-link-active">Tab 1</a>
+          <a href="#tab-2" class="tab-link">Tab 2</a>
+          <a href="#tab-3" class="tab-link">Tab 3</a>
+      .tabs
+        .page-content.tab.tab-active#tab-1
+          .block
+            <p><b>Tab 1 content</b></p>
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+        .page-content.tab#tab-2
+          .block
+            <p><b>Tab 2 content</b></p>
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+        .page-content.tab#tab-3
+          .block
+            <p><b>Tab 3 content</b></p>
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+  script(type="text/template7", id="tabbar-labels")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Tabbar With Labels
+          <div class="right md-only">
+            <a class="link toggle-toolbar-position">
+              <i class="icon material-icons rotate-icon">compare_arrows</i>
+            </a>
+          </div>
+      .toolbar.tabbar-labels
+        .toolbar-inner
+          <a href="#tab-1" class="tab-link tab-link-active">
+            <i class="icon f7-icons ios-only">email_fill</i>
+            <i class="icon material-icons md-only">email</i>
+            <span class="tabbar-label">Inbox</span>
+          </a>
+          <a href="#tab-2" class="tab-link">
+            <i class="icon f7-icons ios-only">today_fill<span class="badge color-red">5</span></i>
+            <i class="icon material-icons md-only">today<span class="badge color-red">5</span></i>
+            <span class="tabbar-label">Calendar</span>
+          </a>
+          <a href="#tab-3" class="tab-link">
+            <i class="icon f7-icons ios-only">cloud_fill</i>
+            <i class="icon material-icons md-only">file_upload</i>
+            <span class="tabbar-label">Upload</span>
+          </a>
+      .tabs
+        .page-content.tab.tab-active#tab-1
+          .block
+            <p><b>Tab 1 content</b></p>
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+        .page-content.tab#tab-2
+          .block
+            <p><b>Tab 2 content</b></p>
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+        .page-content.tab#tab-3
+          .block
+            <p><b>Tab 3 content</b></p>
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+            p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+            p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+            p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+            p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+            p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+  script(type="text/template7", id="tabbar-scrollable")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Scrollable Tabbar
+      .toolbar.tabbar.tabbar-scrollable
+        .toolbar-inner
+          | {{#each tabs}}
+          <a href="#tab-{{this}}" class="tab-link {{#if @first}}tab-link-active{{/if}}">Tab {{this}}</a>
+          | {{/each}}
+      .tabs
+        | {{#each tabs}}
+        <div id="tab-{{this}}" class="page-content tab {{#if @first}}tab-active{{/if}}">
+          <div class="block">
+            <p><b>Tab {{this}} content</b></p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?</p>
+            <p>Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!</p>
+            <p>At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.</p>
+            <p>Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.</p>
+            <p>Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.</p>
+          </div>
+        </div>
+        | {{/each}}
+  style.
+    .rotate-icon {
+      transform: rotate(90deg);
+    }
+  script.
+    var $$ = Dom7;
+
+    var static = Template7.compile($$('#static').html());
+    var fixed = Template7.compile($$('#fixed').html());
+    var api = Template7.compile($$('#api').html());
+    var hideOnScroll = Template7.compile($$('#hide-on-scroll').html());
+    var tabbar = Template7.compile($$('#tabbar').html());
+    var tabbarLabels = Template7.compile($$('#tabbar-labels').html());
+    var tabbarScrollable = Template7.compile($$('#tabbar-scrollable').html());
+
+
+
+    var app = new Framework7({
+      routes: [
+        {
+          path: '/static/',
+          template: static,
+        },
+        {
+          path: '/fixed/',
+          template: fixed,
+        },
+        {
+          path: '/api/',
+          template: api,
+          on: {
+            pageInit: function (e, page) {
+              var toolbarEl = page.$el.find('.toolbar');
+              page.$el.find('.hide-toolbar').on('click', function () {
+                app.toolbar.hide(toolbarEl);
+              });
+              page.$el.find('.show-toolbar').on('click', function () {
+                app.toolbar.show(toolbarEl);
+              });
+            }
+          }
+        },
+        {
+          path: '/hide-on-scroll/',
+          template: hideOnScroll,
+        },
+        {
+          path: '/tabbar/',
+          template: tabbar,
+        },
+        {
+          path: '/tabbar-labels/',
+          template: tabbarLabels,
+          on: {
+            pageInit: function (e, page) {
+              page.$el.find('.toggle-toolbar-position').on('click', function (e) {
+                page.$el.find('.toolbar').toggleClass('toolbar-bottom-md');
+              });
+            }
+          }
+        },
+        {
+          path: '/tabbar-scrollable/',
+          template: tabbarScrollable,
+          options: {
+            context: {
+              tabs: [1,2,3,4,5,6,7,8,9,10]
+            }
+          }
+        },
+      ]
+    });

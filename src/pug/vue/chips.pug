@@ -1,0 +1,114 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Chips Vue Component | Framework7 Vue Documentation';
+
+block content
+
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Chips Vue Component
+      p <a href="../docs/chips.html">Chips (Tags)</a> Vue component represent complex entities in small blocks, such as a contact. They can contain a photo, short title string, and brief information
+      h2 Usage example
+      pre
+        code
+          | &lt;!-- Simple Chip --&gt;
+          | &lt;f7-chip text="Example Chip"&gt;&lt;/f7-chip&gt;
+          | &lt;!-- Colored Chip --&gt;
+          | &lt;f7-chip text="Another Chip" bg="red" color="white"&gt;&lt;/f7-chip&gt;
+          | &lt;!-- Media Chip --&gt;
+          | &lt;f7-chip text="Jane Doe" media='&lt;img src="http://lorempixel.com/100/100/people/9/"&gt;'&gt;&lt;/f7-chip&gt;
+          | &lt;!-- Deleteable Chip --&gt;
+          | &lt;f7-chip text="Another Chip" deleteable @delete="onChipDelete"&gt;&lt;/f7-chip&gt;
+          | &lt;!-- Deleteable Media Chip --&gt;
+          | &lt;f7-chip text="Jane Doe" media='&lt;img src="http://lorempixel.com/100/100/people/9/"&gt;' media-bg="red" deleteable @delete="onChipDelete"&gt;&lt;/f7-chip&gt;
+      p Renders to:
+      pre
+        code
+          | &lt;!-- Simple Chip --&gt;
+          | &lt;span class="chip"&gt;
+          |   &lt;span class="chip-label"&gt;Example Chip&lt;/span&gt;
+          | &lt;/span&gt;
+          | &lt;!-- Colored Chip --&gt;
+          | &lt;span class="chip bg-red color-white"&gt;
+          |   &lt;span class="chip-label"&gt;Another Chip&lt;/span&gt;
+          | &lt;/span&gt;
+          | &lt;!-- Media Chip --&gt;
+          | &lt;span class="chip bg-red color-white"&gt;
+          |   &lt;span class="chip-media"&gt;
+          |     &lt;img src="http://lorempixel.com/100/100/people/9/"&gt;
+          |   &lt;/span&gt;
+          |   &lt;span class="chip-label"&gt;Jane Doe&lt;/span&gt;
+          | &lt;/span&gt;
+          | &lt;!-- Deleteable Chip --&gt;
+          | &lt;span class="chip bg-red color-white"&gt;
+          |   &lt;span class="chip-label"&gt;Another Chip&lt;/span&gt;
+          |   &lt;a href="#" class="chip-delete"&gt;&lt;/a&gt;
+          | &lt;/span&gt;
+          | &lt;!-- Deleteable Media Chip --&gt;
+          | &lt;span class="chip"&gt;
+          |   &lt;span class="chip-media bg-red"&gt;
+          |     &lt;img src="http://lorempixel.com/100/100/people/9/"&gt;
+          |   &lt;/span&gt;
+          |   &lt;span class="chip-label"&gt;Jane Doe&lt;/span&gt;
+          |   &lt;a href="#" class="chip-delete"&gt;&lt;/a&gt;
+          | &lt;/span&gt;
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td color
+            td string
+            td 
+            td Chip text color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td bg
+            td string
+            td 
+            td Chip background color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td text
+            td string
+            td 
+            td Chip label text
+          tr
+            td media
+            td string
+            td 
+            td Content of chip media
+          tr
+            td media-bg
+            td string
+            td 
+            td Chip media element background color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td media-color
+            td string
+            td 
+            td Chip media element text color. One of <a href="../docs/color-themes.html">default colors</a>
+          tr
+            td deleteable
+            td boolean
+            td 
+            td Defines whether the Chip has additional "delete" link or not
+      h2 Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td click
+            td Event will be triggered on Chip click
+          tr
+            td delete
+            td Event will be triggered on Chip delete link click

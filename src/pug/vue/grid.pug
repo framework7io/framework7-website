@@ -1,0 +1,101 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Grid Vue Component | Framework7 Vue Documentation';
+
+block content
+
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Grid Vue Component
+      p Grid Vue component represents Framework7's <a href="../docs/grid.html">Layout Grid</a>.
+      h2 Usage examples
+      h4 Equal width columns
+      pre
+        code
+          :code
+            <f7-grid>
+              <f7-col>Col 1</f7-col>
+              <f7-col>Col 2</f7-col>
+              <f7-col>Col 3</f7-col>
+            </f7-grid>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="row">
+              <div class="col-auto"></div>
+              <div class="col-auto"></div>
+              <div class="col-auto"></div>
+            </div>
+      h4 No gutter and fixed size
+      pre
+        code
+          :code
+            <f7-grid no-gutter>
+              <f7-col width="50">Col 50%</f7-col>
+              <f7-col width="25">Col 25%</f7-col>
+              <f7-col width="25">Col 25%</f7-col>
+            </f7-grid>
+
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="row no-gutter">
+              <div class="col-50"></div>
+              <div class="col-25"></div>
+              <div class="col-25"></div>
+            </div>
+      h4 Different columns width on tablet
+      pre
+        code
+          :code
+            <f7-grid>
+              <f7-col width="50" tablet-width="25">Col 1</f7-col>
+              <f7-col width="50" tablet-width="25">Col 2</f7-col>
+              <f7-col width="50" tablet-width="25">Col 3</f7-col>
+              <f7-col width="50" tablet-width="25">Col 4</f7-col>
+            </f7-grid>
+
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="row">
+              <div class="col-50 tablet-25">Col 1</div>
+              <div class="col-50 tablet-25">Col 2</div>
+              <div class="col-50 tablet-25">Col 3</div>
+              <div class="col-50 tablet-25">Col 4</div>
+            </div>
+
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            th(colspan="4") &lt;f7-grid&gt; properties
+          tr
+            td no-gutter
+            td boolean
+            td 
+            td Removes spacing between columns
+          tr
+            th(colspan="4") &lt;f7-col&gt; properties
+          tr
+            td width
+            td string/number
+            td "auto"
+            td Column width
+          tr
+            td tablet-width
+            td string/number
+            td
+            td Column width for large screen tablets

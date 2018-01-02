@@ -1,0 +1,156 @@
+extends _layout
+block vars
+  - var includeF7Icons = true;
+  - var includeMaterialIcons = true;
+block content
+    .view.view-main.view-init
+      .page
+        .navbar
+          .navbar-inner.sliding
+            .left
+              a.link Left
+            .title Navbar
+            .right
+              a.link Right
+        .page-content
+          .list.links-list
+            ul
+              li
+                a(href="/static/") Static Navbar
+              li
+                a(href="/fixed/") Fixed Navbar
+              li
+                a(href="/api/") Navbar API
+              li
+                a(href="/hide-on-scroll/") Hide On Scroll
+
+block scripts
+  script(type="text/template7", id="static")
+    .page.no-navbar
+      .page-content
+        .navbar
+          .navbar-inner
+            .left
+              a.link.back
+                i.icon.icon-back
+                span.ios-only Back
+            .title Static Navbar
+            .right
+        .block
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+  script(type="text/template7", id="fixed")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Fixed Navbar
+      .page-content
+        .block
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+  script(type="text/template7", id="api")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Navbar API
+      .page-content
+        .block
+          p
+            a.button.button-raised.hide-navbar Hide Navbar
+          p
+            a.button.button-raised.show-navbar Show Navbar
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+  script(type="text/template7", id="hide-on-scroll")
+    .page
+      .navbar
+        .navbar-inner.sliding
+          .left
+            a.link.back
+              i.icon.icon-back
+              span.ios-only Back
+          .title Hide On Scroll
+      .page-content.hide-navbar-on-scroll
+        .block
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+          p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!
+          p Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.
+          p Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!
+          p Veritatis vero quis ipsum explicabo beatae consequatur, deleniti, tenetur assumenda sit quisquam soluta, possimus magnam nostrum animi hic sapiente sed laudantium similique quas labore, voluptatem eius aliquam. Sunt, ad aliquam!
+          p Animi iste, optio mollitia, sint hic neque sed, quis labore deserunt esse delectus fugit impedit qui consequatur reiciendis quam. Totam tenetur, mollitia. Porro optio similique perspiciatis aliquam ipsam vel reprehenderit!
+
+  style.
+    .rotate-icon {
+      transform: rotate(90deg);
+    }
+  script.
+    var $$ = Dom7;
+
+    var static = Template7.compile($$('#static').html());
+    var fixed = Template7.compile($$('#fixed').html());
+    var api = Template7.compile($$('#api').html());
+    var hideOnScroll = Template7.compile($$('#hide-on-scroll').html());
+
+    var app = new Framework7({
+      routes: [
+        {
+          path: '/static/',
+          template: static,
+        },
+        {
+          path: '/fixed/',
+          template: fixed,
+        },
+        {
+          path: '/api/',
+          template: api,
+          on: {
+            pageInit: function (e, page) {
+              var navbarEl = app.navbar.getElByPage(page);
+
+              page.$el.find('.hide-navbar').on('click', function () {
+                app.navbar.hide(navbarEl);
+              });
+              page.$el.find('.show-navbar').on('click', function () {
+                app.navbar.show(navbarEl);
+              });
+            }
+          }
+        },
+        {
+          path: '/hide-on-scroll/',
+          template: hideOnScroll,
+        },
+      ]
+    });

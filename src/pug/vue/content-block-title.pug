@@ -1,0 +1,31 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Block Title Vue Component | Framework7 Vue Documentation';
+
+block content
+
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Block Title Vue Component
+      p Block Title Vue component represents <a href="../docs/content-block.html">Content Block Title</a> element that is usually used before <a href="content-block.html">Block Component</a> (<a href="../docs/content-block.html">Content Block</a>) or <a href="list.html">List Component</a> (<a href="../docs/list-view.html">List Block / List View</a>)
+      h2 Usage example
+      pre
+        code
+          | &lt;f7-block-title&gt;Block Title&lt;/f7-block-title&gt;
+          | &lt;f7-block&gt;...&lt;/f7-block&gt;
+          | 
+          | &lt;f7-block-title&gt;Another Block Title&lt;/f7-block-title&gt;
+          | &lt;f7-list&gt;...&lt;/f7-list&gt;
+      p Renders to:
+      pre
+        code
+          | &lt;div class="content-block-title"&gt;Block Title&lt;/div&gt;
+          | &lt;div class="content-block"&gt;...&lt;/div&gt;
+          | 
+          | &lt;div class="content-block-title"&gt;Another Block Title&lt;/div&gt;
+          | &lt;div class="list-block"&gt;...&lt;/div&gt;
+      h2 Properties
+      p This component has no any properties

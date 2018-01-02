@@ -1,0 +1,45 @@
+pre, code {
+  .monospace();
+}
+
+code {
+  font-size: 13px;
+  color: #333;
+  font-weight: normal;
+  background: #f5f5f5;
+  color: #000;
+  display: inline-block;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+code.hljs, pre code {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 20px;
+  background: #fafafa;
+  line-height: 21px;
+  border: 1px solid #f3f3f3;
+}
+pre {
+  overflow: hidden;
+  word-wrap: break-word;
+  font-size: 13px;
+  white-space: pre-wrap;
+  code {
+    display: block;
+  }
+}
+.nowrap {
+  white-space: nowrap;
+}
+
+.important-note {
+  code {
+    background: rgba(255,255,255,0.8);
+  }
+  code.hljs {
+    background: rgba(255,255,255,0.8);
+    border: none;
+  }
+}

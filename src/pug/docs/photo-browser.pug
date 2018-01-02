@@ -1,0 +1,629 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Photo Browser | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Photo Browser
+    .docs-index
+    p Photo Browser is a photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).
+    p Photo Browser uses <a href="swiper.html">Swiper Slider</a> component to slide between photos.
+
+    h2 Photo Browser App Methods
+    p Let's look at related App methods to work with Photo Browser:
+    .method-wrap
+      p
+        span.method app.photoBrowser.create(<span>parameters</span>)
+        | - create Photo Browser instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with photo browser parameters
+      p.method-returns Method returns created Photo Browser's instance
+
+    .method-wrap
+      p
+        span.method app.photoBrowser.destroy(<span>el</span>)
+        | - destroy Photo Browser instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Photo Browser element or Photo Browser instance to destroy.
+    .method-wrap
+      p
+        span.method app.photoBrowser.get(<span>el</span>)
+        | - get Photo Browser instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Photo Browser element.
+      p.method-returns Method returns Photo Browser's instance
+    p For example:
+    pre
+      code.js
+        :code
+          var photoBrowser = app.photoBrowser.create({
+            photos: [
+              'path/to/photo-1.jpg'
+              'path/to/photo-2.jpg'
+            ],
+          });
+    h2 Photo Browser Parameters
+    p Let's look on list of all available Photo Browser parameters:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td photos
+          td array
+          td []
+          td Array with URLs of photos or array of objects with "url" (or "html") and "caption" properties.
+        tr
+          td exposition
+          td boolean
+          td true
+          td Enable disable exposition mode when clicking on Photo Browser.
+        tr
+          td expositionHideCaptions
+          td boolean
+          td false
+          td Set to true if you also want to hide captions in exposition mode
+        tr
+          td swipeToClose
+          td boolean
+          td true
+          td You can close Photo Browser with swipe up/down when this parameter is enabled
+        tr
+          td routableModals
+          td boolean
+          td true
+          td Will add opened photo browser to router history which gives ability to close photo browser by going back in router history and set current route to the photo browser modal
+        tr
+          td url
+          td string
+          td photos/
+          td Photo browser modal URL that will be set as a current route
+        tr
+          td view
+          td object
+          td
+          td Link to initialized View instance if you want use "page" Photo Browser type or where to set routing when <code>routableModals</code> enabled. By default, if not specified, it will be opened in Main View.
+        tr
+          td type
+          td string
+          td standalone
+          td Define how Photo Browser should be opened. Could be <code>standalone</code> (will be opened as an overlay with custom transition effect), <code>popup</code> (will be opened as <a href="popup.html">popup</a>), <code>page</code> (will be injected to View and loaded as a new page).
+        tr
+          td theme
+          td string
+          td light
+          td Photo Browser color theme, could be <code>light</code> or <code>dark</code>
+        tr
+          td captionsTheme
+          td string
+          td
+          td Captions color theme, could be also <code>light</code> or <code>dark</code>. By default, equal to <code>theme</code> parameter
+        tr
+          td navbar
+          td boolean
+          td true
+          td Set to false to remove Photo Browser's Navbar
+        tr
+          td toolbar
+          td boolean
+          td true
+          td Set to false to remove Photo Browser's Toolbar
+        tr
+          td backLinkText
+          td string
+          td Close
+          td Text on back link in Photo Browser's navbar
+        tr
+          td navbarOfText
+          td string
+          td 'of'
+          td Text of "of" in photos counter: "3 of 5"
+        tr
+          td iconsColor
+          td string
+          td
+          td One of the <a href="color-themes.html">default colors</a>
+        tr
+          td swiper
+          td object
+          td
+          td Swiper parameters. By default equals to:
+            pre
+              code.js
+                :code
+                  swiper: {
+                    initialSlide: 0,
+                    spaceBetween: 20,
+                    speed: 300,
+                    loop: false,
+                    preloadImages: true,
+                    navigation: {
+                      nextEl: '.photo-browser-next',
+                      prevEl: '.photo-browser-prev',
+                    },
+                    zoom: {
+                      enabled: true,
+                      maxRatio: 3,
+                      minRatio: 1,
+                    },
+                    lazy: {
+                      enabled: true,
+                    },
+                  },
+        tr
+          th(colspan="4") Render functions
+        tr
+          td renderNavbar
+          td function
+          td
+          td Function to render navbar, must return navbar HTML string
+        tr
+          td renderToolbar
+          td function
+          td
+          td Function to render toolbar, must return toolbar HTML string
+        tr
+          td renderCaption
+          td function(caption, index)
+          td
+          td Function to render single caption, must return caption HTML string
+        tr
+          td renderObject
+          td function(photo, index)
+          td
+          td Function to render photo object, must return photo object HTML string
+        tr
+          td renderLazyPhoto
+          td function(photo, index)
+          td
+          td Function to render lazy loaded photo slide, must return slide HTML string
+        tr
+          td renderPhoto
+          td function(photo, index)
+          td
+          td Function to render photo as a swiper slide, must return slide HTML string
+        tr
+          td renderPage
+          td function
+          td
+          td Function to render photobrowser page, must return full page HTML layout string
+        tr
+          td renderPopup
+          td function
+          td
+          td Function to render photobrowser popup, must return full popup HTML layout string
+        tr
+          td renderStandalone
+          td function
+          td
+          td Function to render photobrowser standalone modal, must return full modal HTML layout string
+        tr
+          th(colspan="4") Events
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var photoBrowser = app.photoBrowser.create({
+                    ...
+                    on: {
+                      opened: function () {
+                        console.log('photo browser opened')
+                      }
+                    }
+                  })
+
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>photoBrowser</code> property to set defaults for all photo browsers. For example:
+      pre
+        code
+          :code
+            var app = new Framework7({
+              photoBrowser: {
+                type: 'popup',
+              }
+            });
+    h3 Photos Array
+    p When we initialize Photo Browser we need to pass array with photos/videos in <code>photos</code> parameter. Let's look at different variations of this array:
+    pre
+      code.js
+        | // If we need photo browser with just photos we may pass array with string urls:
+        | var photos = [
+        |     'image1.jpg',
+        |     'image2.jpg',
+        |     'image3.jpg',
+        |     'image4.jpg',
+        | ];
+        |
+        | //If we need to use caption for some of photos then each photo should be presented as object:
+        | var photos = [
+        |     {
+        |         url: 'image1.jpg',
+        |         caption: 'Caption 1'
+        |     },
+        |     {
+        |         url: 'image2.jpg',
+        |         caption: 'Caption 1'
+        |     },
+        |     // This one will be without caption
+        |     {
+        |         url: 'image3.jpg',
+        |     },
+        |     // This one will be also without caption
+        |     'image4.jpg'
+        | ];
+        |
+        | //If we need to use videos in some slides we need to pass HTML element of video element or iframe within "html" property:
+        | var photos = [
+        |     {
+        |         url: 'image1.jpg',
+        |         caption: 'Caption 1'
+        |     },
+        |     // Video element with caption
+        |     {
+        |         html: '&lt;video src="video1.mp4"&gt;&lt;/video&gt;',
+        |         caption: 'Video Caption'
+        |     },
+        |     // This one is embedded video without caption
+        |     {
+        |         html: '&lt;iframe src="..."&gt;&lt;/iframe&gt;',
+        |     },
+        |     // This one will be also video without caption
+        |     '&lt;video src="video2.mp4"&gt;&lt;/video&gt;'
+        | ];
+    h2 Photo Browser Methods & Properties
+    p After we initialize Photo Browser we have its initialized instance in variable (like <code>photoBrowser</code> variable in examples above) with helpful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td photoBrowser.app
+          td Link to global app instance
+        tr
+          td photoBrowser.el
+          td Photo Browser HTML element
+        tr
+          td photoBrowser.$el
+          td Dom7 instance with Photo Browser HTML element
+        tr
+          td photoBrowser.activeIndex
+          td Index number of currently active photo slide
+        tr
+          td photoBrowser.exposed
+          td <code>true</code> if Photo Browser in exposition mode
+        tr
+          td photoBrowser.opened
+          td <code>true</code> if Photo Browser is currently opened
+        tr
+          td photoBrowser.url
+          td Photo Browser URL (that was passed in <code>url</code> parameter)
+        tr
+          td photoBrowser.view
+          td Photo Browser View (that was passed in <code>view</code> parameter) or found parent view
+        tr
+          td photoBrowser.swiper
+          td Contains initialized Swiper instance with all available Swiper <a href="http://idangero.us/swiper/api/#methods" target="_blank">methods and properties</a>
+        tr
+          td photoBrowser.params
+          td Object with initialization parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td photoBrowser.open(<span>index</span>)
+          td Open Photo Browser on photo with index number equal to "index" parameter. If "index" parameter is not specified, it will be opened on last closed photo.
+        tr
+          td photoBrowser.close()
+          td Close Photo Browser
+        tr
+          td photoBrowser.expositionToggle()
+          td Toggle exposition mode
+        tr
+          td photoBrowser.expositionEnable()
+          td Enable exposition mode
+        tr
+          td photoBrowser.expositionDisable()
+          td Disable exposition mode
+        tr
+          td photoBrowser.destroy()
+          td Destroy photo prowser instance
+        tr
+          td photoBrowser.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td photoBrowser.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td photoBrowser.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td photoBrowser.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td photoBrowser.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Photo Browser Events
+    p Photo Browser will fire the following DOM events on photo browser element and events on app and photo browser instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td photobrowser:open
+          td Photo Browser Element
+          td Event will be triggered when Photo Browser starts its opening animation
+        tr
+          td photobrowser:opened
+          td Photo Browser Element
+          td Event will be triggered after Photo Browser completes its opening animation
+        tr
+          td photobrowser:close
+          td Photo Browser Element
+          td Event will be triggered when Photo Browser starts its closing animation
+        tr
+          td photobrowser:closed
+          td Photo Browser Element
+          td Event will be triggered after Photo Browser completes its closing animation
+    h3 App and Photo Browser Instance Events
+    p Photo Browser instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>photoBrowser</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td swipeToClose
+          td photoBrowser
+          td Event will be fired when user close photo browser with swipe up/down.
+        tr
+          td tap
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired when user click/tap on Swiper. Receives 'touchend' event as an arguments.
+        tr
+          td click
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired when user click/tap on Swiper after 300ms delay. Receives 'touchend' event as an arguments.
+        tr
+          td doubleTap
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired when user double tap on Swiper's container. Receives 'touchend' event as an arguments
+        tr
+          td slideChange
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired when currently active slide is changed
+        tr
+          td transitionStart
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired in the beginning of transition.
+        tr
+          td transitionEnd
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired after transition.
+        tr
+          td slideChangeTransitionStart
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired in the beginning of animation to other slide (next or previous).
+        tr
+          td slideChangeTransitionEnd
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired after animation to other slide (next or previous).
+        tr
+          td lazyImageLoad
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired in the beginning of lazy loading of image
+        tr
+          td lazyImageReady
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired when lazy loading image will be loaded
+        tr
+          td touchStart
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired when user touch Swiper. Receives 'touchstart' event as an arguments.
+        tr
+          td touchMoveOpposite
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired when user touch and move finger over Swiper in direction opposite to direction parameter. Receives 'touchmove' event as an arguments.
+        tr
+          td touchEnd
+          td photoBrowser
+          td <a href="http://idangero.us/swiper/api/#events" target="_blank">Swiper event</a>. Event will be fired when user release Swiper. Receives 'touchend' event as an arguments.
+
+        tr
+          td open
+          td photoBrowser
+          td(rowspan="2") Event will be triggered when Photo Browser starts its opening animation. As an argument event handler receives photoBrowser instance
+        tr
+          td photoBrowserOpen
+          td app
+        tr
+          td opened
+          td photoBrowser
+          td(rowspan="2") Event will be triggered after Photo Browser completes its opening animation. As an argument event handler receives photoBrowser instance
+        tr
+          td photoBrowserOpened
+          td app
+        tr
+          td close
+          td photoBrowser
+          td(rowspan="2") Event will be triggered when Photo Browser starts its closing animation. As an argument event handler receives photoBrowser instance
+        tr
+          td photoBrowserClose
+          td app
+        tr
+          td closed
+          td photoBrowser
+          td(rowspan="2") Event will be triggered after Photo Browser completes its closing animation. As an argument event handler receives photoBrowser instance
+        tr
+          td photoBrowserClosed
+          td app
+        tr
+          td beforeDestroy
+          td photoBrowser
+          td(rowspan="2") Event will be triggered right before Photo Browser instance will be destroyed. As an argument event handler receives photoBrowser instance
+        tr
+          td photoBrowserBeforeDestroy
+          td app
+
+
+
+    .with-device
+      h2(data-device-preview="../docs-demos/photo-browser.html") Examples
+
+      pre
+        code.html
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="block-title"&gt;Light Theme&lt;/div&gt;
+          |   &lt;div class="block row"&gt;
+          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-standalone"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
+          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-popup"&gt;Popup&lt;/a&gt;&lt;/div&gt;
+          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-page"&gt;Page&lt;/a&gt;&lt;/div&gt;
+          |   &lt;/div&gt;
+          |   &lt;div class="block-title"&gt;Dark Theme&lt;/div&gt;
+          |   &lt;div class="block row"&gt;
+          |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-standalone-dark"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
+          |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-popup-dark"&gt;Popup&lt;/a&gt;&lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;
+      pre
+        code.js
+          | var app = new Framework7();
+          |
+          | var $$ = Dom7;
+          |
+          |
+          | /*=== Default standalone ===*/
+          | var myPhotoBrowserStandalone = app.photoBrowser.create({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ]
+          | });
+          | //Open photo browser on click
+          | $$('.pb-standalone').on('click', function () {
+          |     myPhotoBrowserStandalone.open();
+          | });
+          |
+          | /*=== Popup ===*/
+          | var myPhotoBrowserPopup = app.photoBrowser.create({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ],
+          |     type: 'popup'
+          | });
+          | $$('.pb-popup').on('click', function () {
+          |     myPhotoBrowserPopup.open();
+          | });
+          |
+          | /*=== As Page ===*/
+          | var myPhotoBrowserPage = app.photoBrowser.create({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ],
+          |     type: 'page',
+          |     backLinkText: 'Back'
+          | });
+          | $$('.pb-page').on('click', function () {
+          |     myPhotoBrowserPage.open();
+          | });
+          |
+          | /*=== Standalone Dark ===*/
+          | var myPhotoBrowserDark = app.photoBrowser.create({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ],
+          |     theme: 'dark'
+          | });
+          | $$('.pb-standalone-dark').on('click', function () {
+          |     myPhotoBrowserDark.open();
+          | });
+          |
+          | /*=== Popup Dark ===*/
+          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
+          |     photos : [
+          |         'http://lorempixel.com/1024/1024/sports/1/',
+          |         'http://lorempixel.com/1024/1024/sports/2/',
+          |         'http://lorempixel.com/1024/1024/sports/3/',
+          |     ],
+          |     theme: 'dark',
+          |     type: 'popup'
+          | });
+          | $$('.pb-popup-dark').on('click', function () {
+          |     myPhotoBrowserPopupDark.open();
+          | });
+          |
+          | /*=== With Captions ===*/
+          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
+          |     photos : [
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/1/',
+          |             caption: 'Caption 1 Text'
+          |         },
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/2/',
+          |             caption: 'Second Caption Text'
+          |         },
+          |         // This one without caption
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/3/',
+          |         },
+          |     ],
+          |     theme: 'dark',
+          |     type: 'standalone'
+          | });
+          | $$('.pb-standalone-captions').on('click', function () {
+          |     myPhotoBrowserPopupDark.open();
+          | });
+          |
+          | /*=== With Video ===*/
+          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
+          |     photos : [
+          |         {
+          |             html: '&lt;iframe src="//www.youtube.com/embed/lmc21V-zBq0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;',
+          |             caption: 'Woodkid - Run Boy Run (Official HD Video)'
+          |         },
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/2/',
+          |             caption: 'Second Caption Text'
+          |         },
+          |         {
+          |             url: 'http://lorempixel.com/1024/1024/sports/3/',
+          |         },
+          |     ],
+          |     theme: 'dark',
+          |     type: 'standalone'
+          | });
+          | $$('.pb-standalone-video').on('click', function () {
+          |     myPhotoBrowserPopupDark.open();
+          | });

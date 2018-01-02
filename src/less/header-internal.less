@@ -1,0 +1,302 @@
+.internal-header {
+  height: 160px;
+  color: #fff;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 500;
+
+  > .center {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    &:before {
+      position: absolute;
+      content: '';
+      border-left: 180px solid transparent;
+      border-right: 500px solid transparent;
+      border-top: 160px solid @brightColor;
+      left: 150px;
+      bottom: 0;
+      transform-origin: left bottom;
+      z-index: -1;
+    }
+  }
+  .logo-holder {
+    width: 160px;
+    margin-right: 30px;
+  }
+  .logo {
+    width: 160px;
+    height: 160px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    box-shadow: 0px 10px 50px rgba(0,0,0,0.3);
+    transition: 600ms;
+    transition-property: box-shadow, transform;
+    border: 4px solid #fff;
+    &:hover {
+      box-shadow: 0px 30px 100px rgba(0,0,0,0.3);
+      transform: scale(1.05);
+    }
+  }
+  .header-content {
+    width: 100%;
+    flex-shrink: 10;
+    margin-right: 10px;
+  }
+  .title {
+    font-size: 42px;
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+  ul.nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    margin-left: -10px;
+    li {
+      margin: 0;
+      position: relative;
+    }
+    li:hover ul {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0px);
+    }
+    ul {
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      position: absolute;
+      background: #fff;
+      box-shadow: 0px 10px 50px rgba(0,0,0,0.3);
+      z-index: 500;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      white-space: nowrap;
+      padding: 10px 20px;
+      border-radius: 5px;
+      left: 50%;
+      transition: 200ms;
+      transform: translateX(-50%) translateY(10px);
+      top: 100%;
+      margin-top: 10px;
+      &:before {
+        content: '';
+        height: 10px;
+        bottom: 100%;
+        width: 100%;
+        position: absolute;
+        left: 0;
+      }
+      &:after {
+        content: '';
+        width: 0;
+        height: 0;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid #fff;
+        position: absolute;
+      }
+      li + li {
+        margin-top: 6px;
+      }
+      a {
+        color: #555;
+        text-decoration: none;
+        &:hover {
+          color: @primaryColor;
+        }
+      }
+    }
+    > li + li {
+      margin-left: 5px;
+    }
+    > li > a {
+      color: inherit;
+      text-decoration: none;
+      padding: 0 10px;
+      display: block;
+      border-radius: 10px;
+    }
+    > li:hover > a, > li.active > a {
+      background: rgba(0,0,0,0.1);
+    }
+  }
+  .carbon {
+    margin-left: auto;
+    position: relative;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    flex-shrink: 0;
+  }
+  .patreon-github {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: -10px;
+    .patreon-button {
+      margin-left: -10px;
+      &:not(:hover) {
+        background: none;
+      }
+    }
+    .github-buttons {
+      margin-left: 20px;
+      line-height: 22px;
+      a span {
+        font-size: 12px;
+      }
+    }
+  }
+
+}
+
+.bsa-cpc {
+  background: darken(@primaryColor, 5%);
+  height: 30px;
+  position: relative;
+  z-index: 100;
+  #_default_ {
+    margin: 0px auto;
+    box-sizing: border-box;
+    height: 30px;
+    position: relative;
+    padding: 0 40px;
+    padding-left: 40px + 160px + 30px;
+    max-width: 1200px;
+    font-size: 14px;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+  }
+  .default-ad {
+    display: none;
+  }
+  ._default_ {
+    display: inline;
+    overflow: hidden;
+    line-height: 1;
+  }
+  ._default_> * {
+    vertical-align: middle;
+  }
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+  a:hover {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+  }
+  .default-image {
+    display: none;
+  }
+  .default-title:after {
+    content: " — ";
+  }
+  .default-title,
+  .default-description {
+    display: inline;
+  }
+  .default-title {
+    position: relative;
+    margin-left: 0;
+  }
+  .default-title:before {
+    position: relative;
+    top: -1px;
+    padding: 3px 6px;
+    border-radius: 2px;
+    background-color: #fff;
+    color: @primaryColor;
+    content: "Sponsor";
+    text-transform: uppercase;
+    font-size: 10px;
+    line-height: 1;
+    margin-right: 8px;
+    display: inline-block;
+  }
+}
+
+@media (max-width: 960px) {
+  .internal-header {
+    height: auto;
+    > .center {
+      padding-top: 20px;
+      padding-bottom: 20px;
+      &:before {
+        left: 50px;
+      }
+    }
+    .header-content {
+      max-width: 100%;
+      min-width: 0;
+      width: auto;
+    }
+    .logo-holder {
+      width: 120px;
+    }
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin-top: 0;
+    }
+    .title {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    .patreon-github {
+      margin-bottom: 0;
+      margin-top: 10px;
+    }
+  }
+  .bsa-cpc {
+    z-index: 100;
+    position: relative;
+    #_default_ {
+      padding-left: 180px;
+    }
+  }
+}
+@media (max-width: 900px) {
+  .internal-header {
+    > .center {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      &:before {
+        left: 50px;
+      }
+    }
+    .patreon-github {
+      display: block;
+      .github-buttons {
+        margin-left: 0;
+        margin-top: 5px;
+      }
+    }
+  }
+  .bsa-cpc {
+    z-index: 100;
+    position: relative;
+    #_default_ {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+}
+@media (max-width: 768px) {
+
+}

@@ -1,0 +1,71 @@
+extends _layout
+block vars
+  - var includeF7Icons = true;
+  - var includeMaterialIcons = true;
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Selectable Rows
+          .right
+      .page-content
+        .data-table.data-table-init.card
+          table
+            thead
+              tr
+                th.checkbox-cell
+                  label.checkbox
+                    input(type="checkbox")
+                    i.icon-checkbox
+                th.label-cell Desert (100g serving)
+                th.numeric-cell Calories
+                th.numeric-cell Fat (g)
+                th.numeric-cell Carbs
+                th.numeric-cell Protein (g)
+            tbody
+              tr
+                td.checkbox-cell
+                  label.checkbox
+                    input(type="checkbox")
+                    i.icon-checkbox
+                td.label-cell Frozen yogurt
+                td.numeric-cell 159
+                td.numeric-cell 6.0
+                td.numeric-cell 24
+                td.numeric-cell 4.0
+              tr
+                td.checkbox-cell
+                  label.checkbox
+                    input(type="checkbox")
+                    i.icon-checkbox
+                td.label-cell Ice cream sandwich
+                td.numeric-cell 237
+                td.numeric-cell 9.0
+                td.numeric-cell 37
+                td.numeric-cell 4.4
+              tr
+                td.checkbox-cell
+                  label.checkbox
+                    input(type="checkbox")
+                    i.icon-checkbox
+                td.label-cell Eclair
+                td.numeric-cell 262
+                td.numeric-cell 16.0
+                td.numeric-cell 24
+                td.numeric-cell 6.0
+              tr
+                td.checkbox-cell
+                  label.checkbox
+                    input(type="checkbox")
+                    i.icon-checkbox
+                td.label-cell Cupcake
+                td.numeric-cell 305
+                td.numeric-cell 3.7
+                td.numeric-cell 67
+                td.numeric-cell 4.3
+
+block scripts
+  script.
+    var app = new Framework7();

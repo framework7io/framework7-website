@@ -1,0 +1,24 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'tutorials';
+  - var title = 'Framework7 Tutorials';
+
+block content
+  - var tutorials = getYamlData('tutorials/tutorials.yml');
+  h1.text-align-center Framework7 Tutorials
+  p.text-align-center.large-text If you wrote any tutorial or video about Framework7, don't hesitate to <a href="https://github.com/nolimits4web/Framework7-Website" target="_blank">send PR</a> to this website section with information about your tutorial.
+  .tutorials
+    each tutorial in tutorials
+      .tutorial(class=tutorial.video ? 'video' : '')
+        .tutorial-date #{tutorial.date}
+        .tutorial-title
+          a(href=tutorial.url, target="_blank") #{tutorial.title}
+        if (tutorial.author)
+          .tutorial-author
+            a(href=tutorial.author.url, target="_blank") #{tutorial.author.name}
+        if (tutorial.badges)
+          .tutorial-badges
+            each badge in tutorial.badges
+              span #{badge}
+

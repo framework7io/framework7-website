@@ -1,0 +1,112 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Accordion Vue Component | Framework7 Vue Documentation';
+
+block content
+
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Accordion Vue
+      p Accordion Vue component represents Framework7's <a href="../docs/accordion.html">Accordion</a> component.
+      h2 Usage examples
+      h4 Accordion
+      pre
+        code
+          :code
+            <f7-accordion>
+              <!-- Item 1 -->
+              <f7-accordion-item>
+                <f7-accordion-toggle>Item 1</f7-accordion-toggle>
+                <f7-accordion-content>
+                  Item 1 content...
+                </f7-accordion-content>
+              </f7-accordion-item>
+              <!-- Item 2 -->
+              <f7-accordion-item>
+                <f7-accordion-toggle>Item 2</f7-accordion-toggle>
+                <f7-accordion-content>
+                  Item 2 content...
+                </f7-accordion-content>
+              </f7-accordion-item>
+            </f7-accordion>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="accordion-list">
+              <!-- Item 1 -->
+              <div class="accordion-item">
+                <div class="accordion-item-toggle">Item 1</div>
+                <div class="accordion-item-content">
+                  Item 1 content...
+                </div>
+              </div>
+              <!-- Item 2 -->
+              <div class="accordion-item">
+                <div class="accordion-item-toggle">Item 2</div>
+                <div class="accordion-item-content">
+                  Item 2 content...
+                </div>
+              </div>
+            </div>
+      h4 Separate Collapsible
+      p If you want to use single separate collapsible element you may just omit "f7-accordion" wrapper element:
+      pre
+        code
+          :code
+            <!-- Single collapsible element -->
+            <f7-accordion-item>
+              <f7-accordion-toggle>Item 1</f7-accordion-toggle>
+              <f7-accordion-content>
+                Item 1 content...
+              </f7-accordion-content>
+            </f7-accordion-item>
+
+            <!-- Another separate collapsible element -->
+            <f7-accordion-item>
+              <f7-accordion-toggle>Item 2</f7-accordion-toggle>
+              <f7-accordion-content>
+                Item 2 content...
+              </f7-accordion-content>
+            </f7-accordion-item>
+      p Renders to:
+      pre
+        code
+          :code
+            <!-- Single collapsible element -->
+            <div class="accordion-item">
+              <div class="accordion-item-toggle">Item 1</div>
+              <div class="accordion-item-content">
+                Item 1 content...
+              </div>
+            </div>
+
+            <!-- Another separate collapsible element -->
+            <div class="accordion-item">
+              <div class="accordion-item-toggle">Item 2</div>
+              <div class="accordion-item-content">
+                Item 2 content...
+              </div>
+            </div>
+      h2 Accordion Item Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td accordion:open
+            td Event will be triggered when accordion content starts its opening animation.
+          tr
+            td accordion:opened
+            td Event will be triggered after accordion content completes its opening animation.
+          tr
+            td accordion:close
+            td Event will be triggered when accordion content starts its closing animation.
+          tr
+            td accordion:closed
+            td Event will be triggered after accordion content completes its closing animation.

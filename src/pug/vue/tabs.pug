@@ -1,0 +1,114 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Tabs Vue Component | Framework7 Vue Documentation';
+
+block content
+
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Tabs Vue Component
+      p Tabs allow to simply switch between different content. Tabs Vue component represents <a href="../docs/tabs.html">Tabs</a> component.
+      h2 Usage examples
+      pre
+        code
+          :code
+            <f7-tabs>
+              <f7-tab id="tab1" active>Tab 1 content...</f7-tab>
+              <f7-tab id="tab2">Tab 2 content...</f7-tab>
+            </f7-tabs>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="tabs">
+              <div id="tab1" class="tab acitive">Tab 1 content...</div>
+              <div id="tab2" class="tab">Tab 2 content...</div>
+            </div>
+      h4 Animated tabs
+      pre
+        code
+          :code
+            <f7-tabs animated>
+              <f7-tab id="tab1" active>Tab 1 content...</f7-tab>
+              <f7-tab id="tab2">Tab 2 content...</f7-tab>
+            </f7-tabs>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="tabs-animated-wrap">
+              <div class="tabs">
+                <div id="tab1" class="tab acitive">Tab 1 content...</div>
+                <div id="tab2" class="tab">Tab 2 content...</div>
+              </div>
+            </div>
+            </div>
+      h4 Swipeable tabs
+      pre
+        code
+          :code
+            <f7-tabs swipeable>
+              <f7-tab id="tab1" active>Tab 1 content...</f7-tab>
+              <f7-tab id="tab2">Tab 2 content...</f7-tab>
+            </f7-tabs>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="tabs-swipeable-wrap">
+              <div class="tabs">
+                <div id="tab1" class="tab acitive">Tab 1 content...</div>
+                <div id="tab2" class="tab">Tab 2 content...</div>
+              </div>
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Description
+        tbody
+          tr
+            th(colspan="3") &lt;f7-tabs&gt; properties
+          tr
+            td animated
+            td boolean
+            td Enables animated tabs
+          tr
+            td swipeable
+            td boolean
+            td Enables swipeable tabs
+          tr
+            th(colspan="3") &lt;f7-tab&gt; properties
+          tr
+            td active
+            td boolean
+            td Defines currently active/visible tab
+      h2 Tab Methods
+      table.methods-table
+        tr
+          td .show(<span>animated</span>)
+          td Show tab
+      h2 Tab Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td tab:show
+            td Event will be triggered when Tab becomes visible/active
+          tr
+            td tab:hide
+            td Event will be triggered when Tab becomes invisible/inactive
+      h2 Switch Tabs
+      p You can control/switch tabs:
+      ul
+        li by clicking on <a href="button.html">Button</a> or <a href="link.html">Link</a> specifying related tab's ID using <code>tab-link</code> prop
+        li using its <a href="../docs/tabs.html#show-tab-using-javascript">JavaScript API</a>
+        li using <a href="navigation-router.html#nested-routes">Tab Routes</a>

@@ -1,0 +1,182 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Checkbox | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Checkbox
+    .docs-index
+    h2 Checkbox Layout
+    p Checkbox layout is pretty simple:
+    pre
+      code.html
+        :code
+          <!-- checkbox element -->
+          <label class="checkbox">
+            <!-- checkbox input -->
+            <input type="checkbox">
+            <!-- checkbox icon -->
+            <i class="icon-checkbox"></i>
+          </label>
+    h2 Checkbox Group/List
+    p To create Checkbox group/list we need to use <a href="list-view.html">List View</a> with few additions:
+    pre
+      code.html
+        :code
+          <div class="list">
+            <ul>
+              <!-- Single checkbox item -->
+              <li>
+                <label class="item-checkbox item-content">
+                  <!-- Checkbox input -->
+                  <input type="checkbox"/>
+                  <!-- Checkbox icon -->
+                  <i class="icon icon-checkbox"></i>
+                  <div class="item-inner">
+                    <!-- Checkbox Title -->
+                    <div class="item-title">Books</div>
+                  </div>
+                </label>
+              </li>
+              <!-- Another checkbox item -->
+              <li>
+                <label class="item-checkbox item-content">
+                  <!-- Checked by default -->
+                  <input type="checkbox" checked/>
+                  <i class="icon icon-checkbox"></i>
+                  <div class="item-inner">
+                    <div class="item-title">Music</div>
+                  </div>
+                </label>
+              </li>
+              ...
+            </ul>
+          </div>
+    .important-note
+      ul
+        li <code>item-content</code> must be a <code><b>&lt;label&gt;</b></code> element with additional <code><b>item-checkbox</b></code> class
+        li Checkbox input (<code>&lt;input type="checkbox"&gt;</code>) must be a first child of <code>item-content</code>
+        li Checkbox icon must be <b>after</b> checkbox input
+    .with-device
+      h2(data-device-preview="../docs-demos/checkbox.html") Examples
+      h4 Inline
+      pre
+        code.html
+          :code
+            <div class="block block-strong">
+              <p>Lorem <label class="checkbox"><input type="checkbox"><i class="icon-checkbox"></i></label> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <label class="checkbox"><input type="checkbox"><i class="icon-checkbox"></i></label> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+            </div>
+      h4 Checkbox Group
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-checkbox" value="Books" checked="checked"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Books</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-checkbox" value="Movies"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Movies</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-checkbox" value="Food"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Food</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-checkbox" value="Drinks"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title">Drinks</div>
+                    </div>
+                  </label>
+                </li>
+              </ul>
+            </div>
+      h4 With Media Lists
+      pre
+        code.html
+          :code
+            <div class="list media-list">
+              <ul>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-media-checkbox" value="1"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Facebook</div>
+                        <div class="item-after">17:14</div>
+                      </div>
+                      <div class="item-subtitle">New messages from John Doe</div>
+                      <div class="item-text">Lorem ipsum...</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-media-checkbox" value="2"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">John Doe (via Twitter)</div>
+                        <div class="item-after">17:11</div>
+                      </div>
+                      <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
+                      <div class="item-text">Lorem ipsum...</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-media-checkbox" value="3"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Facebook</div>
+                        <div class="item-after">16:48</div>
+                      </div>
+                      <div class="item-subtitle">New messages from John Doe</div>
+                      <div class="item-text">Lorem ipsum...</div>
+                    </div>
+                  </label>
+                </li>
+                <li>
+                  <label class="item-checkbox item-content">
+                    <input type="checkbox" name="demo-media-checkbox" value="4"/>
+                    <i class="icon icon-checkbox"></i>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">John Doe (via Twitter)</div>
+                        <div class="item-after">15:32</div>
+                      </div>
+                      <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
+                      <div class="item-text">Lorem ipsum...</div>
+                    </div>
+                  </label>
+                </li>
+              </ul>
+            </div>

@@ -1,0 +1,276 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Button | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content.with-device
+    h1 Button
+    .docs-index
+    p Framework7 comes with a bunch of ready to use buttons. All you need is to just add appropriate classes to your links or submit/button inputs:
+    h2 Button Layout
+    p Button layout is pretty simple. Just add <code>button</code> class to links or submit/button inputs:
+    pre
+      code.html
+        :code
+          <!-- link as button -->
+          <a class="button">Button</a>
+
+          <!-- <button> as button -->
+          <button class="button">Button</button>
+
+          <!-- <input type="submit"> as button -->
+          <input type="submit" class="button" value="Button">
+    h2 Button Modifier Classes
+    p There is a variety of different buttons in Framework7. Different button styles achieved by additional modifier classes and their combinations:
+    table.props-table
+      tbody
+        tr
+          td button-fill
+          td Filled-style button
+        tr
+          td button-fill-ios
+          td Button will have filled-style only in iOS theme
+        tr
+          td button-fill-md
+          td Button will have filled-style only in MD theme
+        tr
+          td button-round
+          td Rounded button
+        tr
+          td button-round-ios
+          td Button will be rounded only in iOS theme
+        tr
+          td button-round-md
+          td Button will be rounded only in MD theme
+        tr
+          td button-small
+          td Small button
+        tr
+          td button-small-ios
+          td Button will be small only in iOS theme
+        tr
+          td button-small-md
+          td Button will be small only in MD theme
+        tr
+          td button-big
+          td Big button
+        tr
+          td button-big-ios
+          td Button will be big only in iOS theme
+        tr
+          td button-big-md
+          td Button will be big only in MD theme
+        tr
+          td button-raised
+          td Raised button&nbsp;
+            b.md-only This will have effect only in MD theme
+        tr
+          td button-outline
+          td Outline button&nbsp;
+            b.md-only This will have effect only in MD theme
+        tr
+          td button-active
+          td Active/selected button state. For use inside of Segmented
+        tr
+          td color-[color]
+          td Color button, where <b>[color]</b> is one of the <a href="color-themes.html">default colors</a>
+    p And of course we can mix these classes:
+    pre
+      code.html
+        :code
+          <!-- rounded button -->
+          <a class="button button-round">Button</a>
+
+          <!-- rounded and filled button -->
+          <a class="button button-round button-fill">Button</a>
+
+          <!-- raised, round, fill, big button -->
+          <a class="button button-round button-fill button-raised button-fill">Button</a>
+
+          <!-- small red button -->
+          <a class="button button-small color-red">Button</a>
+    h2 Segmented Control
+    p A segmented control is a linear set of two or more segments (buttons), each of which functions as a mutually exclusive button. Within the control, all buttons are equal in width. Segmented controls are often used to display different views (switch tabs).
+    h3 Segmented Layout
+    p Segmented control layout is pretty simple, just a <code>&lt;div&gt;</code> with a <code>segmented</code> class around buttons:
+    pre
+      code
+        :code
+          <div class="segmented">
+            <a class="button button-active">Tab 1</a>
+            <a class="button">Tab 2</a>
+          </div>
+    h3 Segmented Modifier Classes
+    p As well as buttons, segmented also supports few additional classes for styling:
+    table.props-table
+      tbody
+        tr
+          td segmented-round
+          td Rounded segmented
+        tr
+          td segmented-raised
+          td Raised segmented &nbsp;
+            b.md-only This will have effect only in MD theme
+    .with-device
+      h2(data-device-preview="../docs-demos/button.html") Examples
+      h4 Usual Buttons
+      p Add <code>button</code> class.
+      pre
+        code.html
+          :code
+            <div class="block">
+              <div class="row">
+                <button class="button col">Button</button>
+                <button class="button col">Button</button>
+                <button class="button col button-round">Round</button>
+              </div>
+            </div>
+      h4 Fill Buttons
+      p Add <code>button-fill</code> class.
+      pre
+        code.html
+          :code
+            <div class="block">
+              <div class="row">
+                <button class="col button button-fill">Button</button>
+                <button class="col button button-fill">Button</button>
+                <button class="col button button-fill button-round">Round</button>
+              </div>
+            </div>
+      h4 Outline Buttons
+      p Add <code>button-outline</code> class.
+      pre
+        code.html
+          :code
+            <div class="block">
+              <div class="row">
+                <button class="col button button-outline">Button</button>
+                <button class="col button button-outline">Button</button>
+                <button class="col button button-outline button-round">Round</button>
+              </div>
+            </div>
+      h4 Raised Buttons
+      p Add <code>button-raised</code> class.
+      pre
+        code.html
+          :code
+            <div class="block">
+              <p class="row">
+                <button class="col button button-raised">Button</button>
+                <button class="col button button-raised button-fill">Fill</button>
+                <button class="col button button-outline button-raised">Outline</button>
+              </p>
+              <p class="row">
+                <button class="col button button-raised button-round">Round</button>
+                <button class="col button button-raised button-fill button-round">Fill</button>
+                <button class="col button button-outline button-round button-raised">Outline</button>
+              </p>
+            </div>
+      h4 Segmented Buttons
+      p Put buttons inside of <code>segmented</code>
+      pre
+        code.html
+          :code
+            <div class="block">
+              <p class="segmented segmented-raised">
+                <button class="button">Button</button>
+                <button class="button">Button</button>
+                <button class="button button-active">Active</button>
+              </p>
+              <p class="segmented">
+                <button class="button button-outline">Outline</button>
+                <button class="button button-outline">Outline</button>
+                <button class="button button-outline button-active">Active</button>
+              </p>
+              <p class="segmented segmented-raised segmented-round">
+                <button class="button button-round">Button</button>
+                <button class="button button-round">Button</button>
+                <button class="button button-round button-active">Active</button>
+              </p>
+              <p class="segmented segmented-round">
+                <button class="button button-round button-outline">Outline</button>
+                <button class="button button-round button-outline">Outline</button>
+                <button class="button button-round button-outline button-active">Active</button>
+              </p>
+            </div>
+      h4 Big Buttons
+      p Add <code>button-big</code> class.
+      pre
+        code.html
+          :code
+            <div class="block">
+              <p class="row">
+                <button class="col button button-big">Button</button>
+                <button class="col button button-big button-fill">Fill</button>
+              </p>
+              <p class="row">
+                <button class="col button button-big button-raised">Raised</button>
+                <button class="col button button-big button-raised button-fill">Raised Fill</button>
+              </p>
+            </div>
+      h4 Small Buttons
+      p Add <code>button-small</code> class.
+      pre
+        code.html
+          :code
+            <div class="block">
+              <p class="row">
+                <button class="col button button-small">Button</button>
+                <button class="col button button-small button-outline">Outline</button>
+                <button class="col button button-small button-fill">Fill</button>
+              </p>
+              <p class="row">
+                <button class="col button button-small button-round">Button</button>
+                <button class="col button button-small button-round button-outline">Outline</button>
+                <button class="col button button-small button-round button-fill">Fill</button>
+              </p>
+            </div>
+      h4 Color Buttons
+      p Add <code>color-[color]</code> class. Where <b>[color]</b> is one of the <a href="color-themes.html">default colors</a>.
+      pre
+        code.html
+          :code
+            <div class="block">
+              <p class="row">
+                <button class="col button color-red">Red</button>
+                <button class="col button color-green">Green</button>
+                <button class="col button color-blue">Blue</button>
+              </p>
+              <p class="row">
+                <button class="col button color-pink">Pink</button>
+                <button class="col button color-yellow">Yellow</button>
+                <button class="col button color-orange">Orange</button>
+              </p>
+              <p class="row">
+                <button class="col button color-gray">Gray</button>
+                <button class="col button color-black">Black</button>
+              </p>
+            </div>
+      h4 Color Fill Buttons
+      p Add <code>button-fill</code> and <code>color-[color]</code> class. Where <b>[color]</b> is one of the <a href="color-themes.html">default colors</a>.
+      pre
+        code.html
+          :code
+            <div class="block">
+              <p class="row">
+                <button class="col button button-fill color-red">Red</button>
+                <button class="col button button-fill color-green">Green</button>
+                <button class="col button button-fill color-blue">Blue</button>
+              </p>
+              <p class="row">
+                <button class="col button button-fill color-pink">Pink</button>
+                <button class="col button button-fill color-yellow">Yellow</button>
+                <button class="col button button-fill color-orange">Orange</button>
+              </p>
+              <p class="row">
+                <button class="col button button-fill color-gray">Gray</button>
+                <button class="col button button-fill color-black">Black</button>
+                <button class="col button button-fill color-white text-color-black">White</button>
+              </p>
+            </div>

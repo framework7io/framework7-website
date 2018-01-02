@@ -1,0 +1,417 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'App / Core | Framework7 Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 App / Core
+    .docs-index
+    p When we init the app we can use the <code>new Framework7</code> constructor and pass an object with main app parameters:
+    pre
+      code
+        :code
+          var app = new Framework7({
+            // App id
+            id: 'com.myapp.test',
+            // Enable swipe panel
+            panel: {
+              swipe: 'left',
+            },
+            // ... other parameters
+          });
+    p This constructor returns main app Framework7 instance.
+    h2 App Parameters
+    p Let's look at the list of available parameters:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td id
+          td string
+          td io.framework7.testapp
+          td App bundle id.
+        tr
+          td name
+          td string
+          td Framework7
+          td App name. Can be used by other components, e.g. as the default title for <a href="dialog.html">Dialog</a> component.
+        tr
+          td version
+          td string
+          td 1.0.0
+          td App version. Can be used by other components.
+        tr
+          td theme
+          td string
+          td auto
+          td App theme. Can be <code>ios</code>, <code>md</code> or <code>auto</code>. In case of <code>auto</code> it will use iOS theme for iOS devices and MD theme for all other devices.
+        tr
+          td language
+          td string
+          td
+          td App language. Can be used by other components. By default equal to the current browser/webview language (i.e. <code>navigator.language</code>).
+        tr
+          td routes
+          td array
+          td []
+          td Array with default routes to all views.
+        tr
+          td root
+          td string
+          td body
+          td App root element.
+        tr
+          td data
+          td function
+          td
+          td App root data. Must be a function that returns an object with root data. For example:
+            pre
+              code
+                :code
+                  var app = new Framework7({
+                    data: function () {
+                      return {
+                        username: 'vladimir',
+                        firstName: 'Vladimir',
+                        lastName: 'Kharlampidi'
+                      };
+                    },
+                  });
+            p Note, that <code>this</code> inside of this data function points to <code>app</code> Framework7 instance.
+        tr
+          td methods
+          td object
+          td {}
+          td App root methods. Object with methods, e.g.
+            pre
+              code
+                :code
+                  var app = new Framework7({
+                    methods: {
+                      alert: function() {
+                        app.dialog.alert('Hello World');
+                      }
+                    }
+                  });
+        tr
+          td on
+          td object
+          td {}
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var app = new Framework({
+                    on: {
+                      init: function () {
+                        console.log('App initialized'),
+                      },
+                      pageInit: function () {
+                        console.log('Page initialized'),
+                      },
+                    }
+                  })
+        tr
+          td init
+          td boolean
+          td true
+          td By default Framework7 will be initialized automatically when you call <code>new Framework7()</code>. If you want to prevent this behavior you can disable it with this option and then initialize it manually with <code>app.init()</code> when you need it.
+        tr
+          td initOnDeviceReady
+          td boolean
+          td true
+          td If automatic initialization is enabled with <code>init: true</code> parameter and app is running under cordova environment then it will be initialized on <code>deviceready</code> event.
+        tr
+          th(colspan="4") Clicks Module Parameters
+        tr
+          td clicks
+          td object
+          td
+          td Object with clicks-module related parameters:
+            pre
+              code
+                :code
+                  var app = new Framework7({
+                    clicks: {
+                      externalLinks: '.external',
+                    }
+                  })
+        tr.subparam-open-row
+          td(colspan="4") {
+        tr.subparam-row
+          td externalLinks
+          td string
+          td '.external'
+          td CSS selector for links that should be treated as external and shouldn't be handled by Framework7. For example such '.external' value will match to links like <code>&lt;a href="somepage.html" class="external"&gt;</code> (with class "external")
+        tr.subparam-close-row
+          td(colspan="4") }
+        tr
+          th(colspan="4") Touch Module Parameters
+        tr
+          td touch
+          td object
+          td
+          td Object with touch-module related parameters:
+            pre
+              code
+                :code
+                  var app = new Framework7({
+                    touch: {
+                      tapHold: true,
+                    }
+                  })
+        tr.subparam-open-row
+          td(colspan="4") {
+        tr.subparam-row
+          td fastClicks
+          td boolean
+          td true
+          td Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script.
+        tr.subparam-row
+          td fastClicksDistanceThreshold
+          td number
+          td 10
+          td Distance threshold (in px) to prevent short taps. So if tap/move distance is larger than this value then "click" will not be triggered
+        tr.subparam-row
+          td fastClicksDelayBetweenClicks
+          td number
+          td 50
+          td Minimal allowed delay (in ms) between multiple clicks
+        tr.subparam-row
+          td fastClicksExclude
+          td string
+          td
+          td This parameter allows to specify elements not handled by fast clicks by passing CSS selector of such elements
+        tr.subparam-row
+          td disableContextMenu
+          td boolean
+          td true
+          td
+        tr.subparam-row
+          td tapHold
+          td boolean
+          td false
+          td Enables tap hold
+        tr.subparam-row
+          td tapHoldDelay
+          td number
+          td 750
+          td Determines how long (in ms) the user must hold their tap before the taphold event is fired on the target element
+        tr.subparam-row
+          td tapHoldPreventClicks
+          td boolean
+          td true
+          td When enabled (by default), then click event will not be fired after tap hold event
+        tr.subparam-row
+          td activeState
+          td boolean
+          td true
+          td When enabled, app will add "active-state" class to currently touched (:active) element.
+        tr.subparam-row
+          td activeStateElements
+          td string
+          td a, button, label, span, .actions-button
+          td CSS selector of elements where enabled <code>activeState</code> will add appropriate active class
+        tr.subparam-row
+          td materialRipple
+          td boolean
+          td true
+          td Enables Material theme specific touch ripple effect
+        tr.subparam-row
+          td materialRippleElements
+          td string
+          td .ripple, .link, .item-link, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell, .notification-close-button
+          td CSS selector of elements to apply touch ripple effect on click
+        tr.subparam-close-row
+          td(colspan="4") }
+    p These are default app parameters for app core module.
+    p Most of components that has JavaScript API may extend this list of parameters with the property named as component. For example <a href="#">Panel</a> component extends app parameters with <code>panel</code> property that accepts Panel specific parameters. For example:
+    pre
+      code
+        :code
+          var app = new Framework7({
+            id: 'com.myapp.test',
+            // Extended by Panel component:
+            panel: {
+              swipe: 'left',
+              leftBreakpoint: 768,
+              rightBreakpoint: 1024,
+            },
+            // Extended by Dialog component:
+            dialog: {
+              title: 'My App',
+            },
+            // Extended by Statusbar component:
+            statusbar: {
+              iosOverlaysWebview: true,
+            },
+          });
+    h2 App Methods & Properties
+    p Returned Framework7 instance (<code>app</code>) contains a lot of useful properties and methods:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td app.id
+          td App ID passed in parameters
+        tr
+          td app.name
+          td App name passed in parameters
+        tr
+          td app.version
+          td App version
+        tr
+          td app.routes
+          td App routes
+        tr
+          td app.language
+          td App language
+        tr
+          td app.root
+          td Dom7 instance with app root element
+        tr
+          td app.rtl
+          td Boolean property indicating app is in RTL layout or not
+        tr
+          td app.theme
+          td Current app theme. Can be <code>md</code> or <code>ios</code>
+        tr
+          td app.data
+          td Object with app root data passed on intialization
+        tr
+          td app.methods
+          td Object with app root methods
+        tr
+          td app.width
+          td App width in px
+        tr
+          td app.height
+          td App height in px
+        tr
+          td app.left
+          td App left offset in px
+        tr
+          td app.top
+          td App top offset in px
+        tr
+          td app.initialized
+          td Boolean property indicating app is initialized or not
+        tr
+          td app.$
+          td Dom7 alias
+        tr
+          td app.t7
+          td Template7 alias
+        tr
+          td app.params
+          td App parameters
+        tr
+          td app.support
+          td Object with properties about supported features. Check the <a href="support.html">Support</a> utilities section
+        tr
+          td app.device
+          td Object with properties about device. Check the <a href="device.html">Device</a> utilities section
+        tr
+          td app.utils
+          td Object with some useful utilities. Check the <a href="utils.html">Utils</a> section
+        tr
+          td app.request
+          td Contains methods to work with XHR requests. Check the <a href="request.html">Request</a> utilities section
+
+        tr
+          th(colspan="2") Methods
+        tr
+          td app.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td app.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td app.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td app.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td app.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+        tr
+          td app.init()
+          td Initialize app. In case you disabled auto initialization with <code>init: false</code> parameter
+    p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with <code>panel</code> property that accepts Panel specific properties and methods. For example:
+    pre
+      code
+        :code
+          // Open panel
+          app.panel.open('left');
+
+          // Hide statusbar
+          app.statusbar.hide();
+    h2 App Events
+    p App instance emits the following core events:
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td init
+          td
+          td Event will be fired on app initialization. Automatically after <code>new Framework7()</code> or after <code>app.init()</code> if you disabled auto init.
+        tr
+          td resize
+          td
+          td Event will be fired on app resize (window resize).
+        tr
+          td orientationchange
+          td
+          td Event will be fired on app orientation change (window orientantion change).
+        tr
+          td click
+          td <span>event</span>
+          td Event will be fired on app click
+        tr
+          td touchstart:active
+          td <span>event</span>
+          td Event will be fired on touch start (mousedown) event added as active listener (possible to prevent default)
+        tr
+          td touchmove:active
+          td <span>event</span>
+          td Event will be fired on touch move (mousemove) event added as active listener (possible to prevent default)
+        tr
+          td touchend:active
+          td <span>event</span>
+          td Event will be fired on touch end (mouseup) event added as active listener (possible to prevent default)
+        tr
+          td touchstart:passive
+          td <span>event</span>
+          td Event will be fired on touch start (mousedown) event added as passive listener (impossible to prevent default)
+        tr
+          td touchmove:passive
+          td <span>event</span>
+          td Event will be fired on touch move (mousemove) event added as passive listener (impossible to prevent default)
+        tr
+          td touchend:passive
+          td <span>event</span>
+          td Event will be fired on touch end (mouseup) event added as passive listener (impossible to prevent default)
+    p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance. For example:
+    pre
+      code
+        :code
+          app.on('panelOpen', function (panel) {
+            console.log('Panel ' + panel.side + ' opened');
+          });
+

@@ -1,0 +1,216 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Grid / Layout Grid | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Grid / Layout Grid
+    .docs-index
+    p Framework7 comes with flexible layout grid that allows you place your content as you need.
+    h2 Grid Layout
+    pre
+      code
+        | &lt;!-- Each "cells" row should be wrapped with div class="row" --&gt;
+        | &lt;div class="row"&gt;
+        |     &lt;!-- Each "cell" has col-[widht in percents] class --&gt;
+        |     &lt;div class="col-50"&gt;50%&lt;/div&gt;
+        |     &lt;div class="col-50"&gt;50%&lt;/div&gt;
+        | &lt;/div&gt;
+        | &lt;div class="row"&gt;
+        |     &lt;!-- Each "cell" has col-[widht in percents] class --&gt;
+        |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
+        |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
+        |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
+        | &lt;/div&gt;
+    p By defaul all "cells" has 15px gap between each other for iOS theme and 16px gap for MD theme. If you want "cells" without gap, you should add additional <code><b>no-gap</b></code> class to "row":
+    pre
+      code
+        | &lt;!-- Additional "no-gap" class on row to remove space between cells --&gt;
+        | &lt;div class="row no-gap"&gt;
+        |     &lt;!-- Each "cell" has col-[widht in percents] class --&gt;
+        |     &lt;div class="col-50"&gt;50%&lt;/div&gt;
+        |     &lt;div class="col-50"&gt;50%&lt;/div&gt;
+        | &lt;/div&gt;
+        | &lt;div class="row"&gt;
+        |     &lt;!-- Each "cell" has col-[widht in percents] class --&gt;
+        |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
+        |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
+        |     &lt;div class="col-33"&gt;33%&lt;/div&gt;
+        | &lt;/div&gt;
+    h2 Column Sizes
+    p The following columns size are available:
+    - var cols = [5, 10, 15, 20, 25, 30, 100/3, 35, 40, 45, 50, 55, 60, 65, 100*(2/3), 70, 75, 80, 85, 90, 95, 100];
+    table
+      thead
+        tr
+          th Class
+          th Tablet Class <br><small>width >= 768px</small>
+          th Desktop Class <br><small>width >= 1025px</small>
+          th Width
+      tbody
+        - for (var i = 0; i < cols.length; i++)
+          - var className = Math.floor(cols[i]);
+          tr
+            td col-#{className}
+            td tablet-#{className}
+            td desktop-#{className}
+            td #{cols[i]}%
+        tr
+          td col
+          td tablet-auto
+          td desktop-auto
+          td Equal width
+    .with-device
+      h2(data-device-preview="../docs-demos/grid.html") Examples
+      p By default grid columns (cells) has no any visual styles, we'll add them for this demo:
+      pre
+        code.css
+          :code
+            div[class*="col"] {
+              background: #fff;
+              text-align: center;
+              color: #000;
+              border: 1px solid #ddd;
+              padding: 5px;
+              margin-bottom: 15px;
+              font-size: 12px;
+            }
+      pre
+        code.html
+          :code
+            <div class="block-title">Columns with gap</div>
+            <div class="block">
+              <div class="row">
+                <div class="col">50% (.col)</div>
+                <div class="col">50% (.col)</div>
+              </div>
+              <div class="row">
+                <div class="col">25% (.col)</div>
+                <div class="col">25% (.col)</div>
+                <div class="col">25% (.col)</div>
+                <div class="col">25% (.col)</div>
+              </div>
+              <div class="row">
+                <div class="col">33% (.col)</div>
+                <div class="col">33% (.col)</div>
+                <div class="col">33% (.col)</div>
+              </div>
+              <div class="row">
+                <div class="col">20% (.col)</div>
+                <div class="col">20% (.col)</div>
+                <div class="col">20% (.col)</div>
+                <div class="col">20% (.col)</div>
+                <div class="col">20% (.col)</div>
+              </div>
+              <div class="row">
+                <div class="col-33">33% (.col-33)</div>
+                <div class="col-66">66% (.col-66)</div>
+              </div>
+              <div class="row">
+                <div class="col-25">25% (.col-25)</div>
+                <div class="col-25">25% (.col-25)</div>
+                <div class="col-50">50% (.col-50)</div>
+              </div>
+              <div class="row">
+                <div class="col-75">75% (.col-75)</div>
+                <div class="col-25">25% (.col-25)</div>
+              </div>
+              <div class="row">
+                <div class="col-80">80% (.col-80)</div>
+                <div class="col-20">20% (.col-20)</div>
+              </div>
+            </div>
+      pre
+        code.html
+          :code
+            <div class="block-title">No gap between columns</div>
+            <div class="block">
+              <div class="row no-gap">
+                <div class="col">50% (.col)</div>
+                <div class="col">50% (.col)</div>
+              </div>
+              <div class="row no-gap">
+                <div class="col">25% (.col)</div>
+                <div class="col">25% (.col)</div>
+                <div class="col">25% (.col)</div>
+                <div class="col">25% (.col)</div>
+              </div>
+              <div class="row no-gap">
+                <div class="col">33% (.col)</div>
+                <div class="col">33% (.col)</div>
+                <div class="col">33% (.col)</div>
+              </div>
+              <div class="row no-gap">
+                <div class="col">20% (.col)</div>
+                <div class="col">20% (.col)</div>
+                <div class="col">20% (.col)</div>
+                <div class="col">20% (.col)</div>
+                <div class="col">20% (.col)</div>
+              </div>
+              <div class="row no-gap">
+                <div class="col-33">33% (.col-33)</div>
+                <div class="col-66">66% (.col-66)</div>
+              </div>
+              <div class="row no-gap">
+                <div class="col-25">25% (.col-25)</div>
+                <div class="col-25">25% (.col-25)</div>
+                <div class="col-50">50% (.col-50)</div>
+              </div>
+              <div class="row no-gap">
+                <div class="col-75">75% (.col-75)</div>
+                <div class="col-25">25% (.col-25)</div>
+              </div>
+              <div class="row no-gap">
+                <div class="col-80">80% (.col-80)</div>
+                <div class="col-20">20% (.col-20)</div>
+              </div>
+            </div>
+      pre
+        code.html
+          :code
+            <div class="block-title">Nested</div>
+            <div class="block">
+              <div class="row">
+                <div class="col">50% (.col)
+                  <div class="row">
+                    <div class="col">50% (.col)</div>
+                    <div class="col">50% (.col)</div>
+                  </div>
+                </div>
+                <div class="col">50% (.col)
+                  <div class="row">
+                    <div class="col-33">33% (.col-33)</div>
+                    <div class="col-66">66% (.col-66)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      pre
+        code.html
+          :code
+            <div class="block-title">Responsive Grid</div>
+            <div class="block">
+              <p>Grid cells have different size on Phone/Tablet</p>
+              <div class="row">
+                <div class="col-100 tablet-50">.col-100.tablet-50</div>
+                <div class="col-100 tablet-50">.col-100.tablet-50</div>
+              </div>
+              <div class="row">
+                <div class="col-50 tablet-25">.col-50.tablet-25</div>
+                <div class="col-50 tablet-25">.col-50.tablet-25</div>
+                <div class="col-50 tablet-25">.col-50.tablet-25</div>
+                <div class="col-50 tablet-25">.col-50.tablet-25</div>
+              </div>
+              <div class="row">
+                <div class="col-100 tablet-40">.col-100.tablet-40</div>
+                <div class="col-50 tablet-60">.col-50.tablet-60</div>
+                <div class="col-50 tablet-66">.col-50.tablet-66</div>
+                <div class="col-100 tablet-33">.col-100.tablet-33</div>
+              </div>
+            </div>

@@ -1,0 +1,483 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Navbar | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Navbar
+    .docs-index
+    p Navbar is a fixed area at the top of a screen that contains Page title and navigation elements.
+    p Navbar has 3 main parts: Left, Title and Right. Each part may contain any HTML content, but it is recommended to use them in the following way:
+    ul
+      li
+        p <strong>Left</strong> part is designed to be used with "back link", icons or with single text link.
+      li
+        p <strong>Title</strong> part is used to display page title or tab links (buttons row/segmented controller).
+      li
+        p <strong>Right</strong> part is for the same as the Left part.
+
+    h2 Navbar HTML Layout
+    p Navbar layout is pretty simple and self explaining:
+    pre
+      code.html
+        | &lt;div class="navbar"&gt;
+        |     &lt;div class="navbar-inner"&gt;
+        |         &lt;div class="left"&gt;Left&lt;/div&gt;
+        |         &lt;div class="title"&gt;Page Title&lt;/div&gt;
+        |         &lt;div class="right"&gt;Right&lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/div&gt;
+    .important-note
+      p Note that Navbar's Title element has lowest width priority, and when window screen will not fit all three elements Title part will be cut.
+      p So if you use plain text in Title part it will have ellipsis (...) on the end when cuted. But you need to take care about it if you have some custom elements there.
+    h3 Navbar With Links
+    p To add links in Left or Right part you just need to add the plain <code>&lt;a&gt;</code> tag with additional <code>link</code> class:
+    pre
+      code.html
+        | &lt;div class="navbar"&gt;
+        |     &lt;div class="navbar-inner"&gt;
+        |         &lt;div class="left"&gt;
+        |             &lt;a href="#" class="link"&gt;Left Link&lt;/a&gt;
+        |         &lt;/div&gt;
+        |         &lt;div class="title"&gt;Page Title&lt;/div&gt;
+        |         &lt;div class="right"&gt;
+        |             &lt;a href="#" class="link"&gt;Right Link&lt;/a&gt;
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/div&gt;
+    h3 Multiple Links
+    p Nothing extraordinary. Just add more <code>&lt;a class="link"</code> to the required part:
+    pre
+      code.html
+        | &lt;div class="navbar"&gt;
+        |     &lt;div class="navbar-inner"&gt;
+        |         &lt;div class="left"&gt;
+        |             &lt;a href="#" class="link"&gt;Left 1&lt;/a&gt;
+        |             &lt;a href="#" class="link"&gt;Left 2&lt;/a&gt;
+        |         &lt;/div&gt;
+        |         &lt;div class="title"&gt;Page Title&lt;/div&gt;
+        |         &lt;div class="right"&gt;
+        |             &lt;a href="#" class="link"&gt;Right 1&lt;/a&gt;
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/div&gt;
+    h3 Links With Icons + Text
+    p Here comes a little difference. In this case we need to <strong>wrap link's text with</strong> <code>&lt;span&gt;</code> element. It is required for correct spacing between icon and "word", and for animation:
+    pre
+      code.html
+        | &lt;div class="navbar"&gt;
+        |     &lt;div class="navbar-inner"&gt;
+        |         &lt;div class="left"&gt;
+        |             &lt;a href="#" class="link"&gt;
+        |                 &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+        |                 &lt;span&gt;Back&lt;/span&gt;
+        |             &lt;/a&gt;
+        |         &lt;/div&gt;
+        |         &lt;div class="title"&gt;Title&lt;/div&gt;
+        |         &lt;div class="right"&gt;
+        |             &lt;a href="#" class="link"&gt;
+        |                 &lt;i class="icon another-icon"&gt;&lt;/i&gt;
+        |                 &lt;span&gt;Menu&lt;/span&gt;
+        |             &lt;/a&gt;
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/div&gt;
+    h3 Links With Icons Only
+    p If need links with icons and without text we need to additional <code><b>icon-only</b></code> class to links. With this class link will have fixed size so we can't miss it with finger:
+    pre
+      code.html
+        | &lt;div class="navbar"&gt;
+        |     &lt;div class="navbar-inner"&gt;
+        |         &lt;div class="left"&gt;
+        |             &lt;a href="#" class="link icon-only"&gt;
+        |                 &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+        |             &lt;/a&gt;
+        |         &lt;/div&gt;
+        |         &lt;div class="title"&gt;Title&lt;/div&gt;
+        |         &lt;div class="right"&gt;
+        |             &lt;a href="#" class="link icon-only"&gt;
+        |                 &lt;i class="icon another-icon"&gt;&lt;/i&gt;
+        |             &lt;/a&gt;
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/div&gt;
+    h3 Theme-specific Styling
+    p In iOS theme Navbar has thin border on the bottom. To disable this border you need to add <code><b>no-hairline</b></code> class to navbar element:
+    pre
+      code.html
+        :code
+          <div class="navbar no-hairline">...</div>
+    p In MD theme Navbar has shadow. To disable this shadow you need to add <code><b>no-shadow</b></code> class to navbar element:
+    pre
+      code.html
+        :code
+          <div class="navbar no-shadow">...</div>
+    h2 Navbar Type
+    p Now let's look where we can place our Navbar in DOM. There are several rules to place Navbar.
+    h3 Static Navbar
+    p Static navbar position is the probably most rarely used layout type. In this case Navbar is just part of the scrollable page content:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <!-- Scrollable page content -->
+            <div class="page-content">
+              <!-- Static navbar goes in the beginning inside of page-content -->
+              <div class="navbar">...</div>
+              ...
+
+            </div>
+          </div>
+    h3 Fixed Navbar
+    p Fixed navbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed toolbar then it must be BEFORE the toolbar:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <!-- Fixed navbar goes ALWAYS FIRST -->
+            <div class="navbar">...</div>
+            <!-- Fixed toolbar goes ALWAYS AFTER navbar -->
+            <div class="toolbar">...</div>
+
+            <!-- Scrollable page content -->
+            <div class="page-content">
+              ...
+            </div>
+          </div>
+    .important-note
+      p
+        strong Fixed Navbar must always be a direct child of a page and BEFORE the toolbar (if fixed toolbar is used on this page)
+    h3 Common Navbar
+    p If we need only one common navbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
+    pre
+      code.html
+        :code
+          <div class="view">
+            <!-- View common navbar -->
+            <div class="navbar">...</div>
+
+            <!-- Pages -->
+            <div class="page">...</div>
+          </div>
+    p If we need only one common navbar / navbar for all views then it must be a direct child of Views element and be BEFORE all views.
+    pre
+      code.html
+        :code
+          <div class="views tabs">
+            <!-- Views common navbar -->
+            <div class="navbar">...</div>
+
+            <div class="view tab tab-active" id="tab-1">...</div>
+            <div class="view tab" id="tab-2">...</div>
+            ...
+          </div>
+    .important-note
+      p
+        strong Common Navbar must always be a direct child of Views/View and BEFORE the navbar (if same common toolbar is used)
+    h2 Dynamic Navbar
+    p.ios-only Dynamic Navbar is supported only in iOS Theme
+    p One of the iOS-theme awesome features is the dynamic navbar. Navbar's elements will slide and fade during pages transition and swipe back when dynamic navbar is enabled.
+    p It is enabled by default when you use <code>Fixed-positioned</code> navbars, when Navbar is a direct child of the page.
+    p If you want to disable it you need to pass <code>dynamicNavbar: false</code> for required View on its initialisation or in global <a href="app.html#app-parameters">app parameters</a> for all views. For example:
+    pre
+      code.js
+        :code
+          // Disable globally
+          var app = new Framework7({
+            view: {
+              dynamicNavbar: false,
+            },
+          });
+
+          // Disable only for view on its initialisation
+          var mainView = app.views.create('.view-main', {
+            dynamicNavbar: false,
+          });
+    h3 Dynamic Navbar Layout
+    p Dynamic Navbar layout is the same as for usual Navbar, the only difference is that you can add additional classes to the Navbar parts (Left, Title, Right) to tell which type of transition effect you want on this part:
+    .important-note
+      ul
+        li
+          p By default (if there is no additional classes) each Navbar part has <b>"Fade"</b> transition effect
+        li
+          p If you add <code><b>sliding</b></code> class to any of Navbar parts then it will have <b>"Sliding"</b> effect
+        li
+          p If you add <code><b>sliding</b></code> class to the <code>navbar-inner</code> then <b>all</b> Navbar parts will have <b>"Sliding"</b> effect
+        li
+          p For better look you should keep identic transition type for the same Navbar parts through different pages.
+    pre
+      code.html
+        :code
+          <!-- No additional classes, all elements will have "fade" effect on page transition -->
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="left">
+                <a href="#" class="link">Home Left</a>
+              </div>
+              <div class="title">Home</div>
+              <div class="right">
+                <a href="#" class="link">Home Right</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Title and Left will have "sliding" effect on page transition -->
+          <div class="navbar">
+            <div class="navbar-inner">
+              <!-- Additional "sliding" class -->
+              <div class="left sliding">
+                <a href="#" class="link">Home Left</a>
+              </div>
+              <!-- Additional "sliding" class -->
+              <div class="title sliding">Home</div>
+              <div class="right">
+                <a href="#" class="link">Home Right</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- All parts will have "sliding" effect on page transition -->
+          <div class="navbar">
+            <!-- Additional "sliding" class -->
+            <div class="navbar-inner sliding">
+              <div class="left">
+                <a href="#" class="link">Home Left</a>
+              </div>
+              <div class="title">Home</div>
+              <div class="right">
+                <a href="#" class="link">Home Right</a>
+              </div>
+            </div>
+          </div>
+
+    h2 Navbar App Methods
+    p We can use following app methods available for Navbar:
+    table.methods-table
+      tbody
+        tr
+          td app.navbar.hide(<span>navbarEl</span>, <span>animate</span>)
+          td Hide navbar
+            ul.method-parameters
+              li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
+              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be hidden with animation or not. By default is <code>true</code>
+        tr
+          td app.navbar.show(<span>navbarEl</span>, <span>isAnimated</span>)
+          td Show navbar
+            ul.method-parameters
+              li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
+              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be shown with animation or not. By default is <code>true</code>
+        tr
+          td app.navbar.size(<span>navbarEl</span>)
+          td Recalculate positional styles for Navbar elements. It could be useful after you change some of Navbar elements dynamically. <span class="ios-only">This will have effect only in iOS theme</span>
+            ul.method-parameters
+              li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
+        tr
+          td app.navbar.getElByPage(<span>pageEl</span>)
+          td Get navbar HTML element by specified page element. Useful only when dynamic navbar is enabled. In this case it is out of the page container. <span class="ios-only">This will have effect only in iOS theme</span>
+            ul.method-parameters
+              li <span class="parameter">pageEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page where to look for navbar. Required.
+    h2 Navbar App Parameters
+    p It is possible to control some default navbar behavior using global <a href="app.html#app-parameters">app parameters</a> by passing navbar related parameters under <code>navbar</code> parameter:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td hideOnPageScroll
+          td boolean
+          td false
+          td Will hide Navbars on page scroll
+        tr
+          td showOnPageScrollEnd
+          td boolean
+          td true
+          td Set to <code>true</code> to show hidden Navbar when scrolling reaches end of the page
+        tr
+          td showOnPageScrollTop
+          td boolean
+          td true
+          td Set to <code>false</code> and hidden Navbar will not become visible when you scroll page to top everytime. They will become visible only at the most top scroll position, in the beginning of the page
+        tr
+          td scrollTopOnTitleClick
+          td boolean
+          td true
+          td When enabled then every click on navbar's title element will scroll related page to the top
+        tr
+          td iosCenterTitle
+          td boolean
+          td true
+          td When enabled then it will try to position title at the center in iOS theme. Sometime (with some custom design) it may not needed. <span class="ios-only">This will have effect only in iOS theme</span>
+
+    p For example:
+    pre
+      code.js
+        :code
+          var app = new Framework7({
+            navbar: {
+              hideOnPageScroll: true,
+              iosCenterTitle: false,
+            },
+          });
+    h2 Control Navbar With Page Classes
+    p Framework7 allows you to hide/show Navbar on specific page or on specific page scoll by using additional classes.
+
+    p If you want to hide navbar on page scroll on some specific page use additional classes on this page's <code>&lt;div class="page-content"&gt;</code> element:
+    ul
+      li <code><b>hide-bars-on-scroll</b></code> - to hide both Navbar and Toolbar on page scroll
+      li <code><b>hide-navbar-on-scroll</b></code> - to hide Navbar on page scroll
+
+    p To disable this behavior on specific pages you may use the following additional classes:
+    ul
+      li <code><b>keep-bars-on-scroll</b></code> - to keep Navbar and Toolbar on page scroll
+      li <code><b>keep-navbar-on-scroll</b></code> - to keep Navbar on page scroll
+    p For example:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <div class="navbar">
+              ...
+            </div>
+            <!-- "hide-navbar-on-scroll" class to hide Navbar -->
+            <div class="page-content hide-navbar-on-scroll">
+              <div class="content-block">
+                <p>Scroll page down</p>
+                ...
+              </div>
+            </div>
+          </div>
+
+    p If you have common single Navbar across all pages/views of your app you can hide/show Navbar automatically for some pages where you don't need it.
+    p To make it work all you need is to add <code><b>no-navbar</b></code> class to loaded page (<code>&lt;div class="page no-navbar"&gt;</code>):
+    pre
+      code.html
+        | &lt;!-- Page has additional "no-navbar" class --&gt;
+        | &lt;div class="page no-navbar"&gt;
+        |   &lt;div class="page-content"&gt;
+        |       ...
+        |   &lt;/div&gt;
+        | &lt;/div&gt;
+    .with-device
+      h2(data-device-preview="../docs-demos/navbar.html") Examples
+      h3 Static Navbar
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="page-content">
+                <!-- Static Navbar -->
+                <div class="navbar">
+                  <div class="navbar-inner">
+                    <div class="left">
+                      <a class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                      </a>
+                    </div>
+                    <div class="title">Static Navbar</div>
+                    <div class="right"></div>
+                  </div>
+                </div>
+                <div class="block">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
+                  ...
+                </div>
+              </div>
+            </div>
+      h3 Fixed Navbar
+      pre
+        code.html
+          :code
+            <div class="page">
+              <!-- Fixed/Dynamic Navbar -->
+              <div class="navbar">
+                <div class="navbar-inner sliding">
+                  <div class="left">
+                    <a class="link back">
+                      <i class="icon icon-back"></i>
+                      <span class="ios-only">Back</span>
+                    </a>
+                  </div>
+                  <div class="title">Fixed Navbar</div>
+                </div>
+              </div>
+              <div class="page-content">
+                <div class="block">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
+                  ...
+                </div>
+              </div>
+            </div>
+      h3 Navbar API
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner sliding">
+                  <div class="left">
+                    <a class="link back">
+                      <i class="icon icon-back"></i>
+                      <span class="ios-only">Back</span>
+                    </a>
+                  </div>
+                  <div class="title">Navbar API</div>
+                </div>
+              </div>
+              <div class="page-content">
+                <div class="block">
+                  <p><a class="button button-raised hide-navbar">Hide Navbar</a></p>
+                  <p><a class="button button-raised show-navbar">Show Navbar</a></p>
+                  <p>Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.</p>
+                  ...
+                </div>
+              </div>
+            </div>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            $$('.hide-navbar').on('click', function () {
+              app.navbar.hide('.navbar');
+            });
+            $$('.show-navbar').on('click', function () {
+              app.navbar.show('.navbar');
+            });
+      h3 Hide On Scroll
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner sliding">
+                  <div class="left">
+                    <a class="link back">
+                      <i class="icon icon-back"></i>
+                      <span class="ios-only">Back</span>
+                    </a>
+                  </div>
+                  <div class="title">Hide On Scroll</div>
+                </div>
+              </div>
+              <!-- Additional "hide-navbar-on-scroll" class to hide navbar on scroll automatically -->
+              <div class="page-content hide-navbar-on-scroll">
+                <div class="block">
+                  <p>Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.</p>
+                  ...
+                </div>
+              </div>
+            </div>
+

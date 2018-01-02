@@ -1,0 +1,82 @@
+extends _layout
+block content
+  .view.view-main
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Vertical Side By Side
+          .right
+      .page-content
+        .block-title Side By Side
+        .timeline.timeline-sides
+          .timeline-item
+            .timeline-item-date 21 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Some text goes here
+          .timeline-item
+            .timeline-item-date 22 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Another text goes here
+          .timeline-item
+            .timeline-item-date 23 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Just plain text
+          .timeline-item
+            .timeline-item-date 24 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner One more text here
+        .block-title Only Tablet Side By Side
+        .timeline.tablet-sides
+          .timeline-item
+            .timeline-item-date 21 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Some text goes here
+          .timeline-item
+            .timeline-item-date 22 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Another text goes here
+          .timeline-item
+            .timeline-item-date 23 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Just plain text
+          .timeline-item
+            .timeline-item-date 24 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner One more text here
+
+        .block-title Forced Sides
+        .timeline.timeline-sides
+          .timeline-item.timeline-item-right
+            .timeline-item-date 21 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Some text goes here
+          .timeline-item.timeline-item-right
+            .timeline-item-date 22 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Another text goes here
+          .timeline-item.timeline-item-left
+            .timeline-item-date 23 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Just plain text
+          .timeline-item.timeline-item-left
+            .timeline-item-date 24 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner One more text here
+
+
+block scripts
+  script.
+    var app = new Framework7();

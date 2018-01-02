@@ -1,0 +1,26 @@
+block vars
+doctype
+html
+  head
+    meta(charset="utf-8")
+    title=title
+    meta(property="og:image", content="http://framework7.io/i/f7-banner.jpg")
+    meta(name="viewport", content="width=device-width, viewport-fit=cover")
+    if (includeF7Icons)
+      link(rel="stylesheet" href=cdn + "/css/framework7-icons.css")
+    link(rel="stylesheet", href=cdn + "/css/normalize.css")
+    link(rel="stylesheet", href=cdn + "/css/highlight.css")
+    link(rel="stylesheet", href=cdn + "/css/main.css")
+    link(rel="shortcut icon" href="/i/favicon.png")
+    script(src=cdn + "/js/modernizr-2.7.1.min.js")
+  body
+    include _internal-header
+    main
+      .center
+        block content
+    footer
+      .center
+        include _footer
+    block footer
+    include _footer-scripts
+    block scripts

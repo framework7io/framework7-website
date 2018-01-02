@@ -1,0 +1,500 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Toolbar / Tabbar | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Toolbar / Tabbar
+    .docs-index
+    p Toolbar is a fixed area at the bottom of a screen that contains navigation elements.
+    h2 Toolbar HTML Layout
+    p Toolbar layout is very simple:
+    pre
+      code.html
+        | &lt;div class="toolbar"&gt;
+        |     &lt;div class="toolbar-inner"&gt;
+        |         &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+        |         &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+        |         &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
+        |     &lt;/div&gt;
+        | &lt;/div&gt;
+    p By default, all Toolbar elements (links) equally spaced along toolbar - they have equal space between each other.
+    p In MD Theme Toolbar/Tabbar is usually on top of the app right below the Navbar. But if you really need to have Toolbar on bottom you can do it by just using addional <code><b>toolbar-bottom-md</b></code> class:
+    pre
+      code.html
+        | &lt;div class="toolbar toolbar-bottom-md"&gt;
+        |     &lt;div class="toolbar-inner"&gt;
+        |         &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+        |         &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+        |         &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
+        |     &lt;/div&gt;
+        | &lt;/div&gt;
+    h3 Theme-specific Styling
+    p In iOS theme Toolbar/Tabbar has thin border on the top. To disable this border you need to add <code><b>no-hairline</b></code> class to toolbar element:
+    pre
+      code.html
+        :code
+          <div class="toolbar no-hairline">...</div>
+    p In MD theme Toolbar/Tabbar has shadow. To disable this shadow you need to add <code><b>no-shadow</b></code> class to toolbar element:
+    pre
+      code.html
+        :code
+          <div class="toolbar no-shadow">...</div>
+
+    h2 Toolbar Type
+    p Now let's look where we can place our Toolbar / Tabbar in DOM. There are several rules to place Toolbar.
+    h3 Static Toolbar
+    p Static toolbar position is the probably most rarely used layout type. In this case Toolbar / Tabbar is just part of the scrollable page content:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <!-- Fixed navbar goes first -->
+            <div class="navbar">...</div>
+
+            <!-- Scrollable page content -->
+            <div class="page-content">
+              ...
+
+              <!-- Static toolbar goes in the end inside of page-content -->
+              <div class="toolbar">...</div>
+            </div>
+          </div>
+    h3 Fixed Toolbar
+    p Fixed toolbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed Navbar then it must be <b>AFTER Navbar</b>:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <!-- Fixed navbar goes first -->
+            <div class="navbar">...</div>
+            <!-- Fixed toolbar goes ALWAYS after Navbar -->
+            <div class="toolbar">...</div>
+
+            <!-- Scrollable page content -->
+            <div class="page-content">
+              ...
+            </div>
+          </div>
+    .important-note
+      p
+        strong Fixed Toolbar/Tabbar must always be a direct child of a page and AFTER the Navbar (if fixed navbar is used on this page)
+    h3 Common Toolbar
+    p If we need only one common toolbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
+    pre
+      code.html
+        :code
+          <div class="view">
+            <!-- View common toolbar -->
+            <div class="toolbar">...</div>
+
+            <!-- Pages -->
+            <div class="page">...</div>
+          </div>
+    p If we need only one common toolbar / tabbar for all views then it must be a direct child of Views element and be <b>BEFORE all views</b>. Such layout mainly used in multiple views/tabbed app layout with toolbar
+    pre
+      code.html
+        :code
+          <div class="views tabs">
+            <!-- Views common toolbar / tabbar -->
+            <div class="toolbar tabbar">...</div>
+
+            <div class="view tab tab-active" id="tab-1">...</div>
+            <div class="view tab" id="tab-2">...</div>
+            ...
+          </div>
+    .important-note
+      p
+        strong Common Toolbar/Tabbar must always be a direct child of Views/View and placed <b>AFTER Navbar</b> (if same positioned navbar is used)
+    h2 Toolbar App Methods
+    p We can use following app methods available for Toolbars:
+    table.methods-table
+      tbody
+        tr
+          td app.toolbar.hide(<span>toolbarEl</span>, <span>animate</span>)
+          td Hide toolbar
+            ul.method-parameters
+              li <span class="parameter">toolbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.
+              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be hidden with animation or not. By default is <code>true</code>
+        tr
+          td app.toolbar.show(<span>toolbarEl</span>, <span>isAnimated</span>)
+          td Show toolbar
+            ul.method-parameters
+              li <span class="parameter">toolbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required toolbar. Required.
+              li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be shown with animation or not. By default is <code>true</code>
+        tr
+          td app.toolbar.setHighlight(<span>tabbarEl</span>)
+          td Set highlight on tab links according to active one. <span class="md-only">This will have effect only in MD theme</span>
+            ul.method-parameters
+              li <span class="parameter">tabbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required tabbar. Required.
+    h2 Toolbar App Parameters
+    p It is possible to control some default toolbar behavior using global <a href="app.html#app-parameters">app parameters</a> by passing toolbar related parameters under <code>toolbar</code> parameter:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td hideOnPageScroll
+          td boolean
+          td false
+          td Will hide Toolbars/Tabbars on page scroll
+        tr
+          td showOnPageScrollEnd
+          td boolean
+          td true
+          td Set to <code>true</code> to show hidden Toolbar/Tabbar when scrolling reaches end of the page
+        tr
+          td showOnPageScrollTop
+          td boolean
+          td true
+          td Set to <code>false</code> and hidden Toolbar/Tabbar will not become visible when you scroll page to top everytime. They will become visible only at the most top scroll position, in the beginning of the page
+    p For example:
+    pre
+      code.js
+        :code
+          var app = new Framework7({
+            toolbar: {
+              hideOnPageScroll: true,
+            },
+          });
+
+    h2 Tabbar
+    p Tabbar is a particular case of Toolbar, but it contains icons (or icons with labels) instead of plain links and inteded to be used with <a href="tabs.html">Tabs</a>.
+    h3 Tabbar Layout
+    p Tab bar layout is almost the same as for Toolbar, but Tab bar has additional <code><b>tabbar</b></code> class:
+    pre
+      code.html
+        :code
+          <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+              <a href="#tab1" class="tab-link tab-link-active">
+                <i class="icon demo-icon-1"></i>
+              </a>
+              <a href="#tab2" class="tab-link">
+                <i class="icon demo-icon-2"></i>
+              </a>
+              ....
+            </div>
+          </div>
+    p In MD Theme Tabbar also located on top of the app right below the Navbar. And if you need to have Tabbar on bottom you can do it by just using addional <code><b>toolbar-bottom-md</b></code> class:
+    pre
+      code.html
+        :code
+          <div class="toolbar tabbar toolbar-bottom">
+            <div class="toolbar-inner">
+              ...
+            </div>
+          </div>
+    p By default, all Tab Bar elements (links) equally spaced along toolbar - they have equal space between each other. But here is important note about links size:
+    .important-note
+      ul
+        li
+          p On narrow screen (phone) all links will have the same size equal to [screen width] / [number of links]
+        li
+          p On wide screen (tablet) all links will be centered with minimal width equal to 105px
+    h3 Tabbar With Labels
+    p If you need to use Tabbar icons with labels we need one more "tabbar-labels" class on Tabbar, and to put &lt;span class="tabbar-label"&gt; inside of link:
+    pre
+      code.html
+        :code
+          <div class="toolbar tabbar tabbar-labels">
+            <div class="toolbar-inner">
+              <a href="#tab1" class="tab-link tab-link-active">
+                <i class="icon demo-icon-1"></i>
+                <span class="tabbar-label">Label 1</span>
+              </a>
+              <a href="#tab2" class="tab-link">
+                <i class="icon demo-icon-2"></i>
+                <span class="tabbar-label">Label 2</span>
+              </a>
+              ...
+            </div>
+          </div>
+
+    h3 Scrollable Tabbar
+    p When you have a lot of links and they all don't fit into view, then it could be useful to use scrollable Tabbar. It allows to swipe/scroll through tab links.
+    p All we need to make Tabbar scrollable is just to add additional <code><b>tabbar-scrollable</b></code> class to the Tabbar:
+    pre
+      code.html
+        :code
+          <!-- Additional "tabbar-scrollable" class -->
+          <div class="toolbar tabbar tabbar-scrollable">
+            <div class="toolbar-inner">
+              <a href="#tab-1" class="tab-link tab-link-active">Tab 1</a>
+              <a href="#tab-2" class="tab-link">Tab 2</a>
+              <a href="#tab-3" class="tab-link">Tab 3</a>
+              ...
+              <a href="#tab-12" class="tab-link">Tab 12</a>
+            </div>
+          </div>
+
+    h2 Control Toolbar/Tabbar With Page Classes
+    p Framework7 allows you to hide/show Toolbar/Tabbar on specific page or on specific page scoll by using additional classes.
+
+    p If you want to hide toolbar/tabbar on page scroll on some specific page use additional classes on this page's <code>&lt;div class="page-content"&gt;</code> element:
+    ul
+      li <code><b>hide-bars-on-scroll</b></code> - to hide both Navbar and Toolbar on page scroll
+      li <code><b>hide-toolbar-on-scroll</b></code> - to hide Toolbar/Tabbar on page scroll
+
+    p To disable this behavior on specific pages you may use the following additional classes:
+    ul
+      li <code><b>keep-bars-on-scroll</b></code> - to keep Navbar and Toolbar on page scroll
+      li <code><b>keep-toolbar-on-scroll</b></code> - to keep Toolbar on page scroll
+    p For example:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <div class="navbar">
+              ...
+            </div>
+            <!-- "hide-toolbar-on-scroll" class to hide Toolbar -->
+            <div class="page-content hide-toolbar-on-scroll">
+              <div class="content-block">
+                <p>Scroll page down</p>
+                ...
+              </div>
+            </div>
+            <div class="toolbar">
+              <div class="toolbar-inner">
+                <a href="#" class="link">Hello</a>
+                <a href="#" class="link">World</a>
+              </div>
+            </div>
+          </div>
+
+
+
+    p If you have common single Toolbar / Tabbar across all pages/views of your app you can hide/show Toolbar/Tabbar automatically for some pages where you don't need it.
+    p To make it work all you need is to add <code><b>no-toolbar</b></code> class to loaded page (<code>&lt;div class="page no-toolbar"&gt;</code>):
+    pre
+      code
+        | &lt;!-- Page has additional "no-toolbar" class --&gt;
+        | &lt;div class="page no-toolbar"&gt;
+        |   &lt;div class="page-content"&gt;
+        |       ...
+        |   &lt;/div&gt;
+        | &lt;/div&gt;
+    .with-device
+      h2(data-device-preview="../docs-demos/toolbar-tabbar.html") Examples
+      h3 Static Toolbar
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                ...
+              </div>
+              <div class="page-content">
+                <div class="block">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
+                  ...
+                </div>
+                <!-- Static Toolbar -->
+                <div class="toolbar no-shadow">
+                  <div class="toolbar-inner">
+                    <a class="link">Link 1</a>
+                    <a class="link">Link 2</a>
+                    <a class="link">Link 3</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+      h3 Fixed Toolbar
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                ...
+              </div>
+              <!-- Fixed Toolbar -->
+              <div class="toolbar">
+                <div class="toolbar-inner">
+                  <a class="link">Link 1</a>
+                  <a class="link">Link 2</a>
+                  <a class="link">Link 3</a>
+                </div>
+              </div>
+              <div class="page-content">
+                <div class="block">
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque quos asperiores ut, odio numquam ab, qui, alias adipisci in magni reiciendis reprehenderit. Labore esse quae ut tempore consequatur, reprehenderit similique!</p>
+                  ...
+                </div>
+              </div>
+            </div>
+      h3 Toolbar API
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                ...
+              </div>
+              <div class="toolbar toolbar-bottom-md">
+                <div class="toolbar-inner">
+                  <a class="link">Link 1</a>
+                  <a class="link">Link 2</a>
+                  <a class="link">Link 3</a>
+                </div>
+              </div>
+              <div class="page-content">
+                <div class="block">
+                  <p><a class="button button-raised hide-toolbar">Hide Toolbar</a></p>
+                  <p><a class="button button-raised show-toolbar">Show Toolbar</a></p>
+                  <p>Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.</p>
+                  ....
+                </div>
+              </div>
+            </div>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            $$('.hide-toolbar').on('click', function () {
+              app.toolbar.hide('.toolbar');
+            });
+            $$('.show-toolbar').on('click', function () {
+              app.toolbar.show('.toolbar');
+            });
+      h3 Hide On Scroll
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                ...
+              </div>
+              <div class="toolbar toolbar-bottom-md">
+                <div class="toolbar-inner">
+                  <a class="link">Link 1</a>
+                  <a class="link">Link 2</a>
+                  <a class="link">Link 3</a>
+                </div>
+              </div>
+              <!-- Additional "hide-toolbar-on-scroll" class to hide toolbar on scroll automatically -->
+              <div class="page-content hide-toolbar-on-scroll">
+                <div class="block">
+                  <p>Quis omnis, quam maiores voluptates vero atque porro? Soluta modi dolore eum dolor iste eos perspiciatis vero porro aliquam officia deleniti, cumque rem, consequatur, ea ipsa temporibus dicta architecto saepe.</p>
+                  <p>Tempora eius, sit distinctio architecto repellat, rerum quae, eum suscipit aperiam libero beatae ut eveniet ex labore illo! Labore illo harum voluptatum nulla ullam natus beatae iste tempora ut fugiat!</p>
+                  ...
+                </div>
+              </div>
+            </div>
+      h3 Tabbar
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                ...
+              </div>
+              <!-- Additional "tabbar" class -->
+              <div class="toolbar tabbar">
+                <div class="toolbar-inner">
+                  <!-- Links have "tab-link" class instead of just "link" to switch tabs -->
+                  <a href="#tab-1" class="tab-link tab-link-active">Tab 1</a>
+                  <a href="#tab-2" class="tab-link">Tab 2</a>
+                  <a href="#tab-3" class="tab-link">Tab 3</a>
+                </div>
+              </div>
+              <!-- Tabs -->
+              <div class="tabs">
+                <!-- First tab, active -->
+                <div class="page-content tab tab-active" id="tab-1">
+                  <div class="block">
+                    <p><b>Tab 1 content</b></p>
+                    ...
+                  </div>
+                </div>
+                <!-- Second tab -->
+                <div class="page-content tab" id="tab-2">
+                  <div class="block">
+                    <p><b>Tab 2 content</b></p>
+                    ...
+                  </div>
+                </div>
+                <!-- Third tab -->
+                <div class="page-content tab" id="tab-3">
+                  <div class="block">
+                    <p><b>Tab 3 content</b></p>
+                    ...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+      h3 Tabbar With Labels
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                  ...
+              </div>
+              <!-- Additional "tabbar-labels" class -->
+              <div class="toolbar tabbar-labels">
+                <div class="toolbar-inner">
+                  <a href="#tab-1" class="tab-link tab-link-active">
+                    <!-- Different icons for iOS and MD themes -->
+                    <i class="icon f7-icons ios-only">email_fill</i>
+                    <i class="icon material-icons md-only">email</i>
+                    <!-- Label text -->
+                    <span class="tabbar-label">Inbox</span>
+                  </a>
+                  <a href="#tab-2" class="tab-link">
+                    <i class="icon f7-icons ios-only">today_fill<span class="badge color-red">5</span></i>
+                    <i class="icon material-icons md-only">today<span class="badge color-red">5</span></i>
+                    <span class="tabbar-label">Calendar</span>
+                  </a>
+                  <a href="#tab-3" class="tab-link">
+                    <i class="icon f7-icons ios-only">cloud_fill</i>
+                    <i class="icon material-icons md-only">file_upload</i>
+                    <span class="tabbar-label">Upload</span>
+                  </a>
+                </div>
+              </div>
+              <div class="tabs">
+                ...
+              </div>
+            </div>
+      h3 Scrollable Tabbar
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                ...
+              </div>
+              <!-- Additional "tabbar-scrollable" class -->
+              <div class="toolbar tabbar tabbar-scrollable">
+                <div class="toolbar-inner">
+                  <a href="#tab-1" class="tab-link tab-link-active">Tab 1</a>
+                  <a href="#tab-2" class="tab-link">Tab 2</a>
+                  ...
+                  <a href="#tab-10" class="tab-link">Tab 10</a>
+                </div>
+              </div>
+              <div class="tabs">
+                <div id="tab-1" class="page-content tab tab-active"> ... </div>
+                <div id="tab-2" class="page-content tab"> ... </div>
+                ...
+                <div id="tab-10" class="page-content tab"> ... </div>
+              </div>
+            </div>
+
+
+

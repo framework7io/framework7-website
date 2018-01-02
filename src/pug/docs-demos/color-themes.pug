@@ -1,0 +1,113 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+            a(href="#").link
+              i.icon.icon-back
+              span.ios-only Back
+          .title Color Themes
+      .toolbar.toolbar-bottom-md
+        .toolbar-inner
+          a(href="#").link Left
+          a(href="#").link Right
+      .page-content
+        .block Praesent varius justo odio. Duis in <a href="#">cursus</a> lorem. Suspendisse convallis porta ornare. Vivamus consectetur varius ligula convallis posuere. Proin quis neque eget nisi tempus <a href="#">faucibus</a> at volutpat leo. Suspendisse id erat aliquet, vulputate sem ac, iaculis metus. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+        .block
+          p.segmented
+            a(href="#").button.button-active Button 1
+            a(href="#").button Button 2
+            a(href="#").button Button 3
+          p
+            a(href="#").button.button-big.button-fill Fill Button
+        .block-title Choose Color Theme
+        .list
+          ul
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="red")
+                i.icon.icon-radio
+                .item-inner
+                  .item-title Red
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="green")
+                i.icon-radio
+                .item-inner
+                  .item-title Green
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="blue", checked)
+                i.icon-radio
+                .item-inner
+                  .item-title Blue
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="pink")
+                i.icon-radio
+                .item-inner
+                  .item-title Pink
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="yellow")
+                i.icon-radio
+                .item-inner
+                  .item-title Yellow
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="orange")
+                i.icon-radio
+                .item-inner
+                  .item-title Orange
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="gray")
+                i.icon-radio
+                .item-inner
+                  .item-title Gray
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="white")
+                i.icon-radio
+                .item-inner
+                  .item-title White
+            li
+              label.item-radio.item-content
+                input(type="radio", name="color-radio", value="black")
+                i.icon-radio
+                .item-inner
+                  .item-title Black
+        .block-title Choose Layout Theme
+        .list
+          ul
+            li
+              label.item-radio.item-content
+                input(type="radio", name="layout-radio", value="", checked)
+                i.icon-radio
+                .item-inner
+                  .item-title Default
+            li
+              label.item-radio.item-content
+                input(type="radio", name="layout-radio", value="theme-dark")
+                i.icon-radio
+                .item-inner
+                  .item-title Dark
+block scripts
+
+  script.
+    var app = new Framework7();
+    var $$ = Dom7;
+    $$('input[name="color-radio"]').on('change', function () {
+      if (this.checked) {
+        $$('.view').removeClass('color-theme-pink color-theme-blue color-theme-red color-theme-black color-theme-gray color-theme-orange color-theme-yellow color-theme-green color-theme-white');
+        $$('.view').addClass('color-theme-' + $$(this).val());
+      }
+    });
+    $$('input[name="layout-radio"]').on('change', function () {
+      if (this.checked) {
+        $$('.view').removeClass('theme-white theme-dark');
+        $$('.view').addClass(this.value);
+      }
+    });

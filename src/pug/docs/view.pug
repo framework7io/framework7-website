@@ -1,0 +1,767 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'View / Router | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 View / Router
+    .docs-index
+    p <strong>View</strong> (&lt;div class="view"&gt;) - is a separate visual part of the app with its own settings, navigation and history. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app.
+    h2 View Layout
+    p Let's look at view HTML structure:
+    pre
+      code.html
+        :code
+          <body>
+            <!-- app root -->
+            <div id="app">
+              <!-- view inside of panel -->
+              <div class="panel panel-left panel-cover">
+                <div class="view panel-view"> ... </div>
+              </div>
+              <!-- Your main view -->
+              <div class="view view-main">
+                <!-- View related pages -->
+                ...
+              </div>
+              <div class="popup">
+                <div class="view popup-view"> ... </div>
+              </div>
+            </div>
+          </body>
+    p As you see <strong>View</strong> may be almost in any part of your app.
+    h4 Main View
+    p Your main view should have additional <strong>view-main</strong> class. Why we need main view? By default all links (which is not in any initialized view) will load pages in main view. Also if you use <code>pushState</code> hash navigation then it works only for main view's navigation.
+    h2 Multiple Views Layout
+    p In case we have the app with multiple views in app root, so called "Tabbed Views" app, we must wrap our views with additional <code>&lt;div class="views"&gt;</code> element.
+    .important-note
+      p Only one "Views" element is allowed!
+    pre
+      code.html
+        :code
+          <body>
+            <!-- app root -->
+            <div id="app">
+              <!-- view inside of panel -->
+              <div class="panel panel-left panel-cover">
+                <div class="view panel-view"> ... </div>
+              </div>
+              <!-- Views container -->
+              <div class="views tabs">
+                <!-- Your main view -->
+                <div class="view view-main tab tab-active" id="view-1">
+                  <!-- View related pages -->
+                  ...
+                </div>
+                <!-- Another view -->
+                <div class="view tab" id="view-2">
+                  <!-- View related pages -->
+                  ...
+                </div>
+                ...
+              </div>
+              <div class="popup">
+                <div class="view popup-view"> ... </div>
+              </div>
+            </div>
+          </body>
+    h2 View App Methods
+    p When we already have required views in HTML and our app is already <a href="init-app.html">initialized</a>, now we need to initialize our views. Let's look at available app methods to work with Views:
+    .method-wrap
+      p
+        span.method app.views.create(<span>viewEl, parameters</span>)
+        |  - initialize View
+      ul.method-parameters
+        li
+          span.parameter viewEl
+          |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. If string - CSS selector of View element
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with View parameters
+        li.method-returns Method returns object with just created View instance.
+    .method-wrap
+      p
+        span.method app.views.get(<span>viewEl</span>)
+        |  - get View instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter viewEl
+          |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. If string - CSS selector of View element
+        li.method-returns Method returns object with just created View instance.
+    .method-wrap
+      p There could be situation when we need to get currently active View, because instead of main app view we may also have view in opened popup, popover, opened panel, tabs, etc. This method allows to get the View instance of currently active/visible/"most-top" view.
+      p For example, if you have initilized View in panel, and panel is currently opened, then this method will return panel's view. Or, if you use app with tab bar layout, where each tab is view, then this method will return currently active/visible tab-view
+      p
+        span.method app.views.current()
+        |  - get currently active/visible View instance.
+
+      ul.method-parameters
+        li.method-returns Method returns object with just created View instance.
+
+
+    h2 View Parameters
+    p Now let's look at list of available parameters we need to create View:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td name
+          td string
+          td
+          td View name. If view was created with name, then it may be accessed via <code>app.views.[name]</code>
+        tr
+          td main
+          td boolean
+          td false
+          td Specify whether this is View is main or not. If not passed then will be determined based on whether its element has <code>view-main</code> class or not
+        tr
+          td router
+          td boolean
+          td true
+          td Set to false to disable view router
+        tr
+          td url
+          td string
+          td
+          td Default (initial) View's url. If not specified, then it is equal to document url
+        tr
+          td stackPages
+          td boolean
+          td false
+          td If enabled then all previous pages in navigation chain will not be removed from DOM when you navigate deeper and deeper. It could be useful, for example, if you have some Form from 5 steps (5 pages) and when you are on last 5th page you need access to form that was on 1st page.
+        tr
+          td linksView
+          td string<br>object
+          td
+          td CSS Selector of another view or object with initialized View instance. By defaul all links in initialized (only) view will load pages in this view. This tell links to load pages in other view.
+        tr
+          td uniqueHistory
+          td boolean
+          td false
+          td Set to true and App will keep View's navigation history unique, it will also remove duplicated pages. By default, equal to the same App's parameter.
+        tr
+          td uniqueHistoryIgnoreGetParameters
+          td boolean
+          td false
+          td Use this parameter in addition to <code>uniqueHistory</code>. Set to <code>true</code> and App will ignore URL GET parameters when cheking its uniqueness. So the URLs like "page.html" and "page.html?id=3" will be treated as the same. By default, equal to the same App's parameter.
+        tr
+          td allowDuplicateUrls
+          td boolean
+          td false
+          td You may enable this parameter to allow loading of new pages that have same url as currently "active" page in View.
+        tr
+          td animate
+          td boolean
+          td true
+          td Enables transitions between pages
+        tr
+          td preloadPreviousPage
+          td boolean
+          td true
+          td Enable/disable preloading of previous page when you go deep in navigation. Should be enabled for correct work of "swipe back page" feature.
+        tr
+          td reloadPages
+          td boolean
+          td false
+          td When enabled, View will always reload currently active page without loading new one
+        tr
+          td restoreScrollTopOnBack
+          td boolean
+          td true
+          td When enabled it will restore page scroll top when you get back to this page
+        tr
+          td unloadTabContent
+          td boolean
+          td true
+          td Unloads routable tab content (removes tab inner content) when tab becomes visible. Only for routable tabs
+        tr
+          td iosPageLoadDelay
+          td number
+          td 0
+          td Delay (in ms) after new page will be loaded and inserted to DOM and before it will be transitioned. Can be increased a bit to improve performance. Will have effect only under iOS theme
+        tr
+          td materialPageLoadDelay
+          td number
+          td 0
+          td Delay (in ms) after new page will be loaded and inserted to DOM and before it will be transitioned. Can be increased a bit to improve performance. Will have effect only under MD theme
+        tr
+          th(colspan="4") Routes
+        tr
+          td routes
+          td array
+          td
+          td Array with current View <a href="routes.html">routes</a>. In case if specified then will overwrite global app routes and routes only specified here will be available for the current View
+        tr
+          td routesAdd
+          td array
+          td
+          td Array with additional <a href="routes.html">routes</a> that will extend global app routes. This additional routes will only be available for the current View
+        tr
+          th(colspan="4") Elements Removal
+        tr
+          td removeElements
+          td boolean
+          td true
+          td During page transitions Router may remove unused Page and Navbar elements from DOM. Useful to be disabled in case you want to handle elements removal manually or using other library, e.g. Vue or React
+        tr
+          td removeElementsWithTimeout
+          td boolean
+          td false
+          td When enabled then Router will remove elements after timeout
+        tr
+          td removeElementsTimeout
+          td number
+          td 0
+          td Timeout to remove elements (in case of <code>removeElementsWithTimeout: true</code>)
+        tr
+          th(colspan="4") XHR Cache
+        tr
+          td xhrCache
+          td boolean
+          td true
+          td As Router can use Ajax to load HTML content for pages it is good to use caching, especially if your content in those pages updates not very often.
+        tr
+          td xhrCacheIgnore
+          td boolean
+          td []
+          td Array of URLs (string) that should not be cached
+        tr
+          td xhrCacheIgnoreGetParameters
+          td boolean
+          td false
+          td If "true" then URLs like "about.html?id=2" and "about.html?id=3" will be treated and cached like single "about.html" page
+        tr
+          td xhrCacheDuration
+          td boolean
+          td 1000 * 60 * 10
+          td Duration in ms (milliseconds) while app will use cache instead of loading page with another Ajax request. By default it takes 10 minutes.
+        tr
+          th(colspan="4") iOS Dynamic Navbar
+        tr
+          td iosDynamicNavbar
+          td boolean
+          td true
+          td Enables dynamic navbar for iOS theme
+        tr
+          td iosSeparateDynamicNavbar
+          td boolean
+          td true
+          td When enabled will extract dynamic navbar HTML element from page element and put it as a child of Views element. It improves dynamic navbar transition appearance, but in case you need dynamic navbar to be always as a page's child, then disable this parameter
+        tr
+          td iosAnimateNavbarBackIcon
+          td boolean
+          td true
+          td This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding".
+        tr
+          th(colspan="4") Swipe back (iOS theme only)
+        tr
+          td iosSwipeBack
+          td boolean
+          td true
+          td Enable/disable ability to swipe back from left edge of screen to get to the previous page.
+        tr
+          td iosSwipeBackThreshold
+          td number
+          td 0
+          td Value in px. Swipe back action will start if "touch distance" will be more than this value.
+        tr
+          td iosSwipeBackActiveArea
+          td number
+          td 30
+          td Value in px. Width of invisible left edge of the screen that triggers swipe back action
+        tr
+          td iosSwipeBackAnimateShadow
+          td boolean
+          td true
+          td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance
+        tr
+          td iosSwipeBackAnimateOpacity
+          td boolean
+          td true
+          td Enable/disable opacity animation during swipe back action. You can disable it to improve performance
+        tr
+          th(colspan="4") Push State
+        tr
+          td pushState
+          td boolean
+          td false
+          td If you develop web app (not PhoneGap or Home Screen web app) it is useful to enable hash navigation (browser url will look like "http://my-webapp.com/#!/about.html"). User as well will be able to navigate through app's history by using browser's default back and forward buttons.
+        tr
+          td pushStateRoot
+          td string
+          td
+          td Push state root URL separator, for example "http://my-app.com/". It is useful only in case when you use empty ("") pushStateSeparator
+        tr
+          td pushStateAnimate
+          td boolean
+          td true
+          td Enable/disable page transitions on push state change
+        tr
+          td pushStateAnimateOnLoad
+          td boolean
+          td false
+          td Enable/disable push state page transition on app load
+        tr
+          td pushStateSeparator
+          td string
+          td #!
+          td Push state URL separator, can be changed for something like '#page/' and then your push state urls will look like "http://myapp.com/#page/about.html"
+        tr
+          td pushStateOnLoad
+          td boolean
+          td true
+          td Disable to ignore parsing push state URL and loading page on app load
+        tr
+          th(colspan="4") Events Handlers
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var view = app.views.create('.view-main', {
+                    on: {
+                      pageInit: function () {
+                        console.log('page init')
+                      }
+                    }
+                  })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>view</code> property to set defaults for all views. For example:
+      pre
+        code
+          :code
+            var app = new Framework7({
+              view: {
+                iosDynamicNavbar: false,
+                xhrCache: false,
+              }
+            });
+    h2 View Methods & Properties
+    p So to create View we have to call:
+    pre
+      code
+        :code
+          var view = app.views.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>view</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td view.app
+          td Link to global app instance
+        tr
+          td view.el
+          td View HTML element
+        tr
+          td view.$el
+          td Dom7 instance with view HTML element
+        tr
+          td view.name
+          td View name that was passed <code>name</code> parameter
+        tr
+          td view.main
+          td Boolean property indicating is it a main view or not
+        tr
+          td view.routes
+          td Array with available router's routes
+        tr
+          td view.history
+          td Array with view history
+        tr
+          td view.params
+          td Object with view initialization parameters
+        tr
+          td view.router
+          td View's initialized router instance
+        tr
+          th(colspan="2") Methods
+        tr
+          td view.destroy()
+          td Destroy view instance
+        tr
+          td view.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td view.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td view.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td view.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td view.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Router API / Methods & Properties
+    p View's main purpose is a navigating/routing between pages. We can access its router instance by <code>view.router</code>. It has a lot of useful methods and properties to take control over routing and navigation:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Router Properties
+        tr
+          td router.app
+          td Link to global app instance
+        tr
+          td router.view
+          td Link to related View instance
+        tr
+          td router.params
+          td Object with router initialization parameters
+        tr
+          td router.el
+          td Router's view HTML element
+        tr
+          td router.$el
+          td Dom7 instance with router's view HTML element
+        tr
+          td router.routes
+          td Array with available router's routes
+        tr
+          td router.history
+          td Array with router's view history
+        tr
+          td router.cache
+          td Object with router/view cache data
+        tr
+          td router.currentRoute
+          td Object with current route data. It has the following properties
+            ul
+              li <code>url</code> - route URL
+              li <code>path</code> - route path
+              li <code>query</code> - object with route query. If the url is <code>/page/?id=5&foo=bar</code> then it will contain the following object <code>{id: '5', foo: 'bar'}</code>
+              li <code>params</code> - route params. If we have matching route with <code>/page/user/:userId/post/:postId/</code> path and url of the page is <code>/page/user/55/post/12/</code> then it will be the following object <code>{userId: '55', postId: '12'}</code>
+              li <code>name</code> - route name
+              li <code>hash</code> - route URL hash
+              li <code>route</code> - object with matching route from available routes
+        tr
+          td router.previousRoute
+          td Object with previously active route data. Same object format as <code>currentRoute</code>
+        tr
+          td router.allowPageChange
+          td Boolean property indicating is it allowed to change page / navigate or not
+        tr
+          th(colspan="2") Router Methods
+        tr
+          td router.navigate(<span>url, options</span>)
+          td Navigate to (load) new page
+            ul.method-parameters
+              li <span class="parameter">url</span> <span class="parameter-type">string</span> - url to navigate to
+              li <span class="parameter">options</span> - <span class="parameter-type">object</span> with additional navigation properties (optional):
+                ul
+                  li <span class="parameter">reloadCurrent</span> (<span class="parameter-type">boolean</span>) - replace the current page with the new one from route
+                  li <span class="parameter">reloadPrevious</span> (<span class="parameter-type">boolean</span>) - replace the previous page in history with the new one from route
+                  li <span class="parameter">reloadAll</span> (<span class="parameter-type">boolean</span>) - load new page and remove all previous pages from history and DOM
+                  li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
+                  li <span class="parameter">history</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in router history
+                  li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
+                  li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
+                  li <span class="parameter">context</span> (<span class="parameter-type">object</span>) - additional Router component or Template7 page context
+        tr
+          td router.back(<span>url, options</span>)
+          td Go back to previous page, going back in View history
+            ul.method-parameters
+              li <span class="parameter">url</span> <span class="parameter-type">string</span> - url to navigate to (optional).
+                ul
+                  li If not specified, then it will go back to the previous page in history.
+                  li If specified and there is previous page in history then it will be ignored.
+                  li If specified and there is a <code>force: true</code> option then will remove previous page from DOM and navigate back to the specified page URL
+              li <span class="parameter">options</span> - <span class="parameter-type">object</span> with additional navigation properties (optional):
+                ul
+                  li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
+                  li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
+                  li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
+                  li <span class="parameter">force</span> (<span class="parameter-type">boolean</span>) - if set to <code></code> then it will ignore previos page in history and load specified one
+        tr
+          td router.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td router.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td router.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td router.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td router.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Linking Between Pages & Views
+    p It may be not very comfortable to use router methods all the time to navigate between pages. In many cases we can just use <a href="link.html">links</a> to navigate between pages. And we can pass additional navigation parameters using <code>data-</code> attributes:
+    pre
+      code.html
+        :code
+          <!-- same as router.navigate('/somepage/'); -->
+          <a href="/somepage/">Some Page</a>
+
+          <!-- same as router.navigate('/somepage/', {reloadCurrent: true, animate: false}); -->
+          <a href="/somepage/" data-animate="false" data-reload-current="true">Some Page</a>
+
+          <!-- same as router.back(); -->
+          <a href="#" class="back">Go back</a>
+
+          <!-- same as router.back('/home/', {force: true, ignoreCache: true}); -->
+          <a href="/home/" data-force="true" data-ignore-cache="true" class="back">Go back</a>
+    p Links default behavior:
+    ul
+      li If link is in inside of not initialized view then it will load page in main view
+      li If link is in inside of initialized view then it will load page in this view (if other view is not specified in view's <code>linksView</code> parameter)
+    p But if we need to load page in another view we can specify this view's CSS selector in link's <code>data-view</code> attribute
+    pre
+      code.html
+        :code
+          <!-- left view -->
+          <div class="view view-init view-left" data-name="left">
+            ...
+            <!-- will load "some-page" to main view -->
+            <a href="/some-page/" data-view=".view-main">Some Page</a>
+            ...
+          </div>
+          <!-- main view -->
+          <div class="view view-init view-main">
+            ...
+            <!-- will load "another-page" to left view -->
+            <a href="/another-page/" data-view=".view-left">Another Page</a>
+            ...
+          </div>
+    h2 Router Events
+    p Router has a lot of useful events.
+    h3 Dom Events
+    p Router will fire the following DOM events for swipe back pages (iOS-theme only):
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td swipeback:move
+          td View Element<span>&lt;div class="view"&gt;</span>
+          td Event will be triggered during swipe back move
+        tr
+          td swipeback:beforechange
+          td View Element<span>&lt;div class="view"&gt;</span>
+          td Event will be triggered right before swipe back animation to previous page when you release it
+        tr
+          td swipeback:afterchange
+          td View Element<span>&lt;div class="view"&gt;</span>
+          td Event will be triggered after swipe back animation to previous page when you release it
+        tr
+          td swipeback:beforereset
+          td View Element<span>&lt;div class="view"&gt;</span>
+          td Event will be triggered right before swipe back animation to current page when you release it
+        tr
+          td swipeback:afterreset
+          td View Element<span>&lt;div class="view"&gt;</span>
+          td Event will be triggered after swipe back animation to current page when you release it
+    h3 Router Instance Events
+    .important-note
+      p Router events bubble to View instance and to the App instance, so the event emitted on router instance will also be avaiable on view and on app intsances:
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          td routeChange
+          td <span>(newRoute, previousRoute, router)</span>
+          td Event will be fired on current route change
+        tr
+          td routeChanged
+          td <span>(newRoute, previousRoute, router)</span>
+          td Event will be fired on current route change and after page transitions
+        tr
+          th(colspan="3") XHR Events
+        tr
+          td routerAjaxStart
+          td <span>(xhr)</span>
+          td Event will be fired after router XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc
+        tr
+          td routerAjaxSuccess
+          td <span>(xhr)</span>
+          td Event will be fired when the request succeeds
+        tr
+          td routerAjaxError
+          td <span>(xhr)</span>
+          td Event will be fired if the request fails
+        tr
+          td routerAjaxComplete
+          td <span>(xhr)</span>
+          td Event will be fired when the request finishes
+        tr
+          th(colspan="3") Swipe Back Events
+        tr
+          td swipebackMove
+          td <span>(data)</span>
+          td Event will be triggered during swipe back move. <code>data</code> contains object with the following properties: <code>percentage</code>, <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+        tr
+          td swipebackBeforeChange
+          td <span>(data)</span>
+          td Event will be triggered right before swipe back animation to previous page when you release it. <code>data</code> contains object with the following properties: <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+        tr
+          td swipebackAfterChange
+          td <span>(data)</span>
+          td Event will be triggered after swipe back animation to previous page when you release it. <code>data</code> contains object with the following properties: <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+        tr
+          td swipebackBeforeReset
+          td <span>(data)</span>
+          td Event will be triggered right before swipe back animation to current page when you release it. <code>data</code> contains object with the following properties: <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+        tr
+          td swipebackAfterReset
+          td <span>(data)</span>
+          td Event will be triggered after swipe back animation to current page when you release it. <code>data</code> contains object with the following properties: <code>currentPageEl</code>, <code>previousPageEl</code>, <code>currentNavbarEl</code>, <code>previousNavbarEl</code>
+        tr
+          th(colspan="3") Page Events
+        tr
+          td pageMounted
+          td <span>(pageData)</span>
+          td Event will be triggered when new page just inserted to DOM. As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
+          td pageInit
+          td <span>(pageData)</span>
+          td Event will be triggered after Router initialize required page's components and navbar. As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
+          td pageReinit
+          td <span>(pageData)</span>
+          td This event will be triggered in case of navigating to the page that was already initialized. As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
+          td pageBeforeIn
+          td <span>(pageData)</span>
+          td Event will be triggered when everything initialized and page is ready to be transitioned into view (into active/current position). As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
+          td pageAfterIn
+          td <span>(pageData)</span>
+          td Event will be triggered after page transitioned into view. As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
+          td pageBeforeOut
+          td <span>(pageData)</span>
+          td Event will be triggered right before page is going to be transitioned out of view. As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
+          td pageAfterOut
+          td <span>(pageData)</span>
+          td Event will be triggered after page transitioned out of view. As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
+          td pageBeforeRemove
+          td <span>(pageData)</span>
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
+          th(colspan="3") Routable Tabs Events
+        tr
+          td tabInit<br>tabMounted
+          td <span>(newTabEl, tabRoute)</span>
+          td Event will be triggered right after routable Tab content will be loaded. As an argument event handler receives:
+            ul
+              li <code>newTabEl</code> - tab HTML element where route content was just loaded (new tab)
+              li <code>tabRoute</code> - new tab route
+        tr
+          td tabBeforeRemove
+          td <span>(oldTabEl, newTabEl, tabRoute)</span>
+          td Event will be triggered right after routable Tab content will be loaded. As an argument event handler receives:
+            ul
+              li <code>oldTabEl</code> - tab HTML element where route content was just removed (old tab)
+              li <code>newTabEl</code> - tab HTML element where route content was just loaded (new tab)
+              li <code>tabRoute</code> - new tab route
+        tr
+          th(colspan="3") Routable Modals Events
+        tr
+          td modalInit<br>modalMounted
+          td <span>(modalEl, modalRoute, modal)</span>
+          td Event will be triggered right after routable modal content will be loaded and added to DOM. As an argument event handler receives:
+            ul
+              li <code>modalEl</code> - loaded modal HTML element
+              li <code>modalRoute</code> - modal route
+              li <code>modal</code> - created modal instance
+        tr
+          td modalBeforeRemove
+          td <span>(modalEl, modalRoute, modal)</span>
+          td Event will be triggered right before routable modal will be removed from DOM and destroyed. As an argument event handler receives:
+            ul
+              li <code>modalEl</code> - modal HTML element
+              li <code>modalRoute</code> - modal route
+              li <code>modal</code> - modal instance
+    h2 View Auto Initialization
+    p If you don't need to use View API and your View is inside of DOM on a moment of app initialization then it can be auto initialized with just adding additional <code>view-init</code> class:
+    pre
+      code.html
+        :code
+          <!-- Add view-init class -->
+          <div class="view view-init">
+            ...
+          </div>
+    p But what about View parameters. In this case we may pass them in <code>data-</code> attributes.
+    .important-note
+      p Parameters that used in camelCase, for example <code>pushState</code>, in data- attributes should be used as kebab-case as <b>data-push-state</b>
+    pre
+      code
+        | &lt;!-- view parameters in data- attributes --&gt;
+        | &lt;div class="view view-init" data-url="/" data-name="home" data-push-state="true"&gt;
+        |   ...
+        | &lt;/div&gt;
+    p In this case if you need to access created View instance you can use:
+    ul
+      li In case if it is main view, we may use <code>app.views.main</code> to get main view instance
+      li Otherwise, we can access it by passed <code>name</code> parameter like <code>app.views.home</code>
+    pre
+      code.html
+        :code
+          <!-- main view -->
+          <div class="view view-main view-init">
+            ...
+          </div>
+
+          <!-- another view -->
+          <div class="view view-init" data-name="home">
+            ...
+          </div>
+    pre
+      code.js
+        :code
+          var mainView = app.views.main;
+          var homeView = app.views.home;
+    h2 Initial Page Route
+    p Initial page can also be loaded correctly using <a href="routes.html">Routes</a>. In app layout we must leave View blank:
+    pre
+      code.html
+        :code
+          <body>
+            <div id="app">
+              <div class="view view-main"></div>
+            </div>
+          </body>
+    p In routes we may specify "home" route, for example:
+    pre
+      code.js
+        :code
+          routes: [
+            {
+              path: '/',
+              url: './home.html'
+            },
+            ...
+          ]
+    p And when we init the View, we need to specify it is default URL:
+    pre
+      code.js
+        :code
+          app.views.create('.view-main', {
+            url: '/'
+          })
+    p That is all, now on app load, home page content will be loaded from "home.html" file.
+

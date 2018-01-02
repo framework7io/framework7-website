@@ -1,0 +1,735 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Messages | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Messages
+    .docs-index
+    p Messages component will help you with visualisation of comments and messaging system in your app.
+    h2 Messages Layout
+    pre
+      code.html
+        :code
+          <div class="page">
+            <div class="page-content messages-content">
+              <div class="messages">
+                <!-- Date stamp -->
+                <div class="messages-title"><b>Sunday, Feb 9</b> 12:58</div>
+
+                <!-- Sent message (by default - green and on right side) -->
+                <div class="message message-sent">
+                  <div class="message-content">
+                    <!-- Bubble with text -->
+                    <div class="message-bubble">
+                      <div class="message-text">Hi, Kate</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Another sent message -->
+                <div class="message message-sent">
+                  <div class="message-content">
+                    <div class="message-bubble">
+                      <div class="message-text">How are you?</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Received message (by default - grey on left side) -->
+                <div class="message message-with-avatar message-received">
+                  <!-- Sender name -->
+                  <div class="message-name">Kate</div>
+
+                  <!-- Bubble with text -->
+                  <div class="message-text">I am fine, thanks</div>
+
+                  <!-- Sender avatar -->
+                  <div style="background-image:url(http://lorempixel.com/output/people-q-c-100-100-9.jpg)" class="message-avatar"></div>
+                </div>
+
+                <div class="message message-received">
+                  <!-- Sender name -->
+                  <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7)"></div>
+                  <div class="message-content">
+                    <!-- Sender name -->
+                    <div class="message-name">Blue Ninja</div>
+                    <!-- Bubble with text -->
+                    <div class="message-bubble">
+                      <div class="message-text">Hi there, I am also fine, thanks! And how are you?</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    p
+      b Messages page layout:
+    ul
+      li
+        p <code>messages-content</code> - required additional class for messages wrapper. Should be added to <code>page-content</code>
+      li
+        p <code>messages</code> - required additional wrapper for messages bubbles. Required element.
+      li
+        p <code>messages-title</code> - messages title
+      li
+        p <code>message</code> - single message
+    h3 Single Message Layout
+    p Here is a full single message layout:
+    pre
+      code.html
+        :code
+          <div class="message">
+            <div class="message-avatar" style="background-image:url(path/to/avatar)"></div>
+            <div class="message-content">
+              <div class="message-name">John Doe</div>
+              <div class="message-header">Message header</div>
+              <div class="message-bubble">
+                <div class="message-text-header">Text header</div>
+                <div class="message-image">
+                  <img src="path/to/image">
+                </div>
+                <div class="message-text">Hello world!</div>
+                <div class="message-text-footer">Text footer</div>
+              </div>
+              <div class="message-footer">Message footer</div>
+            </div>
+          </div>
+    ul
+      li
+        p <code>message-avatar</code> - sender avatar, <em>optional</em>
+      li
+        p <code>message-name</code> - sender name, <em>optional</em>
+      li
+        p <code>message-header</code> - single message header, <em>optional</em>
+      li
+        p <code>message-text-header</code> - text header inside of bubble, <em>optional</em>
+      li
+        p <code>message-image</code> - message image, <em>optional</em>
+      li
+        p <code>message-text</code> - message text, <em>optional</em>
+      li
+        p <code>message-text-footer</code> - text footer inside of bubble, <em>optional</em>
+      li
+        p <code>message-footer</code> - footer text after bubble, <em>optional</em>
+    h4 Additional classes for single message container
+    ul
+      li
+        p <code>message-sent</code> - additional class for single message which indicates that this message was sent by user. It stays on right side with green background color.
+      li
+        p <code>message-received</code> - additional class for single message which indicates that this message was received by user. It stays on left side with grey background color.
+      li
+        p <code>message-tail</code> - additional class for single message (received or sent) to add bubble "tail"
+      li
+        p <code>message-same-name</code> - additional class for indicating that message has same sender name as previous message
+      li
+        p <code>message-same-avatar</code> - additional class for indicating that message has same avatar as previous message
+      li
+        p <code>message-same-header</code> - additional class for indicating that message has same message-header as previous message
+      li
+        p <code>message-same-footer</code> - additional class for indicating that message has same message-footer as previous message
+      li
+        p <code>message-last</code> - additional class for single message (received or sent) to indicate last received or last sent message in current conversation by one sender
+      li
+        p <code>message-first</code> - additional class for single message (received or sent) to indicate first received or first sent message in current conversation by one sender
+    h2 Messages App Methods
+    p Now, when we have Messages' HTML, we need to initialize it. We need to use related App's method:
+    table.methods-table
+      tbody
+        tr
+          td app.messages.create(<span>parameters</span>)
+          td Initialize Messages with parameters
+            ul.method-parameters
+              li
+                span.parameter parameters
+                |  - <span class="parameter-type">object</span> - object with Messages parameters
+
+              li.method-returns Method returns initialized Messages instance
+        tr
+          td app.messages.destroy(<span>el</span>)
+          td Destroy Messages instance
+            ul.method-parameters
+              li
+                span.parameter el
+                |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Messages element or Messages instance to destroy.
+        tr
+          td app.messages.get(<span>el</span>)
+          td Get Messages instance by HTML element
+            ul.method-parameters
+              li
+                span.parameter el
+                |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Messages element.
+              li.method-returns Method returns Messages's instance
+    h2 Messages Parameters
+    p Let's look on list of all available parameters:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td autoLayout
+          td boolean
+          td true
+          td Enable Auto Layout to add all required additional classes automatically based on passed conditions
+        tr
+          td newMessagesFirst
+          td boolean
+          td false
+          td Enable if you want to use new messages on top, instead of having them on bottom
+        tr
+          td scrollMessages
+          td boolean
+          td true
+          td Enable/disable messages autoscrolling when adding new message
+        tr
+          td scrollMessagesOnEdge
+          td boolean
+          td true
+          td If enabled then messages autoscrolling will happen only when user is on top/bottom of the messages view
+        tr
+          td messages
+          td array
+          td
+            td Array with initial messages. Each message in array should be presented as an object with <a href="#single-message-parameters">single message parameters</a>
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var messages = app.messages.create({
+                    el: '.messages',
+                    on: {
+                      change: function () {
+                        console.log('Textarea value changed')
+                      }
+                    }
+                  })
+        tr
+          td renderMessage
+          td function(message)
+          td
+          td Function to render single message. Must return full message HTML string
+        tr
+          th(colspan="4") Autolayout Conditions
+        tr
+          td firstMessageRule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-first</code> class will be added to message
+        tr
+          td lastMessageRule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-last</code> class will be added to message
+        tr
+          td tailMessageRule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-tail</code> class will be added to message
+        tr
+          td sameNameMessageRule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-same-name</code> class will be added to message
+        tr
+          td sameHeaderMessageRule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-same-header</code> class will be added to message
+        tr
+          td sameFooterMessageRule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-same-footer</code> class will be added to message
+        tr
+          td sameAvatarMessageRule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then <code>message-same-avatar</code> class will be added to message
+        tr
+          td customClassMessageRule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return additional message classes as string, based on required condition depending on previous and next messages.
+    h2 Single Message Parameters
+    p Let's look on single message parameters object that we should use when we pass <code>messages</code> array:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td text
+          td string
+          td
+          td Message text
+        tr
+          td header
+          td string
+          td
+          td Single message header
+        tr
+          td footer
+          td string
+          td
+          td Single message footer
+        tr
+          td name
+          td string
+          td
+          td Sender name
+        tr
+          td avatar
+          td string
+          td
+          td Sender avatar URL string
+        tr
+          td type
+          td string
+          td sent
+          td Message type - <code>sent</code> or <code>received</code>
+        tr
+          td textHeader
+          td string
+          td
+          td Message text header
+        tr
+          td textFooter
+          td string
+          td
+          td Message text footer
+        tr
+          td image
+          td string
+          td
+          td Message image HTML string, e.g. <code>&lt;img src="path/to/image"&gt;</code>. Can be used instead of <code>imageSrc</code> parameter
+        tr
+          td imageSrc
+          td string
+          td
+          td Message image URL string. Can be used instead of <code>image</code> parameter
+        tr
+          td isTitle
+          td boolean
+          td
+          td Defines whether it should be rendered as a message or as a messages title
+    h2 Messages Methods & Properties
+    p So to create Messages we have to call:
+    pre
+      code
+        :code
+          var messages = app.messages.create({ /* parameters */ })
+    p After we initialize Messages we have its initialized instance in variable (like <code>messages</code> variable in example above) with helpful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td messages.params
+          td Object with passed initialization parameters
+        tr
+          td messages.el
+          td Messages container HTML element (<code>&lt;div class="messages"&gt;</code>)
+        tr
+          td messages.$el
+          td Dom7 element with messages HTML element
+        tr
+          td messages.messages
+          td Array with messages
+        tr
+          th(colspan="2") Methods
+        tr
+          td messages.showTyping(<span>message</span>)
+          td Show typing message indicator
+            ul.method-parameters
+              li
+                span.parameter message
+                |  - <span class="parameter-type">object</span> - <a href="#single-message-parameters">parameters of message</a> to add
+        tr
+          td messages.hideTyping()
+          td Hide typing message indicator
+        tr
+          td messages.addMessage(<span>message</span>, <span>method</span>, <span>animate</span>);
+          td
+            p Add new message to the end or to the beginning depending on <b>method</b> parameter
+            ul.method-parameters
+              li
+                span.parameter message
+                |  - <span class="parameter-type">object</span> - <a href="#single-message-parameters">parameters of message</a> to add. Required.
+              li
+                span.parameter method
+                |  - <span class="parameter-type">string</span> - (<code>append</code> or <code>prepend</code>) dictates to add new message in the end or in the beginning of messages container. Optional, if not specified, then it will add message depending on <code>newMessagesFirst</code> parameter
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> - (by default <b>true</b>) You may pass here <b>false</b> and message will be added immediately without any transiton and scrolling animation. Optional.
+
+              li.method-returns Method returns Messages instance
+        tr
+          td messages.addMessages(<span>messages</span>, <span>method</span>, <span>animate</span>);
+          td Add multiple messages per once.
+            ul.method-parameters
+              li
+                span.parameter messages
+                |  - <span class="parameter-type">array</span> with messages to add. Each message in array should be presented as an object with <a href="#single-message-parameters">message parameters</a> Required.
+              li.method-returns Method returns Messages instance
+        tr
+          td messages.removeMessage(<span>message</span>);
+          td Remove message
+            ul.method-parameters
+              li
+                span.parameter message
+                |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">number</span> (with index number of message from <code>messages</code> array) of message to remove
+              li.method-returns Method returns Messages instance
+        tr
+          td messages.removeMessages(<span>messages</span>);
+          td Remove multiple messages
+            ul.method-parameters
+              li
+                span.parameter messages
+                |  - <span class="parameter-type">array</span> with messages to remove
+              li.method-returns Method returns Messages instance
+        tr
+          td messages.scroll(<span>duration, position</span>);
+          td Scroll messages to top/bottom depending on <code>newMessagesFirst</code> parameter
+            ul.method-parameters
+              li
+                span.parameter duration
+                |  - <span class="parameter-type">number</span> scroll duration in ms
+              li
+                span.parameter position
+                |  - <span class="parameter-type">number</span> scroll position in px
+        tr
+          td messages.renderMessages()
+          td Render messages HTML depending on <code>messages</code> array
+        tr
+          td messages.layout();
+          td Force messages auto layout
+        tr
+          td messages.clean();
+          td Clean/remove all the messages
+        tr
+          td messages.destroy();
+          td Destroy messages instance
+    h2 Messages Events
+    p Messages will fire the following DOM events on messages element and events on app and messages instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td messages:beforedestroy
+          td Messages Element<span>&lt;div class="messages"&gt;</span>
+          td Event will be triggered right before Messages instance will be destroyed
+    h3 App and Messages Instance Events
+    p Messages instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>messages</code>.
+    table.events-table.double-events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td beforeDestroy
+          td messages
+          td(rowspan="2") <span>(messages)</span>
+          td(rowspan="2") Event will be triggered right before Messages instance will be destroyed
+        tr
+          td messagesBeforeDestroy
+          td app
+    h2 Messages Auto Initialization
+    p If you don't need to use Messages API and your Messages is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code><b>messages-init</b></code> class to messages element, and all required parameters can be passed using <code><b>data-</b></code> attributes:
+    pre
+      code.html
+        :code
+          <div class="messages messages-init" data-new-messages-first="true">
+            ...
+          </div>
+    .important-note
+      p Parameters that used in camelCase, for example <b>newMessagesFirst</b>, in data- attributes should be used in kebab-case as <b>data-new-messages-first</b>
+    .with-device
+      h2(data-device-preview="../docs-demos/messages.html") Examples
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="title">Messages</div>
+                </div>
+              </div>
+              <div class="toolbar messagebar">
+                <div class="toolbar-inner">
+                  <div class="messagebar-area">
+                    <textarea class="resizable" placeholder="Message"></textarea>
+                  </div><a class="link send-link" href="#">Send</a>
+                </div>
+              </div>
+              <div class="page-content messages-content">
+                <div class="messages">
+                  <!-- Messages title -->
+                  <div class="messages-title"><b>Sunday, Feb 9,</b> 12:58</div>
+                  <!-- Full layout sent message -->
+                  <div class="message message-sent">
+                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7);"></div>
+                    <div class="message-content">
+                      <div class="message-name">John Doe</div>
+                      <div class="message-header">Message header</div>
+                      <div class="message-bubble">
+                        <div class="message-text-header">Text header</div>
+                        <div class="message-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+                        <div class="message-text-footer">Text footer</div>
+                      </div>
+                      <div class="message-footer">Message footer</div>
+                    </div>
+                  </div>
+                  <!-- Full layout received message -->
+                  <div class="message message-received">
+                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7);"></div>
+                    <div class="message-content">
+                      <div class="message-name">John Doe</div>
+                      <div class="message-header">Message header</div>
+                      <div class="message-bubble">
+                        <div class="message-text-header">Text header</div>
+                        <div class="message-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</div>
+                        <div class="message-text-footer">Text footer</div>
+                      </div>
+                      <div class="message-footer">Message footer</div>
+                    </div>
+                  </div>
+                  <!-- Messages -->
+                  <div class="message message-sent">
+                    <div class="message-content">
+                      <div class="message-bubble">
+                        <div class="message-text">Hi, Kate</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-sent">
+                    <div class="message-content">
+                      <div class="message-bubble">
+                        <div class="message-text">How are you?</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-received">
+                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9);"></div>
+                    <div class="message-content">
+                      <div class="message-name">Kate</div>
+                      <div class="message-bubble">
+                        <div class="message-text">Hi, I am good!</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-received">
+                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7);"></div>
+                    <div class="message-content">
+                      <div class="message-name">Blue Ninja</div>
+                      <div class="message-bubble">
+                        <div class="message-text">Hi there, I am also fine, thanks! And how are you?</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-sent">
+                    <div class="message-content">
+                      <div class="message-bubble">
+                        <div class="message-text">Hey, Blue Ninja! Glad to see you ;)</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-sent">
+                    <div class="message-content">
+                      <div class="message-bubble">
+                        <div class="message-text">Hey, look, cutest kitten ever!</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-sent">
+                    <div class="message-content">
+                      <div class="message-bubble">
+                        <div class="message-image"><img src="http://lorempixel.com/200/260/cats/4/" style="width:200px; height: 260px;"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-received">
+                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9);"></div>
+                    <div class="message-content">
+                      <div class="message-name">Kate</div>
+                      <div class="message-bubble">
+                        <div class="message-text">Nice!</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-received">
+                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9);"></div>
+                    <div class="message-content">
+                      <div class="message-name">Kate</div>
+                      <div class="message-bubble">
+                        <div class="message-text">Like it very much!</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message message-received">
+                    <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7);"></div>
+                    <div class="message-content">
+                      <div class="message-name">Blue Ninja</div>
+                      <div class="message-bubble">
+                        <div class="message-text">Awesome!</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            // Init Messages
+            var messages = app.messages.create({
+              el: '.messages',
+
+              // First message rule
+              firstMessageRule: function (message, previousMessage, nextMessage) {
+                // Skip if title
+                if (message.isTitle) return false;
+                /* if:
+                  - there is no previous message
+                  - or previous message type (send/received) is different
+                  - or previous message sender name is different
+                */
+                if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+                return false;
+              },
+              // Last message rule
+              lastMessageRule: function (message, previousMessage, nextMessage) {
+                // Skip if title
+                if (message.isTitle) return false;
+                /* if:
+                  - there is no next message
+                  - or next message type (send/received) is different
+                  - or next message sender name is different
+                */
+                if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                return false;
+              },
+              // Last message rule
+              tailMessageRule: function (message, previousMessage, nextMessage) {
+                // Skip if title
+                if (message.isTitle) return false;
+                  /* if (bascially same as lastMessageRule):
+                  - there is no next message
+                  - or next message type (send/received) is different
+                  - or next message sender name is different
+                */
+                if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                return false;
+              }
+            });
+
+            // Init Messagebar
+            var messagebar = app.messagebar.create({
+              el: '.messagebar'
+            });
+
+            // Response flag
+            var responseInProgress = false;
+
+            // Send Message
+            $$('.send-link').on('click', function () {
+              var text = messagebar.getValue().replace(/\n/g, '<br>').trim();
+              // return if empty message
+              if (!text.length) return;
+
+              // Clear area
+              messagebar.clear();
+
+              // Return focus to area
+              messagebar.focus();
+
+              // Add message to messages
+              messages.addMessage({
+                text: text,
+              });
+
+              if (responseInProgress) return;
+              // Receive dummy message
+              receiveMessage();
+            });
+
+            // Dummy response
+            var answers = [
+              'Yes!',
+              'No',
+              'Hm...',
+              'I am not sure',
+              'And what about you?',
+              'May be ;)',
+              'Lorem ipsum dolor sit amet, consectetur',
+              'What?',
+              'Are you sure?',
+              'Of course',
+              'Need to think about it',
+              'Amazing!!!'
+            ]
+            var people = [
+              {
+                name: 'Kate Johnson',
+                avatar: 'http://lorempixel.com/100/100/people/9'
+              },
+              {
+                name: 'Blue Ninja',
+                avatar: 'http://lorempixel.com/100/100/people/7'
+              }
+            ];
+            function receiveMessage() {
+              responseInProgress = true;
+              setTimeout(function () {
+                // Get random answer and random person
+                var answer = answers[Math.floor(Math.random() * answers.length)];
+                var person = people[Math.floor(Math.random() * people.length)];
+
+                // Show typing indicator
+                messages.showTyping({
+                  header: person.name + ' is typing',
+                  avatar: person.avatar
+                });
+
+                setTimeout(function () {
+                  // Add received dummy message
+                  messages.addMessage({
+                    text: answer,
+                    type: 'received',
+                    name: person.name,
+                    avatar: person.avatar
+                  });
+                  // Hide typing indicator
+                  messages.hideTyping();
+                  responseInProgress = false;
+                }, 4000);
+              }, 1000);
+            }

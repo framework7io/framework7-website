@@ -18,11 +18,13 @@
     "gulp-jade": "^1.1.0",
     "gulp-less": "^3.0.5",
     "gulp-open": "^1.0.0",
-    "gulp-sftp": "^0.1.5",
+    "gulp-pug": "^3.3.0",
     "gulp-util": "^3.0.8",
     "jade": "^1.11.0",
+    "js-yaml": "^3.10.0",
     "jsdom": "^9.11.0",
     "json-fn": "^1.1.1",
+    "pug": "^2.0.0-rc.4",
     "to-case": "^2.0.0"
   }
 }

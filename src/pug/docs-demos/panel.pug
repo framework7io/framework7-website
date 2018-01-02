@@ -1,0 +1,61 @@
+extends _layout
+block content
+  .panel.panel-left.panel-reveal
+    .block
+      p Left Panel content here
+      p
+        a(href="#").panel-close Close me
+      p
+        a(href="#", data-panel="right").panel-open Open Right Panel
+
+  .panel.panel-right.panel-cover
+    .block
+      p Right Panel content here
+      p
+        a(href="#").panel-close Close me
+      p
+        a(href="#", data-panel="left").panel-open Open Left Panel
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Panels
+          .right
+      .page-content
+        .block
+          p
+            a(href="#").panel-open Open Left Panel
+          p
+            a(href="#", data-panel="right").panel-open Open Right Panel
+
+block scripts
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    // Dom Events
+    $$('.panel-left').on('panel:open', function () {
+      console.log('Panel left: open');
+    });
+    $$('.panel-left').on('panel:opened', function () {
+      console.log('Panel left: opened');
+    });
+
+    // Instance Events
+    var panelRight = app.panel.right;
+    panelRight.on('open', function () {
+      console.log('Panel right: open');
+    });
+    panelRight.on('opened', function () {
+      console.log('Panel right: opened');
+    });
+
+    // App Events
+    app.on('panelClose', function (panel) {
+      console.log('Panel ' + panel.side + ': close');
+    });
+    app.on('panelClosed', function (panel) {
+      console.log('Panel ' + panel.side + ': closed');
+    });

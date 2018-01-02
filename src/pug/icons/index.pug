@@ -1,0 +1,21 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = '';
+  - var title = 'Framework7 Icons';
+  - var includeF7Icons = true;
+
+block content
+  h1.text-align-center Framework7 Icons
+  div.text-align-center.large-text
+    p The premium and free iOS-icons font for Framework7.
+    p The font is developed to be used with Framework7, but you can use it wherever you see it fits, personal or commercial. It is free to use and licensed under MIT. The font can be downloaded at the <a href="https://github.com/framework7io/framework7-icons" target="_blank"><b>Framework7 Icons</b></a> repository.
+  h2.text-align-center Icons Cheatsheet
+  br
+  .f7-demo-icons
+    for icon in icons
+      .f7-demo-icon-cell
+        .f7-demo-icon
+          i.f7-icons #{icon.name}
+        .f7-demo-icon-label #{icon.name}
+

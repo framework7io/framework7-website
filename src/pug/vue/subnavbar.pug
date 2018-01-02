@@ -1,0 +1,79 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Sub Navbar Vue Component | Framework7 Vue Documentation';
+
+block content
+
+    .docs-nav
+      include ../_docs-vue-menu
+    .docs-content
+      h1 Sub Navbar Vue Component
+      p Sub Navbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.
+      p Sub Navbar Vue component represents <a href="../docs/subnavbar.html">Sub Navbar</a> component.
+      h2 Usage examples
+      pre
+        code
+          :code
+            <f7-subnavbar>
+              <f7-buttons>
+                <f7-button tab-link="#tab1" active>Tab 1</f7-button>
+                <f7-button tab-link="#tab2">Tab 2</f7-button>
+              </f7-buttons>
+            </f7-subnavbar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="subnavbar">
+              <div class="buttons-row">
+                <a href="#" class="button tab-link active" data-tab="#tab1">Tab 1</a>
+                <a href="#" class="button tab-link" data-tab="#tab2">Tab 2</a>
+              </div>
+            </div>
+      h4 Inside of Navbar
+      pre
+        code
+          :code
+            <f7-navbar back-link="Back" title="Tabs" sliding>
+              <f7-subnavbar sliding>
+                <f7-buttons>
+                  <f7-button tab-link="#tab1" active>Tab 1</f7-button>
+                  <f7-button tab-link="#tab2">Tab 2</f7-button>
+                </f7-buttons>
+              </f7-subnavbar>
+            </f7-navbar>
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left sliding">
+                  <a href="#" class="link back">
+                    <i class="icon icon-back"></i>
+                    <span>Back</span>
+                  </a>
+                </div>
+                <div class="center sliding">Tabs</div>
+                <div class="subnavbar sliding">
+                  <div class="buttons-row">
+                    <a href="#" class="button tab-link active" data-tab="#tab1">Tab 1</a>
+                    <a href="#" class="button tab-link" data-tab="#tab2">Tab 2</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+      h2 Properties
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Description
+        tbody
+          tr
+            td sliding
+            td boolean
+            td Enables "sliding" effect

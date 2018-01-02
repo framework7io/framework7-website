@@ -1,0 +1,93 @@
+extends _layout
+block content
+  .view.view-main
+    .page
+      .navbar
+        .navbar-inner
+          .left
+            a(href="#", data-popover=".popover-about").link.popover-open About
+          .title Popover
+          .right
+            a(href="#", data-popover=".popover-links").link.popover-open Links
+      .page-content
+        .block
+          p
+            a(href="#", data-popover=".popover-about").link.popover-open Open About Popover
+          p
+            a(href="#", data-popover=".popover-links").link.popover-open Open Links Popover
+          p
+            a(href="#").link.dynamic-popover Create Dynamic Popover
+
+  style.
+    .popover {
+      width:200px;
+    }
+
+  .popover.popover-about
+    .popover-inner
+      .block
+        p About
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+  .popover.popover-links
+    .popover-inner
+      .list
+        ul
+          li
+            a(href="#").list-button.item-link Link 1
+          li
+            a(href="#").list-button.item-link Link 2
+          li
+            a(href="#").list-button.item-link Link 3
+          li
+            a(href="#").list-button.item-link Link 4
+
+
+
+block scripts
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    // DOM events for About popover
+    $$('.popover-about').on('popover:open', function (e, popover) {
+      console.log('About popover open');
+    });
+    $$('.popover-about').on('popover:opened', function (e, popover) {
+      console.log('About popover opened');
+    });
+
+    // Create dynamic Popover
+    var dynamicPopover = app.popover.create({
+      targetEl: 'a.dynamic-popover',
+      content: '<div class="popover">'+
+                  '<div class="popover-inner">'+
+                    '<div class="block">'+
+                      '<p>Popover created dynamically.</p>'+
+                      '<p><a href="#" class="link popover-close">Close me</a></p>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>',
+      // Events
+      on: {
+        open: function (popover) {
+          console.log('Popover open');
+        },
+        opened: function (popover) {
+          console.log('Popover opened');
+        },
+      }
+    });
+    // Events also can be assigned on instance later
+    dynamicPopover.on('close', function (popover) {
+      console.log('Popover close');
+    });
+    dynamicPopover.on('closed', function (popover) {
+      console.log('Popover closed');
+    });
+
+    // Open dynamic popover
+    $$('.dynamic-popover').on('click', function () {
+      dynamicPopover.open();
+    });
+

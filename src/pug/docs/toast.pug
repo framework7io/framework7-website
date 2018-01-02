@@ -1,0 +1,403 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Toast | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Toast
+    .docs-index
+    p Toasts provide brief feedback about an operation through a message on the screen.
+    h2 Toast App Methods
+    p Let's look at related App methods to work with Toast:
+    .method-wrap
+      p
+        span.method app.toast.create(<span>parameters</span>)
+        | - create Toast instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with toast parameters
+      p.method-returns Method returns created Toast's instance
+
+    .method-wrap
+      p
+        span.method app.toast.destroy(<span>el</span>)
+        | - destroy Toast instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Toast element or Toast instance to destroy.
+    .method-wrap
+      p
+        span.method app.toast.get(<span>el</span>)
+        | - get Toast instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Toast element.
+      p.method-returns Method returns Toast's instance
+    .method-wrap
+      p
+        span.method app.toast.open(<span>el</span>, <span>animate</span>)
+        | - opens Toast
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Toast element to open.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Open Toast with animation.
+      p.method-returns Method returns Toast's instance
+    .method-wrap
+      p
+        span.method app.toast.close(<span>el</span>, <span>animate</span>)
+        | - closes Toast
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Toast element to close.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Close Toast with animation.
+      p.method-returns Method returns Toast's instance
+    h2 Toast Parameters
+    p Now let's look at list of available parameters we need to create Toast:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement
+          td
+          td Toast element. Can be useful if you already have Toast element in your HTML and want to create new instance using this element
+        tr
+          td icon
+          td string
+          td
+          td Toast icon HTML layout, e.g. <code>&lt;i class="f7-icons"&gt;home&lt;/i&gt;</code> or image <code>&lt;img src="path/to/icon.png"&gt;</code>
+        tr
+          td text
+          td string
+          td
+          td Toast inner text
+        tr
+          td position
+          td string
+          td bottom
+          td Toast position. Can be <code>bottom</code>, <code>center</code> or <code>top</code>
+        tr
+          td closeButton
+          td boolean
+          td false
+          td Adds toast close button
+        tr
+          td closeButtonColor
+          td string
+          td
+          td One of the <a href="color-themes.html">default color themes</a>
+        tr
+          td closeButtonText
+          td string
+          td Ok
+          td Close button text
+        tr
+          td cssClass
+          td string
+          td
+          td Additional css class to add
+        tr
+          td render
+          td function
+          td
+          td Custom function to render Toast. Must return toast html
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var toast = app.toast.create({
+                    title: 'John Doe'
+                    text: 'Hello, how are you?',
+                    on: {
+                      opened: function () {
+                        console.log('Toast opened')
+                      }
+                    }
+                  })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>toast</code> property to set defaults for all toasts. For example:
+      pre
+        code
+          :code
+            var app = new Framework7({
+              toast: {
+                closeTimeout: 3000,
+                closeButton: true,
+              }
+            });
+    h2 Toast Methods & Properties
+    p So to create Toast we have to call:
+    pre
+      code
+        :code
+          var toast = app.toast.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>toast</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td toast.app
+          td Link to global app instance
+        tr
+          td toast.el
+          td Toast HTML element
+        tr
+          td toast.$el
+          td Dom7 instance with toast HTML element
+        tr
+          td toast.params
+          td Toast parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td toast.open()
+          td Open toast
+        tr
+          td toast.close()
+          td Close toast
+        tr
+          td toast.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td toast.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td toast.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td toast.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td toast.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+
+    h2 Toast Events
+    p Toast will fire the following DOM events on toast element and events on app and toast instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td toast:open
+          td Toast Element<span>&lt;div class="toast"&gt;</span>
+          td Event will be triggered when Toast starts its opening animation
+        tr
+          td toast:opened
+          td Toast Element<span>&lt;div class="toast"&gt;</span>
+          td Event will be triggered after Toast completes its opening animation
+        tr
+          td toast:close
+          td Toast Element<span>&lt;div class="toast"&gt;</span>
+          td Event will be triggered when Toast starts its closing animation
+        tr
+          td toast:closed
+          td Toast Element<span>&lt;div class="toast"&gt;</span>
+          td Event will be triggered after Toast completes its closing animation
+    h3 App and Toast Instance Events
+    p Toast instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>toast</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td closeButtonClick
+          td <span>toast</span>
+          td toast
+          td(rowspan="2") Event will be triggered when user clicks on Toast close button. As an argument event handler receives toast instance
+        tr
+          td toastCloseButtonClick
+          td <span>toast</span>
+          td app
+        tr
+          td open
+          td <span>toast</span>
+          td toast
+          td(rowspan="2") Event will be triggered when Toast starts its opening animation. As an argument event handler receives toast instance
+        tr
+          td toastOpen
+          td <span>toast</span>
+          td app
+        tr
+          td opened
+          td <span>toast</span>
+          td toast
+          td(rowspan="2") Event will be triggered after Toast completes its opening animation. As an argument event handler receives toast instance
+        tr
+          td toastOpened
+          td <span>toast</span>
+          td app
+        tr
+          td close
+          td <span>toast</span>
+          td toast
+          td(rowspan="2") Event will be triggered when Toast starts its closing animation. As an argument event handler receives toast instance
+        tr
+          td toastClose
+          td <span>toast</span>
+          td app
+        tr
+          td closed
+          td <span>toast</span>
+          td toast
+          td(rowspan="2") Event will be triggered after Toast completes its closing animation. As an argument event handler receives toast instance
+        tr
+          td toastClosed
+          td <span>toast</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>toast</span>
+          td toast
+          td(rowspan="2") Event will be triggered right before Toast instance will be destroyed. As an argument event handler receives toast instance
+        tr
+          td toastBeforeDestroy
+          td <span>toast</span>
+          td app
+    .with-device
+      h2(data-device-preview="../docs-demos/toast.html") Examples
+      pre
+        code
+          :code
+            <div class="block">
+              <p>
+                <a href="#" class="button button-raised open-toast-bottom">Toast on Bottom</a>
+              </p>
+              <p>
+                <a href="#" class="button button-raised open-toast-top">Toast on Top</a>
+              </p>
+              <p>
+                <a href="#" class="button button-raised open-toast-center">Toast on Center</a>
+              </p>
+              <p>
+                <a href="#" class="button button-raised open-toast-icon">Toast with icon</a>
+              </p>
+              <p>
+                <a href="#" class="button button-raised open-toast-large">Toast with large message</a>
+              </p>
+              <p>
+                <a href="#" class="button button-raised open-toast-button">Toast with close button</a>
+              </p>
+              <p>
+                <a href="#" class="button button-raised open-toast-custom-button">Toast with custom button</a>
+              </p>
+              <p>
+                <a href="#" class="button button-raised open-toast-callback">Toast with callback on close</a>
+              </p>
+            </div>
+      pre
+        code
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            // Create bottom toast
+            var toastBottom = app.toast.create({
+              text: 'This is default bottom positioned toast',
+              closeTimeout: 2000,
+            });
+            // Create top toast
+            var toastTop = app.toast.create({
+              text: 'Top positioned toast',
+              position: 'top',
+              closeTimeout: 2000,
+            });
+            // Create center toast
+            var toastCenter = app.toast.create({
+              text: 'I\'m on center',
+              position: 'center',
+              closeTimeout: 2000,
+            });
+            // Create toast with icon
+            var toastIcon = app.toast.create({
+              icon: app.theme === 'ios' ? '<i class="f7-icons">star</i>' : '<i class="material-icons">star</i>',
+              text: 'I\'m with icon',
+              position: 'center',
+              closeTimeout: 2000,
+            });
+            // Create toast with large message
+            var toastLargeMessage = app.toast.create({
+              text: 'This toast contains a lot of text. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil, quae, ab. Delectus amet optio facere autem sapiente quisquam beatae culpa dolore.',
+              closeTimeout: 2000,
+            });
+            // Create toast with button
+            var toastWithButton = app.toast.create({
+              text: 'Toast with additional close button',
+              closeButton: true,
+            });
+            // Create toast with custom button text
+            var toastWithCustomButton = app.toast.create({
+              text: 'Custom close button',
+              closeButton: true,
+              closeButtonText: 'Close Me',
+              closeButtonColor: 'red',
+            });
+            // Create toast with callback on close
+            var toastWithCallback = app.toast.create({
+              text: 'Callback on close',
+              closeButton: true,
+              on: {
+                close: function () {
+                  app.dialog.alert('Toast closed');
+                },
+              }
+            });
+
+            // Open toasts
+            $$('.open-toast-bottom').on('click', function () {
+              toastBottom.open();
+            });
+            $$('.open-toast-top').on('click', function () {
+              toastTop.open();
+            });
+            $$('.open-toast-center').on('click', function () {
+              toastCenter.open();
+            });
+            $$('.open-toast-icon').on('click', function () {
+              toastIcon.open();
+            });
+            $$('.open-toast-large').on('click', function () {
+              toastLargeMessage.open();
+            });
+            $$('.open-toast-button').on('click', function () {
+              toastWithButton.open();
+            });
+            $$('.open-toast-custom-button').on('click', function () {
+              toastWithCustomButton.open();
+            });
+            $$('.open-toast-callback').on('click', function () {
+              toastWithCallback.open();
+            });

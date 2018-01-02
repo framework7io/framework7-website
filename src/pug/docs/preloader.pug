@@ -1,0 +1,151 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'docs';
+  - var title = 'Preloader | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    h1 Preloader
+    .docs-index
+    p Framework7 has a nice preloader indicator. Preloader is made with SVG and animated with CSS so it can be easily resized.
+    h2 Preloader Layout
+    p Layout is pretty simple:
+    pre
+      code.html
+        :code
+          <div class="preloader"></div>
+    p MD theme uses more complex preloader layout as it has more complex animation. Usually if it is inside of page or created withing some API methods F7 will add this additional inner layout automatically. But if you will add it manually using, lets say, direct DOM manipulation then you may need to add full layout which is required for MD theme:
+    pre
+      code.html
+        :code
+          <!-- Full preloader layout for MD theme -->
+          <div class="preloader">
+            <span class="preloader-inner">
+              <span class="preloader-inner-gap"></span>
+              <span class="preloader-inner-left">
+                  <span class="preloader-inner-half-circle"></span>
+              </span>
+              <span class="preloader-inner-right">
+                  <span class="preloader-inner-half-circle"></span>
+              </span>
+            </span>
+          </div>
+    h2 Preloader Colors
+    p Preloader supports all <a href="color-themes.html">default colors</a>. So to change its color just add <code>color-[color]</code> class to preloader element.
+    p MD theme also supports special <code>color-multi</code> color to make preloader multi-color.
+    pre.html
+      code
+        :code
+          <!-- Red preloader -->
+          <div class="preloader color-red"></div>
+
+          <!-- Green preloader -->
+          <div class="preloader color-green"></div>
+
+          <!-- Multicolor preloader (MD theme only) -->
+          <div class="preloader color-multi"></div>
+    h2 Preloader Overlay / Preloader API
+    p It is also possible to call special Preloader overlay which is useful if you need to block user actions until something is loaded. This kind of preloader will appear in front of app and block any user actions behind it.
+    p Let's look at related app methods to work with Preloader overlay
+    .method-wrap
+      p
+        span.method app.preloader.show()
+        | - show Preloader overlay
+    .method-wrap
+      p
+        span.method app.preloader.hide()
+        | - hide Preloader overlay
+    p For example:
+    pre
+      code
+        :code
+          var app = new Framework7();
+
+          // Show preloader before Ajax request
+          app.preloader.show();
+
+          // Perform Ajax request
+          app.request.get('someurl.html', function (data) {
+            // Hide preloader when Ajax request completed
+            app.preloader.hide();
+          });
+    .important-note
+      p Opening Preloader overlay will also add <code>with-modal-preloader</code> class to &lt;html&gt; element.
+    .with-device(data-device-preview="../docs-demos/preloader.html")
+      h2 Examples
+      pre
+        code.html
+          :code
+            <div class="block-title">Default</div>
+            <div class="block block-strong align-items-stretch text-align-center">
+              <div class="row text-align-center">
+                <div class="col-25">
+                  <div class="preloader"></div>
+                </div>
+                <div class="col-25" style="background: #222">
+                  <div class="preloader color-white"></div>
+                </div>
+                <!-- Large preloaders -->
+                <div class="col-25">
+                  <div class="preloader" style="width: 44px; height: 44px"></div>
+                </div>
+                <div class="col-25" style="background: #222">
+                  <div class="preloader color-white" style="width: 44px; height: 44px"></div>
+                </div>
+              </div>
+            </div>
+      pre
+        code.html
+          :code
+            <div class="block-title">Color Preloaders</div>
+            <div class="block block-strong">
+              <div class="row">
+                <div class="col-25">
+                  <div class="preloader color-red"></div>
+                </div>
+                <div class="col-25">
+                  <div class="preloader color-green"></div>
+                </div>
+                <div class="col-25">
+                  <div class="preloader color-orange"></div>
+                </div>
+                <div class="col-25">
+                  <div class="preloader color-blue"></div>
+                </div>
+              </div>
+            </div>
+      pre
+        code.html
+          :code
+            <div class="block-title">Multi-color (MD-theme only)</div>
+            <div class="block block-strong text-align-center">
+              <div class="preloader color-multi"></div>
+            </div>
+      pre
+        code.html
+          :code
+            <div class="block-title">Preloader Modals</div>
+            <div class="block block-strong">
+              <p>With <b>app.preloader.show()</b> you can show small overlay with preloader indicator.</p>
+              <p>
+                <a class="button button-raised open-preloader-indicator">Open Small Indicator</a>
+              </p>
+            </div>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            $$('.open-preloader-indicator').on('click', function () {
+              app.preloader.show();
+              setTimeout(function () {
+                app.preloader.hide();
+              }, 3000);
+            });
