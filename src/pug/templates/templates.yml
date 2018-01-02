@@ -23,6 +23,21 @@ official:
 
 community:
 -
+  title: Framework7 Parceljs starter app
+  icon:
+    text: F7 Parcel
+    bgColor: '#333'
+    textColor: '#fff'
+  author:
+    url: https://github.com/GuillaumeBiton/
+    name: Guillaume Biton
+  url: https://github.com/GuillaumeBiton/framework7-parcel-template
+  previewUrl: https://guillaumebiton.github.io/framework7-parcel-template/
+  description: Framework7 starter app template bundle up by parcel
+  badges:
+  - v2
+  - Parceljs
+-
   title: App Framework
   iconUrl: http://is3.mzstatic.com/image/thumb/Purple127/v4/a5/13/be/a513bea8-7382-589f-dc30-3c032068df0c/source/350x350bb.jpg
   author:
