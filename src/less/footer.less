@@ -5,6 +5,9 @@ footer {
   border-top: 1px solid rgba(0,0,0,0.05);
   position: relative;
   z-index: 100;
+  .center {
+    padding-top: 20px;
+  }
   a {
     color: #888;
     text-decoration: none;
@@ -14,16 +17,12 @@ footer {
     text-decoration: none;
   }
   .links {
-    padding: 20px 0;
-    float: left;
+    display: flex;
+    justify-content: flex-start;
   }
   .links-block {
-    float: left;
     text-align: left;
-    margin-left: 60px;
-    &:first-child {
-      margin-left: 0;
-    }
+    margin-right: 30px;
     ul {
       list-style: none;
       margin: 0;
@@ -40,19 +39,18 @@ footer {
     font-size: 16px;
   }
   .sponsors {
-    float: right;
-    padding: 20px 0;
     text-align: right;
+    margin-left: auto;
   }
   .sponsors-title {
     font-size: 16px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     text-align: right;
   }
   #bsap_1306028 {
-    margin-top: 10px;
+    margin-top: 5px;
+    margin-right: -5px;
     font-size: 0;
-    width: 220px * 2 + 20;
     text-align: right;
     a {
       text-align: left;
@@ -66,15 +64,13 @@ footer {
       position: relative;
       overflow: hidden;
       float: none;
+      margin: 5px;
       img {
         border: none;
         outline: 0;
       }
       &:hover {
         opacity: 1;
-      }
-      &:nth-child(2n) {
-        margin-left: 20px;
       }
     }
     a.adhere {

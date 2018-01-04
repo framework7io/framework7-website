@@ -104,7 +104,7 @@
       .on('end', () => {
         buildReactPages(() => {
           console.log(`Finished pug all in ${Date.now() - time}ms`);
-          cb();
+          if(cb) cb();
         });
       });
 

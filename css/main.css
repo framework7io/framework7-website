@@ -2908,6 +2908,9 @@ footer {
   position: relative;
   z-index: 100;
 }
+footer .center {
+  padding-top: 20px;
+}
 footer a {
   color: #888;
   text-decoration: none;
@@ -2917,16 +2920,12 @@ footer a:hover {
   text-decoration: none;
 }
 footer .links {
-  padding: 20px 0;
-  float: left;
+  display: flex;
+  justify-content: flex-start;
 }
 footer .links-block {
-  float: left;
   text-align: left;
-  margin-left: 60px;
-}
-footer .links-block:first-child {
-  margin-left: 0;
+  margin-right: 30px;
 }
 footer .links-block ul {
   list-style: none;
@@ -2943,19 +2942,18 @@ footer .links-block-title {
   font-size: 16px;
 }
 footer .sponsors {
-  float: right;
-  padding: 20px 0;
   text-align: right;
+  margin-left: auto;
 }
 footer .sponsors-title {
   font-size: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   text-align: right;
 }
 footer #bsap_1306028 {
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-right: -5px;
   font-size: 0;
-  width: 460px;
   text-align: right;
 }
 footer #bsap_1306028 a {
@@ -2970,6 +2968,7 @@ footer #bsap_1306028 a {
   position: relative;
   overflow: hidden;
   float: none;
+  margin: 5px;
 }
 footer #bsap_1306028 a img {
   border: none;
@@ -2977,9 +2976,6 @@ footer #bsap_1306028 a img {
 }
 footer #bsap_1306028 a:hover {
   opacity: 1;
-}
-footer #bsap_1306028 a:nth-child(2n) {
-  margin-left: 20px;
 }
 footer #bsap_1306028 a.adhere {
   border: 1px solid rgba(0, 0, 0, 0.4);
