@@ -10,8 +10,6 @@
         del = require('del'),
         iconsManifest = require('./manifest-icons.json'),
         useCDN = true,
-        cdnPath = '//cdn.framework7.io',
-        sftp = require('gulp-sftp'),
         gutil = require( 'gulp-util' ),
         processVueJadeFiles = require('./src/react-doc-generation/vue-jade-file-processing').processVueJadeFiles,
         processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles,
@@ -150,7 +148,7 @@
                 .pipe(jade({
                     pretty: true,
                     locals: {
-                        cdn: useCDN ? cdnPath : '',
+                        cdn: '',
                         icons: iconsManifest.icons
                     }
                 }))
@@ -175,7 +173,7 @@
                 .pipe(jade({
                     pretty: true,
                     locals: {
-                        cdn: useCDN ? cdnPath : '',
+                        cdn: '',
                         icons: iconsManifest.icons
                     }
                 }))
@@ -243,64 +241,6 @@
                 paths.jade + '/_github_buttons.jade',
                 paths.jade + '/_social-buttons.jade'
             ], ['jade']);
-    });
-    /* =================================
-    Deploy
-    ================================= */
-    gulp.task('deploy', function () {
-        var folder;
-        if (process.argv.slice(3)) {
-            folder = process.argv.slice(3);
-            if (folder) folder = folder.toString().replace('-', '');
-        }
-        var src = [
-            './*.html',
-            './robots.txt',
-            './*.png',
-            './framework7.json',
-            './manifest-icons.json',
-            './apps/**/*.*',
-            './contribute/**/*.*',
-            './css/**/*.*',
-            './dist/**/*.*',
-            './docs/**/*.*',
-            './docs-demos/**/*.*',
-            './donate/**/*.*',
-            './examples/**/*.*',
-            './fonts/**/*.*',
-            './forum/**/*.*',
-            './get-started/**/*.*',
-            './i/**/*.*',
-            './icons/**/*.*',
-            './js/**/*.*',
-            './kitchen-sink-ios/**/*.*',
-            './kitchen-sink-material/**/*.*',
-            './plugins/**/*.*',
-            './showcase/**/*.*',
-            './tutorials/**/*.*',
-            './vue/**/*.*',
-            './react/**/*.*'
-            ];
-        var folderSrc = {
-            'index': './index.html',
-            'apps': './apps/**/*.*',
-            'dist': './dist/**/*.*',
-            'docs': './docs/**/*.*',
-            'docs-demos': './docs/**/*.*',
-            'examples': './examples/**/*.*',
-            'plugins': './plugins/**/*.*',
-            'showcase': './showcase/**/*.*',
-            'tutorials': './tutorials/**/*.*',
-            'vue': './vue/**/*.*',
-            'react': './react/**/*.*',
-            'kitchen-sink': ['./kitchen-sink-ios/**/*.*', './kitchen-sink-material/**/*.*']
-        };
-        if (folder) src = folderSrc[folder];
-
-        var remote = require('./remote.json');
-
-        gulp.src(src, {base: './'})
-            .pipe(sftp(remote));
     });
 
     /* =================================

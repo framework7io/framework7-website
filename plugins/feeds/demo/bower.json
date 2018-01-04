@@ -1,9 +1,0 @@
-{
-  "name": "Framework7 Feeds Demo",
-  "description": "Demo for Framework7 Feeds plugin",
-  "author": "Vladimir Kharlampidi",
-  "license": ["MIT"],
-  "dependencies": {
-    "framework7": "~1.2.0"
-  }
-}

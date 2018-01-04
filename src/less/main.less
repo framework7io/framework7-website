@@ -89,7 +89,7 @@
     padding: 0 15px;
     box-sizing: border-box;
     font-weight: 500;
-    .myriad();
+    
     .transition(200ms);
     &:hover {
         background: rgba(red(@dark),green(@dark),blue(@dark),0.1);
@@ -140,10 +140,8 @@
     box-sizing: border-box;
 }
 @light: #eb562e;
-@dark: #b72f20;
+@dark: #EE350F;
 @green: darken(green, 5%);
-
-@import url('fonts.less');
 
 body {
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -155,6 +153,7 @@ body {
     line-height: 1.5;
     background: #fff;
     min-width: 960px;
+    -webkit-font-smoothing: antialiased;
 }
 .center {
     max-width: 1180px;
@@ -180,7 +179,7 @@ li {
 
 // Headings
 h1, h2, h3, h4 {
-    .myriad();
+    
     font-weight: 300;
     color: @dark;
 }
@@ -280,13 +279,7 @@ code {
 }
 // Header
 header {
-    background: @dark;
-    background: -moz-radial-gradient(0% 0%, circle cover, @light 0%, @dark 50%);
-    background: -webkit-gradient(radial, 0% 0%, 0px, center center, 100%, color-stop(0%, @light), color-stop(50%,@dark));
-    background: -webkit-radial-gradient(0% 0%, circle cover, @light 0%, @dark 50%);
-    background: -o-radial-gradient(0% 0%, circle cover, @light 0%, @dark 50%);
-    background: -ms-radial-gradient(0% 0%, circle cover, @light 0%, @dark 50%);
-    background: radial-gradient(circle at 0% 0%, @light 0%, @dark 50%);
+    background: #EE350F;
 
     position: relative;
     height: 700px;
@@ -295,24 +288,18 @@ header {
     box-sizing: border-box;
     padding-top: 34px;
     position: relative;
-    color:#fff;
+    color: #fff;
     z-index: 1;
 
-    &:before {
-        position: absolute;
-        background: url(../i/bg.jpg) no-repeat center;
-        -webkit-background-size: cover;
-        background-size: cover;
-        content: '';
-        width: 100%;
+    height: 170px;
+    padding: 10px 0;
+    overflow: hidden;
+    .center {
         height: 100%;
-        left: 0;
-        top: 0;
-        opacity: 0.4;
     }
-    
+
     .logo {
-        background: url(../i/logo-new.png) no-repeat center;
+        background: url(../i/logo.svg) no-repeat center;
         width: 500px / 2;
         height: 500px / 2;
         margin: 0 auto;
@@ -324,6 +311,7 @@ header {
 
     .title {
         margin: 0;
+        padding-top: 15px;
         font-size: 52px;
         font-weight: 100;
         line-height: 1;
@@ -337,101 +325,71 @@ header {
         line-height: 1.2;
         margin: 25px 0;
     }
-    &.inner-header {
-        height: auto;
-        padding: 30px 0;
-        overflow: hidden;
-        background-position: center bottom;
-        background: @dark;
-        background: -moz-radial-gradient(0% 0%, ellipse cover, @light 0%, @dark 50%);
-        background: -webkit-gradient(radial, 0% 0%, 0px, center center, 100%, color-stop(0%, @light), color-stop(50%,@dark));
-        background: -webkit-radial-gradient(0% 0%, ellipse cover, @light 0%, @dark 50%);
-        background: -o-radial-gradient(0% 0%, ellipse cover, @light 0%, @dark 50%);
-        background: -ms-radial-gradient(0% 0%, ellipse cover, @light 0%, @dark 50%);
-        background: radial-gradient(ellipse at 0% 0%, @light 0%, @dark 50%);
-        .logo {
-            height: 150px;
-            width: 150px;
-            background: url(../i/logo-new.png);
-            -webkit-background-size: 100% auto;
-            background-size: 100% auto;
-            float: left;
+    .logo {
+        height: 150px;
+        width: 150px;
+        background: url(../i/logo.svg);
+        -webkit-background-size: 100% auto;
+        background-size: 100% auto;
+        float: left;
+        border: 4px solid #fff;
+        border-radius: 50%;
+        box-sizing: border-box;
+        box-shadow: 0px 30px 100px rgba(0,0,0,0.3);
+    }
+    .title-links {
+        float: none;
+        margin-left: 130px;
+        margin-left: 180px;
+        margin-right: 300px;
+    }
+    .title {
+        margin: 0;
+        margin-bottom: 20px;
+        font-size: 42px;
+        font-weight: 400;
+    }
+    .inner-links {
+        a {
+            color:#fff;
+            margin-right: 10px;
         }
-          
-        .title-links {
-            float: none;
-            margin-left: 130px;
-            margin-left: 180px;
-            margin-right: 330px;
+    }
+    .links {
+        a {
+            font-size: 14px;
         }
-        .title {
+    }
+    .links-label {
+        width: 50px;
+        padding-right: 10px;
+        text-align: right;
+    }
+    .links-row {
+        margin: 10px 0;
+        &:last-child {
+            margin-bottom: 0;
+        }
+        .links-label, .links {
+            display: inline-block;
             margin: 0;
-            margin-bottom: 20px;
         }
-        .inner-links {
-            a {
-                color:#fff;
-                margin-right: 10px;
-            }
+    }
+    .langs {
+        position: absolute;
+        right: 40px;
+        top: 0;
+        color: rgba(255,255,255,0.8);
+        font-size: 13px;
+        a, span {
+            margin: 0 2px;
         }
-        .links {
-            a {
-                width: 100px;
-                font-size: 14px;
-            }
+        a {
+            color:#fff;
+            text-decoration: none;
         }
-        .links-label {
-            width: 50px;
-            padding-right: 10px;
-            text-align: right;
-        }
-        .links-row {
-            margin: 10px 0;
-            &:last-child {
-                margin-bottom: 0;
-            }
-            .links-label, .links {
-                display: inline-block;
-                margin: 0;
-            }
-        }
-        .langs {
-            position: absolute;
-            right: 40px;
-            top: 0;
-            color: rgba(255,255,255,0.8);
-            font-size: 13px;
-            a, span {
-                margin: 0 2px;
-            }
-            a {
-                color:#fff;
-                text-decoration: none;
-            }
-            a:hover {
-                text-decoration: underline;
-            }
-        }
-        @media (max-width:1100px) {
-            .links {
-                a {
-                    font-size: 13px;
-                    width: 90px;
-                }
-            }
-            .links-label {
-                width: 40px;
-                padding-right: 5px;
-                font-size: 13px;
-            }
-        }
-        @media (max-width:1024px) {
-            .links {
-                a {
-                    font-size: 13px;
-                    width: 75px;
-                }
-            }
+        a:hover {
+            text-decoration: underline;
         }
     }
     .left {
@@ -448,233 +406,36 @@ header {
             height: 44px;
             color:#fff;
             font-size: 17px;
-            margin: 0 10px;
         }
         a:hover {
             background: rgba(255,255,255,0.1);
         }
         a:active {
             background: #fff;
-            color:@dark;
-        }
-    }
-    .phone {
-        position: absolute;
-        background: #111;
-        border-radius: 55px;
-        box-shadow: 0px 0px 0px 2px #aaa; 
-        top: -50px;
-        right: 40px;
-        width: 320px;
-        height: 568px;
-        padding: 105px 25px;
-        &:after {
-            content: '';
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            left: 50%;
-            margin-left: -30px;
-            bottom: 20px;
-            border-radius: 100%;
-            box-sizing: border-box;
-            border: 5px solid #333;
-        }
-        &:before {
-            content: '';
-            width: 60px;
-            height: 10px;
-            border-radius: 10px;
-            position: absolute;
-            left: 50%;
-            margin-left: -30px;
-            background: #333;
-            top: 50px;
-        }
-        
-        .statusbar {
-            position: absolute;
-            width: 320px;
-            height: 20px;
-            background: url(../i/status-bar.png);
-            left: 50%;
-            margin-left: -160px;
-            top: 100px;
-            -webkit-background-size: 100% auto;
-            background-size: 100% auto;
-        }
-        iframe {
-            width: 320px;
-            height: 548px;
-            display: block;
-            width: 100%;
-            margin-top: 20px;
-        }
-        &.phone-android {
-            border-radius: 20px;
-            width: 360px;
-            padding: 60px 20px;
-            height: 640px;
-            margin-top: 9px;
-            .theme-switch {
-                margin-top: -9px;
-            }
-            &:before {
-                  width: 14px;
-                  height: 14px;
-                  border-radius: 50%;
-                  position: absolute;
-                  left: 50%;
-                  margin-left: -7px;
-                  background: #666;
-                  top: 25px;
-            }
-            &:after {
-                content: '';
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                position: absolute;
-                left: 50px;
-                background: #444;
-                top: 30px;
-                margin-left: 0;
-            }
-            iframe {
-                width: 360px;
-                height: 640px - 25;
-                margin-top: 25px;
-
-            }
-            .statusbar {
-                width: 360px;
-                height: 25px;
-                background-image: url(../i/status-bar-android.png);
-                margin-left: -180px;
-                top: 60px;
-            }
-        }
-        .theme-switch {
-            position: absolute;
-            right: 100%;
-            margin-right: 2px;
-            top: 70px;
-            white-space: nowrap;
-            a {
-                text-align: center;
-                background: @dark;
-                text-decoration: none;
-                color:#fff;
-                padding: 5px 10px;
-                border-radius: 5px 0 0 5px;
-                display: block;
-                font-size: 12px;
-                .transition(200ms);
-                opacity: 0.5;
-                background: rgba(0,0,0,0.5);
-                position: relative;
-                span {
-                    display: block;
-                }
-                &.active, &:hover {
-                    opacity: 1;
-                }
-                + a {
-                    margin-top: 10px;
-                }
-                &.active:hover {
-                    .theme-icon {
-                        opacity: 0;
-                    }
-                    .fullscreen {
-                        opacity: 1;
-                    }
-                }
-            }
-            .theme-icon, .fullscreen {
-                .transition(100ms);
-            }
-            .fullscreen {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                box-sizing: border-box;
-                padding: 5px 10px;
-                font-size: 10px;
-                line-height: 1;
-                opacity: 0;
-                i {
-                    width: 30px;
-                    height: 30px;
-                    display: block;
-                    margin-left: auto;
-                    margin-right: auto;
-                    @svg: "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M3.205 28.795h10.662v-10.664h-10.662v10.664zM4.271 19.198h8.53v8.531h-8.53v-8.531z' fill='#ffffff'></path><path d='M23.464 16h1.066v-8.53h-8.53v1.066h6.762l-7.88 7.88 0.754 0.754 7.828-7.828z' fill='#ffffff'></path><path d='M3.205 3.205v12.795h1.066v-11.729h23.457v23.457h-11.729v1.066h12.795v-25.59z' fill='#ffffff'></path></svg>";
-                    @url: `encodeURIComponent(@{svg})`;
-                    background-image: url("data:image/svg+xml;charset=utf-8,@{url}");
-                    background-size: 24px 24px;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                }
-            }
-            .logo-apple, .logo-android {
-                width: 30px;
-                height: 30px;
-                margin-left: auto;
-                margin-right: auto;
-                background-size: 100% 100%;
-                background-position: center;
-                background-repeat: no-repeat;
-                margin-bottom: 3px;
-            }
-            .logo-apple {
-                background-image: url(../i/logo-apple.png);
-            }
-            .logo-android {
-                background-image: url(../i/logo-android.png);
-            }
-        }
-    }
-
-        
-    .release-info {
-        font-size: 14px;
-        margin: 20px 0;
-        a {
-            color:inherit;
-            text-decoration: none;
-            &:hover {
-                text-decoration: underline;
-            }
+            color: #EE350F;
         }
     }
     .links {
-        margin: 20px 0;
-        text-align: center;
+        margin-left: -5px !important;
         a {
-            .button();
             color:#fff;
-            border: 1px solid #fff;
             border-right: none;
             border-radius: 0;
-            padding: 0;
-            width: 84px;
-        }
-        a:first-child {
-            border-radius: 5px 0 0 5px;
-        }
-        a:last-child {
-            border-radius:0 5px 5px 0;
-            border-right: 1px solid #fff;
+            padding: 0 10px;
+            text-decoration: none;
+            display: inline-block;
+            line-height: 21px;
+            font-size: 14px;
+            border-radius: 10px;
+            margin-left: 5px;
+            margin-bottom: 5px;
         }
         a:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.1);
         }
         a:active, a.active {
             background: #fff;
-            color:@dark;
+            color: #EE350F;
         }
     }
     .small-links {
@@ -717,7 +478,7 @@ header {
 
 // Github buttons
 .github-buttons {
-    .myriad();
+    
     font-size: 0;
     line-height: 18px;
     img {
@@ -748,11 +509,10 @@ header {
 
 // Share line
 .share-line {
-    background: darken(@dark, 10%);
-    border-top: 1px solid @dark;
-    padding: 14px 0;
+    background: #d6300d;
+    padding: 10px 0;
     box-sizing: border-box;
-    height: 50px;
+    height: 40px;
     .center {
         padding: 0 40px;
     }
@@ -788,7 +548,7 @@ footer {
     background: darken(@dark, 30%);
     color:#fff;
     color: rgba(255,255,255,0.8);
-    .myriad();
+    
     a {
         color: rgba(255,255,255,0.8);
         text-decoration: none;
@@ -919,182 +679,6 @@ footer {
     }
 }
 
-
-// Examples and apps
-.example {
-    margin: 40px 0;
-    .device {
-        margin: 0 auto;
-        position: relative;
-        background: #111;
-        box-shadow: 0px 0px 0px 2px #aaa;
-        z-index: 1000;
-        padding: 100px 30px;
-        border-radius: 55px;
-        &:after {
-            content: '';
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            left: 50%;
-            margin-left: -30px;
-            bottom: 20px;
-            border-radius: 100%;
-            box-sizing: border-box;
-            border: 5px solid #333;
-        }
-        &:before {
-            content: '';
-            width: 60px;
-            height: 10px;
-            border-radius: 10px;
-            position: absolute;
-            left: 50%;
-            margin-left: -30px;
-            background: #333;
-            top: 50px;
-        }
-        &.device-android {
-            border-radius: 20px;
-            width: 360px;
-            padding: 60px 20px;
-            height: 640px;
-            margin-left: -15px;
-            &:before {
-                  width: 14px;
-                  height: 14px;
-                  border-radius: 50%;
-                  position: absolute;
-                  left: 50%;
-                  margin-left: -7px;
-                  background: #666;
-                  top: 25px;
-            }
-            &:after {
-                content: '';
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                position: absolute;
-                left: 50px;
-                background: #444;
-                top: 30px;
-                margin-left: 0;
-            }
-            iframe {
-                width: 360px;
-                height: 640px;
-            }
-        }
-    }
-    .device-inner {
-        width: 100%;
-        height: 100%;
-        position: relative;
-    }
-    iframe {
-        max-width: 100%;
-    }
-    .device-v {
-        padding: 100px 30px;
-        +.info {
-            margin-left: 424px;
-        }
-    }
-    .device-h {
-        max-width: 1024px;
-        padding: 30px 80px;
-        border-radius: 30px;
-        &:after {
-            left: auto;
-            right: 10px;
-            bottom: auto;
-            top: 50%;
-            margin-left: 0;
-            margin-top: -30px;
-        }
-        &:before {
-            width: 10px;
-            height: 60px;
-            top: 50%;
-            margin-left: auto;
-            margin-top: -30px;
-            left: 35px;
-        }
-    }
-    .device-left {
-        float: left;
-        margin: 0;
-        margin-right: 40px;
-    }
-    .example-author {
-        margin-bottom: 20px;
-    }
-    h2 {
-        margin-top: 0;
-        margin-bottom: 20px;
-        + .example-author {
-            margin-top: -20px;
-        }
-    }
-    .info {
-        padding-top: 30px;
-    }
-    .center-info {
-        margin-left: 50px;
-        margin-right: 50px;
-        margin-bottom: 20px;
-    }
-    a.button {
-        .button();
-        + a.button {
-            margin-left: 15px;
-        }
-    }
-    a.button:hover {
-        background: rgba(red(@dark),green(@dark),blue(@dark),0.1);
-    }
-    .buttons {
-        margin-top: 25px;
-    }
-    .app-launcher {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: #111;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        border: 1px solid #333;
-        span {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            .transform(translate3d(-50%, -50%, 0));
-            color:#fff;
-            font-size: 21px;
-            font-weight: 300;
-            cursor: pointer;
-            &:before {
-                position: absolute;
-                bottom: 100%;
-                width: 64px;
-                height: 64px;
-                margin-bottom: 10px;
-                border: 1px solid #fff;
-                border-radius: 18px;
-                content: '';
-                left: 50%;
-                margin-left: -33px;
-            }
-            &:hover {
-                opacity: 0.8;
-            }
-        }
-    }
-
-}
 
 // Docs
 .docs-wrap {
@@ -1548,164 +1132,7 @@ table.events-table {
         padding-left: 20px;
     }
 }
-ul.tutorials {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    margin-top: 40px;
-    li {
-        margin-bottom: 20px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-    }
-    .tutorial-title {
-        font-size: 27px;
-        font-weight: 300;
-        line-height: 1.3;
-        .myriad();
-        span.video {
-            margin-left: 5px;
-            background:darken(@dark,10%);
-            width: 20px;
-            height: 20px;
-            border-radius: 100%;
-            color:#fff;
-            font-weight: normal;
-            display: inline-block;
-            vertical-align: middle;
-            position: relative;
-            &:after {
-                content: '';
-                width: 0;
-                height: 0;
-                position: absolute;
-                border-top: 4px solid transparent;
-                border-bottom: 4px solid transparent;
-                border-left: 6px solid #fff;
-                position: absolute;
-                left: 50%;
-                margin-left: -3px;
-                margin-top: -4px;
-                top: 50%;
-            }
-        }
-    }
-}
-.tutorial-meta {
-    .tutorial-date {
-        color: #777;
-    }
-}
-a.donate-button {
-    .button();
-    &:hover {
-        background: rgba(red(@dark),green(@dark),blue(@dark),0.1);
-    }
-}
-h1 + .tutorial-author {
-    margin-top: -20px;
-    margin-bottom: 25px;
-}
 
-// Showcase
-.showcase-apps {
-    .app {
-        margin: 50px 0;
-    }
-    .app-icon {
-        width: 200px;
-        height: 200px;
-        float: left;
-        img {
-            max-width: 100%;
-        }
-        &.app-icon-rounded {
-            img {
-                border-radius: 45px;
-            }
-        }
-        &.app-icon-bordered {
-            img {
-                border: 1px solid rgba(0,0,0,0.1);
-            }
-        }
-    }
-    .app-info {
-        margin-left: 230px;
-    }
-    .app-about {
-        color: #555;
-    }
-    h2 {
-        margin: 0;
-        line-height: 1.2;
-    }
-    .app-links {
-        line-height: 180px/4;
-        a {
-            vertical-align: middle;
-            margin-left: 10px;
-        }
-        a:first-child {
-            margin-left: 0;
-        }
-        .button {
-            .button();
-            width: 600px/4;
-            padding: 0;
-            text-align: center;
-        }
-    }
-    .appstore-button, .firefox-button, .google-button, .amazon-button, .chrome-button {
-        width: 600px/4;
-        height: 180px/4;
-        display: inline-block;
-        -webkit-background-size: 100% auto;
-        -moz-background-size: 100% auto;
-        background-size: 100% auto;
-    }
-    .appstore-button {
-        background-image: url(../i/appstore-button.png);
-    }
-    .firefox-button {
-        background-image: url(../i/firefox-button.png);
-    }
-    .amazon-button {
-        background-image: url(../i/amazon-button.png);
-    }
-    .google-button {
-        background-image: url(../i/google-button.png);
-    }
-    .chrome-button {
-        background-image: url(../i/chrome-button.png);
-        height: 42px;
-    }
-    .app-author {
-        margin-bottom: 15px;
-    }
-    .app-shots {
-        background: #eee;
-        padding: 20px;
-        overflow: auto;
-        white-space: nowrap;
-        display: none;
-        img, iframe {
-            max-height: 568px;
-            margin-right: 10px;
-            display: inline-block;
-            vertical-align: top;
-        }
-        img:last-child, iframe:last-child {
-            margin-right: 0;
-        }
-    }
-    .app-show-shots {
-        a {
-            text-decoration: none;
-            border-bottom: 1px dotted;
-        }
-    }
-}
 .color-example {
     display: inline-block;
     border: 1px solid #eee;
@@ -1736,7 +1163,7 @@ table.template7-examples {
     border: 1px solid rgba(255,255,255,0.2);
     background: rgba(255,255,255,0.02);
     position: absolute;
-    right: 40px;
+    right: 20px;
     bottom: 0;
     min-height: 103px;
     a {
@@ -1763,19 +1190,6 @@ table.template7-examples {
         margin-top: 10px;
         margin-left: 140px;
     }
-    &.carbon-home {
-        border: 1px solid #f2f2f2;
-        float: none;
-        margin-left: auto;
-        margin-right: auto;
-        position: static;
-        margin-bottom: -130px;
-        margin-top: -20px;
-        min-height: 103px;
-        a, & {
-            color: #333;
-        }
-    }
 }
 .carbon-placeholder {
     text-align: left;
@@ -1783,65 +1197,6 @@ table.template7-examples {
     #carbonads + & {
         display: none;
     }
-}
-.bsa-cpc {
-  background-color: #b92f1f;
-  #_default_ {
-    position: relative;
-    margin: 0 auto;
-    margin-bottom: 1em;
-    padding: 8px 30px;
-    max-width: 1120px;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  .default-ad {
-    display: none;
-  }
-  ._default_ {
-    display: inline;
-    overflow: hidden;
-    line-height: 1;
-  }
-  ._default_> * {
-    vertical-align: middle;
-  }
-  a {
-    color: #fff;
-    text-decoration: none;
-  }
-  a:hover {
-    color: #eee;
-    text-decoration: none;
-  }
-  .default-image {
-    display: none;
-  }
-  .default-title:after {
-    content: " — ";
-  }
-  .default-title,
-  .default-description {
-    display: inline;
-  }
-  .default-title {
-    position: relative;
-    margin-left: 8px;
-  }
-  .default-title:before {
-    position: relative;
-    top: -1px;
-    left: -8px;
-    padding: 3px 6px;
-    border-radius: 2px;
-    background-color: #fff;
-    color: #b92f1f;
-    content: "Sponsor";
-    text-transform: uppercase;
-    font-size: 10px;
-    font-family: Verdana, sans-serif;
-    line-height: 1;
-  }
 }
 
 .f7-demo-icons {
