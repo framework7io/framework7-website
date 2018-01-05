@@ -230,11 +230,13 @@ block content
       code.html
         :code
           <div class="list simple-list">
-            <li>Item 1</li>
-            <li>Item 2</li>
-            <li>Item 3</li>
-            <li>Item 4</li>
-            ...
+            <ul>
+              <li>Item 1</li>
+              <li>Item 2</li>
+              <li>Item 3</li>
+              <li>Item 4</li>
+              ...
+            </ul>
           </div>
     h2 Links List
     p In case we need list with simple link items structure that have only titles, we may use Links List modification. In this case we need additional class <code>links-list</code> on list block with plain <code>&lt;li&gt;&lt;a&gt;...&lt;/a&gt;&lt;/li&gt;</code> items layout:
@@ -242,16 +244,18 @@ block content
       code.html
         :code
           <div class="list links-list">
-            <li>
-              <a href="#">Link Item 1</a>
-            </li>
-            <li>
-              <a href="#">Link Item 2</a>
-            </li>
-            <li>
-              <a href="#">Link Item 3</a>
-            </li>
-            ...
+            <ul>
+              <li>
+                <a href="#">Link Item 1</a>
+              </li>
+              <li>
+                <a href="#">Link Item 2</a>
+              </li>
+              <li>
+                <a href="#">Link Item 3</a>
+              </li>
+              ...
+            </ul>
           </div>
     h2 Media List
     p Media list view is extended case of List View indended to display more complex data like products, services, users, etc. In this case we need additional <code><b>media-list</b></code> class on list block.

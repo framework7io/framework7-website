@@ -115,7 +115,7 @@ block content
           |     ...
           | &lt;/div&gt;
           |
-          | &lt;div class="buttons-row color-theme-yellow"&gt;
+          | &lt;div class="segmented color-theme-yellow"&gt;
           |     ...
           | &lt;/div&gt;
       .important-note
@@ -128,7 +128,7 @@ block content
           |     ...
           | &lt;/body&gt;
           |
-          | &lt;div class="page theme-white"&gt;
+          | &lt;div class="page theme-dark"&gt;
           |     ...
           | &lt;/div&gt;
           |
@@ -140,21 +140,25 @@ block content
       p There are also additional helper classes that could be used without/outside color themes:
       ul
         li
-          p <code>text-color-[color]</code> - if you want to change text color of required block, or change color of separate button, link or icon, for example:
+          p <code><b>color-[color]</b></code> - if you want to change color of individual button, link or icon, for example:
           pre
             code
               | &lt;a class="button color-red"&gt;Red button&lt;/a&gt;
-              | &lt;i class="icon icon-back color-red"&gt;
         li
-          p <b>bg-color-[color]</b> - if you want quickly to set predefined background color on some block or element:
+          p <code><b>text-color-[color]</b></code> - if you want to change text color of required element:
           pre
             code
-              | &lt;span class="badge bg-pink"&gt;14&lt;/span&gt; - pink badge
+              | &lt;p class="text-color-red"&gt;Red color text&lt;/p&gt;
         li
-          p <b>border-color-[color]</b> - if you want to set predefined border color:
+          p <code><b>bg-color-[color]</b></code> - if you want quickly to set predefined background color on some block or element:
           pre
             code
-              | &lt;div class="button border-red"&gt;...&lt;/div&gt;
+              | &lt;span class="badge bg-color-pink"&gt;14&lt;/span&gt; - pink badge
+        li
+          p <code><b>border-color-[color]</b></code> - if you want to set predefined border color:
+          pre
+            code
+              | &lt;div class="button border-color-red"&gt;...&lt;/div&gt;
       p And of course, you can mix these helper classes:
       pre
         code
