@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Picker | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Picker
     .docs-index
     p Picker is a powerful component that allows you to create custom overlay pickers which looks like iOS native picker.

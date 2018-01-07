@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Form | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Form
     .docs-index
     .with-device

@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Photo Browser | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Photo Browser
     .docs-index
     p Photo Browser is a photo browser component to display collection of photos / images. Photos can be zoomed and panned (optional).

@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Subnavbar | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Subnavbar
     p Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Searchbar. It also remains visible when Navbar hidden
     h2 Subnavbar Layout

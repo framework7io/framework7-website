@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Swipeout | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Swipeout (Swipeable List)
     .docs-index
     p Swipeout is an extension of <a href="list-view.html">list view</a> that allows you to swipe over list elements to reveal hidden menu with  available actions, like swipe-to-delete.

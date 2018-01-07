@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Searchbar | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Searchbar
     .docs-index
     p Searchbar allows user to search through <a href="list-view.html">List View</a> elements. Or it can be used as a visual UI component for your custom search realization.

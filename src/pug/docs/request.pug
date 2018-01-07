@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Request | Framework7 Documentation';
 
 block content
@@ -9,6 +8,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Request / Ajax
     .docs-index
     p Framework7 comes with handy Request library to work with XHR requests (Ajax) right from the box.

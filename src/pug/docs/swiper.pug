@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Swiper Slider | Framework7 Documentation';
 
 block content
@@ -10,7 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
-
+    +improveDocsLink
     h1 Swiper Slider
     .docs-index
     p Framework7 comes with powerful and most modern touch slider ever - <a href="http://www.idangero.us/swiper/">Swiper Slider</a> with super flexible configuration and lot, lot of features.

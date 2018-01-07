@@ -1,13 +1,13 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Initialize App | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Initialize App
     p Now you can see our HTML layout with linked required CSS and JavaScript files. Now we should initialize our app (for example in <code>my-app.js</code>):
     pre

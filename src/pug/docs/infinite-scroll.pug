@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Infinite Scroll | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Infinite Scroll
     .docs-index
     p Infinite Scroll allows to load additional content or do any other required action when page scroll is near to the bottom.

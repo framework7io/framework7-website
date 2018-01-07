@@ -1,13 +1,13 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Installation | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Installation
     p It is really easy to build your app with Framework7. To get started we need to install Framework7. You can skip this step and use one of the ready to use <a href="/templates/">starter app templates</a>.
     p We can download/install framework7 with two ways:

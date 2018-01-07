@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Progressbar| Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Progressbar
     .docs-index
     p In addition to <a href="preloader.html">Preloader</a> Framework7 also comes with fancy animated determinate and infinite/indeterminate progressbars to indicate activity.

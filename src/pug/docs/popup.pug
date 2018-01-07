@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Popup | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Popup
     .docs-index
     p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".

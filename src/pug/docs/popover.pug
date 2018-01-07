@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Popover | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Popover
     .docs-index
     p Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.

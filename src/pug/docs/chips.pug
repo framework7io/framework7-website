@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Chips/Tags | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Chips
     .docs-index
     p Chips (Tags) represent complex entities in small blocks, such as a contact. They can contain a photo, short title string, and brief information.

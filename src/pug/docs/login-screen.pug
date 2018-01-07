@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Login Screen | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Login Screen
     .docs-index
     p Framework7 comes with ready to use Login Screen layout. It could be used inside of page or login screen (embedded) or as a standalone modal.

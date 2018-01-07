@@ -15,6 +15,9 @@ body.body-docs {
   position: relative;
   min-width: 0;
   width: 100%;
+  h1 {
+    margin-top: 0;
+  }
 
   .with-device {
     padding-right: 360px;
@@ -539,6 +542,32 @@ ul.method-parameters {
     }
     span:nth-child(2) {
       opacity: 0;
+    }
+  }
+}
+.improve-docs-link {
+  float: right;
+  a {
+    color: #000;
+    font-size: 16px;
+    display: block;
+    line-height: 20px;
+    height: 20px;
+    opacity: 0.4;
+    text-decoration: none;
+    transition: 200ms;
+    &:hover {
+      opacity: 1;
+    }
+    &:before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: url(../i/gh-logo.svg) no-repeat center;
+      background-size: 18px auto;
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 3px;
     }
   }
 }

@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Messagebar | Framework7 Documentation';
 
 block content
@@ -9,6 +8,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Messagebar
     .docs-index
     p Framework7 comes with special resizealbe toolbar for usage with <a href="messages.html">Messages</a>

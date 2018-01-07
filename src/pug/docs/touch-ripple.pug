@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Touch Ripple | Framework7 Documentation';
 
 block content
@@ -9,6 +8,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Touch Ripple
     .docs-index
     p.md-only Touch Ripple is supported only in Material Theme

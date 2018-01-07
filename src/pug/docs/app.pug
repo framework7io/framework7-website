@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'App / Core | Framework7 Documentation';
 
 block content
@@ -9,6 +8,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 App / Core
     .docs-index
     p When we init the app we can use the <code>new Framework7</code> constructor and pass an object with main app parameters:

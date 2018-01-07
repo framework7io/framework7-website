@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Smart select | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Smart Select
     .docs-index
     p Smart select allows you to easily convert your usual form selects to dynamic pages with <a href="checkboxes-radios.html">grouped radio inputs</a>. You can see such feature in many native iOS apps

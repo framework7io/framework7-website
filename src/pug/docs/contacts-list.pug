@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Contacts List (Table View) | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Contacts List
     p Contacts lists indended to display list of personal people contacts.
     p Contacts list is a particular case of grouped <a href="list-view.html">List View</a> with one difference.

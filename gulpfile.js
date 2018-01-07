@@ -1,6 +1,7 @@
 (function(){
   'use strict';
   var gulp = require('gulp');
+  var gulpData = require('gulp-data');
   var connect = require('gulp-connect');
   var open = require('gulp-open');
   var less = require('gulp-less');
@@ -15,8 +16,15 @@
   var cdnPath = '//cdn.framework7.io';
   var processVuePugFiles = require('./src/react-doc-generation/vue-pug-file-processing').processVuePugFiles;
   var processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles;
+  var pkg = require('./package.json');
 
-
+  // Get src file url
+  function getSrcFileUrl(file) {
+    const srcFileUrl = `${pkg.repository.url}/edit/master/src/pug/${file.path.split('/src/pug/')[1]}`;
+    return {
+      srcFileUrl: srcFileUrl,
+    };
+  }
 
   // Pug Filter
   pug.filters['code'] = function (text) {
@@ -62,6 +70,7 @@
     var time = Date.now();
     console.log(`Starting react pug: all`);
     gulp.src(['./react-pug-temp/*.pug'])
+      .pipe(gulpData(getSrcFileUrl))
       .pipe(gulpPug({
         pug,
         pretty: true,
@@ -88,6 +97,7 @@
     var time = Date.now();
     console.log(`Starting pug: all`);
     gulp.src(['**/*.pug', '!**/_*.pug', '!react/*.pug', '!_*.pug'], { cwd: 'src/pug' })
+      .pipe(gulpData(getSrcFileUrl))
       .pipe(gulpPug({
         pug,
         pretty: true,
@@ -155,6 +165,7 @@
       var time = Date.now();
       console.log(`Starting pug "${src}"`);
       gulp.src(src, { cwd: 'src/pug' })
+        .pipe(gulpData(getSrcFileUrl))
         .pipe(gulpPug({
           pug,
           pretty: true,

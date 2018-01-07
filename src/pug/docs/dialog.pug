@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Dialog | Framework7 Documentation';
 
 block content
@@ -10,6 +9,7 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Dialog
     .docs-index
     p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from user, or to notify or warn user. Dialog as all other modals is part of so called "Temporary Views".

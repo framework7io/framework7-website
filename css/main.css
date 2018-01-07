@@ -1394,6 +1394,9 @@ body.body-docs main > .center {
   min-width: 0;
   width: 100%;
 }
+.docs-content h1 {
+  margin-top: 0;
+}
 .docs-content .with-device {
   padding-right: 360px;
 }
@@ -1930,6 +1933,32 @@ ul.method-parameters .parameter-type {
 }
 .docs-nav-visible .docs-nav-toggle span:nth-child(2) {
   opacity: 0;
+}
+.improve-docs-link {
+  float: right;
+}
+.improve-docs-link a {
+  color: #000;
+  font-size: 16px;
+  display: block;
+  line-height: 20px;
+  height: 20px;
+  opacity: 0.4;
+  text-decoration: none;
+  transition: 200ms;
+}
+.improve-docs-link a:hover {
+  opacity: 1;
+}
+.improve-docs-link a:before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background: url(../i/gh-logo.svg) no-repeat center;
+  background-size: 18px auto;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 3px;
 }
 table {
   width: 100%;

@@ -1,13 +1,13 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Router Component | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Router Component
     .docs-index
     p Router Component is a special type of content that can be loaded by Router when we specify route content using <code>component</code> or <code>componentUrl</code> properties.

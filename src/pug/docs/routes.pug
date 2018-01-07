@@ -1,13 +1,13 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Routes | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Routes
     .docs-index
     h2 Define Routes
