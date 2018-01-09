@@ -16,3 +16,9 @@ tutorials/*.html
 nbproject
 react-pug-temp/
 react-jade-temp/
+dist/components
+dist/less
+dist/modules
+dist/framework7.esm.bundle.js
+dist/framework7.esm.js
+dist/framework7.less
