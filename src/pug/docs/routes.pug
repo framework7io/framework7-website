@@ -132,7 +132,15 @@ block content
         tr
           td url
           td string
-          td Load page content via Ajax
+          td Load page content via Ajax.
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression, e.g.
+            pre
+              code.js
+                :code
+                  {
+                    path: '/users/:userId/posts/:postId',
+                    url: 'http://myapp.com/posts/{{userId}}/{{postId}}'
+                  }
         tr
           td template
           td string<br>function
@@ -141,6 +149,7 @@ block content
           td templateUrl
           td string
           td Load page content from url via Ajax, and compile it using Template7
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression
         tr
           td component
           td object
@@ -149,6 +158,7 @@ block content
           td componentUrl
           td string
           td load pages as a component via Ajax
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression
         tr
           td async
           td function(routeTo, routeFrom, resolve, reject)

@@ -194,6 +194,23 @@ block content
           td 0
           td Delay (in ms) after new page will be loaded and inserted to DOM and before it will be transitioned. Can be increased a bit to improve performance. Will have effect only under MD theme
         tr
+        tr
+          td passRouteQueryToRequest
+          td boolean
+          td true
+          td When enabled then router will pass route url query to request url query (for <code>url</code>, <code>templateUrl</code> and <code>componentUrl</code> <a href="routes.html#route-properties">route properties</a>)
+            p If you have the following route:
+            p <code>{ path: '/somepage/', url: 'http://myserver/page/' }</code>
+            p and you will click link with <b>/somepage/?foo=bar</b> url then it will load page from <b>http://myserver/page/?foo=bar</b> url
+        tr
+          td passRouteParamsToRequest
+          td boolean
+          td false
+          td When enabled then router will pass current route parameters to request url query (for <code>url</code>, <code>templateUrl</code> and <code>componentUrl</code> <a href="routes.html#route-properties">route properties</a>)
+            p If you have the following route:
+            p <code>{ path: '/user/:userId/posts/:postId/', url: 'http://myserver/userpost/' }</code>
+            p and you will click link with <b>/user/11/posts/12/</b> url then it will load page from <b>http://myserver/userpost/?userId=11&postId=12</b> url
+        tr
           th(colspan="4") Routes
         tr
           td routes
@@ -486,6 +503,16 @@ block content
                   li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
                   li <span class="parameter">force</span> (<span class="parameter-type">boolean</span>) - if set to <code></code> then it will ignore previos page in history and load specified one
         tr
+          td router.refreshPage()
+          td Refresh/reload current page. Actually same as:
+            pre
+              code.js
+                :code
+                  router.navigate(router.currentRoute.url, {
+                    reloadCurrent: true,
+                    ignoreCache: true,
+                  });
+        tr
           td router.on(<span>event</span>, <span>handler</span>)
           td Add event handler
         tr
@@ -591,20 +618,20 @@ block content
           th(colspan="3") XHR Events
         tr
           td routerAjaxStart
-          td <span>(xhr)</span>
-          td Event will be fired after router XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc
+          td <span>(xhr, options)</span>
+          td Event will be fired after router XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc. As an arguments receives XHR object and navigating <code>options</code> object
         tr
           td routerAjaxSuccess
-          td <span>(xhr)</span>
-          td Event will be fired when the request succeeds
+          td <span>(xhr, options)</span>
+          td Event will be fired when the request succeeds. As an arguments receives XHR object and navigating <code>options</code> object
         tr
           td routerAjaxError
-          td <span>(xhr)</span>
-          td Event will be fired if the request fails
+          td <span>(xhr, options)</span>
+          td Event will be fired if the request fails. As an arguments receives XHR object and navigating <code>options</code> object
         tr
           td routerAjaxComplete
-          td <span>(xhr)</span>
-          td Event will be fired when the request finishes
+          td <span>(xhr, options)</span>
+          td Event will be fired when the request finishes. As an arguments receives XHR object and navigating <code>options</code> object
         tr
           th(colspan="3") Swipe Back Events
         tr

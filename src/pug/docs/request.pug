@@ -250,7 +250,7 @@ block content
             $$('.login').html(data);
             console.log('Load was performed');
           });
-    h3 json
+    h3 Json
     .method-wrap
       p
         span.method app.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
@@ -284,6 +284,44 @@ block content
           var app = new Framework7();
 
           app.request.json('users.json', function (data) {
+            console.log(data);
+          });
+    h3 PostJSON
+    .method-wrap
+      p
+        span.method app.request.postJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Send JSON data using a HTTP POST request
+      ul.method-parameters
+        li
+          span.parameter url
+          |  - <span class="parameter-type">string</span> - Request url
+        li
+          span.parameter data
+          |  - <span class="parameter-type">object</span> - A plain object
+        li
+          span.parameter success
+          |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        li
+          span.parameter error
+          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+        li
+          span.parameter dataType
+          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>. By default is <code>json</code>. <em>Optional</em>
+      p.method-returns Returns plain XHR object
+    .method-wrap
+      p
+        span.method Framework7.request.postJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Send JSON data using a HTTP POST request
+      p.method-returns Returns plain XHR object
+    p For example:
+    pre
+      code.js
+        :code
+          var app = new Framework7();
+
+          var $$ = Dom7;
+
+          app.request.postJSON('http://api.myapp.com', { username:'foo', password: 'bar' }, function (data) {
             console.log(data);
           });
     h2 Request Setup
