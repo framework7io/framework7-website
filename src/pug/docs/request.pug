@@ -250,10 +250,10 @@ block content
             $$('.login').html(data);
             console.log('Load was performed');
           });
-    h3 GetJSON
+    h3 json
     .method-wrap
       p
-        span.method app.request.getJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
+        span.method app.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
         span - Load JSON-encoded data from the server using a GET HTTP request
       ul.method-parameters
         li
@@ -271,19 +271,19 @@ block content
       p.method-returns Method nothing returns
     .method-wrap
       p
-        span.method Framework7.request.getJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
+        span.method Framework7.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
       p.method-returns Method returns nothing
     p For example:
     pre
       code.js
         :code
-          Framework7.request.getJSON('items.json', function (data) {
+          Framework7.request.json('items.json', function (data) {
             console.log(data);
           });
 
           var app = new Framework7();
 
-          app.request.getJSON('users.json', function (data) {
+          app.request.json('users.json', function (data) {
             console.log(data);
           });
     h2 Request Setup

@@ -273,7 +273,7 @@ block content
                 // Requested route
                 console.log(routeTo);
                 // Get external data and return template7 template
-                $.getJSON('http://some-endpoint/', function (data) {
+                app.request.json('http://some-endpoint/', function (data) {
                   resolve(
                     // How and what to load: template
                     {
