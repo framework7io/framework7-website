@@ -22,3 +22,5 @@ dist/modules
 dist/framework7.esm.bundle.js
 dist/framework7.esm.js
 dist/framework7.less
+
+search-index.json
