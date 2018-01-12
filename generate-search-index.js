@@ -20,6 +20,20 @@ function generateTitleHash(title) {
     .toLowerCase().replace(/\-&-/g,'-');
 }
 
+function addSection(section) {
+  if (section.text) {
+    section.text = section.text.map((el) => {
+      return el
+        .replace(/([ ]{2,})/g, ' ')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/([\n ]{2,})/g, '\n')
+        .replace(/([\n]{2,})/g, '\n');
+    }).join('\n').replace(/([\n ]{2,})/g, '\n');
+  }
+  searchData.push(section);
+}
+
 files.forEach((file) => {
   if (file.indexOf('.') === 0) return;
   const content = fs.readFileSync(`./docs/${file}`, 'utf8');
@@ -40,33 +54,33 @@ files.forEach((file) => {
     if ($el.is('pre')) continue;
     if ($el.hasClass('with-device')) continue;
     if ($el.is('h2')) {
-      if (section) searchData.push(section);
+      if (section) addSection(section);
       section = {
         docs,
         page,
       };
       section.section = $el.text().trim();
-      section.url = `${url}#${generateTitleHash(section.section)}`
+      section.pageUrl = url;
+      section.sectionUrl = `${url}#${generateTitleHash(section.section)}`
     } else if (section) {
-      if (!section.text) section.text = '';
+      if (!section.text) section.text = [];
       let text = '';
       if ($el.is('h3')) {
-        text += `\n${$el.text().trim()}\n`;
+        text += `${$el.text().trim()}`;
       }
       if ($el.is('table')) {
         text += $.makeArray($el.find('tr'))
           .map((row) => {
-            return $.makeArray($(row).find('td')).map(cell => $(cell).text()).join(' | ')
+            return $.makeArray($(row).find('td')).map(cell => $(cell).text().trim()).join(' | ')
           })
           .join('\n')
       }
       else text += $el.text().trim();
-
-      section.text += text;
+      section.text.push(text);
     }
   }
   if (section) {
-    searchData.push(section);
+    addSection(section);
   }
 });
 

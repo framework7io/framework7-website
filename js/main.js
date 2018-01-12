@@ -1,4 +1,83 @@
 ;(function(){
+  // init search
+  var algoliaClient = algoliasearch("5CN8U5PK9Z", "335298dc09a81387378e525c7824e262");
+  var algoliaIndex = algoliaClient.initIndex('f7_docs');
+  var searchTimeout;
+  function renderSearchResults(hits, clear) {
+    var tree = {};
+    var html = '';
+    if (clear) {
+      $('.docs-nav-searchbar div.search-results').remove();
+      return;
+    }
+    if (hits.length === 0) {
+      $('.docs-nav-searchbar div.search-results').remove();
+      $('.docs-nav-searchbar').append('<div class="search-results no-search-results">No results found</div>');
+      return;
+    }
+    hits.forEach((hit) => {
+      var page = hit._highlightResult.page.value;
+      var section = hit._highlightResult.section.value;
+      var text = hit._highlightResult.text.value;
+      if (text.indexOf('<em') >= 100) {
+        text = '...' + text.substring(text.indexOf('<em') - 50, text.length);
+      }
+      text = text.replace(/([\n]{2,})/g, '<br>');
+      if (!tree[hit.docs]) tree[hit.docs] = {};
+      if (!tree[hit.docs][page]) tree[hit.docs][page] = { url: hit.pageUrl };
+      if (!tree[hit.docs][page][section]) tree[hit.docs][page][section] = {
+        text: text,
+        url: hit.sectionUrl,
+      };
+    });
+    var html = '<div class="search-results"><ul>' + Object.keys(tree).map(function (doc) {
+      return '<li><span>' + doc + '</span><ul>' + Object.keys(tree[doc]).map(function (page) {
+        return '<li><a href="' + tree[doc][page].url + '"><span>' + page + '</span></a><ul>' + Object.keys(tree[doc][page]).map(function (section) {
+          if (section === 'url') return '';
+          return '<li><a href="' + tree[doc][page][section].url + '"><span>' + section + '</span><small>'+tree[doc][page][section].text+'</small></a></li>';
+        }).join('') + '</ul></li>'
+      }).join('') + '</ul></li>'
+    }).join('') + '</ul></div>'
+    $('.docs-nav-searchbar div.search-results').remove();
+    $('.docs-nav-searchbar').append(html);
+  }
+  function searchDocs(query) {
+    if (!query) {
+      renderSearchResults([], true);
+      return;
+    }
+    algoliaIndex.search(
+      {
+        query: query,
+        attributesToRetrieve: ['docs', 'page', 'section', 'pageUrl', 'sectionUrl', 'text'],
+        hitsPerPage: 5,
+      },
+      function (err, results) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        renderSearchResults(results.hits)
+      }
+    )
+  }
+  $(document).on('input', '.docs-nav-searchbar input', function (e) {
+    var query = e.target.value.trim().toLowerCase();
+    clearTimeout(searchTimeout);
+    if (!query) {
+      $(this).removeClass('with-query');
+      renderSearchResults([], true);
+      return;
+    }
+    $(this).addClass('with-query');
+    searchTimeout = setTimeout(function () {
+      searchDocs(query);
+    }, 500);
+  });
+  $(document).on('click', '.disable-search', function () {
+    $(this).prev('input').val('').trigger('input');
+  });
+
   function handleLazyScroll() {
     var st = $(window).scrollTop();
     $('img.lazy').each(function(){
@@ -114,22 +193,6 @@
     });
     $('.docs-nav-toggle').click(function (e) {
       $('.docs-nav').toggleClass('docs-nav-visible');
-    });
-    $('.docs-nav-searchbar input').on('input', function (e) {
-      var query = e.target.value.trim().toLowerCase();
-      $('.docs-nav a').each(function (index, el) {
-        var text = $(el).text().trim();
-        var match = text.toLowerCase().indexOf(query) >= 0;
-        if (!match) $(el).parent('li').hide();
-        else $(el).parent('li').css('display', '');
-      });
-      if (query.length) {
-        $('.docs-nav').addClass('docs-nav-with-search');
-        $('.docs-nav .title').hide();
-      } else {
-        $('.docs-nav').removeClass('docs-nav-with-search');
-        $('.docs-nav .title').css('display', '');
-      }
     });
   }
   // Docs scroll spy

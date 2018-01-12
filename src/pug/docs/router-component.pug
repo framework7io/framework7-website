@@ -38,6 +38,10 @@ block content
           td string
           td Component CSS styles. Styles will be added to the document after component will be mounted (added to DOM), and removed after component will be destroyed (removed from the DOM)
         tr
+          td styleScopeId
+          td string
+          td Unique style scope id in case you are using scoped styles. Will add <code>data-scope="styleScopeId"</code> to the component element
+        tr
           td methods
           td object
           td Object with additional component methods which extend component context
@@ -316,7 +320,67 @@ block content
             }
           </script>
     p Well, now it is much cleaner. The <code>&lt;template&gt;</code> and <code>&lt;style&gt;</code> tags will be automatically converted to the same properties of exported component.
-    p You may think that it is not valid to have a direct <code>return</code> statement in script, but it is ok because parser put the content of the script tag into function body, so it is ok here
+    p You may think that it is not valid to have a direct <code>return</code> statement in script, but it is ok because parser puts the content of the script tag into function body, so it is ok here
+    h3 Scoped Styles
+    p In case you want to scope component styles in single file component to this component only, you may add <code><b>scoped</b></code> attribute to component <code>&lt;style&gt;</code> tag:
+    pre
+      code.html
+        :code
+          <template>
+            <!-- component template -->
+          </template>
+
+          <!-- style has additional "scoped" attribute -->
+          <style scoped>
+            p {
+              color: red;
+            }
+            a {
+              text-decoration: none;
+            }
+          </style>
+
+          <script>
+            return {
+              ...
+            }
+          </script>
+    p When scoped style added component element will have additional <code>data-scope="[unique_id]"</code> where [unique_id] is the unique timestamp. And all styles will be refactored to have this unique scope id, for example:
+    pre
+      code.css
+        :code
+          [data-scope="1515740589328"] p {
+            color: red;
+          }
+          [data-scope="1515740589328"] a {
+            text-decoration: none;
+          }
+    p In case you need to use more complex selector with including component parent reference, then you may use <code><b>{{this}}</b></code> keword to reference the component:
+    pre
+      code.html
+        :code
+          <template>
+            <!-- component template -->
+          </template>
+
+          <!-- style has additional "scoped" attribute -->
+          <style scoped>
+            <!-- all paragraphs in this component will be red under iOS theme -->
+            html.ios {{this}} p {
+              color: red;
+            }
+            <!-- all paragraphs in this component will be green under MD theme -->
+            html.md {{this}} p {
+              color: green;
+            }
+          </style>
+
+          <script>
+            return {
+              ...
+            }
+          </script>
+
 
 
 

@@ -1018,6 +1018,119 @@ header .carbon a {
     padding-right: 20px;
   }
 }
+.search-results {
+  position: absolute;
+  background: #fff;
+  background: #EE350F;
+  padding-top: 10px;
+  z-index: 100;
+  box-shadow: 10px 10px 40px rgba(0, 0, 0, 0.2);
+  top: 100%;
+  left: 0px;
+  margin-top: -10px;
+  width: 300px;
+  color: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+@media (max-width: 860px) {
+  .docs-nav .search-results {
+    transition-duration: 300ms;
+    transform: translateX(-110px);
+  }
+  .docs-nav:not(.docs-nav-visible) .search-results {
+    box-shadow: none;
+  }
+  .docs-nav-visible .search-results {
+    transform: translateX(0px);
+  }
+}
+.search-results.no-search-results {
+  color: #333;
+  background: #fff;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+}
+.search-results ul {
+  margin: 0;
+  padding: 0;
+}
+.search-results ul ul {
+  background: #fff;
+}
+.search-results ul li > span,
+.search-results ul li > a > span {
+  display: block;
+  font-weight: 500;
+  font-size: 14px;
+}
+.search-results ul a {
+  color: #333;
+}
+.search-results ul a:hover {
+  color: #EE350F;
+}
+.search-results ul a:hover em,
+.search-results ul a:hover small {
+  color: #EE350F;
+}
+.search-results ul em {
+  font-weight: bold !important;
+  font-style: italic !important;
+  color: #000;
+}
+.search-results ul > li {
+  margin: 0 !important;
+}
+.search-results ul > li > span {
+  background: #EE350F;
+  color: #fff;
+  font-size: 15px;
+  padding: 5px 10px;
+}
+.search-results ul > li > ul {
+  margin: 0;
+}
+.search-results ul > li > ul > li {
+  margin: 0;
+  padding: 5px 0 5px 10px;
+}
+.search-results ul > li > ul > li + li {
+  border-top: 1px solid rgba(0, 0, 0, 0.4);
+}
+.search-results ul > li > ul > li > span {
+  display: block;
+}
+.search-results ul ul ul li {
+  padding: 5px 0;
+  margin: 0;
+}
+.search-results ul ul ul li a {
+  display: block;
+}
+.search-results ul ul ul li span {
+  display: block;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+.search-results ul ul ul li + li {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+.search-results ul small {
+  font-size: 12px;
+  display: block;
+  line-height: 15px;
+  max-height: 45px;
+  position: relative;
+  overflow: hidden;
+  color: #666;
+}
+.search-results ul small em {
+  color: #333;
+}
 .home-block {
   margin: 100px 0;
   position: relative;
@@ -1804,9 +1917,6 @@ ul.method-parameters .parameter-type {
 .docs-nav > ul > li:first-child {
   margin-top: 0;
 }
-.docs-nav.docs-nav-with-search > ul > li {
-  margin-top: 10px;
-}
 .docs-nav ul {
   margin: 0;
   padding: 0;
@@ -1860,6 +1970,45 @@ ul.method-parameters .parameter-type {
   position: relative;
   margin-top: -20px;
   margin-bottom: 20px;
+  position: -webkit-sticky;
+  position: -moz-sticky;
+  position: sticky;
+  top: 10px;
+  z-index: 10;
+}
+.docs-nav-searchbar .disable-search {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  z-index: 300;
+  display: none;
+}
+.docs-nav-searchbar .disable-search:after,
+.docs-nav-searchbar .disable-search:before {
+  content: '';
+  display: block;
+  height: 2px;
+  width: 16px;
+  background: #aaa;
+  position: absolute;
+  border-radius: 4px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -1px;
+  transition: 300ms;
+}
+.docs-nav-searchbar .disable-search:after {
+  transform: rotate(45deg);
+}
+.docs-nav-searchbar .disable-search:before {
+  transform: rotate(-45deg);
+}
+.docs-nav-searchbar input.with-query + .disable-search {
+  display: block;
 }
 .docs-nav-searchbar input[type="search"] {
   border: none;
@@ -1878,8 +2027,11 @@ ul.method-parameters .parameter-type {
   transition: 400ms;
   border: 2px solid rgba(142, 32, 9, 0.1);
   font-size: 13px;
+  z-index: 200;
+  position: relative;
 }
-.docs-nav-searchbar input[type="search"]:focus {
+.docs-nav-searchbar input[type="search"]:focus,
+.docs-nav-searchbar input[type="search"].with-query {
   border-color: transparent;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
   font-size: 14px;

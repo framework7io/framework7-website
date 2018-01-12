@@ -411,11 +411,6 @@ ul.method-parameters {
       }
     }
   }
-  &.docs-nav-with-search {
-    > ul > li {
-      margin-top: 10px;
-    }
-  }
   ul {
     margin: 0;
     padding: 0;
@@ -470,6 +465,45 @@ ul.method-parameters {
   position: relative;
   margin-top: -20px;
   margin-bottom: 20px;
+  position: -webkit-sticky;
+  position: -moz-sticky;
+  position: sticky;
+  top: 10px;
+  z-index: 10;
+
+  .disable-search {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    top: 0;
+    z-index: 300;
+    display: none;
+    &:after, &:before {
+      content: '';
+      display: block;
+      height: 2px;
+      width: 16px;
+      background: #aaa;
+      position: absolute;
+      border-radius: 4px;
+      top: 50%;
+      left: 50%;
+      margin-left: -8px;
+      margin-top: -1px;
+      transition: 300ms;
+    }
+    &:after {
+      transform: rotate(45deg);
+    }
+    &:before {
+      transform: rotate(-45deg);
+    }
+  }
+  input.with-query + .disable-search {
+    display: block;
+  }
   input[type="search"] {
     @bdColor: darken(@primaryColor, 20%);
     border: none;
@@ -488,7 +522,9 @@ ul.method-parameters {
     transition: 400ms;
     border: 2px solid rgba(red(@bdColor), green(@bdColor), blue(@bdColor), 0.1);
     font-size: 13px;
-    &:focus {
+    z-index: 200;
+    position: relative;
+    &:focus, &.with-query {
       border-color: transparent;
       box-shadow: 0px 5px 10px rgba(0,0,0,0.1);
       font-size: 14px;
