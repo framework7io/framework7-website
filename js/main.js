@@ -22,7 +22,7 @@
       if (text.indexOf('<em') >= 100) {
         text = '...' + text.substring(text.indexOf('<em') - 50, text.length);
       }
-      text = text.replace(/([\n]{2,})/g, '<br>');
+      // text = text.replace(/\n)/g, '<br>');
       if (!tree[hit.docs]) tree[hit.docs] = {};
       if (!tree[hit.docs][page]) tree[hit.docs][page] = { url: hit.pageUrl };
       if (!tree[hit.docs][page][section]) tree[hit.docs][page][section] = {
