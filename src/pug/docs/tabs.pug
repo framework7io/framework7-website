@@ -67,7 +67,7 @@ block content
     pre
       code
         | &lt;!-- Link that activates first tab, has the same href attribute (#tab1) as the id attribute of first tab (tab1)  --&gt;
-        | &lt;a href="#tab1" class="tab-link tab-link-active"&gt;Tab 1&lt;/a&gt;
+        | &lt;a href="#tab1" class="tab-link active"&gt;Tab 1&lt;/a&gt;
         |
         | &lt;!-- Link that activates 2nd tab, has the same href attribute (#tab2) as the id attribute of 2nd tab (tab2)  --&gt;
         | &lt;a href="#tab2" class="tab-link"&gt;Tab 2&lt;/a&gt;
@@ -75,7 +75,7 @@ block content
         | &lt;!-- Link that activates 3rd tab, has the same href attribute (#tab2) as the id attribute of 3rd tab (tab3)  --&gt;
         | &lt;a href="#tab3" class="tab-link"&gt;Tab 3&lt;/a&gt;
     .important-note
-      p As you may see, first link also has <code><strong>tab-link-active</strong></code> class. It is not required, but if all such links will be on the same DOM tree level (the same-level children of mutual parent), then script will also change this <code>tab-link-active</code> class on link related to the active tab. It is useful when your "active" link has different visual style (like buttons in <a href="button.html#segmented-control">Segmented Control</a> or links in <a href="toolbar-tabbar.html#tabbar">Tabbar</a>)
+      p As you may see, first link also has <code><strong>active</strong></code> class. It is not required, but if all such links will be on the same DOM tree level (the same-level children of mutual parent), then script will also change this <code>active</code> class on link related to the active tab. It is useful when your "active" link has different visual style (like buttons in <a href="button.html#segmented-control">Segmented Control</a> or links in <a href="toolbar-tabbar.html#tabbar">Tabbar</a>)
     h2 Switch Multiple Tabs
     p Such notation as above uses ID attributes to specify tabs we need to switch to. But sometimes we may have situation when we need to switch few tabs using one tab-link, for this case we may use classes instead of IDs and <code><b>data-tab</b></code> attribute for tab-link. For example:
     pre
@@ -96,7 +96,7 @@ block content
           <!-- Tabs links -->
           <div>
             <!-- This links will switch top and bottom tabs to .tab1 -->
-            <a href="#" class="tab-link tab-link-active" data-tab=".tab1">Tab 1</a>
+            <a href="#" class="tab-link active" data-tab=".tab1">Tab 1</a>
             <!-- This links will switch top and bottom tabs to .tab2 -->
             <a href="#" class="tab-link" data-tab=".tab2">Tab 2</a>
             <!-- This links will switch top and bottom tabs to .tab3 -->
@@ -119,7 +119,7 @@ block content
                 -->
                 <div class="toolbar tabbar-labels toolbar-bottom-md">
                   <div class="toolbar-inner">
-                    <a href="#view-home" class="tab-link tab-link-active">
+                    <a href="#view-home" class="tab-link active">
                       <i class="icon icon-home"></i>
                     </a>
                     <a href="#view-catalog" class="tab-link">
@@ -333,7 +333,7 @@ block content
               <div class="tab page-content" id="tab-3"></div>
             </div>
           </div>
-    p Almost the same as with usual tabs but with the difference that there is no more "tab-link-active" and "tab-active" classes on tab links and tabs. These classes and tabs will be switched by router. And there is a new attribute and class:
+    p Almost the same as with usual tabs but with the difference that there is no more "active" and "tab-active" classes on tab links and tabs. These classes and tabs will be switched by router. And there is a new attribute and class:
     ul
       li <code>data-route-tab-id</code> - additional tab link attribute which is required for tabs switcher to understand which link related to the required route
       li <code>tabs-routable</code> - required additional class on <code>tabs</code> element
@@ -406,7 +406,7 @@ block content
               </div>
               <div class="toolbar tabbar">
                 <div class="toolbar-inner">
-                  <a href="#tab-1" class="tab-link tab-link-active">Tab 1</a>
+                  <a href="#tab-1" class="tab-link active">Tab 1</a>
                   <a href="#tab-2" class="tab-link">Tab 2</a>
                   <a href="#tab-3" class="tab-link">Tab 3</a>
                 </div>
@@ -450,7 +450,7 @@ block content
               </div>
               <div class="toolbar tabbar">
                 <div class="toolbar-inner">
-                  <a href="#tab-1" class="tab-link tab-link-active">Tab 1</a>
+                  <a href="#tab-1" class="tab-link active">Tab 1</a>
                   <a href="#tab-2" class="tab-link">Tab 2</a>
                   <a href="#tab-3" class="tab-link">Tab 3</a>
                 </div>
@@ -497,7 +497,7 @@ block content
               </div>
               <div class="toolbar tabbar">
                 <div class="toolbar-inner">
-                  <a href="#tab-1" class="tab-link tab-link-active">Tab 1</a>
+                  <a href="#tab-1" class="tab-link active">Tab 1</a>
                   <a href="#tab-2" class="tab-link">Tab 2</a>
                   <a href="#tab-3" class="tab-link">Tab 3</a>
                 </div>
