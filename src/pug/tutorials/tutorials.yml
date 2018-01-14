@@ -1,4 +1,24 @@
 -
+  date: Jan 14, 2018
+  video: false
+  title: "Migration To Framework7 v2"
+  url: https://blog.framework7.io/migration-to-framework7-v2-eb6dc38ede3b
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v2
+-
+  date: Sep 8, 2017
+  video: false
+  title: "Mastering Framework7 v2 Router"
+  url: https://blog.framework7.io/mastering-v2-router-958ea2dbd24f
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v2
+-
   date: July 24, 2017
   video: true
   title: "Video Tutorial: How to use Vuex with Framework7"
