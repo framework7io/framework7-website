@@ -1,5 +1,29 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/tomatoid.png"
+  iconRounded: true
+  title: "Tomatoid: Time tracking"
+  author:
+    url: https://www.petrnagy.cz/
+    name: Petr Nagy
+  links:
+    appstore: https://itunes.apple.com/us/app/tomatoid/id1320161270
+    website: https://www.tomatoid.com/mobile
+  description: |
+      Combines time tracking, pomodoro technique and to-do lists into one simple app.
+  features:
+  - Time tracker
+  - Pomodoro timer
+  - Task manager
+  - Projects management, clients, labels, stats, history
+  screenshots:
+  - "#{cdn}/i/showcase/tomatoid-ios-1.png"
+  - "#{cdn}/i/showcase/tomatoid-ios-2.png"
+  - "#{cdn}/i/showcase/tomatoid-ios-3.png"
+  - "#{cdn}/i/showcase/tomatoid-ios-4.png"
+  - "#{cdn}/i/showcase/tomatoid-ios-5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/brief.jpg"
   iconRounded: true
   title: "Brief - Customer messaging"
