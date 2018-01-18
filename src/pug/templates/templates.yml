@@ -51,6 +51,21 @@ community:
   - Vue
   - v1
 -
+  title: F7 [v2] - Vue - Webpack - Cordova
+  icon:
+    text: F7 [v2] Vue Webpack Cordova
+    bgColor: '##21a8f3'
+    textColor: '#fff'
+  author:
+    url: https://github.com/kevinqqnj
+    name: Kevin ZHANG Qing
+  url: https://github.com/kevinqqnj/cordova-template-framework7-vue-v2
+  description: Framework7 [v2] - Vue - Webpack Cordova Template with Webpack Dev Server and Hot Module Replacement
+  badges:
+  - Cordova
+  - Vue
+  - v2
+-
   title: F7 - Vue - Webpack - Cordova
   icon:
     text: F7 Vue Webpack Cordova
