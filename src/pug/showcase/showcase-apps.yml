@@ -2,7 +2,7 @@
 -
   iconUrl: "#{cdn}/i/showcase/tomatoid.png"
   iconRounded: true
-  title: "Tomatoid"
+  title: "Tomatoid: Time tracking"
   author:
     url: https://www.petrnagy.cz/
     name: Petr Nagy
