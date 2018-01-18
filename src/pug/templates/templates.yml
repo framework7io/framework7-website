@@ -54,7 +54,7 @@ community:
   title: F7 [v2] - Vue - Webpack - Cordova
   icon:
     text: F7 [v2] Vue Webpack Cordova
-    bgColor: '##21a8f3'
+    bgColor: '#21a8f3'
     textColor: '#fff'
   author:
     url: https://github.com/kevinqqnj
