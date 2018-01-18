@@ -1,0 +1,48 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'showcase';
+  - var title = 'Framework7 Showcase';
+
+block content
+  - var showcaseApps = getYamlData('showcase/showcase-apps.yml');
+  h1.text-align-center Framework7 Apps Showcase
+  p.text-align-center.large-text If you released Framework7 app on AppStore or GooglePlay, or you have interesting Framework7 web app, don't hesitate to <a href="https://github.com/nolimits4web/Framework7-Website" target="_blank">send PR</a> to this section with information about your app
+  .important-note
+    p We are for the good usability and user experience of apps made with Framework7. So the Framework7 apps released for Android on Google Play should be made with Material or custom theme to get into Showcase, but not with iOS theme.
+  .showcase-apps
+    each app in showcaseApps
+      .app
+        .app-icon(class=app.iconRounded ? 'app-icon-rounded' : '')
+          img(src=app.iconUrl.replace('#{cdn}', cdn))
+        .app-info
+          h4 #{app.title}
+          .app-author by&nbsp;
+            if (app.author.url)
+              a(href=app.author.url, target="_blank") #{app.author.name}
+            else
+              | app.author.name
+          .app-links
+            p
+              each link, index in app.links
+                if (index !== 'website')
+                  a(href=link, class=index + '-button', target="_blank")
+                else
+                  a(href=link, class="button", target="_blank") App Website
+          .app-about
+            if app.description
+              p !{app.description.trim().replace(/\n/g, '<br><br>')}
+            if (app.features)
+              p Features:
+              ul
+                each feature in app.features
+                  li #{feature}
+          .app-show-shots
+            a(href="#") Screenshots
+          if app.screenshots
+            .app-shots
+              each screenshot in app.screenshots
+                img(data-src=screenshot.replace('#{cdn}', cdn))
+
+block scripts
+  <script type='text/javascript'>var _merchantSettings=_merchantSettings || [];_merchantSettings.push(['AT', '1l3voeJ']);(function(){var autolink=document.createElement('script');autolink.type='text/javascript';autolink.async=true; autolink.src= ('https:' == document.location.protocol) ? 'https://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js' : 'http://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(autolink, s);})();</script>

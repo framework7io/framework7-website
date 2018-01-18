@@ -1,0 +1,308 @@
+.apps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 40px;
+  .app {
+    width: 25%;
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+  }
+  .app-icon {
+    width: 200px;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    box-shadow: 0px 20px 50px rgba(0,0,0,0.2);
+    border-radius: 45px;
+    position: relative;
+    display: block;
+    text-decoration: none;
+    img {
+      max-width: 100%;
+      border-radius: inherit;
+    }
+    .img {
+      height: 100%;
+      width: 100%;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 10px;
+      font-size: 22px;
+      font-weight: 500;
+      border-radius: inherit;
+      line-height: 1.1;
+    }
+    &:after {
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      padding: 0 10px;
+      border-radius: 2em;
+      opacity: 0;
+      left: 50%;
+      transform: translate3d(-50%, 10px, 0);
+      content: attr(data-hover-text);
+    }
+    &:hover {
+      box-shadow: 0px 40px 80px rgba(0,0,0,0.1);
+      transform: translate3d(0,0,0) scale(1.05);
+      ~ .app-info {
+        transform: translate3d(0, 10px, 0);
+      }
+      &:after {
+        opacity: 1;
+        transform: translate3d(-50%, 0px, 0);
+      }
+    }
+  }
+  .app-icon,
+  .app-icon:after,
+  .app-info {
+    transition: 400ms;
+  }
+  .app-info {
+    margin-top: 20px;
+  }
+  .app-title {
+    .h4;
+    margin-bottom: 0;
+    margin-top: 0px;
+    line-height: 1.2;
+  }
+  .app-description {
+    margin-top: 10px;
+    padding: 0 10px;
+  }
+  .app-badges {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    white-space: nowrap;
+    span {
+      .badge();
+    }
+  }
+  .app-buttons {
+    z-index: 10;
+    white-space: nowrap;
+    margin-top: 10px;
+    a {
+      .button();
+      font-weight: 500;
+      padding: 0 15px;
+      + a {
+        margin-left: 5px;
+      }
+    }
+  }
+  @media (max-width: 1023px) {
+    .app {
+      width: 100% / 3;
+    }
+  }
+  @media (max-width: 800px) {
+    .app-icon {
+      width: 150px;
+      height: 150px;
+    }
+    .app-icon {
+      border-radius: 35px;
+    }
+  }
+  // @media (max-width: 640px) {
+  //   .app {
+  //     width: 50%;
+  //   }
+  //   .app-icon {
+  //     width: 120px;
+  //     height: 120px;
+  //   }
+  //   .app-icon {
+  //     border-radius: 23px;
+  //   }
+  // }
+  // @media (max-width: 480px) {
+  // }
+}
+.example {
+  margin: 40px 0;
+  .device {
+    margin: 0 auto;
+    position: relative;
+    background: #111;
+    box-shadow: 0px 0px 0px 2px #aaa;
+    z-index: 1000;
+    padding: 100px 30px;
+    border-radius: 55px;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      left: 50%;
+      margin-left: -30px;
+      bottom: 20px;
+      border-radius: 100%;
+      box-sizing: border-box;
+      border: 5px solid #333;
+    }
+    &:before {
+      content: '';
+      width: 60px;
+      height: 10px;
+      border-radius: 10px;
+      position: absolute;
+      left: 50%;
+      margin-left: -30px;
+      background: #333;
+      top: 50px;
+    }
+    &.device-android {
+      border-radius: 20px;
+      width: 360px;
+      padding: 60px 20px;
+      height: 640px;
+      margin-left: -15px;
+      &:before {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        position: absolute;
+        left: 50%;
+        margin-left: -7px;
+        background: #666;
+        top: 25px;
+      }
+      &:after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        position: absolute;
+        left: 50px;
+        background: #444;
+        top: 30px;
+        margin-left: 0;
+      }
+      iframe {
+        width: 360px;
+        height: 640px;
+      }
+    }
+  }
+  .device-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  iframe {
+    max-width: 100%;
+  }
+  .device-v {
+    padding: 100px 30px;
+    +.info {
+      margin-left: 424px;
+    }
+  }
+  .device-h {
+    max-width: 1024px;
+    padding: 30px 80px;
+    border-radius: 30px;
+    &:after {
+      left: auto;
+      right: 10px;
+      bottom: auto;
+      top: 50%;
+      margin-left: 0;
+      margin-top: -30px;
+    }
+    &:before {
+      width: 10px;
+      height: 60px;
+      top: 50%;
+      margin-left: auto;
+      margin-top: -30px;
+      left: 35px;
+    }
+  }
+  .device-left {
+    float: left;
+    margin: 0;
+    margin-right: 40px;
+  }
+  .example-author {
+    margin-bottom: 20px;
+  }
+  h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    + .example-author {
+      margin-top: -20px;
+    }
+  }
+  .info {
+    padding-top: 30px;
+  }
+  .center-info {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 20px;
+  }
+  a.button {
+    .button();
+    + a.button {
+      margin-left: 15px;
+    }
+  }
+  a.button:hover {
+    background: rgba(red(@darkColor),green(@darkColor),blue(@darkColor),0.1);
+  }
+  .buttons {
+    margin-top: 25px;
+  }
+  .app-launcher {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid #333;
+    span {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      color:#fff;
+      font-size: 21px;
+      font-weight: 300;
+      cursor: pointer;
+      &:before {
+        position: absolute;
+        bottom: 100%;
+        width: 64px;
+        height: 64px;
+        margin-bottom: 10px;
+        border: 1px solid #fff;
+        border-radius: 18px;
+        content: '';
+        left: 50%;
+        margin-left: -33px;
+      }
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}

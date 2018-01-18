@@ -1,0 +1,236 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Floating Action Button | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Floating Action Button
+    .docs-index
+    p Floating action button (FAB) is used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.
+    h2 FAB Layout
+    p Layout of floating action button is very simple. Just put it as the direct child of <code>page</code> or <code>view</code>:
+    pre
+      code.html
+        :code
+          <!-- Page-->
+          <div class="page">
+            <!-- Navbar-->
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="center">Floating Action Button</div>
+              </div>
+            </div>
+            <!-- Floating Action Button -->
+            <div class="fab fab-right-bottom">
+              <a href="#">
+                <i class="icon f7-icons">add</i>
+              </a>
+            </div>
+            <!-- Another Floating Action Button -->
+            <div class="fab fab-left-bottom">
+              <a href="#">
+                <i class="icon f7-icons">add</i>
+              </a>
+            </div>
+            <!-- Scrollable Page Content-->
+            <div class="page-content">
+              <div class="block">
+                Lorem ipsum dolor sit amet, ....
+              </div>
+            </div>
+          </div>
+    p FAB position is configured via additional <code>fab-[horizontal]-[vertical]</code> class. The following clases are avaialble:
+    ul
+      li <code>fab-right-bottom</code>
+      li <code>fab-center-bottom</code>
+      li <code>fab-left-bottom</code>
+      li <code>fab-right-center</code>
+      li <code>fab-center-center</code>
+      li <code>fab-left-center</code>
+      li <code>fab-right-top</code>
+      li <code>fab-center-top</code>
+      li <code>fab-left-top</code>
+    h2 FAB Colors
+    p FAB supports all <a href="color-themes.html">default colors</a>. To change its color just add <code>color-[color]</code> class to FAB element.
+    pre.html
+      code
+        :code
+          <!-- Red FAB -->
+          <div class="fab fab-left-top color-red"></div>
+
+          <!-- Green FAB -->
+          <div class="fab fab-right-bottom color-green"></div>
+    h2 Speed Dial
+    p The floating action button can fling out related actions upon press. The button should remain on screen after the menu is invoked. Tapping in the same spot should either activate the most commonly used action or close the open menu.
+    p In this case we need to add additional element with buttons:
+    pre
+      code.html
+        :code
+          <div class="fab fab-right-bottom">
+            <a href="#">
+              <!-- First icon is visible when Speed Dial actions are closed -->
+              <i class="icon f7-icons">add</i>
+              <!-- Second icon is visible when Speed Dial actions are opened -->
+              <i class="icon f7-icons">close</i>
+            </a>
+            <!-- Speed Dial action buttons -->
+            <div class="fab-buttons fab-buttons-bottom">
+              <a href="#">1</a>
+              <a href="#">2</a>
+              <a href="#">3</a>
+            </div>
+          </div>
+    p Speed dial buttons container position is configured via additional class:
+    ul
+      li <code>fab-buttons-top</code> - buttons will appear on top of FAB
+      li <code>fab-buttons-right</code> - buttons will appear on right of FAB
+      li <code>fab-buttons-bottom</code> - buttons will appear on bottom of FAB
+      li <code>fab-buttons-left</code> - buttons will appear on left of FAB
+      li <code>fab-buttons-center</code> - buttons will appear around of FAB
+    .important-note
+      ul
+        li
+          p Note that Speed Dial actions buttons will appear in reversed order
+        li
+          p You shouldn't use more than 6 Speed Dial actions
+        li
+          p You should use at least 3 Speed Dial actions
+    h2 FAB Morph
+    p There is also ability for FAB to morph to any visible element on page.
+    pre
+      code.html
+        :code
+          <div class="page">
+            <div class="navbar">...</div>
+
+            <!-- Toolbar has additional required "fab-morph-target" class -->
+            <div class="toolbar fab-target">
+              ...
+            </div>
+
+            <!-- FAB will morph to toolbar -->
+            <div class="fab fab-morph" data-morph-to=".toolbar">
+              <i class="icon f7-icons">add</i>
+            </div>
+
+            <div class="page-content">
+              ...
+            </div>
+          </div>
+    p Where
+    ul
+      li <code>data-morph-to</code> - additional attribute on FAB where target element's CSS selector must be specified. In this example it points to Toolbar
+      li <code>fab-morph-target</code> - additional required class on FAB morph target, in this example it is added to Toolbar
+    h2 FAB App Methods
+    p We can use following app methods to control FABs:
+    table.methods-table
+      tr
+        td app.fab.open(fabEl, targetEl)
+        td Open FAB speed dial actions/buttons, or morph it to specified target
+          ul.method-parameters
+            li <span class="parameter">fabEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required FAB
+            li <span class="parameter">targetEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of FAB morph target. <em>Optional</em>
+      tr
+        td app.fab.close(fabEl)
+        td Close FAB speed dial actions/buttons, or morph it back from specified target
+          ul.method-parameters
+            li <span class="parameter">fabEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required FAB
+      tr
+        td app.fab.toggle(fabEl)
+        td Toggle FAB speed dial actions/buttons
+          ul.method-parameters
+            li <span class="parameter">fabEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required FAB
+    h2 FAB Events
+    p FAB will fire the following DOM events on FAB element:
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td fab:open
+          td FAB Element<span>&lt;div class="fab"&gt;</span>
+          td Event will be triggered on FAB open or when it morphs to target element
+        tr
+          td fab:close
+          td FAB Element<span>&lt;div class="fab"&gt;</span>
+          td Event will be triggered on FAB close or when it morphs back from target element
+    h2 Control FAB With Links
+    p It is possible to open and close required FAB (if you have it in DOM) using special classes and data attributes on links:
+    .important-note
+      ul
+        li
+          p To open FAB speed dial actions we need to add <code><b>fab-open</b></code> class to any HTML element (prefered to link)
+        li
+          p To close FAB speed dial or to morph FAB back from target we need to add <code><b>fab-close</b></code> class to any HTML element (prefered to link)
+        li
+          p If you have more than one FAB in DOM, you need to specify appropriate FAB via additional <code><b>data-fab=".some-fab"</b></code> attribute on this HTML element
+
+    .with-device
+      h2(data-device-preview="../docs-demos/floating-action-button.html") Examples
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="title">Floating Action Button</div>
+                </div>
+              </div>
+              <!-- Toolbar FAB Morph Target -->
+              <div class="toolbar toolbar-bottom-md fab-morph-target">
+                <div class="toolbar-inner">
+                  <!-- Each Toolbar link will close FAB (morph back) on click -->
+                  <a class="link fab-close">Link 1</a>
+                  <a class="link fab-close">Link 2</a>
+                  <a class="link fab-close">Link 3</a>
+                </div>
+              </div>
+              <!-- FAB Left Top -->
+              <div class="fab fab-left-top color-yellow">
+                <a href="#">
+                  <!-- Icons For iOS Theme -->
+                  <i class="icon f7-icons ios-only">add</i>
+                  <i class="icon f7-icons ios-only">close</i>
+                  <!-- Icons For MD Theme -->
+                  <i class="icon material-icons md-only">add</i>
+                  <i class="icon material-icons md-only">close</i>
+                </a>
+                <!-- FAB speed dial actions -->
+                <div class="fab-buttons fab-buttons-bottom">
+                  <a href="">1</a>
+                  <a href="">2</a>
+                  <a href="">3</a>
+                </div>
+              </div>
+              <!-- FAB Right Top -->
+              <div class="fab fab-right-top color-pink">
+                ...
+              </div>
+              <!-- FAB Center -->
+              <div class="fab fab-center-center color-green">
+                ...
+              </div>
+              <!-- FAB Left Bottom -->
+              <div class="fab fab-left-bottom color-orange">
+                ...
+              </div>
+              <!-- FAB Right Bottom -->
+              <!-- Will morph to Toolbar -->
+              <div class="fab fab-right-bottom fab-morph" data-morph-to=".toolbar">
+                ...
+              </div>
+              <div class="page-content">
+                <div class="block">
+                  <p>Lorem ipsum dolor sit amet...</p>
+                </div>
+              </div>
+            </div>

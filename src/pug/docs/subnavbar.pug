@@ -1,0 +1,151 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Subnavbar | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Subnavbar
+    p Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Searchbar. It also remains visible when Navbar hidden
+    h2 Subnavbar Layout
+    h4 In Navbar
+    pre
+      code.html
+        :code
+          <div class="page page-with-subnavbar">
+            <!-- Navbar -->
+            <div class="navbar">
+              <div class="navbar-inner sliding">
+                <div class="left">...</div>
+                <div class="title">...</div>
+                <div class="right">...</div>
+
+                <!-- Subnavbar -->
+                <div class="subnavbar">
+                  <div class="subnavbar-inner">
+                    <!-- Subnavbar content, for example tabs buttons -->
+                    <div class="segmented">
+                      <a href="#tab1" class="button button-active">Tab 1</a>
+                      <a href="#tab2" class="button">Tab 2</a>
+                      <a href="#tab3" class="button">Tab 3</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Page content -->
+            <div class="page-content">
+              ...
+            </div>
+          </div>
+    p Along with "left", "right" and "title" elements, "subnavbar" also supports "sliding" class for sliding transition when used with Dynamic Navbar.
+    .important-note
+      p Note that page that contains Subnavbar must have additional <code><b>page-with-subnavbar</b></code> class which adds additional top padding required for subnavbar
+    h4 In Page
+    p It is also possible to put it as a direct child of <code>page</code> right after Navbar:
+    pre
+      code.html
+        :code
+          <div class="page page-with-subnavbar">
+            <!-- Navbar -->
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left">...</div>
+                <div class="title">...</div>
+                <div class="right">...</div>
+              </div>
+            </div>
+            <!-- Subnavbar -->
+            <div class="subnavbar">
+              <div class="subnavbar-inner">
+                <!-- Subnavbar content, for example tabs buttons -->
+                <div class="segmented">
+                  <a href="#tab1" class="button button-active">Tab 1</a>
+                  <a href="#tab2" class="button">Tab 2</a>
+                  <a href="#tab3" class="button">Tab 3</a>
+                </div>
+              </div>
+            </div>
+            <!-- Page content -->
+            <div class="page-content">
+              ...
+            </div>
+          </div>
+    h4 In Page Content
+    p It is also possible to put it as a direct child of <code>page-content</code>. In this case it will be static and scroll with the page content:
+    pre
+      code.html
+        :code
+          <div class="page page-with-subnavbar">
+            <!-- Navbar -->
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left">...</div>
+                <div class="title">...</div>
+                <div class="right">...</div>
+              </div>
+            </div>
+
+            <!-- Page content -->
+            <div class="page-content">
+              <!-- Subnavbar -->
+              <div class="subnavbar">
+                <div class="subnavbar-inner">
+                  <!-- Subnavbar content, for example tabs buttons -->
+                  <div class="segmented">
+                    <a href="#tab1" class="button button-active">Tab 1</a>
+                    <a href="#tab2" class="button">Tab 2</a>
+                    <a href="#tab3" class="button">Tab 3</a>
+                  </div>
+                </div>
+              </div>
+              ...
+            </div>
+          </div>
+    .with-device
+      h2(data-device-preview="../docs-demos/subnavbar.html") Example
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="left"></div>
+                  <div class="title">Sub Navbar</div>
+                  <div class="right"></div>
+                  <div class="subnavbar">
+                    <div class="subnavbar-inner">
+                      <div class="segmented segmented-raised">
+                        <a class="button tab-link tab-link-active" href="#tab1">Tab 1</a>
+                        <a class="button tab-link" href="#tab2">Tab 2</a>
+                        <a class="button tab-link" href="#tab3">Tab 3</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="page-content hide-navbar-on-scroll">
+                <div class="tabs">
+                  <div class="tab tab-active" id="tab1">
+                    <div class="block">
+                      <p>Lorem ipsum dolor sit amet...</p>
+                    </div>
+                  </div>
+                  <div class="tab" id="tab2">
+                    <div class="block">
+                      <p>Donec iaculis posuere massa sed dignissim...</p>
+                    </div>
+                  </div>
+                  <div class="tab" id="tab3">
+                    <div class="block">
+                      <p>Etiam non interdum erat. Curabitur erat lacus...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>

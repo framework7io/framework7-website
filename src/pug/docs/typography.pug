@@ -1,0 +1,295 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Typography | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Typography
+    .docs-index
+    p Framework7 comes with a lot of additional CSS helper classes to help you with extra styling and formatting.
+    h2 Content Spacing
+    h3 Margin
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Margin
+        tr
+          td margin
+          td Applies margin to all sides
+        tr
+          td margin-left
+          td Applies margin to the left
+        tr
+          td margin-right
+          td Applies margin to the right
+        tr
+          td margin-top
+          td Applies margin to the top
+        tr
+          td margin-bottom
+          td Applies margin to the bottom
+        tr
+          td margin-horizontal
+          td Applies margin to the left and right
+        tr
+          td margin-vertical
+          td Applies margin to the top and bottom
+        tr
+          td no-margin
+          td Removes margin
+        tr
+          td no-margin-left
+          td Removes left margin
+        tr
+          td no-margin-right
+          td Removes right margin
+        tr
+          td no-margin-top
+          td Removes left margin
+        tr
+          td no-margin-bottom
+          td Removes bottom margin
+    p For example:
+    pre
+      code.html
+        :code
+          <p class="margin-left">Text with left margin</p>
+          <p class="margin-right">Text with right margin</p>
+    h3 Padding
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Padding
+        tr
+          td padding
+          td Applies padding to all sides
+        tr
+          td padding-left
+          td Applies padding to the left
+        tr
+          td padding-right
+          td Applies padding to the right
+        tr
+          td padding-top
+          td Applies padding to the top
+        tr
+          td padding-bottom
+          td Applies padding to the bottom
+        tr
+          td padding-horizontal
+          td Applies padding to the left and right
+        tr
+          td padding-vertical
+          td Applies padding to the top and bottom
+        tr
+          td no-padding
+          td Removes padding
+        tr
+          td no-padding-left
+          td Removes left padding
+        tr
+          td no-padding-right
+          td Removes right padding
+        tr
+          td no-padding-top
+          td Removes left padding
+        tr
+          td no-padding-bottom
+          td Removes bottom padding
+    p For example:
+    pre
+      code.html
+        :code
+          <p class="padding-left">Text with left padding</p>
+          <p class="padding-right">Text with right padding</p>
+
+    h2 Float Elements
+    table.methods-table
+      tbody
+        tr
+          td float-left
+          td The element will float on the left side of its containing block
+        tr
+          td float-right
+          td The element will float on the right side of its containing block
+        tr
+          td float-none
+          td Disable floating
+    p For example
+    pre
+      code.html
+        :code
+          <div class="float-left">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda earum tempora, voluptatem quas? Beatae cumque, ea porro, eius sed nemo impedit tempora nesciunt, nam necessitatibus quis animi. Nobis, dicta, sit!</p>
+          </div>
+          <div class="float-right">
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda earum tempora, voluptatem quas? Beatae cumque, ea porro, eius sed nemo impedit tempora nesciunt, nam necessitatibus quis animi. Nobis, dicta, sit!</p>
+          </div>
+    h2 Text Alignment
+    table.methods-table
+      tbody
+        tr
+          td text-align-left
+          td The inline contents are aligned to the left edge of the line box
+        tr
+          td text-align-right
+          td The inline contents are aligned to the right edge of the line box
+        tr
+          td text-align-center
+          td The inline contents are centered within the line box
+        tr
+          td text-align-justify
+          td The inline contents are justified
+    p For example:
+    pre
+      code.html
+        :code
+          <p class="text-align-center">Center aligned text</p>
+          <p class="text-align-right">Right aligned text</p>
+
+    h2 Element Display
+    table.methods-table
+      tbody
+        tr
+          td display-block
+          td Element will be displayed as block element
+        tr
+          td display-inline
+          td Element will be displayed as inline element
+        tr
+          td display-inline-block
+          td Element will be displayed as inline block element
+        tr
+          td display-flex
+          td Element will be displayed as flex element
+        tr
+          td display-inline-flex
+          td Element will be displayed as inline flex element
+        tr
+          td display-none
+          td Element will be hidden
+    p For example:
+    pre
+      code.html
+        :code
+          <div class="display-flex">
+            <div>Hello</div>
+            <div>World!</div>
+          </div>
+    h2 Flexbox
+    p There are several helper classes to control flex model:
+    h3 Justify Content
+    p The CSS justify-content property defines how the browser distributes space between and around content items along the main axis of their container.
+    table.methods-table
+      tbody
+        tr
+          td justify-content-flex-start
+          td Pack flex items from the start
+        tr
+          td justify-content-center
+          td Pack items around the center
+        tr
+          td justify-content-flex-end
+          td Pack flex items from the end
+        tr
+          td justify-content-space-between
+          td Distribute items evenly. The first item is flush with the start, the last is flush with the end
+        tr
+          td justify-content-space-around
+          td Distribute items evenly. Items have a half-size space on either end
+        tr
+          td justify-content-space-evenly
+          td Distribute items evenly. Items have equal space around them
+        tr
+          td justify-content-stretch
+          td Distribute items evenly. Stretch 'auto'-sized items to fit the container
+        tr
+          td justify-content-start
+          td Pack items from the start
+        tr
+          td justify-content-end
+          td Pack items from the end
+        tr
+          td justify-content-left
+          td Pack items from the left
+        tr
+          td justify-content-right
+          td Pack items from the right
+    h3 Align Content
+    p The CSS align-content property defines how the browser distributes space between and around content items along the cross-axis of their container, which is serving as a flexbox container.
+    table.methods-table
+      tbody
+        tr
+          td align-content-flex-start
+          td Pack flex items from the start
+        tr
+          td align-content-flex-end
+          td Pack flex items from the end
+        tr
+          td align-content-center
+          td Pack items around the center
+        tr
+          td align-content-space-between
+          td Distribute items evenly. The first item is flush with the start, the last is flush with the end
+        tr
+          td align-content-space-around
+          td Distribute items evenly. Items have a half-size space on either end
+        tr
+          td align-content-stretch
+          td Distribute items evenly. Stretch 'auto'-sized items to fit the container
+    h3 Align Items
+    p The CSS align-items property defines how the browser distributes space between and around flex items along the cross-axis of their container. This means it works like justify-content but in the perpendicular direction.
+    table.methods-table
+      tbody
+        tr
+          td align-items-flex-start
+          td Pack flex items from the start
+        tr
+          td align-items-flex-end
+          td Pack flex items from the end
+        tr
+          td align-items-center
+          td Pack items around the center
+        tr
+          td align-items-stretch
+          td Distribute items evenly. Stretch 'auto'-sized items to fit the container
+    h3 Align Self
+    p The align-self CSS property aligns flex items of the current flex line overriding the align-items value. If any of the item's cross-axis margin is set to auto, then align-self is ignored.
+    table.methods-table
+      tbody
+        tr
+          td align-self-flex-start
+          td Put the flex item at the start
+        tr
+          td align-self-flex-end
+          td Put the flex item at the end
+        tr
+          td align-self-center
+          td Put the item around the center
+        tr
+          td align-self-stretch
+          td Stretch 'auto'-sized items to fit the container
+    h3 Flex Shrink
+    p The flex-shrink CSS property specifies the flex shrink factor of a flex item. Flex items will shrink to fill the container according to the flex-shrink number, when the default width of flex items is wider than the flex container.
+    table.methods-table
+      tbody
+        - var flexShrinks = [0,1,2,3,4,5,6,7,8,9,10];
+        each flexShrink in flexShrinks
+          tr
+            td flex-shrink-#{flexShrink}
+            td Sets CSS property <code>flex-shrink: #{flexShrink}</code>
+    p For example:
+    pre
+      code.html
+        :code
+          <div class="display-flex justify-content-space-between align-items-flex-start">
+            <div class="flex-shrink-0">Item 1</div>
+            <div class="align-self-center">Item 2</div>
+            <div class="align-self-flex-end">Item 3</div>
+          </div>

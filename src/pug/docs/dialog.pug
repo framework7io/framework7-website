@@ -1,0 +1,713 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Dialog | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Dialog
+    .docs-index
+    p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from user, or to notify or warn user. Dialog as all other modals is part of so called "Temporary Views".
+
+    p Dialog can be opened only using JavaScript. So let's look at related App methods to work with dialogs
+    h2 Dialog App Methods
+    p Let's look at related App methods to work with Dialog:
+    .method-wrap
+      p
+        span.method app.dialog.create(<span>parameters</span>)
+        | - create Dialog instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with dialog parameters
+      p.method-returns Method returns created Dialog's instance
+
+    .method-wrap
+      p
+        span.method app.dialog.destroy(<span>el</span>)
+        | - destroy Dialog instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Dialog element or Dialog instance to destroy.
+    .method-wrap
+      p
+        span.method app.dialog.get(<span>el</span>)
+        | - get Dialog instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Dialog element.
+      p.method-returns Method returns Dialog's instance
+    .method-wrap
+      p
+        span.method app.dialog.open(<span>el</span>, <span>animate</span>)
+        | - opens Dialog
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Dialog element to open.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Open Dialog with animation.
+      p.method-returns Method returns Dialog's instance
+    .method-wrap
+      p
+        span.method app.dialog.close(<span>el</span>, <span>animate</span>)
+        | - closes Dialog
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Dialog element to close.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Close Dialog with animation.
+      p.method-returns Method returns Dialog's instance
+
+    h2 Dialog Parameters
+    p Now let's look at list of available parameters we need to create Dialog:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement
+          td
+          td Dialog element. Can be useful if you already have Dialog element in your HTML and want to create new instance using this element
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables Dialog backdrop (dark semi transparent layer behind)
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td When enabled, dialog will be closed on backdrop click
+        tr
+          td animate
+          td boolean
+          td true
+          td Whether the Dialog should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+        tr
+          td title
+          td string
+          td
+          td Dialog title
+        tr
+          td text
+          td string
+          td
+          td Dialog inner text
+        tr
+          td content
+          td string
+          td
+          td Custom Dialog content that follows dialog text
+        tr
+          td buttons
+          td array
+          td []
+          td Array with dialog buttons
+        tr
+          td verticalButtons
+          td boolean
+          td false
+          td Enables vertical buttons layout
+        tr
+          td onClick
+          td function(dialog, index)
+          td
+          td Callback function that will be executed after click on the Dialog button. As an arguments it received dialog instance and clicked button index number
+        tr
+          td cssClass
+          td string
+          td
+          td Additional css class to add
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var dialog = app.dialog.create({
+                    text: 'Hello World',
+                    on: {
+                      opened: function () {
+                        console.log('Dialog opened')
+                      }
+                    }
+                  })
+    h3 Button Parameters
+    p Each Button in <code>buttons</code> array must be presented as object with button parameters:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td text
+          td string
+          td
+          td String with Button's text (could be HTML string)
+        tr
+          td bold
+          td boolean
+          td false
+          td Enables bold button text
+        tr
+          td color
+          td string
+          td
+          td Button color, one of default colors
+        tr
+          td close
+          td boolean
+          td true
+          td If enabled then button click will close Dialog
+        tr
+          td cssClass
+          td string
+          td
+          td Additional button CSS class
+        tr
+          td onClick
+          td function(dialog, e)
+          td
+          td Callback function that will be executed after click on this button
+    h2 Dialog Methods & Properties
+    p So to create Dialog we have to call:
+    pre
+      code
+        :code
+          var dialog = app.dialog.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>dialog</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td dialog.app
+          td Link to global app instance
+        tr
+          td dialog.el
+          td Dialog HTML element
+        tr
+          td dialog.$el
+          td Dom7 instance with dialog HTML element
+        tr
+          td dialog.backdropEl
+          td Backdrop HTML element
+        tr
+          td dialog.$backdropEl
+          td Dom7 instance with backdrop HTML element
+        tr
+          td dialog.params
+          td Dialog parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td dialog.open(<span>animate</span>)
+          td Open dialog. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+        tr
+          td dialog.close(<span>animate</span>)
+          td Close dialog. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+        tr
+          td dialog.setProgress(<span>progress</span>, <span>duration</span>)
+          td Sets dialog progress when Dialog Progress shortcut in use
+            ul.method-parameters
+              li
+                span.parameter progress
+                |  - <span class="parameter-type">number</span> - progressbar progress (from 0 to 100)
+              li
+                span.parameter duration
+                |  - <span class="parameter-type">number</span> (in ms) - progressbar progress change duration
+        tr
+          td dialog.setTitle(<span>title</span>)
+          td Sets dialog's title
+            ul.method-parameters
+              li
+                span.parameter title
+                |  - <span class="parameter-type">string</span> - new dialog title
+        tr
+          td dialog.setText(<span>text</span>)
+          td Sets dialog's text
+            ul.method-parameters
+              li
+                span.parameter title
+                |  - <span class="parameter-type">string</span> - new dialog text
+        tr
+          td dialog.destroy()
+          td Destroy dialog
+        tr
+          td dialog.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td dialog.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td dialog.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td dialog.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td dialog.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+
+    h2 Dialog Events
+    p Dialog will fire the following DOM events on dialog element and events on app and dialog instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td dialog:open
+          td Dialog Element<span>&lt;div class="dialog"&gt;</span>
+          td Event will be triggered when Dialog starts its opening animation
+        tr
+          td dialog:opened
+          td Dialog Element<span>&lt;div class="dialog"&gt;</span>
+          td Event will be triggered after Dialog completes its opening animation
+        tr
+          td dialog:close
+          td Dialog Element<span>&lt;div class="dialog"&gt;</span>
+          td Event will be triggered when Dialog starts its closing animation
+        tr
+          td dialog:closed
+          td Dialog Element<span>&lt;div class="dialog"&gt;</span>
+          td Event will be triggered after Dialog completes its closing animation
+    h3 App and Dialog Instance Events
+    p Dialog instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>dialog</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td open
+          td <span>dialog</span>
+          td dialog
+          td(rowspan="2") Event will be triggered when Dialog starts its opening animation. As an argument event handler receives dialog instance
+        tr
+          td dialogOpen
+          td <span>dialog</span>
+          td app
+        tr
+          td opened
+          td <span>dialog</span>
+          td dialog
+          td(rowspan="2") Event will be triggered after Dialog completes its opening animation. As an argument event handler receives dialog instance
+        tr
+          td dialogOpened
+          td <span>dialog</span>
+          td app
+        tr
+          td close
+          td <span>dialog</span>
+          td dialog
+          td(rowspan="2") Event will be triggered when Dialog starts its closing animation. As an argument event handler receives dialog instance
+        tr
+          td dialogClose
+          td <span>dialog</span>
+          td app
+        tr
+          td closed
+          td <span>dialog</span>
+          td dialog
+          td(rowspan="2") Event will be triggered after Dialog completes its closing animation. As an argument event handler receives dialog instance
+        tr
+          td dialogClosed
+          td <span>dialog</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>dialog</span>
+          td dialog
+          td(rowspan="2") Event will be triggered right before Dialog instance will be destroyed. As an argument event handler receives dialog instance
+        tr
+          td dialogBeforeDestroy
+          td <span>dialog</span>
+          td app
+    h2 Dialog Shortcuts
+    p There are few shortcuts dialog app methods which makes creation of commonly used dialogs much easier.
+    p First let's check global app parameters which help to configure such shortcuts and also be used for localisation purpose.
+    h3 Dialog Shortcuts Parameters
+    p The following global dialog shortcuts parameters can be passed on <a href="init-app.html">app initialization</a> under <code>dialog</code> property:
+    pre
+      code.js
+        :code
+          var app = new Framewrk7({
+            dialog: {
+              // set default title for all dialog shortcuts
+              title: 'My App',
+              // change default "OK" button text
+              buttonOk: 'Done',
+              ...
+            }
+          });
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td title
+          td string
+          td
+          td Default dialogs shortcuts title. If not specified, will be equal to <code>app.name</code>
+        tr
+          td buttonOk
+          td string
+          td OK
+          td Default "OK" button text
+        tr
+          td buttonCancel
+          td string
+          td Cancel
+          td Default "Cancel" button text
+        tr
+          td usernamePlaceholder
+          td string
+          td Username
+          td Default username field placeholder in Login dialog
+        tr
+          td passwordPlaceholder
+          td string
+          td Password
+          td Default password field placeholder in Login & Password dialogs
+        tr
+          td preloaderTitle
+          td string
+          td Loading...
+          td Default title for Preloader dialog
+        tr
+          td progressTitle
+          td string
+          td Loading...
+          td Default title for Progress dialog
+    p Now let's look at available dialog shortcuts
+    h3 Alert
+    p To create Alert dialog we need to use the following app methods:
+    .method-wrap
+      p
+        span.method app.dialog.alert(<span>text</span>, <span>title</span>, <span>callback</span>)
+        | - create Alert Dialog and open it
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Alert dialog text
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Alert dialog title
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed after user clicks on Alert button
+      p.method-returns Method returns created Dialog's instance
+    .method-wrap
+      p
+        span.method app.dialog.alert(<span>text</span>, <span>callback</span>)
+        | - create Alert Dialog with default title and open it
+      p.method-returns Method returns created Dialog's instance
+
+    h3 Confirm
+    p Confirm dialog usualy used when it is required to confirm some action. To open Confirm modal we should also call one of the following App methods:
+    .method-wrap
+      p
+        span.method app.dialog.confirm(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        | - create Confirm Dialog and open it
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Confirm dialog text
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Confirm dialog title
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Ok" button on Confirm dialog (when user confirms action)
+        li
+          span.parameter callbackCancel
+          |  - <span class="parameter-type">function</span>. Optional. Callback function that will be executed when user click "Cancel" button on Confirm dialog (when user dismisses action)
+      p.method-returns Method returns created Dialog's instance
+    .method-wrap
+      p
+        span.method app.dialog.confirm(<span>text</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        | - create Confirm Dialog with default title and open it
+      p.method-returns Method returns created Dialog's instance
+    h3 Prompt
+    p Prompt dialog used when it is required to get some data/answer from user. To open Prompt dialog we should also call one of the following App methods:
+    .method-wrap
+      p
+        span.method app.dialog.prompt(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        | - create Prompt Dialog and open it
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Prompt dialog text
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Prompt dialog title
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function(value)</span>. Optional. Callback function that will be executed when user click "Ok" button on Prompt dialog. As an argument function receives value of text input
+        li
+          span.parameter callbackCancel
+          |  - <span class="parameter-type">function(value)</span>. Optional. Callback function that will be executed when user click "Cancel" button on Prompt dialog. As an argument function receives value of text input
+    .method-wrap
+      p
+        span.method app.dialog.prompt(<span>text</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        | - create Prompt Dialog with default title and open it
+      p.method-returns Method returns created Dialog's instance
+    h3 Login
+    .method-wrap
+      p
+        span.method app.dialog.login(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        | - create Login Dialog and open it
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Login dialog text
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Login dialog title
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function(username, password)</span>. Optional. Callback function that will be executed when user click "Ok" button on Login dialog. As an argument function receives username and password values
+        li
+          span.parameter callbackCancel
+          |  - <span class="parameter-type">function(username, password)</span>. Optional. Callback function that will be executed when user click "Cancel" button on Login dialog. As an argument function receives username and password values
+    .method-wrap
+      p
+        span.method app.dialog.login(<span>text</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        | - create Login Dialog with default title and open it
+      p.method-returns Method returns created Dialog's instance
+    h3 Password
+    p Password dialog is useful in case you need to request only password
+    .method-wrap
+      p
+        span.method app.dialog.password(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        | - create Password Dialog and open it
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span>. Password dialog text
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Password dialog title
+        li
+          span.parameter callbackOk
+          |  - <span class="parameter-type">function(password)</span>. Optional. Callback function that will be executed when user click "Ok" button on Password dialog. As an argument function receives password value
+        li
+          span.parameter callbackCancel
+          |  - <span class="parameter-type">function(password)</span>. Optional. Callback function that will be executed when user click "Cancel" button on Password dialog. As an argument function receives password value
+    .method-wrap
+      p
+        span.method app.dialog.password(<span>text</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
+        | - create Password Dialog with default title and open it
+      p.method-returns Method returns created Dialog's instance
+    h3 Preloader
+    p Preloader dialog is used to indicate some background activity (like Ajax request) and to block any user actions during this activity. To open Preloader dialog we should also call appropriate App method:
+    .method-wrap
+      p
+        span.method app.dialog.preloader(<span>title</span>)
+        | - create Preloader Dialog and open it
+      ul.method-parameters
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Optional. Preloader dialog title
+      p.method-returns Method returns created Dialog's instance
+    h3 Progress
+    p Same as Preloader dialog but with <a href="progressbar.html">progressbar</a> instead of preloader.
+    .method-wrap
+      p
+        span.method app.dialog.progress(<span>title</span>, <span>progress</span>, <span>color</span>)
+        | - create Progress Dialog and open it
+      ul.method-parameters
+        li
+          span.parameter title
+          |  - <span class="parameter-type">string</span>. Optional. Progress dialog title
+        li
+          span.parameter progress
+          |  - <span class="parameter-type">number</span>. Optional. Progressbar progress (from 0 to 100). If no <code>number</code> passed then it will have infinite progressbar.
+        li
+          span.parameter color
+          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of default colors
+      p.method-returns Method returns created Dialog's instance
+
+    .with-device
+      h2(data-device-preview="../docs-demos/dialog.html") Examples
+      pre
+        code.xml
+          :code
+            <body>
+              ...
+                <div class="page-content">
+                  <div class="block block-strong">
+                    <p class="row">
+                      <button class="col button open-alert">Alert</button>
+                      <button class="col button open-confirm">Confirm</button>
+                      <button class="col button open-prompt">Prompt</button>
+                    </p>
+                    <p class="row">
+                      <button class="col button open-login">Login</button>
+                      <button class="col button open-password">Password</button>
+                    </p>
+                  </div>
+                  <div class="block-title">Vertical Buttons</div>
+                  <div class="block block-strong">
+                    <p>
+                      <button class="button open-vertical">Vertical Buttons</button>
+                    </p>
+                  </div>
+                  <div class="block-title">Preloader Dialog</div>
+                  <div class="block block-strong">
+                    <p class="row">
+                      <button class="col button open-preloader">Preloader</button>
+                      <button class="col button open-preloader-custom">Custom Title</button>
+                    </p>
+                  </div>
+                  <div class="block-title">Progress Dialog</div>
+                  <div class="block block-strong">
+                    <p class="row">
+                      <button class="col button open-progress">Determined</button>
+                      <button class="col button open-progress-infinite">Infinite</button>
+                    </p>
+                  </div>
+                </div>
+              ...
+            </body>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            // Alert
+            $$('.open-alert').on('click', function () {
+              app.dialog.alert('Hello');
+            });
+
+            // Confirm
+            $$('.open-confirm').on('click', function () {
+              app.dialog.confirm('Are you feel good today?', function () {
+                app.dialog.alert('Great!');
+              });
+            });
+
+            // Prompt
+            $$('.open-prompt').on('click', function () {
+              app.dialog.prompt('What is your name?', function (name) {
+                app.dialog.confirm('Are you sure that your name is ' + name + '?', function () {
+                  app.dialog.alert('Ok, your name is ' + name);
+                });
+              });
+            });
+
+            // Login
+            $$('.open-login').on('click', function () {
+              app.dialog.login('Enter your username and password', function (username, password) {
+                app.dialog.alert('Thank you!<br>Username:' + username + '<br>Password:' + password);
+              });
+            });
+
+            // Password
+            $$('.open-password').on('click', function () {
+              app.dialog.password('Enter your username and password', function (password) {
+                app.dialog.alert('Thank you!<br>Password:' + password);
+              });
+            });
+
+            // Vertical Buttons
+            $$('.open-vertical').on('click', function () {
+              app.dialog.create({
+                title: 'Vertical Buttons',
+                text: 'Dialog with vertical buttons',
+                buttons: [
+                  {
+                    text: 'Button 1',
+                  },
+                  {
+                    text: 'Button 2',
+                  },
+                  {
+                    text: 'Button 3',
+                  },
+                ],
+                verticalButtons: true,
+              }).open();
+            });
+
+            // Preloader
+            $$('.open-preloader').on('click', function () {
+              app.dialog.preloader();
+              setTimeout(function () {
+                app.dialog.close();
+              }, 3000);
+            });
+
+            // Preloader with custom text
+            $$('.open-preloader-custom').on('click', function () {
+              app.dialog.preloader('My text...');
+              setTimeout(function () {
+                app.dialog.close();
+              }, 3000);
+            });
+
+            // Progress
+            $$('.open-progress').on('click', function () {
+              var progress = 0;
+              var dialog = app.dialog.progress('Loading assets', progress);
+              dialog.setText('Image 1 of 10');
+              var interval = setInterval(function () {
+                progress += 10;
+                dialog.setProgress(progress);
+                dialog.setText('Image ' + ((progress) / 10) + ' of 10');
+                if (progress === 100) {
+                  clearInterval(interval);
+                  dialog.close();
+                }
+              }, 300)
+            });
+
+            // Progress Infinite
+            $$('.open-progress-infinite').on('click', function () {
+              app.dialog.progress();
+              setTimeout(function () {
+                app.dialog.close();
+              }, 3000);
+            });

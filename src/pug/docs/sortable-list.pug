@@ -1,0 +1,190 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Sortable List | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Sortable List
+    .docs-index
+    p Sortable lists is an extension of <a href="list-view.html">List View</a> that allows you to sort list view elements.
+    h2 Sortable List Layout
+    p Let's look at layout structure of sortable lists in your list views:
+    pre
+      code
+        | &lt;!-- Additional "sortable" class on list block --&gt;
+        | &lt;div class="list sortable"&gt;
+        |     &lt;li&gt;
+        |         &lt;div class="item-content"&gt;
+        |             &lt;div class="item-media"&gt;...&lt;/div&gt;
+        |             &lt;div class="item-inner"&gt;...&lt;/div&gt;
+        |         &lt;/div&gt;
+        |         &lt;!-- Sortable handler element --&gt;
+        |         &lt;div class="sortable-handler"&gt;&lt;/div&gt;
+        |     &lt;/li&gt;
+        | &lt;/div&gt;
+    p Where:
+    ul
+      li <code>sortable-handler</code> - "draggable" element (hidden by default) that allows you to sort current list view element
+    p As you may see it is pretty simple, all you need is to add <code><b>sortable</b></code> class to list block and put <code><b>&lt;div class="sortable-handler"&gt;&lt;/div&gt;</b></code> as a direct child of <code>&lt;li&gt;</code>
+    h2 Sortable App Methods
+    p To enable/disable sorting mode on sortable list we need to use following app methods:
+    .method-wrap
+      p
+        span.method app.sortable.enable(<span>listEl</span>)
+        | - enable sorting mode on sortable list
+      ul.method-parameters
+        li
+          span.parameter listEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Sortable list block element.
+    .method-wrap
+      p
+        span.method app.sortable.disable(<span>listEl</span>)
+        | - disable sorting mode on sortable list
+      ul.method-parameters
+        li
+          span.parameter listEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Sortable list block element.
+    .method-wrap
+      p
+        span.method app.sortable.toggle(<span>listEl</span>)
+        | - toggle sorting mode on sortable list
+      ul.method-parameters
+        li
+          span.parameter listEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Sortable list block element.
+    h2 Sortable Events
+    p Sortable will fire the following DOM events on sortable list block element and events on app instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td sortable:enable
+          td Sortable List<span>&lt;div class="list sortable"&gt;</span>
+          td Event will be triggered when sortable mode is enabled
+        tr
+          td sortable:disable
+          td Sortable List<span>&lt;div class="list sortable"&gt;</span>
+          td Event will be triggered when sortable mode is disabled
+        tr
+          td sortable:sort
+          td List element<span>&lt;li&gt;</span>
+          td Event will be triggered after user release currently sorting element in new position. <code>event.detail</code> will contain object with <code>from</code> and <code>to</code> properties with from/to index numbers of sorted list item
+    h3 App Instance Events
+    p Sortable instance emit events on app instance.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td sortableEnable
+          td app
+          td <span>listEl</span>
+          td Event will be triggered when sortable mode is enabled
+        tr
+          td sortableDisable
+          td app
+          td <span>listEl</span>
+          td Event will be triggered when sortable mode is disabled
+        tr
+          td sortableSort
+          td app
+          td <span>listEl, indexes</span>
+          td Event will be triggered after user release currently sorting element in new position. <code>indexes</code> is an object with <code>from</code> and <code>to</code> properties with from/to index numbers of sorted list item
+    h2 Control Sortable With Links
+    p It is possible to enable and disable sortable mode using special classes and data attributes on links:
+    .important-note
+      ul
+        li
+          p To enable sortable mode we need to add <code><b>sortable-open</b></code> class to any HTML element (prefered to link)
+        li
+          p To disable sortable mode we need to add <code><b>sortable-close</b></code> class to any HTML element (prefered to link)
+        li
+          p To toggle sortable mode we need to add <code><b>sortable-toggle</b></code> class to any HTML element (prefered to link)
+        li
+          p If you have more than one sortable list in app, you need to specify appropriate sortable list via additional <code><b>data-sortable=".sortable"</b></code> attribute on this HTML element with CSS selector of required sortable list
+    .with-device
+      h2(data-device-preview="../docs-demos/sortable.html") Examples
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="left"></div>
+                  <div class="title">Sortable</div>
+                  <div class="right">
+                    <!-- Link to toggle sortable -->
+                    <a class="link sortable-toggle" data-sortable=".sortable">Toggle</a>
+                  </div>
+                </div>
+              </div>
+              <div class="page-content">
+                <div class="list sortable">
+                  <ul>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-media"><i class="icon icon-f7"></i></div>
+                        <div class="item-inner">
+                          <div class="item-title">1 Jenna Smith</div>
+                          <div class="item-after">CEO</div>
+                        </div>
+                      </div>
+                      <div class="sortable-handler"></div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-media"><i class="icon icon-f7"></i></div>
+                        <div class="item-inner">
+                          <div class="item-title">2 John Doe</div>
+                          <div class="item-after">Director</div>
+                        </div>
+                      </div>
+                      <div class="sortable-handler"></div>
+                    </li>
+                    ...
+                  </ul>
+                </div>
+                <div class="list media-list sortable">
+                  <ul>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-media"><img src="http://lorempixel.com/160/160/people/1" width="80"/></div>
+                        <div class="item-inner">
+                          <div class="item-title-row">
+                            <div class="item-title">Yellow Submarine</div>
+                            <div class="item-after">$15</div>
+                          </div>
+                          <div class="item-subtitle">Beatles</div>
+                          <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                        </div>
+                      </div>
+                      <div class="sortable-handler"></div>
+                    </li>
+                    ...
+                  </ul>
+                </div>
+              </div>
+            </div>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            app.on('sortableSort', function (listEl, indexes) {
+              console.log(indexes);
+            })

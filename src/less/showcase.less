@@ -1,0 +1,259 @@
+// Showcase
+.showcase-apps {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  .app {
+    margin-top: 50px;
+    width: 25%;
+    text-align: center;
+  }
+
+  h4,
+  .app-icon img,
+  .app-author {
+    transition: 400ms;
+  }
+  .app-icon {
+    width: 200px;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    img {
+      max-width: 100%;
+      box-shadow: 0px 20px 50px rgba(0,0,0,0.2);
+    }
+    &.app-icon-rounded {
+      img {
+        border-radius: 45px;
+      }
+    }
+    &.app-icon-bordered {
+      img {
+        border: 1px solid rgba(0,0,0,0.1);
+      }
+    }
+  }
+  .app-icon:hover {
+    img {
+      box-shadow: 0px 40px 80px rgba(0,0,0,0.1);
+      transform: scale(1.05);
+    }
+    ~ .app-info {
+      h4, .app-author {
+        transform: translateY(10px);
+      }
+    }
+  }
+
+  .app-about, .app-links, .app-show-shots, .app-shots {
+    display: none;
+  }
+  h4 {
+    margin-bottom: 0;
+    margin-top: 20px;
+    line-height: 1.2;
+  }
+  h2 {
+    margin: 0;
+    line-height: 1.2;
+  }
+  @media (max-width: 1023px) {
+    .app {
+      width: 100% / 3;
+    }
+  }
+  @media (max-width: 800px) {
+    .app-icon {
+      width: 150px;
+      height: 150px;
+    }
+    .app-icon.app-icon-rounded img {
+      border-radius: 35px;
+    }
+  }
+  // @media (max-width: 640px) {
+  //   .app {
+  //     width: 50%;
+  //   }
+  //   .app-icon {
+  //     width: 120px;
+  //     height: 120px;
+  //   }
+  //   .app-icon.app-icon-rounded img {
+  //     border-radius: 23px;
+  //   }
+  // }
+  // @media (max-width: 480px) {
+  //   .app {
+  //     margin-top: 30px;
+  //   }
+  //   h4, .app-author {
+  //     display: none;
+  //   }
+  // }
+}
+.showcase-app-preview-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(0,0,0,0.4);
+  width: 100%;
+  height: 100%;
+  z-index: 900;
+}
+.showcase-app-preview {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 1000;
+  background: #fff;
+  border-radius: 45px;
+  transform: translate3d(-50%, -50%, 0);
+  width: 800px;
+  padding: 20px;
+  box-sizing: border-box;
+  height: 600px;
+  max-height: 90%;
+  max-width: 90%;
+  box-shadow: 0px 30px 60px rgba(0,0,0,0.4);
+  .showcase-app-preview-close {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    right: 0px;
+    top: 0px;
+    transform: rotate(45deg);
+    border-radius: 50%;
+    box-sizing: border-box;
+    background: @primaryColor;
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+    &:hover {
+      &:after, &:before {
+        transform: scale(1.2);
+      }
+
+    }
+    &:after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 20%;
+      margin-left: -2px;
+      width: 4px;
+      height: 60%;
+      background: #fff;
+      border-radius: 2px;
+      transition: 200ms;
+    }
+    &:before {
+      content: '';
+      position: absolute;
+      left: 20%;
+      top: 50%;
+      margin-top: -2px;
+      height: 4px;
+      width: 60%;
+      background: #fff;
+      border-radius: 2px;
+      transition: 200ms;
+    }
+  }
+  .app-icon {
+    width: 200px;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    float: left;
+    img {
+      max-width: 100%;
+    }
+    &.app-icon-rounded {
+      img {
+        border-radius: 45px;
+      }
+    }
+    &.app-icon-bordered {
+      img {
+        border: 1px solid rgba(0,0,0,0.1);
+      }
+    }
+  }
+  .app-info {
+    margin-left: 230px;
+    height: 100%;
+    overflow: auto;
+  }
+  .app-about {
+    color: #555;
+  }
+  .app-links {
+    line-height: 180px/4;
+    a {
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+    a:first-child {
+      margin-left: 0;
+    }
+    .button {
+      .button();
+      width: 600px/4;
+      padding: 0;
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+  .appstore-button, .firefox-button, .googleplay-button, .amazon-button, .chrome-button {
+    width: 600px/4;
+    height: 180px/4;
+    display: inline-block;
+    -webkit-background-size: 100% auto;
+    -moz-background-size: 100% auto;
+    background-size: 100% auto;
+  }
+  .appstore-button {
+    background-image: url(../i/appstore-button.png);
+  }
+  .firefox-button {
+    background-image: url(../i/firefox-button.png);
+  }
+  .amazon-button {
+    background-image: url(../i/amazon-button.png);
+  }
+  .googleplay-button {
+    background-image: url(../i/googleplay-button.png);
+  }
+  .chrome-button {
+    background-image: url(../i/chrome-button.png);
+    height: 42px;
+  }
+  .app-author {
+    margin-bottom: 15px;
+  }
+  .app-shots {
+    background: #f3f3f3;
+    border-radius: 4px;
+    padding: 10px;
+    overflow: auto;
+    white-space: nowrap;
+    display: none;
+    img, iframe {
+      max-height: 568px;
+      margin-right: 10px;
+      display: inline-block;
+      vertical-align: top;
+    }
+    img:last-child, iframe:last-child {
+      margin-right: 0;
+    }
+  }
+  .app-show-shots {
+    a {
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+  }
+}

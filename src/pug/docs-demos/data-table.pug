@@ -1,0 +1,93 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Data Table
+          .right
+      .page-content
+        .block-title Plain Table
+        .data-table
+          table
+            thead
+              tr
+                th.label-cell Desert (100g serving)
+                th.numeric-cell Calories
+                th.numeric-cell Fat (g)
+                th.numeric-cell Carbs
+                th.numeric-cell Protein (g)
+                th.tablet-only Comment
+            tbody
+              tr
+                td.label-cell Frozen yogurt
+                td.numeric-cell 159
+                td.numeric-cell 6.0
+                td.numeric-cell 24
+                td.numeric-cell 4.0
+                td.tablet-only Super tasty
+              tr
+                td.label-cell Ice cream sandwich
+                td.numeric-cell 237
+                td.numeric-cell 9.0
+                td.numeric-cell 37
+                td.numeric-cell 4.4
+                td.tablet-only Don't like sandwiches
+              tr
+                td.label-cell Eclair
+                td.numeric-cell 262
+                td.numeric-cell 16.0
+                td.numeric-cell 24
+                td.numeric-cell 6.0
+                td.tablet-only This one is my favorite
+              tr
+                td.label-cell Cupcake
+                td.numeric-cell 305
+                td.numeric-cell 3.7
+                td.numeric-cell 67
+                td.numeric-cell 4.3
+                td.tablet-only No comments
+        .block-title Within card
+        .card.data-table
+          table
+            thead
+              tr
+                th.label-cell Desert (100g serving)
+                th.numeric-cell Calories
+                th.numeric-cell Fat (g)
+                th.numeric-cell Carbs
+                th.numeric-cell Protein (g)
+                th.tablet-only Comment
+            tbody
+              tr
+                td.label-cell Frozen yogurt
+                td.numeric-cell 159
+                td.numeric-cell 6.0
+                td.numeric-cell 24
+                td.numeric-cell 4.0
+                td.tablet-only Super tasty
+              tr
+                td.label-cell Ice cream sandwich
+                td.numeric-cell 237
+                td.numeric-cell 9.0
+                td.numeric-cell 37
+                td.numeric-cell 4.4
+                td.tablet-only Don't like sandwiches
+              tr
+                td.label-cell Eclair
+                td.numeric-cell 262
+                td.numeric-cell 16.0
+                td.numeric-cell 24
+                td.numeric-cell 6.0
+                td.tablet-only This one is my favorite
+              tr
+                td.label-cell Cupcake
+                td.numeric-cell 305
+                td.numeric-cell 3.7
+                td.numeric-cell 67
+                td.numeric-cell 4.3
+                td.tablet-only No comments
+block scripts
+  script.
+    var app = new Framework7();

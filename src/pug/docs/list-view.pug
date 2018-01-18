@@ -1,0 +1,1043 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'List View (Table View) | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 List View (Table View)
+    .docs-index
+    p List views are versatile and powerful user interface compontents frequently found in apps. A list view presents data in a scrollable list of multiple rows that may be divided into sections/groups.
+    p List views have many purposes:
+    ul
+      li To let users navigate through hierarchically structured data
+      li To present an indexed list of items
+      li To display detail information and controls in visually distinct groupings
+      li To present a selectable list of options
+    h2 List View Block
+    p List block is your list view elements wrapper.
+    p So first of all, all your list view elements should be wrapped with <code>&lt;div class="list"&gt;</code> element:
+    pre
+      code.html
+        | &lt;div class="list"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    p To remove hairlines (thin borders) around list block we need additional <code><b>no-harilines</b></code> class:
+    pre
+      code.html
+        | &lt;div class="list no-hairlines"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    p To remove hairlines (thin borders) between list items we need additional <code><b>no-harilines-between</b></code> class:
+    pre
+      code.html
+        | &lt;div class="list no-hairlines-between"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    p To make list block inset we need additional <code><b>inset</b></code> class:
+    pre
+      code.html
+        | &lt;div class="list inset"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    p To make block inset only on large screens we need to use <code><b>tablet-inset</b></code> class instead:
+    pre
+      code.html
+        | &lt;div class="list tablet-inset"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    h2 List Item
+    pre
+      code.html
+        | &lt;div class="list no-hairlines"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+
+    p Single list element has pretty complex but flexible layout:
+    pre
+      code
+        | &lt;li&gt;
+        |     &lt;div class="item-content"&gt;
+        |         &lt;div class="item-media"&gt;
+        |             &lt;i class="icon my-icon"&gt;&lt;/i&gt;
+        |         &lt;/div&gt;
+        |         &lt;div class="item-inner"&gt;
+        |             &lt;div class="item-title"&gt;
+        |                 List element title
+        |             &lt;/div&gt;
+        |             &lt;div class="item-after"&gt;
+        |                 List element label
+        |             &lt;/div&gt;
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/li&gt;
+    p Where:
+    ul
+      li
+        p <code>item-content</code> - main flex wrapper for <code>item-media</code> and <code>item-inner</code>. <strong>Requred</strong> element.
+      ul
+        li
+          p <code>item-media</code> - container for your media element like icon, image, etc. <strong>Optional</strong> element.
+        li
+          p <code>item-inner</code> - main flex wrapper for <code>item-title</code> and <code>item-after</code>. <strong>Requred</strong> element.
+        ul
+          li
+            p <code>item-title</code> - single-line list item title. <strong>Required</strong> element.
+          li
+            p <code>item-after</code> - list item label. Could countain any additional HTML elements, like label text, or badge, or switch/toggle or button, etc. <strong>Optional</strong> element.
+    .important-note
+      ul
+        li
+          p Because .item-content is actually CSS flex-box element, note that <strong><code>item-media</code> and <code>item-inner</code> should be direct children of <code>item-content</code></strong>!
+        li
+          p For the same reason <strong><code>item-title</code> and <code>item-after</code> should be direct children of <code>item-inner</code></strong>!
+    p Also note that if your list item has nothing additional, you can user <code>item-content</code> class on <code>&lt;li&gt;</code> element:
+    pre
+      code.html
+        | &lt;li class="item-content"&gt;
+        |     &lt;div class="item-media"&gt;
+        |         &lt;i class="icon my-icon"&gt;&lt;/i&gt;
+        |     &lt;/div&gt;
+        |     &lt;div class="item-inner"&gt;
+        |         &lt;div class="item-title"&gt;
+        |             List element title
+        |         &lt;/div&gt;
+        |         &lt;div class="item-after"&gt;
+        |             List element label
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/li&gt;
+    h2 List Item Header/Footer
+    p If we need to add list item header/footer text in addition to item's title we can use <code>item-header</code> and <code>item-footer</code> elements:
+    pre
+      code.html
+        :code
+          <li>
+            <div class="item-content">
+              <div class="item-media">
+                <i class="icon my-icon"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title">
+                  <!-- Item header, must be first child of item-title -->
+                  <div class="item-header">Item header text</div>
+                  List element title
+                  <!-- Item footer, must be last child of item-title -->
+                  <div class="item-footer">Item footer text</div>
+                </div>
+                <div class="item-after">...</div>
+              </div>
+            </div>
+          </li>
+    h2 Link Item
+    p Of course in most cases we need to use list view elements as links (&lt;a&gt;) to other pages or data. In this case we need to wrap <code>item-content</code> with <code>&lt;a class="item-link"&gt;</code> element:
+    pre
+      code.html
+        :code
+          <li>
+            &lt;a href="#" class="item-link"&gt;
+              &lt;div class="item-content"&gt;
+                &lt;div class="item-media"&gt;...&lt;/div&gt;
+                &lt;div class="item-inner"&gt;...&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/a&gt;
+          </li>
+    p If your links contains nothing except "item-content" then we can just use link as "item-content":
+    pre
+      code.html
+        :code
+          <li>
+            &lt;a href="#" class="item-link item-content"&gt;
+              &lt;div class="item-media"&gt;...&lt;/div&gt;
+              &lt;div class="item-inner"&gt;...&lt;/div&gt;
+            &lt;/a&gt;
+          </li>
+    .important-note
+      p
+        strong Note that <code>item-inner</code> has additional right padding and chevron icon when it is in <code>item-link</code>
+
+    h2 List Divider
+    p List divider is a simple list element with title to visually divide one list items from another:
+    pre
+      code.html
+        | &lt;li class="item-divider"&gt;Divider title here&lt;/li&gt;
+    pre
+      code.html
+        :code
+           &lt;div class="list"&gt;
+             &lt;ul&gt;
+               &lt;!-- List items --&gt;
+               &lt;li class="item-content"&gt;...&lt;/li&gt;
+               &lt;li class="item-content"&gt;...&lt;/li&gt;
+
+               &lt;!-- Divider --&gt;
+               &lt;li class="item-divider"&gt;Divider title here&lt;/li&gt;
+
+               &lt;!-- Another list items --&gt;
+               &lt;li class="item-content"&gt;...&lt;/li&gt;
+               &lt;li class="item-content"&gt;...&lt;/li&gt;
+             &lt;/ul&gt;
+           &lt;/div&gt;
+    h2 Grouped Lists
+    p Sometimes we need to group list view elements inside of single list block. In this case we need to additional <code>list-group</code> elements:
+    pre
+      code.html
+        :code
+           &lt;div class="list"&gt;
+             &lt;!-- First group--&gt;
+             &lt;div class="list-group"&gt;
+               &lt;ul&gt;
+                 &lt;li class="list-group-title"&gt;First group&lt;/li&gt;
+                 &lt;li class="item-content"&gt;...&lt;/li&gt;
+                 &lt;li class="item-content"&gt;...&lt;/div&gt;
+                 &lt;/li&gt;
+                 ...
+               &lt;/ul&gt;
+             &lt;/div&gt;
+
+             &lt;!-- Second group--&gt;
+             &lt;div class="list-group"&gt;
+               &lt;ul&gt;
+                 &lt;li class="list-group-title"&gt;Second Group&lt;/li&gt;
+                 &lt;li class="item-content"&gt;...&lt;/li&gt;
+                 &lt;li class="item-content"&gt;...&lt;/li&gt;
+                 ...
+               &lt;/ul&gt;
+             &lt;/div&gt;
+           &lt;/div&gt;
+    p You may ask what is the difference from simple dividers? <strong>With list groups, group titles have sticky position during scroll within single group.</strong>
+    h2 Simple List
+    p In case we need list with simple items structure that have only titles, we may use Simple List modification. In this case we need additional class <code>simple-list</code> on list block with plain <code>&lt;li&gt;</code> items layout:
+    pre
+      code.html
+        :code
+          <div class="list simple-list">
+            <ul>
+              <li>Item 1</li>
+              <li>Item 2</li>
+              <li>Item 3</li>
+              <li>Item 4</li>
+              ...
+            </ul>
+          </div>
+    h2 Links List
+    p In case we need list with simple link items structure that have only titles, we may use Links List modification. In this case we need additional class <code>links-list</code> on list block with plain <code>&lt;li&gt;&lt;a&gt;...&lt;/a&gt;&lt;/li&gt;</code> items layout:
+    pre
+      code.html
+        :code
+          <div class="list links-list">
+            <ul>
+              <li>
+                <a href="#">Link Item 1</a>
+              </li>
+              <li>
+                <a href="#">Link Item 2</a>
+              </li>
+              <li>
+                <a href="#">Link Item 3</a>
+              </li>
+              ...
+            </ul>
+          </div>
+    h2 Media List
+    p Media list view is extended case of List View indended to display more complex data like products, services, users, etc. In this case we need additional <code><b>media-list</b></code> class on list block.
+    p And of course it has a bit more complex layout:
+    pre
+      code.html
+        :code
+          <!-- Media list block has additional "media-list" class -->
+          <div class="list media-list">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-media">
+                    <img src="path/to/img.jpg">
+                  </div>
+                  <div class="item-inner">
+                    <div class="item-title-row">
+                      <div class="item-title">Element title</div>
+                      <div class="item-after">Element label</div>
+                    </div>
+                    <div class="item-subtitle">Subtitle</div>
+                    <div class="item-text">Additional description text</div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+    p Where:
+    ul
+      li
+        p <code>item-content</code> - main flex wrapper for <code>item-media</code> and <code>item-inner</code>. <strong>Requred</strong> element.
+      ul
+        li
+          p <code>item-media</code> - container for your media element like icon, image, etc. <strong>Optional</strong> element.
+        li
+          p <code>item-inner</code> - <strong>Requred</strong> element.
+        ul
+          li
+            p <code>item-title-row</code> - main flex wrapper for <code>item-title</code> and <code>item-after</code>. <strong>Optional</strong> element.
+          ul
+            li
+              p <code>item-title</code> - single-line list item title. <strong>Optional</strong> element.
+            li
+              p <code>item-after</code> - list item label. Could countain any additional HTML elements, like label text, or badge, or switch/toggle or button, etc. <strong>Optional</strong> element.
+          li
+            p <code>item-subtitle</code> - additional single-line title. <strong>Optional</strong> element.
+          li
+            p <code>item-text</code> - additional two-lines container for detailed description. <strong>Optional</strong> element.
+    h2 Custom Table-like Elements
+    p In you case you need some custom list item layout with table-like structure you may use additional list elements <code>item-row</code> and <code>item-cell</code>:
+    pre
+      code.html
+        :code
+          <li class="item-content">
+            <div class="item-inner item-cell">
+              <div class="item-row">
+                <div class="item-cell">Cell 1-1</div>
+                <div class="item-cell">Cell 1-2</div>
+                <div class="item-cell">Cell 1-3</div>
+              </div>
+              <div class="item-row">
+                <div class="item-cell">Cell 2-1</div>
+                <div class="item-cell">Cell 2-2</div>
+              </div>
+              <div class="item-row">
+                <div class="item-cell">Cell 3-1</div>
+                <div class="item-cell">
+                  <div class="item-row">
+                    Cell 3-2
+                  </div>
+                  <div class="item-row">
+                    Cell 3-3
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+    .with-device
+      h2(data-device-preview="../docs-demos/list-view.html") Examples
+      h4 Simple List
+      pre
+        code.html
+          :code
+            <div class="list simple-list">
+              <ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+              </ul>
+            </div>
+      h4 Links List
+      pre
+        code.html
+          :code
+            <div class="list links-list">
+              <ul>
+                <li><a href="#">Link 1</a></li>
+                <li><a href="#">Link 2</a></li>
+                <li><a href="#">Link 3</a></li>
+              </ul>
+            </div>
+      h4 List With Icons
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Ivan Petrov</div>
+                      <div class="item-after">CEO</div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">John Doe</div>
+                      <div class="item-after"> <span class="badge">5</span></div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Jenna Smith</div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      h4 Links
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Ivan Petrov</div>
+                      <div class="item-after">CEO</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">John Doe</div>
+                      <div class="item-after">Cleaner</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Jenna Smith</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h4 Links, Header, Footer
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">
+                        <div class="item-header">Name</div>
+                        | John Doe
+                      </div>
+                      <div class="item-after">Edit</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">
+                        <div class="item-header">Phone</div>
+                        | +7 90 111-22-3344
+                      </div>
+                      <div class="item-after">Edit</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">
+                        <div class="item-header">Email</div>
+                        | john@doe
+                        <div class="item-footer">Home</div>
+                      </div>
+                      <div class="item-after">Edit</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">
+                        <div class="item-header">Email</div>
+                        | john@framework7
+                        <div class="item-footer">Work</div>
+                      </div>
+                      <div class="item-after">Edit</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h4 Links Without Icons
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Ivan Petrov</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title">John Doe</div>
+                    </div>
+                  </a>
+                </li>
+                <li class="item-divider">Divider Here</li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Ivan Petrov</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Jenna Smith</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h4 Grouped with sticky titles
+      pre
+        code.html
+          :code
+            <div class="list">
+              <div class="list-group">
+                <ul>
+                  <li class="list-group-title">A</li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Aaron </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Abbie</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Adam</div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="list-group">
+                <ul>
+                  <li class="list-group-title">B</li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Bailey</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Barclay</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Bartolo</div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="list-group">
+                <ul>
+                  <li class="list-group-title">C</li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Caiden</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Calvin</div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title">Candy</div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+      h4 Mixed and nested
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Ivan Petrov</div>
+                      <div class="item-after">CEO</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Two icons here</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">No icons here</div>
+                    </div>
+                  </div>
+                  <ul>
+                    <li>
+                      <a href="#" class="item-link item-content">
+                        <div class="item-media"><i class="icon icon-f7"></i></div>
+                        <div class="item-inner">
+                          <div class="item-title">Ivan Petrov</div>
+                          <div class="item-after">CEO</div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="item-link item-content">
+                        <div class="item-media"><i class="icon icon-f7"></i><i class="icon icon-f7"></i></div>
+                        <div class="item-inner">
+                          <div class="item-title">Two icons here</div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">No icons here</div>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <a href="#" class="item-link item-content">
+                        <div class="item-media"><i class="icon icon-f7"></i></div>
+                        <div class="item-inner">
+                          <div class="item-title">Ultra long text goes here, no, it is really really long</div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-media"><i class="icon icon-f7"></i></div>
+                        <div class="item-inner">
+                          <div class="item-title">With toggle</div>
+                          <div class="item-after">
+                            <label class="toggle toggle-init">
+                              <input type="checkbox">
+                              <span class="toggle-icon"></span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Ultra long text goes here, no, it is really really long</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">With toggle</div>
+                      <div class="item-after">
+                        <label class="toggle toggle-init">
+                          <input type="checkbox"/>
+                          <span class="toggle-icon"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      h4 Mixed, inset
+      pre
+        code.html
+          :code
+            <div class="list inset">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Ivan Petrov</div>
+                      <div class="item-after">CEO</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Two icons here</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Ultra long text goes here, no, it is really really long</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">With toggle</div>
+                      <div class="item-after">
+                        <label class="toggle toggle-init">
+                          <input type="checkbox"/>
+                          <span class="toggle-icon"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="block-footer">
+                <p>Here comes some useful information about list above</p>
+              </div>
+            </div>
+      h4 Tablet inset
+      pre
+        code.html
+          :code
+            <div class="list tablet-inset">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Ivan Petrov</div>
+                      <div class="item-after">CEO</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Two icons here</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Ultra long text goes here, no, it is really really long</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+              <div class="block-footer">
+                <p>This list block will look like "inset" only on tablets (iPad)</p>
+              </div>
+            </div>
+      h4 Media List / Songs
+      pre
+        code.html
+          :code
+            <div class="list media-list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/160/160/people/1" width="80"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Yellow Submarine</div>
+                        <div class="item-after">$15</div>
+                      </div>
+                      <div class="item-subtitle">Beatles</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div></a></li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/160/160/people/2" width="80"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Don't Stop Me Now</div>
+                        <div class="item-after">$22</div>
+                      </div>
+                      <div class="item-subtitle">Queen</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/160/160/people/3" width="80"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Billie Jean</div>
+                        <div class="item-after">$16</div>
+                      </div>
+                      <div class="item-subtitle">Michael Jackson</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h4 Media List / Mail App
+      pre
+        code.html
+          :code
+            <div class="list media-list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Facebook</div>
+                        <div class="item-after">17:14</div>
+                      </div>
+                      <div class="item-subtitle">New messages from John Doe</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">John Doe (via Twitter)</div>
+                        <div class="item-after">17:11</div>
+                      </div>
+                      <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Facebook</div>
+                        <div class="item-after">16:48</div>
+                      </div>
+                      <div class="item-subtitle">New messages from John Doe</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">John Doe (via Twitter)</div>
+                        <div class="item-after">15:32</div>
+                      </div>
+                      <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h4 Media List / Something more simple
+      pre
+        code.html
+          :code
+            <div class="list media-list">
+              <ul>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/1" width="44"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Yellow Submarine</div>
+                      </div>
+                      <div class="item-subtitle">Beatles</div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/2" width="44"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Don't Stop Me Now</div>
+                      </div>
+                      <div class="item-subtitle">Queen</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/3" width="44"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Billie Jean</div>
+                      </div>
+                      <div class="item-subtitle">Michael Jackson</div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+      h4 Media List / Inset
+      pre
+        code.html
+          :code
+            <div class="list media-list inset">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/4" width="44"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Yellow Submarine</div>
+                      </div>
+                      <div class="item-subtitle">Beatles</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/5" width="44"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Don't Stop Me Now</div>
+                      </div>
+                      <div class="item-subtitle">Queen</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-media"><img src="http://lorempixel.com/88/88/fashion/6" width="44"/></div>
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Billie Jean</div>
+                      </div>
+                      <div class="item-subtitle">Michael Jackson</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h4 Custom Table-like Layout
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner item-cell">
+                      <div class="item-row">
+                        <div class="item-cell">Cell 1-1</div>
+                        <div class="item-cell">Cell 1-2</div>
+                        <div class="item-cell">Cell 1-3</div>
+                      </div>
+                      <div class="item-row">
+                        <div class="item-cell">Cell 2-1</div>
+                        <div class="item-cell">Cell 2-2</div>
+                      </div>
+                      <div class="item-row">
+                        <div class="item-cell">Cell 3-1</div>
+                        <div class="item-cell">
+                          <div class="item-row">
+                            Cell 3-2
+                          </div>
+                          <div class="item-row">
+                            Cell 3-3
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner item-cell">
+                      <div class="item-row">
+                        <div class="item-cell">Cell 1-1</div>
+                        <div class="item-cell">Cell 1-2</div>
+                        <div class="item-cell">Cell 1-3</div>
+                      </div>
+                      <div class="item-row">
+                        <div class="item-cell">Cell 2-1</div>
+                        <div class="item-cell">Cell 2-2</div>
+                      </div>
+                      <div class="item-row">
+                        <div class="item-cell">Cell 3-1</div>
+                        <div class="item-cell">
+                          <div class="item-row">
+                            Cell 3-2
+                          </div>
+                          <div class="item-row">
+                            Cell 3-3
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+
+
+
+
+

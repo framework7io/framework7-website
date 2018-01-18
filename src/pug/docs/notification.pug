@@ -1,0 +1,386 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Notification | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Notification
+    .docs-index
+    p With Notification component you can show required messages that looks like Push (or Local) system notifications.
+    h2 Notification App Methods
+    p Let's look at related App methods to work with Notification:
+    .method-wrap
+      p
+        span.method app.notification.create(<span>parameters</span>)
+        | - create Notification instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with notification parameters
+      p.method-returns Method returns created Notification's instance
+
+    .method-wrap
+      p
+        span.method app.notification.destroy(<span>el</span>)
+        | - destroy Notification instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Notification element or Notification instance to destroy.
+    .method-wrap
+      p
+        span.method app.notification.get(<span>el</span>)
+        | - get Notification instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Notification element.
+      p.method-returns Method returns Notification's instance
+    .method-wrap
+      p
+        span.method app.notification.open(<span>el</span>, <span>animate</span>)
+        | - opens Notification
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Notification element to open.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Open Notification with animation.
+      p.method-returns Method returns Notification's instance
+    .method-wrap
+      p
+        span.method app.notification.close(<span>el</span>, <span>animate</span>)
+        | - closes Notification
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Notification element to close.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Close Notification with animation.
+      p.method-returns Method returns Notification's instance
+    h2 Notification Parameters
+    p Now let's look at list of available parameters we need to create Notification:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement
+          td
+          td Notification element. Can be useful if you already have Notification element in your HTML and want to create new instance using this element
+        tr
+          td icon
+          td string
+          td
+          td Notification icon HTML layout, e.g. <code>&lt;i class="f7-icons"&gt;home&lt;/i&gt;</code> or image <code>&lt;img src="path/to/icon.png"&gt;</code>
+        tr
+          td title
+          td string
+          td
+          td Notification title
+        tr
+          td titleRightText
+          td string
+          td
+          td Additional text on the right side of title
+        tr
+          td subtitle
+          td string
+          td
+          td Notification subtitle
+        tr
+          td text
+          td string
+          td
+          td Notification inner text
+        tr
+          td closeButton
+          td boolean
+          td false
+          td Adds notification close button
+        tr
+          td closeTimeout
+          td number
+          td
+          td Timeout delay (in ms) to close notification automatically
+        tr
+          td closeOnClick
+          td boolean
+          td false
+          td If enabled, notification will be closed on notification click
+        tr
+          td swipeToClose
+          td boolean
+          td true
+          td If enabled, notification can be closed by swipe gesture
+        tr
+          td cssClass
+          td string
+          td
+          td Additional css class to add
+        tr
+          td render
+          td function
+          td
+          td Custom function to render Notification. Must return notification html
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var notification = app.notification.create({
+                    title: 'John Doe'
+                    text: 'Hello, how are you?',
+                    on: {
+                      opened: function () {
+                        console.log('Notification opened')
+                      }
+                    }
+                  })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>notification</code> property to set defaults for all notifications. For example:
+      pre
+        code
+          :code
+            var app = new Framework7({
+              notification: {
+                title: 'My App',
+                closeTimeout: 3000,
+              }
+            });
+    h2 Notification Methods & Properties
+    p So to create Notification we have to call:
+    pre
+      code
+        :code
+          var notification = app.notification.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>notification</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td notification.app
+          td Link to global app instance
+        tr
+          td notification.el
+          td Notification HTML element
+        tr
+          td notification.$el
+          td Dom7 instance with notification HTML element
+        tr
+          td notification.params
+          td Notification parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td notification.open()
+          td Open notification
+        tr
+          td notification.close()
+          td Close notification
+        tr
+          td notification.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td notification.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td notification.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td notification.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td notification.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+
+    h2 Notification Events
+    p Notification will fire the following DOM events on notification element and events on app and notification instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td notification:open
+          td Notification Element<span>&lt;div class="notification"&gt;</span>
+          td Event will be triggered when Notification starts its opening animation
+        tr
+          td notification:opened
+          td Notification Element<span>&lt;div class="notification"&gt;</span>
+          td Event will be triggered after Notification completes its opening animation
+        tr
+          td notification:close
+          td Notification Element<span>&lt;div class="notification"&gt;</span>
+          td Event will be triggered when Notification starts its closing animation
+        tr
+          td notification:closed
+          td Notification Element<span>&lt;div class="notification"&gt;</span>
+          td Event will be triggered after Notification completes its closing animation
+    h3 App and Notification Instance Events
+    p Notification instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>notification</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td click
+          td <span>notification</span>
+          td notification
+          td(rowspan="2") Event will be triggered when user clicks on Notification element. As an argument event handler receives notification instance
+        tr
+          td notificationClick
+          td <span>notification</span>
+          td app
+        tr
+          td open
+          td <span>notification</span>
+          td notification
+          td(rowspan="2") Event will be triggered when Notification starts its opening animation. As an argument event handler receives notification instance
+        tr
+          td notificationOpen
+          td <span>notification</span>
+          td app
+        tr
+          td opened
+          td <span>notification</span>
+          td notification
+          td(rowspan="2") Event will be triggered after Notification completes its opening animation. As an argument event handler receives notification instance
+        tr
+          td notificationOpened
+          td <span>notification</span>
+          td app
+        tr
+          td close
+          td <span>notification</span>
+          td notification
+          td(rowspan="2") Event will be triggered when Notification starts its closing animation. As an argument event handler receives notification instance
+        tr
+          td notificationClose
+          td <span>notification</span>
+          td app
+        tr
+          td closed
+          td <span>notification</span>
+          td notification
+          td(rowspan="2") Event will be triggered after Notification completes its closing animation. As an argument event handler receives notification instance
+        tr
+          td notificationClosed
+          td <span>notification</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>notification</span>
+          td notification
+          td(rowspan="2") Event will be triggered right before Notification instance will be destroyed. As an argument event handler receives notification instance
+        tr
+          td notificationBeforeDestroy
+          td <span>notification</span>
+          td app
+    .with-device
+      h2(data-device-preview="../docs-demos/notification.html") Examples
+      pre
+        code
+          :code
+            <div class="block">
+              <p>
+                <a class="button button-raised open-full" href="#">Full-layout notification</a>
+              </p>
+              <p>
+                <a class="button button-raised open-with-button" href="#">With close button</a>
+              </p>
+              <p>
+                <a class="button button-raised open-click-to-close" href="#">Click to close</a>
+              </p>
+              <p>
+                <a class="button button-raised open-callback-on-close" href="#">Callback on close</a>
+              </p>
+            </div>
+      pre
+        code
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            // Create full-layout notification
+            var notificationFull = app.notification.create({
+              icon: '<i class="icon demo-icon">7</i>',
+              title: 'Framework7',
+              titleRightText: 'now',
+              subtitle: 'This is a subtitle',
+              text: 'This is a simple notification message',
+              closeTimeout: 3000,
+            });
+
+            // Create notification with close button
+            var notificationWithButton = app.notification.create({
+              icon: '<i class="icon demo-icon">7</i>',
+              title: 'Framework7',
+              subtitle: 'Notification with close button',
+              text: 'Click (x) button to close me',
+              closeButton: true,
+            });
+
+            // Create notification with click to close
+            var notificationClickToClose = app.notification.create({
+              icon: '<i class="icon demo-icon">7</i>',
+              title: 'Framework7',
+              titleRightText: 'now',
+              subtitle: 'Notification with close on click',
+              text: 'Click me to close',
+              closeOnClick: true,
+            })
+
+            // With callback on close
+            var notificationCallbackOnClose = app.notification.create({
+              icon: '<i class="icon demo-icon">7</i>',
+              title: 'Framework7',
+              titleRightText: 'now',
+              subtitle: 'Notification with close on click',
+              text: 'Click me to close',
+              closeOnClick: true,
+              on: {
+                close: function () {
+                  app.dialog.alert('Notification closed');
+                },
+              },
+            });
+
+            // Open Notifications
+            $$('.open-full').on('click', function () {
+              notificationFull.open();
+            });
+            $$('.open-with-button').on('click', function () {
+              notificationWithButton.open();
+            });
+            $$('.open-click-to-close').on('click', function () {
+              notificationClickToClose.open();
+            });
+            $$('.open-callback-on-close').on('click', function () {
+              notificationCallbackOnClose.open();
+            });

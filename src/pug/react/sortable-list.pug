@@ -1,0 +1,149 @@
+extends ../src/pug/_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Sortable List React Component | Framework7 React Documentation';
+
+block content
+
+    .docs-nav
+      include ./_docs-react-menu
+    .docs-content
+      h1 Sortable List React Component
+      p Sortable List is not a separate component, but just a particular case of using <a href="list.html">&lt;List&gt;</a> and <a href="list-item.html">&lt;ListItem&gt;</a> components.
+      h2 Usage example
+      p Here is the full sortable list page example:
+      pre
+        code
+          :code
+              ...
+              constructor() {
+                this.state = {
+                  sorting: false,
+                  items: [1, 2, 3, 4, 5]                  
+                };
+              }
+
+              ...
+              ...
+              render() {
+                return (
+                  <Page>
+                    <Navbar backLink="Back" title="Sortable" sliding>
+                      <NavRight>
+                        <!-- Link to enable/disable sortable -->
+                        <Link toggleSortable="#sortable">{sorting ? 'Done' : 'Open'}</Link>
+                      </NavRight>
+                    </Navbar>
+
+                    <List 
+                      id="sortable" 
+                      sortable 
+                      onSortableSort={this.onSort} 
+                      onSortableOpen={this.onOpen} 
+                      onSortableClose={this.onClose}
+                    >
+                      {this.state.items.map((item) => (
+                        <ListItem title={'Item ' + item}></ListItem>
+                      ))}                  
+                    </List>
+                  </Page>
+                );
+              }
+
+              ...
+              ...
+
+              onOpen() {
+                this.setState({
+                  sorting: !this.state.sorting,
+                  ...this.state
+                });                
+              }
+
+              onClose() {
+                this.setState({
+                  sorting: !this.state.sorting,
+                  ...this.state
+                });
+              }
+
+              onSort(event, indexes) {
+                  console.log('sort', indexes);
+              }
+      p Renders to:
+      pre
+        code
+          :code
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="left sliding">
+                    <a href="#" class="back link toggle-sortable" data-sortable="#sortable">Back</a>
+                  </div>
+                  <div class="center sliding">Sortable</div>
+                </div>
+              </div>
+              <div class="page-content">
+                <div class="list-block sortable" id="sortable">
+                  <ul>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Item 1</div>
+                        </div>
+                      </div>
+                      <div class="sortable-handler"></div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Item 2</div>
+                        </div>
+                      </div>
+                      <div class="sortable-handler"></div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Item 3</div>
+                        </div>
+                      </div>
+                      <div class="sortable-handler"></div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Item 4</div>
+                        </div>
+                      </div>
+                      <div class="sortable-handler"></div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Item 5</div>
+                        </div>
+                      </div>
+                      <div class="sortable-handler"></div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+      h2 Event Properties
+      table.events-table
+        thead
+          tr
+            th Event
+            th Description
+        tbody
+          tr
+            td sortable:open
+            td Event will be triggered when sortable mode is enabled
+          tr
+            td sortable:close
+            td Event will be triggered when sortable mode is disabled
+          tr
+            td sortable:sort
+            td Event will be triggered after user release currently sorting element in new position. <code>event.detail</code> will contain object with <code>startIndex</code> and <code>newIndex</code> properties with start/new index numbers of sorted list item

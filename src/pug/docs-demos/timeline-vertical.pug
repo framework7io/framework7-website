@@ -1,0 +1,79 @@
+extends _layout
+block content
+  .view.view-main
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Vertical Timeline
+          .right
+      .page-content
+        .timeline
+          .timeline-item
+            .timeline-item-date 21 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content Plain text item
+          .timeline-item
+            .timeline-item-date 22 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner Another text goes here
+          .timeline-item
+            .timeline-item-date 23 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+                .timeline-item-time 12:33
+                .timeline-item-title Item Title
+                .timeline-item-subtitle Item Subtitle
+                .timeline-item-text Item Text
+          .timeline-item
+            .timeline-item-date 24 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner
+                .timeline-item-time 12:33
+                .timeline-item-title Item Title
+                .timeline-item-subtitle Item Subtitle
+                .timeline-item-text Item Text
+
+          .timeline-item
+            .timeline-item-date 25 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+                .timeline-item-time 12:33
+                .timeline-item-title Item Title
+                .timeline-item-subtitle Item Subtitle
+                .timeline-item-text Item Text
+
+                .timeline-item-time 15:45
+                .timeline-item-title Item Title
+                .timeline-item-subtitle Item Subtitle
+                .timeline-item-text Item Text
+
+          .timeline-item
+            .timeline-item-date 26 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content
+              .timeline-item-inner
+                .timeline-item-time 12:33
+                .timeline-item-title Item Title
+                .timeline-item-subtitle Item Subtitle
+                .timeline-item-text Item Text
+              .timeline-item-inner
+                .timeline-item-time 15:45
+                .timeline-item-title Item Title
+                .timeline-item-subtitle Item Subtitle
+                .timeline-item-text Item Text
+
+          .timeline-item
+            .timeline-item-date 27 <small>DEC</small>
+            .timeline-item-divider
+            .timeline-item-content.card
+              .card-header Card header
+              .card-content.card-content-padding Card content
+              .card-footer Card footer
+
+
+block scripts
+  script.
+    var app = new Framework7();

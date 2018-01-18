@@ -1,0 +1,386 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Router Component | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Router Component
+    .docs-index
+    p Router Component is a special type of content that can be loaded by Router when we specify route content using <code>component</code> or <code>componentUrl</code> properties.
+    p It should help to better structure our apps, keep things in appropriate place, and make many things quicker and in a more clear and comfortable way.
+    <h2>Component Structure</h2>
+    p If you know what is Vue component, then it will be much easier to understand as it looks pretty similar. Router Component is basically an object with the following properties (all properties are optional):
+    table.params-table
+      thead
+        tr
+          th Property
+          th Type
+          th Description
+      tbody
+        tr
+          td template
+          td string
+          td Template7 template string. Will be compiled as Template7 template
+        tr
+          td render
+          td function
+          td Render function to render component. Must return full html string or HTMLElement
+        tr
+          td data
+          td function
+          td Component data, function must return component context data
+        tr
+          td style
+          td string
+          td Component CSS styles. Styles will be added to the document after component will be mounted (added to DOM), and removed after component will be destroyed (removed from the DOM)
+        tr
+          td styleScopeId
+          td string
+          td Unique style scope id in case you are using scoped styles. Will add <code>data-scope="styleScopeId"</code> to the component element
+        tr
+          td methods
+          td object
+          td Object with additional component methods which extend component context
+        tr
+          td on
+          td object
+          td Object with page events handlers
+        tr
+          th(colspan="3") Lifecycle Hooks
+        tr
+          td beforeCreate
+          td function
+          td Called synchronously immediately after the component has been initialized, before data and event/watcher setup.
+        tr
+          td created
+          td function
+          td Called synchronously after the component is created, context data and methods are available and component element <code>$el</code> is also created and available
+        tr
+          td beforeMount
+          td function
+          td Called right before component will be added to DOM
+        tr
+          td mounted
+          td function
+          td Called right after component was be added to DOM
+        tr
+          td beforeDestroy
+          td function
+          td Called right before component will be destoyed
+        tr
+          td destroyed
+          td function
+          td Called when component destroyed
+    .important-note
+      p All lifecycle hooks and methods automatically have their <code>this</code> context bound to the component context, so that you can access component data and methods. This means <b>you should not use an arrow function to define a lifecycle method</b> (e.g. <code>created: () => this.doSomething()</code>). The reason is arrow functions bind the parent context, so <code>this</code> will not be the component instance as you expect and <code>this.doSomething</code> will be undefined.
+    p So the example route with page component may look like:
+    pre
+      code.js
+        :code
+          routes = [
+            // ...
+            {
+              path: '/some-page/',
+              // Component Object
+              component: {
+                template: `
+                  <div class="page">
+                    <div class="navbar">
+                      <div class="navbar-inner">
+                        <div class="title">{{title}}</div>
+                      </div>
+                    </div>
+                    <div class="page-content">
+                      <a @click="openAlert" class="red-link">Open Alert</a>
+                      <div class="list simple-list">
+                        <ul>
+                          {{#each names}}
+                            <li>{{this}}</li>
+                          {{/each}}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                `,
+                style: `
+                  .red-link {
+                    color: red;
+                  }
+                `,
+                data: function () {
+                  return {
+                    title: 'Component Page',
+                    names: ['John', 'Vladimir', 'Timo'],
+                  }
+                },
+                methods: {
+                  openAlert: function () {
+                    var self = this;
+                    self.$app.dialog.alert('Hello world!');
+                  },
+                },
+                on: {
+                  pageInit: function (e, page) {
+                    // do something on page init
+                  },
+                  pageAfterOut: function (e, page) {
+                    // page has left the view
+                  },
+                }
+              },
+            },
+            // ...
+          ]
+    p Note that in component additional <code>@</code> attribute is supported in component template. It is a shorthand method to assign event listener to the specified element. Specified event handler will be searched in component <code>methods</code>
+    h2 Component Context
+    p As we said above, all component methods and Template7 compiler are executed in the context of the component.
+    p Component context is the object you have returned in component's <code>data</code> and methods from specified <code>methods</code> object, but also extended with the following useful properties:
+    table.params-table
+      thead
+        th Property
+        th Type
+        th Desctiption
+      tbody
+        tr
+          td $el
+          td object
+          td Dom7 instance with component HTML element
+            pre
+              code.js
+                :code
+                  this.$el.find('p').addClass('red')
+        tr
+          td $<br>$$<br>$dom7
+          td function
+          td <a href="dom7.html">Dom7</a> library:
+            pre
+              code.js
+                :code
+                  this.$$('p').text('hello world')
+        tr
+          td $app
+          td object
+          td Framework7 app instance
+            pre
+              code.js
+                :code
+                  this.$app.dialog.alert('Hello world!')
+        tr
+          td $root
+          td object
+          td Root data and methods you have specified in <code>data</code> and <code>methods</code> properties on app init
+            pre
+              code.js
+                :code
+                  var app = new Framework7({
+                    // root data
+                    data: function () {
+                      return {
+                        username: 'johndoe'
+                      }
+                    },
+                    // root methods
+                    methods: {
+                      helloWorld: function () {
+                        app.dialog.alert('Hello world!');
+                      }
+                    }
+                  });
+
+                  // then in component:
+                  console.log(this.$root.username); // -> 'johndoe';
+
+                  this.$root.helloWorld(); // -> call alert
+        tr
+          td $route
+          td object
+          td Current route. Contains object with route <code>query</code>, <code>hash</code>, <code>params</code>, <code>path</code> and <code>url</code>
+        tr
+          td $router
+          td Router instance
+          td Related router instance
+            pre
+              code.js
+                :code
+                  this.$router.back(); //navigate back
+        tr
+          td $theme
+          td object
+          td Object with <code>md</code> and <code>ios</code> boolean properties which indicating current theme. For example:
+            pre
+              code.js
+                :code
+                  if (this.$theme.ios) { /* do something when iOS theme is active */ }
+                  if (this.$theme.md) { /* do something when MD theme is active */ }
+    h2 Component Page Events
+    p Component page events handlers can be passed in <code>on</code> component property. They are usual DOM <a href="page.html#page-events">Page Events</a>. Because they are DOM events, they accept <code>event</code> as first agrument, and <a href="page.html#page-data">Page Data</a> as second argument. There only difference with usual DOM events is that their context (<code>this</code>) bound to component context and event handler name must be specified in camelCase format:
+    pre
+      code.js
+        :code
+          ...
+          data: function () {
+            return {
+              username: 'johndoe',
+            };
+          },
+          on: {
+            pageMounted: function (e, page) {
+              console.log('page mounted');
+            },
+            pageInit: function (e, page) {
+              console.log(this.username); // -> 'johndoe'
+            },
+            pageBeforeIn: function (e, page) {
+              console.log('page before in');
+            },
+            pageAfterIn: function (e, page) {
+              console.log('page after in');
+            },
+            pageBeforeOut: function (e, page) {
+              console.log('page before out');
+            },
+            pageAfterOut: function (e, page) {
+              console.log('page after out');
+            },
+            pageBeforeRemove: function (e, page) {
+              console.log('page before remove');
+            },
+          }
+
+    h2 Single File Component
+    p It is not very comfortable to specify all component routes under same routes array, especially if we have a lot of such routes. This is why we can use <code>componentUrl</code> instead and out component into single file:
+    pre
+      code.js
+        :code
+          routes = [
+            ...
+            {
+              path: '/some-page/',
+              componentUrl: './some-page.html',
+            },
+            ..
+          ];
+    p And in <code>some-page.html</code>:
+    pre
+      code.html
+        :code
+          <!-- component template -->
+          <template>
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="title">{{title}}</div>
+                </div>
+              </div>
+              <div class="page-content">
+                <a @click="openAlert">Open Alert</a>
+                <div class="list simple-list">
+                  <ul>
+                    {{#each names}}
+                      <li>{{this}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </template>
+          <!-- component styles -->
+          <style>
+            .red-link {
+              color: red;
+            }
+          </style>
+          <!-- rest of component data and methods -->
+          <script>
+            // script must return component object
+            return {
+              data: function () {
+                return {
+                  title: 'Component Page',
+                  names: ['John', 'Vladimir', 'Timo'],
+                }
+              },
+              methods: {
+                openAlert: function () {
+                  var self = this.$app.dialog.alert('Hello world!');
+                },
+              },
+              on: {
+                pageInit: function () {
+                  // do something on page init
+                },
+                pageAfterOut: function () {
+                  // page has left the view
+                },
+              }
+            }
+          </script>
+    p Well, now it is much cleaner. The <code>&lt;template&gt;</code> and <code>&lt;style&gt;</code> tags will be automatically converted to the same properties of exported component.
+    p You may think that it is not valid to have a direct <code>return</code> statement in script, but it is ok because parser puts the content of the script tag into function body, so it is ok here
+    h3 Scoped Styles
+    p In case you want to scope component styles in single file component to this component only, you may add <code><b>scoped</b></code> attribute to component <code>&lt;style&gt;</code> tag:
+    pre
+      code.html
+        :code
+          <template>
+            <!-- component template -->
+          </template>
+
+          <!-- style has additional "scoped" attribute -->
+          <style scoped>
+            p {
+              color: red;
+            }
+            a {
+              text-decoration: none;
+            }
+          </style>
+
+          <script>
+            return {
+              ...
+            }
+          </script>
+    p When scoped style added component element will have additional <code>data-scope="[unique_id]"</code> where [unique_id] is the unique timestamp. And all styles will be refactored to have this unique scope id, for example:
+    pre
+      code.css
+        :code
+          [data-scope="1515740589328"] p {
+            color: red;
+          }
+          [data-scope="1515740589328"] a {
+            text-decoration: none;
+          }
+    p In case you need to use more complex selector with including component parent reference, then you may use <code><b>{{this}}</b></code> keword to reference the component:
+    pre
+      code.html
+        :code
+          <template>
+            <!-- component template -->
+          </template>
+
+          <!-- style has additional "scoped" attribute -->
+          <style scoped>
+            <!-- all paragraphs in this component will be red under iOS theme -->
+            html.ios {{this}} p {
+              color: red;
+            }
+            <!-- all paragraphs in this component will be green under MD theme -->
+            html.md {{this}} p {
+              color: green;
+            }
+          </style>
+
+          <script>
+            return {
+              ...
+            }
+          </script>
+
+
+
+

@@ -1,0 +1,208 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Content Block Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Block / Content block
+    p Content blocks designed (mostly) to add extra formatting and required spacing for text content:
+    .docs-index
+    h2 Block
+    p To add content block element just add <code>&lt;div&gt;</code> with <b>block</b> class:
+    pre
+      code.html
+        :code
+          <div class="block">
+            <!-- block content -->
+          </div>
+    p To add extra highlighting to block element we need additional <b>block-strong</b> class
+    pre
+      code.html
+        :code
+          <div class="block block-strong">
+            <!-- block content -->
+          </div>
+    p To remove hairlines around strong block we need additional <b>no-harilines</b> class
+    pre
+      code.html
+        :code
+          <div class="block block-strong no-hairlines">
+            <!-- block content -->
+          </div>
+    p To make block inset we need additional <b>inset</b> class
+    pre
+      code.html
+        :code
+          <div class="block block-strong inset">
+            <!-- inset block content -->
+          </div>
+    p To make block inset only on large screens we need to use <b>tablet-inset</b> class instead
+    pre
+      code.html
+        :code
+          <div class="block block-strong tablet-inset">
+            <!-- inset block content -->
+          </div>
+    h2 Block Title
+    p To add block title before Block or <a href="list-view.html">List View</a> we need element with <b>block-title</b> class:
+    pre
+      code.html
+        :code
+          <div class="block-title">Here comes block title</div>
+          <div class="block">
+            <!-- block content -->
+          </div>
+
+          <div class="block-title">Here comes the list</div>
+          <div class="list">
+            <!-- list content -->
+          </div>
+    h2 Block Header / Footer
+    p If we need and extra heading and footer texts we can use Block Header element. It can be used both inside and outside of block elements (Block, List View)
+    pre
+      code.html
+        :code
+          <!-- Inside of block -->
+          <div class="block">
+            <!-- Block header -->
+            <div class="block-header">Block Header</div>
+            ...
+            <!-- Block footer -->
+            <div class="block-footer">Block Footer</div>
+          </div>
+
+          <!-- Outside of block -->
+          <div class="block-header">Block Header</div>
+          <div class="block">
+            ...
+          </div>
+          <div class="block-footer">Block Footer</div>
+
+          <!-- After Block Title -->
+          <div class="block-title">Block Title Here</div>
+          <div class="block-header">Block Header</div>
+          <div class="block">
+            ...
+          </div>
+          <div class="block-footer">Block Footer</div>
+
+    .with-device(data-device-preview="../docs-demos/block.html")
+      h2 Examples
+      pre
+        code.html
+          :code
+            <p>This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.</p>
+
+            <!-- Content block -->
+            <div class="block">
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </div>
+
+            <!-- Additional "block-strong" class for extra highlighting -->
+            <div class="block block-strong">
+              <p>Here comes another text block with additional "<b>block-strong</b>" class. Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. </p>
+            </div>
+
+            <!-- Block Title -->
+            <div class="block-title">Block title</div>
+
+            <div class="block">
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </div>
+
+            <div class="block-title">Another ultra long content block title</div>
+            <div class="block block-strong">
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </div>
+
+            <div class="block-title">Inset</div>
+            <!-- Inset content block -->
+            <div class="block block-strong inset">
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </div>
+
+            <div class="block-title">Tablet Inset</div>
+            <!-- This block will be inset only on tablets (large screens) -->
+            <div class="block block-strong tablet-inset">
+              <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </div>
+
+            <div class="block-title">With Header & Footer</div>
+            <div class="block">
+              <!-- Block footer -->
+              <div class="block-header">Block Header</div>
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              <!-- Block header -->
+              <div class="block-footer">Block Footer</div>
+            </div>
+
+            <div class="block-header">Block Header</div>
+            <div class="block">
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </div>
+            <div class="block-footer">Block Footer</div>
+
+            <div class="block block-strong">
+              <div class="block-header">Block Header</div>
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              <div class="block-footer">Block Footer</div>
+            </div>
+
+            <div class="block-header">Block Header</div>
+            <div class="block block-strong">
+              <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+            </div>
+            <div class="block-footer">Block Footer</div>
+      pre
+        code
+          :code
+            ...
+            <div class="page-content">
+                <p>This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.</p>
+
+                <!-- Content block -->
+                <div class="block">
+                    <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel. </p>
+                </div>
+
+                <!-- We can wrap content with additional "content-block-inner" element for additional highlighting -->
+                <div class="block">
+                  <div class="content-block-inner">Here comes another text block additionaly wrapped with "content-block-inner". Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. </div>
+                </div>
+
+                <!-- Add ".content-block-title" to add block's title -->
+                <div class="block-title">Content block title</div>
+                <div class="block">
+                    <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </div>
+
+                <div class="block-title">Another ultra long content block title</div>
+                <div class="block">
+                  <div class="content-block-inner">
+                    <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                  </div>
+                </div>
+
+                <div class="block-title">Inset</div>
+                <!-- Inset content block -->
+                <div class="content-block inset">
+                  <div class="content-block-inner">
+                    <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                  </div>
+                </div>
+
+                <div class="block-title">Tablet Inset</div>
+                <!-- This block will be inset only on tablets -->
+                <div class="block block-strong tablet-inset">
+                    <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </div>
+
+            </div>
+
+            ...

@@ -1,0 +1,619 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Action Sheet | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Action Sheet
+    ul.docs-index
+    p Action Sheet is a slide-up pane for presenting the user with a set of alternatives for how to proceed with a given task.
+    p You can also use action sheets to prompt the user to confirm a potentially dangerous action.
+    p The action sheet contains an optional title and one or more buttons, each of which corresponds to an action to take.
+    .important-note
+      p Note that is not recommended to use Action Sheet on large screens (iPad). On large screens you should use <a href="popover.html">Popover</a> instead.
+    h2 Action Sheet App Methods
+    p Let's look at related App methods to work with Action Sheet:
+    .method-wrap
+      p
+        span.method app.actions.create(<span>parameters</span>)
+        | - create Action Sheet instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with action sheet parameters
+      p.method-returns Method returns created Action Sheet's instance
+
+    .method-wrap
+      p
+        span.method app.actions.destroy(<span>el</span>)
+        | - destroy Action Sheet instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Action element instance to destroy.
+    .method-wrap
+      p
+        span.method app.actions.get(<span>el</span>)
+        | - get Action Sheet instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Action Sheet element.
+      p.method-returns Method returns Action Sheet's instance
+    .method-wrap
+      p
+        span.method app.actions.open(<span>el</span>, <span>animate</span>)
+        | - opens Action Sheet
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Action Sheet element to open.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Open Actions Sheet with animation.
+      p.method-returns Method returns Action Sheet's instance
+    .method-wrap
+      p
+        span.method app.actions.close(<span>el</span>, <span>animate</span>)
+        | - closes Action Sheet
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Action Sheet element to close.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Close Actions Sheet with animation.
+      p.method-returns Method returns Action Sheet's instance
+
+    h2 Action Sheet Parameters
+    p Now let's look at list of available parameters we need to create Action Sheet:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement
+          td
+          td Action Sheet element. Can be useful if you already have Action Sheet element in your HTML and want to create new instance using this element
+        tr
+          td content
+          td string
+          td
+          td Full Action Sheet HTML content string. Can be useful if you want to create Action Sheet element with custom HTML
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables Action Sheet backdrop (dark semi transparent layer behind)
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td When enabled, action sheet will be closed on backdrop click
+        tr
+          td animate
+          td boolean
+          td true
+          td Whether the Action Sheet should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+        tr
+          td buttons
+          td array
+          td
+          td Action sheet groups/buttons. In this case Actions layout will be generated dynamically based on passed groups and buttons. In case of <b>groups</b> it should array where each item represent array with buttons for group.
+        tr
+          td grid
+          td boolean
+          td false
+          td Enables grid buttons layout
+        tr
+          td convertToPopover
+          td boolean
+          td true
+          td When enabled, action sheet will be converted to <a href="popover.html">Popover</a> on large screens.
+        tr
+          td forceToPopover
+          td boolean
+          td false
+          td When enabled, action sheel will be always converted to <a href="popover.html">Popover</a>.
+        tr
+          td targetEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of target element. Required when converstion to popover is in use
+        tr
+          td targetX
+          td number
+          td
+          td Virtual target element horizontal offset from left side of the screen. Required when converstion to popover is in use without using real target element (<code>targetEl</code>)
+        tr
+          td targetY
+          td number
+          td
+          td Virtual target element vertical offset from top of the screen. Required when converstion to popover is in use without using real target element (<code>targetEl</code>)
+        tr
+          td targetWidth
+          td number
+          td 0
+          td Virtual target element width (in px). Required when converstion to popover is in use without using real target element (<code>targetEl</code>)
+        tr
+          td targetHeight
+          td number
+          td 0
+          td Virtual target element height (in px). Required when converstion to popover is in use without using real target element (<code>targetEl</code>)
+        tr
+          td onClick
+          td function(actions, e)
+          td
+          td Callback function that will be executed after click on the Action Sheet button
+        tr
+          td render
+          td function
+          td
+          td Custom function to render Action Sheet. Must return Action Sheet html
+        tr
+          td renderPopover
+          td function
+          td
+          td Custom function to render Popover when conversition to popover is in use. Must return Popover html
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var actions = app.actions.create({
+                    buttons: [ /* ... */ ],
+                    on: {
+                      opened: function () {
+                        console.log('Action Sheet opened')
+                      }
+                    }
+                  })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>actions</code> property to set defaults for all action sheets. For example:
+      pre
+        code
+          :code
+            var app = new Framework7({
+              actions: {
+                convertToPopover: false,
+                grid: true,
+              }
+            });
+    h3 Button Parameters
+    p Each Button in <code>buttons</code> array must be presented as object with button parameters:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td text
+          td string
+          td
+          td String with Button's text (could be HTML string)
+        tr
+          td icon
+          td string
+          td
+          td HTML string of icon
+        tr
+          td bold
+          td boolean
+          td false
+          td Enables bold button text
+        tr
+          td color
+          td string
+          td
+          td Button color, one of default colors
+        tr
+          td bg
+          td string
+          td
+          td Button background color, one of default colors
+        tr
+          td label
+          td boolean
+          td false
+          td If enabled then it will be rendered as label instead of button
+        tr
+          td disabled
+          td boolean
+          td false
+          td Defines whether the button is disabled or not.
+        tr
+          td close
+          td boolean
+          td true
+          td If enabled then button click will close Action Sheet
+        tr
+          td onClick
+          td function(actions, e)
+          td
+          td Callback function that will be executed after click on this button
+    h2 Action Sheet Methods & Properties
+    p So to create Action Sheet we have to call:
+    pre
+      code
+        :code
+          var actions = app.actions.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>actions</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td actions.app
+          td Link to global app instance
+        tr
+          td actions.el
+          td Action sheet HTML element
+        tr
+          td actions.$el
+          td Dom7 instance with action sheet HTML element
+        tr
+          td actions.backdropEl
+          td Backdrop HTML element
+        tr
+          td actions.$backdropEl
+          td Dom7 instance with backdrop HTML element
+        tr
+          td actions.params
+          td Action sheet instance parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td actions.open(<span>animate</span>)
+          td Open action sheet. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+        tr
+          td actions.close(<span>animate</span>)
+          td Close action sheet. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+        tr
+          td actions.destroy()
+          td Destroy action sheet
+        tr
+          td actions.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td actions.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td actions.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td actions.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td actions.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Control Action Sheet With Links
+    p It is possible to open and close required action sheets (if you have them in DOM) using special classes and data attributes on links:
+    .important-note
+      ul
+        li
+          p To open action sheet we need to add "<b>actions-open</b>" class to any HTML element (prefered to link)
+        li
+          p To close action sheet we need to add "<b>actions-close</b>" class to any HTML element (prefered to link)
+        li
+          p If you have more than one action sheet in DOM, you need to specify appropriate action sheet via additional <b>data-actions=".my-actions"</b> attribute on this HTML element
+    p According to above note:
+    pre
+      code.xml
+        :code
+          <!-- In data-actions attribute we specify CSS selector of action sheet we need to open -->
+          <p><a href="#" data-actions=".my-actions" class="actions-open">Open Actions</a></p>
+
+          <!-- And somewhere in DOM -->
+          <div class="actions-modal my-actions">
+            ...
+          </div>
+
+
+    h2 Action Sheet Events
+    p Action sheet will fire the following DOM events on action sheet element and events on app and action sheet instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td actions:open
+          td Action Sheet Element<span>&lt;div class="actions-modal"&gt;</span>
+          td Event will be triggered when Action Sheet starts its opening animation
+        tr
+          td actions:opened
+          td Action Sheet Element<span>&lt;div class="actions-modal"&gt;</span>
+          td Event will be triggered after Action Sheet completes its opening animation
+        tr
+          td actions:close
+          td Action Sheet Element<span>&lt;div class="actions-modal"&gt;</span>
+          td Event will be triggered when Action Sheet starts its closing animation
+        tr
+          td actions:closed
+          td Action Sheet Element<span>&lt;div class="actions-modal"&gt;</span>
+          td Event will be triggered after Action Sheet completes its closing animation
+    h3 App and Action Sheet Instance Events
+    p Action Sheet instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>actions</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td open
+          td <span>actions</span>
+          td actions
+          td(rowspan="2") Event will be triggered when Action Sheet starts its opening animation. As an argument event handler receives action sheet instance
+        tr
+          td actionsOpen
+          td <span>actions</span>
+          td app
+        tr
+          td opened
+          td <span>actions</span>
+          td actions
+          td(rowspan="2") Event will be triggered after Action Sheet completes its opening animation. As an argument event handler receives action sheet instance
+        tr
+          td actionsOpened
+          td <span>actions</span>
+          td app
+        tr
+          td close
+          td <span>actions</span>
+          td actions
+          td(rowspan="2") Event will be triggered when Action Sheet starts its closing animation. As an argument event handler receives action sheet instance
+        tr
+          td actionsClose
+          td <span>actions</span>
+          td app
+        tr
+          td closed
+          td <span>actions</span>
+          td actions
+          td(rowspan="2") Event will be triggered after Action Sheet completes its closing animation. As an argument event handler receives action sheet instance
+        tr
+          td actionsClosed
+          td <span>actions</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>actions</span>
+          td actions
+          td(rowspan="2") Event will be triggered right before Action Sheet instance will be destroyed. As an argument event handler receives action sheet instance
+        tr
+          td actionsBeforeDestroy
+          td <span>actions</span>
+          td app
+    h2(data-device-preview="../docs-demos/action-sheet.html") Examples
+    .with-device
+      pre
+        code
+          :code
+            <body>
+            ...
+             <div class="page-content">
+              <div class="block">
+                <p><a class="ac-1" href="#">One group, three buttons</a></p>
+                <p><a class="ac-2" href="#">One group, title, three buttons</a></p>
+                <p><a class="ac-3" href="#">Two groups</a></p>
+                <p><a class="ac-4" href="#">Three groups</a></p>
+                <p><a class="ac-5" href="#">With callbacks on click</a></p>
+                <p><a class="ac-6" href="#">Actions grid</a></p>
+              </div>
+            </div>
+            ...
+            </body>
+
+      pre
+        code
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            //- One group, three buttons
+            var ac1 = app.actions.create({
+              buttons: [
+                {
+                  text: 'Button1',
+                  bold: true
+                },
+                {
+                  text: 'Button2'
+                },
+                {
+                  text: 'Cancel',
+                  color: 'red'
+                },
+              ]
+            })
+            //- One group, title, three buttons
+            var ac2 = app.actions.create({
+              buttons: [
+                {
+                  text: 'Do something',
+                  label: true
+                },
+                {
+                  text: 'Button1',
+                  bold: true
+                },
+                {
+                  text: 'Button2',
+                },
+                {
+                  text: 'Cancel',
+                  color: 'red'
+                },
+              ]
+            });
+            //- Two groups
+            var ac3 = app.actions.create({
+              buttons: [
+                // First group
+                [
+                  {
+                    text: 'Do something',
+                    label: true
+                  },
+                  {
+                    text: 'Button1',
+                    bold: true
+                  },
+                  {
+                    text: 'Button2',
+                  }
+                ],
+                // Second group
+                [
+                  {
+                    text: 'Cancel',
+                    color: 'red'
+                  }
+                ]
+              ]
+            });
+            //- Three groups
+            var ac4 = app.actions.create({
+              buttons: [
+                [
+                  {
+                    text: 'Share',
+                    label: true
+                  },
+                  {
+                    text: 'Mail',
+                  },
+                  {
+                    text: 'Messages',
+                  }
+                ],
+                [
+                  {
+                    text: 'Social share',
+                    label: true
+                  },
+                  {
+                    text: 'Facebook',
+                  },
+                  {
+                    text: 'Twitter',
+                  }
+                ],
+                [
+                  {
+                    text: 'Cancel',
+                    color: 'red'
+                  }
+                ]
+              ],
+            });
+            //- With callbacks on click
+            var ac5 = app.actions.create({
+              buttons: [
+                {
+                  text: 'Button1',
+                  onClick: function () {
+                    app.dialog.alert('Button1 clicked')
+                  }
+                },
+                {
+                  text: 'Button2',
+                  onClick: function () {
+                    app.dialog.alert('Button2 clicked')
+                  }
+                },
+                {
+                  text: 'Cancel',
+                  color: 'red',
+                  onClick: function () {
+                    app.dialog.alert('Cancel clicked')
+                  }
+                },
+              ]
+            });
+            //- Actions Grid
+            var ac6 = app.actions.create({
+              grid: true,
+              buttons: [
+                [
+                  {
+                    text: 'Button 1',
+                    icon: '<img src="http://lorempixel.com/96/96/people/1" width="48"/>'
+                  },
+                  {
+                    text: 'Button 2',
+                    icon: '<img src="http://lorempixel.com/96/96/people/2" width="48">'
+                  },
+                  {
+                    text: 'Button 3',
+                    icon: '<img src="http://lorempixel.com/96/96/people/3" width="48">'
+                  },
+                ],
+                [
+                  {
+                    text: 'Button 1',
+                    icon: '<img src="http://lorempixel.com/96/96/fashion/4" width="48"/>'
+                  },
+                  {
+                    text: 'Button 2',
+                    icon: '<img src="http://lorempixel.com/96/96/fashion/5" width="48">'
+                  },
+                  {
+                    text: 'Button 3',
+                    icon: '<img src="http://lorempixel.com/96/96/fashion/6" width="48">'
+                  },
+                ]
+              ]
+            });
+
+            $$('.ac-1').on('click', function () {
+                ac1.open();
+            });
+            $$('.ac-2').on('click', function () {
+                ac2.open();
+            });
+            $$('.ac-3').on('click', function () {
+                ac3.open();
+            });
+            $$('.ac-4').on('click', function () {
+                ac4.open();
+            });
+            $$('.ac-5').on('click', function () {
+                ac5.open();
+            });
+            $$('.ac-6').on('click', function () {
+                ac6.open();
+            });
+

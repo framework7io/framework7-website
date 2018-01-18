@@ -1,0 +1,93 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          // In data-sheet attribute we specify CSS selector of sheet we need to open
+          .title Sheet Modal
+          .right
+            a(href="#", data-sheet=".my-sheet").link.sheet-open Open Sheet
+      .page-content
+        .block
+          // In data-sheet attribute we specify CSS selector of sheet we need to open
+          p
+            a(href="#", data-sheet=".my-sheet").link.sheet-open Open Sheet
+          // Link to close sheet
+          p
+            a(href="#", data-sheet=".my-sheet").link.sheet-close Close Sheet
+
+          p
+            a(href="#").link.dynamic-sheet Create Dynamic Sheet
+
+  .sheet-modal.my-sheet
+    .toolbar
+      .toolbar-inner
+        .left
+        .right
+          a(href="#").link.sheet-close Done
+    .sheet-modal-inner
+      .block
+        h4 Info
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.
+
+
+block scripts
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    // DOM events for my-sheet sheet
+    $$('.my-sheet').on('sheet:open', function (e, sheet) {
+      console.log('my-sheet open');
+    });
+    $$('.my-sheet').on('sheet:opened', function (e, sheet) {
+      console.log('my-sheet opened');
+    });
+
+    // Create dynamic Sheet
+    var dynamicSheet = app.sheet.create({
+      content: '<div class="sheet-modal">'+
+                  '<div class="toolbar">'+
+                    '<div class="toolbar-inner">'+
+                      '<div class="left"></div>'+
+                      '<div class="right">'+
+                        '<a class="link sheet-close">Done</a>'+
+                      '</div>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="sheet-modal-inner">'+
+                    '<div class="block">'+
+                      '<p>Sheet created dynamically.</p>'+
+                      '<p><a href="#" class="link sheet-close">Close me</a></p>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>',
+      // Events
+      on: {
+        open: function (sheet) {
+          console.log('Sheet open');
+        },
+        opened: function (sheet) {
+          console.log('Sheet opened');
+        },
+      }
+    });
+    // Events also can be assigned on instance later
+    dynamicSheet.on('close', function (sheet) {
+      console.log('Sheet close');
+    });
+    dynamicSheet.on('closed', function (sheet) {
+      console.log('Sheet closed');
+    });
+
+    // Open dynamic sheet
+    $$('.dynamic-sheet').on('click', function () {
+      // Close inline sheet before
+      app.sheet.close('.my-sheet');
+
+      // Open dynamic sheet
+      dynamicSheet.open();
+    });
+

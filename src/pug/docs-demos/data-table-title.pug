@@ -1,0 +1,253 @@
+extends _layout
+block vars
+  - var includeF7Icons = true;
+  - var includeMaterialIcons = true;
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Table Title
+          .right
+      .page-content
+        .block-title With title and actions
+        .data-table.data-table-init.card
+          .card-header
+            .data-table-title Nutrition
+            .data-table-actions
+              a.link.icon-only
+                i.icon.f7-icons.ios-only sort
+                i.icon.material-icons.md-only sort
+              a.link.icon-only
+                i.icon.f7-icons.ios-only more_vertical_round
+                i.icon.material-icons.md-only more_vert
+          .card-content
+            table
+              thead
+                tr
+                  th.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  th.label-cell Desert (100g serving)
+                  th.numeric-cell Calories
+                  th.numeric-cell Fat (g)
+                  th.numeric-cell Carbs
+                  th.numeric-cell Protein (g)
+              tbody
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Frozen yogurt
+                  td.numeric-cell 159
+                  td.numeric-cell 6.0
+                  td.numeric-cell 24
+                  td.numeric-cell 4.0
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Ice cream sandwich
+                  td.numeric-cell 237
+                  td.numeric-cell 9.0
+                  td.numeric-cell 37
+                  td.numeric-cell 4.4
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Eclair
+                  td.numeric-cell 262
+                  td.numeric-cell 16.0
+                  td.numeric-cell 24
+                  td.numeric-cell 6.0
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Cupcake
+                  td.numeric-cell 305
+                  td.numeric-cell 3.7
+                  td.numeric-cell 67
+                  td.numeric-cell 4.3
+        .block-title Different actions on select
+        .data-table.data-table-init.card
+          .card-header
+            .data-table-header
+              .data-table-title Nutrition
+              .data-table-actions
+                a.link.icon-only
+                  i.icon.f7-icons.ios-only sort
+                  i.icon.material-icons.md-only sort
+                a.link.icon-only
+                  i.icon.f7-icons.ios-only more_vertical_round
+                  i.icon.material-icons.md-only more_vert
+            .data-table-header-selected
+              .data-table-title-selected <span class="data-table-selected-count"></span> items selected
+              .data-table-actions
+                a.link.icon-only
+                  i.icon.f7-icons.ios-only trash
+                  i.icon.material-icons.md-only delete
+                a.link.icon-only
+                  i.icon.f7-icons.ios-only more_vertical_round
+                  i.icon.material-icons.md-only more_vert
+          .card-content
+            table
+              thead
+                tr
+                  th.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  th.label-cell Desert (100g serving)
+                  th.numeric-cell Calories
+                  th.numeric-cell Fat (g)
+                  th.numeric-cell Carbs
+                  th.numeric-cell Protein (g)
+              tbody
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Frozen yogurt
+                  td.numeric-cell 159
+                  td.numeric-cell 6.0
+                  td.numeric-cell 24
+                  td.numeric-cell 4.0
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Ice cream sandwich
+                  td.numeric-cell 237
+                  td.numeric-cell 9.0
+                  td.numeric-cell 37
+                  td.numeric-cell 4.4
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Eclair
+                  td.numeric-cell 262
+                  td.numeric-cell 16.0
+                  td.numeric-cell 24
+                  td.numeric-cell 6.0
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Cupcake
+                  td.numeric-cell 305
+                  td.numeric-cell 3.7
+                  td.numeric-cell 67
+                  td.numeric-cell 4.3
+        .block-title Alternate header with row actions
+        .data-table.data-table-init.card
+          .card-header
+            .data-table-links
+              a.link Add
+              a.link Remove
+            .data-table-actions
+              a.link.icon-only
+                i.icon.f7-icons.ios-only sort
+                i.icon.material-icons.md-only sort
+              a.link.icon-only
+                i.icon.f7-icons.ios-only more_vertical_round
+                i.icon.material-icons.md-only more_vert
+          .card-content
+            table
+              thead
+                tr
+                  th.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  th.label-cell Desert (100g serving)
+                  th.numeric-cell Calories
+                  th.numeric-cell Fat (g)
+                  th.numeric-cell Carbs
+                  th.numeric-cell Protein (g)
+                  th
+              tbody
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Frozen yogurt
+                  td.numeric-cell 159
+                  td.numeric-cell 6.0
+                  td.numeric-cell 24
+                  td.numeric-cell 4.0
+                  td.actions-cell
+                    a.link.icon-only
+                      i.icon.f7-icons.ios-only compose
+                      i.icon.material-icons.md-only edit
+                    a.link.icon-only
+                      i.icon.f7-icons.ios-only trash
+                      i.icon.material-icons.md-only delete
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Ice cream sandwich
+                  td.numeric-cell 237
+                  td.numeric-cell 9.0
+                  td.numeric-cell 37
+                  td.numeric-cell 4.4
+                  td.actions-cell
+                    a.link.icon-only
+                      i.icon.f7-icons.ios-only compose
+                      i.icon.material-icons.md-only edit
+                    a.link.icon-only
+                      i.icon.f7-icons.ios-only trash
+                      i.icon.material-icons.md-only delete
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Eclair
+                  td.numeric-cell 262
+                  td.numeric-cell 16.0
+                  td.numeric-cell 24
+                  td.numeric-cell 6.0
+                  td.actions-cell
+                    a.link.icon-only
+                      i.icon.f7-icons.ios-only compose
+                      i.icon.material-icons.md-only edit
+                    a.link.icon-only
+                      i.icon.f7-icons.ios-only trash
+                      i.icon.material-icons.md-only delete
+                tr
+                  td.checkbox-cell
+                    label.checkbox
+                      input(type="checkbox")
+                      i.icon-checkbox
+                  td.label-cell Cupcake
+                  td.numeric-cell 305
+                  td.numeric-cell 3.7
+                  td.numeric-cell 67
+                  td.numeric-cell 4.3
+                  td.actions-cell
+                    a.link.icon-only
+                      i.icon.f7-icons.ios-only compose
+                      i.icon.material-icons.md-only edit
+                    a.link.icon-only
+                      i.icon.f7-icons.ios-only trash
+                      i.icon.material-icons.md-only delete
+
+block scripts
+  script.
+    var myApp = new Framework7();

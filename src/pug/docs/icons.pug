@@ -1,0 +1,77 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Icons | Framework7 Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Icons
+    .docs-index
+    p By default Framework7 contains pretty limited set of icons used internally, such are <code>back</code>, <code>forward</code>, <code>prev</code> and <code>next</code> icons:
+    pre
+      code.html
+        | &lt;i class="icon icon-back"&gt;&lt;/i&gt;
+        | &lt;i class="icon icon-forward"&gt;&lt;/i&gt;
+        | &lt;i class="icon icon-prev"&gt;&lt;/i&gt;
+        | &lt;i class="icon icon-next"&gt;&lt;/i&gt;
+    p These few icons help to keep consistency in main nav elements between iOS and Material themes.
+    h2 Framework7 Icons Font
+    p In your app, of course, you may need much more icons to represent your content. For this case we have designed <a href="https://github.com/nolimits4web/Framework7-Icons" target="_blank"><b>Framework7 Icons</b></a> font to be used with <b>iOS theme</b> of Framework7. By default it is not included in Framework7 package and latest version of the font can be downloaded at the <a href="https://github.com/nolimits4web/Framework7-Icons" target="_blank"><b>Framework7 Icons</b></a> repository.
+    .important-note
+      p For MD theme we highly recommend to use greatly designed <a href="https://material.io/icons/" target="_blank"><b>Material Icons</b></a> font.
+    h3 Install font
+    ol
+      li Download and extract the font pack from the <a href="https://github.com/nolimits4web/Framework7-Icons" target="_blank"><b>Framework7 Icons</b></a> repository
+      li Copy the <code>framework7-icons.css</code> to your project
+      li Copy the <code>fonts</code> folder to your project
+      li Ensure the font urls within <code>framework7-icons.css</code> properly reference the <code>fonts</code> path within your project
+      li Include a reference to the <code>framework7-icons.css</code> file where you reference app stylesheets:
+        pre
+          code.html
+            | &lt;link rel="stylesheet" href="path/to/framework7-icons.css"&gt;
+    h3 Cheatsheet
+    p You can use the following <a href="/icons/" target="_blank"><b>cheatsheet</b></a> to easily find the icon you want to use.
+    h3 HTML Example
+    p It’s easy to incorporate icons into your web page. Here’s a small example:
+    pre
+      code.html
+        | &lt;i class="f7-icons"&gt;home&lt;/i&gt;
+    p This example uses a typographic feature called <a href="http://alistapart.com/article/the-era-of-symbol-fonts" target="_blank">ligatures</a>, which allows rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.
+    h3 Styling Icons
+    h4 Sizing
+    p Framework7 Icons look best at 25px, but if an icon needs to be displayed in an alternative size, just use CSS font-size rule:
+    pre
+      code.css
+        | .size-22 { font-size: 22px }
+        | .size-25 { font-size: 25px }
+        | .size-29 { font-size: 29px }
+        | .size-50 { font-size: 50px }
+    pre
+      code.html
+        | &lt;i class="f7-icons size-22"&gt;home&lt;/i&gt;
+        | &lt;i class="f7-icons size-25"&gt;home&lt;/i&gt;
+        | &lt;i class="f7-icons size-29"&gt;home&lt;/i&gt;
+        | &lt;i class="f7-icons size-50"&gt;home&lt;/i&gt;
+    h4 Coloring
+    p Using the icon font allows for easy styling of an icon in any <a href="color-themes.html">default color</a> or custom color.
+    pre
+      code.css
+        | .color-custom { color: #ff0000 }
+    pre
+      code.html
+        | &lt;i class="f7-icons color-red"&gt;home&lt;/i&gt;
+        | &lt;i class="f7-icons color-yellow"&gt;home&lt;/i&gt;
+        | &lt;i class="f7-icons color-custom"&gt;home&lt;/i&gt;
+    h2 Using Both F7 Icons & Material Icons
+    p To keep best practise its better to use F7 Icons font for iOS theme and Material Icons font for MD theme. But what to do in case you develop your app for both MD and iOS themes?
+    p In this case we may use router's <code>ios-only</code> and <code>md-only</code> helper classes to have F7 icon in iOS theme and Material icons in MD theme:
+    pre
+      code.html
+        :code
+          <i class="f7-icons ios-only">home</i>
+          <i class="material-icons md-only">home</i>
+    p In this case we will have only <code>&lt;i class="f7-icons ios-only"&gt;home&lt;/i&gt;</code> when app running with iOS theme and only <code>&lt;i class="material-icons ios-only"&gt;home&lt;/i&gt;</code> when app is in MD theme.

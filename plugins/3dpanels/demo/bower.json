@@ -1,9 +1,0 @@
-{
-  "name": "Framework7-3D-Panels-Demo",
-  "description": "Demo for Framework7-3D-Panels plugin",
-  "author": "Vladimir Kharlampidi",
-  "license": ["MIT"],
-  "dependencies": {
-    "framework7": "~1.2.0"
-  }
-}

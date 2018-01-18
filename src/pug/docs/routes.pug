@@ -1,0 +1,703 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Routes | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Routes
+    .docs-index
+    h2 Define Routes
+    p First of all, when we init the Framework7 app we should pass default routes using <code>routes</code> array parameter:
+    pre
+      code.js
+        :code
+          var app = new Framework7({
+            routes: [
+              {
+                name: 'about',
+                path: '/about/',
+                url: './pages/about.html',
+              },
+              {
+                name: 'news',
+                path: '/news/',
+                url: './pages/news.html',
+                options: {
+                  animate: false,
+                },
+              },
+              {
+                name: 'users',
+                path: '/users/',
+                templateUrl: './pages/users.html',
+                options: {
+                  context: {
+                    users: ['John Doe', 'Vladimir Kharlampidi', 'Timo Ernst'],
+                  },
+                },
+                on: {
+                  pageAfterIn: function (e, page) {
+                    // do something after page gets into the view
+                  },
+                  pageInit: function (e, page) {
+                    // do something when page initialized
+                  },
+                }
+              },
+              // Default route, match to all pages (e.g. 404 page)
+              {
+                path: '(.*)',
+                url: './pages/404.html',
+              },
+            ],
+          });
+    p Routes defined on app init are default routes, they will be available for any View/Router in the app.
+    p If you have a multi-view/router app and you want to have some View/Router to have <b>own strict routes</b> and don't want default routes be available in this <a href="view.html">View</a>, then you may specify the same <code>routes</code> parameter on View init:
+    pre
+      code.js
+        :code
+          var view1 = app.views.create('.view-1', {
+            routes: [
+              {
+                path: '/users/',
+                url: './pages/users.html',
+              },
+              {
+                path: '/user/',
+                url: './pages/user.html',
+              },
+            ],
+          });
+    p If you have a multi-view/router app and you want to have some View/Router to have <b>additional routes</b> and don't want these additional routes are available in other Views, then you may specify the <code>routesAdd</code> parameter on View init:
+    pre
+      code.js
+        :code
+          // This view will support all global routes + own additional routes
+          var view2 = app.views.create('.view-2', {
+            // These routes are only available in this view
+            routesAdd: [
+              {
+                path: '/blog/',
+                url: './pages/blog.html',
+              },
+              {
+                path: '/post/',
+                url: './pages/post.html',
+              },
+            ],
+          })
+    h2 Route Properties
+    p Ok, now will see what each route property means:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Description
+      tbody
+        tr
+          td name
+          td string
+          td Route name, e.g. <code>home</code>
+        tr
+          td path
+          td string
+          td Route path. Means this route will be loaded when we click link that match to this path, or can be loaded by this path using API
+        tr
+          td options
+          td object
+          td Object with additional route options (optional)
+        tr
+          td routes
+          td array
+          td Array with nested routes
+        tr
+          th(colspan="4") Content Related Propertues<br><small>The following route properties define how (from where/what) content should be loaded</small>
+        tr
+          td el
+          td HTMLElement
+          td Load page from DOM by passed HTMLElement
+        tr
+          td pageName
+          td string
+          td Load page from DOM that has same data-name attribute
+        tr
+          td content
+          td string
+          td Creates dynamic page from specified content string
+        tr
+          td url
+          td string
+          td Load page content via Ajax.
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression, e.g.
+            pre
+              code.js
+                :code
+                  {
+                    path: '/users/:userId/posts/:postId',
+                    url: 'http://myapp.com/posts/{{userId}}/{{postId}}'
+                  }
+        tr
+          td template
+          td string<br>function
+          td Load page content from passed Template7 template string or function
+        tr
+          td templateUrl
+          td string
+          td Load page content from url via Ajax, and compile it using Template7
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression
+        tr
+          td component
+          td object
+          td Load page from passed Framework7 <a href="router-component.html">Router Component</a>
+        tr
+          td componentUrl
+          td string
+          td load pages as a component via Ajax
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression
+        tr
+          td async
+          td function(routeTo, routeFrom, resolve, reject)
+          td Do required asynchronous manipulation and the return required route content and options
+        tr
+          th(colspan="4") Routable Tabs
+        tr
+          td tabs
+          td array
+          td Array with tab routes
+        tr
+          th(colspan="4") Routable Modals
+        tr
+          td actions
+          td object
+          td Action Sheet route
+        tr
+          td popup
+          td object
+          td Popup route
+        tr
+          td loginScreen
+          td object
+          td Login screen route
+        tr
+          td popover
+          td object
+          td Popover route
+        tr
+          td sheet
+          td object
+          td Sheet route
+        tr
+          th(colspan="4") Events
+        tr
+          td on
+          td object
+          td Object with event handlers
+        tr
+          th(colspan="4") Alias & Redirect
+        tr
+          td alias
+          td
+            | string
+            br
+            | array
+          td Route alias, or array with route aliases. We need to specify here alias <b>path</b>
+        tr
+          td redirect
+          td
+            | string
+            br
+            | function(route, resolve, reject)
+          td Route redirect. We need to specify here redirect <b>url</b> (not path)
+    p Here is an example for most of possible options:
+    pre
+      code.js
+        :code
+          routes: [
+            // Load via Ajax
+            {
+              path: '/about/',
+              url: './pages/about.html',
+            },
+            // Dynamic page from content
+            {
+              path: '/news/',
+              content: `
+                <div class="page">
+                  <div class="page-content">
+                    <div class="block">
+                      <p>This page created dynamically</p>
+                    </div>
+                  </div>
+                </div>
+              `,
+            },
+            // By page name (data-name="services") presented in DOM
+            {
+              path: '/services/',
+              pageName: 'services',
+            },
+            // By page HTMLElement
+            {
+              path: '/contacts/',
+              el: document.querySelector('.page[data-name="contacts"]'),
+            },
+            // By template
+            {
+              path: '/template/:name/',
+              template: `
+                <div class="page">
+                  <div class="page-content">
+                    <div class="block">
+                      <p>Hello {{$route.params.name}}</p>
+                    </div>
+                  </div>
+                </div>
+              `,
+            },
+            // By template URL
+            {
+              path: '/blog/',
+              templateUrl: './pages/blog.html',
+            },
+            // By component
+            {
+              path: '/posts/',
+              component: {
+                // look below
+              },
+            },
+            // By component url
+            {
+              path: '/post/:id/',
+              componentUrl: './pages/component.html',
+            },
+            // Async
+            {
+              path: '/something/',
+              async: function (routeTo, routeFrom, resolve, reject) {
+                // Requested route
+                console.log(routeTo);
+                // Get external data and return template7 template
+                app.request.json('http://some-endpoint/', function (data) {
+                  resolve(
+                    // How and what to load: template
+                    {
+                      template: '<div class="page">{{users}}</div>'
+                    },
+                    // Custom template context
+                    {
+                      context: {
+                        users: data,
+                      },
+                    }
+                  );
+                });
+              }
+            }
+          ],
+    h2 Route Path
+    p As stated above, the route's <code>path</code> property means the path/url that will be displayed in browser window address bar (if <code>pushState</code> enabled) when the following route will be loaded either by api or clicking on a link with same path.
+    p There is also support for dynamic paths. So if you have the following path in your route <code>/blog/users/:userId/posts/:postId/</code> and click the link with the with the <code>/blog/users/12/posts/25</code> href then on loaded page we access <code>route.params</code> object containing <code>{ userId: 12, postId: 25 }</code>
+    p Route path matching is handled by <a href="https://github.com/pillarjs/path-to-regexp" target="_blank">Path To Regexp</a> library, so everything what is supported there is supported in Framework7 as well. For example, if you want to add default route which match all paths, we can use regular expression like:
+    pre
+      code.js
+        :code
+          // Default route, match to all pages (e.g. 404 page)
+          {
+            path: '(.*)',
+            url: './pages/404.html',
+          },
+
+    h2 Route Options
+    p Let's look at additional route options that can be passed in <code>options</code> property:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Description
+      tbody
+      tr
+        td animate
+        td boolean
+        td whether the page should be animated or not (overwrites default router settings)
+      tr
+        td history
+        td boolean
+        td whether the page should be saved in router history
+      tr
+        td pushState
+        td boolean
+        td whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
+      tr
+        td reloadCurrent
+        td boolean
+        td replace the current page with the new one from route
+      tr
+        td reloadPrevious
+        td boolean
+        td replace the previous page in history with the new one from route
+      tr
+        td reloadAll
+        td boolean
+        td load new page and remove all previous pages from history and DOM
+      tr
+        td context
+        td object
+        td custom/extended context for Template7/Component page (when route loaded from <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>)
+    h2 Async Route
+    p <code>async</code> route property is very powerful tool designed to return dynamic route properties. It is a function with the following arguments:
+    .method-wrap
+      p.method async(<span>routeTo, routeFrom, resolve, reject</span>)
+      ul.method-parameters
+        li <span class="parameter">routeTo</span> - requested Route
+        li <span class="parameter">routeFrom</span> - currently active Route
+        li <span class="parameter">resolve</span> - callback function that you need to call to proceed route loading
+        li <span class="parameter">reject</span> - callback function that you need to call to abort route loading
+    .method-wrap
+      p <code>resolve</code> callback function accepts two arguments:
+      p.method resolve(<span>parameters, options</span>)
+      ul.method-parameters
+        li <span class="parameter">parameters</span> <span class="parameter-type">object</span> - object with resolved route content. Must contain one of <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code> properties
+        li <span class="parameter">options</span> <span class="parameter-type">object</span> - object with <a href="#route-options">Route Options</a>
+    .method-wrap
+      p <code>reject</code> callback function doesn't have arguments:
+      p.method reject()
+    .important-note
+      p
+        b Note that until you call <code>resolve</code> or <code>reject</code> in async method, routing will be blocked!
+    p For example:
+    pre
+      code.js
+        :code
+          routes = [
+            {
+              path: '/foo/',
+              async(routeTo, routeFrom, resole, reject) {
+                if (userIsLoggedIn) {
+                  resolve({ url: 'secured.html' })
+                } else {
+                  resolve({ url: 'login.html' })
+                }
+              }
+            }
+          ]
+    h2 Route Events
+    p It is possible to add all page events inside of route for this page using <code>on</code> route property. For example:
+    pre
+      code.js
+        :code
+          var app = new Framework7({
+            routes: [
+              // ...
+              {
+                path: '/users/',
+                url: './pages/users.html',
+                on: {
+                  pageBeforeIn: function (event, page) {
+                    // do something before page gets into the view
+                  },
+                  pageAfterIn: function (event, page) {
+                    // do something after page gets into the view
+                  },
+                  pageInit: function (event, page) {
+                    // do something when page initialized
+                  },
+                  pageBeforeRemove: function (event, page) {
+                    // do something before page gets removed from DOM
+                  },
+                }
+              },
+              // ...
+            ],
+          });
+    p Please note, that such route events are actually DOM events, so each such handler will accept <code>event</code> as a first argument with the event itself and <code>page</code> as the second argument with <a href="page.html#page-data">page data</a>.
+    h2 Nested Routes
+    p It is possible to have nested routes (routes in routes) as well:
+    pre
+      code.js
+        :code
+          routes = [
+            {
+              path: '/faq/',
+              url: './pages/faq.html',
+            },
+            {
+              path: '/catalog/',
+              url: './pages/catalog.html',
+              routes: [
+                {
+                  path: 'computers/',
+                  url: './pages/computers.html',
+                },
+                {
+                  path: 'monitors/',
+                  url: './pages/monitors.html',
+                },
+                ...
+              ],
+            }
+          ];
+    p What does it mean? To get better understanding, actually (under the hood) such routes will be merged into the following ones:
+    pre
+      code.js
+        :code
+          routes = [
+            {
+              path: '/faq/',
+              url: './pages/faq.html',
+            },
+            {
+              path: '/catalog/',
+              url: './pages/catalog.html',
+            }
+            {
+              path: '/catalog/computers/',
+              url: './pages/computers.html',
+            },
+            {
+              path: '/catalog/monitors/',
+              url: './pages/monitors.html',
+            },
+          ];
+    p So let's say we are on a <code>/catalog/</code> page and have the following links:
+    ol
+      li
+        p <code>&lt;a href="computers/"&gt;Computers</a></code> - will work as expected. Link will be merged with the current route (<code>/catalog/</code> + <code>computers/</code>) and we will have <code>/catalog/computers/</code> which we have in our routes.
+      li
+        p <code>&lt;a href="./computers/"&gt;Computers&lt;/a&gt;</code> - will work the same as case 1 because <code>./</code> in the beginning of path means same sub level.
+      li
+        p <code>&lt;a href="/catalog/computers/"&gt;Computers&lt;/a&gt;</code> - will also work as expected the same as case 1 because <code>/</code> (slash) in the beginning means root. And we have such root route in merged routes.
+      li
+        p <code>&lt;a href="/computers/"&gt;Computers&lt;/a&gt;</code> - <b>won't work</b> as expected because <code>/</code> (slash) in the beginning means root. And we don't have such <code>/computers/</code> root route in our routes.
+
+
+    h2 Routable Tabs
+    p What routable tabs means and why is it good?
+    ul
+      li First of all, it provides opportunity to navigate to tabs by usual links instead of so called special tab-links.
+      li Second, when navigating to such route you can load a page with required tab opened.
+      li Third, with enabled Push State, the same tab will be opened when you navigate back and forward in history.
+      li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
+    p First of all we need to specify tabs routes in app routes. Let's assume we have a page with routable tabs on /tabs/ route:
+    pre
+      code.js
+        :code
+          routes = [
+            {
+              path: '/about-me/',
+              url: './pages/about-me/index.html',
+              // Pass "tabs" property to route
+              tabs: [
+                // First (default) tab has the same url as the page itself
+                {
+                  path: '/',
+                  id: 'about',
+                  // Fill this tab content from content string
+                  content: `
+                    <div class="block">
+                      <h3>About Me</h3>
+                      <p>...</p>
+                    </div>
+                  `
+                },
+                // Second tab
+                {
+                  path: '/contacts/',
+                  id: 'contacts',
+                  // Fill this tab content via Ajax request
+                  url: './pages/about-me/contacts.html',
+                },
+                // Third tab
+                {
+                  path: '/cv/',
+                  id: 'cv',
+                  // Load this tab content as a component via Ajax request
+                  componentUrl: './pages/about-me/cv.html',
+                },
+              ],
+            }
+          ]
+    p On the <code>/about-me/</code> page we may have the following structure for example:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="title">About Me</div>
+              </div>
+            </div>
+            <div class="toolbar tabbar">
+              <div class="toolbar-inner">
+                <a href="./" class="tab-link" data-route-tab-id="about">About</a>
+                <a href="./contacts/" class="tab-link" data-route-tab-id="contacts">>Contacts</a>
+                <a href="./cv/" class="tab-link" data-route-tab-id="cv">>CV</a>
+              </div>
+            </div>
+            <div class="tabs tabs-routable">
+              <div class="tab page-content" id="about"></div>
+              <div class="tab page-content" id="contacts"></div>
+              <div class="tab page-content" id="cv"></div>
+            </div>
+          </div>
+    p Almost the same as with usual <a href="tabs.html">Tabs</a> but with the difference that there is no more <code>tab-link-active</code> and <code>tab-active</code> classes on tab links and tabs. These classes and tabs will be switched by router. And there is a new <code>data-route-tab-id</code> attribute, it is required for tabs switcher to understand which link related to the selected route.
+    p You can learn more about Routable Tabs and their additional events in appropriate sections of <a href="tabs.html#routable-tabs">Tabs</a> component page.
+
+    h2 Routable Modals
+    p Modals can routable as well. By Modals here we mean the following components: <a href="popup.html">Popup</a>, <a href="popover.html">Popover</a>, <a href="action-sheet.html">Actions Sheet</a>, <a href="login-screen.html">Login Screen</a>, <a href="sheet.html">Sheet</a>. Probably Popup and Login Screen have more use cases here.
+    p And same features as for routable tabs and pages:
+    ul
+      li it provides opportunity to open modals by usual links instead of so called special links or API,
+      li with enabled Push State, the same modal will be opened when you refresh browser, navigate back and forward in history,
+      li with routable modals you can load modal itself and its content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
+    pre
+      code.js
+        :code
+          routes = [
+            ...
+            // Creates popup from passed HTML string
+            {
+              path: '/popup-content/',
+              popup: {
+                content: `
+                  <div class="popup">
+                    <div class="view">
+                      <div class="page">
+                        ...
+                      </div>
+                    </div>
+                  </div>
+                `
+              }
+            },
+            // Load Login Screen from file via Ajax
+            {
+              path: '/login-screen-ajax/',
+              loginScreen: {
+                url: './login-screen.html',
+                /* login-screen.html contains:
+                  <div class="login-screen">
+                    <div class="view">
+                      <div class="page">
+                        ...
+                      </div>
+                    </div>
+                  </div>
+                */
+              },
+            },
+            // Load Popup from component file
+            {
+              path: '/popup-component/',
+              loginScreen: {
+                componentUrl: './popup-component.html',
+                /* popup-component.html contains:
+                  <template>
+                    <div class="popup-screen">
+                      <div class="view">
+                        <div class="page">
+                          ...
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <style>...</style>
+                  <script>...</script>
+                */
+              },
+            },
+            // Use async route to check if the user is logged in:
+            {
+              path: '/secured-page/',
+              async(routeTo, routeFrom, resolve, reject) {
+                if (userIsLoggedIn) {
+                  resolve({
+                    url: 'secured-page.html',
+                  });
+                } else {
+                  resolve({
+                    loginScreen: {
+                      url: 'login-screen.html'
+                    } ,
+                  });
+                }
+              },
+            }
+          ]
+    p According to example above:
+    ul
+      li when you click on link with <code>/popup-content/</code> href attribute it will open Popup from specified string content,
+      li when you click on link with <code>/login-screen-ajax/</code> href attribute it will perform Ajax request to <code>login-screen.html</code> file and open it as a Login Screen,
+      li when you click on link with <code>/popup-component/</code> href attribute it will perform Ajax request to <code>popup-component.html</code> file, parse it as a Router Component and open it as a Popup,
+      li when you click on link with <code>/secured-content/</code> href attribute it will load page from <code>secured-page.html</code> if user is logged in or open Login Screen from <code>login-screen.html</code> file is user is not logged in.
+    h2 Redirect & Alias
+    h3 Alias
+    p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
+    pre
+      code.js
+        :code
+          routes = [
+            {
+              path: '/foo/',
+              url: 'somepage.html',
+              alias: '/bar/',
+            },
+            {
+              path: '/foo2/',
+              url: 'anotherpage.html',
+              alias: ['/bar2/', '/baz/', '/baz2/'],
+            }
+          ]
+    p According to the example above:
+    ul
+      li if we request page by <code>/foo/</code> or <code>/bar/</code> URL then first route will match and we get the page loaded from <code>somepage.html</code>
+      li if we request page by <code>/foo2/</code> , <code>/bar2/</code>, <code>/baz/</code>, <code>/baz2/</code> URL then second route will match and we the page loaded from <code>anotherpage.html</code>
+    h3 Redirect
+    p We can pass route redirect using <code>redirect</code> property:
+    ul
+      li if we pass <code>redirect</code> as a <code>string</code>, we must pass here direct redirect url
+      li if we pass <code>redirect</code> as a <code>function</code>, we need to call function's resolve parameter with redirect url
+    p For example:
+    pre
+      code.js
+        :code
+          routes = [
+            {
+              path: '/foo/',
+              url: 'somepage.html',
+            },
+            {
+              path: '/bar/',
+              redirect: '/foo/',
+            },
+            {
+              path: '/baz/',
+              redirect: function (route, resolve, reject) {
+                // if we have "user" query parameter
+                if (route.query.user) {
+                  // redirect to such url
+                  resolve('/foo/?user=' + route.query.user);
+                }
+                // otherwise do nothing
+                else reject();
+              }
+            }
+          ]
+    p Above example means:
+    ul
+      li when we request <code>/bar/</code> URL then router will redirect to <code>/foo/</code> URL and then search for route that match to this new URL. In this case it will match to the first route with path <code>/foo/</code> and load the page from <code>somepage.html</code>
+      li when we request <code>/baz/?user=john</code> we will redirect to URL <code>/foo/?user=john</code> that will match to first route
+      li when we request <code>/baz/</code> (without query) nothing will happen
+    .important-note
+      p Note in redirects we pass URL, not the route path like in alias
+
+
+
+
+

@@ -1,0 +1,170 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Framework7 Plugins API | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Framework7 Plugins API
+    p Framework7 comes with simple plugins/extensions API that allows you to create your own Framework7 plugins and extensions.
+    p It is based on expandable Classes. Every JavaScript class (component) that is used in Framework7 is expandable.
+    h2 Plugin Structure
+    p First of all let's look at the basic plugin's JS structure. It is basically an object:
+    pre
+      code.js
+        :code
+          var myPlugin = {
+            // Module Name
+            name: 'demo-module',
+            /* Install callback
+            It will be executed right after component is installed
+            Context of this callback points to Class where it was installed
+            */
+            install() {
+              const Class = this;
+              console.log(Class);
+            },
+            /* Create callback
+            It will be executed in the very beginning of class initilization (when we create new instance of the class)
+            */
+            create(instance) {
+              console.log('init', instance);
+            },
+            /*
+            Object with default class/plugin parameters
+            */
+            params: {
+              myPlugin: {
+                a: 1,
+                b: 2,
+                c: 3,
+              }
+            },
+            /* proto object extends Class prototype */
+            proto: {
+              demo() {
+                return 'demo-module-proto-method';
+              },
+              demoStatic: 'demo-module-proto-static',
+            },
+            // Extend Class with static props and methods, e.g. Class.myMethod
+            static: {
+              demo() {
+                return 'demo-module-class-method';
+              },
+              demoStatic: 'demo-module-class-static',
+            },
+            /* Initialized instance Props & Methods */
+            instance: {
+              demoProp: true,
+              demoMethod() {
+                return 'demo-method';
+              },
+            },
+            /* Event handlers */
+            on: {
+              demoEvent(a, b) {
+                console.log('demo-event', a, b);
+              },
+            },
+            /* Handle clicks */
+            clicks: {
+              // prop name means CSS selector of element to add click handler
+              'p': function ($clickedEl, data) {
+                // $clickedEl: Dom7 instance of clicked element
+                // data: element data set (data- attributes)
+              },
+            }
+          };
+
+    h2 Install Plugin
+    p After we have our plugin, we need to install it on required Class. To install plugin we must call `.use()` method on class. For example, if this is an common Framework7 plugin:
+    pre
+      code.js
+        :code
+          Framework7.use(myPlugin);
+    .important-note
+      p Plugin must be installed before class initialization (before calling <code>new Framework7()</code>)
+    h2 Demo Plugin
+    p Let's create simple Debug demo plugin. It will do nothing, just log some events:
+    pre
+      code.js
+        :code
+          /* framework7.debug.js */
+
+          var debugEnabled = false;
+
+          window.debugPlugin = {
+            name: 'debugger',
+            // extend app params with debugger params
+            params: {
+              debugger: false,
+            },
+            create: function () {
+              var app = this;
+              // extend app methods with debugger methods when app instance just created
+              app.debugger = {
+                enable: function () {
+                  debugEnabled = true;
+                },
+                disable: function () {
+                  debugFalse = true;
+                },
+              }
+            },
+            on: {
+              init: function () {
+                var app = this;
+                if (app.params.debugger) debugEnabled = true;
+                if(debugEnabled) console.log('app init');
+              },
+              pageBeforeIn: function (page) {
+                if(debugEnabled) console.log('pageBeforeIn', page);
+              },
+              pageAfterIn: function (page) {
+                if(debugEnabled) console.log('pageAfterIn', page);
+              },
+              pageBeforeOut: function (page) {
+                if(debugEnabled) console.log('pageBeforeOut', page);
+              },
+              pageAfterOut: function (page) {
+                if(debugEnabled) console.log('pageAfterOut', page);
+              },
+              pageInit: function (page) {
+                if(debugEnabled) console.log('pageInit', page);
+              },
+              pageBeforeRemove: function (page) {
+                if(debugEnabled) console.log('pageBeforeRemove', page);
+              },
+            }
+          }
+    p We need to include it to app:
+    pre
+      code
+        | &lt;body&gt;
+        |     ...
+        |     &lt;script src="path/to/framework7.js"&gt;&lt;/script&gt;
+        |     &lt;script src="path/to/framework7.debug.js"&gt;&lt;/script&gt;
+        |     &lt;script src="path/to/myapp.js"&gt;&lt;/script&gt;
+        | &lt;/body&gt;
+    pre
+      code.js
+        :code
+          /* myapp.js */
+
+          // install plugin first
+          Framework7.use(debugPlugin);
+
+          // init app
+          var app = new Framework7({
+            //enable debugger
+            debugger: true,
+          });
+
+          /*
+            we can later disable it by calling
+            app.debugger.disable();
+          */

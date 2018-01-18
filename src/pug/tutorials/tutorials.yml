@@ -1,0 +1,176 @@
+-
+  date: Jan 14, 2018
+  video: false
+  title: "Migration To Framework7 v2"
+  url: https://blog.framework7.io/migration-to-framework7-v2-eb6dc38ede3b
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v2
+-
+  date: Sep 8, 2017
+  video: false
+  title: "Mastering Framework7 v2 Router"
+  url: https://blog.framework7.io/mastering-v2-router-958ea2dbd24f
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v2
+-
+  date: July 24, 2017
+  video: true
+  title: "Video Tutorial: How to use Vuex with Framework7"
+  url: https://www.timo-ernst.net/blog/2017/07/24/use-vuex-framework7/
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v1
+-
+  date: June 6, 2017,
+  title: Login app template with Framework7-Vue  Webpack hot reload + Cordova + Icon/Splash screen generation
+  url: https://github.com/daniegarcia254/Framework7-Vue-Webpack-Cordova
+  author:
+    name: Daniel García
+    url: https://github.com/daniegarcia254/
+  badges:
+  - v1
+-
+  video: true
+  date: March 20, 2017
+  title: "Video Tutorial: Build a chat app in 20 minutes with Vue.js and Framework7"
+  url: https://www.timo-ernst.net/blog/2017/03/20/build-chat-app-20-minutes/
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v1
+-
+  video: true
+  date: January 9, 2017
+  title: "Video Tutorial: Create a Twitter app with Vue.js, Framework7 and PhoneGap"
+  url: https://www.timo-ernst.net/blog/2017/01/09/tutorial-create-a-twitter-app-with-vuejs-framework7-phonegap-and-webpack-episode-01/
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v1
+-
+  date: December 4, 2016
+  title: "Introducing: Star Track by PhoneGap"
+  url: http://phonegap.com/blog/2016/04/21/introducing-star-track-by-phonegap/
+  author:
+    name: Tommy-Carlos Williams / PhoneGap
+    url: https://github.com/devgeeks
+  badges:
+  - v1
+-
+  date: December 4, 2016
+  title: PhoneGap Day EU Essentials Workshop 2016
+  url: http://hollyschinsky.github.io/pgday-eu-star-track/index.html
+  author:
+    name: Holly Schinsky / PhoneGap
+    url: http://devgirl.org/
+  badges:
+  - v1
+-
+  date: December 4, 2016
+  title: Framework7 Tutorials
+  url: https://www.tutorialspoint.com/framework7/index.htm
+  author:
+    name: tutorialspoint
+    url: https://www.tutorialspoint.com/index.htm
+  badges:
+  - v1
+-
+  video: true
+  date: December 4, 2016
+  title: Framework7 Video Tutorials
+  url: https://www.youtube.com/playlist?list=PLnBvgoOXZNCM2C5hoDiLuRC2ufb-2LG9j
+  author:
+    name: Braintem
+    url: https://www.youtube.com/channel/UCfjlsXMcayeWoqQzE_8ALaQ
+  badges:
+  - v1
+-
+  video: true
+  date: December 4, 2016
+  title: "Video Screencast: How to get started with Framework7, VueJS and Webpack"
+  url: https://www.timo-ernst.net/blog/2016/11/13/how-to-get-started-with-framework7-vuejs-and-webpack/
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net
+  badges:
+  - v1
+-
+  video: true
+  date: November 5, 2015
+  title: "Video Screencast: How to use Framework7 with Angular 1.x"
+  url: http://www.timo-ernst.net/blog/2015/11/05/video-screencast-how-to-use-framework7-with-angularjs/
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net
+  badges:
+  - v1
+-
+  date: May 31, 2015,
+  title: Multilanguage application for Phonegap with Gettext, Jad and po2json (on Russian)
+  url: http://ekhlakov.blogspot.ru/2015/05/phonegap.html
+  author:
+    name: Oleg Ekhlakov
+    url: http://ekhlakov.blogspot.com/
+  badges:
+  - v1
+-
+  date: April 11, 2015,
+  title: Framework7 and Parse for User login
+  url: http://www.htmlcenter.com/blog/framework7-and-parse-for-user-login/
+  author:
+    name: Saul Zukauskas (HTML Center)
+    url: http://www.htmlcenter.com/
+  badges:
+  - v1
+-
+  date: April 5, 2015,
+  title: A movie-list demo app built with Framework7 and Angular 1.x
+  url: http://www.timo-ernst.net/2015/04/a-movie-list-demo-app-built-with-framework7-and-angular/
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net/
+  badges:
+  - v1
+-
+  title: Framework7 & PhoneGap – Getting Started
+  url: http://thejackalofjavascript.com/framework7-phonegap-getting-started/
+  author:
+    name: The Jackal of Javascript
+    url: http://thejackalofjavascript.com/
+  badges:
+  - v1
+-
+  video: true
+  title: Integrating Framework7 into Rails
+  url: http://codemy.net/posts/integrating-framework7-into-rails
+  author:
+    name: Codemy.net
+    url: http://codemy.net/
+  badges:
+  - v1
+-
+  video: true
+  title: Filling out Mobile Site UI (Variants + Framework7)
+  url: http://codemy.net/posts/filling-out-mobile-site-ui
+  author:
+    name: Codemy.net
+    url: http://codemy.net/
+  badges:
+  - v1
+-
+  video: true
+  title: Optimizing Rails App for Framework7
+  url: http://codemy.net/posts/optimizing-mobile-site
+  author:
+    name: Codemy.net
+    url: http://codemy.net/

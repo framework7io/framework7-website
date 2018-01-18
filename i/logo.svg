@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400px" height="400px" viewBox="0 0 400 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Round</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="10.4834541%" x2="50%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <circle id="path-2" cx="200" cy="200" r="200"></circle>
+        <linearGradient x1="94.2262842%" y1="28.4907593%" x2="34.9055035%" y2="61.944442%" id="linearGradient-4">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M47.9669921,283.361585 C50,294 106.5,348.100006 147,350 C147,350 152.349173,327.170934 156.349173,289.170934 L47.9669921,283.361585 Z" id="path-5"></path>
+        <linearGradient x1="88.5585139%" y1="50%" x2="5.2684286%" y2="100%" id="linearGradient-6">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M156.113083,289.529294 C161.722555,266.879371 170.638687,233.449196 182,206 L47.9669921,283.361585 L156.113083,289.529294 Z" id="path-7"></path>
+        <linearGradient x1="95.265027%" y1="9.31339475%" x2="11.9836703%" y2="62.083356%" id="linearGradient-8">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M181.481525,207.904079 L7.67353742,200.180926 C6,216 27,271 47.9669921,283.361585 L181.481525,207.904079 Z" id="path-9"></path>
+        <linearGradient x1="67.1571358%" y1="76.5608676%" x2="0%" y2="94.3080635%" id="linearGradient-10">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M181.590803,208.515352 C188.841359,190.997841 214.492994,142.62562 218,137 L7.67353742,200.180926" id="path-11"></path>
+        <linearGradient x1="80.6692233%" y1="52.1781387%" x2="0%" y2="50%" id="linearGradient-12">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M222.803032,137.962014 L25.6208864,64.5172895 C-4,94 -4,185 7.67353742,200.180926 L222.803032,137.962014 Z" id="path-13"></path>
+        <linearGradient x1="76.622759%" y1="50%" x2="4.68864364%" y2="28.8778411%" id="linearGradient-14">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="93.7402776%" y1="5.41509121%" x2="8.89805333%" y2="10.9954581%" id="linearGradient-15">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M294.436688,37.8034369 C314.590205,15.2276093 328,-1.42108547e-14 328,-1.42108547e-14 L143.6018,0.147992702 L78.8000031,0.200000763 C49,18 33,32.2586447 25.6208864,64.5172895 L294.436688,37.8034369 Z" id="path-16"></path>
+        <linearGradient x1="10.9389566%" y1="11.4532129%" x2="55.0490395%" y2="91.1340832%" id="linearGradient-17">
+            <stop stop-color="#D13700" offset="0%"></stop>
+            <stop stop-color="#F94721" offset="100%"></stop>
+        </linearGradient>
+        <path d="M133.869995,334.920013 C133.869995,334.920013 61.6806184,298.834824 25.58593,280.79223 C23.7239533,279.861487 -23.2813959,330.196879 15.8593021,344.09844 C55,358 108,349 133.869995,334.920013 Z" id="path-18"></path>
+        <linearGradient x1="11.961026%" y1="33.2900315%" x2="100%" y2="100%" id="linearGradient-19">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M133.869995,334.920013 L49,203 C49,203 38.6891691,229.668855 32,251 C26.7287963,267.809384 22.9893538,283.08015 23.7820091,283.476373 C59.9401375,301.550679 133.869995,334.920013 133.869995,334.920013 Z" id="path-20"></path>
+        <linearGradient x1="4.79679953%" y1="0%" x2="78.8898107%" y2="76.4422829%" id="linearGradient-21">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M133.865442,334.917273 C171,327 221,279 226.559998,259.76001 L49,204 L133.865442,334.917273 Z" id="path-22"></path>
+        <linearGradient x1="11.9836705%" y1="20.0165789%" x2="85.8910618%" y2="85.8681926%" id="linearGradient-23">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M226.555289,259.760502 C226.555289,259.760502 133.554679,174.006845 86.375308,132.635265 C85.8764941,132.197855 70.7924746,155.716616 62,173 C53.0647837,190.563971 47.7666506,204.678723 48.5853084,204.934664 C107.479501,223.347038 226.555289,259.760502 226.555289,259.760502 Z" id="path-24"></path>
+        <linearGradient x1="0%" y1="3.65270201%" x2="95.6930989%" y2="50%" id="linearGradient-25">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M226.559998,259.76001 C249,237 265,201 260,149 L82,133 L226.559998,259.76001 Z" id="path-26"></path>
+        <linearGradient x1="20.672013%" y1="38.8371981%" x2="97.3570207%" y2="100%" id="linearGradient-27">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M260,149 C260,149 194.876631,71.808263 161,35 C160.621282,34.588508 139.309237,59.2336046 122,82 C103.200852,106.726037 84.2235821,134.93021 85,135 C142.842032,140.199284 260,149 260,149 Z" id="path-28"></path>
+        <linearGradient x1="25.0561659%" y1="10.0003418%" x2="100%" y2="88.6450269%" id="linearGradient-29">
+            <stop stop-color="#B70000" offset="0%"></stop>
+            <stop stop-color="#FF2E2E" offset="100%"></stop>
+        </linearGradient>
+        <path d="M260,149 C260,57 211,12 193.973646,0.680481081 C193.973646,0.680481081 177,18 158,38 L260,149 Z" id="path-30"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Round">
+            <mask id="mask-3" fill="white">
+                <use xlink:href="#path-2"></use>
+            </mask>
+            <use id="Mask" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+            <g id="Left" mask="url(#mask-3)">
+                <g transform="translate(-3.000000, 43.000000)" id="Oval">
+                    <g fill="none">
+                        <use fill="url(#linearGradient-4)" xlink:href="#path-5"></use>
+                        <use fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-5"></use>
+                    </g>
+                    <g fill="none">
+                        <use fill="url(#linearGradient-6)" xlink:href="#path-7"></use>
+                        <use fill-opacity="0.8" fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-7"></use>
+                    </g>
+                    <g fill="none">
+                        <use fill="url(#linearGradient-8)" xlink:href="#path-9"></use>
+                        <use fill-opacity="0.6" fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-9"></use>
+                    </g>
+                    <g fill="none">
+                        <use fill="url(#linearGradient-10)" xlink:href="#path-11"></use>
+                        <use fill-opacity="0.4" fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-11"></use>
+                    </g>
+                    <g fill="none">
+                        <use fill="url(#linearGradient-12)" xlink:href="#path-13"></use>
+                        <use fill-opacity="0.2" fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-13"></use>
+                    </g>
+                    <path d="M217.997639,137.366948 C247.997639,95.3669482 276.094955,56.2974912 296,34 L25.6208864,64.5172895 L217.997639,137.366948 Z" fill="url(#linearGradient-14)"></path>
+                    <g fill="none">
+                        <use fill="url(#linearGradient-15)" xlink:href="#path-16"></use>
+                        <use fill-opacity="0.1" fill="#632003" xlink:href="#path-16"></use>
+                    </g>
+                </g>
+            </g>
+            <g id="Right" mask="url(#mask-3)">
+                <g transform="translate(140.000000, 51.000000)" id="Oval">
+                    <g>
+                        <use fill="url(#linearGradient-17)" xlink:href="#path-18"></use>
+                        <use fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-18"></use>
+                    </g>
+                    <g>
+                        <use fill="url(#linearGradient-19)" xlink:href="#path-20"></use>
+                        <use fill-opacity="0.8" fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-20"></use>
+                    </g>
+                    <g>
+                        <use fill="url(#linearGradient-21)" xlink:href="#path-22"></use>
+                        <use fill-opacity="0.6" fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-22"></use>
+                    </g>
+                    <g>
+                        <use fill="url(#linearGradient-23)" xlink:href="#path-24"></use>
+                        <use fill-opacity="0.4" fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-24"></use>
+                    </g>
+                    <g>
+                        <use fill="url(#linearGradient-25)" xlink:href="#path-26"></use>
+                        <use fill-opacity="0.2" fill="#FD4B00" style="mix-blend-mode: lighten;" xlink:href="#path-26"></use>
+                    </g>
+                    <g>
+                        <use fill="url(#linearGradient-27)" xlink:href="#path-28"></use>
+                        <use fill-opacity="0" fill="#FD4B00" xlink:href="#path-28"></use>
+                    </g>
+                    <g>
+                        <use fill="url(#linearGradient-29)" xlink:href="#path-30"></use>
+                        <use fill-opacity="0.1" fill="#632003" xlink:href="#path-30"></use>
+                    </g>
+                </g>
+            </g>
+            <g id="7" mask="url(#mask-3)" fill="#FFFFFF">
+                <g transform="translate(41.000000, -120.000000)">
+                    <path d="M34.6,163.211277 L283.8,163.211277 C256.199862,190.811415 231.100113,219.411129 208.5,249.011277 C185.899887,278.611425 166.500081,309.711114 150.3,342.311277 C134.099919,374.91144 121.700043,409.211097 113.1,445.211277 C104.499957,481.211457 100.399998,519.211077 100.8,559.211277 L112.8,559.211277 C112.8,518.411073 117.199956,480.311454 126,444.911277 C134.800044,409.5111 147.19992,375.911436 163.2,344.111277 C179.20008,312.311118 198.599886,281.811423 221.4,252.611277 C244.200114,223.411131 269.399862,195.011415 297,167.411277 L297,151.211277 L34.6,151.211277 L34.6,163.211277 Z"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

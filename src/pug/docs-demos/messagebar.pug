@@ -1,0 +1,203 @@
+extends _layout
+block vars
+  - var includeF7Icons = true
+  - var includeMaterialIcons = true
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .title Messages
+      .toolbar.messagebar
+        .toolbar-inner
+          a(href="#").link.toggle-sheet
+            <i class="icon f7-icons ios-only">camera_fill</i>
+            <i class="icon material-icons md-only">camera_alt</i>
+          .messagebar-area
+            textarea(placeholder="Message")
+          a(href="#").link Send
+        .messagebar-sheet
+      .page-content.messages-content
+        .messages
+          <div class="messages-title"><b>Sunday, Feb 9,</b> 12:58</div>
+          <div class="message message-sent">
+            <div class="message-content">
+              <div class="message-bubble">
+                <div class="message-text">Hi, Kate</div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-sent">
+            <div class="message-content">
+              <div class="message-bubble">
+                <div class="message-text">How are you?</div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-received">
+            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9)"></div>
+            <div class="message-content">
+              <div class="message-name">Kate</div>
+              <div class="message-bubble">
+                <div class="message-text">Hi, I am good!</div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-received">
+            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7)"></div>
+            <div class="message-content">
+              <div class="message-name">Blue Ninja</div>
+              <div class="message-bubble">
+                <div class="message-text">Hi there, I am also fine, thanks! And how are you?</div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-sent">
+            <div class="message-content">
+              <div class="message-bubble">
+                <div class="message-text">Hey, Blue Ninja! Glad to see you ;)</div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-sent">
+            <div class="message-content">
+              <div class="message-bubble">
+                <div class="message-text">Hey, look, cutest kitten ever!</div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-sent">
+            <div class="message-content">
+              <div class="message-bubble">
+                <div class="message-image">
+                  <img src="http://lorempixel.com/200/260/cats/4/" style="width:200px; height: 260px">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-received">
+            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9)"></div>
+            <div class="message-content">
+              <div class="message-name">Kate</div>
+              <div class="message-bubble">
+                <div class="message-text">Nice!</div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-received">
+            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/9)"></div>
+            <div class="message-content">
+              <div class="message-name">Kate</div>
+              <div class="message-bubble">
+                <div class="message-text">Like it very much!</div>
+              </div>
+            </div>
+          </div>
+          <div class="message message-received">
+            <div class="message-avatar" style="background-image:url(http://lorempixel.com/100/100/people/7)"></div>
+            <div class="message-content">
+              <div class="message-name">Blue Ninja</div>
+              <div class="message-bubble">
+                <div class="message-text">Awesome!</div>
+              </div>
+            </div>
+          </div>
+
+block scripts
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    var messages = app.messages.create({
+      el: '.messages',
+      firstMessageRule: function (message, previousMessage, nextMessage) {
+        if (message.isTitle) return false;
+        if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+        return false;
+      },
+      lastMessageRule: function (message, previousMessage, nextMessage) {
+        if (message.isTitle) return false;
+        if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+        return false;
+      },
+      tailMessageRule: function (message, previousMessage, nextMessage) {
+        if (message.isTitle) return false;
+        if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+        return false;
+      }
+    });
+
+    // Init messagebar
+    var messagebar = app.messagebar.create({
+      el: '.messagebar',
+      attachments: []
+    });
+
+    // Available Images
+    var images = [
+      'http://lorempixel.com/300/300/cats/1/',
+      'http://lorempixel.com/200/300/cats/2/',
+      'http://lorempixel.com/400/300/cats/3/',
+      'http://lorempixel.com/300/150/cats/4/',
+      'http://lorempixel.com/150/300/cats/5/',
+      'http://lorempixel.com/300/300/cats/6/',
+      'http://lorempixel.com/300/300/cats/7/',
+      'http://lorempixel.com/200/300/cats/8/',
+      'http://lorempixel.com/400/300/cats/9/',
+      'http://lorempixel.com/300/150/cats/10/'
+    ]
+    // Create sheet items
+    var sheetHtml = '';
+    images.forEach(function (image) {
+      sheetHtml +=
+        '<label class="checkbox messagebar-sheet-image" style="background-image:url(' + image + ')">' +
+          '<input type="checkbox">' +
+          '<i class="icon icon-checkbox"></i>' +
+        '</label>';
+    });
+
+    $$('.messagebar-sheet').html(sheetHtml);
+
+    /*========================
+      Handle Attachments
+      ========================*/
+    function checkAttachments() {
+      if (messagebar.attachments.length > 0) {
+        messagebar.attachmentsShow();
+        messagebar.setPlaceholder('Add comment or Send');
+      } else {
+        messagebar.attachmentsHide();
+        messagebar.setPlaceholder('Message');
+      }
+    }
+
+    $$('.messagebar-sheet-image input').on('change', function (e) {
+      var index = $$(e.target).parents('.messagebar-sheet-image').index();
+      var image = images[index];
+      if (e.target.checked) {
+        // Add to attachments
+        messagebar.attachments.unshift(image)
+      } else {
+        // Remove from attachments
+        messagebar.attachments.splice(messagebar.attachments.indexOf(image), 1);
+      }
+      messagebar.renderAttachments();
+      checkAttachments();
+    });
+
+    messagebar.on('attachmentDelete', function (messagebar, attachmentEl, attachmentIndex) {
+      var image = messagebar.attachments.splice(attachmentIndex, 1)[0];
+      messagebar.renderAttachments();
+      checkAttachments();
+      // Uncheck in sheet
+      var imageIndex = images.indexOf(image);
+      messagebar.$el.find('.messagebar-sheet .checkbox').eq(imageIndex).find('input').prop('checked', false);
+    });
+
+    /*========================
+      Toggle Sheet
+      ========================*/
+    $$('a.toggle-sheet').on('click', function () {
+      messagebar.sheetToggle();
+    });

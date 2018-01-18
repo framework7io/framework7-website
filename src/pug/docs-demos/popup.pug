@@ -1,0 +1,77 @@
+extends _layout
+block content
+  .view.view-main
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Popup
+          .right
+      .page-content
+        .block
+          p
+            a(href="#", data-popup=".popup-about").link.popup-open Open About Popup
+          p
+            a(href="#", data-popup=".popup-services").link.popup-open Open Services Popup
+          p
+            a(href="#").link.dynamic-popup Create Dynamic Popup
+  .popup.popup-about
+    .block
+      p About
+      p
+        a(href="#").link.popup-close Close popup
+      p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque, pellentesque nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem. Aliquam et elementum neque. Vestibulum sed egestas ipsum.
+
+  .popup.popup-services
+    .block
+      p Services
+      p
+        a(href="#").link.popup-close Close popup
+      p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac. Integer vitae quam a ante lobortis lobortis. Nam vehicula sagittis quam, sit amet congue purus consequat sed. Maecenas eget mattis lectus. Aliquam luctus luctus leo ac fringilla. Sed nec eros vel purus tincidunt tincidunt in in orci. Sed tellus neque, pellentesque nec metus id, congue elementum odio. Donec turpis tellus, mollis ac leo eget, accumsan fermentum lorem. Aliquam et elementum neque. Vestibulum sed egestas ipsum.
+
+
+block scripts
+  script.
+    var app = new Framework7();
+
+    var $$ = Dom7;
+
+    // DOM events for About popup
+    $$('.popup-about').on('popup:open', function (e, popup) {
+      console.log('About popup open');
+    });
+    $$('.popup-about').on('popup:opened', function (e, popup) {
+      console.log('About popup opened');
+    });
+
+    // Create dynamic Popup
+    var dynamicPopup = app.popup.create({
+      content: '<div class="popup">'+
+                  '<div class="block">'+
+                    '<p>Popup created dynamically.</p>'+
+                    '<p><a href="#" class="link popup-close">Close me</a></p>'+
+                  '</div>'+
+                '</div>',
+      // Events
+      on: {
+        open: function (popup) {
+          console.log('Popup open');
+        },
+        opened: function (popup) {
+          console.log('Popup opened');
+        },
+      }
+    });
+    // Events also can be assigned on instance later
+    dynamicPopup.on('close', function (popup) {
+      console.log('Popup close');
+    });
+    dynamicPopup.on('closed', function (popup) {
+      console.log('Popup closed');
+    });
+
+    // Open dynamic popup
+    $$('.dynamic-popup').on('click', function () {
+      dynamicPopup.open();
+    });
+

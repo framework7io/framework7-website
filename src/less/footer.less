@@ -1,0 +1,130 @@
+// Footer
+footer {
+  background: @footerBg;
+  color: #666;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  position: relative;
+  z-index: 100;
+  .center {
+    padding-top: 20px;
+  }
+  a {
+    color: #888;
+    text-decoration: none;
+  }
+  a:hover {
+    color: @primaryColor;
+    text-decoration: none;
+  }
+  .links {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .links-block {
+    text-align: left;
+    margin-right: 30px;
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  .links-block-title {
+    font-size: 16px;
+  }
+  .sponsors {
+    text-align: right;
+    margin-left: auto;
+  }
+  .sponsors-title {
+    font-size: 16px;
+    margin-bottom: 5px;
+    text-align: right;
+  }
+  #bsap_1306028 {
+    margin-top: 5px;
+    margin-right: -5px;
+    font-size: 0;
+    text-align: right;
+    a {
+      text-align: left;
+      margin-bottom: 20px;
+      font-size: 14px;
+      box-sizing: border-box;
+      display: inline-block;
+      border: none;
+      opacity: 0.97;
+      font-family: inherit;
+      position: relative;
+      overflow: hidden;
+      float: none;
+      margin: 5px;
+      img {
+        border: none;
+        outline: 0;
+      }
+      &:hover {
+        opacity: 1;
+      }
+    }
+    a.adhere {
+      border: 1px solid rgba(0,0,0,0.4);
+      border-radius: 3px;
+      text-align: center;
+      width: 220px;
+      height: 65px;
+      background: none;
+      font-family: inherit;
+      line-height: 63px;
+      font-weight: normal;
+      transform: translate3d(0,0,0);
+      &:hover {
+        background: rgba(255,255,255,0.05);
+      }
+    }
+  }
+  .copy {
+    padding: 20px 0;
+    font-size: 14px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    a {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    p {
+      margin: 5px 0;
+      &:first-child {
+        margin-top: 0;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  a.keycdn-link {
+    text-decoration: none;
+    border-bottom: none;
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .copy-left {
+    float: left;
+  }
+  .copy-right {
+    float: right;
+  }
+  img.keycdn-logo {
+    height: 20px;
+    width: auto;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+}

@@ -1,0 +1,55 @@
+extends ../_internal-template
+
+block vars
+  - var activeLink = 'templates';
+  - var title = 'Ready To Use Framework7 App Templates';
+
+block content
+  - var templates = getYamlData('templates/templates.yml');
+
+  h1.text-align-center Official Starter Templates
+  .apps.templates
+    each app in templates.official
+      .app
+        a.app-icon(href=app.url, target="_blank", data-hover-text="Download")
+          if (app.iconUrl)
+            img(src=app.iconUrl.replace('#{cdn}', cdn))
+          else if (app.icon)
+            .img(style='background-color: ' + app.icon.bgColor + '; color: ' + app.icon.textColor) #{app.icon.text}
+
+          if app.badges
+            .app-badges
+              each badge in app.badges
+                span #{badge}
+        .app-info
+          .app-title #{app.title}
+          if app.author
+            .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
+          .app-buttons
+            a(href=app.url, target="_blank") Download
+            if app.previewUrl
+              a(href=app.previewUrl, target="_blank") Preview
+          .app-description #{app.description}
+  h2.text-align-center Community Starter Apps & Templates
+  .apps.templates
+    each app in templates.community
+      .app
+        a.app-icon(href=app.url, target="_blank", data-hover-text="Download")
+          if (app.iconUrl)
+            img(src=app.iconUrl.replace('#{cdn}', cdn))
+          else if (app.icon)
+            .img(style='background-color: ' + app.icon.bgColor + '; color: ' + app.icon.textColor) #{app.icon.text}
+
+          if app.badges
+            .app-badges
+              each badge in app.badges
+                span #{badge}
+        .app-info
+          .app-title #{app.title}
+          if app.author
+            .app-author by <a href="#{app.author.url}" target="_blank">#{app.author.name}</a>
+          .app-buttons
+            a(href=app.url, target="_blank") Download
+            if app.previewUrl
+              a(href=app.previewUrl, target="_blank") Preview
+          .app-description #{app.description}

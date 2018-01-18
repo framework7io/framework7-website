@@ -1,0 +1,198 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Contacts List (Table View) | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Contacts List
+    p Contacts lists indended to display list of personal people contacts.
+    p Contacts list is a particular case of grouped <a href="list-view.html">List View</a> with one difference.
+    p The only difference is what we nedd to add additional <code><b>contacts-list</b></code> class to the list view element (<code>&lt;div class="list"&gt;</code>)
+    .with-device
+      h3(data-device-preview="../docs-demos/contacts-list.html") Example
+      pre
+        code
+          | &lt;div class="page-content"&gt;
+          |   &lt;div class="list contacts-list"&gt;
+          |     &lt;div class="list-group"&gt;
+          |       &lt;ul&gt;
+          |         &lt;li class="list-group-title"&gt;A&lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Aaron &lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Abbie&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Adam&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Adele&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Agatha&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Agnes&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Albert&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Alexander&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="list-group"&gt;
+          |       &lt;ul&gt;
+          |         &lt;li class="list-group-title"&gt;B&lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Bailey&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Barclay&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Bartolo&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Bellamy&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Belle&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Benjamin&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="list-group"&gt;
+          |       &lt;ul&gt;
+          |         &lt;li class="list-group-title"&gt;C&lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Caiden&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Calvin&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Candy&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Carl&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Cherilyn&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Chester&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Chloe&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="list-group"&gt;
+          |       &lt;ul&gt;
+          |         &lt;li class="list-group-title"&gt;V&lt;/li&gt;
+          |         &lt;li&gt;
+          |           &lt;div class="item-content"&gt;
+          |             &lt;div class="item-inner"&gt;
+          |               &lt;div class="item-title"&gt;Vladimir&lt;/div&gt;
+          |             &lt;/div&gt;
+          |           &lt;/div&gt;
+          |         &lt;/li&gt;
+          |       &lt;/ul&gt;
+          |     &lt;/div&gt;
+          |   &lt;/div&gt;
+          | &lt;/div&gt;

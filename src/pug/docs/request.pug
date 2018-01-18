@@ -1,0 +1,360 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Request | Framework7 Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Request / Ajax
+    .docs-index
+    p Framework7 comes with handy Request library to work with XHR requests (Ajax) right from the box.
+    p It is avaialable as a <code><b>request</b></code> property of Framework7 class (<code>Framework7.request</code>) and same property on initialized app instance (<code>app.request</code>):
+    pre
+      code.js
+        :code
+          // If we need it in place where we don't have access to app instance or before we init the app
+          Framework7.request.get('somepage.html', function (data) {
+            console.log(data);
+          });
+
+
+          // After we init the app we can access it as app instance property
+          var app = new Framework7({ /*...*/ });
+
+          app.request.get('somepage.html', function (data) {
+            console.log(data);
+          });
+    h2 API
+    .method-wrap
+      p
+        span.method app.request(<span>parameters</span>)
+        span - Load data from the server
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span> - Request parameters
+      p.method-returns Returns plain XHR object
+    .method-wrap
+      p
+        span.method Framework7.request(<span>parameters</span>)
+        span - Load data from the server
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span> - Request parameters
+      p.method-returns Returns plain XHR object
+    p Let's look at the list of available parameters
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td async
+          td boolean
+          td true
+          td If you need synchronous requests, set this option to <code>false</code>
+        tr
+          td method
+          td string
+          td GET
+          td Request method (e.g. "POST", "GET", "PUT")
+        tr
+          td cache
+          td boolean
+          td true
+          td If set to false, it will force requested pages not to be cached by the browser. Setting cache to false will only work correctly with HEAD and GET requests. It works by appending <code>_nocache={timestamp}</code> to the GET parameters
+        tr
+          td contentType
+          td string
+          td application/x-www-form-urlencoded
+          td Content type. Also could be <code>multipart/form-data</code> or <code>text/plain</code>. For cross-domain requests, setting the content type to anything other than application/x-www-form-urlencoded, multipart/form-data, or text/plain will trigger the browser to send a preflight OPTIONS request to the server
+        tr
+          td crossDomain
+          td boolean
+          td
+          td If you wish to force a crossDomain request (such as JSONP) on the same domain, set the value of crossDomain to true. When <code>true</code> additional <code>X-Requested-With: XMLHttpRequest</code> header will not be added to request. By default it will try to guess depending on app and request hosts
+        tr
+          td data
+          td object<br>string<br>array
+          td
+          td Data to be sent to the server. It is converted to a query string, if not already a string. It's appended to the url for GET-requests. See processData option to prevent this automatic processing. For POST requests could be <code>FormData</code> instance
+        tr
+          td processData
+          td boolean
+          td true
+          td By default, data passed in to the data option as an object (technically, anything other than a string) will be processed and transformed into a query string, fitting to the default content-type "application/x-www-form-urlencoded". If you want to send a DOMDocument, or other non-processed data, set this option to <code>false</code>
+        tr
+          td dataType
+          td string
+          td text
+          td The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>
+        tr
+          td headers
+          td object
+          td
+          td An object of additional header key/value pairs to send along with requests using the XMLHttpRequest transport. For example:
+        tr
+          td xhrFields
+          td object
+          td
+          td An object of key/value pairs to set on the native XHR object
+        tr
+          td username
+          td string
+          td
+          td A username to be used with XMLHttpRequest in response to an HTTP access authentication request
+        tr
+          td password
+          td string
+          td
+          td A password to be used with XMLHttpRequest in response to an HTTP access authentication request
+        tr
+          td timeout
+          td number
+          td 0
+          td Set a timeout (in milliseconds) for the request
+        tr
+          th(colspan="4") Callbacks
+
+        tr
+          td beforeCreate
+          td function (parameters)
+          td
+          td A pre-request callback function that can be used to modify passed parameters
+        tr
+          td beforeOpen
+          td function (xhr, parameters)
+          td
+          td A pre-request callback function that will be called before XHR opened. Can be used to modify XHR object
+        tr
+          td beforeSend
+          td function (xhr)
+          td
+          td A pre-request callback function that will be called after XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc
+        tr
+          td error
+          td function (xhr, status)
+          td
+          td A function to be called if the request fails
+        tr
+          td success
+          td function (data, status, xhr)
+          td
+          td A function to be called if the request succeeds
+        tr
+          td complete
+          td function (xhr, status)
+          td
+          td A function to be called when the request finishes (after success and error callbacks are executed)
+        tr
+          td statusCode
+          td object
+          td
+          td An object of numeric HTTP codes and functions to be called when the response has the corresponding code. For example, the following will alert when the response status is a 404:
+            pre
+              code.js
+                | app.request({
+                |   url: 'somepage.html',
+                |   statusCode: {
+                |     404: function (xhr) {
+                |       alert('page not found');
+                |     }
+                |   }
+                | })
+
+    h2 Shorthand Methods
+    p Request comes with some pre configured methods for ease of use.
+    h3 Get
+    .method-wrap
+      p
+        span.method app.request.get(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Load data from the server using a HTTP GET request
+      ul.method-parameters
+        li
+          span.parameter url
+          |  - <span class="parameter-type">string</span> - Request url
+        li
+          span.parameter data
+          |  - <span class="parameter-type">object</span> - A plain object or string that is sent to the server with the request. <em>Optional</em>
+        li
+          span.parameter success
+          |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        li
+          span.parameter error
+          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+        li
+          span.parameter dataType
+          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>. <em>Optional</em>
+      p.method-returns Returns plain XHR object
+    .method-wrap
+      p
+        span.method Framework7.request.get(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Load data from the server using a HTTP GET request
+      p.method-returns Returns plain XHR object
+    p For example:
+    pre
+      code.js
+        :code
+          var app = new Framework7();
+
+          var $$ = Dom7;
+
+          app.request.get('blog-post.php', { foo:'bar', id:5 }, function (data) {
+            $$('.articles').html(data);
+            console.log('Load was performed');
+          });
+    h3 Post
+    .method-wrap
+      p
+        span.method app.request.post(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Load data from the server using a HTTP POST request
+      ul.method-parameters
+        li
+          span.parameter url
+          |  - <span class="parameter-type">string</span> - Request url
+        li
+          span.parameter data
+          |  - <span class="parameter-type">object</span> - A plain object or <em>FormData</em> or string that is sent to the server with the request. <em>Optional</em>
+        li
+          span.parameter success
+          |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        li
+          span.parameter error
+          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+        li
+          span.parameter dataType
+          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>. <em>Optional</em>
+      p.method-returns Returns plain XHR object
+    .method-wrap
+      p
+        span.method Framework7.request.post(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Load data from the server using a HTTP POST request
+      p.method-returns Returns plain XHR object
+    p For example:
+    pre
+      code.js
+        :code
+          var app = new Framework7();
+
+          var $$ = Dom7;
+
+          app.request.post('auth.php', { username:'foo', password: 'bar' }, function (data) {
+            $$('.login').html(data);
+            console.log('Load was performed');
+          });
+    h3 Json
+    .method-wrap
+      p
+        span.method app.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
+        span - Load JSON-encoded data from the server using a GET HTTP request
+      ul.method-parameters
+        li
+          span.parameter url
+          |  - <span class="parameter-type">string</span> - Request url
+        li
+          span.parameter data
+          |  - <span class="parameter-type">object</span> - A plain object or <em>FormData</em> or string that is sent to the server with the request. <em>Optional</em>
+        li
+          span.parameter success
+          |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        li
+          span.parameter error
+          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+      p.method-returns Method nothing returns
+    .method-wrap
+      p
+        span.method Framework7.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
+      p.method-returns Method returns nothing
+    p For example:
+    pre
+      code.js
+        :code
+          Framework7.request.json('items.json', function (data) {
+            console.log(data);
+          });
+
+          var app = new Framework7();
+
+          app.request.json('users.json', function (data) {
+            console.log(data);
+          });
+    h3 PostJSON
+    .method-wrap
+      p
+        span.method app.request.postJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Send JSON data using a HTTP POST request
+      ul.method-parameters
+        li
+          span.parameter url
+          |  - <span class="parameter-type">string</span> - Request url
+        li
+          span.parameter data
+          |  - <span class="parameter-type">object</span> - A plain object
+        li
+          span.parameter success
+          |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        li
+          span.parameter error
+          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+        li
+          span.parameter dataType
+          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>. By default is <code>json</code>. <em>Optional</em>
+      p.method-returns Returns plain XHR object
+    .method-wrap
+      p
+        span.method Framework7.request.postJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Send JSON data using a HTTP POST request
+      p.method-returns Returns plain XHR object
+    p For example:
+    pre
+      code.js
+        :code
+          var app = new Framework7();
+
+          var $$ = Dom7;
+
+          app.request.postJSON('http://api.myapp.com', { username:'foo', password: 'bar' }, function (data) {
+            console.log(data);
+          });
+    h2 Request Setup
+    .method-wrap
+      p
+        span.method app.request.setup(parameters)
+        span - Set default values for future Ajax requests. <b>Its use is not recommended</b>
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span> - Default requests parameters
+    .method-wrap
+      p
+        span.method Framework7.request.setup(parameters)
+        span - Set default values for future Ajax requests. <b>Its use is not recommended</b>
+    p For example:
+    pre
+      code.js
+        :code
+          // After the following setup all XHR requests will have additional 'Autorization' header
+          Framework7.request.setup({
+            headers: {
+              'Authorization': 'sometokenvalue'
+            }
+          })
+    h2 Original Request Parameters
+    p Each of request methods returns plain XHR object, which is also available in callbacks. This default XHR object is extended with the following properties:
+    table.methods-table
+      tbody
+        tr
+          td xhr.requestParameters
+          td Object with passed XHR request parameters
+        tr
+          td xhr.requestUrl
+          td String with request URL
+

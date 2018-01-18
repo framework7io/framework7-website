@@ -1,0 +1,51 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Support | Framework7 Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Support
+    p Framework7 also comes with features detection library.
+    p It is avaialable as a <code><b>support</b></code> property of Framework7 class (<code>Framework7.support</code>) and same property on initialized app instance (<code>app.support</code>):
+    pre
+      code.js
+        :code
+          // If we need it in place where we don't have access to app instance or before we init the app
+          if (!Framework7.support.touch) {
+            console.log('No touch support');
+          }
+
+
+          // After we init the app we can access it as app instance property
+          var app = new Framework7({ /*...*/ });
+          if (!app.support.touch) {
+            console.log('No touch support');
+          }
+    h3 Support Properties
+    table.methods-table
+      tr
+        td touch
+        td Touch events support (touchstart, touchmove, touchend)
+      tr
+        td transforms3d
+        td CSS 3D Transforms support
+      tr
+        td flexbox
+        td CSS Flexbox model support
+      tr
+        td observer
+        td Mutation Observers support
+      tr
+        td passiveListener
+        td Passive event listener support
+      tr
+        td gestures
+        td Gestures event support (gesturestart, gesturechange, gestureend)
+      tr
+        td positionSticky
+        td CSS <code>position:sticky</code> support

@@ -1,0 +1,36 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'RTL Layout | Framework7 Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 RTL Layout
+    p Framework7 has full support for RTL (right to left) languages like Arabic and Hebrew. To enable RTL mode you simply need to include CSS file with RTL styles instead of usual one and add <code>dir="rtl"</code> attribute on <code>html</code> element:
+    pre
+      code
+        | &lt;!DOCTYPE html&gt;
+        | &lt;html dir="rtl"&gt;
+        |   &lt;head&gt;
+        |     ...
+        |     &lt;title&gt;My App&lt;/title&gt;
+        |     &lt;!-- Path to Framework7 RTL stylesheet --&gt;
+        |     &lt;link rel="stylesheet" href="path/to/framework7.rtl.min.css"&gt;
+        |
+        |     &lt;!-- Path to your custom app styles--&gt;
+        |     &lt;link rel="stylesheet" href="path/to/my-app.css"&gt;
+        |     ...
+    p If you build your app only using iOS or MD theme then you can include theme-related RTL stylesheet:
+    pre
+      code
+        :code
+          <!-- For iOS theme only -->
+          <link rel="stylesheet" href="path/to/framework7.rtl.ios.min.css">
+          <!-- For MD theme only -->
+          <link rel="stylesheet" href="path/to/framework7.rtl.md.min.css">
+    .important-note
+      p Note that all RTL "mirrors" in RTL mode are made using CSS only, so you should not change order of HTML elements and keep it in LTR way.

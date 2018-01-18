@@ -1,0 +1,120 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Device | Framework7 Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Device
+    .docs-index
+    p Framework7 comes with Device detection library with which contains useful information about device and platform.
+    p It is avaialable as a <code><b>device</b></code> property of Framework7 class (<code>Framework7.device</code>) and same property on initialized app instance (<code>app.device</code>):
+    pre
+      code.js
+        :code
+          // If we need it in place where we don't have access to app instance or before we init the app
+          if (Framework7.device.ios) {
+            console.log('It is iOS device');
+          }
+
+
+          // After we init the app we can access it as app instance property
+          var app = new Framework7({ /*...*/ });
+          if (app.device.android) {
+            console.log('It is android device');
+          }
+    h2 Methods & Properties
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td ios
+          td <code>true</code> for iOS device
+        tr
+          td android
+          td <code>true</code> for Android device
+        tr
+          td windows
+          td <code>true</code> for Windows Phone device
+        tr
+          td desktop
+          td <code>true</code> for desktop browser
+        tr
+          td iphone
+          td <code>true</code> for iPhone
+        tr
+          td iphoneX
+          td <code>true</code> for iPhone X
+        tr
+          td ipod
+          td <code>true</code> for iPod
+        tr
+          td ipad
+          td <code>true</code> for iPad
+        tr
+          td cordova
+          td <code>true</code> when app running in cordova environment
+        tr
+          td phonegap
+          td alias for <code>cordova</code> prop
+        tr
+          td webView
+          td <code>true</code> if app runs in web view - webapp installed to home screen
+        tr
+          td os
+          td Contains OS can be <code>ios</code>, <code>android</code> or <code>windows</code> (for Windows Phone)
+        tr
+          td osVersion
+          td Contains OS version, e.g. <code>11.2.0</code>
+        tr
+          td pixelRatio
+          td Device pixel ratio
+        tr
+          td statusbar
+          td <code>true</code> if app running in full-screen mode and requires <a href="status-bar.html">Status Bar</a> overlay
+        tr
+          th(colspan="2") Methods
+        tr
+          td needsStatusbarOverlay()
+          td Returns <code>true</code> if app running in full-screen mode and requires <a href="status-bar.html">Status Bar</a> overlay
+    h2 Device Related Classes
+    p Also this Device detecting library adds additional classes on <code>&lt;html&gt;</code> element which can help you with different CSS styles for different OS and platforms.
+    p So if you open app with iOS 7.1 device you may have the following classes:
+    pre
+      code
+        | &lt;html class="ios device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-pixel-ratio-1"&gt;
+        | ...
+    p If you open app with iOS 7.1 device with retina screen and your app running in full screen mode:
+    pre
+      code
+        | &lt;html class="device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-retina device-pixel-ratio-2 with-statusbar"&gt;
+        | ...
+    p If you open app on iPhone X and your app running in full screen mode:
+    pre
+      code
+        | &lt;html class="device-ios device-iphone-x device-ios-11 device-ios-11-0 device-ios-gt-6 device-ios-gt-7 device-ios-gt-8 device-ios-gt-9 device-ios-gt-10 device-retina device-pixel-ratio-3 with-statusbar"&gt;
+        | ...
+    p If you open app with Android 4.4 device you will have the following classes:
+    pre
+      code
+        | &lt;html class="device-android device-android-4 device-android-4-4"&gt;
+        | ...
+    p In other words classes calculated by the following rule:
+    pre
+      code.nohighlight
+        :code
+          device-[os]
+          device-[os major version]
+          device-[os full version]
+          [device-desktop]
+          [device-retina]
+          [device-iphone-x] - if it is iPhone X
+          [device-desktop]
+          device-pixel-ratio-[pixel ratio]
+          [with-statusbar] - in case the app is running in full screen mode
+    .important-note
+      p Note that "greater than" (ios-gt-6: for all iOS greater than iOS 6) classes available only for iOS

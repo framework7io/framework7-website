@@ -1,0 +1,119 @@
+.tutorials {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.tutorial {
+  width: ~"calc(100% / 3 - 40px)";
+  box-sizing: border-box;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
+  margin-bottom: 40px;
+  position: relative;
+  &:nth-child(3n), &:nth-child(3n - 1) {
+    margin-left: 40px;
+  }
+  @media (max-width: 960px) {
+    width: ~"calc(100% / 2 - 20px)";
+    &:nth-child(3n), &:nth-child(3n - 1) {
+      margin-left: 0px;
+    }
+    &:nth-child(2n) {
+      margin-left: 40px;
+    }
+  }
+  @media (max-width: 640px) {
+    width: 100%;
+    &:nth-child(2n) {
+      margin-left: 0px;
+    }
+  }
+  &.video .tutorial-title a:after{
+    content: '▶︎';
+    background: @primaryColor;
+    width: 20px;
+    box-sizing: border-box;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 10px;
+    margin-left: 5px;
+    color: #fff;
+    text-align: center;
+    line-height: 20px;
+    font-size: 10px;
+    padding-left: 2px;
+  }
+}
+.tutorial-title {
+  .h5;
+  margin: 0;
+  a {
+    color: inherit;
+    transition-duration: 200ms;
+    display: block;
+    &:hover {
+      color: @primaryColor;
+      text-decoration: none;
+    }
+  }
+  span.video {
+    margin-left: 5px;
+    background:darken(@darkColor,10%);
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    color:#fff;
+    font-weight: normal;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    &:after {
+      content: '';
+      width: 0;
+      height: 0;
+      position: absolute;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid #fff;
+      position: absolute;
+      left: 50%;
+      margin-left: -3px;
+      margin-top: -4px;
+      top: 50%;
+    }
+  }
+}
+.tutorial-author {
+  display: block;
+  margin-top: 5px;
+}
+.tutorial-date {
+  color: #777;
+  margin-bottom: 5px;
+}
+a.donate-button {
+  .button();
+  &:hover {
+    background: rgba(red(@darkColor),green(@darkColor),blue(@darkColor),0.1);
+  }
+}
+h1 + .tutorial-author {
+  margin-top: -20px;
+  margin-bottom: 25px;
+}
+.tutorial-badges {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  white-space: nowrap;
+  span {
+    .badge();
+    background: #aaa;
+  }
+}

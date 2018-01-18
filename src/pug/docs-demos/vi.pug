@@ -1,0 +1,106 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Video Intelligence
+          .right
+      .page-content
+        .block.block-strong
+          p
+            b Prepaired ad
+            | . Ad already prepaired (loaded) and waiting to start playing when required.
+          p
+            a.button.button-raised.show-prepaired Prepaired Ad
+        .block.block-strong
+          p
+            b Create ad and show
+            |  it at a time.
+          p
+            a.button.button-raised.create-and-show Create & Show
+        .block.block-strong
+          p
+            b Autoplay Fallback
+            | . In some cases (like old iOS Safari) video can't be played automatically without user interaction. In this case you may use custom fallback (e.g. to show a Dialog) which will require user interaction to play a video ad.
+          p
+            a.button.button-raised.create-and-show-with-custom-callback Create & Show With Custom Fallback
+        .block.block-strong
+          p
+            b Rewarded Ad
+            | . vi API also comes with handy events to check whether the video was fully completed or not. Useful, for example, in case when you need to reward user for watching an ad.
+          p
+            a.button.button-raised.create-and-show-rewarded Create & Show Rewarded Ad
+
+block scripts
+  script.
+    var app = new Framework7({
+      id: 'io.framework7.testapp',
+      vi: {
+        placementId: 'pltd4o7ibb9rc653x14',
+      }
+    });
+
+    var $$ = Dom7;
+
+    // Create prepaire ad
+    var prepairedAd;
+    if (!app.vi.sdkReady) {
+      app.on('viSdkReady', function () {
+        prepairedAd = app.vi.createAd({
+          autoplay: false,
+        });
+      })
+    } else {
+      prepairedAd = app.vi.createAd({
+        autoplay: false,
+      });
+    }
+
+    // Show prepaired ad
+    $$('.show-prepaired').on('click', function () {
+      prepairedAd.start();
+    });
+
+    // Create and show ad
+    $$('.create-and-show').on('click', function () {
+      app.vi.createAd();
+    });
+
+    // With custom autplay fallback
+    $$('.create-and-show-with-custom-callback').on('click', function () {
+      app.vi.createAd({
+        fallbackOverlay: false,
+        on: {
+          autoplayFailed() {
+            const ad = this;
+            app.dialog.alert('Check out this awesome ad', () => {
+              ad.start();
+            })
+          }
+        }
+      });
+    });
+
+    // Create and show rewarded ad
+    $$('.create-and-show-rewarded').on('click', function () {
+      app.vi.createAd({
+        autoplay: false,
+        on: {
+          ready() {
+            const ad = this;
+            app.dialog.alert('Check out this awesome ad to get the reward', () => {
+              ad.start();
+            })
+          },
+          complete() {
+            app.dialog.alert('Congrats! You got the reward!')
+          },
+          userexit() {
+            app.dialog.alert('Sorry, no reward for you!')
+          },
+        }
+      });
+    });
+

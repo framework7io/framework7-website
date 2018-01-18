@@ -1,0 +1,230 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Utils | Framework7 Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Utils
+    .docs-index
+    p Framework7 utils is a set of helper methods that used internally and can be handy during development as well.
+    p It is avaialable as a <code><b>utils</b></code> property of Framework7 class (<code>Framework7.utils</code>) and same property on initialized app instance (<code>app.utils</code>):
+    pre
+      code.js
+        :code
+          // If we need it in place where we don't have access to app instance or before we init the app
+          var now = Framework7.utils.now();
+
+
+          // After we init the app we can access it as app instance property
+          var app = new Framework7({ /*...*/ });
+          var now = app.utils.now();
+
+    h2 Utils Methods
+
+    h3 parseUrlQuery
+    .method-wrap
+      p
+        span.method app.utils.parseUrlQuery(<span>url</span>)
+        span - parse url query get parameters
+      ul.method-parameters
+        li
+          span.parameter url
+          |  - <span class="parameter-type">string</span> - url with GET parameters. Required.
+      p.method-returns Method returns object with query parameters
+    pre
+      code.js
+        | var query = app.utils.parseUrlQuery('http://google.com/?id=5&foo=bar');
+        | console.log(query); // { id: 5, foo: 'bar' }
+
+    h3 serializeObject
+    .method-wrap
+      p
+        span.method app.utils.serializeObject(<span>object</span>)
+        span - Create a serialized representation of a plain object suitable for use in a URL query string
+      ul.method-parameters
+        li
+          span.parameter object
+          |  - <span class="parameter-type">object</span> - Object to serialize
+      p.method-returns returns a new unique array
+    pre
+      code.js
+        | var params = { foo: 'bar', id: 5 };
+        | console.log(app.utils.serializeObject(params)); // 'foo=bar&id=5'
+
+    h3 requestAnimationFrame
+    .method-wrap
+      p
+        span.method app.utils.requestAnimationFrame(<span>callback</span>)
+        span - Cross-browser implementation on requestAnimationFrame
+      ul.method-parameters
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">function</span> - function to call when it's time to update your animation for the next repaint
+      p.method-returns returns animation request id, that uniquely identifies the entry in the callback list
+    pre
+      code.js
+        | var animId;
+        | function anim() {
+        |   var left = parseInt($$('#anim').css('left'), 10) + 1;
+        |   $$('#anim').css({left: left + 'px'})
+        |   animId = app.utils.requestAnimationFrame(anim);
+        | }
+        | animId = app.utils.requestAnimationFrame(anim);
+
+    h3 cancelAnimationFrame
+    .method-wrap
+      p
+        span.method app.utils.cancelAnimationFrame(<span>requestID</span>)
+        span - Cancels an animation frame request
+      ul.method-parameters
+        li
+          span.parameter requestID
+          |  - <span class="parameter-type">number</span> - The ID value returned by the call to app.utils.requestAnimationFrame() that requested the callback
+    pre
+      code.js
+        | app.utils.cancelAnimationFrame(animId);
+
+    h3 removeDiacritics
+    .method-wrap
+      p
+        span.method app.utils.removeDiacritics(<span>text</span>)
+        span - Replace diacritics in specified text string with standard latin characters
+      ul.method-parameters
+        li
+          span.parameter text
+          |  - <span class="parameter-type">string</span> - Text string
+
+    pre
+      code.js
+        | var text = app.utils.removeDiacritics('ÁÓL');
+        | console.log(text); //-&gt; 'AOL'
+
+    h3 nextFrame
+    .method-wrap
+      p
+        span.method app.utils.nextFrame(<span>callback</span>)
+        span - Executes code on next available animation frame.
+      ul.method-parameters
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">string</span> - function to call when it's time to update your animation for the next repaint.
+
+    pre
+      code.js
+        :code
+          app.utils.nextFrame(function() {
+            // do something on next frame
+          });
+
+    h3 nextTick
+    .method-wrap
+      p
+        span.method app.utils.nextTick(<span>callback</span>, <span>delay</span>)
+        span - executes code after required delay. Basically alias for <code>setTimeout</code>
+      ul.method-parameters
+        li
+          span.parameter callback
+          |  - <span class="parameter-type">string</span> - function to call after specified delay
+        li
+          span.parameter delay
+          |  - <span class="parameter-type">number</span> - delay in ms. <em>Optional, by deault is <code>0</code></em>
+      p.method-returns returns timeout ID
+    pre
+      code.js
+        :code
+          app.utils.nextTick(function() {
+            // do something on next tick
+          });
+
+    h3 now
+    .method-wrap
+      p
+        span.method app.utils.now()
+        span - returns current timestamp in ms
+    pre
+      code.js
+        :code
+          var time = app.utils.now();
+          setTimeout(function () {
+            var timeDiff = app.utils.now() - now;
+            console.log(timeDiff + 'ms past');
+          }, 2000);
+    h3 extend
+    .method-wrap
+      p
+        span.method app.utils.extend(<span>target</span>, <span>...from</span>)
+        span - extends <code>target</code> object with properties and methods from <code>from</code> objects
+      ul.method-parameters
+        li
+          span.parameter target
+          |  - <span class="parameter-type">object</span> - target object to extend
+        li
+          span.parameter from
+          |  - <span class="parameter-type">object</span> - objects to copy properties and methods from
+      p.method-returns returns target object with extended properties and methods
+    p This method becomes very handy if you need to extend one object with properties of others or when you need a deep copy of an object.
+    pre
+      code
+        :code
+          var a = {
+            apple: 0,
+            cherry: 97
+          };
+          // Pass as empty object as target to copy a into b
+          var b = app.utils.extend({}, a);
+
+          console.log(b); // { apple:0, cherry: 97 }
+          console.log(a === b); // false
+    pre
+      code
+        :code
+          var a = {
+            apple: 0,
+            cherry: 97
+          };
+          var b = {
+            bannana: 10,
+            pineapple: 20,
+          }
+
+          // Extends a with b
+          app.utils.extend(a, b);
+
+          console.log(a); // { apple: 0, cherry: 97, bannana: 10, peneapple: 20 }
+    pre
+      code
+        :code
+          var a = {
+            apple: 0,
+            cherry: 97
+          };
+          var b = {
+            bannana: 10,
+            pineapple: 20,
+          }
+
+          // Create new object c from the merge of a and b
+          var c = app.utils.extend({}, a, b);
+
+          console.log(c); // { apple: 0, cherry: 97, bannana: 10, peneapple: 20 }
+    pre
+      code
+        :code
+          var a = {
+            apple: 0,
+            cherry: 97
+          };
+          var b = {
+            apple: 10,
+            pineapple: 20,
+          }
+
+          // Extend a with b
+          app.utils.extend(a, b);
+
+          console.log(a); // { apple: 10, cherry: 97, peneapple: 20 }

@@ -1,0 +1,482 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Popover | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Popover
+    .docs-index
+    p Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
+    .important-note
+      p Note that is not recommended to use Popover on small screens (iPhone). On small screens you should use <a href="action-sheet.html">Action Sheet</a> instead.
+    h2 Popover Layout
+    p First of all let's look on Popover layout, it is pretty simple:
+    pre
+      code.html
+        | &lt;body&gt;
+        |     ...
+        |     &lt;div class="popover"&gt;
+        |         &lt;!-- Popover's angle arrow --&gt;
+        |         &lt;div class="popover-angle"&gt;&lt;/div&gt;
+        |
+        |         &lt;!-- Popover content --&gt;
+        |         &lt;div class="popover-inner"&gt;
+        |             &lt;!-- Any HTML content here --&gt;
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/body&gt;
+    p Popover is highly customizable element and you can put anything inside, event another view with navigation.
+
+
+    h2 Popover App Methods
+    p Let's look at related App methods to work with Popover:
+    .method-wrap
+      p
+        span.method app.popover.create(<span>parameters</span>)
+        | - create Popover instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with popover parameters
+      p.method-returns Method returns created Popover's instance
+
+    .method-wrap
+      p
+        span.method app.popover.destroy(<span>el</span>)
+        | - destroy Popover instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. Popover element or Popover instance to destroy.
+    .method-wrap
+      p
+        span.method app.popover.get(<span>el</span>)
+        | - get Popover instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Popover element.
+      p.method-returns Method returns Popover's instance
+    .method-wrap
+      p
+        span.method app.popover.open(<span>el</span>, <span>targetEl</span>, <span>animate</span>)
+        | - opens Popover
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Popover element to open.
+        li
+          span.parameter targetEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Target element to set popover position around this element
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Open Popover with animation.
+      p.method-returns Method returns Popover's instance
+    .method-wrap
+      p
+        span.method app.popover.close(<span>el</span>, <span>animate</span>)
+        | - closes Popover
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Popover element to close.
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span>. Close Popover with animation.
+      p.method-returns Method returns Popover's instance
+
+    h2 Popover Parameters
+    p Now let's look at list of available parameters we need to create Popover:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement
+          td
+          td Popover element. Can be useful if you already have Popover element in your HTML and want to create new instance using this element
+        tr
+          td content
+          td string
+          td
+          td Full Popover HTML layout string. Can be useful if you want to create Popover element dynamically
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables Popover backdrop (dark semi transparent layer behind)
+        tr
+          td closeByBackdropClick
+          td boolean
+          td true
+          td When enabled, popover will be closed on backdrop click
+        tr
+          td closeByOutsideClick
+          td boolean
+          td true
+          td When enabled, popover will be closed on when click outside of it
+        tr
+          td animate
+          td boolean
+          td true
+          td Whether the Popover should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods
+        tr
+          td targetEl
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of target element
+        tr
+          td targetX
+          td number
+          td
+          td Virtual target element horizontal offset from left side of the screen. Required without using real target element (<code>targetEl</code>)
+        tr
+          td targetY
+          td number
+          td
+          td Virtual target element vertical offset from top of the screen. Required without using real target element (<code>targetEl</code>)
+        tr
+          td targetWidth
+          td number
+          td 0
+          td Virtual target element width (in px). Required without using real target element (<code>targetEl</code>)
+        tr
+          td targetHeight
+          td number
+          td 0
+          td Virtual target element height (in px). Required without using real target element (<code>targetEl</code>)
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var popover = app.popover.create({
+                    content: '<div class="popover">...</div>',
+                    on: {
+                      opened: function () {
+                        console.log('Popover opened')
+                      }
+                    }
+                  })
+    .important-note
+      p Note that all following parameters can be used in global app parameters under <code>popover</code> property to set defaults for all popovers. For example:
+      pre
+        code
+          :code
+            var app = new Framework7({
+              popover: {
+                closeByBackdropClick: false,
+              }
+            });
+    h2 Popover Methods & Properties
+    p So to create Popover we have to call:
+    pre
+      code
+        :code
+          var popover = app.popover.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>popover</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td popover.app
+          td Link to global app instance
+        tr
+          td popover.el
+          td Popover HTML element
+        tr
+          td popover.$el
+          td Dom7 instance with popover HTML element
+        tr
+          td popover.backdropEl
+          td Backdrop HTML element
+        tr
+          td popover.$backdropEl
+          td Dom7 instance with backdrop HTML element
+        tr
+          td popover.targetEl
+          td Popover target HTML element
+        tr
+          td popover.$targetEl
+          td Dom7 instance with popover target HTML element
+        tr
+          td popover.params
+          td Popover parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td popover.open(<span>targetEl</span>, <span>animate</span>)
+          td Open popover around target element. Where
+            ul.method-parameters
+              li
+                span.parameter targetEl
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - target element to set popover position around this element
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+        tr
+          td popover.open(<span>animate</span>)
+          td Open popover around target element passed on popover creation. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be opened with animation
+        tr
+          td popover.close(<span>animate</span>)
+          td Close popover. Where
+            ul.method-parameters
+              li
+                span.parameter animate
+                |  - <span class="parameter-type">boolean</span> (by default <code>true</code>) - defines whether it should be closed with animation
+        tr
+          td popover.destroy()
+          td Destroy popover
+        tr
+          td popover.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td popover.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td popover.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td popover.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td popover.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 Control Popover With Links
+    p It is possible to open and close required popover (if you have them in DOM) using special classes and data attributes on links:
+    .important-note
+      ul
+        li
+          p To open popover we need to add "<b>popover-open</b>" class to any HTML element (prefered to link)
+        li
+          p To close popover we need to add "<b>popover-close</b>" class to any HTML element (prefered to link)
+        li
+          p If you have more than one popover in DOM, you need to specify appropriate popover via additional <b>data-popover=".my-popover"</b> attribute on this HTML element
+    p According to above note:
+    pre
+      code.xml
+        :code
+          <!-- In data-popover attribute we specify CSS selector of popover we need to open -->
+          <p><a href="#" data-popover=".my-popover" class="popover-open">Open Popover</a></p>
+
+          <!-- And somewhere in DOM -->
+          <div class="popover my-popover">
+            <div class="popover-inner">
+              <!-- Link to close popover -->
+              <a class="link popover-close">Close Popover</a>
+            </div>
+          </div>
+
+
+    h2 Popover Events
+    p Popover will fire the following DOM events on popover element and events on app and popover instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td popover:open
+          td Popover Element<span>&lt;div class="popover"&gt;</span>
+          td Event will be triggered when Popover starts its opening animation
+        tr
+          td popover:opened
+          td Popover Element<span>&lt;div class="popover"&gt;</span>
+          td Event will be triggered after Popover completes its opening animation
+        tr
+          td popover:close
+          td Popover Element<span>&lt;div class="popover"&gt;</span>
+          td Event will be triggered when Popover starts its closing animation
+        tr
+          td popover:closed
+          td Popover Element<span>&lt;div class="popover"&gt;</span>
+          td Event will be triggered after Popover completes its closing animation
+    h3 App and Popover Instance Events
+    p Popover instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>popover</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td open
+          td <span>popover</span>
+          td popover
+          td(rowspan="2") Event will be triggered when Popover starts its opening animation. As an argument event handler receives popover instance
+        tr
+          td popoverOpen
+          td <span>popover</span>
+          td app
+        tr
+          td opened
+          td <span>popover</span>
+          td popover
+          td(rowspan="2") Event will be triggered after Popover completes its opening animation. As an argument event handler receives popover instance
+        tr
+          td popoverOpened
+          td <span>popover</span>
+          td app
+        tr
+          td close
+          td <span>popover</span>
+          td popover
+          td(rowspan="2") Event will be triggered when Popover starts its closing animation. As an argument event handler receives popover instance
+        tr
+          td popoverClose
+          td <span>popover</span>
+          td app
+        tr
+          td closed
+          td <span>popover</span>
+          td popover
+          td(rowspan="2") Event will be triggered after Popover completes its closing animation. As an argument event handler receives popover instance
+        tr
+          td popoverClosed
+          td <span>popover</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>popover</span>
+          td popover
+          td(rowspan="2") Event will be triggered right before Popover instance will be destroyed. As an argument event handler receives popover instance
+        tr
+          td popoverBeforeDestroy
+          td <span>popover</span>
+          td app
+
+
+    .with-device
+      h2(data-device-preview="../docs-demos/popover.html") Examples
+      pre
+        code.html
+          :code
+            <body>
+              ...
+                <div class="page">
+                  <div class="navbar">
+                    <div class="navbar-inner">
+                      <div class="left">
+                        <!-- Additional "popover-open" class to open popover on link click -->
+                        <!-- In data-popover attribute we specify CSS selector of popover we need to open -->
+                        <a class="link popover-open" href="#" data-popover=".popover-about">About</a>
+                      </div>
+                      <div class="title">Popover</div>
+                      <div class="right">
+                        <a class="link popover-open" href="#" data-popover=".popover-links">Links</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="page-content">
+                    <div class="block">
+                      <p>
+                        <!-- In data-popover attribute we specify CSS selector of popover we need to open -->
+                        <a class="link popover-open" href="#" data-popover=".popover-about">Open About Popover</a>
+                      </p>
+                      <p>
+                        <!-- In data-popover attribute we specify CSS selector of popover we need to open -->
+                        <a class="link popover-open" href="#" data-popover=".popover-links">Open Links Popover</a>
+                      </p>
+                      <p>
+                        <a class="link dynamic-popover" href="#">Create Dynamic Popover</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ...
+
+              <!-- Popovers -->
+              <div class="popover popover-about">
+                <div class="popover-inner">
+                  <div class="block">
+                    <p>About</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="popover popover-links">
+                <div class="popover-inner">
+                  <div class="list">
+                    <ul>
+                      <li><a class="list-button item-link" href="#">Link 1</a></li>
+                      <li><a class="list-button item-link" href="#">Link 2</a></li>
+                      <li><a class="list-button item-link" href="#">Link 3</a></li>
+                      <li><a class="list-button item-link" href="#">Link 4</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              ...
+            </body>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            // DOM events for About popover
+            $$('.popover-about').on('popover:open', function (e, popover) {
+              console.log('About popover open');
+            });
+            $$('.popover-about').on('popover:opened', function (e, popover) {
+              console.log('About popover opened');
+            });
+
+            // Create dynamic Popover
+            var dynamicPopover = app.popover.create({
+              targetEl: 'a.dynamic-popover',
+              content: '<div class="popover">'+
+                          '<div class="popover-inner">'+
+                            '<div class="block">'+
+                              '<p>Popover created dynamically.</p>'+
+                              '<p><a href="#" class="link popover-close">Close me</a></p>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
+              // Events
+              on: {
+                open: function (popover) {
+                  console.log('Popover open');
+                },
+                opened: function (popover) {
+                  console.log('Popover opened');
+                },
+              }
+            });
+            // Events also can be assigned on instance later
+            dynamicPopover.on('close', function (popover) {
+              console.log('Popover close');
+            });
+            dynamicPopover.on('closed', function (popover) {
+              console.log('Popover closed');
+            });
+
+            // Open dynamic popover
+            $$('.dynamic-popover').on('click', function () {
+              dynamicPopover.open();
+            });

@@ -1,0 +1,396 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Form | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Form
+    .docs-index
+    .with-device
+      h2(data-device-preview="../docs-demos/form-data.html") Form Data
+      p Framework7 comes with some very useful methods, this makes working with forms as simple as possible:
+      h3 Form Data App Methods
+      p Using the following app methods we can easily convert all form fields values to data object and fill the form from data object:
+      .method-wrap
+        p
+          span.method app.form.convertToData(<span>form</span>)
+          | - convert form fields values to data object
+        ul.method-parameters
+          li
+            span.parameter form
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to data object. Required.
+        li.method-returns Method returns object
+      .method-wrap
+        p
+          span.method app.form.fillFromData(<span>form</span>, <span>data</span>)
+          | - fill up form according to data object
+        ul.method-parameters
+          li
+            span.parameter form
+            |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of form that should be converted to data object. Required.
+          li
+            span.parameter formData
+            |  - <span class="parameter-type">object</span> with from data. Required.
+      .important-note
+        ul
+          li
+            p Note that each input should have <code>name</code> attribute, otherwise its value will not be presented in data object
+          li
+            p Checkboxes and "multiple" selects will be presented as Arrays
+      h3 Form Data Events
+      p Form data api will fire the following DOM events on form element and app instance:
+      h4 DOM Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Description
+        tbody
+          tr
+            td form:todata
+            td Form Element<span>&lt;form&gt;</span>
+            td Event will be triggered on form when calling <code>app.form.convertToData</code>
+          tr
+            td form:fromdata
+            td Form Element<span>&lt;form&gt;</span>
+            td Event will be triggered on form when calling <code>app.form.fillFromData</code>
+      h4 App Events
+      p Form Data api emit events on app instance as well:
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Arguments
+            th Description
+        tbody
+
+          tr
+            td formToData
+            td app
+            td
+              span (form, data)
+            td Event will be triggered on <code>app.form.convertToData</code> call
+          tr
+            td formFromData
+            td app
+            td
+              span (form, data)
+            td Event will be triggered on <code>app.form.fillFromData</code> call
+
+      h3 Form Data Example
+      pre
+        code.html
+          :code
+            <form class="list" id="my-form">
+              <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" name="name" placeholder="Your name">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">E-mail</div>
+                      <div class="item-input-wrap">
+                        <input type="email" name="email" placeholder="E-mail">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Gender</div>
+                      <div class="item-input-wrap">
+                        <select name="gender">
+                          <option value="male" selected>Male</option>
+                          <option value="female">Female</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Toggle</div>
+                      <div class="item-after">
+                        <label class="toggle toggle-init">
+                          <input type="checkbox" name="toggle" value="yes"><i class="toggle-icon"></i>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </form>
+            <div class="block block-strong row">
+              <div class="col"><a class="button convert-form-to-data" href="#">Get Data</a></div>
+              <div class="col"><a class="button fill-form-from-data" href="#">Fill Form</a></div>
+            </div>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+            $$('.convert-form-to-data').on('click', function(){
+              var formData = app.form.convertToData('#my-form');
+              alert(JSON.stringify(formData));
+            });
+
+            $$('.fill-form-from-data').on('click', function(){
+              var formData = {
+                'name': 'John',
+                'email': 'john@doe.com',
+                'gender': 'female',
+                'toggle': ['yes'],
+              }
+              app.form.fillFromData('#my-form', formData);
+            });
+
+      h2(data-device-preview="../docs-demos/form-storage.html") Form Storage
+      p With form storage it is easy to store and parse forms data automatically, especially on Ajax loaded pages. And the most interesting part is that when you load this page again Framework7 will parse this data and fill up all form fields automatically!
+      p To enable form storage for specific form, all you need is:
+      ul
+        li add <code>form-store-data</code> class to form
+        li add <code>id</code> attribute to form. It will not work if form doesn't have <code>id</code> attribute
+        li make sure that all you inputs have <code>name</code> attributes, otherwise they will be ignored
+      p After form storage is enabled with <code>form-store-data</code> class, then form data will be saved to <code>localStorage</code> on every form input change.
+      p Otherwise you can use the following app methods to store/get/remove stored form data:
+      h3 Form Storage App Methods
+      .method-wrap
+        p
+          span.method app.form.getFormData(<span>formId</span>)
+          | - get form data for the form with specified <code>id</code> attribute
+        ul.method-parameters
+        li
+          span.parameter formId
+          |  - <span class="parameter-type">string</span> - "id" attribute of required form. Required.
+        li.method-returns Method returns object with form data
+      .method-wrap
+        p
+          span.method app.form.storeFormData(<span>formId</span>, <span>data</span>)
+          | - store form data for the form with specified <code>id</code> attribute
+        ul.method-parameters
+        li
+          span.parameter formId
+          |  - <span class="parameter-type">string</span> - "id" attribute of required form. Required.
+        li
+          span.parameter formJSON
+          |  - <span class="parameter-type">object</span> - JSON data to store
+      .method-wrap
+        p
+          span.method app.form.removeFormData(<span>formId</span>)
+          | - remove form data for the form with specified <code>id</code> attribute
+        ul.method-parameters
+        li
+          span.parameter formId
+          |  - <span class="parameter-type">string</span> - "id" attribute of required form. Required.
+      h3 Form Storage Events
+      p Form Storage api will fire the following DOM events on form element and app instance:
+      h4 DOM Events
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Description
+        tbody
+          tr
+            td form:storedata
+            td Form Element<span>&lt;form&gt;</span>
+            td Event will be triggered right after for data saved
+      h4 App Events
+      p Form Storage api emit events on app instance as well:
+      table.events-table
+        thead
+          tr
+            th Event
+            th Target
+            th Arguments
+            th Description
+        tbody
+          tr
+            td formStoreData
+            td app
+            td
+              span (form, data)
+            td Event will be triggered right after for data saved
+      h3 Form Storage Example
+      pre
+        code.html
+          :code
+            <form class="list form-store-data" id="my-form">
+              <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" name="name" placeholder="Your name">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">E-mail</div>
+                      <div class="item-input-wrap">
+                        <input type="email" name="email" placeholder="E-mail">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Gender</div>
+                      <div class="item-input-wrap">
+                        <select name="gender">
+                          <option value="male" selected>Male</option>
+                          <option value="female">Female</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Switch</div>
+                      <div class="item-after">
+                        <label class="toggle">
+                          <input type="checkbox" name="switch" value="yes"><i class="toggle-icon"></i>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </form>
+    h2 Ajax Form Submit
+    p Framework7 allows automatically send form data using Ajax.
+    p It could be done in two ways
+    ul
+      li when user submits it (when he clicks on "submit" button) or when "submit" event triggered on form programmatically
+      li when user change any form field or when "change" event triggered on form (or form field) programmatically
+
+    h3 Send form data on submit
+    p To enable Ajax form and send data automatically on submit, we just need to add <code><b>form-ajax-submit</b></code> class to form:
+    pre
+      code
+        | &lt;form action="send-here.html" method="GET" class="form-ajax-submit"&gt;
+        |     ...
+        | &lt;/form&gt;
+    p And when user will submit this form, it automatically will be sended using Ajax with the following rules:
+    .important-note
+      ul
+        li
+          p Form data will be sended to the file/url specified in form's <code>action</code> attribute
+        li
+          p Request method will be the same as specified in form's <code>method</code> attribute
+        li
+          p Content type will be the same as specified in form's <code>enctype</code> attribute. By default (if not specified), it is <code>application/x-www-form-urlencoded</code>
+
+    h3 Send form data on input change
+    p Mostly we don't use "submit" buttons in apps, so in this cases we need to submit form data when user changes any form fields. For this case we need to use <code><b>form-ajax-submit-onchange</b></code> class:
+    pre
+      code
+        | &lt;form action="send-here.html" method="GET" class="form-ajax-submit-onchange"&gt;
+        |     ...
+        | &lt;/form&gt;
+    p And when user will change any form filed, form data automatically will be sended using Ajax with the same rules as in previous case.
+
+    h3 Ajax Form Submit Events
+    p Sometimes we need to get actual XHR repsonse from the file/url where we send form data with Ajax. We can use special events for that:
+    h4 Dom Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td formajax:success
+          td Form Element<span>&lt;form class="form-ajax-submit"&gt;</span>
+          td Event will be triggered after successful Ajax request
+        tr
+          td formajax:complete
+          td Form Element<span>&lt;form class="form-ajax-submit"&gt;</span>
+          td Event will be triggered after Ajax request completed
+        tr
+          td formajax:beforesend
+          td Form Element<span>&lt;form class="form-ajax-submit"&gt;</span>
+          td Event will be triggered right before Ajax request
+        tr
+          td formajax:error
+          td Form Element<span>&lt;form class="form-ajax-submit"&gt;</span>
+          td Event will be triggered on Ajax request error
+    pre
+      code.js
+        | var app = new Framework7();
+        |
+        | var $$ = Dom7;
+        |
+        | $$('form.form-ajax-submit').on('formajax:success', function (e) {
+        |   var xhr = e.detail.xhr; // actual XHR object
+        |
+        |   var data = e.detail.data; // Ajax response from action file
+        |   // do something with response data
+        | });
+    h4 App Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td formAjaxSuccess
+          td app
+          td <span>(formEl, data, xhr)</span>
+          td Event will be triggered after successful Ajax request
+        tr
+          td formAjaxComplete
+          td app
+          td <span>(formEl, data, xhr)</span>
+          td Event will be triggered after Ajax request completed
+        tr
+          td formAjaxBeforeSend
+          td app
+          td <span>(formEl, data, xhr)</span>
+          td Event will be triggered right before Ajax request
+        tr
+          td formAjaxError
+          td app
+          td <span>(formEl, data, xhr)</span>
+          td Event will be triggered on Ajax request error
+    pre
+      code.js
+        :code
+          var app = new Framework7();
+
+          app.on('formAjaxSuccess', function (formEl, data, xhr) {
+            // do something with response data
+          });
+

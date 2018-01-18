@@ -1,0 +1,467 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Video Intelligence (vi) | Framework7 Documentation';
+
+block content
+  include _docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Video Intelligence (vi)
+    .docs-index
+    p <a href="http://vi.ai" target="_blank">Video Intelligence</a> component that built into Framework7 allows you to easily add video advertising to your Framework7 app, straight out-of-the-box.
+    p vi's interstitial ads can be placed into your app experience at your discretion, showing full screen video ads. Advertisers pay a premium for these ad slots, and they will be directly connected to your app; you'll be able to monetise straight away.
+    h2 Getting Started With vi
+    h4 1. Sign up for Framework7 vi publisher account
+    p First of all as a mobile publisher you need to create vi publisher account. To signup for Framework7 vi account go to <a href="http://vi.framework7.io/" target="_blank">vi.framework7.io</a> and fill up the following form:
+    img(src=cdn + "/i/docs/vi-1.png")
+    h4 2. Setup your app at vi
+    p After successful registration you will receive instructions with vi dashboard link and temporary password to the specified email.
+    p When you log in to your vi dashboard you will see a list of your apps. If you don’t have apps create new one:
+    img(src=cdn + "/i/docs/vi-2.png")
+    p When you already have an app, you need to <b>add placement</b> for this app:
+    img(src=cdn + "/i/docs/vi-3.png")
+    p When you create place choose Placement Type: "Video Interstitial"
+    img(src=cdn + "/i/docs/vi-4.png")
+    p Ok, after we have placement created we need placement ID, choose just created placement:
+    img(src=cdn + "/i/docs/vi-5.png")
+    p Click “copy” near the placement id string to copy id to the clipboard
+    img(src=cdn + "/i/docs/vi-6.png")
+    h4 3. Configure vi in Framework7 app
+    p After we set the things up at vi dashboard we will have:
+    ul
+      li App bundle id (e.g. <code>io.framework7.testapp</code>)
+      li Placement id (e.g. <code>pltd4o7ibb9rc653x14</code>)
+    p Now when we have our vi placement id we may set it up in Framework7 on the app initialization:
+    pre
+      code.js
+        :code
+          var app = new Framework7({
+            /*
+              common app bundle id must match the one
+              you have specified when created app in vi dashboard:
+            */
+            id: 'io.framework7.testapp',
+
+            /* add vi placement id under the vi module parameters */
+            vi: {
+              placementId: 'pltd4o7ibb9rc653x14',
+            },
+          });
+    h4 4. Show Ad
+    p That is all, now we can use Framework7’s vi API to create and show ads. In simplest way just call the following method when you need to show an ad:
+    pre
+      code.js
+        :code
+          app.vi.createAd();
+    h2 vi App Methods
+    p Let's look at available vi app methods and properties:
+    table.methods-table
+      tr
+        td app.vi.createAd(parameters)
+        td Create (and show) vi video ad.
+          ul.method-parameters
+            li <span class="parameter">parameters</span> - <span class="parameter-type">object</span> with vi ad parameters
+            li.method-returns Method returns vi ad instance
+      tr
+        td app.vi.loadSdk()
+        td Loads vi SDK. By default if vi is not disabled in app parameters then it will load it automatically
+      tr
+        td app.vi.sdkReady
+        td Boolean property indicating whether the vi SDK is ready or not
+    h2 vi Ad Parameters
+    p Let's look at list of all available parameters when we create vi ad:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td enabled
+          td boolean
+          td false
+          td Global app parameter which enables vi API and vi SDK to load. If you pass any vi parameters under <code>vi</code> app parameters then it will enable vi api as well
+        tr
+          td appId
+          td string
+          td
+          td App bundle id, if not specified then equal to <code>id</code> <a href="app.html#app-parameters">app parameter</a>
+        tr
+          td placementId
+          td string
+          td pltd4o7ibb9rc653x14
+          td vi placemenet ID, you can use this one for testing, and switch to yours real one for production
+        tr
+          td placementType
+          td string
+          td interstitial
+          td Ad type. Can be <code>interstitial</code> (when ad runs as full screen video) or <code>instream</code> (when ad video )
+        tr
+          td autoplay
+          td boolean
+          td true
+          td Enables video ad autoplay
+        tr
+          td startMuted
+          td boolean
+          td
+          td Defines whether the ad must start muted or not. By default is <code>true</code> when app is running as a web app (not Cordova) under mobile device (iOS or Android). It is required because on mobile device video autoplay usually requires additional user interaction
+        tr
+          td fallbackOverlay
+          td boolean
+          td true
+          td Enables overlay layer that will be visible when ad can not autoplay (in case video autoplay requires user interaction)
+        tr
+          td fallbackOverlayText
+          td string
+          td Please watch this ad
+          td Fallback overlay text
+        tr
+          td appVer
+          td string
+          td
+          td App version, if not specified then equal to <code>version</code> <a href="app.html#app-parameters">app parameter</a>
+        tr
+          td language
+          td boolean
+          td null
+          td App language, if not specified then equal to <code>language</code> <a href="app.html#app-parameters">app parameter</a>
+        tr
+          td width
+          td number
+          td
+          td App width in px. If not specified then equal to app container width
+        tr
+          td height
+          td number
+          td
+          td App height in px. If not specified then equal to app container height
+        tr
+          td showProgress
+          td boolean
+          td true
+          td Enable ad interface progress bar
+        tr
+          td showBranding
+          td boolean
+          td true
+          td Enable ad interface vi branding logo
+        tr
+          td showMute
+          td boolean
+          td true
+          td Enable ad interface mute button
+        tr
+          td os
+          td string
+          td
+          td Operating system, if not specified then will be equal to <code>app.device.os</code>
+        tr
+          td osVersion
+          td string
+          td
+          td Operating system version, if not specified then will be equal to <code>app.device.osVersion</code>
+        tr
+          td orientation
+          td string
+          td
+          td Device orientation, if not specified then will be detected based on <code>window.orientation</code>
+        tr
+          td age
+          td number
+          td
+          td User age (optional)
+        tr
+          td gender
+          td string
+          td
+          td User gender (optional)
+        tr
+          td advertiserId
+          td string
+          td
+          td Unique advertiser identifier (optional)
+        tr
+          td latitude
+          td integer
+          td
+          td Device location latitude (optional)
+        tr
+          td longitude
+          td integer
+          td
+          td Device location longitude (optional)
+        tr
+          td storeId
+          td string
+          td
+          td App store id (optional)
+        tr
+          td ip
+          td string
+          td
+          td Device IP address (optional)
+        tr
+          td manufacturer
+          td string
+          td
+          td Device manufacturer (optional)
+        tr
+          td model
+          td string
+          td
+          td Device model
+        tr
+          td connectionType
+          td string
+          td
+          td Device connection type (optional)
+        tr
+          td connectionProvider
+          td string
+          td
+          td Device connection provider (optional)
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var viAd = app.vi.createAd({
+                    on: {
+                      stopped: function () {
+                        console.log('Ad video stopped')
+                      }
+                    }
+                  })
+    .important-note
+      p All parameters can be used in global app parameters under <code>vi</code> property to set defaults for all vi ads. For example:
+      pre
+        code.js
+          :code
+            var app = new Framework7({
+              /*
+                common app bundle id must match the one
+                you have specified when created app in vi dashboard:
+              */
+              id: 'io.framework7.testapp',
+
+              /* global vi parameters */
+              vi: {
+                placementId: 'pltd4o7ibb9rc653x14',
+              }
+            });
+      p In this case when we create vi ad, we need to pass parameters that we want to override:
+      pre
+        code.js
+          :code
+            var viAd = app.vi.createAd({
+              // disable autoplay for this ad
+              autoplay: false,
+            })
+    h2 vi Ad Methods & Properties
+    p So to create vi ad we have to call:
+    pre
+      code
+        :code
+          var viAd = app.vi.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>viAd</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td viAd.app
+          td Link to global app instance
+        tr
+          td viAd.ad
+          td Original vi ad instance
+        tr
+          td viAd.params
+          td vi ad parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td viAd.start()
+          td Start ad video. Useful in case of disabled autoplay
+        tr
+          td viAd.pause()
+          td Pause ad video
+        tr
+          td viAd.resume()
+          td Resume ad video
+        tr
+          td viAd.stop()
+          td Stop ad video, in this case ad will be closed and destroyed. It will be impossible to proceed with this video ad
+        tr
+          td viAd.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td viAd.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td viAd.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td viAd.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td viAd.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+    h2 vi Ad Events
+    p vi ad will fire the following events on vi ad instance:
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td ready
+          td viAd
+          td <span></span>
+          td Event will be triggered when ad created, requested and ready to be played. In case of disabled autplay, you to listen for this event and call <code>viAd.start()</code> when ad becomes ready
+        tr
+          td started
+          td viAd
+          td <span></span>
+          td Event will be triggered when ad video started to play
+        tr
+          td click
+          td viAd
+          td <span></span>
+          td Event will be triggered after click on ad video
+        tr
+          td click
+          td viAd
+          td <span>url</span>
+          td Event will be triggered after click on ad video. As an argument it received click target URL. Use this url only in case if ad target url can not be opened by your device/app
+        tr
+          td impression
+          td viAd
+          td <span></span>
+          td Event will be triggered on ad impression
+        tr
+          td stopped
+          td viAd
+          td <span>reason</span>
+          td Event will be triggered when video ad stopped. As an argument it receives string <code>reason</code>, which can be, for example, <code>userexit</code> (when video was interrupted by user) or <code>complete</code> when ad video completed
+        tr
+          td complete
+          td viAd
+          td <span></span>
+          td Event will be triggered when video ad finished
+        tr
+          td userexit
+          td viAd
+          td <span></span>
+          td Event will be triggered when user closed the video ad
+        tr
+          td autoplayFailed
+          td viAd
+          td <span>reason</span>
+          td Event will be triggered in case of enabled autoplay and it failed to start an ad (for example when additional user interraction required)
+        tr
+          td error
+          td viAd
+          td <span>error</span>
+          td Event will be triggered on ad error. As an argument it receives error message
+    h4 App Events
+    p vi component also fires events on app instance:
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td viSdkReady
+          td app
+          td <span></span>
+          td Event will be triggered when vi SDK loaded and ready to be used
+    .with-device
+      h2(data-device-preview="../docs-demos/vi.html") Examples
+      pre
+        code.js
+          :code
+            var app = new Framework7({
+              id: 'io.framework7.testapp',
+              vi: {
+                placementId: 'pltd4o7ibb9rc653x14',
+              }
+            });
+
+            var $$ = Dom7;
+
+            // Create prepaire ad
+            var prepairedAd;
+            if (!app.vi.sdkReady) {
+              app.on('viSdkReady', function () {
+                prepairedAd = app.vi.createAd({
+                  autoplay: false,
+                });
+              })
+            } else {
+              prepairedAd = app.vi.createAd({
+                autoplay: false,
+              });
+            }
+
+            // Show prepaired ad
+            $$('.show-prepaired').on('click', function () {
+              prepairedAd.start();
+            });
+
+            // Create and show ad
+            $$('.create-and-show').on('click', function () {
+              app.vi.createAd();
+            });
+
+            // With custom autplay fallback
+            $$('.create-and-show-with-custom-callback').on('click', function () {
+              app.vi.createAd({
+                fallbackOverlay: false,
+                on: {
+                  autoplayFailed() {
+                    const ad = this;
+                    app.dialog.alert('Check out this awesome ad', () => {
+                      ad.start();
+                    })
+                  }
+                }
+              });
+            });
+
+            // Create and show rewarded ad
+            $$('.create-and-show-rewarded').on('click', function () {
+              app.vi.createAd({
+                autoplay: false,
+                on: {
+                  ready() {
+                    const ad = this;
+                    app.dialog.alert('Check out this awesome ad to get the reward', () => {
+                      ad.start();
+                    })
+                  },
+                  complete() {
+                    app.dialog.alert('Congrats! You got the reward!')
+                  },
+                  userexit() {
+                    app.dialog.alert('Sorry, no reward for you!')
+                  },
+                }
+              });
+            });
+

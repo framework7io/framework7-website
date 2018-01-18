@@ -20,16 +20,16 @@ const replaceEventsTable = (jsDomDoc) => {
     });
 }
 
-const removeMethodsTable = (jsDomDoc) => {    
-    jsDomDoc.querySelectorAll('.methods-table').forEach(node => {        
+const removeMethodsTable = (jsDomDoc) => {
+    jsDomDoc.querySelectorAll('.methods-table').forEach(node => {
         node.parentNode.removeChild(node);
-    });    
+    });
 
     jsDomDoc.querySelectorAll('h2').forEach(node => {
         if (node.innerHTML === 'Methods') {
             node.parentNode.removeChild(node);
         }
-    });    
+    });
 }
 
 const processReactHtmlFile = (htmlFileInfo) => {
@@ -73,6 +73,6 @@ module.exports.processReactHtmlFiles = (callback) => {
             fs.writeFileSync(REACT_HTML_PATH + '/' + reactHtmlFileInfo.name, outputHtml);
         });
 
-        callback();
-    });    
+        if (callback) callback();
+    });
 };
