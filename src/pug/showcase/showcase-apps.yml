@@ -1,5 +1,32 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/tascadalmerita.png"
+  iconRounded: true
+  title: "iTasca – Tasca d’Almerita Wine and Estates"
+  author:
+    url: http://www.cofficegroup.com/
+    name: Coffice s.r.l.
+  links:
+    appstore: https://itunes.apple.com/it/app/itasca-tasca-dalmerita/id560984078
+    googleplay: https://play.google.com/store/apps/details?id=it.tascadalmerita.iTasca
+    website: http://www.tascadalmerita.it/
+  description: |
+      Enjoy sicilian wines through the five Estates of the well-known wine-making family, Tasca d’Almerita. Discover the Tasca family’s love for the culture of the different terroirs where their estates are located, and for the wines that come from them.
+  features:
+  - Wine and Estates list and search engine
+  - Video and photo galleries
+  - Wine Taste recorder and manager
+  - In app multilanguage features (Supports It, En,De)
+  - Offline mode available
+  - geolocation, photopicker
+  screenshots:
+  - "#{cdn}/i/showcase/tascadalmerita_1.png"
+  - "#{cdn}/i/showcase/tascadalmerita_2.png"
+  - "#{cdn}/i/showcase/tascadalmerita_3.png"
+  - "#{cdn}/i/showcase/tascadalmerita_4.png"
+  - "#{cdn}/i/showcase/tascadalmerita_5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/tomatoid.png"
   iconRounded: true
   title: "Tomatoid: Time tracking"
