@@ -1,5 +1,5 @@
 ##########
-- iconUrl: "#{cdn}/i/showcase/Hal icon.png"
+- iconUrl: "#{cdn}/i/showcase/halicon.png"
   iconRounded: true
   title: "Hal – Construction solution"
   author:
@@ -18,13 +18,11 @@
   - In app two language features (Supports Arabic, En)
   - geolocation, photopicker
   screenshots:
-  - "#{cdn}/i/showcase/Hals1.png"
-  - "#{cdn}/i/showcase/Hals2.png"
-  - "#{cdn}/i/showcase/Hals3.png"
-
-  #########
+  - "#{cdn}/i/showcase/hals1.png"
+  - "#{cdn}/i/showcase/hals2.png"
+  - "#{cdn}/i/showcase/hals3.png"
+#########
   -
-
   iconUrl: "#{cdn}/i/showcase/tascadalmerita.png"
   iconRounded: true
   title: "iTasca – Tasca d’Almerita Wine and Estates"
