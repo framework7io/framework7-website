@@ -1,4 +1,28 @@
 ##########
+- 
+  iconUrl: "#{cdn}/i/showcase/halicon.png"
+  iconRounded: true
+  title: "Hal – Construction solution"
+  author:
+    url: http://www.hal-web.com/
+    name: Hal Team
+  links:
+    appstore: https://itunes.apple.com/us/app/%D8%AD%D9%84/id1194820433?mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.arapeak.solution
+    website: http://www.hal.sa/
+  description: |
+       We provide you with the best experience in the field of construction work so that the work professionally and punctuality in the agreed period and professional transparency.
+  features:
+  - Provide construction services
+  - provide expert technician in Electrician,pluber,loader...etc
+  - Supply all construction material In Riyadh
+  - In app two language features (Supports Arabic, En)
+  - geolocation, photopicker
+  screenshots:
+  - "#{cdn}/i/showcase/hals1.png"
+  - "#{cdn}/i/showcase/hals2.png"
+  - "#{cdn}/i/showcase/hals3.png"
+#########
 -
   iconUrl: "#{cdn}/i/showcase/tascadalmerita.png"
   iconRounded: true
@@ -2236,3 +2260,6 @@
   - "#{cdn}/i/showcase/gunluc1.png"
   - "#{cdn}/i/showcase/gunluc2.png"
   - "#{cdn}/i/showcase/gunluc3.png"
+
+ 
+  
