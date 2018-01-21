@@ -1,5 +1,6 @@
 ##########
-- iconUrl: "#{cdn}/i/showcase/halicon.png"
+- 
+  iconUrl: "#{cdn}/i/showcase/halicon.png"
   iconRounded: true
   title: "Hal – Construction solution"
   author:
@@ -22,7 +23,7 @@
   - "#{cdn}/i/showcase/hals2.png"
   - "#{cdn}/i/showcase/hals3.png"
 #########
-  -
+-
   iconUrl: "#{cdn}/i/showcase/tascadalmerita.png"
   iconRounded: true
   title: "iTasca – Tasca d’Almerita Wine and Estates"
