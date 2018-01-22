@@ -14,8 +14,8 @@
   var iconsManifest = require('./icons/manifest-icons.json');
   var useCDN = true;
   var cdnPath = '//cdn.framework7.io';
-  var processVuePugFiles = require('./src/react-doc-generation/vue-pug-file-processing').processVuePugFiles;
-  var processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles;
+  // var processVuePugFiles = require('./src/react-doc-generation/vue-pug-file-processing').processVuePugFiles;
+  // var processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles;
   var pkg = require('./package.json');
 
   // Get src file url
@@ -64,6 +64,7 @@
       });
   });
 
+  /*
   function buildReactPages(cb) {
     checkIsLocal(process.argv.slice(3));
     processVuePugFiles();
@@ -89,6 +90,7 @@
         processReactHtmlFiles(cb);
       });
   }
+  */
 
   // All Pug Pages
   function buildPages(cb) {
@@ -112,10 +114,14 @@
       })
       .pipe(gulp.dest('./'))
       .on('end', () => {
+        console.log(`Finished pug all in ${Date.now() - time}ms`);
+        if(cb) cb();
+        /*
         buildReactPages(() => {
           console.log(`Finished pug all in ${Date.now() - time}ms`);
           if(cb) cb();
         });
+        */
       });
 
   }
