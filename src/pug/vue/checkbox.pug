@@ -1,0 +1,139 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Checkbox Vue Component | Framework7 Vue Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 Checkbox Vue Component
+    .docs-index
+    p Checkbox Vue component represents <a href="../docs/checkbox.html">Checkbox</a> component.
+    h2 Checkbox Components
+    p There are following components included:
+    ul
+      li <code><b>f7-checkbox</b></code>
+    h2 Checkbox Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-checkbox&gt; properties
+        tr
+          td checked
+          td boolean
+          td
+          td Defines whether the checkbox input is checked or not
+        tr
+          td name
+          td string<br>number
+          td
+          td Checkbox input name
+        tr
+          td value
+          td string<br>number<br>boolean
+          td
+          td Checkbox input value
+        tr
+          td disabled
+          td boolean
+          td
+          td Defines whether the checkbox input is disabled
+        tr
+          td readonly
+          td boolean
+          td
+          td Defines whether the checkbox input is readonly
+    h2 Checkbox Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-checkbox&gt; events
+        tr
+          td change
+          td Event will be triggered when checkbox state changed
+    h2 Checkboxes List
+    p Checkboxes List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;f7-list&gt;</a></code>, <code><a href="list-item.html">&lt;f7-list-item&gt;</a></code>.
+    pre
+      code.html
+        :code
+          <f7-list>
+            <!-- Additional "checkbox" prop to enable checkbox list item -->
+            <f7-list-item checkbox value="check_1" checked title="Checkbox 1"></f7-list-item>
+            <f7-list-item checkbox value="check_2" title="Checkbox 2"></f7-list-item>
+          </f7-list>
+    h2 Checkbox v-model
+    p <code>v-model</code> <b>is not supported</b> on Checkbox vue component. Instead, just use the combination of <code>checked</code> property and <code>@change</code> event:
+    pre
+      code.html
+        :code
+          <template>
+            <!-- With boolean value -->
+            <f7-checkbox :checked="jobIsDone" @change="jobIsDone = $event.target.checked"></f7-checkbox>
+
+            <!-- With array value -->
+            <f7-checkbox
+              value="bannana"
+              :checked="fruits.indexOf('bannana') >= 0"
+              @change="checkFruits"
+            ></f7-checkbox>
+
+            <f7-checkbox
+              value="orange"
+              :checked="fruits.indexOf('orange') >= 0"
+              @change="checkFruits"
+            ></f7-checkbox>
+
+            <f7-checkbox
+              value="apple"
+              :checked="fruits.indexOf('apple') >= 0"
+              @change="checkFruits"
+            ></f7-checkbox>
+          </template>
+          <script>
+            export default {
+              data() {
+                return {
+                  jobIsDone: false,
+                  fruits: [],
+                };
+              },
+              methods: {
+                checkFruits(event) {
+                  const self = this;
+                  const value = event.target.value;
+                  if (event.target.checked) {
+                    self.fruits.push(value);
+                  } else {
+                    self.fruits.splice(self.fruits.indexOf(value), 1);
+                  }
+                },
+              },
+            };
+          </script>
+    h2 Examples
+    pre
+      code.html
+        :code
+          <!-- Inline checkbox -->
+          <p>Lorem <f7-checkbox name="checkbox-1"></f7-checkbox> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <f7-checkbox name="checkbox-2" checked></f7-checkbox> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+
+          <!-- Checkboxes List -->
+          <f7-list>
+            <f7-list-item checkbox title="Books" name="demo-checkbox" checked></f7-list-item>
+            <f7-list-item checkbox title="Movies" name="demo-checkbox"></f7-list-item>
+            <f7-list-item checkbox title="Food" name="demo-checkbox"></f7-list-item>
+            <f7-list-item checkbox title="Drinks" name="demo-checkbox"></f7-list-item>
+          </f7-list>
+
