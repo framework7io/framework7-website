@@ -6,96 +6,112 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Grid Vue Component
-      p Grid Vue component represents Framework7's <a href="../docs/grid.html">Layout Grid</a>.
-      h2 Examples
-      h4 Equal width columns
-      pre
-        code
-          :code
-            <f7-grid>
-              <f7-col>Col 1</f7-col>
-              <f7-col>Col 2</f7-col>
-              <f7-col>Col 3</f7-col>
-            </f7-grid>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="row">
-              <div class="col-auto"></div>
-              <div class="col-auto"></div>
-              <div class="col-auto"></div>
-            </div>
-      h4 No gutter and fixed size
-      pre
-        code
-          :code
-            <f7-grid no-gutter>
-              <f7-col width="50">Col 50%</f7-col>
-              <f7-col width="25">Col 25%</f7-col>
-              <f7-col width="25">Col 25%</f7-col>
-            </f7-grid>
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 Grid Vue Component
+    .docs-index
+    p Grid Vue component represents Framework7's <a href="../docs/grid.html">Layout Grid</a>.
+    h2 Grid Components
+    p There are following components included:
+    ul
+      li <code><b>f7-row</b></code> - grid row
+      li <code><b>f7-col</b></code> - grid column (cell)
 
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="row no-gutter">
-              <div class="col-50"></div>
-              <div class="col-25"></div>
-              <div class="col-25"></div>
-            </div>
-      h4 Different columns width on tablet
-      pre
-        code
-          :code
-            <f7-grid>
-              <f7-col width="50" tablet-width="25">Col 1</f7-col>
-              <f7-col width="50" tablet-width="25">Col 2</f7-col>
-              <f7-col width="50" tablet-width="25">Col 3</f7-col>
-              <f7-col width="50" tablet-width="25">Col 4</f7-col>
-            </f7-grid>
+    h2 Grid Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-row&gt; properties
+        tr
+          td no-gap
+          td boolean
+          td false
+          td Removes spacing between columns
+        tr
+          td tag
+          td string
+          td div
+          td Defines which tag must be used to render row element
+        tr
+          th(colspan="4") &lt;f7-col&gt; properties
+        tr
+          td width
+          td number<br>string
+          td auto
+          td Column width. Check available <a href="../docs/grid.html#column-sizes">Column Sizes</a>
+        tr
+          td tablet-width
+          td number<br>string
+          td
+          td Column width for large screen tablets (when width &gt;= 768px)
+        tr
+          td desktop-width
+          td number<br>string
+          td
+          td Column width for larger screen tablets (when width &gt;= 1025px)
+    h2 Examples
+    h4 Equal width columns
+    pre
+      code.html
+        :code
+          <f7-row>
+            <f7-col>Col 1</f7-col>
+            <f7-col>Col 2</f7-col>
+            <f7-col>Col 3</f7-col>
+          </f7-row>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="row">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+          </div>
+    h4 No gap and fixed size
+    pre
+      code.html
+        :code
+          <f7-row no-gap>
+            <f7-col width="50">Col 50%</f7-col>
+            <f7-col width="25">Col 25%</f7-col>
+            <f7-col width="25">Col 25%</f7-col>
+          </f7-row>
 
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="row">
-              <div class="col-50 tablet-25">Col 1</div>
-              <div class="col-50 tablet-25">Col 2</div>
-              <div class="col-50 tablet-25">Col 3</div>
-              <div class="col-50 tablet-25">Col 4</div>
-            </div>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="row no-gap">
+            <div class="col-50"></div>
+            <div class="col-25"></div>
+            <div class="col-25"></div>
+          </div>
+    h4 Different columns width on tablet
+    pre
+      code.html
+        :code
+          <f7-row>
+            <f7-col width="50" tablet-width="25">Col 1</f7-col>
+            <f7-col width="50" tablet-width="25">Col 2</f7-col>
+            <f7-col width="50" tablet-width="25">Col 3</f7-col>
+            <f7-col width="50" tablet-width="25">Col 4</f7-col>
+          </f7-row>
 
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            th(colspan="4") &lt;f7-grid&gt; properties
-          tr
-            td no-gutter
-            td boolean
-            td 
-            td Removes spacing between columns
-          tr
-            th(colspan="4") &lt;f7-col&gt; properties
-          tr
-            td width
-            td string/number
-            td "auto"
-            td Column width
-          tr
-            td tablet-width
-            td string/number
-            td
-            td Column width for large screen tablets
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="row">
+            <div class="col-50 tablet-25">Col 1</div>
+            <div class="col-50 tablet-25">Col 2</div>
+            <div class="col-50 tablet-25">Col 3</div>
+            <div class="col-50 tablet-25">Col 4</div>
+          </div>

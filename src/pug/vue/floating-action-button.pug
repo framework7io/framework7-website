@@ -1,0 +1,149 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Floating Action Button Vue Component | Framework7 Vue Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 Floating Action Button Vue Component
+    .docs-index
+    p Floating action buttons (FABs) are used for a promoted action. They are distinguished by a circled icon floating above the UI and have motion behaviors that include morphing, launching, and a transferring anchor point.
+    p Floating Action Button Vue component represents <a href="../docs/floating-action-button.html">Floating Action Button</a> element.
+    h2 FAB Components
+    p There are following components included:
+    ul
+      li <code><b>f7-fab</b></code> - main FAB element
+      li <code><b>f7-fab-buttons</b></code> - wrapper for multiple FAB buttons used as Speed Dial FAB
+      li <code><b>f7-fab-button</b></code> - single FAB Speed Dial button
+    h2 FAB Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-fab&gt; properties
+        tr
+          td position
+          td string
+          td right-bottom
+          td FAB position. Can be one of the following:
+            ul
+              li <code>right-bottom</code>
+              li <code>center-bottom</code>
+              li <code>left-bottom</code>
+              li <code>right-center</code>
+              li <code>center-center</code>
+              li <code>left-center</code>
+              li <code>right-top</code>
+              li <code>center-top</code>
+              li <code>left-top</code>
+        tr
+          td morph-to
+          td string
+          td
+          td String CSS selector of the FAB morph target
+        tr
+          th(colspan="4") &lt;f7-fab-buttons&gt; properties
+        tr
+          td position
+          td string
+          td top
+          td Speed dial buttons position, can be one of the following:
+            ul
+              li <code>top</code> - buttons will appear on top of FAB
+              li <code>right</code> - buttons will appear on right of FAB
+              li <code>bottom</code> - buttons will appear on bottom of FAB
+              li <code>left</code> - buttons will appear on left of FAB
+              li <code>center</code> - buttons will appear around of FAB
+        tr
+          th(colspan="4") &lt;f7-fab-button&gt; properties
+        tr
+          td fab-close
+          td boolean
+          td false
+          td When enabled then clicking on this button will close the FAB
+    h2 FAB Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-fab&gt; events
+        tr
+          td click
+          td Event will be triggered after click on FAB
+        tr
+          th(colspan="2") &lt;f7-fab-button&gt; events
+        tr
+          td click
+          td Event will be triggered after click on FAB Speed Dial button
+    h2 Examples
+    h4 Default FAB
+    pre
+      code
+        :code
+          <f7-page>
+            <!-- FAB must be direct child of a page -->
+            <f7-fab color="pink" @click="doSomething">
+              <f7-icon f7="add"></f7-icon>
+            </f7-fab>
+            ...
+          </f7-page>
+    p Renders to:
+    pre
+      code
+        :code
+          ...
+          <div class="fab fab-right-bottom color-pink">
+            <a href="#">
+              <i class="icon f7-icons">add</i>
+            </a>
+          </div>
+          ...
+    h4 Speed Dial
+    pre
+      code
+        :code
+          <f7-page>
+            <!-- FAB must be direct child of a page -->
+            <f7-fab color="pink" @click="doSomething">
+              <!-- First icon is visible when Speed Dial actions are closed -->
+              <f7-icon f7="add"></f7-icon>
+              <!-- Second icon is visible when Speed Dial actions are opened -->
+              <f7-icon f7="close"></f7-icon>
+
+              <!-- Speed Dial Buttons -->
+              <f7-fab-buttons>
+                <f7-fab-button color="orange" @click="onButtonClick">A</f7-fab-button>
+                <f7-fab-button color="green" @click="onButtonClick">B</f7-fab-button>
+                <f7-fab-button color="blue" @click="onButtonClick">C</f7-fab-button>
+              </f7-fab-buttons>
+            </f7-fab>
+            ...
+          </f7-page>
+    p Renders to:
+    pre
+      code
+        :code
+          ...
+          <div class="fab fab-right-bottom color-pink">
+            <a href="#">
+              <i class="icon f7-icons">add</i>
+              <i class="icon f7-icons">close</i>
+            </a>
+            <div class="fab-buttons fab-buttons-top">
+              <a href="#" class="color-orange">A</a>
+              <a href="#" class="color-green">B</a>
+              <a href="#" class="color-blue">C</a>
+            </div>
+          </div>
+          ...

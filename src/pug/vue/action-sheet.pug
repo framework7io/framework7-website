@@ -74,6 +74,17 @@ block content
           td boolean
           td true
           td Should Action Sheet be closed on button click or not
+    h2 Action Sheet Methods
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") &lt;f7-actions&gt; methods
+        tr
+          td .open(<span>animate</span>)
+          td Open Action Sheet
+        tr
+          td .close(<span>animate</span>)
+          td Close Action Sheet
     h2 Action Sheet Events
     table.events-table
       thead
@@ -95,22 +106,13 @@ block content
         tr
           td actions:closed
           td Event will be triggered after Action Sheet completes its closing animation
-    h2 Action Sheet Methods
-    table.methods-table
-      tbody
-        tr
-          th(colspan="2") &lt;f7-actions&gt; methods
-        tr
-          td .open(<span>animate</span>)
-          td Open Action Sheet
-        tr
-          td .close(<span>animate</span>)
-          td Close Action Sheet
     h2 Open And Close Action Sheet
     p In addition to Action Sheet open()/close() methods, you can open and close it:
     ul
       li using <a href="../docs/action-sheet.html">Action Sheet API</a>
       li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
+    h2 Access To Action Sheet Instance
+    p You can access Action Sheet initialized instance by accessing <code><b>.f7Actions</b></code> component's property.
     h2 Examples
     pre
       code
