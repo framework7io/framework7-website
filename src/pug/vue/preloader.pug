@@ -5,50 +5,53 @@ block vars
   - var title = 'Preloader / Spinner Vue Component | Framework7 Vue Documentation';
 
 block content
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 Preloader / Spinner Vue Component
+    .docs-index
+    p Preloader / Spinner Vue component represents <a href="../docs/preloader.html">Preloader</a> element.
+    h2 Preloader Components
+    p There are following components included:
+    ul
+      li <code><b>f7-preloader</b></code>
+    h2 Preloader Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;f7-preloader&gt; properties
+        tr
+          td size
+          td string<br>number
+          td Size of the preloader in px
+    h2 Examples
+    pre
+      code.html
+        :code
+          <!-- Preloader -->
+          <f7-preloader></f7-preloader>
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Preloader / Spinner Vue Component
-      p Preloader / Spinner Vue component represents <a href="../docs/preloader.html">Preloader</a> element.
-      h2 Examples
-      pre
-        code
-          | &lt;!-- Preloader --&gt;
-          | &lt;f7-preloader&gt;&lt;/f7-preloader&gt;
-          | 
-          | &lt;!-- Red preloader --&gt;
-          | &lt;f7-preloader color="red"&gt;&lt;/f7-preloader&gt;
-          | 
-          | &lt;!-- Blue with custom size --&gt;
-          | &lt;f7-preloader color="blue" size="44px"&gt;&lt;/f7-preloader&gt;
-      p Renders to:
-      pre
-        code
-          | &lt;!-- Preloader --&gt;
-          | &lt;span class="preloader"&gt;&lt;/span&gt;
-          | 
-          | &lt;!-- Red preloader --&gt;
-          | &lt;span class="preloader color-red"&gt;&lt;/span&gt;
-          | 
-          | &lt;!-- Blue with custom size --&gt;
-          | &lt;span class="preloader color-blue" style="width:44px; height:44px"&gt;&lt;/span&gt;
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td color
-            td string
-            td 
-            td Preloader color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td size
-            td string/number
-            td 
-            td Size of the preloader in px
+          <!-- Red preloader -->
+          <f7-preloader color="red"></f7-preloader>
+
+          <!-- Blue with custom size -->
+          <f7-preloader color="green" size="44px"></f7-preloader>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <!-- Preloader -->
+          <span class="preloader"></span>
+
+          <!-- Red preloader -->
+          <span class="preloader color-red"></span>
+
+          <!-- Blue with custom size -->
+          <span class="preloader color-green" style="width:44px; height:44px"></span>
+
+
