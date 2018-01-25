@@ -1,0 +1,107 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Range Slider Vue Component | Framework7 Vue Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 Range Slider Vue Component
+    .docs-index
+    p Range Slider Vue component represents <a href="../docs/range-slider.html">Range Slider</a> component.
+    h2 Range Slider Components
+    p There are following components included:
+    ul
+      li <code><b>f7-range</b></code>
+    h2 Range Slider Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-range&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Range Slider
+        tr
+          td value
+          td number<br>array<br>string
+          td
+          td Range Slider value, must be array in case of dual range slider
+        tr
+          td min
+          td number<br>string
+          td
+          td Minimum value
+        tr
+          td max
+          td number<br>string
+          td
+          td Maximum value
+        tr
+          td step
+          td number<br>string
+          td 1
+          td Maximum value
+        tr
+          td label
+          td boolean
+          td false
+          td Enables additional label around range slider knob
+        tr
+          td dual
+          td boolean
+          td false
+          td Enables dual range slider
+        tr
+          td disabled
+          td boolean
+          td false
+          td Defines whether the toggle input is disabled or not
+    h2 Range Slider Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-range&gt; events
+        tr
+          td range:change
+          td Event will be triggered when Range Slider value has been changed
+    h2 Range Slider Methods
+    table.methods-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-range&gt; methods
+        tr
+          td .setValue(<span>newValue</span>)
+          td Set new range slider value
+        tr
+          td .getValue()
+          td Returns range slider value
+    h2 Examples
+    pre
+      code.html
+        :code
+          <!-- Checked -->
+          <f7-toggle checked></f7-toggle>
+
+          <!-- Color toggle -->
+          <f7-toggle color="red"></f7-toggle>
+
+          <!-- Disabled -->
+          <f7-toggle color="orange" disabled></f7-toggle>
