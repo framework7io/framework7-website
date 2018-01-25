@@ -97,11 +97,31 @@ block content
     pre
       code.html
         :code
-          <!-- Checked -->
-          <f7-toggle checked></f7-toggle>
+          <!-- Default -->
+          <f7-range
+            :min="0"
+            :max="100"
+            :step="1"
+            :value="10"
+          ></f7-range>
 
-          <!-- Color toggle -->
-          <f7-toggle color="red"></f7-toggle>
+          <!-- Enable labels + color -->
+          <f7-range
+            :min="0"
+            :max="100"
+            :step="1"
+            :value="50"
+            :label="true"
+            color="orange"
+          ></f7-range>
 
-          <!-- Disabled -->
-          <f7-toggle color="orange" disabled></f7-toggle>
+          <!-- Dual -->
+          <f7-range
+            :min="0"
+            :max="500"
+            :step="1"
+            :value="[100, 500]"
+            :label="true"
+            :dual="true"
+            color="green"
+          ></f7-range>
