@@ -45,7 +45,7 @@ block content
           td When enabled the additional "subnavbar-inner" wrapper element will be added
     h2 Examples
     pre
-      code
+      code.html
         :code
           <f7-subnavbar>
             <f7-segmented>
@@ -55,7 +55,7 @@ block content
           </f7-subnavbar>
     p Renders to:
     pre
-      code
+      code.html
         :code
           <div class="subnavbar">
             <div class="subnavbar-inner">
@@ -65,35 +65,28 @@ block content
               </div>
             </div>
           </div>
-    h4 Inside of Navbar
+    h4 Inside of Navbar With Title
     pre
-      code
+      code.html
         :code
-          <f7-navbar back-link="Back" title="Tabs" sliding>
-            <f7-subnavbar sliding>
-              <f7-buttons>
-                <f7-button tab-link="#tab1" active>Tab 1</f7-button>
-                <f7-button tab-link="#tab2">Tab 2</f7-button>
-              </f7-buttons>
-            </f7-subnavbar>
+          <f7-navbar back-link="Back">
+            <f7-subnavbar title="Page Title"></f7-subnavbar>
           </f7-navbar>
     p Renders to:
     pre
-      code
+      code.html
         :code
           <div class="navbar">
-            <div class="navbar-inner">
-              <div class="left sliding">
+            <div class="navbar-inner sliding">
+              <div class="left">
                 <a href="#" class="link back">
                   <i class="icon icon-back"></i>
                   <span>Back</span>
                 </a>
               </div>
-              <div class="center sliding">Tabs</div>
-              <div class="subnavbar sliding">
-                <div class="buttons-row">
-                  <a href="#" class="button tab-link active" data-tab="#tab1">Tab 1</a>
-                  <a href="#" class="button tab-link" data-tab="#tab2">Tab 2</a>
+              <div class="subnavbar">
+                <div class="subnavbar-inner">
+                  <div class="title">Page Title</div>
                 </div>
               </div>
             </div>
