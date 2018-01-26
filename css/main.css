@@ -2138,7 +2138,7 @@ table.params-table th,
 table.params-table td {
   vertical-align: top;
 }
-table.params-table tbody td:first-child,
+table.params-table tbody td:first-child:not([colspan]),
 table.params-table tbody td:nth-child(2),
 table.params-table tbody td:nth-child(3):not(:last-child) {
   font-size: 13px;
