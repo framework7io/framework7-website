@@ -6,288 +6,504 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Messages Component
-      p Messages Vue component represents <a href="../docs/messages.html">Messages</a> component.
-      h2 Examples
-      pre
-        code
-          :code
-            <f7-messages>
-              <f7-message name="John" text="Hello, Kate!" type="received"></f7-message>
-              <f7-message name="Kate" text="Hi, John!" type="sent"></f7-message>
-            </f7-messages>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="messages">
-              <div class="message message-received">
-                <div class="message-name">John</div>
-                <div class="message-text">Hello, Kate!</div>
-              </div>
-              <div class="message message-sent">
-                <div class="message-name">Kate</div>
-                <div class="message-text">Hi, John!</div>
-              </div>
-            </div>
-      h4 With Messagebar
-      p Here is how it can be used in Vue component along with <a href="messagebar.html">Message Bar</a>:
-      pre
-        code
-          :code
-            <template>
-              <f7-messages>
-                <f7-message v-for="message in messages"
-                  :text="message.text"
-                  :label="message.label"
-                  :date="message.date"
-                  :name="message.name"
-                  :avatar="message.avatar"
-                  :type="message.type"
-                  :day="message.day"
-                  :time="message.time"
-                  @click="onClick"
-                  @click:text="onTextClick"
-                  @click:name="onNameClick"
-                  @click:avatar="onAvatarClick"
-                ></f7-message>
-              </f7-messages>
-              <f7-messagebar placeholder="Message" send-link="Send" @submit="onSubmit"></f7-messagebar>
-            </template>
-            <script>
-              export default {
-                data: function () {
-                  return {
-                    name: 'Vladimir',
-                    avatar: 'path/to/avatar-1.jpg',
-                    messages: [
-                      {
-                        day: 'Wendesday',
-                        time: '13:34'
-                      },
-                      {
-                        name: 'Vladimir',
-                        text: 'How are you?',
-                        label: 'Sent in good mood :)',
-                        avatar: 'path/to/avatar-1.jpg',
-                        date: 'Yesterday 13:34'
-                      },
-                      {
-                        name: 'Jane',
-                        text: 'I\'m good, thank you!',
-                        type: 'received',
-                        avatar: 'path/to/avatar-2.jpg',
-                        date: 'Yesterday at 13:50'
-                      }
-                    ]
-                  }
-                },
-                methods: {
-                  onClick: function (event) {
-                    console.log('message click');
-                  },
-                  onAvatarClick: function () {
-                    console.log('avatar-click');
-                  },
-                  onTextClick: function () {
-                    console.log('text-click');
-                  },
-                  onNameClick: function () {
-                    console.log('name-click');
-                  },
-                  onSubmit: function (text, clear) {
-                    if (text.trim().length === 0) return;
-                    this.messages.push({
-                      name: this.name,
-                      avatar: this.avatar,
-                      text: text,
-                      date: (function () {
-                        var now = new Date();
-                        var hours = now.getHours();
-                        var minutes = now.getMinutes();
-                        return hours + ':' + minutes;
-                      })()
-                    });
-                    // Clear Message Bar
-                    clear();
-                  }
-                }
-              }
-            </script>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            th(colspan="4") &lt;f7-messages&gt; properties
-          tr
-            td init
-            td boolean
-            td true
-            td Initializes Messages component
-          tr
-            td autoLayout
-            td boolean
-            td true
-            td Enable Auto Layout to add all required additional classes (like "message-pic", "message-with-avatar", "message-with-tail", etc) to each message automatically
-          tr
-            td newMessagesFirst
-            td boolean
-            td false
-            td Enable if you want to use new messages on top, instead of having them on bottom
-          tr
-            td scrollMessages
-            td boolean
-            td true
-            td Enable/disable messages autoscrolling when adding new message
-          tr
-            td scrollMessagesOnlyOnEdge
-            td boolean
-            td false
-            td If enabled then messages autoscrolling will happen only when user is on top/bottom of the messages view
-          tr
-            td messages
-            td array
-            td
-              td Array with initial messages. Each message in array should be presented as object with <a href="../docs/messages.html#single-message-parameters">message parameters</a>
-          tr
-            th(colspan="4") &lt;f7-message&gt; properties
-          tr
-            td type
-            td string
-            td "sent"
-            td Message type: "sent" (default) or "received"
-          tr
-            td text
-            td string
-            td
-            td Single message text
-          tr
-            td avatar
-            td string
-            td
-            td Single message user's avatar URL
-          tr
-            td name
-            td string
-            td
-            td Single message user's name
-          tr
-            td label
-            td string
-            td
-            td Single message label
-          tr
-            td date
-            td string
-            td
-            td Single message date
-          tr
-            td day
-            td string
-            td
-            td Conversation day
-          tr
-            td time
-            td string
-            td
-            td Conversation time
-          tr
-            td first
-            td boolean
-            td true
-            td Defines that the message is first in the conversation
-          tr
-            td last
-            td boolean
-            td true
-            td Defines that the message is last in the conversation
-      h2 Methods
-      table.methods-table
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 Messages Component
+    .docs-index
+    p Messages Vue component represents <a href="../docs/messages.html">Messages</a> component.
+
+    h2 Messages Components
+    p There are following components included:
+    ul
+      li <code><b>f7-messages</b></code> - main Messages container
+      li <code><b>f7-message</b></code> - single message element
+      li <code><b>f7-messages-title</b></code> - single messages title element
+
+    h2 Messages Properties
+    table.params-table
+      thead
         tr
-          td .addMessage(<span>messageParameters</span>, <span>method</span>, <span>animate</span>);
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-messages&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Messages component
+        //- tr
+          td auto-layout
+          td boolean
+          td false
+          td Enable Auto Layout to add all required additional classes automatically based on passed conditions
+        tr
+          td new-messages-first
+          td boolean
+          td false
+          td Enable if you want to use new messages on top, instead of having them on bottom
+        tr
+          td scroll-messages
+          td boolean
+          td true
+          td Enable/disable messages autoscrolling when adding new message
+        tr
+          td scroll-messages-on-edge
+          td boolean
+          td true
+          td If enabled then messages autoscrolling will happen only when user is on top/bottom of the messages view
+        //- tr
+          td messages
+          td array
           td
-            p Add new message to the end or to the beginning depending on <b>method</b> parameter
-            ul.method-parameters
-              li
-                span.parameter messageParameters
-                |  - <span class="parameter-type">object</span> <a href="../docs/messages.html#single-message-parameters">parameters of message</a> to add. Required.
-              li
-                span.parameter method
-                |  - <span class="parameter-type">string</span> - ('append' or 'prepend') dictates to add new message in the end or in the beginning of messages container. Optional, if not specified, then it will add message depending on <code>newMessagesFirst</code> parameter
-              li
-                span.parameter animate
-                |  - <span class="parameter-type">boolean</span> - (by default <b>true</b>) You may pass here <b>false</b> and message will be added immediately without any transiton and scrolling animation. Optional.
-              
-              li.method-returns Method returns HTMLElement of added messsage
+          td Array with initial messages. Each message in array should be presented as object with <a href="../docs/messages.html#single-message-parameters">message parameters</a>. Pass messages here if you don't use single-message components. Otherwise leave all bindings and data rendering to Vue
+        //- tr
+          td
+            | first-message-rule<br><br>
+            | last-message-rule<br><br>
+            | tail-message-rule<br><br>
+            | same-name-message-rule<br><br>
+            | same-header-message-rule<br><br>
+            | same-footer-message-rule<br><br>
+            | same-avatar-message-rule<br><br>
+          td function(message, previousMessage, nextMessage)
+          td
+          td Functions that must return boolean <code>true</code> or <code>false</code> based on required condition depending on previous and next messages. In case of match then the appropriage class will be added to message:
+            ul
+              li message-first
+              li message-last
+              li message-tail
+              li message-same-name
+              li message-same-header
+              li message-same-footer
+              li message-same-avatar
+        //- tr
+          td custom-class-message-rule
+          td function(message, previousMessage, nextMessage)
+          td
+          td Function that must return additional message classes as string, based on required condition depending on previous and next messages
         tr
-          td .appendMessage(<span>messageParameters</span>, <span>animate</span>);
-          td Add new message to the end (to the bottom)
+          th(colspan="4") &lt;f7-message&gt; properties
         tr
-          td .prependMessage(<span>messageParameters</span>, <span>animate</span>);
-          td Add new message to the beginning (to the top)
+          td type
+          td string
+          td sent
+          td Message type: <code>sent</code> (default) or <code>received</code>
         tr
-          td .addMessages(<span>messages</span>, <span>method</span>, <span>animate</span>);
-          td Add multiple messages per once. 
-            ul.method-parameters
-              li
-                span.parameter messages
-                |  - <span class="parameter-type">array</span> with messages to add. Each message in array should be presented as object with <a href="../docs/messages.html#single-message-parameters">message parameters</a> Required.
-              li.method-returns Method returns array of HTMLElements with added messsages
+          td text
+          td string
+          td
+          td Message text
         tr
-          td .removeMessage(<span>message</span>);
-          td Remove message
+          td avatar
+          td string
+          td
+          td Message user's avatar URL
+        tr
+          td name
+          td string
+          td
+          td Message user's name
+        tr
+          td image
+          td string
+          td
+          td Message image URL
+        tr
+          td header
+          td string
+          td
+          td Message header
+        tr
+          td footer
+          td string
+          td
+          td Message footer
+        tr
+          td text-header
+          td string
+          td
+          td Message text header
+        tr
+          td text-footer
+          td string
+          td
+          td Message text footer
+        tr
+          td first
+          td boolean
+          td false
+          td Defines that the message is first in the conversation
+        tr
+          td last
+          td boolean
+          td false
+          td Defines that the message is last in the conversation
+        tr
+          td tail
+          td boolean
+          td false
+          td Defines that the message has visual "tail". Usually last message in conversation
+        tr
+          td same-name
+          td boolean
+          td false
+          td Defines that this message sender name is the same as on previous message
+        tr
+          td same-header
+          td boolean
+          td false
+          td Defines that this message header text is the same as on previous message
+        tr
+          td same-footer
+          td boolean
+          td false
+          td Defines that this message footer text is the same as on previous message
+        tr
+          td same-avatar
+          td boolean
+          td false
+          td Defines that this message user's avatar URL is the same as on previous message
+
+    h2 Messages Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;f7-messages&gt; methods
+      tr
+        td .scroll(<span>duration, position</span>);
+        td Scroll messages to top/bottom depending on <code>newMessagesFirst</code> parameter
+          ul.method-parameters
+            li
+              span.parameter duration
+              |  - <span class="parameter-type">number</span> scroll duration in ms
+            li
+              span.parameter position
+              |  - <span class="parameter-type">number</span> scroll position in px
+      tr
+        td .showTyping(<span>message</span>);
+        td Show typing message indicator
             ul.method-parameters
               li
                 span.parameter message
-                |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of message element to remove. Required
-              li.method-returns Method returns <b>true</b> if specified message was removed
+                |  - <span class="parameter-type">object</span> - <a href="../docs/messages.html#single-message-parameters">parameters of message</a> to add
+      tr
+        td .hideTyping()
+        td Hide typing message indicator
+
+    h2 Messages Events
+    table.events-table
+      thead
         tr
-          td .removeMessages(<span>messages</span>);
-          td Remove multiple messages
-            ul.method-parameters
-              li
-                span.parameter messages
-                |  - <span class="parameter-type">array</span> (with HTMLElements) or <span class="parameter-type">string</span> (with CSS Selector) of messages to remove. Required
-              li.method-returns Method returns <b>true</b> if specified messages was removed
+          th Event
+          th Description
+      tbody
         tr
-          td .scroll();
-          td Scroll messages to top/bottom depending on newMessagesFirst parameter
+          th(colspan="2") &lt;f7-message&gt; events
         tr
-          td .layout();
-          td Apply messages auto layout
+          td click
+          td Event will be triggered when user clicks on message bubble
         tr
-          td .clean();
-          td Clean/remove all the messages
-        
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            th(colspan="2") &lt;f7-message&gt; events
-          tr
-            td click
-            td Event will be triggered when user clicks on message bubble
-          tr
-            td click:name
-            td Event will be triggered when user clicks on message user's name
-          tr
-            td click:text
-            td Event will be triggered when user clicks on message text
-          tr
-            td click:avatar
-            td Event will be triggered when user clicks on message user's avatar
-      h2 Access To Initialized Instance
-      p If you use automatic initalization to init Messages (with <code>init:true</code> prop) and need to use its <a href="../docs/messages.html#messages-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messages</b></code> component's property.
+          td click:name
+          td Event will be triggered when user clicks on message user's name
+        tr
+          td click:text
+          td Event will be triggered when user clicks on message text
+        tr
+          td click:avatar
+          td Event will be triggered when user clicks on message user's avatar
+        tr
+          td click:header
+          td Event will be triggered when user clicks on message header
+        tr
+          td click:footer
+          td Event will be triggered when user clicks on message footer
+        tr
+          td click:bubble
+          td Event will be triggered when user clicks on message bubble
+
+    h2 Messages Slots
+    p Single message Vue component (<code>&lt;f7-message&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="message-bubble"&gt;</code> element in the end
+      li <code><b>start</b></code> - element will be inserted in the beginning and direct child of main message element <code>&lt;div class="message"&gt;</code>
+      li <code><b>end</b></code> - element will be inserted in the end and direct child of main message element <code>&lt;div class="message"&gt;</code>
+      li <code><b>content-start</b></code> - element will be inserted in the beginning and direct child of the <code>&lt;div class="message-content"&gt;</code> element
+      li <code><b>content-end</b></code> - element will be inserted in the end and direct child of the <code>&lt;div class="message-content"&gt;</code> element
+      li <code><b>bubble-start</b></code> - element will be inserted in the beginning and direct child of the <code>&lt;div class="message-bubble"&gt;</code> element
+      li <code><b>bubble-end</b></code> - element will be inserted in the end and direct child of the <code>&lt;div class="message-bubble"&gt;</code> element. Same as <code><b>default</b></code> slot
+    p The following slots can be used inside of single message instead of same props if you need to pass there more complext layout:
+    ul
+      li <code><b>header</b></code> - element will be inserted in message header
+      li <code><b>footer</b></code> - element will be inserted in message footer
+      li <code><b>text</b></code> - element will be inserted in message text
+      li <code><b>name</b></code> - element will be inserted in message name
+      li <code><b>image</b></code> - element will be inserted in message image (supposed tp be an <code>&lt;img&gt;</code> element)
+      li <code><b>text-header</b></code> - element will be inserted in message text header
+      li <code><b>text-footer</b></code> - element will be inserted in message text footer
+    pre
+      code.html
+        :code
+          <f7-message
+            type="sent"
+            text="Hello World"
+            name="John Doe"
+            avatar="path/to/image.jpg"
+          >
+            <div slot="start">Start</div>
+            <div slot="end">End</div>
+            <div slot="content-start">Content Start</div>
+            <div slot="content-end">Content End</div>
+            <div slot="bubble-start">Bubble Start</div>
+            <div slot="bubble-end">Bubble End</div>
+          </f7-message>
+
+          <!-- Renders to: -->
+
+          <div class="message message-sent">
+            <div>Start</div>
+            <div class="message-avatar" style="background-image: url(path/to/image.jpg);"></div>
+            <div class="message-content">
+              <div>Content Start</div>
+              <div class="message-name">John Doe</div>
+              <div class="message-bubble">
+                <div>Bubble Start</div>
+                <div class="message-text">Hello World</div>
+                <div>Bubble End</div>
+              </div>
+              <div>Content End</div>
+            </div>
+            <div>End</div>
+          </div>
+
+    h2 Access To Messages Instance
+    p If you use automatic initalization to init Messages (with <code>init:true</code> prop) and need to use <a href="../docs/messages.html">Messages API</a> you can access its initialized instance by accessing <code><b>.f7Messages</b></code> component's property.
+
+    h2 Examples
+    pre
+      code.html
+        :code
+          <f7-messages>
+            <f7-message name="John" text="Hello, Kate!" type="received"></f7-message>
+            <f7-message name="Kate" text="Hi, John!" type="sent"></f7-message>
+          </f7-messages>
+
+          <!-- Renders to: -->
+
+          <div class="messages">
+            <div class="message message-received">
+              <div class="message-name">John</div>
+              <div class="message-text">Hello, Kate!</div>
+            </div>
+            <div class="message message-sent">
+              <div class="message-name">Kate</div>
+              <div class="message-text">Hi, John!</div>
+            </div>
+          </div>
+
+    h4 Full Example
+    p Here is how it can be used in Vue component along with <a href="messagebar.html">Messagebar</a>:
+    pre
+      code.html
+        :code
+          <template>
+            <f7-page>
+              <f7-navbar title="Messsages" back-link="Back"></f7-navbar>
+
+              <!-- Messagebar -->
+              <f7-messagebar
+                placeholder="Send message"
+                ref="messagebar"
+              >
+                <!-- Send message link -->
+                <f7-link
+                  icon-if-ios="f7:arrow_up_fill"
+                  icon-if-md="material:send"
+                  slot="inner-end"
+                  @click="sendMessage"
+                ></f7-link>
+              </f7-messagebar>
+
+              <!-- Messages -->
+              <f7-messages ref="messages">
+                <f7-messages-title><b>Sunday, Feb 9,</b> 12:58</f7-messages-title>
+                <f7-message
+                  v-for="(message, index) in messagesData"
+                  :key="index"
+                  :type="message.type"
+                  :text="message.text"
+                  :image="message.image"
+                  :name="message.name"
+                  :avatar="message.avatar"
+                  :first="isFirstMessage(message, index)"
+                  :last="isLastMessage(message, index)"
+                  :tail="isTailMessage(message, index)"
+                ></f7-message>
+              </f7-messages>
+            </f7-page>
+          </template>
+          <script>
+            export default {
+              data() {
+                return {
+                  // Initial messages
+                  messagesData: [
+                    {
+                      type: 'sent',
+                      text: 'Hi, Kate',
+                    },
+                    {
+                      type: 'sent',
+                      text: 'How are you?',
+                    },
+                    {
+                      name: 'Kate',
+                      type: 'received',
+                      text: 'Hi, I am good!',
+                      avatar: 'http://lorempixel.com/100/100/people/9',
+                    },
+                    {
+                      name: 'Blue Ninja',
+                      type: 'received',
+                      text: 'Hi there, I am also fine, thanks! And how are you?',
+                      avatar: 'http://lorempixel.com/100/100/people/7',
+                    },
+                    {
+                      type: 'sent',
+                      text: 'Hey, Blue Ninja! Glad to see you ;)',
+                    },
+                    {
+                      type: 'sent',
+                      text: 'Hey, look, cutest kitten ever!',
+                    },
+                    {
+                      type: 'sent',
+                      image: 'http://lorempixel.com/200/260/cats/4/',
+
+                    },
+                    {
+                      name: 'Kate',
+                      type: 'received',
+                      text: 'Nice!',
+                      avatar: 'http://lorempixel.com/100/100/people/9',
+                    },
+                    {
+                      name: 'Kate',
+                      type: 'received',
+                      text: 'Like it very much!',
+                      avatar: 'http://lorempixel.com/100/100/people/9',
+                    },
+                    {
+                      name: 'Blue Ninja',
+                      type: 'received',
+                      text: 'Awesome!',
+                      avatar: 'http://lorempixel.com/100/100/people/7',
+                    },
+                  ],
+                  // Dummy data
+                  people: [
+                    {
+                      name: 'Kate Johnson',
+                      avatar: 'http://lorempixel.com/100/100/people/9',
+                    },
+                    {
+                      name: 'Blue Ninja',
+                      avatar: 'http://lorempixel.com/100/100/people/7',
+                    },
+                  ],
+                  answers: [
+                    'Yes!',
+                    'No',
+                    'Hm...',
+                    'I am not sure',
+                    'And what about you?',
+                    'May be ;)',
+                    'Lorem ipsum dolor sit amet, consectetur',
+                    'What?',
+                    'Are you sure?',
+                    'Of course',
+                    'Need to think about it',
+                    'Amazing!!!',
+                  ],
+                  // Response in progress flag
+                  responseInProgress: false,
+                };
+              },
+              methods: {
+                // Messages rules for correct styling
+                isFirstMessage(message, index) {
+                  const self = this;
+                  const previousMessage = self.messagesData[index - 1];
+                  if (message.isTitle) return false;
+                  if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+                  return false;
+                },
+                isLastMessage(message, index) {
+                  const self = this;
+                  const nextMessage = self.messagesData[index + 1];
+                  if (message.isTitle) return false;
+                  if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                  return false;
+                },
+                isTailMessage(message, index) {
+                  const self = this;
+                  const nextMessage = self.messagesData[index + 1];
+                  if (message.isTitle) return false;
+                  if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                  return false;
+                },
+                sendMessage() {
+                  const self = this;
+                  const text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
+
+                  if (text.length === 0) {
+                    // exit when empty messagebar text is empty
+                    return;
+                  }
+
+                  // Clear messagebar area
+                  self.messagebar.clear();
+
+                  // Focus area
+                  if (text.length) self.messagebar.focus();
+
+                  // Add sent message
+                  self.messagesData.push({
+                    text,
+                  });
+
+                  // Mock response
+                  if (self.responseInProgress) return;
+                  self.responseInProgress = true;
+                  setTimeout(() => {
+                    const answer = self.answers[Math.floor(Math.random() * self.answers.length)];
+                    const person = self.people[Math.floor(Math.random() * self.people.length)];
+                    self.messages.showTyping({
+                      header: `${person.name} is typing`,
+                      avatar: person.avatar,
+                    });
+                    setTimeout(() => {
+                      self.messagesData.push({
+                        text: answer,
+                        type: 'received',
+                        name: person.name,
+                        avatar: person.avatar,
+                      });
+                      self.messages.hideTyping();
+                      self.responseInProgress = false;
+                    }, 4000);
+                  }, 1000);
+                },
+                onF7Ready() {
+                  const self = this;
+                  // References to us APIs
+                  self.messagebar = self.$refs.messagebar.f7Messagebar;
+                  self.messages = self.$refs.messages.f7Messages;
+                },
+              },
+            };
+          </script>
+
