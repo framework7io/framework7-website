@@ -227,7 +227,7 @@ block content
             | <br> infinite
           td Same as <code>&lt;f7-page&gt;</code> events
     h2 Page Slots
-    p Page Vue component (&lt;f7-page&gt;) has additional slots for custom elements:
+    p Page Vue component (<code>&lt;f7-page&gt;</code>) has additional slots for custom elements:
     ul
       li <code><b>default</b></code> - element will be inserted as a child of  "page-content", if <code>page-content</code> prop is enabled (by default)
       li <code><b>fixed</b></code> - element will be inserted as a direct child of "page" right before "page-content"
@@ -238,10 +238,9 @@ block content
             <div slot="fixed">Fixed element</div>
             <p>Page content goes here</p>
           </f7-page>
-    p Renders to:
-    pre
-      code.html
-        :code
+
+          <!-- Renders to: -->
+
           <div class="page">
             <div>Fixed element</div>
             <div class="page-content">
@@ -256,10 +255,9 @@ block content
           <f7-page name="home">
             <p>Page content</p>
           </f7-page>
-    p Renders to:
-    pre
-      code.html
-        :code
+
+          <!-- Renders to: -->
+
           <div class="page" data-name="home">
             <div class="page-content">
               <p>Page content</p>
@@ -273,10 +271,9 @@ block content
             <f7-navbar title="My App"></f7-navbar>
             <p>Page content</p>
           </f7-page>
-    p Renders to:
-    pre
-      code.html
-        :code
+
+          <!-- Renders to: -->
+
           <div class="page" data-name="home">
             <div class="navbar">
               <div class="navbar-inner sliding">
@@ -295,10 +292,9 @@ block content
             <f7-navbar title="My App"></f7-navbar>
             <p>Page content</p>
           </f7-page>
-    p Renders to:
-    pre
-      code.html
-        :code
+
+          <!-- Renders to: -->
+
           <div class="page">
             <div class="navbar">
               <div class="navbar-inner sliding">
@@ -321,10 +317,9 @@ block content
             <f7-navbar title="My App"></f7-navbar>
             <p>Page content</p>
           </f7-page>
-    p Renders to:
-    pre
-      code.html
-        :code
+
+          <!-- Renders to: -->
+
           <div class="page">
             <div class="navbar">
               <div class="navbar-inner sliding">
@@ -346,10 +341,9 @@ block content
             <f7-page-content tab id="tab-2">Tab 2 Content ...</f7-page-content>
             <f7-page-content tab id="tab-3">Tab 3 Content ...</f7-page-content>
           </f7-page>
-    p Renders to:
-    pre
-      code.html
-        :code
+
+          <!-- Renders to: -->
+
           <div class="page">
             <div class="navbar">
               <div class="navbar-inner sliding">
