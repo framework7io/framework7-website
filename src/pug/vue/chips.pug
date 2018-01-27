@@ -6,109 +6,138 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Chips Vue Component
-      p <a href="../docs/chips.html">Chips (Tags)</a> Vue component represent complex entities in small blocks, such as a contact. They can contain a photo, short title string, and brief information
-      h2 Usage example
-      pre
-        code
-          | &lt;!-- Simple Chip --&gt;
-          | &lt;f7-chip text="Example Chip"&gt;&lt;/f7-chip&gt;
-          | &lt;!-- Colored Chip --&gt;
-          | &lt;f7-chip text="Another Chip" bg="red" color="white"&gt;&lt;/f7-chip&gt;
-          | &lt;!-- Media Chip --&gt;
-          | &lt;f7-chip text="Jane Doe" media='&lt;img src="http://lorempixel.com/100/100/people/9/"&gt;'&gt;&lt;/f7-chip&gt;
-          | &lt;!-- Deleteable Chip --&gt;
-          | &lt;f7-chip text="Another Chip" deleteable @delete="onChipDelete"&gt;&lt;/f7-chip&gt;
-          | &lt;!-- Deleteable Media Chip --&gt;
-          | &lt;f7-chip text="Jane Doe" media='&lt;img src="http://lorempixel.com/100/100/people/9/"&gt;' media-bg="red" deleteable @delete="onChipDelete"&gt;&lt;/f7-chip&gt;
-      p Renders to:
-      pre
-        code
-          | &lt;!-- Simple Chip --&gt;
-          | &lt;span class="chip"&gt;
-          |   &lt;span class="chip-label"&gt;Example Chip&lt;/span&gt;
-          | &lt;/span&gt;
-          | &lt;!-- Colored Chip --&gt;
-          | &lt;span class="chip bg-red color-white"&gt;
-          |   &lt;span class="chip-label"&gt;Another Chip&lt;/span&gt;
-          | &lt;/span&gt;
-          | &lt;!-- Media Chip --&gt;
-          | &lt;span class="chip bg-red color-white"&gt;
-          |   &lt;span class="chip-media"&gt;
-          |     &lt;img src="http://lorempixel.com/100/100/people/9/"&gt;
-          |   &lt;/span&gt;
-          |   &lt;span class="chip-label"&gt;Jane Doe&lt;/span&gt;
-          | &lt;/span&gt;
-          | &lt;!-- Deleteable Chip --&gt;
-          | &lt;span class="chip bg-red color-white"&gt;
-          |   &lt;span class="chip-label"&gt;Another Chip&lt;/span&gt;
-          |   &lt;a href="#" class="chip-delete"&gt;&lt;/a&gt;
-          | &lt;/span&gt;
-          | &lt;!-- Deleteable Media Chip --&gt;
-          | &lt;span class="chip"&gt;
-          |   &lt;span class="chip-media bg-red"&gt;
-          |     &lt;img src="http://lorempixel.com/100/100/people/9/"&gt;
-          |   &lt;/span&gt;
-          |   &lt;span class="chip-label"&gt;Jane Doe&lt;/span&gt;
-          |   &lt;a href="#" class="chip-delete"&gt;&lt;/a&gt;
-          | &lt;/span&gt;
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td color
-            td string
-            td 
-            td Chip text color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td bg
-            td string
-            td 
-            td Chip background color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td text
-            td string
-            td 
-            td Chip label text
-          tr
-            td media
-            td string
-            td 
-            td Content of chip media
-          tr
-            td media-bg
-            td string
-            td 
-            td Chip media element background color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td media-color
-            td string
-            td 
-            td Chip media element text color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td deleteable
-            td boolean
-            td 
-            td Defines whether the Chip has additional "delete" link or not
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td click
-            td Event will be triggered on Chip click
-          tr
-            td delete
-            td Event will be triggered on Chip delete link click
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Chip Vue Component
+    .docs-index
+    p <a href="../docs/chips.html">Chips (Tags)</a> Vue component represent complex entities in small blocks, such as a contact. They can contain a photo, short title string, and brief information
+    h2 Chip Components
+    p There are following components included:
+    ul
+      li <code><b>f7-chip</b></code>
+    h2 Chip Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-chip&gt; properties
+        tr
+          td text
+          td string
+          td
+          td Chip label text
+        tr
+          td media
+          td string
+          td
+          td Text content of chip media
+        tr
+          td media-bg-color
+          td string
+          td
+          td Chip media element background color. One of the <a href="colors.html">default colors</a>
+        tr
+          td media-text-color
+          td string
+          td
+          td Chip media element text color. One of the <a href="colors.html">default colors</a>
+        tr
+          td deleteable
+          td boolean
+          td false
+          td Defines whether the Chip has additional "delete" button or not
+    h2 Chip Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-chip&gt; events
+        tr
+          td click
+          td Event will be triggered on Chip click
+        tr
+          td delete
+          td Event will be triggered on Chip delete button click
+    h2 Chip Slots
+    p Chip Vue component has additional slots for custom elements:
+    ul
+      li <code><b>text</b></code> - element will be inserted in place of chip text label
+      li <code><b>media</b></code> - element will be inserted in the chip's media element
+
+    h2 Examples
+    pre
+      code.html
+        :code
+          <!-- Simple Chip -->
+          <f7-chip text="Example Chip"></f7-chip>
+
+          <!-- Colored Chip -->
+          <f7-chip text="Another Chip" color="red"></f7-chip>
+
+          <!-- Media Chip -->
+          <f7-chip text="Jane Doe" media="J" media-bg-color="red"></f7-chip>
+
+          <!-- Deleteable Chip -->
+          <f7-chip text="Another Chip" deleteable @delete="onChipDelete"></f7-chip>
+
+          <!-- Deleteable Media Chip -->
+          <f7-chip text="Jane Doe" media-bg="red" deleteable @delete="onChipDelete">
+            <img slot="media" src="http://lorempixel.com/100/100/people/9/">
+          </f7-chip>
+
+          <!-- With Icon -->
+          <f7-chip text="Add Contact" color="blue">
+            <f7-icon slot="media" f7="add_round"></f7-icon>
+          </f7-chip>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <!-- Simple Chip -->
+          <div class="chip">
+            <div class="chip-label">Example Chip</div>
+          </div>
+
+          <!-- Colored Chip -->
+          <div class="chip color-red">
+            <div class="chip-label">Another Chip</div>
+          </div>
+
+          <!-- Media Chip -->
+          <div class="chip bg-color-red">
+            <div class="chip-media">J</div>
+            <div class="chip-label">Jane Doe</div>
+          </div>
+
+          <!-- Deleteable Chip -->
+          <div class="chip">
+            <div class="chip-label">Another Chip</div>
+            <a href="#" class="chip-delete"></a>
+          </div>
+
+          <!-- Deleteable Media Chip -->
+          <div class="chip">
+            <div class="chip-media bg-color-red">
+              <img src="http://lorempixel.com/100/100/people/9/">
+            </div>
+            <div class="chip-label">Jane Doe</div>
+            <a href="#" class="chip-delete"></a>
+          </div>
+
+          <!-- With Icon -->
+          <div class="chip color-blue">
+            <div class="chip-media">
+              <i class="icon f7-icons">add_round</i>
+            </div>
+            <div class="chip-label">Add Contact</div>
+          </div>

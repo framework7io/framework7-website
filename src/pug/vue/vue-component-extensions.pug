@@ -1,0 +1,134 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Vue Component Extensions | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Vue Component Extensions
+    .docs-index
+    h2 Context Extensions
+    p <b>After</b> Vue mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all Vue components:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td this.$f7
+          td Main Framework7's initialized instance. It allows you to use any of Framework7 APIs
+        tr
+          td this.$$<br>this.Dom7
+          td Access to built-in <a href="../docs/dom.html">Dom7</a> DOM library that utilizes most edge and high-performance methods for DOM manipulation
+        tr
+          td this.$device
+          td Access to <a href="../docs/device.html">Device</a> utilities
+        tr
+          td this.$request
+          td Access to <a href="../docs/request.html">Request</a> library for XHR requests
+        tr
+          td this.$utils
+          td Access to <a href="../docs/utils.html">Utils</a> object with few useful utilities
+        tr
+          td this.$theme
+          td Object with boolean properties with information about currently used theme (iOS or MD): <code>this.$theme.ios</code> and <code>this.$theme.material</code>
+        tr
+          td this.$f7router
+          td
+            p.important-note This property only available for components inside of initialized View
+            p Framework7 Router Instance. It has a lot of useful <a href="../docs/view.html#router-api-methods-properties">Methods & Propserties</a> to use for navigation
+        tr
+          td this.$f7route
+          td
+            p.important-note This property only available for components inside of initialized View
+            p Object with current route data that was used to load this page, tab or modal. It has the following properties
+            ul
+              li <code>url</code> - route URL
+              li <code>path</code> - route path
+              li <code>query</code> - object with route query. If the url is <code>/page/?id=5&foo=bar</code> then it will contain the following object <code>{id: '5', foo: 'bar'}</code>
+              li <code>params</code> - route params. If we have matching route with <code>/page/user/:userId/post/:postId/</code> path and url of the page is <code>/page/user/55/post/12/</code> then it will be the following object <code>{userId: '55', postId: '12'}</code>
+              li <code>name</code> - route name
+              li <code>hash</code> - route URL hash
+              li <code>route</code> - object with matching route from available routes
+
+    h2 Methods Extensions
+    p And there are additional methods will be available on any Vue component:
+    table.methods-table
+      tbody
+        tr
+          td onF7Ready(<span>$f7</span>)
+          td Component method will be executed on/when Framework7 initialized. It is safe to put all Framework7 related logic into this method
+        tr
+          td onF7RouteChange(<span>newRoute</span>, <span>previousRoute</span>, <span>router</span>)
+          td Component method will be executed on Framework7 route change
+        tr
+          td onF7RouteChanged(<span>newRoute</span>, <span>previousRoute</span>, <span>router</span>)
+          td Event will be fired on current route change and after page transitions
+    p For example
+    pre
+      code.js
+        :code
+          // Init App
+          new Vue({
+            el: '#app',
+            framework7: {
+              routes: Routes
+            },
+            methods: {
+              onF7Ready(f7) {
+                // do some f7 related logic
+                f7.dialog.alert('App initialized');
+              }
+            }
+          });
+    p Or in single-file vue component:
+    pre
+      code.html
+        :code
+          <template>
+            <f7-page>
+              ...
+            </f7-page>
+          </template>
+          <script>
+            export default {
+              data() {
+                ...
+              },
+              methods: {
+                onF7Ready(f7) {
+                  // f7 api can be used here
+                },
+              },
+            };
+          </script>
+    h2 Page Events Extensions
+    p Framework-Vue plugin also introduces new <code>on</code> Vue component option that can be used in page components to listen for <a href="../docs/page.html#page-events">page events</a>:
+    pre
+      code.html
+        :code
+          <template>
+            <f7-page>
+              ...
+            </f7-page>
+          </template>
+          <script>
+            export default {
+              data() {
+                ...
+              },
+              // page events
+              on: {
+                pageInit(event, pageData) {
+                  // do something on page init
+                },
+                pageAfterOut(event, pageData) {
+                  // do something when page transitioned out of view
+                },
+              }
+            };
+          </script>

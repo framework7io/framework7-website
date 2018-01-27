@@ -1,0 +1,165 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Color Properties | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Color Properties
+    .docs-index
+    .with-device(data-device-preview="../docs-demos/color-themes.html")
+      h2 Color Properties
+      p <b>All Framework7-Vue components</b> supports same set of color properties that allow to set separate element colors and color themes:
+
+      table.params-table
+        thead
+          tr
+            th Prop
+            th Type
+            th Default
+            th Description
+        tbody
+          tr
+            td color
+            td string
+            td
+            td Single element color. One of the default colors.
+          tr
+            td color-theme
+            td string
+            td
+            td Applies color theme to the element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc. One of the default colors.
+          tr
+            td text-color
+            td string
+            td
+            td Sets element's text color. One of the default colors.
+          tr
+            td bg-color
+            td string
+            td
+            td Sets element's background color. One of the default colors.
+          tr
+            td border-theme
+            td string
+            td
+            td Sets element's borders color. One of the default colors.
+          tr
+            td ripple-color
+            td string
+            td
+            td Sets element ripple wave color (MD-theme only). One of the default colors.
+          tr
+            td theme-dark
+            td boolean
+            td false
+            td Enables dark layout theme on element. It should be some parent element as this will have visual effect on all supported children elements, e.g. view, page, navbar, toolbar, list, etc.
+      p For example:
+      pre
+        code.html
+          :code
+            <!-- Button color -->
+            <f7-button color="red">Red Button</f7-button>
+
+            <!-- Link color -->
+            <f7-link color="green">Green Link</f7-link>
+
+            <!-- Page color theme -->
+            <f7-page color-theme="orange">
+              ...
+            </f7-page>
+
+            <!-- Panel with dark theme -->
+            <f7-panel theme-dark>
+              ...
+            </f7-panel>
+
+      h2 Supported Colors
+      table
+        thead
+          tr
+            th Color
+            th iOS
+            th MD
+        tbody
+          tr
+            td red
+            td
+              div.color-example(style="background-color: #ff3b30")
+              div #ff3b30
+            td
+              div.color-example(style="background-color: #f44336")
+              div #f44336
+          tr
+            td green
+            td
+              div.color-example(style="background-color: #4cd964")
+              div #4cd964
+            td
+              div.color-example(style="background-color: #4caf50")
+              div #4caf50
+          tr
+            td blue
+            td
+              div.color-example(style="background-color: #007aff")
+              div #007aff
+            td
+              div.color-example(style="background-color: #2196f3")
+              div #2196f3
+          tr
+            td pink
+            td
+              div.color-example(style="background-color: #ff2d55")
+              div #e91e63
+            td
+              div.color-example(style="background-color: #e91e63")
+              div #e91e63
+          tr
+            td yellow
+            td
+              div.color-example(style="background-color: #ffcc00")
+              div #ffcc00
+            td
+              div.color-example(style="background-color: #ffeb3b")
+              div #ffeb3b
+          tr
+            td orange
+            td
+              div.color-example(style="background-color: #ff9500")
+              div #ff9500
+            td
+              div.color-example(style="background-color: #ff9800")
+              div #ff9800
+          tr
+            td gray
+            td
+              div.color-example(style="background-color: #8e8e93")
+              div #8e8e93
+            td
+              div.color-example(style="background-color: #9e9e9e")
+              div #9e9e9e
+          tr
+            td white
+            td
+              div.color-example(style="background-color: #fff")
+              div #fff
+            td
+              div.color-example(style="background-color: #fff")
+              div #fff
+          tr
+            td black
+            td
+              div.color-example(style="background-color: #000")
+              div #000
+            td
+              div.color-example(style="background-color: #000")
+              div #000
+
+
+

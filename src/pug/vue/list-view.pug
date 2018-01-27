@@ -1,0 +1,334 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'List Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 List Vue Component
+    .docs-index
+    p List views are versatile and powerful user interface compontents frequently found in iOS apps. A list view presents data in a scrollable list of multiple rows that may be divided into sections/groups.
+    p List views have many purposes:
+    ul
+      li To let users navigate through hierarchically structured data
+      li To present an indexed list of items
+      li To display detail information and controls in visually distinct groupings
+      li To present a selectable list of options
+    p List Vue component represents Framework7's <a href="../docs/list-view.html">List View</a> component.
+
+    h2 List Components
+    p There are following components included:
+    ul
+      li <code><b>f7-list</b></code> - main List View element
+      li <code><b>f7-list-group</b></code> - list group element
+
+    h2 List Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-list&gt; properties
+        tr
+          td inset
+          td boolean
+          td false
+          td Makes list block inset
+        tr
+          td tablet-inset
+          td boolean
+          td false
+          td Makes block inset on tablets, but not on phones
+        tr
+          td media-list
+          td boolean
+          td false
+          td Enables <a href="../docs/list-view.html#media-list">Media List</a>
+        tr
+          td links-list
+          td boolean
+          td false
+          td Enables simplified <a href="../docs/list-view.html#links-list">Links List</a>
+        tr
+          td simple-list
+          td boolean
+          td false
+          td Enables simplified <a href="../docs/list-view.html#simple-list">Simple List</a>
+        tr
+          td sortable
+          td boolean
+          td false
+          td Enables <a href="sortable.html">Sortable List</a>
+        tr
+          td sortable-enabled
+          td boolean
+          td false
+          td Enables sorting on sortable list
+        tr
+          td accordion
+          td boolean
+          td false
+          td Enables <a href="accordion.html#accordion-list">Accordion List</a>
+        tr
+          td contacts-list
+          td boolean
+          td false
+          td Enables <a href="contacts-list.html">Contacts List</a> by adding required addional classes for styling
+        tr
+          td form
+          td boolean
+          td false
+          td Enables <code>&lt;form&gt;</code> tag on list block instead of <code>&lt;div&gt;</code>
+        tr
+          td form-store-data
+          td boolean
+          td false
+          td Enables <a href="../docs/form.html#form-storage">form storage</a> for the current form
+        tr
+          td inline-labels
+          td boolean
+          td false
+          td Enables inline-styled labels for <a href="inputs.html">Form Inputs</a>
+        tr
+          td no-hairlines
+          td boolean
+          td false
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a>
+        tr
+          td no-hairlines-md
+          td boolean
+          td false
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for MD theme
+        tr
+          td no-hairlines-ios
+          td boolean
+          td false
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for iOS theme
+        tr
+          td no-hairlines-between
+          td boolean
+          td false
+          td Removes inner <a href="../docs/hairlines.html">hairlines</a> between items
+        tr
+          td no-hairlines-between-md
+          td boolean
+          td false
+          td Removes inner <a href="../docs/hairlines.html">hairlines</a> between items for MD theme
+        tr
+          td no-hairlines-between-ios
+          td boolean
+          td false
+          td Removes inner <a href="../docs/hairlines.html">hairlines</a> between items for iOS theme
+        tr
+          td tab
+          td boolean
+          td false
+          td Adds additional "tab" class when block should be used as a Tab
+        tr
+          td tab-active
+          td boolean
+          td false
+          td Adds additional "tab-active" class when block used as a Tab and makes it active tab
+        tr
+          td virtual-list
+          td boolean
+          td false
+          td Enables Virtual List
+        tr
+          td virtual-list-params
+          td object
+          td
+          td Object with <a href="../docs/virtual-list.html#virtual-list-parameters">Virtual List Parameters</a>
+
+    h2 List Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-list&gt; events
+        tr
+          td tab:show
+          td Event will be triggered when List Block-Tab becomes visible/active
+        tr
+          td tab:hide
+          td Event will be triggered when List Block-Tab becomes invisible/inactive
+        tr
+          th(colspan="2") &lt;f7-list&gt; Sortable specific events
+        tr
+          td sortable:enable
+          td Event will be triggered when sortable mode is enabled
+        tr
+          td sortable:disable
+          td Event will be triggered when sortable mode is disabled
+        tr
+          td sortable:sort
+          td Event will be triggered after user release currently sorting element in new position. <code>event.detail</code> will contain object with <code>from</code> and <code>to</code> properties with start/new index numbers of sorted list item
+        tr
+          th(colspan="2") &lt;f7-list&gt; Virtual List specific events
+        tr
+          td virtual:itembeforeinsert
+          td Event will be triggered before item will be added to virtual document fragment
+        tr
+          td virtual:itemsbeforeinsert
+          td Event will be triggered after current DOM list will be removed and before new document will be inserted
+        tr
+          td virtual:itemsafterinsert
+          td Event will be triggered after new document fragment with items inserted
+        tr
+          td virtual:beforeclear
+          td Event will be triggered before current DOM list will be removed and replaced with new document fragment
+
+    h2 Virtual List
+    p For Virtual List usage and examples check the <a href="virtual-list.html">Virtual List Vue Component</a> documentation.
+
+    h2 Sortable List
+    p For Sortable List usage and examples check the <a href="sortable.html">Sortable Vue Component</a> documentation.
+
+    h2 Accordion List
+    p For Accordion List usage and examples check the <a href="accordion.html">Accordion Vue Component</a> documentation.
+
+    h2 Examples
+    h4 Minimal Layout
+    pre
+      code.html
+        :code
+          <f7-list>
+            <f7-list-item title="Item 1"></f7-list-item>
+            <f7-list-item title="Item 2"></f7-list-item>
+          </f7-list>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="list">
+            <ul>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Item 1</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Item 2</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+    h4 With Groups
+    pre
+      code.html
+        :code
+          <f7-list>
+            <f7-list-group>
+              <f7-list-item title="Group 1" group-title></f7-list-item>
+              <f7-list-item title="Item 1"></f7-list-item>
+              <f7-list-item title="Item 2"></f7-list-item>
+            </f7-list-group>
+            <f7-list-group>
+              <f7-list-item title="Group 2" group-title></f7-list-item>
+              <f7-list-item title="Item 1"></f7-list-item>
+              <f7-list-item title="Item 2"></f7-list-item>
+            </f7-list-group>
+          </f7-list>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="list">
+            <div class="list-group">
+              <ul>
+                <li class="list-group-title"><span>Group 1</span></li>
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Item 1</div>
+                  </div>
+                </li>
+                <li class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Item 2</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="list-group">
+              <ul>
+                <li class="list-group-title"><span>Group 2</span></li>
+                ...
+              </ul>
+            </div>
+          </div>
+    h4 Media List
+    pre
+      code
+        :code
+          <f7-list media-list>
+            <f7-list-item title="Item 1" subtitle="Subtitle 1" text="Item 1 Text"></f7-list-item>
+            <f7-list-item title="Item 1" subtitle="Subtitle 2" text="Item 2 Text"></f7-list-item>
+          </f7-list>
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="list media-list">
+            <ul>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Item 1</div>
+                  </div>
+                  <div class="item-subtitle">Subtitle 1</div>
+                  <div class="item-text">Item 1 Text</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title">Item 1</div>
+                  </div>
+                  <div class="item-subtitle">Subtitle 1</div>
+                  <div class="item-text">Item 1 Text</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+    h4 With Block Footer
+    pre
+      code
+        :code
+          <f7-list>
+            <f7-list-item title="Item 1"></f7-list-item>
+            <f7-list-item title="Item 2"></f7-list-item>
+            <f7-block-footer>List Footer</f7-block-footer>
+          </f7-list>
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="list">
+            <ul>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Item 1</div>
+                </div>
+              </li>
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Item 2</div>
+                </div>
+              </li>
+            </ul>
+            <div class="block-footer">List Footer</div>
+          </div>

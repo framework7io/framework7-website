@@ -1,0 +1,127 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Radio Vue Component | Framework7 Vue Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Radio Vue Component
+    .docs-index
+    p Radio Vue component represents <a href="../docs/radio.html">Radio</a> component.
+    h2 Radio Components
+    p There are following components included:
+    ul
+      li <code><b>f7-radio</b></code>
+    h2 Radio Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-radio&gt; properties
+        tr
+          td checked
+          td boolean
+          td
+          td Defines whether the radio input is checked or not
+        tr
+          td name
+          td string<br>number
+          td
+          td Radio input name
+        tr
+          td value
+          td string<br>number<br>boolean
+          td
+          td Radio input value
+        tr
+          td disabled
+          td boolean
+          td
+          td Defines whether the radio input is disabled
+        tr
+          td readonly
+          td boolean
+          td
+          td Defines whether the radio input is readonly
+    h2 Radio Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-radio&gt; events
+        tr
+          td change
+          td Event will be triggered when radio input state changed
+    h2 Radios List
+    p Radios List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;f7-list&gt;</a></code>, <code><a href="list-item.html">&lt;f7-list-item&gt;</a></code>.
+    pre
+      code.html
+        :code
+          <f7-list>
+            <!-- Additional "radio" prop to enable radio list item -->
+            <f7-list-item radio value="check_1" name="demo-radio" checked title="Radio 1"></f7-list-item>
+            <f7-list-item radio value="check_2" name="demo-radio" title="Radio 2"></f7-list-item>
+          </f7-list>
+    h2 Radio v-model
+    p <code>v-model</code> <b>is not supported</b> on Radio vue component. Instead, just use the combination of <code>checked</code> property and <code>@change</code> event:
+    pre
+      code.html
+        :code
+          <template>
+            <f7-radio
+              name="fruit"
+              value="bannana"
+              :checked="fruit === 'bannana'"
+              @change="fruit = $event.target.value"
+            ></f7-radio>
+
+            <f7-radio
+              name="fruit"
+              value="orange"
+              :checked="fruit === 'orange'"
+              @change="fruit = $event.target.value"
+            ></f7-radio>
+
+            <f7-radio
+              name="fruit"
+              value="apple"
+              :checked="fruit === 'apple'"
+              @change="fruit = $event.target.value"
+            ></f7-radio>
+          </template>
+          <script>
+            export default {
+              data() {
+                return {
+                  fruit: 'apple'
+                };
+              },
+            };
+          </script>
+    h2 Examples
+    pre
+      code.html
+        :code
+          <!-- Inline radio -->
+          <p>Lorem <f7-radio name="demo-radio-1"></f7-radio> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <f7-radio name="demo-radio-1" checked></f7-radio> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+
+          <!-- Radios List -->
+          <f7-list>
+            <f7-list-item radio value="Books" title="Books" name="demo-radio-2" checked></f7-list-item>
+            <f7-list-item radio value="Movies" title="Movies" name="demo-radio-2"></f7-list-item>
+            <f7-list-item radio value="Food" title="Food" name="demo-radio-2"></f7-list-item>
+            <f7-list-item radio value="Drinks" title="Drinks" name="demo-radio-2"></f7-list-item>
+          </f7-list>
+

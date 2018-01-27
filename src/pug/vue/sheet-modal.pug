@@ -1,0 +1,98 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Sheet Modal Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Sheet Modal Vue Component
+    .docs-index
+    p Sheet Modal is a special overlay type which is similar to Picker/Calendar's overlay. Such modal allows to create custom picker overlays with custom content.
+    p Sheet Modal Vue component represents <a href="../docs/sheet-modal.html">Sheet Modal</a> component.
+    h2 Sheet Modal Components
+    p There are following components included:
+    ul
+      li <code><b>f7-sheet</b></code> - sheet modal element
+    h2 Sheet Modal Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;f7-sheet&gt; properties
+        tr
+          td backdrop
+          td boolean
+          td Enable to render additional sheet modal backdrop when required
+        tr
+          td opened
+          td boolean
+          td Allows to open/close Sheet Modal and set its initial state
+    h2 Sheet Modal Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;f7-sheet&gt; methods
+      tr
+        td .open(<span>animate</span>)
+        td Open sheet modal
+      tr
+        td .close(<span>animate</span>)
+        td Close sheet modal
+    h2 Sheet Modal Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-sheet&gt; events
+        tr
+          td sheet:open
+          td Event will be triggered when Sheet Modal starts its opening animation
+        tr
+          td sheet:opened
+          td Event will be triggered after Sheet Modal completes its opening animation
+        tr
+          td sheet:close
+          td Event will be triggered when Sheet Modal starts its closing animation
+        tr
+          td sheet:closed
+          td Event will be triggered after Sheet Modal completes its closing animation
+
+    h2 Open And Close Sheet Modal
+    p You can control Sheet Modal state, open and closing it:
+    ul
+      li using its <a href="../docs/sheet-modal.html">Sheet Modal API</a>
+      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>sheet-open</code> property (to open it) and <code>sheet-close</code> property to close it
+
+    h2 Access To Sheet Modal Instance
+    p You can access Sheet Modal initialized instance by accessing <code><b>.f7Sheet</b></code> component's property.
+
+    h2 Examples
+    pre
+      code
+        :code
+          <!-- Sheet Modal -->
+          <f7-sheet>
+            <!-- Sheet Modal content goes here -->
+          </f7-sheet>
+    p Renders to:
+    pre
+      code
+        :code
+          <!-- Sheet Modal -->
+          <div class="sheet-modal">
+            <div class="sheet-modal-inner">
+              <!-- Sheet Modal content goes here -->
+            </div>
+          </div>

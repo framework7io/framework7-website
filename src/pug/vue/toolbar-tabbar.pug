@@ -1,0 +1,204 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Toolbar Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Toolbar Vue Component
+    .docs-index
+    p Toolbar is a fixed (with Fixed and Through layout types) area at the bottom of a screen that contains navigation elements. Toolbar does not have any parts, just plain links inside
+    p Toolbar Vue component represents <a href="../docs/toolbar-tabbar.html">Toolbar</a> component.
+
+    h2 Toolbar Components
+    p There are following components included:
+    ul
+      li <code><b>f7-toolbar</b></code>
+
+    h2 Toolbar Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-toolbar&gt; properties
+        tr
+          td inner
+          td boolean
+          td true
+          td When enabled (by default), it will put all the content within internal `toolbar-inner` element. Disable it only in case you want to put totally custom layout inside
+        tr
+          td bottom-md
+          td boolean
+          td false
+          td Defines whether the Toolbar should be on bottom or not (MD theme only)
+        tr
+          td tabbar
+          td boolean
+          td false
+          td Defines whether the Toolbar is also a Tabbar or not
+        tr
+          td labels
+          td boolean
+          td false
+          td Enables Tabbar with labels (affects only when <code>tabbar: true</code>)
+        tr
+          td scrollable
+          td boolean
+          td false
+          td Enables scrollable Tabbar (affects only when <code>tabbar: true</code>)
+        tr
+          td no-shadow
+          td boolean
+          td
+          td Disable shadow rendering for Material theme
+        tr
+          td no-hairline
+          td boolean
+          td false
+          td Disable toolbar/tabbar top thin border (hairline) for iOS theme
+        tr
+          td hidden
+          td boolean
+          td false
+          td Makes toolbar hidden
+
+    h2 Toolbar Methods
+    table.methods-table
+      td
+        th(colspan="2") &lt;f7-toolbar&gt; methods
+      tr
+        td .hide(<span>animate</span>)
+        td Hide toolbar
+      tr
+        td .show(<span>animate</span>)
+        td Show toolbar
+
+    h2 Toolbar Slots
+    p Toolbar Vue component (<code>&lt;f7-toolbar&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="toolbar-inner"&gt;</code> element
+      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="toolbar-inner"&gt;</code> element
+      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="toolbar-inner"&gt;</code> element
+    pre
+      code.html
+        :code
+          <f7-toolbar>
+            <div slot="before-inner">Before Inner</div>
+            <div slot="after-inner">After Inner</div>
+            <!-- Goes to default slot: -->
+            <f7-link>Left Link</f7-link>
+            <f7-link>Right Link</f7-link>
+          </f7-toolbar>
+
+          <!-- Renders to: -->
+
+          <div class="toolbar">
+            <div>Before Inner</div>
+            <div class="toolbar-inner">
+              <a href="#" class="link">Left Link</a>
+              <a href="#" class="link">Right Link</a>
+            </div>
+            <div>After Inner</div>
+          </div>
+
+    h2 Examples
+    pre
+      code.html
+        :code
+          <f7-toolbar>
+            <f7-link>Left Link</f7-link>
+            <f7-link>Right Link</f7-link>
+          </f7-toolbar>
+
+          <!-- Renders to: -->
+
+          <div class="toolbar">
+            <div class="toolbar-inner">
+              <a href="#" class="link">Left Link</a>
+              <a href="#" class="link">Right Link</a>
+            </div>
+          </div>
+    h4 Bottom Toolbar (Affects MD Theme only)
+    pre
+      code.html
+        :code
+          <f7-toolbar bottom-md>
+            <f7-link>Left Link</f7-link>
+            <f7-link>Right Link</f7-link>
+          </f7-toolbar>
+
+          <!-- Renders to: -->
+
+          <div class="toolbar toolbar-bottom-md">
+            <div class="toolbar-inner">
+              <a href="#" class="link">Left Link</a>
+              <a href="#" class="link">Right Link</a>
+            </div>
+          </div>
+    h4 Tabbar
+    pre
+      code.html
+        :code
+          <f7-toolbar tabbar>
+            <f7-link tab-link="#tab1">Tab 1</f7-link>
+            <f7-link tab-link="#tab2">Tab 2</f7-link>
+          </f7-toolbar>
+
+          <!-- Renders to: -->
+
+          <div class="toolbar tabbar">
+            <div class="toolbar-inner">
+              <a href="#" class="tab-link" data-tab="#tab1">Tab 1</a>
+              <a href="#" class="tab-link" data-tab="#tab2">Tab 2</a>
+            </div>
+          </div>
+    h4 Tabbar With Labels
+    pre
+      code.html
+        :code
+          <f7-toolbar tabbar labels>
+            <f7-link icon="icon-1" text="Tab 1" tab-link="#tab1"></f7-link>
+            <f7-link icon="icon-2" text="Tab 2" tab-link="#tab2"></f7-link>
+          </f7-toolbar>
+
+          <!-- Renders to: -->
+
+          <div class="toolbar tabbar tabbar-labels">
+            <div class="toolbar-inner">
+              <a href="#" class="tab-link" data-tab="#tab1">
+                <i class="icon icon-1"></i>
+                <span class="tabbar-label">Tab 1</span>
+              </a>
+              <a href="#" class="tab-link" data-tab="#tab1">
+                <i class="icon icon-2"></i>
+                <span class="tabbar-label">Tab 2</span>
+              </a>
+            </div>
+          </div>
+    h4 Scrollable Tabbar
+    pre
+      code.html
+        :code
+          <f7-toolbar tabbar scrollable>
+            <f7-link tab-link="#tab1">Tab 1</f7-link>
+            <f7-link tab-link="#tab2">Tab 2</f7-link>
+          </f7-toolbar>
+
+          <!-- Renders to: -->
+
+          <div class="toolbar tabbar tabbar-scrollable">
+            <div class="toolbar-inner">
+              <a href="#" class="tab-link" data-tab="#tab1">Tab 1</a>
+              <a href="#" class="tab-link" data-tab="#tab2">Tab 2</a>
+            </div>
+          </div>

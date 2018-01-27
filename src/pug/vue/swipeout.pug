@@ -1,0 +1,321 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Swipeout Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Swipeout Vue Component
+    .docs-index
+    p Swipeout List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;f7-list&gt;</a>, <a href="list-item.html">&lt;f7-list-item swipeout&gt;</a> Vue components and additional Swipeout components.
+    p Swipeout Vue component represents Framework7's <a href="../docs/swipeout.html">Swipeout</a> component.
+    h2 Swipeout Components
+    p There are following components included:
+    ul
+      li <code><b>f7-swipeout-actions</b></code> - wrapper for swipeout buttons
+      li <code><b>f7-swipeout-button</b></code> - single swipeout button
+
+    h2 Swipeout Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-swipeout-actions&gt; Properties
+        tr
+          td side
+          td string
+          td right
+          td Swipeout actions side
+        tr
+          td right
+          td boolean
+          td
+          td Shortcut for <code>side="right"</code> prop
+        tr
+          td left
+          td boolean
+          td
+          td Shortcut for <code>side="right"</code> prop
+        tr
+          th(colspan="4") &lt;f7-swipeout-button&gt; Properties
+        tr
+          td delete
+          td boolean
+          td false
+          td Will automatically delete swipeout list item on click
+        tr
+          td close
+          td boolean
+          td false
+          td Will automatically close swipeout list item on click
+        tr
+          td overswipe
+          td boolean
+          td false
+          td Will be triggered click automatically if you swipe actions too much - <a href="../docs/swipeout.html#overswipe">overswipe</a>
+        tr
+          td text
+          td string
+          td
+          td Swipeout button text label
+        tr
+          td confirmText
+          td string
+          td
+          td This text will be shown in dialog where user must agree before item delete
+    h2 Swipeout Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-swipeout-button&gt; events
+        tr
+          td click
+          td Event will be triggered on swipeout button click
+        tr
+          th(colspan="2") &lt;f7-list-item&gt; events
+            br
+            small The following events will be available on &lt;f7-list-item&gt; with <code>swipeout</code> enabled
+        tr
+          td swipeout
+          td Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage
+        tr
+          td swipeout:open
+          td Event will be triggered when swipeout element starts its opening animation
+        tr
+          td swipeout:opened
+          td Event will be triggered after swipeout element completes its opening animation
+        tr
+          td swipeout:close
+          td Event will be triggered when swipeout element starts its closing animation
+        tr
+          td swipeout:closed
+          td Event will be triggered after swipeout element completes its closing animation
+        tr
+          td swipeout:delete
+          td Event will be triggered after swipeout element starts its delete animation
+        tr
+          td swipeout:deleted
+          td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+    h2 Examples
+    h4 Swipe To Delete
+    pre
+      code.html
+        :code
+          <f7-list>
+            <f7-list-item swipeout title="Item 1" @swipeout:deleted="onSwipeoutDeleted">
+              <f7-swipeout-actions>
+                <f7-swipeout-button delete>Delete</f7-swipeout-button>
+              </f7-swipeout-actions>
+            </f7-list-item>
+            <f7-list-item swipeout title="Item 2" @swipeout:deleted="onSwipeoutDeleted">
+              <f7-swipeout-actions>
+                <f7-swipeout-button delete>Delete</f7-swipeout-button>
+              </f7-swipeout-actions>
+            </f7-list-item>
+          </f7-list>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="list">
+            <ul>
+              <li class="swipeout">
+                <div class="swipeout-content">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Item 1</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-delete">Delete</a>
+                </div>
+              </li>
+              <li class="swipeout">
+                <div class="swipeout-content">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Item 2</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-delete">Delete</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+    h4 With Additional Actions
+    pre
+      code.html
+        :code
+          <f7-list>
+            <f7-list-item swipeout title="Item 1" @swipeout:deleted="onSwipeoutDeleted">
+              <f7-swipeout-actions>
+                <f7-swipeout-button close color="blue">Reply</f7-swipeout-button>
+                <f7-swipeout-button delete>Delete</f7-swipeout-button>
+              </f7-swipeout-actions>
+            </f7-list-item>
+            <f7-list-item swipeout title="Item 2" @swipeout:deleted="onSwipeoutDeleted">
+              <f7-swipeout-actions>
+                <f7-swipeout-button close color="blue">Reply</f7-swipeout-button>
+                <f7-swipeout-button delete>Delete</f7-swipeout-button>
+              </f7-swipeout-actions>
+            </f7-list-item>
+          </f7-list>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="list">
+            <ul>
+              <li class="swipeout">
+                <div class="swipeout-content">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Item 1</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-close color-blue">Reply</a>
+                  <a href="#" class="swipeout-delete">Delete</a>
+                </div>
+              </li>
+              <li class="swipeout">
+                <div class="swipeout-content">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Item 2</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-close color-blue">Reply</a>
+                  <a href="#" class="swipeout-delete">Delete</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+    h4 With Actions On Left
+    pre
+      code.html
+        :code
+          <f7-list>
+            <f7-list-item swipeout title="Item 1">
+              <f7-swipeout-actions left>
+                <f7-swipeout-button close color="orange">Mark</f7-swipeout-button>
+              </f7-swipeout-actions>
+            </f7-list-item>
+            <f7-list-item swipeout title="Item 2">
+              <f7-swipeout-actions left>
+                <f7-swipeout-button close color="orange">Mark</f7-swipeout-button>
+              </f7-swipeout-actions>
+            </f7-list-item>
+          </f7-list>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="list">
+            <ul>
+              <li class="swipeout">
+                <div class="swipeout-content">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Item 1</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-left">
+                  <a href="#" class="swipeout-close color-orange">Mark</a>
+                </div>
+              </li>
+              <li class="swipeout">
+                <div class="swipeout-content">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Item 2</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-close color-orange">Mark</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+    h4 With Actions On Both Sides
+    pre
+      code.html
+        :code
+          <f7-list>
+            <f7-list-item swipeout title="Item 1">
+              <f7-swipeout-actions left>
+                <f7-swipeout-button close color="orange">Mark</f7-swipeout-button>
+              </f7-swipeout-actions>
+              <f7-swipeout-actions right>
+                <f7-swipeout-button delete>Delete</f7-swipeout-button>
+              </f7-swipeout-actions>
+            </f7-list-item>
+            <f7-list-item swipeout title="Item 2">
+              <f7-swipeout-actions left>
+                <f7-swipeout-button close color="orange">Mark</f7-swipeout-button>
+              </f7-swipeout-actions>
+              <f7-swipeout-actions right>
+                <f7-swipeout-button delete>Delete</f7-swipeout-button>
+              </f7-swipeout-actions>
+            </f7-list-item>
+          </f7-list>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="list">
+            <ul>
+              <li class="swipeout">
+                <div class="swipeout-content">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Item 1</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-left">
+                  <a href="#" class="swipeout-close color-orange">Mark</a>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-delete">Delete</a>
+                </div>
+              </li>
+              <li class="swipeout">
+                <div class="swipeout-content">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Item 2</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-close color-orange">Mark</a>
+                </div>
+                <div class="swipeout-actions-right">
+                  <a href="#" class="swipeout-delete">Delete</a>
+                </div>
+              </li>
+            </ul>
+          </div>

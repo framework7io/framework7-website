@@ -1,0 +1,159 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Block Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Block Vue Component
+    .docs-index
+    p Block Vue component represents <a href="../docs/block.html">Block / Content Block</a> element designed (mostly) to add extra formatting and required spacing for text content.
+    h2 Block Components
+    p There are following components included:
+    ul
+      li <code><b>f7-block</b></code> - main block element
+      li <code><b>f7-block-title</b></code> - block title. Can be used before Block or List View
+      li <code><b>f7-block-header</b></code> - extra header element. Can be used both inside and outside of block elements
+      li <code><b>f7-block-footer</b></code> - extra footer element. Can be used both inside and outside of block elements
+    h2 Block Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-block&gt; properties
+        tr
+          td inset
+          td boolean
+          td
+          td Makes block inset
+        tr
+          td tablet-inset
+          td boolean
+          td
+          td Makes block inset on tablets, but not on phones
+        tr
+          td strong
+          td boolean
+          td
+          td Adds extra highlighting and padding block content
+        tr
+          td accordion-list
+          td boolean
+          td
+          td Makes block wrapper for accordion items
+        tr
+          td tabs
+          td boolean
+          td
+          td Adds additional "tabs" class to make the block tabs wrapper
+        tr
+          td tab
+          td boolean
+          td
+          td Adds additional "tab" class when block should be used as a Tab
+        tr
+          td tab-active
+          td boolean
+          td
+          td Adds additional "tab-active" class when block used as a Tab and makes it active tab
+        tr
+          td no-hairlines
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a>
+        tr
+          td no-hairlines-md
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for MD theme
+        tr
+          td no-hairlines-ios
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for iOS theme
+    h2 Examples
+    pre
+      code.html
+        :code
+          <!-- Block -->
+          <f7-block>...</f7-block>
+
+          <!-- With extran highlighting and padding, additional "strong" prop -->
+          <f7-block strong>...</f7-block>
+
+          <!-- With block title -->
+          <f7-block-title>Block Title</f7-block-title>
+          <f7-block>...</f7-block>
+
+          <!-- Inset -->
+          <f7-block inset>...</f7-block>
+
+          <!-- With header and footer -->
+          <f7-block>
+            <f7-block-header>Block Header</f7-block-header>
+            ...
+            <f7-block-footer>Block Footer</f7-block-footer>
+          </f7-block>
+
+          <!-- With header and footer outside -->
+          <f7-block-header>Block Header</f7-block-header>
+          <f7-block>
+            ...
+          </f7-block>
+          <f7-block-footer>Block Footer</f7-block-footer>
+
+          <!-- With header after block title and footer outside-->
+          <f7-block-title>Block Title</f7-block-title>
+          <f7-block-header>Block Header</f7-block-header>
+          <f7-block>
+            ...
+          </f7-block>
+
+    p Renders to:
+    pre
+      code
+        :code
+          <!-- Block -->
+          <div class="block">...</div>
+
+          <!-- With extran highlighting and padding, additional "strong" prop -->
+          <div class="block block-strong">...</div>
+
+          <!-- With block title -->
+          <div class="block-title">Block Title</div>
+          <div class="block">...</div>
+
+          <!-- Inset -->
+          <div class="block inset">...</div>
+
+          <!-- With header and footer -->
+          <div class="block">
+            <div class="block-header">Block Header</div>
+            ...
+            <div class="block-footer">Block Footer</div>
+          </div>
+
+          <!-- With header and footer outside -->
+          <div class="block-header">Block Header</div>
+          <div class="block">
+            ...
+          </div>
+          <div class="block-footer">Block Footer</div>
+
+          <!-- With header after block title and footer outside-->
+          <div class="block-title">Block Title Here</div>
+          <div class="block-header">Block Header</div>
+          <div class="block">
+            ...
+          </div>
+

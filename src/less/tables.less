@@ -42,7 +42,7 @@ table.params-table {
     vertical-align: top;
   }
   tbody {
-    td:first-child, td:nth-child(2), td:nth-child(3):not(:last-child) {
+    td:first-child:not([colspan]), td:nth-child(2), td:nth-child(3):not(:last-child) {
       font-size: 13px;
       color: @darkColor;
       .monospace();

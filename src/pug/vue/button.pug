@@ -6,400 +6,279 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Button Vue Component
-      p Button Vue component represents Framework7's <a href="../docs/buttons.html">Buttons</a> elements.
-      h2 Usage examples
-      pre
-        code
-          :code
-            <f7-button>Button Text</f7-button>
-      p Renders to:
-      pre
-        code
-          :code
-            <a href="#" class="button">Button Text</a>
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Button Vue Component
+    .docs-index
+    p Button Vue component represents Framework7's <a href="../docs/buttons.html">Buttons</a> elements.
 
-      h4 Buttons Row / Segmented Controller
-      pre
-        code
-          :code
-            <f7-buttons>
-              <f7-button>Button 1</f7-button>
-              <f7-button>Button 2</f7-button>
-              <f7-button>Button 3</f7-button>
-            </f7-buttons>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="buttons-row">
-              <a href="#" class="button">Button 1</a>
-              <a href="#" class="button">Button 2</a>
-              <a href="#" class="button">Button 3</a>
-            </div>
+    h2 Button Components
+    p There are following components included:
+    ul
+      li <code><b>f7-button</b></code> - single button
+      li <code><b>f7-segmented</b></code> - segmented wrapper for buttons
 
-      h4 Tab Links
-      pre
-        code
-          :code
-            <!-- Tabs -->
-            <f7-tabs>
-              <f7-tab id="tab-1" active>Tab 1</f7-tab>
-              <f7-tab id="tab-2">Tab 2</f7-tab>
-            </f7-tabs>
-            <!-- Switch Between Tabs -->
-            <f7-buttons>
-              <f7-button tab-link="#tab-1" active>Button 1</f7-button>
-              <f7-button tab-link="#tab-2">Button 2</f7-button>
-            </f7-buttons>
-      p Renders to:
-      pre
-        code
-          :code
-            <!-- Tabs -->
-            <div class="tabs">
-              <div class="tab active" id="tab-1">Tab 1</div>
-              <div class="tab" id="tab-2">Tab 2</div>
-            </div>
-            <!-- Switch Between Tabs -->
-            <a href="#" data-tab="#tab-1" class="tab-link">Show Tab 1</a>
-            <a href="#" data-tab="#tab-2" class="tab-link">Show Tab 2</a>
-            <div class="buttons-row">
-              <a href="#" data-tab="#tab-1" class="button active">Button 1</a>
-              <a href="#" data-tab="#tab-2" class="button">Button 2</a>
-            </div>
+    h2 Button Properties
+    p Button component has almost the same properties as the <a href="link.html">Link</a> component but with few additional button-specific properties:
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-segmented&gt; properties
+        tr
+          td raised
+          td boolean
+          td false
+          td Makes segmented raised. Affects MD theme only
+        tr
+          td round
+          td boolean
+          td false
+          td Makes segmented round
+        tr
+          td tag
+          td string
+          td div
+          td Tag used to render Segmented element
+        tr
+          th(colspan="4") &lt;f7-button&gt; properties
+        tr
+          td tab-link
+          td string<br>boolean
+          td
+          td Enables tab link and specify CSS selector of the target tab (if specified as a string)
+        tr
+          td tab-link-active
+          td boolean
+          td false
+          td Makes this tab link active
+        tr
+          td active
+          td boolean
+          td false
+          td Makes this button active state when used in Segmented. Must be used instead of <code>tab-link-active</code>
+        tr
+          td text
+          td string
+          td
+          td Button text label
+        tr
+          td no-fast-click
+          td boolean
+          td
+          td Disables fast click
+        tr
+          td round
+          td boolean
+          td false
+          td Makes button round
+        tr
+          td round-ios
+          td boolean
+          td false
+          td Makes button round for iOS theme only
+        tr
+          td round-md
+          td boolean
+          td false
+          td Makes button round for MD theme only
+        tr
+          td big
+          td boolean
+          td false
+          td Makes big button
+        tr
+          td big-ios
+          td boolean
+          td false
+          td Makes big button for iOS theme only
+        tr
+          td big-md
+          td boolean
+          td false
+          td Makes big button for MD theme only
+        tr
+          td small
+          td boolean
+          td false
+          td Makes small button
+        tr
+          td small-ios
+          td boolean
+          td false
+          td Makes small button for iOS theme only
+        tr
+          td small-md
+          td boolean
+          td false
+          td Makes small button for MD theme only
+        tr
+          td fill
+          td boolean
+          td false
+          td Makes button filled color
+        tr
+          td fill-ios
+          td boolean
+          td false
+          td Makes button filled color for iOS theme only
+        tr
+          td fill-md
+          td boolean
+          td false
+          td Makes button filled color for MD theme only
+        tr
+          td raised
+          td boolean
+          td false
+          td Makes button raised. Affects MD theme only
+        tr
+          td outline
+          td boolean
+          td false
+          td Makes button outline. Affects MD theme only
+        tr
+          th(colspan="4") &lt;f7-button&gt; icon related properties
+        +vueLinkIconProps
+        tr
+          th(colspan="4") &lt;f7-button&gt; navigation/router related properties
+        +vueLinkRouterProps
+        tr
+          th(colspan="4") &lt;f7-button&gt; action related properties
+        +vueLinkActionsProps
 
-      h4 Route Tab Links
-      p Note, this requires <a href="navigation-router.html#nested-routes">tab routes</a> to be configured.
-      pre
-        code
-          :code
-            <!-- Tabs -->
-            <f7-tabs>
-              <f7-tab route-tab-id="tab-1">Tab 1</f7-tab>
-              <f7-tab route-tab-id="tab-2">Tab 2</f7-tab>
-            </f7-tabs>
-            <!-- Switch Between Tabs -->
-            <f7-buttons>
-              <f7-button route-tab-link="#tab-1" href="/tabs/">Button 1</f7-button>
-              <f7-button route-tab-link="#tab-2" href="/tabs/tab-2/">Button 2</f7-button>
-            </f7-buttons>
-      p Renders to:
-      pre
-        code
-          :code
-            <!-- Tabs -->
-            <div class="tabs">
-              <div class="tab active">Tab 1</div>
-              <div class="tab">Tab 2</div>
-            </div>
-            <div class="buttons-row">
-              <a href="#" class="button active">Button 1</a>
-              <a href="#" class="button">Button 2</a>
-            </div>            
+    h2 Button Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-button&gt; events
+        tr
+          td click
+          td Event will be triggered after click on a button
 
-      h4 Colors
-      pre
-        code
-          :code
-            <f7-button color="red">Red Button</f7-button>
-            <f7-button color="green">Green Button</f7-button>
+    h2 Examples
+    pre
+      code.html
+        :code
+          <f7-button>Button Text</f7-button>
 
-            <f7-buttons theme="orange">
-              <f7-button active>Button 1</f7-button>
-              <f7-button>Button 2</f7-button>
-              <f7-button>Button 3</f7-button>
-            </f7-buttons>
+          <!-- Renders to: -->
 
-            <!-- With custom Touch-Ripple color, affects Material theme only -->
-            <f7-button ripple-color="yellow">Yellow-ripple Button</f7-button>
-      p Renders to:
-      pre
-        code
-          :code
-            <a href="#" class="button color-red">Red Button</a>
-            <a href="#" class="button color-green">Green Button</a>
+          <a href="#" class="button">Button Text</a>
 
-            <div class="buttons theme-orange">
-              <a href="#" class="button active">Button 1</a>
-              <a href="#" class="button">Button 2</a>
-            </div>
+    h4 Segmented Controller
+    pre
+      code.html
+        :code
+          <f7-segmented>
+            <f7-button>Button 1</f7-button>
+            <f7-button>Button 2</f7-button>
+            <f7-button>Button 3</f7-button>
+          </f7-segmented>
 
-            <a href="#" class="button ripple-yellow">Yellow-ripple Button</a>
+          <!-- Renders to: -->
 
-      h4 Round/Fill/Raised/Big
-      pre
-        code
-          :code
-            <f7-button big color="red">Big Red Button</f7-button>
+          <div class="segmented">
+            <a href="#" class="button">Button 1</a>
+            <a href="#" class="button">Button 2</a>
+            <a href="#" class="button">Button 3</a>
+          </div>
 
-            <!-- "round" affects iOS theme only -->
-            <f7-button round color="green">Round Green Button</f7-button>
-            <f7-button big round>Big Round Button</f7-button>
+    h4 Tab Links
+    pre
+      code.html
+        :code
+          <!-- Tabs -->
+          <f7-tabs>
+            <f7-tab id="tab-1" tab-active>Tab 1</f7-tab>
+            <f7-tab id="tab-2">Tab 2</f7-tab>
+          </f7-tabs>
+          <!-- Switch Between Tabs -->
+          <f7-segmented>
+            <f7-button tab-link="#tab-1" tab-link-active>Button 1</f7-button>
+            <f7-button tab-link="#tab-2">Button 2</f7-button>
+          </f7-segmented>
 
-            <!-- "fill" affects iOS theme only -->
-            <f7-button fill>Filled-Color Button</f7-button>
+          <!-- Renders to: -->
 
-            <!-- "raised" affects Material theme only  -->
-            <f7-button raised>Raised Button</f7-button>
-            <f7-button big raised color="red">Big Red Raised Button</f7-button>
-      p Renders to:
-      pre
-        code
-          :code
-            <a href="#" class="button button-big color-red">Big Red Button</a>
+          <!-- Tabs -->
+          <div class="tabs">
+            <div class="tab tab-active" id="tab-1">Tab 1</div>
+            <div class="tab" id="tab-2">Tab 2</div>
+          </div>
+          <!-- Switch Between Tabs -->
+          <div class="segmented">
+            <a href="#" data-tab="#tab-1" class="button tab-link tab-link-active">Button 1</a>
+            <a href="#" data-tab="#tab-2" class="button tab-link">Button 2</a>
+          </div>
 
-            <!-- "round" affects iOS theme only -->
-            <a href="#" class="button button-round color-green">Round Green Button</a>
-            <a href="#" class="button button-round button-big">Big Round Button</a>
+    h4 Routable Tabs
+    pre
+      code.html
+        :code
+          <!-- Tabs -->
+          <f7-tabs routable>
+            <f7-tab id="tab-1"></f7-tab>
+            <f7-tab id="tab-2"></f7-tab>
+          </f7-tabs>
 
-            <!-- "fill" affects iOS theme only -->
-            <a href="#" class="button button-fill">Filled-Color Button</a>
+          <f7-segmented>
+            <f7-button route-tab-id="#tab-1" tab-link href="/tabs/">Button 1</f7-button>
+            <f7-button route-tab-id="#tab-2" tab-link href="/tabs/tab-2/">Button 2</f7-button>
+          </f7-segmented>
 
-            <!-- "raised" affects Material theme only  -->
-            <a href="#" class="button button-raised">Raised Button</a>
-            <a href="#" class="button button-big button-raised color-red">Big Red Raised Button</a>
-      h2 Properties
-      p Button component has almost the same properties as the <a href="link.html">Link</a> component but with few additional button-specific properties:
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            th(colspan="4") Button-specific Properties
-          tr
-            td round
-            td boolean
-            td
-            td Makes button round. Affects iOS theme only
-          tr
-            td big
-            td boolean
-            td
-            td Makes big button
-          tr
-            td raised
-            td boolean
-            td
-            td Makes button raised. Affects Material theme only
-          tr
-            td fill
-            td boolean
-            td
-            td Makes button filled color. Affects iOS theme only
+          <!-- Renders to: -->
 
-          tr
-            th(colspan="4") Links Properties
-          tr
-            td no-link-class
-            td boolean
-            td
-            td Removes "link" class
-          tr
-            td color
-            td string
-            td
-            td Link color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td ripple-color
-            td string
-            td
-            td Link Touch-ripple color (affects only Material theme). One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td theme
-            td string
-            td
-            td Link color theme. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td bg
-            td string
-            td
-            td Link background color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td text
-            td string
-            td
-            td Link text
-          tr
-            th(colspan="4") Control Links
-          tr
-            td tab-link
-            td string/boolean
-            td
-            td Enables tab link and specify CSS selector of the target tab (if specified as a string)
-          tr
-            td open-panel
-            td string/boolean
-            td
-            td Defines panel to open. Can be "left" or "right"
-          tr
-            td close-panel
-            td boolean
-            td
-            td Closes panel on click
-          tr
-            td open-popup
-            td string/boolean
-            td
-            td CSS selector of the popup to open on click
-          tr
-            td close-popup
-            td string/boolean
-            td
-            td CSS selector of the popup to close on click. Or boolean property to close currently opened popup
-          tr
-            td open-popover
-            td string/boolean
-            td
-            td CSS selector of the popover to open on click
-          tr
-            td close-popover
-            td string/boolean
-            td
-            td CSS selector of the popover to close on click. Or boolean property to close currently opened popover
-          tr
-            td open-picker
-            td string/boolean
-            td
-            td CSS selector of the picker to open on click
-          tr
-            td close-picker
-            td string/boolean
-            td
-            td CSS selector of the picker to close on click. Or boolean property to close currently opened picker
-          tr
-            td open-login-screen
-            td string/boolean
-            td
-            td CSS selector of the login screen to open on click
-          tr
-            td close-login-screen
-            td string/boolean
-            td
-            td CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen
-          tr
-            td open-sortable
-            td string/boolean
-            td
-            td CSS selector of the Sortable list to open on click
-          tr
-            td close-sortable
-            td string/boolean
-            td
-            td CSS selector of the Sortable list to close on click. Or boolean property to close currently opened Sortable list
-          tr
-            td toggle-sortable
-            td string/boolean
-            td
-            td CSS selector of the Sortable list to toggle on click. Or boolean property to toggle currently opened/closed Sortable list
-          tr
-            th(colspan="4") Navigation / Router Properties
-          tr
-            td href
-            td string
-            td #
-            td URL of the page to load
-          tr
-            td view
-            td string
-            td
-            td CSS selector of the View to load the page
-          tr
-            td no-fast-click
-            td boolean
-            td
-            td Disables fast click
-          tr
-            td external
-            td boolean
-            td
-            td Enable to bypass Framework7's link click handler
-          tr
-            td back
-            td boolean
-            td
-            td Enables back navigation link
-          tr
-            td force
-            td boolean
-            td
-            td Force page to load and ignore previous page in history (use together with <b>back</b> prop)
-          tr
-            td reload
-            td boolean
-            td
-            td Reloads new page instead of the currently active one
-          tr
-            td animate-pages
-            td boolean
-            td
-            td Disables pages animation
-          tr
-            td ignore-cache
-            td boolean
-            td
-            td Ignores caching
-          tr
-            td page-name
-            td string
-            td
-            td Name of the page to load
-          tr
-            td template
-            td string
-            td
-            td Template name to load
-          tr
-            td route-tab-link
-            td string
-            td
-            td Used for <a href="navigation-router.html#nested-routes">tab routes</a>. Connects the button to a tab with the same value in its <code>route-tab-id</code> so that when the tab is active, the button appears as active too
-          tr
-            th(colspan="4") <a href="icon.html">Icon</a> Properties
-          tr
-            td icon-size
-            td string/number
-            td
-            td Icon size in px
-          tr
-            td icon
-            td string
-            td
-            td Custom icon class
-          tr
-            td icon-f7
-            td string
-            td
-            td Name of F7 Icons font icon
-          tr
-            td icon-material
-            td string
-            td
-            td Name of Material Icons font icon
-          tr
-            td icon-fa
-            td string
-            td
-            td Name of Font Awesome font icon
-          tr
-            td icon-ion
-            td string
-            td
-            td Name of Ionicons font icon
-          tr
-            td icon-if-ios
-            td string
-            td
-            td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
-          tr
-            td icon-if-material
-            td string
-            td
-            td Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+          <!-- Tabs -->
+          <div class="tabs tabs-routable">
+            <div class="tab" id="tab-1"></div>
+            <div class="tab" id="tab-2"></div>
+          </div>
+
+          <div class="segmented">
+            <a href="/tabs/" data-route-tab-id="#tab-1" class="button tab-link">Button 1</a>
+            <a href="/tabs/tab-2/" data-route-tab-id="#tab-2" class="button tab-link">Button 2</a>
+          </div>
+
+    h4 Colors
+    pre
+      code.html
+        :code
+          <f7-button color="red">Red Button</f7-button>
+          <f7-button color="green">Green Button</f7-button>
+
+          <f7-segmented color="orange">
+            <f7-button active>Button 1</f7-button>
+            <f7-button>Button 2</f7-button>
+            <f7-button>Button 3</f7-button>
+          </f7-segmented>
+
+          <!-- With custom Touch-Ripple color, affects Material theme only -->
+          <f7-button ripple-color="yellow">Yellow-ripple Button</f7-button>
+
+    h4 Round/Fill/Raised/Big
+    pre
+      code.html
+        :code
+          <f7-button big color="red">Big Red Button</f7-button>
+
+          <f7-button round color="green">Round Green Button</f7-button>
+          <f7-button big round>Big Round Button</f7-button>
+
+          <f7-button fill>Filled-Color Button</f7-button>
+
+          <f7-button raised>Raised Button</f7-button>
+          <f7-button big raised color="red">Big Red Raised Button</f7-button>
+
+

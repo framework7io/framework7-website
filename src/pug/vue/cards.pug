@@ -1,0 +1,113 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Card Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Card Vue Component
+    .docs-index
+    p Cards, along with List View, is a one more great way to contain and orginize your information. Cards contains unique related data, for example, a photo, text, and link all about a single subject. Cards are typically an entry point to more complex and detailed information.
+    p Card Vue component represents <a href="../docs/cards.html">Cards</a> component.
+    h2 Card Components
+    p There are following components included:
+    ul
+      li <code><b>f7-card</b></code>
+      li <code><b>f7-card-header</b></code>
+      li <code><b>f7-card-content</b></code>
+      li <code><b>f7-card-footer</b></code>
+    h2 Card Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-card&gt; properties
+        tr
+          td title
+          td string
+          td
+          td Card header content
+        tr
+          td content
+          td string
+          td
+          td Card content
+        tr
+          td footer
+          td string
+          td
+          td Card footer content
+        tr
+          td padding
+          td boolean
+          td true
+          td Adds additional inner padding on card content
+        tr
+          th(colspan="4") &lt;f7-card-content&gt; properties
+        tr
+          td padding
+          td boolean
+          td true
+          td Adds additional inner padding
+    h2 Examples
+    h4 Minimal layout with extra content padding
+    pre
+      code
+        :code
+          <f7-card title="Card Title" content="Card Content" footer="Card Footer"></f7-card>
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="card">
+            <div class="card-header">Card Title</div>
+            <div class="card-content card-content-padding">Card Content</div>
+            <div class="card-footer">Card Footer</div>
+          </div>
+    h4 Minimal layout without extra content padding
+    pre
+      code.html
+        :code
+          <f7-card title="Card Title" content="Card Content" footer="Card Footer" :padding="false"></f7-card>
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="card">
+            <div class="card-header">Card Title</div>
+            <div class="card-content">Card Content</div>
+            <div class="card-footer">Card Footer</div>
+          </div>
+    h4 Custom Layout
+    pre
+      code
+        :code
+          <f7-card>
+            <f7-card-header>Card header content</f7-card-header>
+            <f7-card-content>
+              <p>Card content</p>
+            </f7-card-content>
+            <f7-card-footer>Card footer content</f7-card-footer>
+          </f7-card>
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="card">
+            <div class="card-header">Card header content</div>
+            <div class="card-content">
+              <p>Card content</p>
+            </div>
+            <div class="card-footer">Card footer content</div>
+          </div>
+

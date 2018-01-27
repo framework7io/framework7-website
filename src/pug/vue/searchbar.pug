@@ -2,55 +2,292 @@ extends ../_docs-template
 
 block vars
   - var activeLink = 'vue';
-  - var title = 'Search Bar Vue Component | Framework7 Vue Documentation';
+  - var title = 'Searchbar Vue Component | Framework7 Vue Documentation';
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Search Bar Vue Component
-      p Search Bar Vue component represents Framework7's <a href="../docs/searchbar.html">Search Bar</a> component.
-      h2 Usage example
-      pre
-        code
-          :code
-            <f7-searchbar
-              cancel-link="Cancel"
-              placeholder="Search in items"
-              :clear-button="true"
-            ></f7-searchbar>
-      p Renders to:
-      pre
-        code
-          :code
-            <form class="searchbar">
-              <div class="searchbar-input">
-                <!-- Input -->
-                <input type="search" placeholder="Search in items">
-                <!-- Clear button -->
-                <a href="#" class="searchbar-clear"></a>
-              </div>
-              <!-- Cancel Link -->
-              <div class="searchbar-cancel">Cancel</div>
-            </form>
-      p Here is how it can be used in Vue component with initialization
-      pre
-        code.html
-          :code
-            <template>
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Searchbar Vue Component
+    .docs-index
+    p Searchbar Vue component represents Framework7's <a href="../docs/searchbar.html">Searchbar</a> component.
 
-              <!-- Search bar -->
+    h2 Searchbar Components
+    p There are following components included:
+    ul
+      li <code><b>f7-searchbar</b></code>
+
+
+    h2 Searchbar Properties
+    p You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-searchbar&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Searchbar
+        tr
+          td form
+          td boolean
+          td true
+          td Main searchbar element will be used as a <code>form</code> tag instead of <code>div</code>
+        tr
+          td placeholder
+          td string
+          td "Search"
+          td Input placeholder text
+        tr
+          td disable-button
+          td boolean
+          td true
+          td Enables disable button
+        tr
+          td disable-button-text
+          td string
+          td Cancel
+          td Disable button text
+        tr
+          td clear-button
+          td boolean
+          td true
+          td Enables searchbar input clear button
+        tr
+          td search-container
+          td string<br>object
+          td
+          td CSS selector or HTML element of list block to search
+        tr
+          td search-in
+          td string
+          td .item-title
+          td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <code>'.item-title, .item-text'</code>
+        tr
+          td search-item
+          td string
+          td li
+          td CSS selector of single search item. If we do a search in List View, then it must be a single list element <code>li</code>
+        tr
+          td found-el
+          td string<br>object
+          td .searchbar-found
+          td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page
+        tr
+          td not-foud-el
+          td string<br>object
+          td .searchbar-not-found
+          td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page
+        tr
+          td backdrop
+          td boolean
+          td true
+          td Enables searchbar backdrop element
+        tr
+          td backdrop-el
+          td string<br>object
+          td
+          td CSS selector or HTMLElement of searchbar backdrop element. If not passed and  <code>backdrop</code> parameter is true then it will look for <code>.searchbar-backdrop</code> element. In case none found it will create one automatically
+        tr
+          td ignore
+          td string
+          td .searchbar-ignore
+          td CSS selector for items to be ignored by searchbar and always present in search results
+        tr
+          td custom-search
+          td boolean
+          td false
+          td When enabled searchbar will not search through any of list blocks specified by <code>search-container</code> and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
+        tr
+          td remove-diacritics
+          td boolean
+          td false
+          td Enable to remove/replace diacritics (á, í, ó, etc.) during search
+        tr
+          td hide-dividers
+          td boolean
+          td true
+          td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
+        tr
+          td hide-groups
+          td boolean
+          td true
+          td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups
+        tr
+          td no-shadow
+          td boolean
+          td false
+          td Disable shadow rendering for MD theme
+        tr
+          td no-hairline
+          td boolean
+          td false
+          td Disable searchbar bottom thin border (hairline) for iOS theme
+
+    h2 Searchbar Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;f7-searchbar&gt; methods
+      tr
+        td .search(<span>query</span>)
+        td Force searchbar to search passed query
+      tr
+        td .enable()
+        td Enable/activate searchbar
+      tr
+        td .disable()
+        td Disable/deactivate searchbar
+      tr
+        td .toggle()
+        td Toggle searchbar
+      tr
+        td .clear()
+        td Clear search query and update results
+
+    h2 Searchbar Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;f7-searchbar&gt; events
+        tr
+          td searchbar:search
+          td <span>(searchbar, query, previousQuery)</span>
+          td Event will be triggered during search (search field change). As an arguments event receives searchbar instance, search query and previous query
+        tr
+          td searchbar:clear
+          td <span>(searchbar, previousQuery)</span>
+          td Event will be triggered when user clicks on Searchbar input "clear" button. As an arguments event receives searchbar instance and previous query
+        tr
+          td searchbar:enable
+          td <span>(searchbar)</span>
+          td Event will be triggered when Searchbar becomes active
+        tr
+          td searchbar:disable
+          td <span>(searchbar)</span>
+          td Event will be triggered when Searchbar becomes inactive/disabled
+        tr
+          td change
+          td <span>(event)</span>
+          td Event will be triggered when "change" event occurs on searchbar input element
+        tr
+          td input
+          td <span>(event)</span>
+          td Event will be triggered when "input" event occurs on searchbar input element
+        tr
+          td focus
+          td <span>(event)</span>
+          td Event will be triggered when "focus" event occurs on searchbar input element
+        tr
+          td blur
+          td <span>(event)</span>
+          td Event will be triggered when "blur" event occurs on searchbar input element
+        tr
+          td click:clear
+          td <span>(event)</span>
+          td Event will be triggered when user clicks on input "clear" button
+        tr
+          td click:disable
+          td <span>(event)</span>
+          td Event will be triggered when user clicks on searchbar disable button
+    h2 Searchbar Slots
+    p Searchbar Vue component has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the end. Same as <code><b>inner-end</b></code> slot
+      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="searchbar-inner"&gt;</code> element
+      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="searchbar-inner"&gt;</code> element
+      li <code><b>inner-start</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the beginning
+      li <code><b>inner-end</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-inner"&gt;</code> element in the end
+      li <code><b>input-wrap-start</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-input-wrap"&gt;</code> element in the beginning
+      li <code><b>input-wrap-end</b></code> - element will be inserted as a child of <code>&lt;div class="searchbar-input-wrap"&gt;</code> element in the end
+    h4 Without Slots:
+    pre
+      code.html
+        :code
+          <f7-searchbar
+            disable-link-text="Cancel"
+            placeholder="Search in items"
+            :clear-button="true"
+          ></f7-searchbar>
+
+          <!-- Renders to: -->
+
+          <form class="searchbar">
+            <div class="searchbar-inner">
+              <div class="searchbar-input-wrap">
+                <input type="search" placeholder="Search">
+                <i class="searchbar-icon"></i>
+                <span class="input-clear-button"></span>
+              </div>
+              <span class="searchbar-disable-button">Cancel</span>
+            </div>
+          </form>
+    h4 With Slots:
+    pre
+      code.html
+        :code
+          <f7-searchbar
+            disable-link-text="Cancel"
+            placeholder="Search in items"
+            :clear-button="true"
+          >
+            <div slot="inner-start">Inner Start</div>
+            <div slot="inner-end">Inner End</div>
+            <div slot="input-wrap-start">Input Wrap Start</div>
+            <div slot="input-wrap-end">Input Wrap End</div>
+            <div slot="before-inner">Before Inner</div>
+            <div slot="after-inner">After Inner</div>
+          </f7-searchbar>
+
+          <!-- Renders to: -->
+
+          <form class="searchbar">
+            <div slot="before-inner">Before Inner</div>
+            <div class="searchbar-inner">
+              <div slot="inner-start">Inner Start</div>
+              <div class="searchbar-input-wrap">
+                <div slot="input-wrap-start">Input Wrap Start</div>
+                <input type="search" placeholder="Search">
+                <i class="searchbar-icon"></i>
+                <span class="input-clear-button"></span>
+                <div slot="input-wrap-end">Input Wrap End</div>
+              </div>
+              <span class="searchbar-disable-button">Cancel</span>
+              <div slot="inner-end">Inner End</div>
+            </div>
+            <div slot="after-inner">After Inner</div>
+          </form>
+
+    h2 Access To Searchbar Instance
+    p If you use automatic initalization to init Searchbar (with <code>init:true</code> prop) and need to use Searchbar API you can access its initialized instance by accessing <code><b>.f7Searchbar</b></code> component's property.
+
+    h2 Examples
+    p Here is how it can be used in Vue component with initialization
+    pre
+      code.html
+        :code
+          <template>
+            <f7-page>
+
+              <!-- Searchbar -->
               <f7-searchbar
-                <!-- Cancel link's text (affects iOS theme only) -->
-                cancel-link="Cancel"
-                <!-- Where to search -->
-                search-list="#search-list"
-                <!-- Input placeholder text -->
+                disable-link-text="Cancel"
+                search-container="#search-list"
                 placeholder="Search in items"
-                <!-- Show "clear" button -->
                 :clear-button="true"
-                <!-- Events -->
                 @searchbar:search="onSearch"
                 @searchbar:enable="onEnable"
                 @searchbar:disable="onDisable"
@@ -62,217 +299,38 @@ block content
                 <f7-list-item title="Nothing found"></f7-list-item>
               </f7-list>
 
-              <!-- Search-through list -->
+              <!-- Search through this list -->
               <f7-list class="searchbar-found" id="search-list">
                 <f7-list-item v-for="item in items" :title="'Item ' + item"></f7-list-item>
               </f7-list>
 
-            </template>
+            </f7-page>
+          </template>
 
-            <script>
-              export default {
-                data: function () {
-                  return {
-                    items: (function () {
-                      var it = [];
-                      for (var i = 0; i < 100; i++) it.push(i+1);
-                      return it;
-                    })()
-                  }
-                },
-                methods: {
-                  onSearch: function (query, found) {
-                    console.log('search', query);
-                  },
-                  onClear: function (event) {
-                    console.log('clear');
-                  },
-                  onEnable: function (event) {
-                    console.log('enable');
-                  },
-                  onDisable: function (event) {
-                    console.log('disable');
-                  },
+          <script>
+            export default {
+              data: function () {
+                return {
+                  items: (function () {
+                    var it = [];
+                    for (var i = 0; i < 100; i++) it.push(i+1);
+                    return it;
+                  })()
                 }
+              },
+              methods: {
+                onSearch: function (searchbar, query, previousQuery) {
+                  console.log('search', query);
+                },
+                onClear: function (event) {
+                  console.log('clear');
+                },
+                onEnable: function (event) {
+                  console.log('enable');
+                },
+                onDisable: function (event) {
+                  console.log('disable');
+                },
               }
-            </script>
-      h2 Slots
-      p Search Bar Vue component has additional slots for custom elements:
-      ul
-        li <b>before-input</b> - element will be inserted right before &lt;input type="search"&gt; element
-        li <b>after-input</b> - element will be inserted right after &lt;input type="search"&gt; element
-      pre
-        code
-          :code
-            <f7-searchbar
-              cancel-link="Cancel"
-              placeholder="Search in items"
-              :clear-button="true"
-            >
-              <div slot="before-input">Before Input</div>
-              <div slot="after-input">After Input</div>
-            </f7-searchbar>
-      p Renders to:
-      pre
-        code
-          :code
-            <form class="searchbar">
-              <div class="searchbar-input">
-                <div>Before Input</div>
-                <input type="search" placeholder="Search in items">
-                <div>After Input</div>
-                <a href="#" class="searchbar-clear"></a>
-              </div>
-              <div class="searchbar-cancel">Cancel</div>
-            </form>
-      h2 Properties
-      p You can pass all parameters in single <code>params</code> property or use separate props for each parameter to specify them via component attributes:
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td form
-            td boolean
-            td true
-            td Main search bar element will be used as a <code>form</code> tag instead of <code>div</code>
-          tr
-            td placeholder
-            td string
-            td "Search"
-            td Input placeholder text
-          tr
-            td cancel-link
-            td string
-            td 
-            td Cancel link text. Affects only iOS theme
-          tr
-            td clear-button
-            td boolean
-            td true
-            td Enables "clear" input button
-
-          tr
-            td init
-            td boolean
-            td true
-            td Initializes Search Bar
-          tr
-            td params
-            td Object
-            td 
-            td Object with <a href="../docs/searchbar.html#search-bar-parameters">Search Bar API</a> parameters
-          tr
-            th(colspan="4") <code>params</code> separate props
-          tr
-            td searchList
-            td string/object
-            td 
-            td CSS selector or HTML element of list block to search
-          tr
-            td searchIn
-            td string
-            td '.item-title'
-            td CSS selector of List View element's field where we need to search. Usually we search through element titles ('.item-title'). It is also to pass few elements for search like <b>'.item-title, .item-text'</b>
-          tr
-            td found
-            td string/object
-            td 
-            td CSS selector or HTMLElement of searchbar "found" element. If not specified, searchbar will look for <code>.searchbar-found</code> element on page
-          tr
-            td notFoud
-            td string/object
-            td 
-            td CSS selector or HTMLElement of searchbar "not-found" element. If not specified, searchbar will look for <code>.searchbar-not-found</code> element on page
-          tr
-            td overlay
-            td string/object
-            td 
-            td CSS selector or HTMLElement of searchbar overlay. If not specified, searchbar will look for <code>.searchbar-overlay</code> element on page
-          tr
-            td ignore
-            td string
-            td '.searchbar-ignore'
-            td CSS selector for items to be ignored by searchbar and always present in search results
-          tr
-            td customSearch
-            td boolean
-            td false
-            td When enabled searchbar will not search through any of list blocks specified by `searchList` and you will be able to use custom search functionality, for example, for calling external APIs with search results and for displaying them manually
-          tr
-            td removeDiacritics
-            td boolean
-            td false
-            td Enable to remove/replace diacritics (á, í, ó, etc.) during search
-          tr
-            td hideDividers
-            td boolean
-            td true
-            td If enabled, then search will consider item dividers and group titles and hide them if there are no found items right after them
-          tr
-            td hideGroups
-            td boolean
-            td true
-            td If enabled, then search will consider list view groups hide them if there are no found items inside of these groups
-          tr
-            td no-shadow
-            td boolean
-            td Disable shadow rendering for Material theme
-      h2 Methods
-      table.methods-table
-        tr
-          td .empty()
-          td Clear search query and update results
-        tr
-          td .search(<span>query</span>)
-          td Force searchbar to search passed query
-        tr
-          td .enable()
-          td Enable/activate searchbar
-        tr
-          td .disable()
-          td Disable/deactivate searchbar
-        
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td searchbar:search
-            td Event will be triggered during search (search field change). Event detail contains search query (e.detail.query) and array of found HTML elements (e.detail.foundItems)
-          tr
-            td searchbar:clear
-            td Event will be triggered when user clicks on Search Bar's "clear" element (a href="#" class="searchbar-clear")
-          tr
-            td searchbar:enable
-            td Event will be triggered when Search Bar becomes active
-          tr
-            td searchbar:disable
-            td Event will be triggered when Search Bar becomes inactive - when user clicks on "Cancel" button (a href="searchbar-cancel") or on "searchbar-overlay" element
-          tr
-            td change
-            td Event will be triggered when "change" event occurs on search bar input element
-          tr
-            td input
-            td Event will be triggered when "input" event occurs on search bar input element
-          tr
-            td focus
-            td Event will be triggered when "focus" event occurs on search bar input element
-          tr
-            td blur
-            td Event will be triggered when "blur" event occurs on search bar input element
-          tr
-            td click:clear
-            td Event will be triggered when user clicks on input "clear" button
-          tr
-            td click:cancel
-            td Event will be triggered when user clicks on "cancel" link
-      h2 Access To Initialized Instance
-      p If you use automatic initalization to init Search Bar (with <code>init:true</code> prop) and need to use its <a href="../docs/searchbar.html#search-bar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Searchbar</b></code> component's property.
+            }
+          </script>

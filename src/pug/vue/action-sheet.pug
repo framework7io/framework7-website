@@ -5,121 +5,146 @@ block vars
   - var title = 'Action Sheet Vue Component | Framework7 Vue Documentation';
 
 block content
-
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Action Sheet Vue Component
-      p Action Sheet is a slide-up pane for presenting the user with a set of alternatives for how to proceed with a given task. You can also use action sheets to prompt the user to confirm a potentially dangerous action. The action sheet contains an optional title and one or more buttons, each of which corresponds to an action to take.
-      p Action Sheet Vue component represents <a href="../docs/action-sheet.html">Action Sheet</a> component.
-      h2 Usage example
-      pre
-        code
-          :code
-            <!-- Actions -->
-            <f7-actions>
-              <!-- Actions Group -->
-              <f7-actions-group>
-                <!-- Actions Label -->
-                <f7-actions-label>Hello</f7-actions-label>
-                <!-- Actions Buttons -->
-                <f7-actions-button>Button 1</f7-actions-button>
-                <f7-actions-button @click="doSomething">Button 2</f7-actions-button>
-              </f7-actions-group>
-              <!-- Another Group -->
-              <f7-actions-group>
-                <!-- Cancel/Close Button -->
-                <f7-actions-button color="red" bold>Cancel</f7-actions-button>
-              </f7-actions-group>
-            </f7-actions>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="actions-modal">
-              <div class="actions-modal-group">
-                <div class="actions-modal-label">Hello</div>
-                <div class="actions-modal-button">Button 1</div>
-                <div class="actions-modal-button">Button 2</div>
-              </div>
-              <div class="actions-modal-group">
-                <div class="actions-modal-button color-red actions-modal-button-bold">Cancel</div>
-              </div>
-            </div>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            th(colspan="4") &lt;f7-actions&gt; properties
-          tr
-            td opened
-            td boolean
-            td 
-            td Allows to open/close Action Sheet and set its initial state
-          tr
-            th(colspan="4") &lt;f7-actions-label&gt; properties
-          tr
-            td color
-            td string
-            td 
-            td Actions label color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td bold
-            td boolean
-            td 
-            td Defines whether the label text is bold or not
-          tr
-            th(colspan="4") &lt;f7-actions-button&gt; properties
-          tr
-            td color
-            td string
-            td 
-            td Actions button color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td bold
-            td boolean
-            td 
-            td Defines whether the button text is bold or not
-          tr
-            td close
-            td boolean
-            td true
-            td Should Action Sheet be closed on button click or not
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td actions:open
-            td Event will be triggered when Action Sheet starts its opening animation
-          tr
-            td actions:opened
-            td Event will be triggered after Action Sheet completes its opening animation
-          tr
-            td actions:close
-            td Event will be triggered when Action Sheet starts its closing animation
-          tr
-            td actions:closed
-            td Event will be triggered after Action Sheet completes its closing animation
-      h2 Methods
-      table.methods-table
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Action Sheet Vue Component
+    .docs-index
+    p Action Sheet is a slide-up pane for presenting the user with a set of alternatives for how to proceed with a given task. You can also use action sheets to prompt the user to confirm a potentially dangerous action. The action sheet contains an optional title and one or more buttons, each of which corresponds to an action to take.
+    p Action Sheet Vue component represents <a href="../docs/action-sheet.html">Action Sheet</a> component.
+    h2 Action Sheet Components
+    p There are following components included:
+    ul
+      li <code><b>f7-actions</b></code> - action sheet element
+      li <code><b>f7-actions-group</b></code> - action sheet buttons group
+      li <code><b>f7-actions-button</b></code> - action sheet button
+      li <code><b>f7-actions-label</b></code> - action sheet label
+    h2 Action Sheet Properties
+    table.params-table
+      thead
         tr
-          td .open(<span>animated</span>)
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-actions&gt; properties
+        tr
+          td opened
+          td boolean
+          td false
+          td Allows to open/close Action Sheet and set its initial state
+        tr
+          td grid
+          td boolean
+          td false
+          td Enables grid buttons layout
+        tr
+          td convertToPopover
+          td boolean
+          td
+          td When enabled, action sheet will be converted to Popover on large screens. By default inherits same app parameter value
+        tr
+          td forceToPopover
+          td boolean
+          td
+          td When enabled, action sheel will be always converted to Popover. By default inherits same app parameter value
+        tr
+          td target
+          td HTMLElement<br>string
+          td
+          td HTML element or string CSS selector of target element. Required when converstion to popover is in use
+        tr
+          th(colspan="4") &lt;f7-actions-label&gt; properties
+        tr
+          td bold
+          td boolean
+          td false
+          td Defines whether the label text is bold or not
+        tr
+          th(colspan="4") &lt;f7-actions-button&gt; properties
+        tr
+          td bold
+          td boolean
+          td false
+          td Defines whether the button text is bold or not
+        tr
+          td close
+          td boolean
+          td true
+          td Should Action Sheet be closed on button click or not
+    h2 Action Sheet Methods
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") &lt;f7-actions&gt; methods
+        tr
+          td .open(<span>animate</span>)
           td Open Action Sheet
         tr
-          td .close(<span>animated</span>)
+          td .close(<span>animate</span>)
           td Close Action Sheet
-      h2 Open and close Action Sheet
-      p You can control Action Sheet state, open and closing it:
-      ul
-        li using its <a href="../docs/action-sheet.html#create-and-open-action-sheet">JavaScript API</a>
-        li by passing <b>true</b> or <b>false</b> to its <code>opened</code> prop
+    h2 Action Sheet Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-actions&gt; events
+        tr
+          td actions:open
+          td Event will be triggered when Action Sheet starts its opening animation
+        tr
+          td actions:opened
+          td Event will be triggered after Action Sheet completes its opening animation
+        tr
+          td actions:close
+          td Event will be triggered when Action Sheet starts its closing animation
+        tr
+          td actions:closed
+          td Event will be triggered after Action Sheet completes its closing animation
+    h2 Open And Close Action Sheet
+    p In addition to Action Sheet open()/close() methods, you can open and close it:
+    ul
+      li using <a href="../docs/action-sheet.html">Action Sheet API</a>
+      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
+    h2 Access To Action Sheet Instance
+    p You can access Action Sheet initialized instance by accessing <code><b>.f7Actions</b></code> component's property.
+    h2 Examples
+    pre
+      code
+        :code
+          <!-- Actions -->
+          <f7-actions>
+            <!-- Actions Group -->
+            <f7-actions-group>
+              <!-- Actions Label -->
+              <f7-actions-label>Hello</f7-actions-label>
+              <!-- Actions Buttons -->
+              <f7-actions-button>Button 1</f7-actions-button>
+              <f7-actions-button @click="doSomething">Button 2</f7-actions-button>
+            </f7-actions-group>
+            <!-- Another Group -->
+            <f7-actions-group>
+              <!-- Cancel/Close Button -->
+              <f7-actions-button color="red" bold>Cancel</f7-actions-button>
+            </f7-actions-group>
+          </f7-actions>
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="actions-modal">
+            <div class="actions-group">
+              <div class="actions-label">Hello</div>
+              <div class="actions-button">Button 1</div>
+              <div class="actions-button">Button 2</div>
+            </div>
+            <div class="actions-group">
+              <div class="actions-button actions-button-bold color-red">Cancel</div>
+            </div>
+          </div>

@@ -107,31 +107,25 @@ h1,
   line-height: 1.2;
 }
 h1:first-child,
-.h1:first-child,
-.docs-nav-toggle + h1,
-.docs-nav-toggle + .h1 {
+.h1:first-child {
   margin-top: 0;
 }
 h2,
 .h2 {
   font-size: 32px;
   line-height: 1.3;
+  margin: 25px 0 15px;
 }
 h3,
 .h3 {
   font-size: 26px;
   line-height: 1.4;
-}
-h2,
-h3,
-.h2,
-.h3 {
   margin: 15px 0;
 }
 h4,
 .h4 {
   font-size: 20px;
-  margin: 10px 0;
+  margin: 15px 0;
   line-height: 1.4;
 }
 h5,
@@ -1490,8 +1484,27 @@ img.lazy {
   text-align: center;
 }
 .home-vue .pic img {
-  border-radius: 3px;
+  border-radius: 10px;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+}
+.home-vue a {
+  border-radius: 10em;
+  display: inline-block;
+  transition: 200ms;
+  background-color: #f3f3f3;
+  color: #333;
+  text-decoration: none;
+  height: 44px;
+  line-height: 44px;
+  padding: 0 40px;
+}
+.home-vue a:hover {
+  background: #EE350F;
+  color: #fff;
+}
+.home-vue a:active {
+  background: #EE350F;
+  color: #fff;
 }
 body.body-docs .center {
   max-width: none;
@@ -2144,7 +2157,7 @@ table.params-table th,
 table.params-table td {
   vertical-align: top;
 }
-table.params-table tbody td:first-child,
+table.params-table tbody td:first-child:not([colspan]),
 table.params-table tbody td:nth-child(2),
 table.params-table tbody td:nth-child(3):not(:last-child) {
   font-size: 13px;
@@ -2384,7 +2397,7 @@ table.double-events-table tr:nth-child(4n - 4) td {
 .apps .app-title {
   font-weight: 500;
   font-size: 20px;
-  margin: 10px 0;
+  margin: 15px 0;
   line-height: 1.4;
   margin-bottom: 0;
   margin-top: 0px;

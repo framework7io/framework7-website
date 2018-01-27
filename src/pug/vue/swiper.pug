@@ -2,128 +2,130 @@ extends ../_docs-template
 
 block vars
   - var activeLink = 'vue';
-  - var title = 'Navbar Vue Component | Framework7 Vue Documentation';
+  - var title = 'Swiper Vue Component | Framework7 Vue Documentation';
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Swiper Vue Component
-      p Framework7 comes with powerful and most modern touch slider ever - Swiper Slider with super flexible configuration and lot, lot of features.
-      p Swiper Vue component represents Framework7's <a href="../docs/swiper.html">Swiper</a> component.
-      h2 Usage examples
-      h4 Minimal layout
-      pre
-        code
-          :code
-            <f7-swiper>
-              <f7-swiper-slide>Slide 1</f7-swiper-slide>
-              <f7-swiper-slide>Slide 2</f7-swiper-slide>
-              <f7-swiper-slide>Slide 3</f7-swiper-slide>
-            </f7-swiper>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="swiper-container">
-              <div class="swiper-wrapper">
-                <div class="swiper-slide">Slide 1</div>
-                <div class="swiper-slide">Slide 2</div>
-                <div class="swiper-slide">Slide 3</div>
-              </div>
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Swiper Vue Component
+    .docs-index
+    p Framework7 comes with powerful and most modern touch slider ever - Swiper Slider with super flexible configuration and lot, lot of features.
+    p Swiper Vue component represents Framework7's <a href="../docs/swiper.html">Swiper</a> component.
+    h2 Swiper Components
+    p There are following components included:
+    ul
+      li <code><b>f7-swiper</b></code> - main FAB element
+      li <code><b>f7-swiper-slide</b></code> - wrapper for multiple FAB buttons used as Speed Dial FAB
+    h2 Swiper Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-swiper&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Swiper
+        tr
+          td params
+          td object
+          td
+          td Object with Swiper API parameters
+        tr
+          td pagination
+          td boolean
+          td
+          td Enables pagination
+        tr
+          td scrollbar
+          td boolean
+          td
+          td Enables scrollbar
+        tr
+          td navigation
+          td boolean
+          td
+          td Enables prev/next navigation buttons
+        tr
+          th(colspan="4") &lt;f7-swiper-slide&gt; properties
+        tr
+          td zoom
+          td boolean
+          td
+          td Adds additional slide inner wrapping required for zoom-in functionality (should be also enabled via params on Swiper initialization)
+    h2 Access To Swiper Instance
+    p If you use automatic initalization to init Swiper (with <code>init:true</code> prop) and need to use Swiper API you can access its initialized instance by accessing <code><b>.swiper</b></code> component's property.
+    h2 Examples
+    h4 Minimal layout
+    pre
+      code.html
+        :code
+          <f7-swiper>
+            <f7-swiper-slide>Slide 1</f7-swiper-slide>
+            <f7-swiper-slide>Slide 2</f7-swiper-slide>
+            <f7-swiper-slide>Slide 3</f7-swiper-slide>
+          </f7-swiper>
+
+          <!-- Renders to: -->
+
+          <div class="swiper-container">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">Slide 1</div>
+              <div class="swiper-slide">Slide 2</div>
+              <div class="swiper-slide">Slide 3</div>
             </div>
-      h4 With all controls
-      pre
-        code
-          :code
-            <f7-swiper pagination next-button prev-button scrollbar>
-              <f7-swiper-slide>Slide 1</f7-swiper-slide>
-              <f7-swiper-slide>Slide 2</f7-swiper-slide>
-              <f7-swiper-slide>Slide 3</f7-swiper-slide>
-            </f7-swiper>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="swiper-container">
-              <div class="swiper-wrapper">
-                <div class="swiper-slide">Slide 1</div>
-                <div class="swiper-slide">Slide 2</div>
-                <div class="swiper-slide">Slide 3</div>
-              </div>
-              <div class="swiper-pagination"></div>
-              <div class="swiper-scrollbar"></div>
-              <div class="swiper-button-next"></div>
-              <div class="swiper-button-prev"></div>
+          </div>
+    h4 With all controls
+    pre
+      code.html
+        :code
+          <f7-swiper pagination navigation scrollbar>
+            <f7-swiper-slide>Slide 1</f7-swiper-slide>
+            <f7-swiper-slide>Slide 2</f7-swiper-slide>
+            <f7-swiper-slide>Slide 3</f7-swiper-slide>
+          </f7-swiper>
+
+          <!-- Renders to: -->
+
+          <div class="swiper-container">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">Slide 1</div>
+              <div class="swiper-slide">Slide 2</div>
+              <div class="swiper-slide">Slide 3</div>
             </div>
-      h4 With additional parameters
-      p You can pass any additional <a href="http://idangero.us/swiper/api" target="_blank">Swiper API</a> parameters using <code>params</code> property:
-      pre
-        code
-          :code
-            <f7-swiper next-button prev-button :params="{speed:500, slidesPerView: 3, spaceBetween: 20}">
-              <f7-swiper-slide>Slide 1</f7-swiper-slide>
-              <f7-swiper-slide>Slide 2</f7-swiper-slide>
-              <f7-swiper-slide>Slide 3</f7-swiper-slide>
-            </f7-swiper>
-      h4 With manual initializatiin
-      p In all the examples above Swiper will be initialized automatically. If you don't need it and need to init it manually then pass <code>init: false</code> prop:
-      pre
-        code
-          :code
-            <f7-swiper :init="false">
-              <f7-swiper-slide>Slide 1</f7-swiper-slide>
-              <f7-swiper-slide>Slide 2</f7-swiper-slide>
-              <f7-swiper-slide>Slide 3</f7-swiper-slide>
-            </f7-swiper>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            th(colspan="4") &lt;f7-swiper&gt; properties
-          tr
-            td init
-            td boolean
-            td true
-            td Initializes Swiper
-          tr
-            td params
-            td object
-            td
-            td Object with Swiper API parameters
-          tr
-            td pagination
-            td boolean
-            td
-            td Enables pagination
-          tr
-            td scrollbar
-            td boolean
-            td
-            td Enables scrollbar
-          tr
-            td next-button
-            td boolean
-            td
-            td Enables next navigation button
-          tr
-            td prev-button
-            td boolean
-            td
-            td Enables previous navigation button
-          tr
-            th(colspan="4") &lt;f7-swiper-slide&gt; properties
-          tr
-            td zoom
-            td boolean
-            td
-            td Adds additional slide inner wrapping required for zoom-in functionality (should be also enabled via params on Swiper initialization)
-      h2 Access To Initialized Instance
-      p If you use automatic initalization to init Swiper (with <code>init:true</code> prop) and need to use its <a href="../docs/swiper.html">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.swiper</b></code> component's property.
+            <div class="swiper-pagination"></div>
+            <div class="swiper-scrollbar"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+          </div>
+    h4 With additional parameters
+    p You can pass any additional <a href="http://idangero.us/swiper/api" target="_blank">Swiper API</a> parameters using <code>params</code> property:
+    pre
+      code.html
+        :code
+          <f7-swiper navigation :params="{speed:500, slidesPerView: 3, spaceBetween: 20}">
+            <f7-swiper-slide>Slide 1</f7-swiper-slide>
+            <f7-swiper-slide>Slide 2</f7-swiper-slide>
+            <f7-swiper-slide>Slide 3</f7-swiper-slide>
+          </f7-swiper>
+    h4 With manual initialization
+    p In all the examples above Swiper will be initialized automatically. If you don't need it and need to init it manually then pass <code>init: false</code> prop:
+    pre
+      code.html
+        :code
+          <f7-swiper :init="false">
+            <f7-swiper-slide>Slide 1</f7-swiper-slide>
+            <f7-swiper-slide>Slide 2</f7-swiper-slide>
+            <f7-swiper-slide>Slide 3</f7-swiper-slide>
+          </f7-swiper>
+
+

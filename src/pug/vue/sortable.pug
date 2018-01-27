@@ -1,0 +1,82 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Sortable Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Sortable Vue Component
+    p Sortable is not a separate component, but just a particular case of using <a href="list-view.html">&lt;f7-list&gt;</a> and <a href="list-item.html">&lt;f7-list-item&gt;</a> components.
+    h2 Sortable Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+        th(colspan="2") &lt;f7-list&gt; events
+          br
+          small The following events will be available on &lt;f7-list&gt; when <code>sortable</code> prop set
+        tr
+          td sortable:enable
+          td Event will be triggered when sortable mode is enabled
+        tr
+          td sortable:disable
+          td Event will be triggered when sortable mode is disabled
+        tr
+          td sortable:sort
+          td Event will be triggered after user release currently sorting element in new position. <code>event.detail</code> will contain object with <code>from</code> and <code>to</code> properties with start/new index numbers of sorted list item
+    h2 Examples
+    p Here is the full sortable list page example:
+    pre
+      code
+        :code
+          <template>
+            <f7-page>
+              <f7-navbar back-link="Back" title="Sortable" sliding>
+                <f7-nav-right>
+                  <!-- Link to enable/disable sortable -->
+                  <f7-link @click="sorting = !sorting">{{sorting ? 'Done' : 'Sort'}}</f7-link>
+                </f7-nav-right>
+              </f7-navbar>
+
+              <!-- Sortable list -->
+              <f7-list
+                sortable
+                :sortable-enabled="sorting"
+                @sortable:sort="onSort"
+                @sortable:enable="onEnable"
+                @sortable:disable="onDisable"
+              >
+                <f7-list-item v-for="item in items" :title="'Item ' + item"></f7-list-item>
+              </f7-list>
+            </f7-page>
+          </template>
+          <script>
+            export default {
+              data: function () {
+                return {
+                  sorting: false,
+                  items: [1, 2, 3, 4, 5]
+                }
+              },
+              methods: {
+                onEnable: function () {
+                  console.log('sort enabled');
+                },
+                onDisable: function () {
+                  console.log('sort disabled');
+                },
+                onSort: function (event, indexes) {
+                  console.log('sort', indexes);
+                },
+              }
+            }
+          </script>
+

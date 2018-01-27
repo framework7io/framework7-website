@@ -6,92 +6,98 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Popup Vue Component
-      p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
-      p Popup Vue component represents <a href="../docs/popup.html">Popup</a> component.
-      h2 Usage example
-      pre
-        code
-          :code
-            <!-- Popup -->
-            <f7-popup>
-              <!-- Popup content goes here -->
-            </f7-popup>
-
-            <!-- Popup which is also fullscreen on tablets -->
-            <f7-popup tablet-fullscreen>
-              <!-- Popup content goes here -->
-            </f7-popup>
-      p Renders to:
-      pre
-        code
-          :code
-            <!-- Popup -->
-            <div class="popup">
-              <!-- Popup content goes here -->
-            </div>
-
-            <!-- Popup which is also fullscreen on tablets -->
-            <div class="popup tablet-fullscreen">
-              <!-- Popup content goes here -->
-            </div>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Description
-        tbody
-          tr
-            td theme
-            td string
-            td Popup theme color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td layout
-            td string
-            td Popup layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>
-          tr
-            td tablet-fullscreen
-            td boolean
-            td Defines whether popup should be displayed fullscreen on tablets or not
-          tr
-            td opened
-            td boolean
-            td Allows to open/close Popup and set its initial state
-      h2 Methods
-      table.methods-table
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Popup Vue Component
+    .docs-index
+    p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
+    p Popup Vue component represents <a href="../docs/popup.html">Popup</a> component.
+    h2 Popup Components
+    p There are following components included:
+    ul
+      li <code><b>f7-popup</b></code> - popup element
+    h2 Popup Properties
+    table.params-table
+      thead
         tr
-          td .open(<span>animated</span>)
-          td Open popup
+          th Prop
+          th Type
+          th Description
+      tbody
         tr
-          td .close(<span>animated</span>)
-          td Close popup
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td popup:open
-            td Event will be triggered when Popup starts its opening animation
-          tr
-            td popup:opened
-            td Event will be triggered after Popup completes its opening animation
-          tr
-            td popup:close
-            td Event will be triggered when Popup starts its closing animation
-          tr
-            td popup:closed
-            td Event will be triggered after Popup completes its closing animation
-      h2 Open and close Popup
-      p You can control Popup state, open and closing it:
-      ul
-        li using its <a href="../docs/popup.html#using-javascript">JavaScript API</a>
-        li by passing <b>true</b> or <b>false</b> to its <code>opened</code> prop
-        li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>open-popup</code> property (to open it) and <code>close-popup</code> property to close it
+          th(colspan="3") &lt;f7-popup&gt; properties
+        tr
+          td tablet-fullscreen
+          td boolean
+          td Defines whether the popup should be displayed fullscreen on tablets or not
+        tr
+          td opened
+          td boolean
+          td Allows to open/close Popup and set its initial state
+    h2 Popup Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;f7-popup&gt; methods
+      tr
+        td .open(<span>animate</span>)
+        td Open popup
+      tr
+        td .close(<span>animate</span>)
+        td Close popup
+    h2 Popup Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-popup&gt; events
+        tr
+          td popup:open
+          td Event will be triggered when Popup starts its opening animation
+        tr
+          td popup:opened
+          td Event will be triggered after Popup completes its opening animation
+        tr
+          td popup:close
+          td Event will be triggered when Popup starts its closing animation
+        tr
+          td popup:closed
+          td Event will be triggered after Popup completes its closing animation
+    h2 Open And Close Popup
+    p You can control Popup state, open and closing it:
+    ul
+      li using <a href="../docs/popup.html">Popup API</a>
+      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>popup-open</code> property (to open it) and <code>popup-close</code> property to close it
+    h2 Access To Popup Instance
+    p You can access Popup initialized instance by accessing <code><b>.f7Popup</b></code> component's property.
+    h2 Examples
+    pre
+      code
+        :code
+          <!-- Popup -->
+          <f7-popup>
+            <!-- Popup content goes here -->
+          </f7-popup>
+
+          <!-- Popup which is also fullscreen on tablets -->
+          <f7-popup tablet-fullscreen>
+            <!-- Popup content goes here -->
+          </f7-popup>
+    p Renders to:
+    pre
+      code
+        :code
+          <!-- Popup -->
+          <div class="popup">
+            <!-- Popup content goes here -->
+          </div>
+
+          <!-- Popup which is also fullscreen on tablets -->
+          <div class="popup tablet-fullscreen">
+            <!-- Popup content goes here -->
+          </div>

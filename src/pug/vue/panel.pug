@@ -6,118 +6,129 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Panel Vue Component
-      p Panel Vue component represents <a href="../docs/side-panels.html">Side Panels</a> component.
-      h2 Usage example
-      pre
-        code
-          | &lt;!-- Left Panel with Reveal effect --&gt;
-          | &lt;f7-panel left reveal&gt;
-          |   &lt;!-- Left panel content goes here --&gt;
-          | &lt;/f7-panel&gt;
-          | 
-          | &lt;!-- Right Panel with Cover effect and dark layout --&gt;
-          | &lt;f7-panel right cover layout="dark"&gt;
-          |   &lt;!-- Right panel content goes here --&gt;
-          | &lt;/f7-panel&gt;
-      p Renders to:
-      pre
-        code
-          | &lt;div class="panel panel-left panel-reveal"&gt;...&lt;/div&gt;
-          | &lt;div class="panel panel-right panel-cover layout-dark"&gt;...&lt;/div&gt;
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td side
-            td string
-            td 
-            td Panel side. Could be "left" or "right"
-          tr
-            td left
-            td boolean
-            td 
-            td Shortcut prop for <code>side="left"</code>
-          tr
-            td right
-            td boolean
-            td 
-            td Shortcut prop for <code>side="right"</code>
-          tr
-            td effect
-            td string
-            td 
-            td Panel effect. Could be "cover" or "reveal"
-          tr
-            td cover
-            td boolean
-            td 
-            td Shortcut prop for <code>effect="cover"</code>
-          tr
-            td reveal
-            td boolean
-            td 
-            td Shortcut prop for <code>effect="reveal"</code>
-          tr
-            td theme
-            td string
-            td 
-            td Panel theme color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td layout
-            td string
-            td 
-            td Panel layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>
-          tr
-            td opened
-            td boolean
-            td 
-            td Allows to open/close panel and set its initial state
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td panel:open
-            td Event will be triggered when Panel starts its opening animation
-          tr
-            td panel:opened
-            td Event will be triggered after Panel completes its opening animation
-          tr
-            td panel:close
-            td Event will be triggered when Panel starts its closing animation
-          tr
-            td panel:closed
-            td Event will be triggered after Panel completes its closing animation
-          tr
-            td panel:overlay-click
-            td Event will be triggered when the panel overlay is clicked
-          tr
-            td panel:swipe
-            td Event will be triggered for swipe panels during touch swipe action
-      h2 Methods
-      table.methods-table
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Panel Vue Component
+    .docs-index
+    p Panel Vue component represents <a href="../docs/panel.html">Side Panels</a> component.
+    h2 Panel Components
+    p There are following components included:
+    ul
+      li <code><b>f7-panel</b></code> - Panel element
+    h2 Panel Properties
+    table.params-table
+      thead
         tr
-          td .open(<span>animated</span>)
-          td Open panel
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
         tr
-          td .close(<span>animated</span>)
-          td Close panel
-      h2 Open and close Panel
-      p You can control panel state, open and closing it:
-      ul
-        li using its <a href="../docs/side-panels.html#using-javascript">JavaScript API</a>
-        li by passing <b>true</b> or <b>false</b> to its <code>opened</code> prop
-        li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>open-panel</code> property (to open it) and <code>close-panel</code> property to close it
+          td side
+          td string
+          td
+          td Panel side. Could be <code>left</code> or <code>right</code>
+        tr
+          td left
+          td boolean
+          td
+          td Shortcut prop for <code>side="left"</code>
+        tr
+          td right
+          td boolean
+          td
+          td Shortcut prop for <code>side="right"</code>
+        tr
+          td effect
+          td string
+          td
+          td Panel effect. Could be <code>cover</code> or <code>reveal</code>
+        tr
+          td cover
+          td boolean
+          td
+          td Shortcut prop for <code>effect="cover"</code>
+        tr
+          td reveal
+          td boolean
+          td
+          td Shortcut prop for <code>effect="reveal"</code>
+        tr
+          td opened
+          td boolean
+          td
+          td Allows to open/close panel and set its initial state
+    h2 Panel Methods
+    table.methods-table
+      tr
+        td .open(<span>animate</span>)
+        td Open panel
+      tr
+        td .close(<span>animate</span>)
+        td Close panel
+    h2 Panel Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          td panel:open
+          td Event will be triggered when Panel starts its opening animation
+        tr
+          td panel:opened
+          td Event will be triggered after Panel completes its opening animation
+        tr
+          td panel:close
+          td Event will be triggered when Panel starts its closing animation
+        tr
+          td panel:closed
+          td Event will be triggered after Panel completes its closing animation
+        tr
+          td panel:backdrop-click
+          td Event will be triggered when the panel backdrop is clicked
+        tr
+          td panel:swipe
+          td Event will be triggered for swipe panels during touch swipe action
+        tr
+          td panel:swipeopen
+          td Event will be triggered in the very beginning of opening it with swipe
+        tr
+          td panel:breakpoint
+          td Event will be triggered when it becomes visible/hidden when app width matches its breakpoint
+    h2 Open And Close Panel
+    p You can control panel state, open and closing it:
+    ul
+      li using <a href="../docs/panel.html">Panel API</a>
+      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>panel-open</code> property (to open it) and <code>panel-close</code> property to close it
+    h2 Access To Panel Instance
+    p You can access Panel initialized instance by accessing <code><b>.f7Panel</b></code> component's property.
+    h2 Examples
+    pre
+      code.html
+        :code
+          <!-- Left Panel with Reveal effect -->
+          <f7-panel left reveal>
+            <!-- Left panel content goes here -->
+          </f7-panel>
+
+          <!-- Right Panel with Cover effect and dark layout theme -->
+          <f7-panel right cover class="theme-dark">
+            <!-- Right panel content goes here -->
+          </f7-panel>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="panel panel-left panel-reveal">
+            ...
+          </div>
+          <div class="panel panel-right panel-cover theme-dark">
+            ...
+          </div>
+
