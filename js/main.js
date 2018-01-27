@@ -16,7 +16,7 @@
     }
     if (hits.length === 0) {
       $('.docs-nav-searchbar div.search-results').remove();
-      $('.docs-nav-searchbar').append('<div class="search-results no-search-results">No results found</div>');
+      $('.docs-nav-searchbar').append('<div class="search-results no-search-results">No results found<div class="algolia-logo"></div></div>');
       return;
     }
     hits.forEach((hit) => {
@@ -34,16 +34,16 @@
         url: hit.sectionUrl,
       };
     });
-    var html = '<div class="search-results"><ul>' + Object.keys(tree).map(function (doc) {
+    var html = '<ul>' + Object.keys(tree).map(function (doc) {
       return '<li><span>' + doc + '</span><ul>' + Object.keys(tree[doc]).map(function (page) {
         return '<li><a href="' + tree[doc][page].url + '"><span>' + page + '</span></a><ul>' + Object.keys(tree[doc][page]).map(function (section) {
           if (section === 'url') return '';
           return '<li><a href="' + tree[doc][page][section].url + '"><span>' + section + '</span><small>'+tree[doc][page][section].text+'</small></a></li>';
         }).join('') + '</ul></li>'
       }).join('') + '</ul></li>'
-    }).join('') + '</ul></div>'
+    }).join('') + '</ul>'
     $('.docs-nav-searchbar div.search-results').remove();
-    $('.docs-nav-searchbar').append(html);
+    $('.docs-nav-searchbar').append('<div class="search-results">' + html + '<div class="algolia-logo"></div></div>');
   }
   function searchDocs(query) {
     if (!query) {

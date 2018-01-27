@@ -13,6 +13,20 @@
   border-radius: 10px;
   overflow: hidden;
   box-sizing: border-box;
+  .algolia-logo {
+    height: 20px;
+    background: #fff;
+    &:after {
+      content: '';
+      display: block;
+      float: right;
+      width: 100px;
+      height: 20px;
+      background: url(../i/algolia.svg) no-repeat center top;
+      background-size: 100% auto;
+      margin-right: 20px;
+    }
+  }
 }
 @media (max-width: 860px) {
   .docs-nav .search-results {
