@@ -172,6 +172,17 @@ block content
     .important-note
       p
         strong Note that <code>item-inner</code> has additional right padding and chevron icon when it is in <code>item-link</code>
+    h2 List Button
+    p List button is a simplified list link item, usefule in case you need to trigger simple self-explaining actions:
+    pre
+      code.html
+        :code
+          <li>
+            <a class="item-link list-button">List Button 1</a>
+          </li>
+          <li>
+            <a class="item-link list-button">List Button 2</a>
+          </li>
 
     h2 List Divider
     p List divider is a simple list element with title to visually divide one list items from another:
@@ -972,6 +983,40 @@ block content
                       <div class="item-subtitle">Michael Jackson</div>
                     </div>
                   </a>
+                </li>
+              </ul>
+            </div>
+      h4 List Buttons
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link list-button">Button 1</a>
+                </li>
+                <li>
+                  <a href="#" class="item-link list-button">Button 2</a>
+                </li>
+                <li>
+                  <a href="#" class="item-link list-button">Button 3</a>
+                </li>
+              </ul>
+            </div>
+      h4 Inset List Buttons
+      pre
+        code.html
+          :code
+            <div class="list inset">
+              <ul>
+                <li>
+                  <a href="#" class="item-link list-button">Button 1</a>
+                </li>
+                <li>
+                  <a href="#" class="item-link list-button">Button 2</a>
+                </li>
+                <li>
+                  <a href="#" class="item-link list-button">Button 3</a>
                 </li>
               </ul>
             </div>

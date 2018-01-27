@@ -1,8 +1,12 @@
 ;(function(){
   // init search
-  var algoliaClient = algoliasearch("5CN8U5PK9Z", "335298dc09a81387378e525c7824e262");
-  var algoliaIndex = algoliaClient.initIndex('f7_docs');
+  var algoliaClient;
+  var algoliaIndex;
   var searchTimeout;
+  if (window.algoliasearch) {
+    algoliaClient = algoliasearch("5CN8U5PK9Z", "335298dc09a81387378e525c7824e262");
+    algoliaIndex = algoliaClient.initIndex('f7_docs');
+  }
   function renderSearchResults(hits, clear) {
     var tree = {};
     var html = '';
