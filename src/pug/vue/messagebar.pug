@@ -2,145 +2,361 @@ extends ../_docs-template
 
 block vars
   - var activeLink = 'vue';
-  - var title = 'Message Bar Vue Component | Framework7 Vue Documentation';
+  - var title = 'Messagebar Vue Component | Framework7 Vue Documentation';
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Message Bar Vue Component
-      p Message Bar Vue component represents Framework7's <a href="../docs/messagebar.html">Message Bar</a> component.
-      h2 Examples
-      pre
-        code
-          :code
-            <f7-messagebar placeholder="Message" send-link="Send" @submit="onSubmit"></f7-messagebar>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="toolbar messagebar">
-              <div class="toolbar-inner">
-                <textarea placeholder="Message"></textarea>
-                <a href="#" class="link">Send</a>
-              </div>
-            </div>
-      h2 Slots
-      p Message Bar Vue component has additional slots for custom elements:
-      ul
-        li <b>before-input</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element
-        li <b>after-input</b> - element will be inserted right after &lt;div type="toolbar-inner"&gt; element
-        li <b>before-textarea</b> - element will be inserted right before textarea
-        li <b>after-textarea</b> - element will be inserted right after textarea
-        li <b>send-link</b> - element will be inserted inside of send link
-      pre
-        code
-          :code
-            <f7-messagebar placeholder="Message" @submit="onSubmit">
-              <div slot="before-inner">Before inner</div>
-              <div slot="after-inner">After inner</div>
-              <div slot="before-textarea">Before textarea</div>
-              <div slot="after-textarea">After textarea</div>
-              <span slot="send-link">Send</span>
-              <div>Default slot</div>
-            </f7-messagebar>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="toolbar messagebar">
-              <div>Before inner</div>
-              <div class="toolbar-inner">
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 Messagebar Vue Component
+    .docs-index
+    p Messagebar Vue component represents Framework7's <a href="../docs/messagebar.html">Messagebar</a> component.
+    h2 Messagebar Components
+    p There are following components included:
+    ul
+      li <code><b>f7-messagebar</b></code> - main messagebar element
+      li <code><b>f7-messagebar-sheet</b></code> - messagebar sheet element
+      li <code><b>f7-messagebar-sheet-image</b></code> - messagebar sheet image item
+      li <code><b>f7-messagebar-sheet-item</b></code> - messagebar sheet item
+      li <code><b>f7-messagebar-attachments</b></code> - messagebar attachments element
+      li <code><b>f7-messagebar-attachment</b></code> - single messagebar attachment element
+    p
+      img(src=cdn + "/i/docs/messagebar-vue.jpg", style="max-width: 950px; width: 100%")
+    h2 Messagebar Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-messagebar&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Messagebar
+        tr
+          td name
+          td string
+          td
+          td Textarea "name" attribute
+        tr
+          td placeholder
+          td string
+          td Message
+          td Textarea placeholder text
+        tr
+          td value
+          td string<br>number
+          td
+          td Textarea value
+        tr
+          td readonly
+          td boolean
+          td false
+          td Sets "readonly" textarea attribute
+        tr
+          td disabled
+          td boolean
+          td false
+          td Sets "disbled" textarea attribute
+        tr
+          td send-link
+          td string
+          td
+          td Enables Send link and specifies its text. This property will be ignored in case you use <code>send-link</code> slot
+        tr
+          td max-height
+          td number
+          td
+          td Defines resizeable textarea max height
+        tr
+          td resizable
+          td bolean
+          td true
+          td Enables resizeable textarea
+        tr
+          td sheet-visible
+          td boolean
+          td false
+          td Makes messagebar sheet visible/active
+        tr
+          td attachments-visible
+          td boolean
+          td false
+          td Makes messagebar attachments visible/active
+        tr
+          th(colspan="4") &lt;f7-messagebar-sheet-image&gt; properties
+        tr
+          td image
+          td string
+          td
+          td Sheet image URL
+        tr
+          td checked
+          td boolean
+          td false
+          td Indicates whether this sheet image-item is checked or not
+        tr
+          th(colspan="4") &lt;f7-messagebar-attachment&gt; properties
+        tr
+          td image
+          td string
+          td
+          td Attachment image URL
+        tr
+          td deletable
+          td boolean
+          td true
+          td Defines whether the attachment is deletable or not. In case of deletable the additional delete button will be rendered
+
+    h2 Messagebar Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;f7-messagebar&gt; methods
+      tr
+        td .clear()
+        td Clear textarea and update/reset its size
+      tr
+        td .setValue(<span>newValue</span>)
+        td Set messagebar textarea value/text
+      tr
+        td .getValue()
+        td Return messagebar textarea value
+      tr
+        td .resizePage()
+        td Force Messagebar to resize messages page depending on messagebar height/size
+      tr
+        td .focus()
+        td Focus messagebar textarea
+      tr
+        td .blur()
+        td Remove focus from messagebar textarea
+
+
+    h2 Messagebar Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;f7-messagebar&gt; events
+        tr
+          td change
+          td <span>(event)</span>
+          td Event will be triggered when "change" event occurs on messagebar textarea element
+        tr
+          td input
+          td <span>(event)</span>
+          td Event will be triggered when "input" event occurs on messagebar textarea element
+        tr
+          td focus
+          td <span>(event)</span>
+          td Event will be triggered when "focus" event occurs on messagebar textarea element
+        tr
+          td blur
+          td <span>(event)</span>
+          td Event will be triggered when "blur" event occurs on messagebar textarea element
+        tr
+          td submit<br>send
+          td <span>(value, clear)</span>
+          td Event will be triggered when user clicks on messagebar "send link"
+        tr
+          th(colspan="3") &lt;f7-messagebar-sheet-image&gt; events
+        tr
+          td change
+          td <span>(event)</span>
+          td Event will be triggered on sheet item checkbox change
+        tr
+          th(colspan="3") &lt;f7-messagebar-attachment&gt; events
+        tr
+          td attachment:click
+          td <span>(event)</span>
+          td Event will be triggered on attachment click
+        tr
+          td attachment:delete
+          td <span>(event)</span>
+          td Event will be triggered on attachment delete button click
+    h2 Messagebar Slots
+    p Messagebar Vue component has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - element will be inserted in the end of &lt;div class="toolbar-inner"&gt; element
+      li <code><b>before-area</b></code> - element will be inserted right before textarea. Messagebar attachments go here
+      li <code><b>after-area</b></code> - element will be inserted right after textarea
+      li <code><b>send-link</b></code> - element will be inserted inside of send link
+      li <code><b>before-inner</b></code> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element
+      li <code><b>after-inner</b></code> - element will be inserted right after &lt;div class="toolbar-inner"&gt; element. Messagebar sheet goes here
+      li <code><b>inner-start</b></code> - element will be inserted in the beginning of &lt;div class="toolbar-inner"&gt; element
+      li <code><b>inner-end</b></code> - element will be inserted in the end of &lt;div class="toolbar-inner"&gt; element. Same as <code>default</code> slot
+    pre
+      code
+        :code
+          <f7-messagebar placeholder="Message" @submit="onSubmit">
+            <div slot="before-inner">Before inner</div>
+            <div slot="after-inner">After inner</div>
+            <div slot="before-area">Before textarea</div>
+            <div slot="after-area">After textarea</div>
+            <f7-icon if-ios="f7:arrow_up_fill" if-md="material:send" slot="send-link"></f7-icon>
+            <div>Default slot</div>
+          </f7-messagebar>
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="toolbar messagebar">
+            <div>Before inner</div>
+            <div class="toolbar-inner">
+              <div class="messagebar-area">
                 <div>Before textarea</div>
                 <textarea placeholder="Message"></textarea>
                 <div>After textarea</div>
-                <a href="#" class="link"><span>Send</span></a>
-                <div>Default slot</div>
               </div>
-              <div>After inner</div>
+              <a href="#" class="link"><i class="icon f7-icons">arrow_up_fill</i></a>
+              <div>Default slot</div>
             </div>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td init
-            td boolean
-            td true
-            td Initializes Message Bar
-          tr
-            td name
-            td string
-            td 
-            td Textarea "name" attribute
-          tr
-            td placeholder
-            td string
-            td "Message"
-            td Textarea placeholder text
-          tr
-            td value
-            td string/number
-            td 
-            td Textarea value
-          tr
-            td readonly
-            td boolean
-            td 
-            td Sets "readonly" textarea attribute
-          tr
-            td disabled
-            td boolean
-            td 
-            td Sets "disbled" textarea attribute
-          tr
-            td send-link
-            td string
-            td
-            td Enables Send link and specifies its text or its inner HTML. This property will be ignored in case you use "send-link" slot
-          tr
-            td max-height
-            td number
-            td
-            td Defines resizeable textarea max height
-      h2 Methods
-      table.methods-table
-        tr
-          td .clear()
-          td Clear textarea and update/reset its size
-        tr
-          td .setValue(<span>newValue</span>)
-          td Set messagebar textarea value/text
-        tr
-          td .getValue()
-          td Return messagebar textarea value
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td change
-            td Event will be triggered when "change" event occurs on message bar textarea element
-          tr
-            td input
-            td Event will be triggered when "input" event occurs on message bar textarea element
-          tr
-            td focus
-            td Event will be triggered when "focus" event occurs on message bar textarea element
-          tr
-            td blur
-            td Event will be triggered when "blur" event occurs on message bar textarea element
-          tr
-            td submit
-            td Event will be triggered when user clicks on message bar "send link"
-      h2 Access To Initialized Instance
-      p If you use automatic initalization to init Message Bar (with <code>init:true</code> prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messagebar</b></code> component's property.
+            <div>After inner</div>
+          </div>
+
+    h2 Access To Messagebar Instance
+    p If you use automatic initalization to init Messagebar (with <code>init:true</code> prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messagebar</b></code> component's property.
+
+    h2 Examples
+    pre
+      code.html
+        :code
+          <f7-messagebar placeholder="Message" send-link="Send" @submit="onSubmit"></f7-messagebar>
+
+          <!-- Renders to: -->
+
+          <div class="toolbar messagebar">
+            <div class="toolbar-inner">
+              <div class="messagebar-area">
+                <textarea placeholder="Message"></textarea>
+              </div>
+              <a href="#" class="link">Send</a>
+            </div>
+          </div>
+
+    h4 With Sheet And Attachments
+    pre
+      code.html
+        :code
+          <template>
+            <f7-page>
+              <f7-navbar title="Messsages" back-link="Back"></f7-navbar>
+
+              <f7-messagebar
+                :placeholder="placeholder"
+                ref="messagebar"
+                :attachmentsVisible="attachmentsVisible"
+                :sheetVisible="sheetVisible"
+              >
+                <!-- Link to toggle Sheet -->
+                <f7-link
+                  icon-if-ios="f7:camera_fill"
+                  icon-if-md="material:camera_alt"
+                  slot="inner-start"
+                  @click="sheetVisible = !sheetVisible"
+                ></f7-link>
+                <!-- Send Message Link -->
+                <f7-link
+                  icon-if-ios="f7:arrow_up_fill"
+                  icon-if-md="material:send"
+                  slot="inner-end"
+                  @click="sendMessage"
+                ></f7-link>
+                <!-- Attachments -->
+                <f7-messagebar-attachments>
+                  <f7-messagebar-attachment
+                    v-for="(image, index) in attachments"
+                    :key="index"
+                    :image="image"
+                    @attachment:delete="deleteAttachment(image)"
+                  ></f7-messagebar-attachment>
+                </f7-messagebar-attachments>
+                <!-- Sheet -->
+                <f7-messagebar-sheet>
+                  <f7-messagebar-sheet-image
+                    v-for="(image, index) in images"
+                    :key="index"
+                    :image="image"
+                    :checked="attachments.indexOf(image) >= 0"
+                    @change="handleAttachment"
+                  ></f7-messagebar-sheet-image>
+                </f7-messagebar-sheet>
+              </f7-messagebar>
+
+              <f7-messages>
+                ...
+              </f7-messages>
+            </f7-page>
+          </template>
+          <script>
+            export default {
+              data() {
+                return {
+                  attachments: [],
+                  sheetVisible: false,
+                  // Sheet images available
+                  images: [
+                    'http://lorempixel.com/300/300/cats/1/',
+                    'http://lorempixel.com/200/300/cats/2/',
+                    'http://lorempixel.com/400/300/cats/3/',
+                    'http://lorempixel.com/300/150/cats/4/',
+                    'http://lorempixel.com/150/300/cats/5/',
+                    'http://lorempixel.com/300/300/cats/6/',
+                    'http://lorempixel.com/300/300/cats/7/',
+                    'http://lorempixel.com/200/300/cats/8/',
+                    'http://lorempixel.com/400/300/cats/9/',
+                    'http://lorempixel.com/300/150/cats/10/',
+                  ],
+                };
+              },
+              computed: {
+                attachmentsVisible() {
+                  const self = this;
+                  return self.attachments.length > 0;
+                },
+                placeholder() {
+                  const self = this;
+                  return self.attachments.length > 0 ? 'Add comment or Send' : 'Message';
+                },
+              },
+              methods: {
+                deleteAttachment(image) {
+                  const self = this;
+                  const index = self.attachments.indexOf(image);
+                  self.attachments.splice(index, 1)[0]; // eslint-disable-line
+                },
+                handleAttachment(e) {
+                  const self = this;
+                  const index = self.$$(e.target).parents('label.checkbox').index();
+                  const image = self.images[index];
+                  if (e.target.checked) {
+                    // Add to attachments
+                    self.attachments.unshift(image);
+                  } else {
+                    // Remove from attachments
+                    self.attachments.splice(self.attachments.indexOf(image), 1);
+                  }
+                },
+                sendMessage() {
+                  const self = this;
+                  const text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
+                  // the rest of logic to send a message
+                },
+                onF7Ready() {
+                  const self = this;
+                  self.messagebar = self.$refs.messagebar.f7Messagebar;
+                },
+              },
+            };
+          </script>
+
