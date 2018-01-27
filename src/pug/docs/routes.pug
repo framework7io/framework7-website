@@ -416,7 +416,9 @@ block content
               // ...
             ],
           });
-    p Please note, that such route events are actually DOM events, so each such handler will accept <code>event</code> as a first argument with the event itself and <code>page</code> as the second argument with <a href="page.html#page-data">page data</a>.
+    .important-note
+      p Please note, that such route events are actually DOM events, so each such handler will accept <code>event</code> as a first argument with the event itself and <code>page</code> as the second argument with <a href="page.html#page-data">page data</a>.
+      p Also, context of such event handler (<code>this</code>) will point to related <a href="view.html#router-api-methods-properties">Router instance</a>.
     h2 Nested Routes
     p It is possible to have nested routes (routes in routes) as well:
     pre
