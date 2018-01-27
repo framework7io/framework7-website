@@ -2,417 +2,592 @@ extends ../_docs-template
 
 block vars
   - var activeLink = 'vue';
-  - var title = 'Form Elements Vue Component | Framework7 Vue Documentation';
+  - var title = 'Input Vue Component | Framework7 Vue Documentation';
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Form Elements Vue Components
-      p Form elements allow you to create flexible and beautiful Form layout. Form elements are just well known <a href="../docs/list-view.html">List View</a> (<b><a href="list-view.html">List</a> and <a href="list-item.html">List Item</a> Vue components</b>) but with few extensions.
-      p Check out Framework7's <a href="../docs/form-elements.html">Form Elements</a> for their appearance.
-      h2 Examples
-      pre
-        code
-          :code
-            <f7-list form>
-              <!-- Text Input -->
-              <f7-list-item>
-                <f7-label>Name</f7-label>
-                <f7-input type="text" placeholder="Name"/>
-              </f7-list-item>
-              <!-- Password -->
-              <f7-list-item>
-                <f7-label>Name</f7-label>
-                <f7-input type="password" placeholder="Password"/>
-              </f7-list-item>
-              <!-- Select -->
-              <f7-list-item>
-                <f7-label>Gender</f7-label>
-                <f7-input type="select">
-                  <option value="1">Male</option>
-                  <option value="1">Female</option>
-                </f7-input>
-              </f7-list-item>
-              <!-- Switch -->
-              <f7-list-item>
-                <f7-label>Switch</f7-label>
-                <f7-input type="switch" @change="onChange"></f7-input>
-              </f7-list-item>
-              <!-- Range -->
-              <f7-list-item>
-                <f7-label>Range</f7-label>
-                <f7-input type="range" min="0" max="100" step="1" value="90"></f7-input>
-              </f7-list-item>
-              <!-- Textarea -->
-              <f7-list-item>
-                <f7-label>Textarea</f7-label>
-                <f7-input type="textarea" placeholder="Textarea"></f7-input>
-              </f7-list-item>
-            </f7-list>
-      p Renders to:
-      pre
-        code
-          :code
-            <form class="list-block">
-              <ul>
-                <!-- Text Input -->
-                <li>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title label">Name</div>
-                      <div class="item-input">
-                        <input type="text" placeholder="Name"></div>
-                    </div>
-                  </div>
-                </li>
-                <!-- Password -->
-                <li>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title label">Password</div>
-                      <div class="item-input">
-                        <input type="password" placeholder="Password"></div>
-                    </div>
-                  </div>
-                </li>
-                <!-- Select -->
-                <li>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title label">Gender</div>
-                      <div class="item-input">
-                        <select type="select">
-                          <option value="1">Male</option>
-                          <option value="1">Female</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <!-- Switch -->
-                <li>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title label">Switch</div>
-                      <div class="item-input">
-                        <label class="label-switch">
-                          <input type="checkbox" value="">
-                          <div class="checkbox"></div>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <!-- Range -->
-                <li>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title label">Range</div>
-                      <div class="item-input">
-                        <div class="range-slider">
-                          <input type="range" max="100" min="0" step="1"></div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <!-- Textarea -->
-                <li>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title label">Textarea</div>
-                      <div class="item-input">
-                        <textarea type="textarea" placeholder="Textarea"></textarea>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </form>
-      h4 Floating Labels (Material Theme only)
-      pre
-        code
-          :code
-            <f7-list form>
-              <!-- Text Input -->
-              <f7-list-item>
-                <f7-label floating>Name</f7-label>
-                <f7-input type="text" placeholder="Name"/>
-              </f7-list-item>
-              <!-- Password -->
-              <f7-list-item>
-                <f7-label floating>Name</f7-label>
-                <f7-input type="password" placeholder="Password"/>
-              </f7-list-item>
-              ...
-            </f7-list>
-      h4 Without labels
-      pre
-        code
-          :code
-            <f7-list form>
-              <!-- Text Input -->
-              <f7-list-item>
-                <f7-input type="text" placeholder="Name"/>
-              </f7-list-item>
-              <!-- Password -->
-              <f7-list-item>
-                <f7-input type="password" placeholder="Password"/>
-              </f7-list-item>
-              ...
-            </f7-list>
-      h4 With Labels and Icons
-      pre
-        code
-          :code
-            <f7-list form>
-              <!-- Text Input -->
-              <f7-list-item>
-                <f7-icon slot="media" f7="person"></f7-icon>
-                <f7-label floating>Name</f7-label>
-                <f7-input type="text" placeholder="Name"/>
-              </f7-list-item>
-              <!-- Password -->
-              <f7-list-item>
-                <f7-icon slot="media" f7="lock"></f7-icon>
-                <f7-label floating>Name</f7-label>
-                <f7-input type="password" placeholder="Password"/>
-              </f7-list-item>
-              ...
-            </f7-list>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            th(colspan="4") &lt;f7-label&gt; properties
-          tr
-            td floating
-            td boolean
-            td
-            td Enables floating label (affects Material theme only)
-          tr
-            th(colspan="4") &lt;f7-input&gt; properties
-          tr
-            td type
-            td string
-            td
-            td Input type. All default HTML5 input type, and few special ones:
-              ul
-                li <b>textarea</b> - to render textarea element
-                li <b>select</b> - to render select element
-                li <b>range</b> - to render range slider
-                li <b>switch</b> - to render switch element
-          tr
-            td resizable
-            td boolean
-            td
-            td Makes textarea resizable
-          tr
-            td name
-            td string
-            td
-            td Input name
-          tr
-            td placeholder
-            td string
-            td
-            td Input placeholder
-          tr
-            td id
-            td string
-            td
-            td Input ID attribute
-          tr
-            td value
-            td string/number
-            td
-            td Input value
-          tr
-            td size/number
-            td string
-            td
-            td Value of input's native "size" attribute
-          tr
-            td pattern
-            td string
-            td
-            td Value of input's native "pattern" attribute
-          tr
-            td accept
-            td string/number
-            td
-            td Value of input's native "accept" attribute
-          tr
-            td autocomplete
-            td string
-            td
-            td Value of input's native "autocomplete" attribute
-          tr
-            td autofocus
-            td boolean
-            td
-            td Value of input's native "autofocus" attribute
-          tr
-            td autosave
-            td string
-            td
-            td Value of input's native "autosave" atribute
-          tr
-            td checked
-            td boolean
-            td
-            td Marks input as checked
-          tr
-            td disabled
-            td boolean
-            td
-            td Marks input as disabled
-          tr
-            td max
-            td string/number
-            td
-            td Value of input's native "max" atribute
-          tr
-            td min
-            td string/number
-            td
-            td Value of input's native "min" atribute
-          tr
-            td step
-            td string/number
-            td
-            td Value of input's native "step" atribute
-          tr
-            td maxlength
-            td string/number
-            td
-            td Value of input's native "maxlength" atribute
-          tr
-            td minlength
-            td string/number
-            td
-            td Value of input's native "minlength" atribute
-          tr
-            td multiple
-            td boolean
-            td
-            td Value of input's native "multiple" atribute
-          tr
-            td readonly
-            td boolean
-            td
-            td Marks input as readonly
-          tr
-            td required
-            td boolean
-            td
-            td Marks input as required
-          tr
-            td inputStyle
-            td string
-            td
-            td Value if input's "style" attribute
-          tr
-            td color
-            td string
-            td
-            td Input color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td wrap
-            td boolean
-            td true
-            td Defines should the input be wraped with "item-input" element or not
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            th(colspan="3") &lt;f7-input&gt; events
-          tr
-            td focus
-            td Fired when user focused to input.
-          tr
-            td focusin
-            td Fired when an element is about to receive focus. The main difference between this event and focus is that the latter doesn't bubble.
-          tr
-            td blur
-            td Fired when user lost focus from input.
-          tr
-            td focusout
-            td Fired when an element is about to lose focus. The main difference between this event and blur is that the latter doesn't bubble.
-          tr
-            td beforeinput
-            td Fired before input value change.
-          tr
-            td input
-            td Fired immediately when input value changed. Note: Input event triggers after beforeinput, keypress, keyup, keydown events.
-          tr
-            td change
-            td Fired when blur if value changed.
-          tr
-            td keypress
-            td You can use this event and @keydown event for prevent input. @keypress event fired after keydown and before keyup.
-              p You can use like this too:
-                code.js @keypress.enter="alert('User pressed enter key.')"
-              p For more information:
-                a(target="_blank", href="https://vuejs.org/v2/guide/events.html#Key-Modifiers") https://vuejs.org/v2/guide/events.html#Key-Modifiers
-          tr
-            td keyup
-            td Fired when user released the keyboard button.
-          tr
-            td keydown
-            td Fired when user starts pressing to the keyboard button.
-          tr
-            td compositionstart
-            td Fired when the composition of a passage of text is prepared (similar to keydown for a keyboard input, but fires with special characters that require a sequence of keys and other inputs such as speech recognition or word suggestion on mobile).
-          tr
-            td compositionupdate
-            td Fired when a character is added to a passage of text being composed (fires with special characters that require a sequence of keys and other inputs such as speech recognition or word suggestion on mobile).
-          tr
-            td compositionend
-            td Fired when the composition of a passage of text has been completed or cancelled.
-          tr
-            td click
-            td Fired when clicked to input.
-          tr
-            td dblclick
-            td Fired when double clicked to input.
-          tr
-            td mousedown
-            td Fired when a pointing device button (usually a mouse button) is pressed on an element.
-          tr
-            td mouseup
-            td Fired when a pointing device button (usually a mouse button) is released over an element.
-          tr
-            td mouseenter
-            td Fired when a pointing device (usually a mouse) is moved over the element that has the listener attached.
-              p @mouseenter and @mouseover events are different. For more info:
-                a(target="_blank", href="https://developer.mozilla.org/en-US/docs/Web/Events/mouseenter") https://developer.mozilla.org/en-US/docs/Web/Events/mouseenter
-          tr
-            td mouseover
-            td Fired when a pointing device is moved onto the element that has the listener attached or onto one of its children.
-          tr
-            td mouseleave
-            td Fired when a pointing device (usually a mouse) is moved off the element that has the listener attached.
-          tr
-            td mouseout
-            td Fired when a pointing device (usually a mouse) is moved off the element that has the listener attached or off one of its children. Note that it is also triggered on the parent when you move onto a child element, since you move out of the visible space of the parent.
-          tr
-            td mousemove
-            td Fired when a pointing device (usually a mouse) is moved while over an element.
-          tr
-            td wheel
-            td Fired when a wheel button of a pointing device (usually a mouse) is rotated. This event replaces the non-standard deprecated mousewheel event.
-          tr
-            td select
-            td Fired when some text is being selected. The event might not be available for all elements in all languages. For example, select events can be dispatched only on form input and textarea elements.
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 Input / Form Elements Vue Components
+    .docs-index
+    p Form elements allow you to create flexible and beautiful Form layout. Form elements are just well known <a href="../docs/list-view.html">List View</a> (<b><a href="list-view.html">List</a> and <a href="list-item.html">List Item</a> Vue components</b>) but with few additional components.
+    p Check out Framework7's <a href="../docs/inputs.html">Inputs / Form Elements</a> for their appearance.
+
+    h2 Input Components
+    p There are following components included:
+    ul
+      li <code><b>f7-input</b></code> - input element
+      li <code><b>f7-label</b></code> - input label element
+
+    h2 Input Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-label&gt; properties
+        tr
+          td floating
+          td boolean
+          td false
+          td Enables floating label (affects MD theme only)
+        tr
+          td inline
+          td boolean
+          td false
+          td Makes label inline
+        tr
+          th(colspan="4") &lt;f7-input&gt; properties
+        tr
+          td wrap
+          td boolean
+          td true
+          td Defines should the input be wraped with "item-input-wrap" element or not. Must be disabled when using outside of List View
+        tr
+          td type
+          td string
+          td
+          td Input type. All default HTML5 input type, and few special ones:
+            ul
+              li <b>textarea</b> - to render textarea element
+              li <b>select</b> - to render select element
+        tr
+          td resizable
+          td boolean
+          td false
+          td Makes textarea resizable
+        tr
+          td inputStyle
+          td string
+          td
+          td Value if input's "style" attribute, in case you need to pass extra styles
+        tr
+          td clear-button
+          td boolean
+          td false
+          td Adds input clear button that will clear input value on click
+        tr
+          td validate
+          td boolean
+          td false
+          td When enabled then input value will be validated on change based on passed "pattern" or based on input type
+        tr
+          td error-message
+          td string
+          td
+          td Custom error message to show when input value is invalid
+        tr
+          td info
+          td string
+          td
+          td Custom additional text with information about input
+        tr
+          td name
+          td string
+          td
+          td Input name
+        tr
+          td placeholder
+          td string
+          td
+          td Input placeholder
+        tr
+          td id
+          td string
+          td
+          td Input ID attribute
+        tr
+          td value
+          td string<br>number
+          td
+          td Input value
+        tr
+          td size
+          td string<br>number
+          td
+          td Value of input's native "size" attribute
+        tr
+          td pattern
+          td string
+          td
+          td Value of input's native "pattern" attribute
+        tr
+          td accept
+          td string<br>number
+          td
+          td Value of input's native "accept" attribute
+        tr
+          td autocomplete
+          td string
+          td
+          td Value of input's native "autocomplete" attribute
+        tr
+          td autofocus
+          td boolean
+          td false
+          td Value of input's native "autofocus" attribute
+        tr
+          td autosave
+          td string
+          td
+          td Value of input's native "autosave" atribute
+        tr
+          td checked
+          td boolean
+          td false
+          td Marks input as checked
+        tr
+          td disabled
+          td boolean
+          td false
+          td Marks input as disabled
+        tr
+          td max
+          td string<br>number
+          td
+          td Value of input's native "max" atribute
+        tr
+          td min
+          td string<br>number
+          td
+          td Value of input's native "min" atribute
+        tr
+          td step
+          td string<br>number
+          td
+          td Value of input's native "step" atribute
+        tr
+          td maxlength
+          td string<br>number
+          td
+          td Value of input's native "maxlength" atribute
+        tr
+          td minlength
+          td string<br>number
+          td
+          td Value of input's native "minlength" atribute
+        tr
+          td multiple
+          td boolean
+          td false
+          td Value of input's native "multiple" atribute
+        tr
+          td readonly
+          td boolean
+          td false
+          td Marks input as readonly
+        tr
+          td required
+          td boolean
+          td false
+          td Marks input as required
+        tr
+          td tabindex
+          td string<br>number
+          td
+          td Value of input's native "tabindex" atribute
+
+    h2 Input Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;f7-input&gt; events
+        tr
+          td focus
+          td <span>(event)</span>
+          td Fired when user focused to input.
+        tr
+          td blur
+          td <span>(event)</span>
+          td Fired when user lost focus from input.
+        tr
+          td input
+          td <span>(event)</span>
+          td Fired immediately when input value changed. Note: Input event triggers after beforeinput, keypress, keyup, keydown events.
+        tr
+          td change
+          td <span>(event)</span>
+          td Fired when blur if value changed.
+        tr
+          td input:clear
+          td <span>(event)</span>
+          td Fired when input clear button clicked
+        tr
+          td textarea:resize
+          td <span>(event)</span>
+          td Fired if resizable textarea resized. <code>event.detail</code> will contain object with the <code>initialHeight</code>, <code>currentHeight</code> and <code>scrollHeight</code> properties
+        tr
+          td input:empty
+          td <span>(event)</span>
+          td Fired when input value becomes empty
+        tr
+          td input:notempty
+          td <span>(event)</span>
+          td Fired when input value becomes not empty
+
+    h2 Input Slots
+    p Input Vue component (<code>&lt;f7-input&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - in case of <code>type="select"</code> or <code>type="textarea"</code> - element will be placed inside of <code>select</code> or <code>textarea</code> tags. Otherwise, it will be placed instead of input element
+      li <code><b>info</b></code> - element will be inserted in <code>&lt;div class="input-info"&gt;</code> element
+    h2 Examples
+    h4 Full Layout / Inline Labels
+    pre
+      code.html
+        :code
+          <f7-list inline-labels no-hairlines-md>
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Name</f7-label>
+              <f7-input type="text" placeholder="Your name" :value="value" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Password</f7-label>
+              <f7-input type="password" placeholder="Your password" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>E-mail</f7-label>
+              <f7-input type="email" placeholder="Your e-mail" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>URL</f7-label>
+              <f7-input type="url" placeholder="URL" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Phone</f7-label>
+              <f7-input type="tel" placeholder="Your phone number" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Gender</f7-label>
+              <f7-input type="select" placeholder="Please choose...">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Birthday</f7-label>
+              <f7-input type="date" value="2014-04-30" placeholder="Please choose..."></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Date time</f7-label>
+              <f7-input type="datetime-local" placeholder="Please choose..."></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Range</f7-label>
+              <f7-input type="range" value="50" min="0" max="100" step="1"></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Textarea</f7-label>
+              <f7-input type="textarea" placeholder="Bio"></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Resizable</f7-label>
+              <f7-input type="textarea" resizable placeholder="Bio"></f7-input>
+            </f7-list-item>
+
+          </f7-list>
+
+    h4 Full Layout / Stacked Labels
+    pre
+      code.html
+        :code
+          <f7-list no-hairlines-md>
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Name</f7-label>
+              <f7-input type="text" placeholder="Your name" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Password</f7-label>
+              <f7-input type="password" placeholder="Your password" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>E-mail</f7-label>
+              <f7-input type="email" placeholder="Your e-mail" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>URL</f7-label>
+              <f7-input type="url" placeholder="URL" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Phone</f7-label>
+              <f7-input type="tel" placeholder="Your phone number" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Gender</f7-label>
+              <f7-input type="select" placeholder="Please choose...">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Birthday</f7-label>
+              <f7-input type="date" value="2014-04-30" placeholder="Please choose..."></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Date time</f7-label>
+              <f7-input type="datetime-local" placeholder="Please choose..."></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Range</f7-label>
+              <f7-input type="range" value="50" min="0" max="100" step="1"></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Textarea</f7-label>
+              <f7-input type="textarea" placeholder="Bio"></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Resizable</f7-label>
+              <f7-input type="textarea" resizable placeholder="Bio"></f7-input>
+            </f7-list-item>
+          </f7-list>
+
+    h4 Floating Labels (MD-theme only)
+    pre
+      code.html
+        :code
+          <f7-list no-hairlines-md>
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label floating>Name</f7-label>
+              <f7-input type="text" placeholder="Your name" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label floating>Password</f7-label>
+              <f7-input type="password" placeholder="Your password" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label floating>E-mail</f7-label>
+              <f7-input type="email" placeholder="Your e-mail" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label floating>URL</f7-label>
+              <f7-input type="url" placeholder="URL" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label floating>Phone</f7-label>
+              <f7-input type="tel" placeholder="Your phone number" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label floating>Bio</f7-label>
+              <f7-input type="textarea" placeholder="Bio" resizable></f7-input>
+            </f7-list-item>
+          </f7-list>
+
+    h4 Validation + Additional Info
+    pre
+      code.html
+        :code
+          <f7-list no-hairlines-md>
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Name</f7-label>
+              <f7-input type="text" placeholder="Your name" info='Default "required" validation' required validate clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Fruit</f7-label>
+              <f7-input type="text" placeholder="Type 'apple' or 'banana'" required validate clear-button>
+                <span slot="info">Pattern validation (<b>apple|banana</b>)</span>
+              </f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>E-mail</f7-label>
+              <f7-input type="email" placeholder="Your e-mail" info='Default e-mail validation' required validate clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>URL</f7-label>
+              <f7-input type="url" placeholder="Your URL" info='Default URL validation' required validate clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-label>Number</f7-label>
+              <f7-input type="text" placeholder="Enter number" info='With custom error message' error-message="Only numbers please!" required validate pattern="[0-9]*" clear-button></f7-input>
+            </f7-list-item>
+
+          </f7-list>
+
+    h4 Icon + Input
+    pre
+      code.html
+        :code
+          <f7-list no-hairlines-md>
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-input type="text" placeholder="Your name" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-input type="password" placeholder="Your password" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-input type="email" placeholder="Your e-mail" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
+              <f7-input type="url" placeholder="URL" clear-button></f7-input>
+            </f7-list-item>
+
+          </f7-list>
+
+    h4 Label + Input
+    pre
+      code.html
+        :code
+          <f7-list no-hairlines-md>
+            <f7-list-item>
+              <f7-label>Name</f7-label>
+              <f7-input type="text" placeholder="Your name" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-label>Password</f7-label>
+              <f7-input type="password" placeholder="Your password" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-label>E-mail</f7-label>
+              <f7-input type="email" placeholder="Your e-mail" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-label>URL</f7-label>
+              <f7-input type="url" placeholder="URL" clear-button></f7-input>
+            </f7-list-item>
+          </f7-list>
+
+    h4 Only Inputs
+    pre
+      code.html
+        :code
+          <f7-list no-hairlines-md>
+            <f7-list-item>
+              <f7-input type="text" placeholder="Your name" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="password" placeholder="Your password" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="email" placeholder="Your e-mail" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="url" placeholder="URL" clear-button></f7-input>
+            </f7-list-item>
+          </f7-list>
+
+    h4 Inputs + Additional Info
+    pre
+      code.html
+        :code
+          <f7-list no-hairlines-md>
+            <f7-list-item>
+              <f7-input type="text" placeholder="Your name" info="Full name please" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="password" placeholder="Your password" info="8 characters minimum" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="email" placeholder="Your e-mail" info="Your work e-mail address" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="url" placeholder="URL" info="Your website URL" clear-button></f7-input>
+            </f7-list-item>
+          </f7-list>
+
+    h4 Only Inputs Inset
+    pre
+      code.html
+        :code
+          <f7-list inset>
+            <f7-list-item>
+              <f7-input type="text" placeholder="Your name" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="password" placeholder="Your password" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="email" placeholder="Your e-mail" clear-button></f7-input>
+            </f7-list-item>
+
+            <f7-list-item>
+              <f7-input type="url" placeholder="URL" clear-button></f7-input>
+            </f7-list-item>
+          </f7-list>
