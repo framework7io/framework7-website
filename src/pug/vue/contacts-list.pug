@@ -6,171 +6,191 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Contacts List Vue Component
-      p Contacts List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;f7-list&gt;</a> and <a href="list-item.html">&lt;f7-list-item&gt;</a> components.
-      h2 Examples
-      p Here is the full contacts list page example:
-      pre
-        code
-          :code
-            <template>
-              <f7-page>
-                <f7-navbar back-link="Back" title="Contacts" sliding></f7-navbar>
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Contacts List Vue Component
+    .docs-index
+    p Contacts List is not a separate component, but just a particular case of using <a href="list-view.html">&lt;f7-list&gt;</a> and <a href="list-item.html">&lt;f7-list-item&gt;</a> components.
 
-                <f7-list contacts>
-                  <f7-list-group v-for="(group, key) in contacts">
-                    <f7-list-item :title="key" group-title></f7-list-item>
-                    <f7-list-item v-for="name in group" :title="name"></f7-list-item>
-                  </f7-list-group>
-                </f7-list>
+    h2 Contacts List Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-list&gt; properties
+        tr
+          td contacts-list
+          td boolean
+          td false
+          td Adds required additional styles for Contacts List
 
-              </f7-page>
-            </template>
-            <script>
-              export default {
-                data: function () {
-                  return {
-                    contacts: {
-                      'A': [
-                        'Aaron',
-                        'Abbie',
-                        'Adam',
-                        'Adele',
-                        'Agatha',
-                        'Agnes',
-                        'Albert',
-                        'Alexander'
-                      ],
-                      'B': [
-                        'Bailey',
-                        'Barclay',
-                        'Bartolo',
-                        'Bellamy',
-                        'Belle',
-                        'Benjamin'
-                      ],
-                      'C': [
-                        'Caiden',
-                        'Calvin',
-                        'Candy',
-                        'Carl',
-                        'Cherilyn',
-                        'Chester',
-                        'Chloe'
-                      ],
-                      'V': [
-                        'Vladimir'
-                      ]
-                    }
+    h2 Examples
+    p Here is the full contacts list page example:
+    pre
+      code.html
+        :code
+          <template>
+            <f7-page>
+              <f7-navbar back-link="Back" title="Contacts" sliding></f7-navbar>
+
+              <f7-list contacts-list>
+                <f7-list-group v-for="(group, key) in contacts">
+                  <f7-list-item :title="key" group-title></f7-list-item>
+                  <f7-list-item v-for="name in group" :title="name"></f7-list-item>
+                </f7-list-group>
+              </f7-list>
+
+            </f7-page>
+          </template>
+          <script>
+            export default {
+              data: function () {
+                return {
+                  contacts: {
+                    'A': [
+                      'Aaron',
+                      'Abbie',
+                      'Adam',
+                      'Adele',
+                      'Agatha',
+                      'Agnes',
+                      'Albert',
+                      'Alexander'
+                    ],
+                    'B': [
+                      'Bailey',
+                      'Barclay',
+                      'Bartolo',
+                      'Bellamy',
+                      'Belle',
+                      'Benjamin'
+                    ],
+                    'C': [
+                      'Caiden',
+                      'Calvin',
+                      'Candy',
+                      'Carl',
+                      'Cherilyn',
+                      'Chester',
+                      'Chloe'
+                    ],
+                    'V': [
+                      'Vladimir'
+                    ]
                   }
                 }
               }
-            </script>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="page">
-              <div class="navbar">
-                <div class="navbar-inner">
-                  <div class="left sliding">
-                    <a href="#" class="back link">Back</a>
-                  </div>
-                  <div class="center sliding">Contacts</div>
+            }
+          </script>
+    p Renders to:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <div class="navbar">
+              <div class="navbar-inner sliding">
+                <div class="left">
+                  <a href="#" class="back link">Back</a>
                 </div>
+                <div class="title">Contacts</div>
               </div>
-              <div class="page-content">
-                <div class="list-block contacts-block">
-                  <div class="list-block-group">
-                    <ul>
-                      <li class="list-group-title">
-                        <span>A</span>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Aaron</div>
-                          </div>
+            </div>
+            <div class="page-content">
+              <div class="list contacts-list">
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">
+                      <span>A</span>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Aaron</div>
                         </div>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Abbie</div>
-                          </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Abbie</div>
                         </div>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Adam</div>
-                          </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Adam</div>
                         </div>
-                      </li>
-                      ...
-                    </ul>
-                  </div>
-                  <div class="list-block-group">
-                    <ul>
-                      <li class="list-group-title">
-                        <span>B</span>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Bailey</div>
-                          </div>
+                      </div>
+                    </li>
+                    ...
+                  </ul>
+                </div>
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">
+                      <span>B</span>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Bailey</div>
                         </div>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Barclay</div>
-                          </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Barclay</div>
                         </div>
-                      </li>
-                      ...
-                    </ul>
-                  </div>
-                  <div class="list-block-group">
-                    <ul>
-                      <li class="list-group-title">
-                        <span>C</span>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Caiden</div>
-                          </div>
+                      </div>
+                    </li>
+                    ...
+                  </ul>
+                </div>
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">
+                      <span>C</span>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Caiden</div>
                         </div>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Calvin</div>
-                          </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Calvin</div>
                         </div>
-                      </li>
-                      ...
-                    </ul>
-                  </div>
-                  <div class="list-block-group">
-                    <ul>
-                      <li class="list-group-title">
-                        <span>V</span>
-                      </li>
-                      <li class="">
-                        <div class="item-content">
-                          <div class="item-inner">
-                            <div class="item-title">Vladimir</div>
-                          </div>
+                      </div>
+                    </li>
+                    ...
+                  </ul>
+                </div>
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">
+                      <span>V</span>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Vladimir</div>
                         </div>
-                      </li>
-                    </ul>
-                  </div>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
+          </div>
