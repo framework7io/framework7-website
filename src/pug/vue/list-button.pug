@@ -6,167 +6,114 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 List Button Vue Component
-      p List Button Vue component represents Framework7's <a href="../docs/buttons.html#list-block-buttons">List Block Button</a> element. They are intended to be used inside of the <a href="list-view.html">List</a> component.
-      h2 Examples
-      h4 Minimal Layout
-      pre
-        code
-          :code
-            <f7-list>
-              <f7-list-button>Button 1</f7-list-button>
-              <f7-list-button>Button 2</f7-list-button>
-            </f7-list>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="list-block">
-              <ul>
-                <li>
-                  <a href="#" class="item-link list-button">Button 1</a>
-                </li>
-                <li>
-                  <a href="#" class="item-link list-button">Button 2</a>
-                </li>
-              </ul>
-            </div>
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    h1 List Button Vue Component
+    .docs-index
+    p List Button Vue component represents Framework7's <a href="../docs/list-view.html#list-button">List Button</a> element. They are intended to be used inside of the <a href="list-view.html">List Vue Component</a>.
 
-      h4 Colored Buttons
-      pre
-        code
-          :code
-            <f7-list>
-              <f7-list-button color="red">Red Button</f7-list-button>
-              <f7-list-button color="green">Green Button</f7-list-button>
-            </f7-list>
-      h4 Control Buttons in Inset List
-      pre
-        code
-          :code
-            <f7-list inset>
-              <f7-list-button open-panel="left">Open Panel</f7-list-button>
-              <f7-list-button open-popup="#my-popup">Open Popup</f7-list-button>
-            </f7-list>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td title
-            td string
-            td
-            td Button inner text
-          tr
-            td color
-            td string
-            td
-            td Link color. One of <a href="../docs/color-themes.html">default colors</a>
+    h2 List Button Components
+    p There are following components included:
+    ul
+      li <code><b>f7-list-button</b></code>
 
-          tr
-            th(colspan="4") Control Links
-          tr
-            td tab-link
-            td string/boolean
-            td
-            td Enables tab link and specify CSS selector of the target tab (if specified as a string)
-          tr
-            td open-panel
-            td string/boolean
-            td
-            td Defines panel to open. Can be "left" or "right"
-          tr
-            td close-panel
-            td boolean
-            td
-            td Closes panel on click
-          tr
-            td open-popup
-            td string/boolean
-            td
-            td CSS selector of the popup to open on click
-          tr
-            td close-popup
-            td string/boolean
-            td
-            td CSS selector of the popup to close on click. Or boolean property to close currently opened popup
-          tr
-            td open-popover
-            td string/boolean
-            td
-            td CSS selector of the popover to open on click
-          tr
-            td close-popover
-            td string/boolean
-            td
-            td CSS selector of the popover to close on click. Or boolean property to close currently opened popover
-          tr
-            td open-picker
-            td string/boolean
-            td
-            td CSS selector of the picker to open on click
-          tr
-            td close-picker
-            td string/boolean
-            td
-            td CSS selector of the picker to close on click. Or boolean property to close currently opened picker
-          tr
-            td open-login-screen
-            td string/boolean
-            td
-            td CSS selector of the login screen to open on click
-          tr
-            td close-login-screen
-            td string/boolean
-            td
-            td CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen
-          tr
-            td open-sortable
-            td string/boolean
-            td
-            td CSS selector of the Sortable list to open on click
-          tr
-            td close-sortable
-            td string/boolean
-            td
-            td CSS selector of the Sortable list to close on click. Or boolean property to close currently opened Sortable list
-          tr
-            td toggle-sortable
-            td string/boolean
-            td
-            td CSS selector of the Sortable list to toggle on click. Or boolean property to toggle currently opened/closed Sortable list
-          tr
-            th(colspan="4") Navigation / Router Properties
-          tr
-            td href
-            td string
-            td #
-            td URL of the page to load
-          tr
-            td view
-            td string
-            td
-            td CSS selector of the View to load the page
-          tr
-            td no-fast-click
-            td boolean
-            td
-            td Disables fast click
-          tr
-            td external
-            td boolean
-            td
-            td Enable to bypass Framework7's link click handler
-          tr
-            td back
-            td boolean
-            td
-            td Enables back navigation link
+    h2 List Button Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td title
+          td string
+          td
+          td Button inner text
+        tr
+          td text
+          td string
+          td
+          td Button inner text, same as <code>title</code>
+        tr
+          td tab-link
+          td string/boolean
+          td
+          td Enables tab link and specify CSS selector of the target tab (if specified as a string)
+        tr
+          td tab-link
+          td string/boolean
+          td
+          td Makes this tab link active
+        tr
+          td no-fast-click
+          td boolean
+          td
+          td Disables fast click
+        tr
+          td target
+          td string
+          td
+          td Link target attribute
+        tr
+          th(colspan="4") &lt;f7-list-button&gt; navigation/router related properties
+        +vueLinkRouterProps
+        tr
+          th(colspan="4") &lt;f7-list-button&gt; action related properties
+        +vueLinkActionsProps
+
+    h2 List Button Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-list-button&gt; events
+        tr
+          td click
+          td Event will be triggered after click on a button
+
+    h2 Examples
+    h4 Minimal Layout
+    pre
+      code.html
+        :code
+          <f7-list>
+            <f7-list-button>Button 1</f7-list-button>
+            <f7-list-button>Button 2</f7-list-button>
+          </f7-list>
+
+          <!-- Renders to: -->
+
+          <div class="list">
+            <ul>
+              <li>
+                <a href="#" class="item-link list-button">Button 1</a>
+              </li>
+              <li>
+                <a href="#" class="item-link list-button">Button 2</a>
+              </li>
+            </ul>
+          </div>
+
+    h4 Color Buttons
+    pre
+      code.html
+        :code
+          <f7-list>
+            <f7-list-button color="red">Red Button</f7-list-button>
+            <f7-list-button color="green">Green Button</f7-list-button>
+          </f7-list>
+
+    h4 Control Buttons in Inset List
+    pre
+      code.html
+        :code
+          <f7-list inset>
+            <f7-list-button panel-open="left">Open Panel</f7-list-button>
+            <f7-list-button popup-open="#my-popup">Open Popup</f7-list-button>
+          </f7-list>
