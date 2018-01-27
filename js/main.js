@@ -54,7 +54,7 @@
       {
         query: query,
         attributesToRetrieve: ['docs', 'page', 'section', 'pageUrl', 'sectionUrl', 'text'],
-        hitsPerPage: 5,
+        hitsPerPage: 6,
       },
       function (err, results) {
         if (err) {
