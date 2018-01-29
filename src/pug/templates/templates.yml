@@ -20,6 +20,31 @@ official:
   previewUrl: https://framework7io.github.io/framework7-template-split-view/
   badges:
   - v2
+-
+  title: Vue.js Simple
+  iconUrl: '#{cdn}/i/templates/f7-vue-simple.svg'
+  url: https://github.com/framework7io/framework7-template-vue-simple
+  previewUrl: https://framework7io.github.io/framework7-template-vue-simple/
+  description: Simple Framework7-Vue starter app template in a single HTML file
+  badges:
+  - v2
+  - Vue
+-
+  title: Vue.js Webpack
+  iconUrl: '#{cdn}/i/templates/f7-vue-webpack.svg'
+  url: https://github.com/framework7io/framework7-template-vue-webpack
+  description: Framework7-Vue Webpack starter app template with hot-reload & css extraction
+  badges:
+  - v2
+  - Vue
+-
+  title: Vue.js Browserify
+  iconUrl: '#{cdn}/i/templates/f7-vue-browserify.svg'
+  url: https://github.com/framework7io/framework7-template-vue-browserify
+  description: Framework7-Vue Browserify starter app template with hot-reload & css extraction
+  badges:
+  - v2
+  - Vue
 
 community:
 -
