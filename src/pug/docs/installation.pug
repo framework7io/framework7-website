@@ -53,6 +53,18 @@ block content
           // Init app
           var app = new Framework({/*...*/});
     p Such modular structure provides best tree-shaking results and package size optimization.
+    p In addition to <code>default</code> export it has named export for <code>Template7</code>, <code>Dom7</code>, <code>Request</code>, <code>Device</code>, <code>Utils</code> and <code>Support</code> libraries:
+    pre
+      code.js
+        :code
+          import Framework7, { Device, Request } from 'framework7';
+
+          var app = new Framework({/*...*/});
+
+          if (Device.ios) {
+            Request.get('http://google.com');
+          }
+
     h2 ES Module Bundle
     p If you need to include Framework7 with all components, we can include its another script bundle with all components installed:
     pre
@@ -63,6 +75,8 @@ block content
 
           // Init app
           var app = new Framework({/*...*/});
+    h2 ES-Next
+    p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile theme as well, as well as <code>Template7</code> and <code>Dom7</code> modules that used as dependencies.
     h2 App HTML Layout
     p Now when we have downloaded/installed Framework7, we can start from creating <a href="app-layout.html">App Layout</a>.
 
