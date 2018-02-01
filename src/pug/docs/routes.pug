@@ -378,7 +378,7 @@ block content
           routes = [
             {
               path: '/foo/',
-              async(routeTo, routeFrom, resole, reject) {
+              async(routeTo, routeFrom, resolve, reject) {
                 if (userIsLoggedIn) {
                   resolve({ url: 'secured.html' })
                 } else {
