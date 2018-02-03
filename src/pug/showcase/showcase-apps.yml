@@ -1,5 +1,25 @@
 ##########
 - 
+  iconUrl: "#{cdn}/i/showcase/azan.png"
+  iconRounded: false
+  title: "Azan Times"
+  author:
+    url: http://www.hal-web.com/
+    name: Hal Team
+  links:
+    appstore: 
+    googleplay: https://play.google.com/store/apps/details?id=org.islamicmajlis.salahtimes&hl=en
+    website:  
+  description: |
+       Prayer time, Islamic Azan time,Salah time.
+  features:
+  - Prayer time for all locations, all country
+  - English, Malayalam support, 
+  - Place search
+  screenshots:
+  - "#{cdn}/i/showcase/azan1.png"
+##########
+- 
   iconUrl: "#{cdn}/i/showcase/halicon.png"
   iconRounded: true
   title: "Hal – Construction solution"
