@@ -1,15 +1,13 @@
 ##########
 - 
   iconUrl: "#{cdn}/i/showcase/azan.png"
-  iconRounded: false
+  iconRounded: true
   title: "Azan Times"
   author:
-    url: 
+    url: https://play.google.com/store/apps/dev?id=5380895901111777097
     name: Rashid NK
-  links:
-    appstore: 
-    googleplay: https://play.google.com/store/apps/details?id=org.islamicmajlis.salahtimes&hl=en
-    website:  
+  links:    
+    googleplay: https://play.google.com/store/apps/details?id=org.islamicmajlis.salahtimes&hl=en   
   description: |
        Prayer time, Islamic Azan time,Salah time.
   features:
