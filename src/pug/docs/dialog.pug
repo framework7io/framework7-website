@@ -12,11 +12,11 @@ block content
     +improveDocsLink
     h1 Dialog
     .docs-index
-    p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from user, or to notify or warn user. Dialog as all other modals is part of so called "Temporary Views".
+    p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from a user, or to notify or warn a user. Dialog, as all other modals, is part of so called "Temporary Views".
 
-    p Dialog can be opened only using JavaScript. So let's look at related App methods to work with dialogs
+    p Dialog can only be opened by using JavaScript. So lets look at related App methods to work with dialogs.
     h2 Dialog App Methods
-    p Let's look at related App methods to work with Dialog:
+    p Lets look at related App methods to work with Dialog:
     .method-wrap
       p
         span.method app.dialog.create(<span>parameters</span>)
@@ -70,7 +70,7 @@ block content
       p.method-returns Method returns Dialog's instance
 
     h2 Dialog Parameters
-    p Now let's look at list of available parameters we need to create Dialog:
+    p Now lets look at list of available parameters we need to create Dialog:
     table.params-table
       thead
         tr
@@ -196,7 +196,7 @@ block content
           td
           td Callback function that will be executed after click on this button
     h2 Dialog Methods & Properties
-    p So to create Dialog we have to call:
+    p So to create a Dialog we have to call:
     pre
       code
         :code
@@ -365,10 +365,10 @@ block content
           td <span>dialog</span>
           td app
     h2 Dialog Shortcuts
-    p There are few shortcuts dialog app methods which makes creation of commonly used dialogs much easier.
-    p First let's check global app parameters which help to configure such shortcuts and also be used for localisation purpose.
+    p There are a few shortcut methods which that make creating dialogs much easier.
+    p First lets check the global app parameters which help to configure such shortcuts and also used for localization purposes.
     h3 Dialog Shortcuts Parameters
-    p The following global dialog shortcuts parameters can be passed on <a href="init-app.html">app initialization</a> under <code>dialog</code> property:
+    p The following global dialog shortcut parameters can be passed on <a href="init-app.html">app initialization</a> under <code>dialog</code> property:
     pre
       code.js
         :code
@@ -429,7 +429,7 @@ block content
           td boolean
           td true
           td Will automatically destroy all predefined dialogs (Alert, Confirm, Prompt, etc.) on close
-    p Now let's look at available dialog shortcuts
+    p Now lets look at available dialog shortcuts
     h3 Alert
     p To create Alert dialog we need to use the following app methods:
     .method-wrap
@@ -454,7 +454,7 @@ block content
       p.method-returns Method returns created Dialog's instance
 
     h3 Confirm
-    p Confirm dialog usualy used when it is required to confirm some action. To open Confirm modal we should also call one of the following App methods:
+    p Confirm dialog is usualy used when it is required to confirm some action. To open the Confirm modal we should also call one of the following App methods:
     .method-wrap
       p
         span.method app.dialog.confirm(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
@@ -479,7 +479,7 @@ block content
         | - create Confirm Dialog with default title and open it
       p.method-returns Method returns created Dialog's instance
     h3 Prompt
-    p Prompt dialog used when it is required to get some data/answer from user. To open Prompt dialog we should also call one of the following App methods:
+    p Prompt dialog is used when it is required to get some data/answer from user. To open Prompt dialog we should also call one of the following App methods:
     .method-wrap
       p
         span.method app.dialog.prompt(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
@@ -526,7 +526,7 @@ block content
         | - create Login Dialog with default title and open it
       p.method-returns Method returns created Dialog's instance
     h3 Password
-    p Password dialog is useful in case you need to request only password
+    p Password dialog is useful in case you need to request only the password
     .method-wrap
       p
         span.method app.dialog.password(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
