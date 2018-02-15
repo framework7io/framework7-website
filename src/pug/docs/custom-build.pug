@@ -130,6 +130,33 @@ block content
               $ npm run build:prod -- --config scripts/my-config.js --output path/to/output/folder
       li
         p That is all. Now you should see newly generated js and css files in specified output folder
+      li
+        p If You are in hurry and want to see how its working then do follow step no 1 to step no 4
+        pre
+          code.shell
+            :code
+              $ npm run build:dev
+        p The result is available in build/ folder.
+      li
+        p To build production version of Framework7:
+        pre
+          code.shell
+            :code
+              $ npm run build:prod
+        p Production version will be available in dist/ folder.
+      li Run Kitchen Sink with development environment
+        pre
+          code.shell
+            :code
+              $ npm run dev
+      li Run Kitchen Sink with Production environment
+        pre
+          code.shell
+            :code
+              $ npm run prod
+      li YOUR FIRST APPLICATION IS LIVE 
+        p Visit http://localhost:3000/kitchen-sink/ From Youre Browser
+                
     h2 ES Modules
     p If you use bundler like Webpack or Rollup you can use only required Framework7 JS components without that build process and by importing only required components:
     pre
