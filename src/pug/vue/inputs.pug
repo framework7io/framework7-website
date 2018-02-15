@@ -241,6 +241,27 @@ block content
     ul
       li <code><b>default</b></code> - in case of <code>type="select"</code> or <code>type="textarea"</code> - element will be placed inside of <code>select</code> or <code>textarea</code> tags. Otherwise, it will be placed instead of input element
       li <code><b>info</b></code> - element will be inserted in <code>&lt;div class="input-info"&gt;</code> element
+    h2 Input v-model
+    p <code>v-model</code> <b>is not supported</b> on <code>f7-input</code> vue component. Instead, just use the combination of <code>value</code> property and <code>@input</code> event:
+    pre
+      code.html
+        :code
+          <template>
+            ...
+            <f7-list-item>
+              <f7-label>Name</f7-label>
+              <f7-input type="text" :value="name" @input="name = $event.target.value" placeholder="Your name" clear-button></f7-input>
+            </f7-list-item>
+            ...
+          </template>
+          <script>
+            export default {
+              data() {
+                name: '',
+              },
+              ...
+            };
+          </script>
     h2 Examples
     h4 Full Layout / Inline Labels
     pre
