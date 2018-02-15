@@ -91,7 +91,7 @@ block content
             ],
           })
     h2 Route Properties
-    p Ok, now will see what each route property means:
+    p Ok, now we will see what each route property means:
     table.params-table
       thead
         tr
@@ -116,7 +116,7 @@ block content
           td array
           td Array with nested routes
         tr
-          th(colspan="4") Content Related Propertues<br><small>The following route properties define how (from where/what) content should be loaded</small>
+          th(colspan="4") Content Related Properties<br><small>The following route properties define how (from where/what) content should be loaded</small>
         tr
           td el
           td HTMLElement
@@ -213,7 +213,7 @@ block content
             br
             | function(route, resolve, reject)
           td Route redirect. We need to specify here redirect <b>url</b> (not path)
-    p Here is an example for most of possible options:
+    p Here is an example for most of the possible options:
     pre
       code.js
         :code
@@ -314,7 +314,7 @@ block content
           },
 
     h2 Route Options
-    p Let's look at additional route options that can be passed in <code>options</code> property:
+    p Lets look at additional route options that can be passed in <code>options</code> property:
     table.params-table
       thead
         tr
@@ -467,7 +467,7 @@ block content
               url: './pages/monitors.html',
             },
           ];
-    p So let's say we are on a <code>/catalog/</code> page and have the following links:
+    p So lets say we are on a <code>/catalog/</code> page and have the following links:
     ol
       li
         p <code>&lt;a href="computers/"&gt;Computers</a></code> - will work as expected. Link will be merged with the current route (<code>/catalog/</code> + <code>computers/</code>) and we will have <code>/catalog/computers/</code> which we have in our routes.
@@ -486,7 +486,7 @@ block content
       li Second, when navigating to such route you can load a page with required tab opened.
       li Third, with enabled Push State, the same tab will be opened when you navigate back and forward in history.
       li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
-    p First of all we need to specify tabs routes in app routes. Let's assume we have a page with routable tabs on /tabs/ route:
+    p First of all we need to specify tabs routes in app routes. Lets assume we have a page with routable tabs on /tabs/ route:
     pre
       code.js
         :code
