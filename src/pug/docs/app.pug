@@ -26,7 +26,7 @@ block content
           });
     p This constructor returns main app Framework7 instance.
     h2 App Parameters
-    p Let's look at the list of available parameters:
+    p Lets look at the list of available parameters:
     table.params-table
       thead
         tr
@@ -235,7 +235,8 @@ block content
         tr.subparam-close-row
           td(colspan="4") }
     p These are default app parameters for app core module.
-    p Most of components that has JavaScript API may extend this list of parameters with the property named as component. For example <a href="#">Panel</a> component extends app parameters with <code>panel</code> property that accepts Panel specific parameters. For example:
+    p Most of components that has JavaScript API may extend this list of parameters with the property named as component. For example <a href="#">Panel</a> component extends app parameters with <code>panel</code> property that accepts Panel specific parameters.
+    p Example:
     pre
       code
         :code
@@ -349,7 +350,8 @@ block content
         tr
           td app.init()
           td Initialize app. In case you disabled auto initialization with <code>init: false</code> parameter
-    p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with <code>panel</code> property that accepts Panel specific properties and methods. For example:
+    p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with <code>panel</code> property that accepts Panel specific properties and methods.
+    p Example:
     pre
       code
         :code
@@ -407,7 +409,8 @@ block content
           td touchend:passive
           td <span>event</span>
           td Event will be fired on touch end (mouseup) event added as passive listener (impossible to prevent default)
-    p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance. For example:
+    p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance.
+    p Example:
     pre
       code
         :code
