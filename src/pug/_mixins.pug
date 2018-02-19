@@ -52,9 +52,9 @@ mixin vueLinkIconProps
 mixin vueLinkRouterProps
   tr
     td href
-    td string
+    td string<br>boolean
     td #
-    td URL of the page to load
+    td URL of the page to load. In case of boolean <code>href="false"</code> it won't add <code>href</code> tag
   tr
     td view
     td string

@@ -62,6 +62,29 @@ block content
           td boolean
           td
           td Adds additional slide inner wrapping required for zoom-in functionality (should be also enabled via params on Swiper initialization)
+    h2 Swiper Slots
+    p Swiper Vue component (<code>&lt;f7-swiper&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>before-wrapper</b></code> - element will be inserted right before <code>&lt;div class="swiper-wrapper"&gt;</code> element
+      li <code><b>after-wrapper</b></code> - element will be inserted right after <code>&lt;div class="swiper-wrapper"&gt;</code> element
+    pre
+      code.html
+        :code
+          <f7-swiper>
+            <div slot="before-wrapper">Before Wrapper</div>
+            <div slot="after-wrapper">After Wrapper</div>
+            <f7-swiper-slide>Default Slot</f7-swiper-slide>
+          </f7-navbar>
+
+          <!-- Renders to: -->
+
+          <div class="swiper-container">
+            <div>Before Wrapper</div>
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">Default Slot</div>
+            </div>
+            <div>After Wrapper</div>
+          </div>
     h2 Access To Swiper Instance
     p If you use automatic initalization to init Swiper (with <code>init:true</code> prop) and need to use Swiper API you can access its initialized instance by accessing <code><b>.swiper</b></code> component's property.
     h2 Examples

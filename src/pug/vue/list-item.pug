@@ -260,7 +260,9 @@ block content
       li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-inner"&gt;</code> element
       li <code><b>default</b></code> / <code><b>inner</b></code> / <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-inner"&gt;</code> element
       li <code><b>media</b></code> - element will be inserted inside of <code>&lt;div class="item-media"&gt;</code> element
+      li <code><b>before-title</b></code> - element will be inserted before <code>&lt;div class="item-title"&gt;</code> element
       li <code><b>title</b></code> - element will be inserted inside of <code>&lt;div class="item-title"&gt;</code> element
+      li <code><b>after-title</b></code> - element will be inserted after <code>&lt;div class="item-title"&gt;</code> element
       li <code><b>subtitle</b></code> - element will be inserted inside of <code>&lt;div class="item-subtitle"&gt;</code> element
       li <code><b>text</b></code> - element will be inserted inside of <code>&lt;div class="item-text"&gt;</code> element
       li <code><b>header</b></code> - element will be inserted inside of <code>&lt;div class="item-header"&gt;</code> element
@@ -289,10 +291,12 @@ block content
                 <span slot="after">After End</span>
                 <div slot="inner-start">Inner Start</div>
                 <div slot="inner">Inner End</div>
+                <div slot="before-title">Before Title</div>
+                <div slot="after-title">After Title</div>
             </f7-list-item>
           </f7-list>
-          <!-- Renders to: -->
 
+          <!-- Renders to: -->
 
           <div class="list media-list">
             <ul>
@@ -307,7 +311,9 @@ block content
                     <div class="item-inner">
                       <div>Inner Start</div>
                       <div class="item-title-row">
+                        <div>Before Title</div>
                         <div class="item-title">Item Title</div>
+                        <div>After Title</div>
                         <div class="item-after">
                           <span>After Start</span>
                           <span>Read more</span>
