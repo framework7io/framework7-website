@@ -482,6 +482,7 @@ block content
                   li <span class="parameter">reloadCurrent</span> (<span class="parameter-type">boolean</span>) - replace the current page with the new one from route
                   li <span class="parameter">reloadPrevious</span> (<span class="parameter-type">boolean</span>) - replace the previous page in history with the new one from route
                   li <span class="parameter">reloadAll</span> (<span class="parameter-type">boolean</span>) - load new page and remove all previous pages from history and DOM
+                  li <span class="parameter">clearPreviousHistory</span> (<span class="parameter-type">boolean</span>) - previous pages history will be cleared after reloading/navigate to the specified route
                   li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
                   li <span class="parameter">history</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in router history
                   li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
@@ -512,6 +513,9 @@ block content
                     reloadCurrent: true,
                     ignoreCache: true,
                   });
+        tr
+          td router.clearPreviousHistory()
+          td Clear router previous pages history and remove all previous pages from DOM
         tr
           td router.on(<span>event</span>, <span>handler</span>)
           td Add event handler
