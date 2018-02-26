@@ -26,7 +26,7 @@
   previewUrl: http://www.timo-ernst.net/misc/upscrollerdemo/
   description: Plugin shows a small blue button at the top of the screen once the user has started scrolling down a bit
   badges:
-  - v1
+  - v2
 
 -
   title: Welcome Screen / Intro Tutorial
@@ -41,7 +41,7 @@
   previewUrl: http://www.timo-ernst.net/misc/f7-plugin-welcomescreen/
   description: Plugin will display a fullscreen swipeable modal window to guide the user through a welcome screen / tutorial
   badges:
-  - v1
+  - v2
 
 -
   title: Toast for Framework7
