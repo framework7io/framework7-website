@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300px" height="300px" viewBox="0 0 300 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>3D Panels</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="3D-Panels">
+            <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="300" height="300"></rect>
+            <polygon id="Rectangle-4" fill="#EE350F" points="160 50 300 0 300 300 160 250"></polygon>
+            <g id="Lines-Copy" transform="translate(0.000000, 38.000000)" fill="#DBDBDB">
+                <rect id="Rectangle-2" x="0" y="0" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy" x="0" y="44" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy-2" x="0" y="88" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy-4" x="0" y="132" width="90" height="4"></rect>
+            </g>
+            <g id="Lines-Copy-2" transform="translate(0.000000, 170.000000)" fill="#DBDBDB">
+                <rect id="Rectangle-2" x="0" y="0" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy" x="0" y="44" width="90" height="4"></rect>
+                <rect id="Rectangle-2-Copy-2" x="0" y="88" width="90" height="4"></rect>
+            </g>
+            <rect id="Rectangle-2" fill="#DBDBDB" transform="translate(92.000000, 150.000000) rotate(90.000000) translate(-92.000000, -150.000000) " x="-58" y="148" width="300" height="4"></rect>
+        </g>
+    </g>
+</svg>

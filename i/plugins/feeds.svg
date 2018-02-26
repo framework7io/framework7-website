@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300px" height="300px" viewBox="0 0 300 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Feeds</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Feeds">
+            <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="300" height="300"></rect>
+            <g id="Lines-Copy" transform="translate(50.000000, 126.000000)" fill="#DBDBDB">
+                <rect id="Rectangle-2-Copy-2" x="0" y="0" width="250" height="4"></rect>
+                <rect id="Rectangle-2-Copy-4" x="0" y="44" width="250" height="4"></rect>
+            </g>
+            <g id="Lines-Copy-2" transform="translate(50.000000, 170.000000)" fill="#DBDBDB">
+                <rect id="Rectangle-2" x="0" y="0" width="250" height="4"></rect>
+                <rect id="Rectangle-2-Copy" x="0" y="44" width="250" height="4"></rect>
+                <rect id="Rectangle-2-Copy-2" x="0" y="88" width="250" height="4"></rect>
+            </g>
+            <g id="social_rss_fill" transform="translate(127.000000, 33.000000)">
+                <circle id="Oval-68" fill="#EE350F" fill-rule="nonzero" cx="8" cy="38" r="8"></circle>
+                <path d="M46,46 C46,20.5949015 25.4050985,0 0,0" id="Oval-68" stroke="#EE350F" stroke-width="8"></path>
+                <path d="M31,46 C31,28.8791728 17.1208272,15 0,15" id="Oval-68" stroke="#EE350F" stroke-width="8"></path>
+            </g>
+        </g>
+    </g>
+</svg>

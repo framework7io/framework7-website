@@ -1,17 +1,29 @@
 -
-  title: Tour Guide
-  icon:
-    text: Tour Guide
-    bgColor: '#fff'
-    textColor: '#000'
-  author:
-    url: http://www.cesarteixeira.pt
-    name: César Teixeira
-  url: https://github.com/razekteixeira/Framework7-Plugin-Tour-Guide
-  previewUrl: http://razekcloudserver.no-ip.org/Framework7TourGuide/example/
-  description: Display a tour guide through your application
+  title: Keypad
+  url: https://github.com/framework7io/framework7-plugin-keypad
+  previewUrl: https://framework7io.github.io/framework7-plugin-keypad/
+  iconUrl: '#{cdn}/i/plugins/keypad.svg'
+  description: Keypad plugin extends Framework7 with additional custom keyboards
   badges:
-  - v1
+  - v2
+
+-
+  title: Feeds
+  url: https://github.com/framework7io/framework7-plugin-feeds
+  previewUrl: https://framework7io.github.io/framework7-plugin-feeds/
+  iconUrl: '#{cdn}/i/plugins/feeds.svg'
+  description: Brings easy RSS feeds integration into Framework7 app
+  badges:
+  - v2
+
+-
+  title: 3D Panels
+  url: https://github.com/framework7io/framework7-plugin-3d-panels
+  previewUrl: https://framework7io.github.io/framework7-plugin-3d-panels/
+  iconUrl: '#{cdn}/i/plugins/3d-panels.svg'
+  description: 3D Panels plugin converts "reveal"-effect panels to great looking 3D panels
+  badges:
+  - v2
 
 -
   title: Up scroller
@@ -44,6 +56,21 @@
   - v2
 
 -
+  title: Tour Guide
+  icon:
+    text: Tour Guide
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://www.cesarteixeira.pt
+    name: César Teixeira
+  url: https://github.com/razekteixeira/Framework7-Plugin-Tour-Guide
+  previewUrl: http://razekcloudserver.no-ip.org/Framework7TourGuide/example/
+  description: Display a tour guide through your application
+  badges:
+  - v1
+
+-
   title: Toast for Framework7
   icon:
     text: Toast
@@ -73,19 +100,6 @@
   badges:
   - v1
 
--
-  title: Keypad
-  icon:
-    text: Keypad
-    bgColor: '#fff'
-    textColor: '#000'
-  author:
-    url: http://www.idangero.us
-    name: iDangero.us
-  url: https://github.com/nolimits4web/Framework7-Keypad
-  description: Keypad plugin extends Framework7 with additional custom keyboards
-  badges:
-  - v1
 
 -
   title: Indexed List
@@ -99,33 +113,5 @@
   url: https://github.com/boynet/Framework7-Indexed-List-plugin
   previewUrl: http://boynet.github.io/boynet/
   description: This plugin is for indexed scroll list like in iOS (and Android), currently works only with Contacts List
-  badges:
-  - v1
-
--
-  title: Feeds
-  icon:
-    text: Feeds
-    bgColor: '#fff'
-    textColor: '#000'
-  author:
-    url: http://www.idangero.us
-    name: iDangero.us
-  url: https://github.com/nolimits4web/Framework7-Feeds
-  description: Brings easy RSS feeds integration into Framework7 app
-  badges:
-  - v1
-
--
-  title: 3D Panels
-  icon:
-    text: 3D Panels
-    bgColor: '#fff'
-    textColor: '#000'
-  author:
-    url: http://www.idangero.us
-    name: iDangero.us
-  url: https://github.com/nolimits4web/Framework7-3D-Panels
-  description: 3D Panels plugin converts "reveal"-effect panels to great looking 3D panels
   badges:
   - v1
