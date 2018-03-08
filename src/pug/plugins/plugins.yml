@@ -27,30 +27,24 @@
 
 -
   title: Up scroller
-  icon:
-    text: Up scroller
-    bgColor: '#fff'
-    textColor: '#000'
   author:
     url: http://www.timo-ernst.net/
     name: Timo Ernst
   url: https://github.com/valnub/Framework7-Upscroller-Plugin
   previewUrl: http://www.timo-ernst.net/misc/upscrollerdemo/
+  iconUrl: '/i/plugins/upscroller.png'
   description: Plugin shows a small blue button at the top of the screen once the user has started scrolling down a bit
   badges:
   - v2
 
 -
   title: Welcome Screen / Intro Tutorial
-  icon:
-    text: Welcome Screen
-    bgColor: '#fff'
-    textColor: '#000'
   author:
     url: http://www.timo-ernst.net/
     name: Timo Ernst
   url: https://github.com/valnub/Framework7-Plugin-Welcomescreen
   previewUrl: http://www.timo-ernst.net/misc/f7-plugin-welcomescreen/
+  iconUrl: '/i/plugins/welcomescreen.png'
   description: Plugin will display a fullscreen swipeable modal window to guide the user through a welcome screen / tutorial
   badges:
   - v2
@@ -72,15 +66,12 @@
 
 -
   title: Toast for Framework7
-  icon:
-    text: Toast
-    bgColor: '#fff'
-    textColor: '#000'
   author:
     url: http://www.timo-ernst.net/
     name: Timo Ernst
   url: https://github.com/valnub/Toast-for-Framework7
   previewUrl: http://www.timo-ernst.net/misc/toastdemo/
+  iconUrl: '/i/plugins/toast.png'
   description: Plugin to show little black iOS-like toasts
   badges:
   - v1
