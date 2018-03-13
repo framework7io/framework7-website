@@ -155,9 +155,9 @@ block content
           th(colspan="4") Searchbar
         tr
           td searchByItem
-          td function(query, index, item)
+          td function(query, item, index)
           td
-          td Search function that will be used by <a href="searchbar.html">Searchbar</a>, it receives search query, item index and item itself. If item matches to search query you need to return <code>true</code>, otherwise this function should return <code>false</code>
+          td Search function that will be used by <a href="searchbar.html">Searchbar</a>, it receives search query, item itself and item index. If item matches to search query you need to return <code>true</code>, otherwise this function should return <code>false</code>
         tr
           td searchAll
           td function(query, items)
