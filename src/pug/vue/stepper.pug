@@ -1,0 +1,200 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Stepper Vue Component | Framework7 Vue Documentation';
+
+block content
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Stepper Vue Component
+    .docs-index
+    p Stepper Vue component represents <a href="../docs/stepper.html">Stepper</a> component.
+    h2 Stepper Components
+    p There are following components included:
+    ul
+      li <code><b>f7-stepper</b></code>
+    h2 Stepper Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-stepper&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Stepper
+        tr
+          td value
+          td number
+          td 0
+          td Stepper value
+        tr
+          td min
+          td number
+          td 0
+          td Minimum value
+        tr
+          td max
+          td number
+          td 100
+          td Maximum value
+        tr
+          td step
+          td number
+          td 1
+          td Maximum value
+        tr
+          td input
+          td boolean
+          td true
+          td Defines should it render <code>&lt;input&gt;</code> element or not
+        tr
+          td inputReadonly
+          td boolean
+          td true
+          td Makes inner input element <code>readonly</code>
+        tr
+          td buttonsOnly
+          td boolean
+          td false
+          td Disables inner value container between stepper buttons
+        tr
+          td formatValue
+          td function(value)
+          td
+          td Custom function to format value for value element between buttons. It must return new formatted value
+        tr
+          td disabled
+          td boolean
+          td false
+          td Defines whether the stepper is disabled or not
+        tr
+          td round
+          td boolean
+          td false
+          td Makes stepper round
+        tr
+          td round-ios
+          td boolean
+          td false
+          td Makes stepper round for iOS theme only
+        tr
+          td round-md
+          td boolean
+          td false
+          td Makes stepper round for MD theme only
+        tr
+          td big
+          td boolean
+          td false
+          td Makes big stepper
+        tr
+          td big-ios
+          td boolean
+          td false
+          td Makes big stepper for iOS theme only
+        tr
+          td big-md
+          td boolean
+          td false
+          td Makes big stepper for MD theme only
+        tr
+          td small
+          td boolean
+          td false
+          td Makes small stepper
+        tr
+          td small-ios
+          td boolean
+          td false
+          td Makes small stepper for iOS theme only
+        tr
+          td small-md
+          td boolean
+          td false
+          td Makes small stepper for MD theme only
+        tr
+          td fill
+          td boolean
+          td false
+          td Makes stepper filled color
+        tr
+          td fill-ios
+          td boolean
+          td false
+          td Makes stepper filled color for iOS theme only
+        tr
+          td fill-md
+          td boolean
+          td false
+          td Makes stepper filled color for MD theme only
+        tr
+          td raised
+          td boolean
+          td false
+          td Makes stepper raised. Affects MD theme only
+    h2 Stepper Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-stepper&gt; events
+        tr
+          td stepper:change
+          td Event will be triggered when Stepper value has been changed
+        tr
+          td stepper:minusclick
+          td Event will be triggered on "minus" button click
+        tr
+          td stepper:plusclick
+          td Event will be triggered on "plus" button click
+        tr
+          td input
+          td Event will be triggered on input's <code>input</code> event
+    h2 Examples
+    pre
+      code.html
+        :code
+          <!-- Default -->
+          <f7-stepper></f7-stepper>
+
+          <!-- Small and round -->
+          <f7-stepper small round></f7-stepper>
+
+          <!-- Min, max, step -->
+          <f7-stepper
+            :min="0"
+            :max="1000"
+            :step="100"
+            :value="500"
+          ></f7-stepper>
+
+          <!-- With buttons only -->
+          <f7-stepper
+            :min="0"
+            :max="1000"
+            :step="100"
+            :value="500"
+            :buttons-only="true"
+          ></f7-stepper>
+
+          <!-- Event -->
+          <f7-stepper
+            :min="10"
+            :max="20"
+            :step="0.5"
+            :value="15"
+            @stepper:change="(value) => { someVar = value }"
+          ></f7-stepper>

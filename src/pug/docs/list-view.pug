@@ -172,6 +172,7 @@ block content
     .important-note
       p
         strong Note that <code>item-inner</code> has additional right padding and chevron icon when it is in <code>item-link</code>
+      p To remove this chevron icon and extra padding, you can add <code>no-chevron</code> class to link item or to containing list
     h2 List Button
     p List button is a simplified list link item, usefule in case you need to trigger simple self-explaining actions:
     pre
@@ -314,6 +315,8 @@ block content
             p <code>item-subtitle</code> - additional single-line title. <strong>Optional</strong> element.
           li
             p <code>item-text</code> - additional two-lines container for detailed description. <strong>Optional</strong> element.
+    .important-note
+      p When you use Link Item (item-link) in media list it will render chevron icon (<code>&gt;</code>) at the level of <code>item-title</code>. If you want to move this chevron to the center of item, then you need to add <code>chevron-center</code> class to this item or to the containing list
     h2 Custom Table-like Elements
     p In you case you need some custom list item layout with table-like structure you may use additional list elements <code>item-row</code> and <code>item-cell</code>:
     pre
@@ -896,6 +899,38 @@ block content
                       <div class="item-title-row">
                         <div class="item-title">John Doe (via Twitter)</div>
                         <div class="item-after">15:32</div>
+                      </div>
+                      <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+      h4 With centered chevron icon
+      pre
+        code.html
+          :code
+            <div class="list media-list chevron-center">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Facebook</div>
+                        <div class="item-after">17:14</div>
+                      </div>
+                      <div class="item-subtitle">New messages from John Doe</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">John Doe (via Twitter)</div>
+                        <div class="item-after">17:11</div>
                       </div>
                       <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
                       <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
