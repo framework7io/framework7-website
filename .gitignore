@@ -10,6 +10,7 @@ react/*.html
 plugins/index.html
 templates/index.html
 showcase/index.html
+sponsors/index.html
 icons/index.html
 tutorials/*.html
 /index.html

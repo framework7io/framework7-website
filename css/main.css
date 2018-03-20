@@ -3208,11 +3208,11 @@ footer .links-block li:last-child {
 footer .links-block-title {
   font-size: 16px;
 }
-footer .sponsors {
+footer .footer-sponsors {
   text-align: right;
   margin-left: auto;
 }
-footer .sponsors-title {
+footer .footer-sponsors-title {
   font-size: 16px;
   margin-bottom: 5px;
   text-align: right;
@@ -3236,6 +3236,7 @@ footer #bsap_1306028 a {
   overflow: hidden;
   float: none;
   margin: 5px;
+  vertical-align: top;
 }
 footer #bsap_1306028 a img {
   border: none;
