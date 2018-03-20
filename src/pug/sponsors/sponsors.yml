@@ -1,0 +1,9 @@
+diamond:
+platinum:
+gold:
+silver:
+-
+  title: Tommy
+  link: http://mytommy.com
+  imageUrl: "#{cdn}/i/sponsors/tommy.png"
+topSupporter:
