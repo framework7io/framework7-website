@@ -53,6 +53,21 @@ block content
           td 1
           td Maximum value
         tr
+          td wraps
+          td boolean
+          td false
+          td When enabled, incrementing beyond maximum value sets value to minimum value; likewise, decrementing below minimum value sets value to maximum value
+        tr
+          td autorepeat
+          td boolean
+          td false
+          td When enabled it will repeatedly increase/decrease values while you tap and hold plus/minus buttons
+        tr
+          td autorepeatDynamic
+          td boolean
+          td false
+          td When enabled it will increase autorepeat ratio based on how long you hold the button
+        tr
           td input
           td boolean
           td true
@@ -163,6 +178,27 @@ block content
         tr
           td input
           td Event will be triggered on input's <code>input</code> event
+    h2 Stepper Methods
+    table.methods-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-stepper&gt; methods
+        tr
+          td .increment()
+          td Increment stepper value, similar to clicking on its "plus" button
+        tr
+          td .decremenet()
+          td Decrement stepper value, similar to clicking on its "minus" button
+        tr
+          td .setValue(<span>newValue</span>)
+          td Set new stepper value
+        tr
+          td .getValue()
+          td Returns stepper value
     h2 Examples
     pre
       code.html

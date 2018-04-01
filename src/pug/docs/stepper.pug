@@ -188,6 +188,21 @@ block content
           td 0
           td Initial value
         tr
+          td wraps
+          td boolean
+          td false
+          td When enabled, incrementing beyond maximum value sets value to minimum value; likewise, decrementing below minimum value sets value to maximum value
+        tr
+          td autorepeat
+          td boolean
+          td false
+          td When enabled it will repeatedly increase/decrease values while you tap and hold plus/minus buttons
+        tr
+          td autorepeatDynamic
+          td boolean
+          td false
+          td When enabled it will increase autorepeat ratio based on how long you hold the button
+        tr
           td valueEl
           td HTMLElement<br>string
           td
@@ -814,6 +829,53 @@ block content
                   <div class="stepper stepper-fill stepper-round stepper-init" data-value="5" data-min="0" data-max="10" data-step="0.5">
                     <div class="stepper-button-minus"></div>
                     <div class="stepper-value"></div>
+                    <div class="stepper-button-plus"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      h4 Autorepeat (Tap & hold)
+      pre
+        code.html
+          :code
+            <div class="block block-strong text-align-center">
+              <div class="row">
+                <div class="col">
+                  <small>Default</small>
+                  <div class="stepper stepper-fill stepper-init" data-autorepeat="true">
+                    <div class="stepper-button-minus"></div>
+                    <div class="stepper-input-wrap">
+                      <input type="text" value="0" min="0" max="100" step="1" readonly>
+                    </div>
+                    <div class="stepper-button-plus"></div>
+                  </div>
+                </div>
+                <div class="col">
+                  <small>Dynamic</small>
+                  <div class="stepper stepper-fill stepper-init" data-autorepeat="true" data-autorepeat-dynamic="true">
+                    <div class="stepper-button-minus"></div>
+                    <div class="stepper-input-wrap">
+                      <input type="text" value="0" min="0" max="100" step="1" readonly>
+                    </div>
+                    <div class="stepper-button-plus"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+      h4 Wraps
+      p In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value
+      pre
+        code.html
+          :code
+            <div class="block block-strong text-align-center">
+              <div class="row">
+                <div class="col">
+                  <div class="stepper stepper-fill stepper-init" data-wraps="true" data-autorepeat="true" data-autorepeat-dynamic="true">
+                    <div class="stepper-button-minus"></div>
+                    <div class="stepper-input-wrap">
+                      <input type="text" value="0" min="0" max="10" step="1" readonly>
+                    </div>
                     <div class="stepper-button-plus"></div>
                   </div>
                 </div>
