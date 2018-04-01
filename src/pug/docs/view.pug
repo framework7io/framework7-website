@@ -279,32 +279,58 @@ block content
           td true
           td This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding".
         tr
-          th(colspan="4") Swipe back (iOS theme only)
+          th(colspan="4") Swipe back
         tr
           td iosSwipeBack
           td boolean
           td true
-          td Enable/disable ability to swipe back from left edge of screen to get to the previous page.
+          td Enable/disable ability to swipe back from left edge of screen to get to the previous page. For iOS theme
         tr
           td iosSwipeBackThreshold
           td number
           td 0
-          td Value in px. Swipe back action will start if "touch distance" will be more than this value.
+          td Value in px. Swipe back action will start if "touch distance" will be more than this value. For iOS theme
         tr
           td iosSwipeBackActiveArea
           td number
           td 30
-          td Value in px. Width of invisible left edge of the screen that triggers swipe back action
+          td Value in px. Width of invisible left edge of the screen that triggers swipe back action. For iOS theme
         tr
           td iosSwipeBackAnimateShadow
           td boolean
           td true
-          td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance
+          td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance. For iOS theme
         tr
           td iosSwipeBackAnimateOpacity
           td boolean
           td true
-          td Enable/disable opacity animation during swipe back action. You can disable it to improve performance
+          td Enable/disable opacity animation during swipe back action. You can disable it to improve performance. For iOS theme
+        tr
+          td mdSwipeBack
+          td boolean
+          td false
+          td Enable/disable ability to swipe back from left edge of screen to get to the previous page. For MD theme
+        tr
+          td mdSwipeBackThreshold
+          td number
+          td 0
+          td Value in px. Swipe back action will start if "touch distance" will be more than this value. For MD theme
+        tr
+          td mdSwipeBackActiveArea
+          td number
+          td 30
+          td Value in px. Width of invisible left edge of the screen that triggers swipe back action. For MD theme
+        tr
+          td mdSwipeBackAnimateShadow
+          td boolean
+          td true
+          td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance. For MD theme
+        tr
+          td mdSwipeBackAnimateOpacity
+          td boolean
+          td false
+          td Enable/disable opacity animation during swipe back action. You can disable it to improve performance. For MD theme
+
         tr
           th(colspan="4") Push State
         tr

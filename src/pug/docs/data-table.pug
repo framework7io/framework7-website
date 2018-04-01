@@ -64,6 +64,63 @@ block content
                 li <code>label-cell</code> - main label cell (only one such kind of cell per row, usually first cell)
                 li <code>numeric-cell</code> - cell to display numeric data (right-aligned)
                 li <code>tablet-only</code> - additional class to show this cell/column only on wide tablet devices (iPad)
+      h2(data-device-preview="../docs-demos/data-table-pagination-footer.html") Pagination Footer
+      pre
+        code.html
+          :code
+            <div class="card data-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="label-cell">Desert (100g serving)</th>
+                    <th class="numeric-cell">Calories</th>
+                    <th class="numeric-cell">Fat (g)</th>
+                    <th class="numeric-cell">Carbs</th>
+                    <th class="numeric-cell">Protein (g)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="label-cell">Frozen yogurt</td>
+                    <td class="numeric-cell">159</td>
+                    <td class="numeric-cell">6.0</td>
+                    <td class="numeric-cell">24</td>
+                    <td class="numeric-cell">4.0</td>
+                  </tr>
+                  ...
+                </tbody>
+              </table>
+              <div class="data-table-footer">
+                <div class="data-table-rows-select">
+                  Per page:
+                  <div class="input input-dropdown">
+                    <select>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="all">All</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="data-table-pagination">
+                  <span class="data-table-pagination-label">1-5 of 10</span>
+                  <a href="#" class="link disabled">
+                    <i class="icon icon-prev color-gray"></i>
+                  </a>
+                  <a href="#" class="link">
+                    <i class="icon icon-next color-gray"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+      p Where
+      ul
+        li <code>data-table-footer</code> - data table footer main element
+          ul
+            li <code>data-table-rows-select</code> - container with amount per page select
+            li <code>data-table-pagination</code> - container with information about current page and prev/next navigation buttons
+              ul
+                li <code>data-table-pagination-label</code> - current paging label
       h2(data-device-preview="../docs-demos/data-table-selectable.html") Selectable Rows
       pre
         code.html
@@ -115,6 +172,60 @@ block content
                     <i class="icon-checkbox"></i>
                   </label>
                 </td>
+      h2(data-device-preview="../docs-demos/data-table-head-inputs.html") Inputs In Table Head
+      p Such tables are widely used in admin interfaces for filtering or search data
+      pre
+        code
+          :code
+            <div class="card data-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="input-cell">
+                      <span class="table-head-label">ID</span>
+                      <div class="input" style="width: 50px">
+                        <input type="number" placeholder="Filter">
+                      </div>
+                    </th>
+                    <th class="input-cell">
+                      <span class="table-head-label">Name</span>
+                      <div class="input">
+                        <input type="text" placeholder="Filter">
+                      </div>
+                    </th>
+                    ...
+                    <th class="input-cell">
+                      <span class="table-head-label">Gender</span>
+                      <div class="input input-dropdown">
+                        <select>
+                          <option value="All">All</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                        </select>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>john@doe.com</td>
+                    <td>Male</td>
+                  </tr>
+                  ...
+                </tbody>
+              </table>
+            </div>
+      p Where
+      ul
+        li
+          p <code>input-cell</code> - additional class on table cell required to display input
+        li
+          p <code>&lt;span class="table-head-label"&gt;</code> - input label
+        li
+          p <code>&lt;div class="input"&gt;</code> - input container
+
       h2(data-device-preview="../docs-demos/data-table-title.html") Table Title/Header
       p When data table is used within <a href="./cards.html">Card</a> it is possible to use additional data table title with actions in card header.
       h4 With title and actions

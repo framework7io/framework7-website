@@ -191,6 +191,11 @@ block content
           td
           td Additional button CSS class
         tr
+          td keyCodes
+          td array
+          td []
+          td Array with keyboard keycodes that will be used to trigger button click. For example, key code <code>13</code> means that button click will be triggered on Enter key press
+        tr
           td onClick
           td function(dialog, e)
           td
@@ -429,6 +434,11 @@ block content
           td boolean
           td true
           td Will automatically destroy all predefined dialogs (Alert, Confirm, Prompt, etc.) on close
+        tr
+          td keyboardActions
+          td boolean
+          td true
+          td Enables keyboard shortcuts (Enter and Esc) keys for predefined dialogs (Alert, Confirm, Prompt, Login, Password) "Ok" and "Cancel" buttons
     p Now lets look at available dialog shortcuts
     h3 Alert
     p To create Alert dialog we need to use the following app methods:

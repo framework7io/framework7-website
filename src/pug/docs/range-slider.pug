@@ -141,6 +141,11 @@ block content
           td
           td Initial value. Number in case of single range, and array of values in case of dual range
         tr
+          td draggableBar
+          td boolean
+          td true
+          td When enabled it is also possible to interact with range slider (change value) on range bar click and swipe.
+        tr
           td on
           td object
           td
@@ -215,6 +220,9 @@ block content
         tr
           td range.setValue(<span>value</span>)
           td Set new range slider value
+        tr
+          td range.destroy()
+          td Destroys range slider instance
         tr
           td range.on(<span>event</span>, <span>handler</span>)
           td Add event handler

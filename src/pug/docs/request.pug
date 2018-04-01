@@ -134,11 +134,13 @@ block content
           td function (xhr, parameters)
           td
           td A pre-request callback function that will be called before XHR opened. Can be used to modify XHR object
+            p.important-note If you <code>return false</code> in this callback it will cancel the request
         tr
           td beforeSend
           td function (xhr)
           td
-          td A pre-request callback function that will be called after XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc
+          td A pre-request callback function that will be called after XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc.
+            p.important-note If you <code>return false</code> in this callback it will cancel the request
         tr
           td error
           td function (xhr, status)
