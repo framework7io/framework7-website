@@ -189,7 +189,12 @@ block content
         tr
           td virtual:beforeclear
           td Event will be triggered before current DOM list will be removed and replaced with new document fragment
-
+    h2 List View Slots
+    p List View Vue component (<code>&lt;f7-list&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>before-list</b></code> - element will be inserted in the beginning of list view and right before <code>&lt;ul&gt;</code> main list
+      li <code><b>after-list</b></code> - element will be inserted in the end of list view and right after <code>&lt;ul&gt;</code> main list
+      li <code><b>list</b></code> - element will be inserted inside of <code>&lt;ul&gt;</code> main list element
     h2 Virtual List
     p For Virtual List usage and examples check the <a href="virtual-list.html">Virtual List Vue Component</a> documentation.
 

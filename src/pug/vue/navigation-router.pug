@@ -11,6 +11,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Navigation Router
+    .docs-index
     p Framework7-Vue as Framework7 itself comes with powerful and flexible router. And to make it work we must specify <a href="../docs/routes.html">Routes</a>.
     p The only difference in Framework7-Vue is that in Vue.js we are already composing our application with Vue components, so we need to map our Pages-Vue components to the routes. It can be done by passing Vue component in <code>component</code> property of the route. Here's a basic example:
     pre
@@ -104,6 +105,23 @@ block content
           })
     .important-note
       p Check the full <a href="../docs/routes.html">Routes Documentation</a> to know about all possible routes options, how to use <a href="../docs/routes.html#nested-routes">Nested Routes</a>, <a href="../docs/routes.html#routable-tabs">Routable Tabs</a> and <a href="../docs/routes.html#routable-modals">Routable Modals</a>.
+    h2 Async Lazy Components
+    p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
+    pre
+      code.js
+        :code
+          {
+            path: '/about',
+            async(routeTo, routeFrom, resolve, reject) {
+              // dynamic import component; returns promise
+              const vueComponent = () => import('./pages/about.vue');
+              // resolve promise
+              vueComponent().then((vc) => {
+                // resolve with component
+                resolve({ component: vc.default })
+              });
+            } ,
+          },
     h2 Router API
     p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>$f7router</b> property of component:
     pre

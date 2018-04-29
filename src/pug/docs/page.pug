@@ -184,7 +184,16 @@ block content
         tr
           td page.route
           td <span class="parameter-type">object</span>
-          td Route associated with this page
+          td Route associated with this page, object with current route data that was used to load this page. It has the following properties
+            ul
+              li <code>url</code> - route URL
+              li <code>path</code> - route path
+              li <code>query</code> - object with route query. If the url is <code>/page/?id=5&foo=bar</code> then it will contain the following object <code>{id: '5', foo: 'bar'}</code>
+              li <code>params</code> - route params. If we have matching route with <code>/page/user/:userId/post/:postId/</code> path and url of the page is <code>/page/user/55/post/12/</code> then it will be the following object <code>{userId: '55', postId: '12'}</code>
+              li <code>name</code> - route name
+              li <code>hash</code> - route URL hash
+              li <code>route</code> - object with matching route from available routes
+              li <code>context</code> - context that was passed to the route
         tr
           td page.pageFrom
           td <span class="parameter-type">object</span>
@@ -193,10 +202,6 @@ block content
           td page.context
           td <span class="parameter-type">object</span>
           td Template7 context that was passed for this page when using Template7 pages
-        tr
-          td page.fromPage
-          td <span class="parameter-type">object</span>
-          td Page Data object of the previously active page
     h2 Access To Page Data
     p If you don't use page events/callbacks and need to access to page data, it is possible via the <code>f7Page</code> property on its HTMLElement:
     pre

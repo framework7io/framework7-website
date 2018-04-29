@@ -172,6 +172,7 @@ block content
         li add <code>id</code> attribute to form. It will not work if form doesn't have <code>id</code> attribute
         li make sure that all you inputs have <code>name</code> attributes, otherwise they will be ignored
       p After form storage is enabled with <code>form-store-data</code> class, then form data will be saved to <code>localStorage</code> on every form input change.
+      p To ignore inputs for storage you can add <code>no-store-data</code> or <code>ignore-store-data</code> class to required input elements.
       p Otherwise you can use the following app methods to store/get/remove stored form data:
       h3 Form Storage App Methods
       .method-wrap
@@ -254,6 +255,16 @@ block content
                       <div class="item-title item-label">E-mail</div>
                       <div class="item-input-wrap">
                         <input type="email" name="email" placeholder="E-mail">
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Ignore from storage</div>
+                      <div class="item-input-wrap">
+                        <input class="no-store-data" type="text" name="text" placeholder="This value won't be stored">
                       </div>
                     </div>
                   </div>

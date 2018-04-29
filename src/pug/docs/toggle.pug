@@ -24,6 +24,41 @@ block content
             <!-- Toggle icon -->
             <span class="toggle-icon"></span>
           </label>
+    p Inside of Simple List:
+    pre
+      code.html
+        :code
+          <div class="list simple-list">
+            <ul>
+              ...
+              <li>
+                <span>Text label</span>
+                <label class="toggle">
+                  <input type="checkbox">
+                  <span class="toggle-icon"></span>
+                </label>
+              </li>
+          </div>
+    p Inside of usual List (preferable in <code>item-after</code>):
+    pre
+      code.html
+        :code
+          <div class="list">
+            <ul>
+              ...
+              <li class="item-content">
+                <div class="item-inner">
+                  <div class="item-title">Text label</div>
+                  <div class="item-after">
+                    <label class="toggle">
+                      <input type="checkbox">
+                      <span class="toggle-icon"></span>
+                    </label>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
     h2 Toggle Colors
     p Toggle supports all <a href="color-themes.html">default colors</a>. So to change its color just add color-[color] class to toggle element.
     pre

@@ -254,6 +254,10 @@ block content
           td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
           td Event will be triggered when Range Slider value has been changed
         tr
+          td range:changed
+          td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
+          td Event will be triggered on slider knob release after value change
+        tr
           td range:beforedestroy
           td Range Slider Element<span>&lt;div class="range-slider"&gt;</span>
           td Event will be triggered right before Range Slider instance will be destroyed
@@ -277,7 +281,16 @@ block content
           td <span>range</span>
           td app
         tr
-          td rangeDestroy
+          td changed
+          td <span>range</span>
+          td range
+          td(rowspan="2") Event will be triggered on slider knob release after value change. As an argument event handler receives range instance
+        tr
+          td rangeChanged
+          td <span>range</span>
+          td app
+        tr
+          td beforeDestroy
           td <span>range</span>
           td range
           td(rowspan="2") Event will be triggered right before Range Slider instance will be destroyed. As an argument event handler receives range instance
