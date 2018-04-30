@@ -2279,5 +2279,26 @@
   - "#{cdn}/i/showcase/gunluc2.png"
   - "#{cdn}/i/showcase/gunluc3.png"
 
- 
+  ##########
+-
+  iconUrl: "#{cdn}/i/showcase/ratingsdekhekya.png"
+  iconRounded: true
+  title: "Ratings Dekhe Kya?"
+  author:
+    url: https://www.linkedin.com/in/kapil-prabhudesai-ba088a88/
+    name: Kapil Prabhudessai
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=in.aryawebstudio.ratingsdekhekya
+    website: http://ratingsdekhekya.in/
+  description: |
+    India's best movie ratings comparison app
+  features:
+  - Movie ratings from top websites
+  - Movie trailers, posters, release dates, and stars
+
+  screenshots:
+  - "#{cdn}/i/showcase/ratingsdekhekya1.png"
+  - "#{cdn}/i/showcase/ratingsdekhekya2.png"
+  - "#{cdn}/i/showcase/ratingsdekhekya3.png"
+  - "#{cdn}/i/showcase/ratingsdekhekya4.png"
   
