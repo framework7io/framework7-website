@@ -46,6 +46,44 @@ official:
   - v2
   - Vue
 
+phonegap:
+-
+  title: Blank PhoneGap template
+  iconUrl: https://phonegap.com/uploads/artwork/PhoneGap-Symbol-Black.svg
+  author:
+    url: https://github.com/phonegap
+    name: Adobe PhoneGap Team
+  url: https://github.com/phonegap/phonegap-template-vue-f7-blank
+  description: A Blank PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
+  badges:
+  - v2
+  - PhoneGap
+  - Vue
+-
+  title: Split View / Panel PhoneGap template
+  iconUrl: https://phonegap.com/uploads/artwork/PhoneGap-Symbol-Black.svg
+  author:
+    url: https://github.com/phonegap
+    name: Adobe PhoneGap Team
+  url: https://github.com/phonegap/phonegap-template-vue-f7-split-panel
+  description: A Split View / Panel PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
+  badges:
+  - v2
+  - PhoneGap
+  - Vue
+-
+  title: TabBar PhoneGap template
+  iconUrl: https://phonegap.com/uploads/artwork/PhoneGap-Symbol-Black.svg
+  author:
+    url: https://github.com/phonegap
+    name: Adobe PhoneGap Team
+  url: https://github.com/phonegap/phonegap-template-vue-f7-tabs
+  description: A TabBar PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
+  badges:
+  - v2
+  - PhoneGap
+  - Vue
+
 community:
 -
   title: Framework7 Parceljs starter app
