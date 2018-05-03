@@ -54,8 +54,12 @@ block content
     p Let's look at related app methods to work with Preloader overlay
     .method-wrap
       p
-        span.method app.preloader.show()
+        span.method app.preloader.show(<span>color</span>)
         | - show Preloader overlay
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">color</span>. Preloader color, one of the <a href="color-themes.html">default colors</a>
     .method-wrap
       p
         span.method app.preloader.hide()
