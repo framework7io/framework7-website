@@ -19,7 +19,7 @@ block content
     p Let's look at related App methods to work with Photo Browser:
     .method-wrap
       p
-        span.method app.photoBrowser.create(<span>parameters</span>)
+        span.method app.photoBrowser(<span>parameters</span>)
         | - create Photo Browser instance
       ul.method-parameters
         li
@@ -48,7 +48,7 @@ block content
     pre
       code.js
         :code
-          var photoBrowser = app.photoBrowser.create({
+          var photoBrowser = app.photoBrowser({
             photos: [
               'path/to/photo-1.jpg'
               'path/to/photo-2.jpg'
@@ -223,7 +223,7 @@ block content
             pre
               code
                 :code
-                  var photoBrowser = app.photoBrowser.create({
+                  var photoBrowser = app.photoBrowser({
                     ...
                     on: {
                       opened: function () {
@@ -517,7 +517,7 @@ block content
           |
           |
           | /*=== Default standalone ===*/
-          | var myPhotoBrowserStandalone = app.photoBrowser.create({
+          | var myPhotoBrowserStandalone = app.photoBrowser({
           |     photos : [
           |         'http://lorempixel.com/1024/1024/sports/1/',
           |         'http://lorempixel.com/1024/1024/sports/2/',
@@ -530,7 +530,7 @@ block content
           | });
           |
           | /*=== Popup ===*/
-          | var myPhotoBrowserPopup = app.photoBrowser.create({
+          | var myPhotoBrowserPopup = app.photoBrowser({
           |     photos : [
           |         'http://lorempixel.com/1024/1024/sports/1/',
           |         'http://lorempixel.com/1024/1024/sports/2/',
@@ -543,7 +543,7 @@ block content
           | });
           |
           | /*=== As Page ===*/
-          | var myPhotoBrowserPage = app.photoBrowser.create({
+          | var myPhotoBrowserPage = app.photoBrowser({
           |     photos : [
           |         'http://lorempixel.com/1024/1024/sports/1/',
           |         'http://lorempixel.com/1024/1024/sports/2/',
@@ -557,7 +557,7 @@ block content
           | });
           |
           | /*=== Standalone Dark ===*/
-          | var myPhotoBrowserDark = app.photoBrowser.create({
+          | var myPhotoBrowserDark = app.photoBrowser({
           |     photos : [
           |         'http://lorempixel.com/1024/1024/sports/1/',
           |         'http://lorempixel.com/1024/1024/sports/2/',
@@ -570,7 +570,7 @@ block content
           | });
           |
           | /*=== Popup Dark ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
+          | var myPhotoBrowserPopupDark = app.photoBrowser({
           |     photos : [
           |         'http://lorempixel.com/1024/1024/sports/1/',
           |         'http://lorempixel.com/1024/1024/sports/2/',
@@ -584,7 +584,7 @@ block content
           | });
           |
           | /*=== With Captions ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
+          | var myPhotoBrowserPopupDark = app.photoBrowser({
           |     photos : [
           |         {
           |             url: 'http://lorempixel.com/1024/1024/sports/1/',
@@ -607,7 +607,7 @@ block content
           | });
           |
           | /*=== With Video ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
+          | var myPhotoBrowserPopupDark = app.photoBrowser({
           |     photos : [
           |         {
           |             html: '&lt;iframe src="//www.youtube.com/embed/lmc21V-zBq0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;',
