@@ -1,5 +1,13 @@
 -
   video: true
+  date: May 28th, 2018
+  title: "Deploy Framework7 apps to Android with PhoneGap Cordova | Beginner Tutorial"
+  url: https://www.timo-ernst.net/blog/2018/05/28/deploy-framework7-apps-to-android-with-phonegap-cordova-beginner-tutorial/
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+-
+  video: true
   date: April 11, 2018
   title: "How to use Framework7 V2 Router | Video Tutorial"
   url: https://www.timo-ernst.net/blog/2018/04/11/how-to-use-framework7-v2-router-tutorial/
