@@ -58,6 +58,31 @@ block content
         li
           span.parameter listEl
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Sortable list block element.
+    h2 Sortable App Parameters
+    p It is possible to configure global sortable behavior on app initialisation by passing sortable related paremeters under <code>sortable</code> property.
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td moveElements
+          td boolean
+          td true
+          td When enabled then it will move (reorder) HTML elements according to new sortable order. It is useful to disable it if you use other library for DOM manipulation, like React or Vue
+    p To change these parameters we need to pass them on app init under <code>sortable</code> property, for example:
+    pre
+      code.js
+        :code
+          var app = new Framework7({
+            sortable: {
+              moveElements: false
+            }
+          });
+
     h2 Sortable Events
     p Sortable will fire the following DOM events on sortable list block element and events on app instance:
     h3 DOM Events

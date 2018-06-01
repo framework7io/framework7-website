@@ -12,7 +12,7 @@
   var del = require('del');
   var yaml = require('js-yaml');
   var iconsManifest = require('./icons/manifest-icons.json');
-  var useCDN = false;
+  var useCDN = true;
   var cdnPath = '//cdn.framework7.io';
   // var processVuePugFiles = require('./src/react-doc-generation/vue-pug-file-processing').processVuePugFiles;
   // var processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles;
