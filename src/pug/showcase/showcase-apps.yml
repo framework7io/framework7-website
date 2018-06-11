@@ -1,4 +1,31 @@
-  ##########
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/tabelafipebrasil.png"
+  iconRounded: true
+  title: "Tabela Fipe Brasil"
+  author:
+    url: https://www.tabelafipebrasil.com
+    name: Shark Tech Apps
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.sharktechapps.tabelafipebrasil
+    appstore: https://itunes.apple.com/app/id1374297261
+    website: https://www.tabelafipebrasil.com/
+  description: |
+    Prices of all Cars, Motorbikes and Trucks for sale in Brazil.
+  features:
+  - Price for Cars, Motorbikes and Trucks
+  - Search vehicles
+  - Historical values
+  - Favorites 
+  - Updated values
+
+  screenshots:
+  - "#{cdn}/i/showcase/tabelafipebrasil1.png"
+  - "#{cdn}/i/showcase/tabelafipebrasil2.png"
+  - "#{cdn}/i/showcase/tabelafipebrasil3.png"
+  - "#{cdn}/i/showcase/tabelafipebrasil4.png"
+  - "#{cdn}/i/showcase/tabelafipebrasil5.png"
+##########
 -
   iconUrl: "#{cdn}/i/showcase/ratingsdekhekya.png"
   iconRounded: true
