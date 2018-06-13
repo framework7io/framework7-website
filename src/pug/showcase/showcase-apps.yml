@@ -1,3 +1,43 @@
+#########
+-
+  iconUrl: "#{cdn}/i/showcase/strongsdict-icon-1024.png"
+  iconRounded: false
+  title: "StrongsDict – Strongsdict App Strong's Greek and Hebrew Dictionary"
+  author:
+    url: https://www.flagsoft.com
+    name: Michael Mustun
+  links:
+    appstore: https://itunes.apple.com/ch/developer/michael-mustun/id572103590?mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.flagsoft.Strongsdict
+    website: https://www.flagsoft.com/cmswp/apps/strongs-dict/
+  description: |
+Strongsdict is the full Strong's Dictionary Greek and Hebrew at your fingertips. Greek and Hebrew Strong's dictionary, full featured with a full test search engine. Contains 14197 entries which is the complete Greek and Hebrews Strong's dictionary found in the original book. This is the Strong's Dictionary, Greek as it appears in the printed version of 1870 by Strong. Main features - Infinity scroll, you can scroll through the whole book - Table of contents for Greek and Hebrew - Search without diacritics. Diacritics are accents and breathing marks, etc. Example search for "אדם" or "אדמ" or "אָדָם" which is A-D-M, Adam; or "משה" (M-S-He) Moshe, Moses - Copy and paste words or search keywords in Greek or Hebrew or English from other sources like internet pages or from other Apps - You can search for words, numbers and keywords in English, Greek and Hebrew - Sharing with Facebook, Twitter, WhatsApp, Email, SMS or Copy to Clipboard Examples - "Aaron", "David", "Abraham", "water" or any subject or name or keyword - "G2222" - search for Greek Strong's number 2222 - "H2222" - search for Hebrew Strong's number 2222 Just add a dot . at the end to get more precise search results - "Aaron.", "David.", "Abraham." - search with a point at the end to get more precise results - "G2222.", "H2222." - search for one entry only with a dot at the end Search without or with diacritics - "אדם" or "אדמ" or "אָדָם" - searches for A-D-M (Adam) - "משה" - search for M-S-He (Moshe, Moses) Install Greek and Hebrew keyboards - Go to Settings General Keyboard Keyboards Add New Keyboard... and choose Greek and Hebrew Support - Please contact us with the integrated direct contact (DDC) within the App if you have new ideas or for support. We are listening.
+  features:
+  - Infinity scroll, you can scroll through the whole book
+  - Table of contents for Greek and Hebrew - Search without diacritics. Diacritics are accents and breathing marks, etc. Example search for "אדם" or "אדמ" or "אָדָם" which is A-D-M, Adam; or "משה" (M-S-He) Moshe, Moses
+  - Copy and paste words or search keywords in Greek or Hebrew or English from other sources like internet pages or from other Apps
+  - You can search for words, numbers and keywords in English, Greek and Hebrew
+  - Sharing with Facebook, Twitter, WhatsApp, Email, SMS or Copy to Clipboard Examples
+  - "Aaron", "David", "Abraham", "water" or any subject or name or keyword
+  - "G2222" - search for Greek Strong's number 2222
+  - "H2222" - search for Hebrew Strong's number 2222
+  - "." Just add a dot . at the end to get more precise search results
+  - "Aaron.", "David.", "Abraham."
+  - "G2222.", "H2222." search with a point at the end to get more precise results
+  - search for one entry only with a dot at the end Search without or with diacritics
+  - "אדם" or "אדמ" or "אָדָם" - searches for A-D-M (Adam)
+  - "משה" - search for M-S-He (Moshe, Moses)
+  screenshots:
+  - "#{cdn}/i/showcase/strongsdict-ios-01.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-02.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-03.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-04.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-05.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-06.png"
+  - "#{cdn}/i/showcase/strongsdict-android-01.png"
+  - "#{cdn}/i/showcase/strongsdict-android-02.png"
+  - "#{cdn}/i/showcase/strongsdict-android-03.png"
+  - "#{cdn}/i/showcase/strongsdict-android-04.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/eztrip_io.png"
