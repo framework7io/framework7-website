@@ -1,5 +1,33 @@
 ##########
 -
+iconUrl: "#{cdn}/i/showcase/eztrip_io.png"
+iconRounded: true
+title: "EzTrip.io - Trip management"
+author:
+  url: https://www.eztrip.io/
+  name: Carlos Duarte
+links:
+  googleplay: https://play.google.com/store/apps/details?id=io.eztrip.travelmgt
+  appstore: https://itunes.apple.com/us/app/eztrip-io/id1338065929?ls=1&mt=8
+  website: https://www.eztrip.io/
+description:
+  EzTrip.io is a travel and expense management system that will assist you to better control all the steps of your business or personal travel.
+features:
+- Organize and keep track of receipts
+- Record all your rewards programs
+- Import itineraries from Carlson Wagonlit Travel
+- Manage multiple trips
+- Report of your travels
+
+screenshots:
+- "#{cdn}/i/showcase/eztrip_io1.png"
+- "#{cdn}/i/showcase/eztrip_io2.png"
+- "#{cdn}/i/showcase/eztrip_io3.png"
+- "#{cdn}/i/showcase/eztrip_io4.png"
+- "#{cdn}/i/showcase/eztrip_io5.png"
+- "#{cdn}/i/showcase/eztrip_io6.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/tabelafipebrasil.png"
   iconRounded: true
   title: "Tabela Fipe Brasil"
