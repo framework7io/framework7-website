@@ -1,5 +1,64 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/eztrip_io.png"
+  iconRounded: true
+  title: "EzTrip.io - Trip management"
+  author:
+    url: https://www.eztrip.io/
+    name: Carlos Duarte
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=io.eztrip.travelmgt
+    appstore: https://itunes.apple.com/us/app/eztrip-io/id1338065929?ls=1&mt=8
+    website: https://www.eztrip.io/
+  description: |
+    EzTrip.io is a travel and expense management system that will assist you to better control all the steps of your business or personal travel.
+  features:
+  - Organize and keep track of receipts
+  - Record all your rewards programs
+  - Import itineraries from Carlson Wagonlit Travel
+  - Manage multiple trips
+  - Report of your travels
+  screenshots:
+  - "#{cdn}/i/showcase/eztrip_io1.png"
+  - "#{cdn}/i/showcase/eztrip_io2.png"
+  - "#{cdn}/i/showcase/eztrip_io3.png"
+  - "#{cdn}/i/showcase/eztrip_io4.png"
+  - "#{cdn}/i/showcase/eztrip_io5.png"
+  - "#{cdn}/i/showcase/eztrip_io6.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/strongsdict-icon-1024.png"
+  iconRounded: true
+  title: "StrongsDict – Strongsdict App Strong's Greek and Hebrew Dictionary"
+  author:
+    url: https://www.flagsoft.com
+    name: Michael Mustun
+  links:
+    appstore: https://itunes.apple.com/ch/app/strongsdict-greek-hebrew-dict/id961026356?mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.flagsoft.Strongsdict
+    website: https://www.flagsoft.com/cmswp/apps/strongs-dict/
+  description: |
+    Strongsdict is the full Strong's Dictionary Greek and Hebrew at your fingertips. Greek and Hebrew Strong's dictionary, full featured with a full test search engine. Contains 14197 entries which is the complete Greek and Hebrews Strong's dictionary found in the original book. This is the Strong's Dictionary, Greek as it appears in the printed version of 1870 by Strong. Main features - Infinity scroll, you can scroll through the whole book - Table of contents for Greek and Hebrew - Search without diacritics. Diacritics are accents and breathing marks, etc. Example search for "אדם" or "אדמ" or "אָדָם" which is A-D-M, Adam; or "משה" (M-S-He) Moshe, Moses - Copy and paste words or search keywords in Greek or Hebrew or English from other sources like internet pages or from other Apps - You can search for words, numbers and keywords in English, Greek and Hebrew - Sharing with Facebook, Twitter, WhatsApp, Email, SMS or Copy to Clipboard Examples - "Aaron", "David", "Abraham", "water" or any subject or name or keyword - "G2222" - search for Greek Strong's number 2222 - "H2222" - search for Hebrew Strong's number 2222 Just add a dot . at the end to get more precise search results - "Aaron.", "David.", "Abraham." - search with a point at the end to get more precise results - "G2222.", "H2222." - search for one entry only with a dot at the end Search without or with diacritics - "אדם" or "אדמ" or "אָדָם" - searches for A-D-M (Adam) - "משה" - search for M-S-He (Moshe, Moses) Install Greek and Hebrew keyboards - Go to Settings General Keyboard Keyboards Add New Keyboard... and choose Greek and Hebrew Support - Please contact us with the integrated direct contact (DDC) within the App if you have new ideas or for support. We are listening.
+  features:
+  - Infinity scroll, you can scroll through the whole book
+  - Table of contents for Greek and Hebrew - Search without diacritics. Diacritics are accents and breathing marks, etc. Example search for "אדם" or "אדמ" or "אָדָם" which is A-D-M, Adam; or "משה" (M-S-He) Moshe, Moses
+  - Copy and paste words or search keywords in Greek or Hebrew or English from other sources like internet pages or from other Apps
+  - You can search for words, numbers and keywords in English, Greek and Hebrew
+  - Sharing with Facebook, Twitter, WhatsApp, Email, SMS or Copy to Clipboard Examples
+  - search for one entry only with a dot at the end Search without or with diacritics
+  screenshots:
+  - "#{cdn}/i/showcase/strongsdict-ios-01.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-02.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-03.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-04.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-05.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-06.png"
+  - "#{cdn}/i/showcase/strongsdict-android-01.png"
+  - "#{cdn}/i/showcase/strongsdict-android-02.png"
+  - "#{cdn}/i/showcase/strongsdict-android-03.png"
+  - "#{cdn}/i/showcase/strongsdict-android-04.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/tabelafipebrasil.png"
   iconRounded: true
   title: "Tabela Fipe Brasil"
@@ -16,7 +75,7 @@
   - Price for Cars, Motorbikes and Trucks
   - Search vehicles
   - Historical values
-  - Favorites 
+  - Favorites
   - Updated values
 
   screenshots:
@@ -48,25 +107,25 @@
   - "#{cdn}/i/showcase/ratingsdekhekya3.png"
   - "#{cdn}/i/showcase/ratingsdekhekya4.png"
 ##########
-- 
+-
   iconUrl: "#{cdn}/i/showcase/azan.png"
   iconRounded: true
   title: "Azan Times"
   author:
     url: https://play.google.com/store/apps/dev?id=5380895901111777097
     name: Rashid NK
-  links:    
-    googleplay: https://play.google.com/store/apps/details?id=org.islamicmajlis.salahtimes&hl=en   
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=org.islamicmajlis.salahtimes&hl=en
   description: |
        Prayer time, Islamic Azan time,Salah time.
   features:
   - Prayer time for all locations, all country
-  - English, Malayalam support, 
+  - English, Malayalam support,
   - Place search
   screenshots:
   - "#{cdn}/i/showcase/azan1.png"
 ##########
-- 
+-
   iconUrl: "#{cdn}/i/showcase/halicon.png"
   iconRounded: true
   title: "Hal – Construction solution"
@@ -2327,4 +2386,4 @@
   - "#{cdn}/i/showcase/gunluc1.png"
   - "#{cdn}/i/showcase/gunluc2.png"
   - "#{cdn}/i/showcase/gunluc3.png"
-  
+
