@@ -7,12 +7,12 @@ html
     meta(name='apple-mobile-web-app-capable', content='yes')
     meta(name="apple-mobile-web-app-status-bar-style", content="black")
     title My App
-    link(rel="stylesheet", href="../dist/css/framework7.ios.min.css")
-    link(rel="stylesheet", href="../dist/css/framework7.ios.colors.min.css")
+    link(rel="stylesheet", href="../packages/core/css/framework7.ios.min.css")
+    link(rel="stylesheet", href="../packages/core/css/framework7.ios.colors.min.css")
     - if (includeF7Icons)
         link(rel="stylesheet" href="../../../css/framework7-icons.css")
   body
     block content
 
-    script(type="text/javascript", src="../dist/js/framework7.min.js")
+    script(type="text/javascript", src="../packages/core/js/framework7.min.js")
     block scripts

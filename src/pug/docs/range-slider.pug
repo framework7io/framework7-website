@@ -11,7 +11,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Range Slider
-    .docs-index
+    ul.docs-index
     h2 Range Slider Layout
     h3 Single Range
     p Single range slider layout is pretty simple:
@@ -193,7 +193,7 @@ block content
           td Range slider width (in px)
         tr
           td range.dual
-          td Boolean proprty indication whether it is dual or not
+          td Boolean property indicating whether it is dual or not
         tr
           td range.min
           td Range min value
@@ -263,7 +263,7 @@ block content
           td Event will be triggered right before Range Slider instance will be destroyed
     h3 App and Range Slider Instance Events
     p Range Slider instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>range</code>.
-    table.events-table
+    table.events-table.double-events-table
       thead
         tr
           th Event
@@ -273,30 +273,30 @@ block content
       tbody
         tr
           td change
-          td <span>range</span>
+          td <span>(range)</span>
           td range
           td(rowspan="2") Event will be triggered when range value has been changed. As an argument event handler receives range instance
         tr
           td rangeChange
-          td <span>range</span>
+          td <span>(range)</span>
           td app
         tr
           td changed
-          td <span>range</span>
+          td <span>(range)</span>
           td range
           td(rowspan="2") Event will be triggered on slider knob release after value change. As an argument event handler receives range instance
         tr
           td rangeChanged
-          td <span>range</span>
+          td <span>(range)</span>
           td app
         tr
           td beforeDestroy
-          td <span>range</span>
+          td <span>(range)</span>
           td range
           td(rowspan="2") Event will be triggered right before Range Slider instance will be destroyed. As an argument event handler receives range instance
         tr
           td rangeBeforeDestroy
-          td <span>range</span>
+          td <span>(range)</span>
           td app
     h2 Range Slider Auto Initialization
     p If you don't need to use Range Slider API and your Range Slider is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>range-slider-init</code> class:

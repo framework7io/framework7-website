@@ -276,15 +276,21 @@ span.ios-only, span.md-only, b.md-only, b.ios-only {
   p:last-child, ul:last-child {
     margin-bottom: 0;
   }
+  .method-parameters {
+    font-size: 14px;
+    + .method-returns {
+      margin-top: -10px;
+    }
+  }
   .method-returns {
     font-style: normal;
     font-style: italic;
+    font-size: 14px;
   }
 }
 p.method, span.method {
   .monospace();
   color: #000;
-  font-size: 15px;
   font-weight: 500;
   span {
     color: @darkColor;
@@ -311,12 +317,10 @@ ul.method-parameters {
 
 .docs-index {
   font-size: 14px;
-  border: 1px solid rgba(0,0,0,0.05);
-  border-radius: 6px;
+  border-left: 2px solid #666;
   margin: 1em 0;
   padding: 0;
-  padding: 20px;
-  background: #fafafa;
+  padding-left: 20px;
   list-style: none;
   font-weight: 500;
   &:empty {
@@ -360,6 +364,7 @@ ul.method-parameters {
   }
 }
 .docs-nav {
+  // border-right: 1px solid #f1f1f1;
   width: 200px;
   margin-left: -40px;
   padding-left: 20px;
@@ -367,6 +372,7 @@ ul.method-parameters {
   flex-shrink: 0;
   color: #615353;
   background: #f7f1f1;
+  background: #ffffff;
   position: relative;
   padding-top: 40px;
   padding-bottom: 40px;
@@ -390,11 +396,10 @@ ul.method-parameters {
     margin-left: -220px;
   }
   .title {
-    text-transform: uppercase;
-    color: darken(#615353, 20%);
+    color: #181818;
     margin-bottom: 10px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 16px;
   }
   .subtitle {
     text-transform: uppercase;
@@ -439,7 +444,7 @@ ul.method-parameters {
     }
   }
   a {
-    color: #503737;
+    color: #3a2b2b;
     text-decoration: none;
     display: block;
     padding-right: 10px;
@@ -506,6 +511,7 @@ ul.method-parameters {
   }
   input[type="search"] {
     @bdColor: darken(@primaryColor, 20%);
+    @bdColor: #000;
     border: none;
     appearance: none;
     -webkit-appearance: none;
@@ -552,12 +558,12 @@ ul.method-parameters {
   span {
     display: block;
     height: 3px;
-    width: 70%;
+    width: 60%;
     background: #fff;
     position: relative;
     border-radius: 4px;
     top: 6px;
-    left: 15%;
+    left: 20%;
     transition: 300ms;
     + span {
       margin-top: 4px;
@@ -571,10 +577,10 @@ ul.method-parameters {
   }
   .docs-nav-visible & {
     span:first-child {
-      transform: translate(5px, -1.5px) rotate(45deg);
+      transform: translate(4px, -1px) rotate(45deg);
     }
     span:last-child {
-      transform: translate(5px, 1px) rotate(-45deg);
+      transform: translate(4px, 0px) rotate(-45deg);
     }
     span:nth-child(2) {
       opacity: 0;
