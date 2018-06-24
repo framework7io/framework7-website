@@ -17,13 +17,18 @@ block content
     p Let's look at basic chip HTML layout
     pre
       code.html
-        | &lt;div class="chip"&gt;
-        |     &lt;div class="chip-media"&gt;
-        |         &lt;img src="http://lorempixel.com/100/100/people/9/"&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="chip-label"&gt;Jane Doe&lt;/div&gt;
-        |     &lt;a href="#" class="chip-delete"&gt;&lt;/a&gt;
-        | &lt;/div&gt;
+        :code
+          <div class="chip">
+            <div class="chip-media">
+              <img src="http://lorempixel.com/100/100/people/9/">
+            </div>
+            <div class="chip-label">Jane Doe</div>
+            <a href="#" class="chip-delete"></a>
+          </div>
+
+          <div class="chip chip-outline">
+            <div class="chip-label">Outline Chip</div>
+          </div>
     p Where
     ul
       li
@@ -35,6 +40,8 @@ block content
             p <code>&lt;div class="card-label"&gt;</code> - Chip text label
           li
             p <code>&lt;a class="card-delete"&gt;</code> - Chip delete icon-link. <em>Optional</em>
+          li
+            p <code>chip-outline</code> - additional class that can be added to chip element to make it outline
     .with-device(data-device-preview="../docs-demos/chips.html")
       h2 Examples
       pre
@@ -55,6 +62,27 @@ block content
                 <div class="chip-label">Fourth Chip</div>
               </div>
               <div class="chip">
+                <div class="chip-label">Last One</div>
+              </div>
+            </div>
+      pre
+        code.html
+          :code
+            <div class="block-title">Outline Chips</div>
+            <div class="block block-strong">
+              <div class="chip chip-outline">
+                <div class="chip-label">Example Chip</div>
+              </div>
+              <div class="chip chip-outline">
+                <div class="chip-label">Another Chip</div>
+              </div>
+              <div class="chip chip-outline">
+                <div class="chip-label">One More Chip</div>
+              </div>
+              <div class="chip chip-outline">
+                <div class="chip-label">Fourth Chip</div>
+              </div>
+              <div class="chip chip-outline">
                 <div class="chip-label">Last One</div>
               </div>
             </div>
@@ -161,6 +189,21 @@ block content
                 <div class="chip-label">Orange Chip</div>
               </div>
               <div class="chip color-pink">
+                <div class="chip-label">Pink Chip</div>
+              </div>
+              <div class="chip chip-outline color-red">
+                <div class="chip-label">Red Chip</div>
+              </div>
+              <div class="chip chip-outline color-green">
+                <div class="chip-label">Green Chip</div>
+              </div>
+              <div class="chip chip-outline color-blue">
+                <div class="chip-label">Blue Chip</div>
+              </div>
+              <div class="chip chip-outline color-orange">
+                <div class="chip-label">Orange Chip</div>
+              </div>
+              <div class="chip chip-outline color-pink">
                 <div class="chip-label">Pink Chip</div>
               </div>
             </div>

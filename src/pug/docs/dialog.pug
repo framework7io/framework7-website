@@ -179,7 +179,7 @@ block content
           td color
           td string
           td
-          td Button color, one of default colors
+          td Button color, one of <a href="color-themes.html">default colors</a>
         tr
           td close
           td boolean
@@ -229,6 +229,9 @@ block content
         tr
           td dialog.params
           td Dialog parameters
+        tr
+          td dialog.opened
+          td Boolean prop indicating whether dialog is opened or not
         tr
           th(colspan="2") Methods
         tr
@@ -563,12 +566,15 @@ block content
     p Preloader dialog is used to indicate some background activity (like Ajax request) and to block any user actions during this activity. To open Preloader dialog we should also call appropriate App method:
     .method-wrap
       p
-        span.method app.dialog.preloader(<span>title</span>)
+        span.method app.dialog.preloader(<span>title</span>, <span>color</span>)
         | - create Preloader Dialog and open it
       ul.method-parameters
         li
           span.parameter title
           |  - <span class="parameter-type">string</span>. Optional. Preloader dialog title
+        li
+          span.parameter color
+          |  - <span class="parameter-type">string</span>. Optional. Preloader color. One of the <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
     h3 Progress
     p Same as Preloader dialog but with <a href="progressbar.html">progressbar</a> instead of preloader.
@@ -585,7 +591,7 @@ block content
           |  - <span class="parameter-type">number</span>. Optional. Progressbar progress (from 0 to 100). If no <code>number</code> passed then it will have infinite progressbar.
         li
           span.parameter color
-          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of default colors
+          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
 
     .with-device

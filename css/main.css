@@ -3112,6 +3112,7 @@ pre code {
   background: #fafafa;
   line-height: 21px;
   border: 1px solid #f3f3f3;
+  font-weight: normal;
 }
 pre {
   overflow: hidden;

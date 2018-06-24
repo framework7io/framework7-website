@@ -16,22 +16,31 @@ block content
     h2 Card Layout
     p Lets look at a basic card HTML layout
     pre
-      code
-        | &lt;div class="card"&gt;
-        |     &lt;div class="card-header"&gt;Header&lt;/div&gt;
-        |     &lt;div class="card-content"&gt;
-        |         &lt;!-- Card content --&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="card-footer"&gt;Footer&lt;/div&gt;
-        | &lt;/div&gt;
-        |
-        | &lt;div class="card"&gt;
-        |     &lt;div class="card-header"&gt;Header&lt;/div&gt;
-        |     &lt;div class="card-content card-content-padding"&gt;
-        |         &lt;!-- Card content --&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="card-footer"&gt;Footer&lt;/div&gt;
-        | &lt;/div&gt;
+      code.html
+        :code
+          <div class="card">
+            <div class="card-header">Header</div>
+            <div class="card-content">
+              <!-- Card content -->
+            </div>
+            <div class="card-footer">Footer</div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">Header</div>
+            <div class="card-content card-content-padding">
+              <!-- Card content -->
+            </div>
+            <div class="card-footer">Footer</div>
+          </div>
+
+          <div class="card card-outline">
+            <div class="card-header">Header</div>
+            <div class="card-content">
+              <!-- Card content -->
+            </div>
+            <div class="card-footer">Footer</div>
+          </div>
     p Where:
     ul
       li
@@ -45,6 +54,8 @@ block content
             p <code>&lt;div class="card-content"&gt;</code> - Main container for card content. Required
           li
             p <code>&lt;div class="card-content card-content-padding"&gt;</code> - Additional <b>card-content-padding</b> used to add extra padding to card-content
+          li
+            p <code>card-outline</code> - additional class that can be added to card element to make it outline
     .important-note
       p Note that "card-header" and "card-footer" have a flexbox layout (<em>display:flex</em>) where as items have a center vertical alignment. If you need to align items to top or to bottom of header/footer, then you may use additional <a href="typography.html">typography</a> classes, for example:
       p <b>&lt;div class="card-header align-items-flex-start"&gt;</b> - align header items by header top line
@@ -58,12 +69,31 @@ block content
             <div class="card">
               <div class="card-content card-content-padding">This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element.</div>
             </div>
+
             <div class="card">
               <div class="card-header">Card header</div>
               <div class="card-content card-content-padding">Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.</div>
               <div class="card-footer">Card Footer</div>
             </div>
+
             <div class="card">
+              <div class="card-content card-content-padding">Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. </div>
+            </div>
+      h4 Outline Cards
+      pre
+        code.html
+          :code
+            <div class="card card-outline">
+              <div class="card-content card-content-padding">This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element.</div>
+            </div>
+
+            <div class="card card-outline">
+              <div class="card-header">Card header</div>
+              <div class="card-content card-content-padding">Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.</div>
+              <div class="card-footer">Card Footer</div>
+            </div>
+
+            <div class="card card-outline">
               <div class="card-content card-content-padding">Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. </div>
             </div>
       h4 Styled Cards
@@ -90,6 +120,7 @@ block content
               </div>
               <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Read more</a></div>
             </div>
+
             <div class="card demo-card-header-pic">
               <div style="background-image:url(http://lorempixel.com/1000/600/people/6/)" class="card-header align-items-flex-end">Lorem Ipsum</div>
               <div class="card-content card-content-padding">
@@ -147,6 +178,7 @@ block content
               <div class="card-content"> <img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/></div>
               <div class="card-footer"><a href="#" class="link">Like</a><a href="#" class="link">Comment</a><a href="#" class="link">Share</a></div>
             </div>
+
             <div class="card demo-facebook-card">
               <div class="card-header">
                 <div class="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
@@ -176,6 +208,7 @@ block content
                 </div>
               </div>
             </div>
+
             <div class="card">
               <div class="card-header">New Releases:</div>
               <div class="card-content">

@@ -25,7 +25,7 @@ block content
             :code
               $ npm install framework7
 
-    p From the downloaded package we will need files from <code>dist/css</code> and <code>dist/js</code> folders
+    p From the downloaded Core package we will need files from <code>css</code> and <code>js</code> folders
     h2 ES Module
     .important-note
       p This feature currently can be used in bundlers like Webpack and Rollup
@@ -43,9 +43,9 @@ block content
           import Framework7 from 'framework7';
 
           // Import additional components
-          import Searchbar from 'framework7/dist/components/searchbar/searchbar.js';
-          import Calendar from 'framework7/dist/components/calendar/calendar.js';
-          import Popup from 'framework7/dist/components/popup/popup.js';
+          import Searchbar from 'framework7/components/searchbar/searchbar.js';
+          import Calendar from 'framework7/components/calendar/calendar.js';
+          import Popup from 'framework7/components/popup/popup.js';
 
           // Install F7 Components using .use() method on class:
           Framework7.use([Searchbar, Calendar, Popup]);
@@ -71,12 +71,12 @@ block content
       code.js
         :code
           // Import framework with all components
-          import Framework7 from 'framework7/dist/framework7.esm.bundle.js';
+          import Framework7 from 'framework7/framework7.esm.bundle.js';
 
           // Init app
           var app = new Framework({/*...*/});
     h2 ES-Next
-    p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile theme as well, as well as <code>Template7</code> and <code>Dom7</code> modules that used as dependencies.
+    p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as <code>template7</code>, <code>dom7</code> and <code>ssr-window</code> modules that used as dependencies.
     h2 App HTML Layout
     p Now when we have downloaded/installed Framework7, we can start from creating <a href="app-layout.html">App Layout</a>.
 

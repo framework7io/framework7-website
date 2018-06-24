@@ -80,6 +80,8 @@ block content
                   'photo-browser',
                   'notification',
                   'autocomplete',
+                  'tooltip',
+                  'gauge',
                   'vi',
                   'typography',
                 ],
@@ -128,35 +130,35 @@ block content
         pre
           code.shell
             :code
-              $ npm run build:prod -- --config scripts/my-config.js --output path/to/output/folder
+              $ npm run build-core:prod -- --config scripts/my-config.js --output path/to/output/folder
       li
         p That is all. Now you should see newly generated js and css files in specified output folder
       li
-        p If You are in hurry and want to see how its working then do follow step no 1 to step no 4
+        p If you are in hurry and want to see how its working then do follow step 1 to 4
         pre
           code.shell
             :code
-              $ npm run build:dev
+              $ npm run build-core:dev
         p The result is available in build/ folder.
       li
         p To build production version of Framework7:
         pre
           code.shell
             :code
-              $ npm run build:prod
+              $ npm run build-core:prod
         p Production version will be available in dist/ folder.
       li Run Kitchen Sink with development environment
         pre
           code.shell
             :code
-              $ npm run dev
+              $ npm run core:dev
       li Run Kitchen Sink with Production environment
         pre
           code.shell
             :code
-              $ npm run prod
-      li YOUR FIRST APPLICATION IS LIVE
-        p Visit http://localhost:3000/kitchen-sink/ From Youre Browser
+              $ npm run core:prod
+      li Kitchen Sink is live
+        p Visit http://localhost:3000/kitchen-sink/core/ From Youre Browser
 
     h2 ES Modules
     p If you use bundler like Webpack or Rollup you can use only required Framework7 JS components without that build process and by importing only required components:
@@ -167,9 +169,9 @@ block content
           import Framework7 from 'framework7';
 
           // Import additional components
-          import Searchbar from 'framework7/dist/components/searchbar/searchbar.js';
-          import Calendar from 'framework7/dist/components/calendar/calendar.js';
-          import Popup from 'framework7/dist/components/popup/popup.js';
+          import Searchbar from 'framework7/components/searchbar/searchbar.js';
+          import Calendar from 'framework7/components/calendar/calendar.js';
+          import Popup from 'framework7/components/popup/popup.js';
 
           // Install F7 Components using .use() method on Framework7 class:
           Framework7.use([Searchbar, Calendar, Popup]);
@@ -186,136 +188,189 @@ block content
       tbody
         tr
           td Dialog
-          td <code>framework7/dist/components/dialog/dialog.js</code>
+          td <code>framework7/components/dialog/dialog.js</code>
         tr
           td Popup
-          td <code>framework7/dist/components/popup/popup.js</code>
+          td <code>framework7/components/popup/popup.js</code>
         tr
           td LoginScreen
-          td <code>framework7/dist/components/login-screen/login-screen.js</code>
+          td <code>framework7/components/login-screen/login-screen.js</code>
         tr
           td Popover
-          td <code>framework7/dist/components/popover/popover.js</code>
+          td <code>framework7/components/popover/popover.js</code>
         tr
           td Actions
-          td <code>framework7/dist/components/actions/actions.js</code>
+          td <code>framework7/components/actions/actions.js</code>
         tr
           td Sheet
-          td <code>framework7/dist/components/sheet/sheet.js</code>
+          td <code>framework7/components/sheet/sheet.js</code>
         tr
           td Toast
-          td <code>framework7/dist/components/toast/toast.js</code>
+          td <code>framework7/components/toast/toast.js</code>
         tr
           td Preloader
-          td <code>framework7/dist/components/preloader/preloader.js</code>
+          td <code>framework7/components/preloader/preloader.js</code>
         tr
           td Progressbar
-          td <code>framework7/dist/components/progressbar/progressbar.js</code>
+          td <code>framework7/components/progressbar/progressbar.js</code>
         tr
           td Sortable
-          td <code>framework7/dist/components/sortable/sortable.js</code>
+          td <code>framework7/components/sortable/sortable.js</code>
         tr
           td Swipeout
-          td <code>framework7/dist/components/swipeout/swipeout.js</code>
+          td <code>framework7/components/swipeout/swipeout.js</code>
         tr
           td Accordion
-          td <code>framework7/dist/components/accordion/accordion.js</code>
+          td <code>framework7/components/accordion/accordion.js</code>
         tr
           td ContactsList
-          td <code>framework7/dist/components/contacts-list/contacts-list.js</code>
+          td <code>framework7/components/contacts-list/contacts-list.js</code>
         tr
           td VirtualList
-          td <code>framework7/dist/components/virtual-list/virtual-list.js</code>
+          td <code>framework7/components/virtual-list/virtual-list.js</code>
         tr
           td ListIndex
-          td <code>framework7/dist/components/list-index/list-index.js</code>
+          td <code>framework7/components/list-index/list-index.js</code>
         tr
           td Timeline
-          td <code>framework7/dist/components/timeline/timeline.js</code>
+          td <code>framework7/components/timeline/timeline.js</code>
         tr
           td Tabs
-          td <code>framework7/dist/components/tabs/tabs.js</code>
+          td <code>framework7/components/tabs/tabs.js</code>
         tr
           td Panel
-          td <code>framework7/dist/components/panel/panel.js</code>
+          td <code>framework7/components/panel/panel.js</code>
         tr
           td Card
-          td <code>framework7/dist/components/card/card.js</code>
+          td <code>framework7/components/card/card.js</code>
         tr
           td Chip
-          td <code>framework7/dist/components/chip/chip.js</code>
+          td <code>framework7/components/chip/chip.js</code>
         tr
           td Form
-          td <code>framework7/dist/components/form/form.js</code>
+          td <code>framework7/components/form/form.js</code>
         tr
           td Input
-          td <code>framework7/dist/components/input/input.js</code>
+          td <code>framework7/components/input/input.js</code>
         tr
           td Checkbox
-          td <code>framework7/dist/components/checkbox/checkbox.js</code>
+          td <code>framework7/components/checkbox/checkbox.js</code>
         tr
           td Radio
-          td <code>framework7/dist/components/radio/radio.js</code>
+          td <code>framework7/components/radio/radio.js</code>
         tr
           td Toggle
-          td <code>framework7/dist/components/toggle/toggle.js</code>
+          td <code>framework7/components/toggle/toggle.js</code>
         tr
           td Range
-          td <code>framework7/dist/components/range/range.js</code>
+          td <code>framework7/components/range/range.js</code>
         tr
           td Stepper
-          td <code>framework7/dist/components/stepper/stepper.js</code>
+          td <code>framework7/components/stepper/stepper.js</code>
         tr
           td SmartSelect
-          td <code>framework7/dist/components/smart-select/smart-select.js</code>
+          td <code>framework7/components/smart-select/smart-select.js</code>
         tr
           td Grid
-          td <code>framework7/dist/components/grid/grid.js</code>
+          td <code>framework7/components/grid/grid.js</code>
         tr
           td Calendar
-          td <code>framework7/dist/components/calendar/calendar.js</code>
+          td <code>framework7/components/calendar/calendar.js</code>
         tr
           td Picker
-          td <code>framework7/dist/components/picker/picker.js</code>
+          td <code>framework7/components/picker/picker.js</code>
         tr
           td InfiniteScroll
-          td <code>framework7/dist/components/infinite-scroll/infinite-scroll.js</code>
+          td <code>framework7/components/infinite-scroll/infinite-scroll.js</code>
         tr
           td PullToRefresh
-          td <code>framework7/dist/components/pull-to-refresh/pull-to-refresh.js</code>
+          td <code>framework7/components/pull-to-refresh/pull-to-refresh.js</code>
         tr
           td Lazy
-          td <code>framework7/dist/components/lazy/lazy.js</code>
+          td <code>framework7/components/lazy/lazy.js</code>
         tr
           td DataTable
-          td <code>framework7/dist/components/data-table/data-table.js</code>
+          td <code>framework7/components/data-table/data-table.js</code>
         tr
           td Fab
-          td <code>framework7/dist/components/fab/fab.js</code>
+          td <code>framework7/components/fab/fab.js</code>
         tr
           td Searchbar
-          td <code>framework7/dist/components/searchbar/searchbar.js</code>
+          td <code>framework7/components/searchbar/searchbar.js</code>
         tr
           td Messages
-          td <code>framework7/dist/components/messages/messages.js</code>
+          td <code>framework7/components/messages/messages.js</code>
         tr
           td Messagebar
-          td <code>framework7/dist/components/messagebar/messagebar.js</code>
+          td <code>framework7/components/messagebar/messagebar.js</code>
         tr
           td Swiper
-          td <code>framework7/dist/components/swiper/swiper.js</code>
+          td <code>framework7/components/swiper/swiper.js</code>
         tr
           td PhotoBrowser
-          td <code>framework7/dist/components/photo-browser/photo-browser.js</code>
+          td <code>framework7/components/photo-browser/photo-browser.js</code>
         tr
           td Notification
-          td <code>framework7/dist/components/notification/notification.js</code>
+          td <code>framework7/components/notification/notification.js</code>
         tr
           td Autocomplete
-          td <code>framework7/dist/components/autocomplete/autocomplete.js</code>
+          td <code>framework7/components/autocomplete/autocomplete.js</code>
+        tr
+          td Tooltip
+          td <code>framework7/components/tooltip/tooltip.js</code>
+        tr
+          td Gauge
+          td <code>framework7/components/gauge/gauge.js</code>
         tr
           td Vi
-          td <code>framework7/dist/components/vi/vi.js</code>
+          td <code>framework7/components/vi/vi.js</code>
         tr
           td Typography
-          td <code>framework7/dist/components/typography/typography.js</code>
+          td <code>framework7/components/typography/typography.js</code>
+    h2 Less.js
+    p Framework7 styles are build with <a href="http://lesscss.org/" target="_blank">Less.js</a>. If you use Less and NPM in your app/project then you can easily create custom framework7 stylesheet with only components you need.
+    p Create your own <code>framework7.less</code> file:
+    pre
+      code.less
+        :code
+          // core
+          @import url('path/to/node_modules/framework7/framework7.less');
+
+          // import only components you need
+          @import url('path/to/node_modules/framework7/components/searchbar/searchbar.less');
+          @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
+          @import url('path/to/node_modules/framework7/components/popup/popup.less');
+    p We can go even further and specify Framework7's main color theme and required colors in custom <code>framework7.less</code> file:
+    pre
+      code.less
+        :code
+          // core
+          @import url('path/to/node_modules/framework7/framework7.less');
+
+          // import only components you need
+          @import url('path/to/node_modules/framework7/components/searchbar/searchbar.less');
+          @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
+          @import url('path/to/node_modules/framework7/components/popup/popup.less');
+
+          // include/exclude themes
+          @includeIosTheme: true;
+          @includeMdTheme: true;
+
+          // include/exclude dark theme
+          @includeDarkTheme: true;
+
+          // iOS theme color
+          @themeColorIos: #007aff;
+          // MD theme color
+          @themeColorMd: #2196f3;
+
+          // Extra colors for iOS theme
+          @colorsIos: red #ff3b30, green #4cd964, blue #007aff, pink #ff2d55, yellow #ffcc00, orange #ff9500, gray #8e8e93, white #ffffff, black #000000;
+
+          // Extra colors for MD theme
+          @colorsMd: red #f44336, green #4caf50, blue #2196f3, pink #e91e63, yellow #ffeb3b, orange #ff9800, gray #9e9e9e, white #ffffff, black #000000;
+
+          // change to true to generate RTL styles
+          @rtl: false;
+
+
