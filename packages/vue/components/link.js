@@ -170,7 +170,7 @@ export default {
 
       if (tooltip) {
         self.f7Tooltip = f7.tooltip.create({
-          el: self.$refs.el,
+          targetEl: el,
           text: tooltip
         });
       }

@@ -1457,6 +1457,12 @@
 	}
 
 	function getDeclarationErrorAddendum() {
+	  if (ReactCurrentOwner.current) {
+	    var name = getComponentName(ReactCurrentOwner.current);
+	    if (name) {
+	      return '\n\nCheck the render method of `' + name + '`.';
+	    }
+	  }
 	  return '';
 	}
 
@@ -1996,7 +2002,7 @@
 	var B={_caughtError:null,_hasCaughtError:!1,_rethrowError:null,_hasRethrowError:!1,invokeGuardedCallback:function(a,b,c,d,e,f,g,h,k){ia.apply(B,arguments);},invokeGuardedCallbackAndCatchFirstError:function(a,b,c,d,e,f,g,h,k){B.invokeGuardedCallback.apply(this,arguments);if(B.hasCaughtError()){var n=B.clearCaughtError();B._hasRethrowError||(B._hasRethrowError=!0,B._rethrowError=n);}},rethrowCaughtError:function(){return ka.apply(B,arguments)},hasCaughtError:function(){return B._hasCaughtError},clearCaughtError:function(){if(B._hasCaughtError){var a=
 	B._caughtError;B._caughtError=null;B._hasCaughtError=!1;return a}A("198");}};function ka(){if(B._hasRethrowError){var a=B._rethrowError;B._rethrowError=null;B._hasRethrowError=!1;throw a;}}var la=null,ma={};
 	function na(){if(la){ for(var a in ma){var b=ma[a],c=la.indexOf(a);-1<c?void 0:A("96",a);if(!oa[c]){b.extractEvents?void 0:A("97",a);oa[c]=b;c=b.eventTypes;for(var d in c){var e=void 0;var f=c[d],g=b,h=d;pa.hasOwnProperty(h)?A("99",h):void 0;pa[h]=f;var k=f.phasedRegistrationNames;if(k){for(e in k){ k.hasOwnProperty(e)&&qa(k[e],g,h); }e=!0;}else { f.registrationName?(qa(f.registrationName,g,h),e=!0):e=!1; }e?void 0:A("98",d,a);}}} }}
-	function qa(a,b,c){ra[a]?A("100",a):void 0;ra[a]=b;sa[a]=b.eventTypes[c].dependencies;}var oa=[],pa={},ra={},sa={};function ta(a){la?A("101"):void 0;la=Array.prototype.slice.call(a);na();}function ua(a){var b=!1,c;for(c in a){ if(a.hasOwnProperty(c)){var d=a[c];ma.hasOwnProperty(c)&&ma[c]===d||(ma[c]?A("102",c):void 0,ma[c]=d,b=!0);} }b&&na();}
+	function qa(a,b,c){ra[a]?A("100",a):void 0;ra[a]=b;sa[a]=b.eventTypes[c].dependencies;}var oa=[],pa={},ra={},sa={};function ta(a){la?A("101"):void 0;la=Array.prototype.slice.call(a);na();}function ua(a){var b=!1,c;for(c in a){ if(a.hasOwnProperty(c)){var d=a[c];ma.hasOwnProperty(c)&&ma[c]===d||(ma[c]=d,b=!0);} }b&&na();}
 	var va={plugins:oa,eventNameDispatchConfigs:pa,registrationNameModules:ra,registrationNameDependencies:sa,possibleRegistrationNames:null,injectEventPluginOrder:ta,injectEventPluginsByName:ua},wa=null,xa=null,ya=null;function za(a,b,c,d){b=a.type||"unknown-event";a.currentTarget=ya(d);B.invokeGuardedCallbackAndCatchFirstError(b,c,void 0,a);a.currentTarget=null;}
 	function Aa(a,b){null==b?A("30"):void 0;if(null==a){ return b; }if(Array.isArray(a)){if(Array.isArray(b)){ return a.push.apply(a,b),a; }a.push(b);return a}return Array.isArray(b)?[a].concat(b):[a,b]}function Ba(a,b,c){Array.isArray(a)?a.forEach(b,c):a&&b.call(c,a);}var Ca=null;
 	function Da(a,b){if(a){var c=a._dispatchListeners,d=a._dispatchInstances;if(Array.isArray(c)){ for(var e=0;e<c.length&&!a.isPropagationStopped();e++){ za(a,b,c[e],d[e]); } }else { c&&za(a,b,c,d); }a._dispatchListeners=null;a._dispatchInstances=null;a.isPersistent()||a.constructor.release(a);}}function Ea(a){return Da(a,!0)}function Fa(a){return Da(a,!1)}var Ga={injectEventPluginOrder:ta,injectEventPluginsByName:ua};
@@ -4844,7 +4850,7 @@
 	      try {
 	        object[key] = null;
 	      } catch (e) {
-	        // no getter for object
+	        // no setter for object
 	      }
 	      try {
 	        delete object[key];
@@ -4875,12 +4881,12 @@
 	  },
 	  requestAnimationFrame: function requestAnimationFrame(callback) {
 	    if (win.requestAnimationFrame) { return win.requestAnimationFrame(callback); }
-	    else if (win.webkitRequestAnimationFrame) { return win.webkitRequestAnimationFrame(callback); }
+	    if (win.webkitRequestAnimationFrame) { return win.webkitRequestAnimationFrame(callback); }
 	    return win.setTimeout(callback, 1000 / 60);
 	  },
 	  cancelAnimationFrame: function cancelAnimationFrame(id) {
 	    if (win.cancelAnimationFrame) { return win.cancelAnimationFrame(id); }
-	    else if (win.webkitCancelAnimationFrame) { return win.webkitCancelAnimationFrame(id); }
+	    if (win.webkitCancelAnimationFrame) { return win.webkitCancelAnimationFrame(id); }
 	    return win.clearTimeout(id);
 	  },
 	  removeDiacritics: function removeDiacritics(str) {
@@ -5066,6 +5072,7 @@
 	};
 
 	var Device = (function Device() {
+	  var platform = win.navigator.platform;
 	  var ua = win.navigator.userAgent;
 
 	  var device = {
@@ -5073,28 +5080,38 @@
 	    android: false,
 	    androidChrome: false,
 	    desktop: false,
-	    windows: false,
+	    windowsPhone: false,
 	    iphone: false,
 	    iphoneX: false,
 	    ipod: false,
 	    ipad: false,
-	    cordova: win.cordova || win.phonegap,
-	    phonegap: win.cordova || win.phonegap,
+	    edge: false,
+	    ie: false,
+	    macos: false,
+	    windows: false,
+	    cordova: !!(win.cordova || win.phonegap),
+	    phonegap: !!(win.cordova || win.phonegap),
 	  };
 
-	  var windows = ua.match(/(Windows Phone);?[\s\/]+([\d.]+)?/); // eslint-disable-line
+	  var windowsPhone = ua.match(/(Windows Phone);?[\s\/]+([\d.]+)?/); // eslint-disable-line
 	  var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/); // eslint-disable-line
 	  var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
 	  var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
 	  var iphone = !ipad && ua.match(/(iPhone\sOS|iOS)\s([\d_]+)/);
 	  var iphoneX = iphone && win.screen.width === 375 && win.screen.height === 812;
+	  var ie = ua.indexOf('MSIE ') >= 0 || ua.indexOf('Trident/') >= 0;
+	  var edge = ua.indexOf('Edge/') >= 0;
+	  var macos = platform === 'MacIntel';
+	  var windows = platform === 'Win32';
 
+	  device.ie = ie;
+	  device.edge = edge;
 
 	  // Windows
-	  if (windows) {
+	  if (windowsPhone) {
 	    device.os = 'windows';
 	    device.osVersion = windows[2];
-	    device.windows = true;
+	    device.windowsPhone = true;
 	  }
 	  // Android
 	  if (android && !windows) {
@@ -5135,16 +5152,19 @@
 
 	  // Desktop
 	  device.desktop = !(device.os || device.android || device.webView);
+	  if (device.desktop) {
+	    device.macos = macos;
+	    device.windows = windows;
+	  }
 
 	  // Minimal UI
 	  if (device.os && device.os === 'ios') {
 	    var osVersionArr = device.osVersion.split('.');
 	    var metaViewport = doc.querySelector('meta[name="viewport"]');
-	    device.minimalUi =
-	      !device.webView &&
-	      (ipod || iphone) &&
-	      (osVersionArr[0] * 1 === 7 ? osVersionArr[1] * 1 >= 1 : osVersionArr[0] * 1 > 7) &&
-	      metaViewport && metaViewport.getAttribute('content').indexOf('minimal-ui') >= 0;
+	    device.minimalUi = !device.webView
+	      && (ipod || iphone)
+	      && (osVersionArr[0] * 1 === 7 ? osVersionArr[1] * 1 >= 1 : osVersionArr[0] * 1 > 7)
+	      && metaViewport && metaViewport.getAttribute('content').indexOf('minimal-ui') >= 0;
 	  }
 
 	  // Check for status bar and fullscreen app mode
@@ -5185,6 +5205,7 @@
 	};
 
 	var staticAccessors$1 = { components: { configurable: true } };
+
 	Framework7Class.prototype.on = function on (events, handler, priority) {
 	  var self = this;
 	  if (typeof handler !== 'function') { return self; }
@@ -5195,6 +5216,7 @@
 	  });
 	  return self;
 	};
+
 	Framework7Class.prototype.once = function once (events, handler, priority) {
 	  var self = this;
 	  if (typeof handler !== 'function') { return self; }
@@ -5207,6 +5229,7 @@
 	  }
 	  return self.on(events, onceHandler, priority);
 	};
+
 	Framework7Class.prototype.off = function off (events, handler) {
 	  var self = this;
 	  if (!self.eventsListeners) { return self; }
@@ -5223,6 +5246,7 @@
 	  });
 	  return self;
 	};
+
 	Framework7Class.prototype.emit = function emit () {
 	    var args = [], len = arguments.length;
 	    while ( len-- ) args[ len ] = arguments[ len ];
@@ -5266,6 +5290,7 @@
 	  }
 	  return self;
 	};
+
 	Framework7Class.prototype.useModulesParams = function useModulesParams (instanceParams) {
 	  var instance = this;
 	  if (!instance.modules) { return; }
@@ -5277,6 +5302,7 @@
 	    }
 	  });
 	};
+
 	Framework7Class.prototype.useModules = function useModules (modulesParams) {
 	    if ( modulesParams === void 0 ) modulesParams = {};
 
@@ -5309,11 +5335,13 @@
 	    }
 	  });
 	};
+
 	staticAccessors$1.components.set = function (components) {
 	  var Class = this;
 	  if (!Class.use) { return; }
 	  Class.use(components);
 	};
+
 	Framework7Class.installModule = function installModule (module) {
 	    var params = [], len = arguments.length - 1;
 	    while ( len-- > 0 ) params[ len ] = arguments[ len + 1 ];
@@ -5340,6 +5368,7 @@
 	  }
 	  return Class;
 	};
+
 	Framework7Class.use = function use (module) {
 	    var params = [], len = arguments.length - 1;
 	    while ( len-- > 0 ) params[ len ] = arguments[ len + 1 ];
@@ -5438,6 +5467,7 @@
 
 	  var prototypeAccessors = { $: { configurable: true },t7: { configurable: true } };
 	  var staticAccessors = { Dom7: { configurable: true },$: { configurable: true },Template7: { configurable: true },Class: { configurable: true } };
+
 	  Framework7.prototype.init = function init () {
 	    var app = this;
 	    if (app.initialized) { return app; }
@@ -5491,15 +5521,19 @@
 	  prototypeAccessors.t7.get = function () {
 	    return Template7;
 	  };
+
 	  staticAccessors.Dom7.get = function () {
 	    return $$1;
 	  };
+
 	  staticAccessors.$.get = function () {
 	    return $$1;
 	  };
+
 	  staticAccessors.Template7.get = function () {
 	    return Template7;
 	  };
+
 	  staticAccessors.Class.get = function () {
 	    return Framework7Class$$1;
 	  };
@@ -6219,7 +6253,8 @@
 	        return false;
 	      }
 	      return $el;
-	    } else if ($el.parents(rippleElements).length > 0) {
+	    }
+	    if ($el.parents(rippleElements).length > 0) {
 	      var rippleParent = $el.parents(rippleElements).eq(0);
 	      if (rippleParent.hasClass('no-ripple')) {
 	        return false;
@@ -6351,9 +6386,9 @@
 	    if (Device.ios || (Device.android && 'getSelection' in win)) {
 	      var selection = win.getSelection();
 	      if (
-	        selection.rangeCount &&
-	        selection.focusNode !== doc.body &&
-	        (!selection.isCollapsed || doc.activeElement === selection.focusNode)
+	        selection.rangeCount
+	        && selection.focusNode !== doc.body
+	        && (!selection.isCollapsed || doc.activeElement === selection.focusNode)
 	      ) {
 	        activeSelection = true;
 	        return true;
@@ -7799,8 +7834,8 @@
 	    var pageChanged = false;
 	    // Swipe back to previous page
 	    if (
-	      (timeDiff < 300 && touchesDiff > 10) ||
-	      (timeDiff >= 300 && touchesDiff > viewContainerWidth / 2)
+	      (timeDiff < 300 && touchesDiff > 10)
+	      || (timeDiff >= 300 && touchesDiff > viewContainerWidth / 2)
 	    ) {
 	      currentPage.removeClass('page-current').addClass(("page-next" + (app.theme === 'md' ? ' page-next-on-right' : '')));
 	      previousPage.removeClass('page-previous').addClass('page-current').removeAttr('aria-hidden');
@@ -8415,12 +8450,12 @@
 	  var component = params.component;
 	  var componentUrl = params.componentUrl;
 
-	  if (!options.reloadCurrent &&
-	    options.route &&
-	    options.route.route &&
-	    options.route.route.parentPath &&
-	    router.currentRoute.route &&
-	    router.currentRoute.route.parentPath === options.route.route.parentPath) {
+	  if (!options.reloadCurrent
+	    && options.route
+	    && options.route.route
+	    && options.route.route.parentPath
+	    && router.currentRoute.route
+	    && router.currentRoute.route.parentPath === options.route.route.parentPath) {
 	    // Do something nested
 	    if (options.route.url === router.url) {
 	      return false;
@@ -8431,8 +8466,8 @@
 	      // Check for equal params name
 	      Object.keys(options.route.params).forEach(function (paramName) {
 	        if (
-	          !(paramName in router.currentRoute.params) ||
-	          (router.currentRoute.params[paramName] !== options.route.params[paramName])
+	          !(paramName in router.currentRoute.params)
+	          || (router.currentRoute.params[paramName] !== options.route.params[paramName])
 	        ) {
 	          sameParams = false;
 	        }
@@ -8447,11 +8482,11 @@
 	  }
 
 	  if (
-	    options.route &&
-	    options.route.url &&
-	    router.url === options.route.url &&
-	    !(options.reloadCurrent || options.reloadPrevious) &&
-	    !router.params.allowDuplicateUrls
+	    options.route
+	    && options.route.url
+	    && router.url === options.route.url
+	    && !(options.reloadCurrent || options.reloadPrevious)
+	    && !router.params.allowDuplicateUrls
 	  ) {
 	    router.allowPageChange = true;
 	    return false;
@@ -9245,9 +9280,11 @@
 	  }
 
 	  // History State
-	  if (router.params.pushState && options.pushState) {
-	    if (backIndex) { History.go(-backIndex); }
-	    else { History.back(); }
+	  if (!(Device.ie || Device.edge)) {
+	    if (router.params.pushState && options.pushState) {
+	      if (backIndex) { History.go(-backIndex); }
+	      else { History.back(); }
+	    }
 	  }
 
 	  // Update History
@@ -9267,6 +9304,14 @@
 
 	  // Current Route
 	  router.currentRoute = options.route;
+
+	  // History State
+	  if (Device.ie || Device.edge) {
+	    if (router.params.pushState && options.pushState) {
+	      if (backIndex) { History.go(-backIndex); }
+	      else { History.back(); }
+	    }
+	  }
 
 	  // Insert Page
 	  insertPage();
@@ -9321,7 +9366,7 @@
 
 	    // Preload previous page
 	    var preloadPreviousPage = app.theme === 'ios' ? (router.params.preloadPreviousPage || router.params.iosSwipeBack) : router.params.preloadPreviousPage;
-	    if (preloadPreviousPage) {
+	    if (preloadPreviousPage && router.history[router.history.length - 2]) {
 	      router.back(router.history[router.history.length - 2], { preload: true });
 	    }
 	    if (router.params.pushState) {
@@ -9367,10 +9412,10 @@
 	  var componentUrl = params.componentUrl;
 
 	  if (
-	    options.route.url &&
-	    router.url === options.route.url &&
-	    !(options.reloadCurrent || options.reloadPrevious) &&
-	    !router.params.allowDuplicateUrls
+	    options.route.url
+	    && router.url === options.route.url
+	    && !(options.reloadCurrent || options.reloadPrevious)
+	    && !router.params.allowDuplicateUrls
 	  ) {
 	    return false;
 	  }
@@ -9464,9 +9509,9 @@
 	    });
 	  }
 	  if (currentRouteIsModal) {
-	    var modalToClose = router.currentRoute.modal ||
-	                         router.currentRoute.route.modalInstance ||
-	                         app[modalType].get();
+	    var modalToClose = router.currentRoute.modal
+	                         || router.currentRoute.route.modalInstance
+	                         || app[modalType].get();
 	    var previousUrl = router.history[router.history.length - 2];
 	    var previousRoute = router.findMatchingRoute(previousUrl);
 	    if (!previousRoute && previousUrl) {
@@ -9757,6 +9802,7 @@
 	  if ( Framework7Class$$1 ) Router.__proto__ = Framework7Class$$1;
 	  Router.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Router.prototype.constructor = Router;
+
 	  Router.prototype.animatableNavElements = function animatableNavElements (newNavbarInner, oldNavbarInner) {
 	    var router = this;
 	    var dynamicNavbar = router.dynamicNavbar;
@@ -9811,6 +9857,7 @@
 
 	    return { newNavEls: newNavEls, oldNavEls: oldNavEls };
 	  };
+
 	  Router.prototype.animateWithCSS = function animateWithCSS (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
 	    var router = this;
 	    var dynamicNavbar = router.dynamicNavbar;
@@ -9901,6 +9948,7 @@
 	      router.$el.addClass(routerTransitionClass);
 	    }
 	  };
+
 	  Router.prototype.animateWithJS = function animateWithJS (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
 	    var router = this;
 	    var dynamicNavbar = router.dynamicNavbar;
@@ -10044,6 +10092,7 @@
 
 	    Utils.nextFrame(render);
 	  };
+
 	  Router.prototype.animate = function animate () {
 	    var args = [], len = arguments.length;
 	    while ( len-- ) args[ len ] = arguments[ len ];
@@ -10058,6 +10107,7 @@
 	      router.animateWithCSS.apply(router, args);
 	    }
 	  };
+
 	  Router.prototype.removeModal = function removeModal (modalEl) {
 	    var router = this;
 	    router.removeEl(modalEl);
@@ -10067,14 +10117,17 @@
 	    var $tabEl = $$1(tabEl);
 	    $tabEl.html('');
 	  };
+
 	  Router.prototype.removeNavbar = function removeNavbar (el) {
 	    var router = this;
 	    router.removeEl(el);
 	  };
+
 	  Router.prototype.removePage = function removePage (el) {
 	    var router = this;
 	    router.removeEl(el);
 	  };
+
 	  Router.prototype.removeEl = function removeEl (el) {
 	    if (!el) { return; }
 	    var router = this;
@@ -10102,6 +10155,7 @@
 	      $el.remove();
 	    }
 	  };
+
 	  Router.prototype.getPageEl = function getPageEl (content) {
 	    var router = this;
 	    if (typeof content === 'string') {
@@ -10116,6 +10170,7 @@
 
 	    return router.findElement('.page', router.tempDom);
 	  };
+
 	  Router.prototype.findElement = function findElement (stringSelector, container, notStacked) {
 	    var router = this;
 	    var view = router.view;
@@ -10150,6 +10205,7 @@
 	    if (found && found.length > 1) { return $$1(found[0]); }
 	    return undefined;
 	  };
+
 	  Router.prototype.flattenRoutes = function flattenRoutes (routes) {
 	    var this$1 = this;
 	    if ( routes === void 0 ) routes = this.routes;
@@ -10195,6 +10251,7 @@
 	      path: path,
 	    };
 	  };
+
 	  Router.prototype.findTabRoute = function findTabRoute (tabEl) {
 	    var router = this;
 	    var $tabEl = $$1(tabEl);
@@ -10204,15 +10261,16 @@
 	    var foundTabRoute;
 	    flattenedRoutes.forEach(function (route) {
 	      if (
-	        route.parentPath === parentPath &&
-	        route.tab &&
-	        route.tab.id === tabId
+	        route.parentPath === parentPath
+	        && route.tab
+	        && route.tab.id === tabId
 	      ) {
 	        foundTabRoute = route;
 	      }
 	    });
 	    return foundTabRoute;
 	  };
+
 	  Router.prototype.findRouteByKey = function findRouteByKey (key, value) {
 	    var router = this;
 	    var routes = router.routes;
@@ -10227,6 +10285,7 @@
 	    });
 	    return matchingRoute;
 	  };
+
 	  Router.prototype.findMatchingRoute = function findMatchingRoute (url) {
 	    if (!url) { return undefined; }
 	    var router = this;
@@ -10284,6 +10343,7 @@
 	    });
 	    return matchingRoute;
 	  };
+
 	  Router.prototype.removeFromXhrCache = function removeFromXhrCache (url) {
 	    var router = this;
 	    var xhrCache = router.cache.xhr;
@@ -10293,6 +10353,7 @@
 	    }
 	    if (index !== false) { xhrCache.splice(index, 1); }
 	  };
+
 	  Router.prototype.xhrRequest = function xhrRequest (requestUrl, options) {
 	    var router = this;
 	    var params = router.params;
@@ -10300,31 +10361,31 @@
 	    var url = requestUrl;
 
 	    var hasQuery = url.indexOf('?') >= 0;
-	    if (params.passRouteQueryToRequest &&
-	      options &&
-	      options.route &&
-	      options.route.query &&
-	      Object.keys(options.route.query).length
+	    if (params.passRouteQueryToRequest
+	      && options
+	      && options.route
+	      && options.route.query
+	      && Object.keys(options.route.query).length
 	    ) {
 	      url += "" + (hasQuery ? '&' : '?') + (Utils.serializeObject(options.route.query));
 	      hasQuery = true;
 	    }
 
-	    if (params.passRouteParamsToRequest &&
-	      options &&
-	      options.route &&
-	      options.route.params &&
-	      Object.keys(options.route.params).length
+	    if (params.passRouteParamsToRequest
+	      && options
+	      && options.route
+	      && options.route.params
+	      && Object.keys(options.route.params).length
 	    ) {
 	      url += "" + (hasQuery ? '&' : '?') + (Utils.serializeObject(options.route.params));
 	      hasQuery = true;
 	    }
 
-	    if (url.indexOf('{{') >= 0 &&
-	      options &&
-	      options.route &&
-	      options.route.params &&
-	      Object.keys(options.route.params).length
+	    if (url.indexOf('{{') >= 0
+	      && options
+	      && options.route
+	      && options.route.params
+	      && Object.keys(options.route.params).length
 	    ) {
 	      Object.keys(options.route.params).forEach(function (paramName) {
 	        var regExp = new RegExp(("{{" + paramName + "}}"), 'g');
@@ -10380,12 +10441,14 @@
 	      });
 	    });
 	  };
+
 	  // Remove theme elements
 	  Router.prototype.removeThemeElements = function removeThemeElements (el) {
 	    var router = this;
 	    var theme = router.app.theme;
 	    $$1(el).find(("." + (theme === 'md' ? 'ios' : 'md') + "-only, .if-" + (theme === 'md' ? 'ios' : 'md'))).remove();
 	  };
+
 	  Router.prototype.templateLoader = function templateLoader (template, templateUrl, options, resolve, reject) {
 	    var router = this;
 	    function compile(t) {
@@ -10440,18 +10503,21 @@
 	      compile(template);
 	    }
 	  };
+
 	  Router.prototype.modalTemplateLoader = function modalTemplateLoader (template, templateUrl, options, resolve, reject) {
 	    var router = this;
 	    return router.templateLoader(template, templateUrl, options, function (html) {
 	      resolve(html);
 	    }, reject);
 	  };
+
 	  Router.prototype.tabTemplateLoader = function tabTemplateLoader (template, templateUrl, options, resolve, reject) {
 	    var router = this;
 	    return router.templateLoader(template, templateUrl, options, function (html) {
 	      resolve(html);
 	    }, reject);
 	  };
+
 	  Router.prototype.pageTemplateLoader = function pageTemplateLoader (template, templateUrl, options, resolve, reject) {
 	    var router = this;
 	    return router.templateLoader(template, templateUrl, options, function (html, newOptions) {
@@ -10460,6 +10526,7 @@
 	      resolve(router.getPageEl(html), newOptions);
 	    }, reject);
 	  };
+
 	  Router.prototype.componentLoader = function componentLoader (component, componentUrl, options, resolve, reject) {
 	    if ( options === void 0 ) options = {};
 
@@ -10515,18 +10582,21 @@
 	      compile(component);
 	    }
 	  };
+
 	  Router.prototype.modalComponentLoader = function modalComponentLoader (rootEl, component, componentUrl, options, resolve, reject) {
 	    var router = this;
 	    router.componentLoader(component, componentUrl, options, function (el) {
 	      resolve(el);
 	    }, reject);
 	  };
+
 	  Router.prototype.tabComponentLoader = function tabComponentLoader (tabEl, component, componentUrl, options, resolve, reject) {
 	    var router = this;
 	    router.componentLoader(component, componentUrl, options, function (el) {
 	      resolve(el);
 	    }, reject);
 	  };
+
 	  Router.prototype.pageComponentLoader = function pageComponentLoader (routerEl, component, componentUrl, options, resolve, reject) {
 	    var router = this;
 	    router.componentLoader(component, componentUrl, options, function (el, newOptions) {
@@ -10535,6 +10605,7 @@
 	      resolve(el, newOptions);
 	    }, reject);
 	  };
+
 	  Router.prototype.getPageData = function getPageData (pageEl, navbarEl, from, to, route, pageFromEl) {
 	    if ( route === void 0 ) route = {};
 
@@ -10581,6 +10652,7 @@
 	    $pageEl[0].f7Page = page;
 	    return page;
 	  };
+
 	  // Callbacks
 	  Router.prototype.pageCallback = function pageCallback (callback, pageEl, navbarEl, from, to, options, pageFromEl) {
 	    if ( options === void 0 ) options = {};
@@ -10662,8 +10734,8 @@
 	          // eslint-disable-next-line
 	          $pageContent = $pageContent.filter(function (pageContentIndex, pageContentEl) {
 	            return (
-	              $$1(pageContentEl).parents('.tab:not(.tab-active)').length === 0 &&
-	              !$$1(pageContentEl).is('.tab:not(.tab-active)')
+	              $$1(pageContentEl).parents('.tab:not(.tab-active)').length === 0
+	              && !$$1(pageContentEl).is('.tab:not(.tab-active)')
 	            );
 	          });
 	        }
@@ -10684,8 +10756,8 @@
 	        // eslint-disable-next-line
 	        $pageContent$1 = $pageContent$1.filter(function (pageContentIndex, pageContentEl) {
 	          return (
-	            $$1(pageContentEl).parents('.tab:not(.tab-active)').length === 0 &&
-	            !$$1(pageContentEl).is('.tab:not(.tab-active)')
+	            $$1(pageContentEl).parents('.tab:not(.tab-active)').length === 0
+	            && !$$1(pageContentEl).is('.tab:not(.tab-active)')
 	          );
 	        });
 	      }
@@ -10704,6 +10776,7 @@
 	      $pageEl[0].f7Page = null;
 	    }
 	  };
+
 	  Router.prototype.saveHistory = function saveHistory () {
 	    var router = this;
 	    router.view.history = router.history;
@@ -10711,6 +10784,7 @@
 	      win.localStorage[("f7router-" + (router.view.id) + "-history")] = JSON.stringify(router.history);
 	    }
 	  };
+
 	  Router.prototype.restoreHistory = function restoreHistory () {
 	    var router = this;
 	    if (router.params.pushState && win.localStorage[("f7router-" + (router.view.id) + "-history")]) {
@@ -10718,12 +10792,14 @@
 	      router.view.history = router.history;
 	    }
 	  };
+
 	  Router.prototype.clearHistory = function clearHistory () {
 	    var router = this;
 	    router.history = [];
 	    if (router.view) { router.view.history = []; }
 	    router.saveHistory();
 	  };
+
 	  Router.prototype.init = function init () {
 	    var router = this;
 	    var app = router.app;
@@ -10732,8 +10808,8 @@
 	    // Init Swipeback
 	    {
 	      if (
-	        (view && router.params.iosSwipeBack && app.theme === 'ios') ||
-	        (view && router.params.mdSwipeBack && app.theme === 'md')
+	        (view && router.params.iosSwipeBack && app.theme === 'ios')
+	        || (view && router.params.mdSwipeBack && app.theme === 'md')
 	      ) {
 	        SwipeBack(router);
 	      }
@@ -10906,6 +10982,7 @@
 	    }
 	    router.emit('local::init routerInit', router);
 	  };
+
 	  Router.prototype.destroy = function destroy () {
 	    var router = this;
 
@@ -11049,6 +11126,7 @@
 	  if ( Framework7Class$$1 ) View.__proto__ = Framework7Class$$1;
 	  View.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  View.prototype.constructor = View;
+
 	  View.prototype.destroy = function destroy () {
 	    var view = this;
 	    var app = view.app;
@@ -11083,6 +11161,7 @@
 
 	    view = null;
 	  };
+
 	  View.prototype.init = function init () {
 	    var view = this;
 	    if (view.params.router) {
@@ -11622,10 +11701,10 @@
 	      return;
 	    }
 	    if (
-	      $el.hasClass('stacked') ||
-	      $el.parents('.stacked').length > 0 ||
-	      $el.parents('.tab:not(.tab-active)').length > 0 ||
-	      $el.parents('.popup:not(.modal-in)').length > 0
+	      $el.hasClass('stacked')
+	      || $el.parents('.stacked').length > 0
+	      || $el.parents('.tab:not(.tab-active)').length > 0
+	      || $el.parents('.popup:not(.modal-in)').length > 0
 	    ) {
 	      return;
 	    }
@@ -11915,17 +11994,17 @@
 	        app.navbar.size($navbarEl);
 	      }
 	      if (
-	        app.params.navbar.hideOnPageScroll ||
-	        page.$el.find('.hide-navbar-on-scroll').length ||
-	        page.$el.hasClass('hide-navbar-on-scroll') ||
-	        page.$el.find('.hide-bars-on-scroll').length ||
-	        page.$el.hasClass('hide-bars-on-scroll')
+	        app.params.navbar.hideOnPageScroll
+	        || page.$el.find('.hide-navbar-on-scroll').length
+	        || page.$el.hasClass('hide-navbar-on-scroll')
+	        || page.$el.find('.hide-bars-on-scroll').length
+	        || page.$el.hasClass('hide-bars-on-scroll')
 	      ) {
 	        if (
-	          page.$el.find('.keep-navbar-on-scroll').length ||
-	          page.$el.hasClass('keep-navbar-on-scroll') ||
-	          page.$el.find('.keep-bars-on-scroll').length ||
-	          page.$el.hasClass('keep-bars-on-scroll')
+	          page.$el.find('.keep-navbar-on-scroll').length
+	          || page.$el.hasClass('keep-navbar-on-scroll')
+	          || page.$el.find('.keep-bars-on-scroll').length
+	          || page.$el.hasClass('keep-bars-on-scroll')
 	        ) {
 	          return;
 	        }
@@ -12169,17 +12248,17 @@
 	        app.toolbar.init(tabbarEl);
 	      });
 	      if (
-	        app.params.toolbar.hideOnPageScroll ||
-	        page.$el.find('.hide-toolbar-on-scroll').length ||
-	        page.$el.hasClass('hide-toolbar-on-scroll') ||
-	        page.$el.find('.hide-bars-on-scroll').length ||
-	        page.$el.hasClass('hide-bars-on-scroll')
+	        app.params.toolbar.hideOnPageScroll
+	        || page.$el.find('.hide-toolbar-on-scroll').length
+	        || page.$el.hasClass('hide-toolbar-on-scroll')
+	        || page.$el.find('.hide-bars-on-scroll').length
+	        || page.$el.hasClass('hide-bars-on-scroll')
 	      ) {
 	        if (
-	          page.$el.find('.keep-toolbar-on-scroll').length ||
-	          page.$el.hasClass('keep-toolbar-on-scroll') ||
-	          page.$el.find('.keep-bars-on-scroll').length ||
-	          page.$el.hasClass('keep-bars-on-scroll')
+	          page.$el.find('.keep-toolbar-on-scroll').length
+	          || page.$el.hasClass('keep-toolbar-on-scroll')
+	          || page.$el.find('.keep-bars-on-scroll').length
+	          || page.$el.hasClass('keep-bars-on-scroll')
 	        ) {
 	          return;
 	        }
@@ -12234,15 +12313,19 @@
 
 	  return ripple;
 	};
+
 	TouchRipple.prototype.onRemove = function onRemove () {
 	  var ripple = this;
-	  ripple.$rippleWaveEl.remove();
+	  if (ripple.$rippleWaveEl) {
+	    ripple.$rippleWaveEl.remove();
+	  }
 	  Object.keys(ripple).forEach(function (key) {
 	    ripple[key] = null;
 	    delete ripple[key];
 	  });
 	  ripple = null;
 	};
+
 	TouchRipple.prototype.remove = function remove () {
 	  var ripple = this;
 	  if (ripple.removing) { return; }
@@ -12322,6 +12405,7 @@
 	  if ( Framework7Class$$1 ) Modal.__proto__ = Framework7Class$$1;
 	  Modal.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Modal.prototype.constructor = Modal;
+
 	  Modal.prototype.onOpen = function onOpen () {
 	    var modal = this;
 	    modal.opened = true;
@@ -12330,11 +12414,13 @@
 	    modal.$el.trigger(("modal:open " + (modal.type.toLowerCase()) + ":open"), modal);
 	    modal.emit(("local::open modalOpen " + (modal.type) + "Open"), modal);
 	  };
+
 	  Modal.prototype.onOpened = function onOpened () {
 	    var modal = this;
 	    modal.$el.trigger(("modal:opened " + (modal.type.toLowerCase()) + ":opened"), modal);
 	    modal.emit(("local::opened modalOpened " + (modal.type) + "Opened"), modal);
 	  };
+
 	  Modal.prototype.onClose = function onClose () {
 	    var modal = this;
 	    modal.opened = false;
@@ -12344,6 +12430,7 @@
 	    modal.$el.trigger(("modal:close " + (modal.type.toLowerCase()) + ":close"), modal);
 	    modal.emit(("local::close modalClose " + (modal.type) + "Close"), modal);
 	  };
+
 	  Modal.prototype.onClosed = function onClosed () {
 	    var modal = this;
 	    if (!modal.type || !modal.$el) { return; }
@@ -12352,6 +12439,7 @@
 	    modal.$el.trigger(("modal:closed " + (modal.type.toLowerCase()) + ":closed"), modal);
 	    modal.emit(("local::closed modalClosed " + (modal.type) + "Closed"), modal);
 	  };
+
 	  Modal.prototype.open = function open (animateModal) {
 	    var modal = this;
 	    var app = modal.app;
@@ -12443,6 +12531,7 @@
 
 	    return modal;
 	  };
+
 	  Modal.prototype.close = function close (animateModal) {
 	    var modal = this;
 	    var $el = modal.$el;
@@ -12503,6 +12592,7 @@
 
 	    return modal;
 	  };
+
 	  Modal.prototype.destroy = function destroy () {
 	    var modal = this;
 	    if (modal.destroyed) { return; }
@@ -12714,10 +12804,10 @@
 	          $$1(buttonEl).on('click', buttonOnClick);
 	        });
 	        if (
-	          addKeyboardHander &&
-	          !app.device.ios &&
-	          !app.device.android &&
-	          !app.device.cordova
+	          addKeyboardHander
+	          && !app.device.ios
+	          && !app.device.android
+	          && !app.device.cordova
 	        ) {
 	          $$1(doc).on('keydown', onKeyPress);
 	        }
@@ -12727,10 +12817,10 @@
 	          $$1(buttonEl).off('click', buttonOnClick);
 	        });
 	        if (
-	          addKeyboardHander &&
-	          !app.device.ios &&
-	          !app.device.android &&
-	          !app.device.cordova
+	          addKeyboardHander
+	          && !app.device.ios
+	          && !app.device.android
+	          && !app.device.cordova
 	        ) {
 	          $$1(doc).off('keydown', onKeyPress);
 	        }
@@ -12779,9 +12869,9 @@
 	      var $target = $$1(target);
 	      if ($target.closest(dialog.el).length === 0) {
 	        if (
-	          dialog.params.closeByBackdropClick &&
-	          dialog.backdropEl &&
-	          dialog.backdropEl === target
+	          dialog.params.closeByBackdropClick
+	          && dialog.backdropEl
+	          && dialog.backdropEl === target
 	        ) {
 	          dialog.close();
 	        }
@@ -13184,11 +13274,11 @@
 	      var $target = $$1(target);
 	      if ($target.closest(popup.el).length === 0) {
 	        if (
-	          popup.params &&
-	          popup.params.closeByBackdropClick &&
-	          popup.params.backdrop &&
-	          popup.backdropEl &&
-	          popup.backdropEl === target
+	          popup.params
+	          && popup.params.closeByBackdropClick
+	          && popup.params.backdrop
+	          && popup.backdropEl
+	          && popup.backdropEl === target
 	        ) {
 	          popup.close();
 	        }
@@ -13429,10 +13519,10 @@
 	      var $target = $$1(target);
 	      if ($target.closest(popover.el).length === 0) {
 	        if (
-	          popover.params.closeByBackdropClick &&
-	          popover.params.backdrop &&
-	          popover.backdropEl &&
-	          popover.backdropEl === target
+	          popover.params.closeByBackdropClick
+	          && popover.params.backdrop
+	          && popover.backdropEl
+	          && popover.backdropEl === target
 	        ) {
 	          popover.close();
 	        } else if (popover.params.closeByOutsideClick) {
@@ -13460,6 +13550,7 @@
 	  if ( Modal$$1 ) Popover.__proto__ = Modal$$1;
 	  Popover.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
 	  Popover.prototype.constructor = Popover;
+
 	  Popover.prototype.resize = function resize () {
 	    var popover = this;
 	    var app = popover.app;
@@ -13741,9 +13832,9 @@
 	      if (actions.params.convertToPopover && (targetEl || (targetX !== undefined && targetY !== undefined))) {
 	        // Popover
 	        if (
-	          actions.params.forceToPopover ||
-	          (app.device.ios && app.device.ipad) ||
-	          app.width >= 768
+	          actions.params.forceToPopover
+	          || (app.device.ios && app.device.ipad)
+	          || app.width >= 768
 	        ) {
 	          convertToPopover = true;
 	        }
@@ -13815,10 +13906,10 @@
 	      var $target = $$1(target);
 	      if ($target.closest(actions.el).length === 0) {
 	        if (
-	          actions.params.closeByBackdropClick &&
-	          actions.params.backdrop &&
-	          actions.backdropEl &&
-	          actions.backdropEl === target
+	          actions.params.closeByBackdropClick
+	          && actions.params.backdrop
+	          && actions.backdropEl
+	          && actions.backdropEl === target
 	        ) {
 	          actions.close();
 	        } else if (actions.params.closeByOutsideClick) {
@@ -13848,6 +13939,7 @@
 	  if ( Modal$$1 ) Actions.__proto__ = Modal$$1;
 	  Actions.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
 	  Actions.prototype.constructor = Actions;
+
 	  Actions.prototype.render = function render () {
 	    var actions = this;
 	    if (actions.params.render) { return actions.params.render.call(actions, actions); }
@@ -13871,6 +13963,7 @@
 	              return ("\n                <div class=\"" + (buttonClasses.join(' ')) + "\">\n                  " + (icon ? ("<div class=\"actions-button-media\">" + icon + "</div>") : '') + "\n                  <div class=\"actions-button-text\">" + text + "</div>\n                </div>").trim();
 	            }).join('')) + "\n          </div>"); }).join('')) + "\n      </div>\n    ").trim();
 	  };
+
 	  Actions.prototype.renderPopover = function renderPopover () {
 	    var actions = this;
 	    if (actions.params.renderPopover) { return actions.params.renderPopover.call(actions, actions); }
@@ -14026,10 +14119,10 @@
 	      var $target = $$1(target);
 	      if ($target.closest(sheet.el).length === 0) {
 	        if (
-	          sheet.params.closeByBackdropClick &&
-	          sheet.params.backdrop &&
-	          sheet.backdropEl &&
-	          sheet.backdropEl === target
+	          sheet.params.closeByBackdropClick
+	          && sheet.params.backdrop
+	          && sheet.backdropEl
+	          && sheet.backdropEl === target
 	        ) {
 	          sheet.close();
 	        } else if (sheet.params.closeByOutsideClick) {
@@ -14210,6 +14303,7 @@
 	  if ( Modal$$1 ) Toast.__proto__ = Modal$$1;
 	  Toast.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
 	  Toast.prototype.constructor = Toast;
+
 	  Toast.prototype.render = function render () {
 	    var toast = this;
 	    var app = toast.app;
@@ -14619,8 +14713,8 @@
 	        }
 	      }
 
-	      if (($insertAfterEl || $insertBeforeEl) &&
-	         $sortableContainer.hasClass('virtual-list')
+	      if (($insertAfterEl || $insertBeforeEl)
+	         && $sortableContainer.hasClass('virtual-list')
 	      ) {
 	        virtualList = $sortableContainer[0].f7VirtualList;
 	        oldIndex = $sortingEl[0].f7VirtualListIndex;
@@ -14815,8 +14909,7 @@
 
 	      if (
 	        (translate > 0 && $actionsLeft.length === 0)
-	        ||
-	        (translate < 0 && $actionsRight.length === 0)
+	        || (translate < 0 && $actionsRight.length === 0)
 	      ) {
 	        if (!opened) {
 	          isTouched = false;
@@ -14953,18 +15046,14 @@
 	      if (
 	        (
 	          timeDiff < 300
-	          &&
-	          (
+	          && (
 	            (touchesDiff < -10 && direction === 'to-left')
-	            ||
-	            (touchesDiff > 10 && direction === 'to-right')
+	            || (touchesDiff > 10 && direction === 'to-right')
 	          )
 	        )
-	        ||
-	        (
+	        || (
 	          timeDiff >= 300
-	          &&
-	          (Math.abs(translate) > actionsWidth / 2)
+	          && (Math.abs(translate) > actionsWidth / 2)
 	        )
 	      ) {
 	        action = 'open';
@@ -15048,12 +15137,12 @@
 	      if (Swipeout.el) {
 	        var $targetEl = $$1(e.target);
 	        if (!(
-	          $$1(Swipeout.el).is($targetEl[0]) ||
-	          $targetEl.parents('.swipeout').is(Swipeout.el) ||
-	          $targetEl.hasClass('modal-in') ||
-	          ($targetEl.attr('class') || '').indexOf('-backdrop') > 0 ||
-	          $targetEl.hasClass('actions-modal') ||
-	          $targetEl.parents('.actions-modal.modal-in, .dialog.modal-in').length > 0
+	          $$1(Swipeout.el).is($targetEl[0])
+	          || $targetEl.parents('.swipeout').is(Swipeout.el)
+	          || $targetEl.hasClass('modal-in')
+	          || ($targetEl.attr('class') || '').indexOf('-backdrop') > 0
+	          || $targetEl.hasClass('actions-modal')
+	          || $targetEl.parents('.actions-modal.modal-in, .dialog.modal-in').length > 0
 	        )) {
 	          app.swipeout.close(Swipeout.el);
 	        }
@@ -15284,6 +15373,7 @@
 	    var $el = $$1(el);
 	    var $list = $el.parents('.accordion-list').eq(0);
 	    var $contentEl = $el.children('.accordion-item-content');
+	    $contentEl.removeAttr('aria-hidden');
 	    if ($contentEl.length === 0) { $contentEl = $el.find('.accordion-item-content'); }
 	    if ($contentEl.length === 0) { return; }
 	    var $openedItem = $list.length > 0 && $el.parent().children('.accordion-item-opened');
@@ -15315,6 +15405,7 @@
 	    var $contentEl = $el.children('.accordion-item-content');
 	    if ($contentEl.length === 0) { $contentEl = $el.find('.accordion-item-content'); }
 	    $el.removeClass('accordion-item-opened');
+	    $contentEl.attr('aria-hidden', true);
 	    $contentEl.transition(0);
 	    $contentEl.css('height', (($contentEl[0].scrollHeight) + "px"));
 	    $contentEl._clientLeft = $contentEl[0].clientLeft;
@@ -15509,6 +15600,7 @@
 	  if ( Framework7Class$$1 ) VirtualList.__proto__ = Framework7Class$$1;
 	  VirtualList.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  VirtualList.prototype.constructor = VirtualList;
+
 	  VirtualList.prototype.setListSize = function setListSize () {
 	    var vl = this;
 	    var items = vl.filteredItems || vl.items;
@@ -15534,6 +15626,7 @@
 	      vl.$itemsWrapEl.css({ height: ((vl.listHeight) + "px") });
 	    }
 	  };
+
 	  VirtualList.prototype.render = function render (force, forceScrollTop) {
 	    var vl = this;
 	    if (force) { vl.lastRepaintY = null; }
@@ -15673,6 +15766,7 @@
 	      });
 	    }
 	  };
+
 	  // Filter
 	  VirtualList.prototype.filterItems = function filterItems (indexes, resetScrollTop) {
 	    if ( resetScrollTop === void 0 ) resetScrollTop = true;
@@ -15687,6 +15781,7 @@
 	    }
 	    vl.update();
 	  };
+
 	  VirtualList.prototype.resetFilter = function resetFilter () {
 	    var vl = this;
 	    if (vl.params.showFilteredItemsOnly) {
@@ -15697,6 +15792,7 @@
 	    }
 	    vl.update();
 	  };
+
 	  VirtualList.prototype.scrollToItem = function scrollToItem (index) {
 	    var vl = this;
 	    if (index > vl.items.length) { return false; }
@@ -15712,15 +15808,18 @@
 	    vl.render(true, (listTop + itemTop) - parseInt(vl.$pageContentEl.css('padding-top'), 10));
 	    return true;
 	  };
+
 	  VirtualList.prototype.handleScroll = function handleScroll () {
 	    var vl = this;
 	    vl.render();
 	  };
+
 	  // Handle resize event
 	  VirtualList.prototype.isVisible = function isVisible () {
 	    var vl = this;
 	    return !!(vl.el.offsetWidth || vl.el.offsetHeight || vl.el.getClientRects().length);
 	  };
+
 	  VirtualList.prototype.handleResize = function handleResize () {
 	    var vl = this;
 	    if (vl.isVisible()) {
@@ -15728,6 +15827,7 @@
 	      vl.render(true);
 	    }
 	  };
+
 	  // Append
 	  VirtualList.prototype.appendItems = function appendItems (items) {
 	    var vl = this;
@@ -15736,10 +15836,12 @@
 	    }
 	    vl.update();
 	  };
+
 	  VirtualList.prototype.appendItem = function appendItem (item) {
 	    var vl = this;
 	    vl.appendItems([item]);
 	  };
+
 	  // Replace
 	  VirtualList.prototype.replaceAllItems = function replaceAllItems (items) {
 	    var vl = this;
@@ -15748,12 +15850,14 @@
 	    vl.domCache = {};
 	    vl.update();
 	  };
+
 	  VirtualList.prototype.replaceItem = function replaceItem (index, item) {
 	    var vl = this;
 	    vl.items[index] = item;
 	    if (vl.params.cache) { delete vl.domCache[index]; }
 	    vl.update();
 	  };
+
 	  // Prepend
 	  VirtualList.prototype.prependItems = function prependItems (items) {
 	    var vl = this;
@@ -15769,6 +15873,7 @@
 	    }
 	    vl.update();
 	  };
+
 	  VirtualList.prototype.prependItem = function prependItem (item) {
 	    var vl = this;
 	    vl.prependItems([item]);
@@ -15806,6 +15911,7 @@
 	    }
 	    vl.update();
 	  };
+
 	  // Insert before
 	  VirtualList.prototype.insertItemBefore = function insertItemBefore (index, item) {
 	    var vl = this;
@@ -15831,6 +15937,7 @@
 	    }
 	    vl.update();
 	  };
+
 	  // Delete
 	  VirtualList.prototype.deleteItems = function deleteItems (indexes) {
 	    var vl = this;
@@ -15872,6 +15979,7 @@
 	    for (var i = 0; i < indexes.length; i += 1) loop( i );
 	    vl.update();
 	  };
+
 	  VirtualList.prototype.deleteAllItems = function deleteAllItems () {
 	    var vl = this;
 	    vl.items = [];
@@ -15879,15 +15987,18 @@
 	    if (vl.params.cache) { vl.domCache = {}; }
 	    vl.update();
 	  };
+
 	  VirtualList.prototype.deleteItem = function deleteItem (index) {
 	    var vl = this;
 	    vl.deleteItems([index]);
 	  };
+
 	  // Clear cache
 	  VirtualList.prototype.clearCache = function clearCache () {
 	    var vl = this;
 	    vl.domCache = {};
 	  };
+
 	  // Update Virtual List
 	  VirtualList.prototype.update = function update (deleteCache) {
 	    var vl = this;
@@ -15897,12 +16008,14 @@
 	    vl.setListSize();
 	    vl.render(true);
 	  };
+
 	  VirtualList.prototype.init = function init () {
 	    var vl = this;
 	    vl.attachEvents();
 	    vl.setListSize();
 	    vl.render();
 	  };
+
 	  VirtualList.prototype.destroy = function destroy () {
 	    var vl = this;
 	    vl.detachEvents();
@@ -16175,14 +16288,17 @@
 	    }
 	    return index;
 	  };
+
 	  ListIndex.prototype.renderSkipPlaceholder = function renderSkipPlaceholder () {
 	    var index = this;
 	    return index.params.renderSkipPlaceholder.call(index);
 	  };
+
 	  ListIndex.prototype.renderItem = function renderItem (itemContent, itemIndex) {
 	    var index = this;
 	    return index.params.renderItem.call(index, itemContent, itemIndex);
 	  };
+
 	  ListIndex.prototype.render = function render () {
 	    var index = this;
 	    var $ul = index.$ul;
@@ -16207,6 +16323,7 @@
 
 	    return index;
 	  };
+
 	  ListIndex.prototype.calcSize = function calcSize () {
 	    var index = this;
 	    var app = index.app;
@@ -16227,6 +16344,7 @@
 
 	    return index;
 	  };
+
 	  ListIndex.prototype.calcIndexes = function calcIndexes () {
 	    var index = this;
 	    if (index.params.indexes === 'auto') {
@@ -16243,6 +16361,7 @@
 	    }
 	    return index;
 	  };
+
 	  ListIndex.prototype.update = function update () {
 	    var index = this;
 	    index.calcIndexes();
@@ -16251,6 +16370,7 @@
 
 	    return index;
 	  };
+
 	  ListIndex.prototype.init = function init () {
 	    var index = this;
 	    index.calcIndexes();
@@ -16258,6 +16378,7 @@
 	    index.render();
 	    index.attachEvents();
 	  };
+
 	  ListIndex.prototype.destroy = function destroy () {
 	    var index = this;
 	    index.$el.trigger('listindex:beforedestroy', index);
@@ -16652,14 +16773,13 @@
 	      }
 
 	      if (
-	        (side === 'left' &&
-	          (
+	        (side === 'left'
+	          && (
 	            direction === 'to-left' && !$el.hasClass('panel-active')
 	          )
 	        )
-	        ||
-	        (side === 'right' &&
-	          (
+	        || (side === 'right'
+	          && (
 	            direction === 'to-right' && !$el.hasClass('panel-active')
 	          )
 	        )
@@ -16775,8 +16895,7 @@
 	        action = 'reset';
 	      } else if (
 	        (timeDiff < 300 && Math.abs(translate) > 0)
-	        ||
-	        (timeDiff >= 300 && (Math.abs(translate) >= panelWidth / 2))
+	        || (timeDiff >= 300 && (Math.abs(translate) >= panelWidth / 2))
 	      ) {
 	        action = 'swap';
 	      } else {
@@ -16796,8 +16915,7 @@
 	      action = 'reset';
 	    } else if (
 	      (timeDiff < 300 && Math.abs(translate) >= 0)
-	      ||
-	      (timeDiff >= 300 && (Math.abs(translate) <= panelWidth / 2))
+	      || (timeDiff >= 300 && (Math.abs(translate) <= panelWidth / 2))
 	    ) {
 	      if (side === 'left' && translate === panelWidth) { action = 'reset'; }
 	      else { action = 'swap'; }
@@ -16902,6 +17020,7 @@
 	  if ( Framework7Class$$1 ) Panel.__proto__ = Framework7Class$$1;
 	  Panel.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Panel.prototype.constructor = Panel;
+
 	  Panel.prototype.init = function init () {
 	    var panel = this;
 	    var app = panel.app;
@@ -16911,15 +17030,14 @@
 	    {
 	      if (
 	        (app.params.panel.swipe === panel.side)
-	        ||
-	        (app.params.panel.swipe === 'both')
-	        ||
-	        (app.params.panel.swipe && app.params.panel.swipe !== panel.side && app.params.panel.swipeCloseOpposite)
+	        || (app.params.panel.swipe === 'both')
+	        || (app.params.panel.swipe && app.params.panel.swipe !== panel.side && app.params.panel.swipeCloseOpposite)
 	      ) {
 	        panel.initSwipePanel();
 	      }
 	    }
 	  };
+
 	  Panel.prototype.getViewEl = function getViewEl () {
 	    var panel = this;
 	    var app = panel.app;
@@ -16931,6 +17049,7 @@
 	    }
 	    return viewEl;
 	  };
+
 	  Panel.prototype.setBreakpoint = function setBreakpoint () {
 	    var obj, obj$1;
 
@@ -16962,6 +17081,7 @@
 	      panel.$el.trigger('panel:breakpoint', panel);
 	    }
 	  };
+
 	  Panel.prototype.initBreakpoints = function initBreakpoints () {
 	    var panel = this;
 	    var app = panel.app;
@@ -16974,11 +17094,13 @@
 	    panel.setBreakpoint();
 	    return panel;
 	  };
+
 	  Panel.prototype.initSwipePanel = function initSwipePanel () {
 	    {
 	      swipePanel(this);
 	    }
 	  };
+
 	  Panel.prototype.destroy = function destroy () {
 	    var panel = this;
 	    var app = panel.app;
@@ -16996,6 +17118,7 @@
 	    Utils.deleteProps(panel);
 	    panel = null;
 	  };
+
 	  Panel.prototype.open = function open (animate) {
 	    if ( animate === void 0 ) animate = true;
 
@@ -17056,6 +17179,7 @@
 
 	    return true;
 	  };
+
 	  Panel.prototype.close = function close (animate) {
 	    if ( animate === void 0 ) animate = true;
 
@@ -17098,12 +17222,14 @@
 	    }
 	    return true;
 	  };
+
 	  Panel.prototype.onOpen = function onOpen () {
 	    var panel = this;
 	    panel.opened = true;
 	    panel.$el.trigger('panel:open', panel);
 	    panel.emit('local::open panelOpen', panel);
 	  };
+
 	  Panel.prototype.onOpened = function onOpened () {
 	    var panel = this;
 	    var app = panel.app;
@@ -17112,6 +17238,7 @@
 	    panel.$el.trigger('panel:opened', panel);
 	    panel.emit('local::opened panelOpened', panel);
 	  };
+
 	  Panel.prototype.onClose = function onClose () {
 	    var panel = this;
 	    panel.opened = false;
@@ -17119,6 +17246,7 @@
 	    panel.$el.trigger('panel:close', panel);
 	    panel.emit('local::close panelClose', panel);
 	  };
+
 	  Panel.prototype.onClosed = function onClosed () {
 	    var panel = this;
 	    var app = panel.app;
@@ -17186,9 +17314,9 @@
 	        if (typeof panel === 'string') {
 	          side = panel;
 	          if (
-	            (app.params.panel.swipe === 'left' && side === 'right') ||
-	            (app.params.panel.swipe === 'right' && side === 'left') ||
-	            side === 'both'
+	            (app.params.panel.swipe === 'left' && side === 'right')
+	            || (app.params.panel.swipe === 'right' && side === 'left')
+	            || side === 'both'
 	          ) {
 	            side = 'both';
 	            app.params.panel.swipe = side;
@@ -17784,10 +17912,12 @@
 	    if (contentScrollTop > min) {
 	      $scrollableEl.scrollTop(centered ? centeredPosition : min, duration);
 	      return true;
-	    } else if (contentScrollTop < max) {
+	    }
+	    if (contentScrollTop < max) {
 	      $scrollableEl.scrollTop(centered ? centeredPosition : max, duration);
 	      return true;
-	    } else if (force) {
+	    }
+	    if (force) {
 	      $scrollableEl.scrollTop(centered ? centeredPosition : max, duration);
 	    }
 	    return false;
@@ -18098,14 +18228,17 @@
 	  if ( Framework7Class$$1 ) Toggle.__proto__ = Framework7Class$$1;
 	  Toggle.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Toggle.prototype.constructor = Toggle;
+
 	  Toggle.prototype.toggle = function toggle () {
 	    var toggle = this;
 	    toggle.checked = !toggle.checked;
 	  };
+
 	  Toggle.prototype.init = function init () {
 	    var toggle = this;
 	    toggle.attachEvents();
 	  };
+
 	  Toggle.prototype.destroy = function destroy () {
 	    var toggle = this;
 	    toggle.$el.trigger('toggle:beforedestroy', toggle);
@@ -18403,15 +18536,15 @@
 	      if (typeof range.previousValue !== 'undefined') {
 	        if (
 	          (
-	            range.dual &&
-	            (
-	              range.previousValue[0] !== range.value[0] ||
-	              range.previousValue[1] !== range.value[1]
+	            range.dual
+	            && (
+	              range.previousValue[0] !== range.value[0]
+	              || range.previousValue[1] !== range.value[1]
 	            )
-	          ) ||
-	          (
-	            !range.dual &&
-	            range.previousValue !== range.value
+	          )
+	          || (
+	            !range.dual
+	            && range.previousValue !== range.value
 	          )
 	        ) {
 	          range.$el.trigger('range:changed', range, range.value);
@@ -18465,6 +18598,7 @@
 	  if ( Framework7Class$$1 ) Range.__proto__ = Framework7Class$$1;
 	  Range.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Range.prototype.constructor = Range;
+
 	  Range.prototype.calcSize = function calcSize () {
 	    var range = this;
 	    var width = range.$el.outerWidth();
@@ -18472,6 +18606,7 @@
 	    range.rangeWidth = width;
 	    range.knobWidth = range.knobs[0].outerWidth();
 	  };
+
 	  Range.prototype.layout = function layout () {
 	    var obj;
 
@@ -18520,6 +18655,7 @@
 	      range.$el.removeClass('range-slider-max');
 	    }
 	  };
+
 	  Range.prototype.setValue = function setValue (newValue, byTouchMove) {
 	    var range = this;
 	    var step = range.step;
@@ -18572,9 +18708,11 @@
 	    range.emit('local::change rangeChange', range, range.value);
 	    return range;
 	  };
+
 	  Range.prototype.getValue = function getValue () {
 	    return this.value;
 	  };
+
 	  Range.prototype.init = function init () {
 	    var range = this;
 	    range.calcSize();
@@ -18582,6 +18720,7 @@
 	    range.attachEvents();
 	    return range;
 	  };
+
 	  Range.prototype.destroy = function destroy () {
 	    var range = this;
 	    range.$el.trigger('range:beforedestroy', range);
@@ -18867,20 +19006,25 @@
 	  if ( Framework7Class$$1 ) Stepper.__proto__ = Framework7Class$$1;
 	  Stepper.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Stepper.prototype.constructor = Stepper;
+
 	  Stepper.prototype.minus = function minus () {
 	    return this.decrement();
 	  };
+
 	  Stepper.prototype.plus = function plus () {
 	    return this.increment();
 	  };
+
 	  Stepper.prototype.decrement = function decrement () {
 	    var stepper = this;
 	    return stepper.setValue(stepper.value - stepper.step);
 	  };
+
 	  Stepper.prototype.increment = function increment () {
 	    var stepper = this;
 	    return stepper.setValue(stepper.value + stepper.step);
 	  };
+
 	  Stepper.prototype.setValue = function setValue (newValue, forceUpdate) {
 	    var stepper = this;
 	    var step = stepper.step;
@@ -18917,14 +19061,17 @@
 	    stepper.emit('local::change stepperChange', stepper, stepper.value);
 	    return stepper;
 	  };
+
 	  Stepper.prototype.getValue = function getValue () {
 	    return this.value;
 	  };
+
 	  Stepper.prototype.formatValue = function formatValue (value) {
 	    var stepper = this;
 	    if (!stepper.params.formatValue) { return value; }
 	    return stepper.params.formatValue.call(stepper, value);
 	  };
+
 	  Stepper.prototype.init = function init () {
 	    var stepper = this;
 	    stepper.attachEvents();
@@ -18934,6 +19081,7 @@
 	    }
 	    return stepper;
 	  };
+
 	  Stepper.prototype.destroy = function destroy () {
 	    var stepper = this;
 	    stepper.$el.trigger('stepper:beforedestroy', stepper);
@@ -19152,6 +19300,7 @@
 	  if ( Framework7Class$$1 ) SmartSelect.__proto__ = Framework7Class$$1;
 	  SmartSelect.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  SmartSelect.prototype.constructor = SmartSelect;
+
 	  SmartSelect.prototype.checkMaxLength = function checkMaxLength () {
 	    var ss = this;
 	    var $containerEl = ss.$containerEl;
@@ -19167,6 +19316,7 @@
 	      $containerEl.find('.disabled').removeClass('disabled');
 	    }
 	  };
+
 	  SmartSelect.prototype.setValue = function setValue (value) {
 	    var ss = this;
 	    var valueArray = [];
@@ -19191,6 +19341,7 @@
 	    }
 	    ss.$valueEl.text(valueArray.join(', '));
 	  };
+
 	  SmartSelect.prototype.getItemsData = function getItemsData () {
 	    var ss = this;
 	    var items = [];
@@ -19240,12 +19391,14 @@
 	    ss.items = items;
 	    return items;
 	  };
+
 	  SmartSelect.prototype.renderSearchbar = function renderSearchbar () {
 	    var ss = this;
 	    if (ss.params.renderSearchbar) { return ss.params.renderSearchbar.call(ss); }
 	    var searchbarHTML = "\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ss.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          <span class=\"searchbar-disable-button\">" + (ss.params.searchbarDisableText) + "</span>\n        </div>\n      </form>\n    ";
 	    return searchbarHTML;
 	  };
+
 	  SmartSelect.prototype.renderItem = function renderItem (item, index) {
 	    var ss = this;
 	    if (ss.params.renderItem) { return ss.params.renderItem.call(ss, item, index); }
@@ -19257,12 +19410,14 @@
 	    }
 	    return itemHtml;
 	  };
+
 	  SmartSelect.prototype.renderItems = function renderItems () {
 	    var ss = this;
 	    if (ss.params.renderItems) { return ss.params.renderItems.call(ss, ss.items); }
 	    var itemsHtml = "\n      " + (ss.items.map(function (item, index) { return ("" + (ss.renderItem(item, index))); }).join('')) + "\n    ";
 	    return itemsHtml;
 	  };
+
 	  SmartSelect.prototype.renderPage = function renderPage () {
 	    var ss = this;
 	    if (ss.params.renderPage) { return ss.params.renderPage.call(ss, ss.items); }
@@ -19273,6 +19428,7 @@
 	    var pageHtml = "\n      <div class=\"page smart-select-page\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
 	    return pageHtml;
 	  };
+
 	  SmartSelect.prototype.renderPopup = function renderPopup () {
 	    var ss = this;
 	    if (ss.params.renderPopup) { return ss.params.renderPopup.call(ss, ss.items); }
@@ -19283,18 +19439,21 @@
 	    var popupHtml = "\n      <div class=\"popup smart-select-popup\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar" + (ss.params.navbarColorTheme ? ("theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + (ss.params.formColorTheme ? ("theme-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
 	    return popupHtml;
 	  };
+
 	  SmartSelect.prototype.renderSheet = function renderSheet () {
 	    var ss = this;
 	    if (ss.params.renderSheet) { return ss.params.renderSheet.call(ss, ss.items); }
 	    var sheetHtml = "\n      <div class=\"sheet-modal smart-select-sheet\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"toolbar " + (ss.params.toolbarColorTheme ? ("theme-" + (ss.params.toolbarColorTheme)) : '') + "\">\n          <div class=\"toolbar-inner\">\n            <div class=\"left\"></div>\n            <div class=\"right\">\n              <a class=\"link sheet-close\">" + (ss.params.sheetCloseLinkText) + "</a>\n            </div>\n          </div>\n        </div>\n        <div class=\"sheet-modal-inner\">\n          <div class=\"page-content\">\n            <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + (ss.params.formColorTheme ? ("theme-" + (ss.params.formColorTheme)) : '') + "\">\n              <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
 	    return sheetHtml;
 	  };
+
 	  SmartSelect.prototype.renderPopover = function renderPopover () {
 	    var ss = this;
 	    if (ss.params.renderPopover) { return ss.params.renderPopover.call(ss, ss.items); }
 	    var popoverHtml = "\n      <div class=\"popover smart-select-popover\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + (ss.params.formColorTheme ? ("theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
 	    return popoverHtml;
 	  };
+
 	  SmartSelect.prototype.onOpen = function onOpen (type, containerEl) {
 	    var ss = this;
 	    var app = ss.app;
@@ -19349,12 +19508,14 @@
 	    ss.$el.trigger('smartselect:open', ss);
 	    ss.emit('local::open smartSelectOpen', ss);
 	  };
+
 	  SmartSelect.prototype.onOpened = function onOpened () {
 	    var ss = this;
 
 	    ss.$el.trigger('smartselect:opened', ss);
 	    ss.emit('local::opened smartSelectOpened', ss);
 	  };
+
 	  SmartSelect.prototype.onClose = function onClose () {
 	    var ss = this;
 	    if (ss.destroyed) { return; }
@@ -19378,6 +19539,7 @@
 	    ss.$el.trigger('smartselect:close', ss);
 	    ss.emit('local::close smartSelectClose', ss);
 	  };
+
 	  SmartSelect.prototype.onClosed = function onClosed () {
 	    var ss = this;
 	    if (ss.destroyed) { return; }
@@ -19388,6 +19550,7 @@
 	    ss.$el.trigger('smartselect:closed', ss);
 	    ss.emit('local::closed smartSelectClosed', ss);
 	  };
+
 	  SmartSelect.prototype.openPage = function openPage () {
 	    var ss = this;
 	    if (ss.opened) { return ss; }
@@ -19417,6 +19580,7 @@
 	    });
 	    return ss;
 	  };
+
 	  SmartSelect.prototype.openPopup = function openPopup () {
 	    var ss = this;
 	    if (ss.opened) { return ss; }
@@ -19454,6 +19618,7 @@
 	    }
 	    return ss;
 	  };
+
 	  SmartSelect.prototype.openSheet = function openSheet () {
 	    var ss = this;
 	    if (ss.opened) { return ss; }
@@ -19494,6 +19659,7 @@
 	    }
 	    return ss;
 	  };
+
 	  SmartSelect.prototype.openPopover = function openPopover () {
 	    var ss = this;
 	    if (ss.opened) { return ss; }
@@ -19530,6 +19696,7 @@
 	    }
 	    return ss;
 	  };
+
 	  SmartSelect.prototype.open = function open (type) {
 	    var ss = this;
 	    if (ss.opened) { return ss; }
@@ -19540,6 +19707,7 @@
 	    }).join('')))]();
 	    return ss;
 	  };
+
 	  SmartSelect.prototype.close = function close () {
 	    var ss = this;
 	    if (!ss.opened) { return ss; }
@@ -19556,11 +19724,13 @@
 	    }
 	    return ss;
 	  };
+
 	  SmartSelect.prototype.init = function init () {
 	    var ss = this;
 	    ss.attachEvents();
 	    ss.setValue();
 	  };
+
 	  SmartSelect.prototype.destroy = function destroy () {
 	    var ss = this;
 	    ss.emit('local::beforeDestroy smartSelectBeforeDestroy', ss);
@@ -19895,8 +20065,8 @@
 	        }
 	        if (calendar.params.closeOnSelect) {
 	          if (
-	            (calendar.params.rangePicker && calendar.value.length === 2) ||
-	            !calendar.params.rangePicker
+	            (calendar.params.rangePicker && calendar.value.length === 2)
+	            || !calendar.params.rangePicker
 	          ) {
 	            calendar.close();
 	          }
@@ -19961,6 +20131,7 @@
 	    var d = new Date(date);
 	    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 	  };
+
 	  Calendar.prototype.normalizeValues = function normalizeValues (values) {
 	    var calendar = this;
 	    var newValues = [];
@@ -19969,11 +20140,13 @@
 	    }
 	    return newValues;
 	  };
+
 	  Calendar.prototype.initInput = function initInput () {
 	    var calendar = this;
 	    if (!calendar.$inputEl) { return; }
 	    if (calendar.params.inputReadOnly) { calendar.$inputEl.prop('readOnly', true); }
 	  };
+
 	  Calendar.prototype.isPopover = function isPopover () {
 	    var calendar = this;
 	    var app = calendar.app;
@@ -19984,14 +20157,16 @@
 
 	    if (!calendar.inline && calendar.inputEl) {
 	      if (params.openIn === 'popover') { return true; }
-	      else if (app.device.ios) {
+	      if (app.device.ios) {
 	        return !!app.device.ipad;
-	      } else if (app.width >= 768) {
+	      }
+	      if (app.width >= 768) {
 	        return true;
 	      }
 	    }
 	    return false;
 	  };
+
 	  Calendar.prototype.formatDate = function formatDate (d) {
 	    var calendar = this;
 	    var date = new Date(d);
@@ -20019,6 +20194,7 @@
 	      .replace(/DD/g, dayNames[weekDay])
 	      .replace(/D(\W+)/g, ((dayNamesShort[weekDay]) + "$1"));
 	  };
+
 	  Calendar.prototype.formatValue = function formatValue () {
 	    var calendar = this;
 	    var value = calendar.value;
@@ -20029,6 +20205,7 @@
 	      .map(function (v) { return calendar.formatDate(v); })
 	      .join(calendar.params.rangePicker ? ' - ' : ', ');
 	  };
+
 	  Calendar.prototype.addValue = function addValue (newValue) {
 	    var calendar = this;
 	    var ref = calendar.params;
@@ -20062,15 +20239,18 @@
 	      calendar.updateValue();
 	    }
 	  };
+
 	  Calendar.prototype.setValue = function setValue (values) {
 	    var calendar = this;
 	    calendar.value = values;
 	    calendar.updateValue();
 	  };
+
 	  Calendar.prototype.getValue = function getValue () {
 	    var calendar = this;
 	    return calendar.value;
 	  };
+
 	  Calendar.prototype.updateValue = function updateValue (onlyHeader) {
 	    var calendar = this;
 	    var $el = calendar.$el;
@@ -20110,6 +20290,7 @@
 	      }
 	    }
 	  };
+
 	  Calendar.prototype.updateCurrentMonthYear = function updateCurrentMonthYear (dir) {
 	    var calendar = this;
 	    var $months = calendar.$months;
@@ -20125,6 +20306,7 @@
 	    $el.find('.current-month-value').text(params.monthNames[calendar.currentMonth]);
 	    $el.find('.current-year-value').text(calendar.currentYear);
 	  };
+
 	  Calendar.prototype.update = function update () {
 	    var calendar = this;
 	    var currentYear = calendar.currentYear;
@@ -20149,6 +20331,7 @@
 	      );
 	    });
 	  };
+
 	  Calendar.prototype.onMonthChangeStart = function onMonthChangeStart (dir) {
 	    var calendar = this;
 	    var $months = calendar.$months;
@@ -20168,6 +20351,7 @@
 	      currentMonth
 	    );
 	  };
+
 	  Calendar.prototype.onMonthChangeEnd = function onMonthChangeEnd (dir, rebuildBoth) {
 	    var calendar = this;
 	    var currentYear = calendar.currentYear;
@@ -20214,6 +20398,7 @@
 	      currentMonth
 	    );
 	  };
+
 	  Calendar.prototype.setMonthsTranslate = function setMonthsTranslate (translate) {
 	    var calendar = this;
 	    var $months = calendar.$months;
@@ -20238,6 +20423,7 @@
 	      .transform(("translate3d(" + (isH ? nextMonthTranslate : 0) + "%, " + (isH ? 0 : nextMonthTranslate) + "%, 0)"))
 	      .addClass('calendar-month-next');
 	  };
+
 	  Calendar.prototype.nextMonth = function nextMonth (transition) {
 	    var calendar = this;
 	    var params = calendar.params;
@@ -20286,6 +20472,7 @@
 	      calendar.onMonthChangeEnd('next');
 	    }
 	  };
+
 	  Calendar.prototype.prevMonth = function prevMonth (transition) {
 	    var calendar = this;
 	    var params = calendar.params;
@@ -20337,6 +20524,7 @@
 	      calendar.onMonthChangeEnd('prev');
 	    }
 	  };
+
 	  Calendar.prototype.resetMonth = function resetMonth (transition) {
 	    if ( transition === void 0 ) transition = '';
 
@@ -20435,10 +20623,12 @@
 	      calendar.onMonthChangeEnd(dir);
 	    }
 	  };
+
 	  Calendar.prototype.nextYear = function nextYear () {
 	    var calendar = this;
 	    calendar.setYearMonth(calendar.currentYear + 1);
 	  };
+
 	  Calendar.prototype.prevYear = function prevYear () {
 	    var calendar = this;
 	    calendar.setYearMonth(calendar.currentYear - 1);
@@ -20492,6 +20682,7 @@
 	    var d = new Date(date);
 	    return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
 	  };
+
 	  Calendar.prototype.renderMonths = function renderMonths (date) {
 	    var calendar = this;
 	    if (calendar.params.renderMonths) {
@@ -20499,6 +20690,7 @@
 	    }
 	    return ("\n      <div class=\"calendar-months-wrapper\">\n        " + (calendar.renderMonth(date, 'prev')) + "\n        " + (calendar.renderMonth(date)) + "\n        " + (calendar.renderMonth(date, 'next')) + "\n      </div>\n    ").trim();
 	  };
+
 	  Calendar.prototype.renderMonth = function renderMonth (d, offset) {
 	    var calendar = this;
 	    var params = calendar.params;
@@ -20629,6 +20821,7 @@
 	    monthHtml = "<div class=\"calendar-month\" data-year=\"" + year + "\" data-month=\"" + month + "\">" + monthHtml + "</div>";
 	    return monthHtml;
 	  };
+
 	  Calendar.prototype.renderWeekHeader = function renderWeekHeader () {
 	    var calendar = this;
 	    if (calendar.params.renderWeekHeader) {
@@ -20645,6 +20838,7 @@
 	    }
 	    return ("\n      <div class=\"calendar-week-header\">\n        " + weekDaysHtml + "\n      </div>\n    ").trim();
 	  };
+
 	  Calendar.prototype.renderMonthSelector = function renderMonthSelector () {
 	    var calendar = this;
 	    var app = calendar.app;
@@ -20662,6 +20856,7 @@
 	    var iconColor = app.theme === 'md' && needsBlackIcon ? 'color-black' : '';
 	    return ("\n      <div class=\"calendar-month-selector\">\n        <a href=\"#\" class=\"link icon-only calendar-prev-month-button\">\n          <i class=\"icon icon-prev " + iconColor + "\"></i>\n        </a>\n        <span class=\"current-month-value\"></span>\n        <a href=\"#\" class=\"link icon-only calendar-next-month-button\">\n          <i class=\"icon icon-next " + iconColor + "\"></i>\n        </a>\n      </div>\n    ").trim();
 	  };
+
 	  Calendar.prototype.renderYearSelector = function renderYearSelector () {
 	    var calendar = this;
 	    var app = calendar.app;
@@ -20679,6 +20874,7 @@
 	    var iconColor = app.theme === 'md' && needsBlackIcon ? 'color-black' : '';
 	    return ("\n      <div class=\"calendar-year-selector\">\n        <a href=\"#\" class=\"link icon-only calendar-prev-year-button\">\n          <i class=\"icon icon-prev " + iconColor + "\"></i>\n        </a>\n        <span class=\"current-year-value\"></span>\n        <a href=\"#\" class=\"link icon-only calendar-next-year-button\">\n          <i class=\"icon icon-next " + iconColor + "\"></i>\n        </a>\n      </div>\n    ").trim();
 	  };
+
 	  Calendar.prototype.renderHeader = function renderHeader () {
 	    var calendar = this;
 	    if (calendar.params.renderHeader) {
@@ -20686,6 +20882,7 @@
 	    }
 	    return ("\n      <div class=\"calendar-header\">\n        <div class=\"calendar-selected-date\">" + (calendar.params.headerPlaceholder) + "</div>\n      </div>\n    ").trim();
 	  };
+
 	  Calendar.prototype.renderFooter = function renderFooter () {
 	    var calendar = this;
 	    var app = calendar.app;
@@ -20694,6 +20891,7 @@
 	    }
 	    return ("\n      <div class=\"calendar-footer\">\n        <a href=\"#\" class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n      </div>\n    ").trim();
 	  };
+
 	  Calendar.prototype.renderToolbar = function renderToolbar () {
 	    var calendar = this;
 	    if (calendar.params.renderToolbar) {
@@ -20717,6 +20915,7 @@
 
 	    return inlineHtml;
 	  };
+
 	  Calendar.prototype.renderCustomModal = function renderCustomModal () {
 	    var calendar = this;
 	    var ref = calendar.params;
@@ -20732,6 +20931,7 @@
 
 	    return sheetHtml;
 	  };
+
 	  Calendar.prototype.renderSheet = function renderSheet () {
 	    var calendar = this;
 	    var ref = calendar.params;
@@ -20747,6 +20947,7 @@
 
 	    return sheetHtml;
 	  };
+
 	  Calendar.prototype.renderPopover = function renderPopover () {
 	    var calendar = this;
 	    var ref = calendar.params;
@@ -20762,6 +20963,7 @@
 
 	    return popoverHtml;
 	  };
+
 	  Calendar.prototype.render = function render () {
 	    var calendar = this;
 	    var params = calendar.params;
@@ -20771,11 +20973,12 @@
 	      if (modalType === 'auto') { modalType = calendar.isPopover() ? 'popover' : 'sheet'; }
 
 	      if (modalType === 'popover') { return calendar.renderPopover(); }
-	      else if (modalType === 'sheet') { return calendar.renderSheet(); }
+	      if (modalType === 'sheet') { return calendar.renderSheet(); }
 	      return calendar.renderCustomModal();
 	    }
 	    return calendar.renderInline();
 	  };
+
 	  Calendar.prototype.onOpen = function onOpen () {
 	    var calendar = this;
 	    var initialized = calendar.initialized;
@@ -20837,6 +21040,7 @@
 	    }
 	    calendar.emit('local::open calendarOpen', calendar);
 	  };
+
 	  Calendar.prototype.onOpened = function onOpened () {
 	    var calendar = this;
 	    calendar.opening = false;
@@ -20848,6 +21052,7 @@
 	    }
 	    calendar.emit('local::opened calendarOpened', calendar);
 	  };
+
 	  Calendar.prototype.onClose = function onClose () {
 	    var calendar = this;
 	    var app = calendar.app;
@@ -20869,6 +21074,7 @@
 	    }
 	    calendar.emit('local::close calendarClose', calendar);
 	  };
+
 	  Calendar.prototype.onClosed = function onClosed () {
 	    var calendar = this;
 	    calendar.opened = false;
@@ -20892,6 +21098,7 @@
 	    }
 	    calendar.emit('local::closed calendarClosed', calendar);
 	  };
+
 	  Calendar.prototype.open = function open () {
 	    var obj;
 
@@ -20956,6 +21163,7 @@
 	      calendar.modal.open();
 	    }
 	  };
+
 	  Calendar.prototype.close = function close () {
 	    var calendar = this;
 	    var opened = calendar.opened;
@@ -20972,6 +21180,7 @@
 	      calendar.modal.close();
 	    }
 	  };
+
 	  Calendar.prototype.init = function init () {
 	    var calendar = this;
 
@@ -20996,6 +21205,7 @@
 	    }
 	    calendar.emit('local::init calendarInit', calendar);
 	  };
+
 	  Calendar.prototype.destroy = function destroy () {
 	    var calendar = this;
 	    if (calendar.destroyed) { return; }
@@ -21496,11 +21706,13 @@
 	  if ( Framework7Class$$1 ) Picker.__proto__ = Framework7Class$$1;
 	  Picker.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Picker.prototype.constructor = Picker;
+
 	  Picker.prototype.initInput = function initInput () {
 	    var picker = this;
 	    if (!picker.$inputEl) { return; }
 	    if (picker.params.inputReadOnly) { picker.$inputEl.prop('readOnly', true); }
 	  };
+
 	  Picker.prototype.resizeCols = function resizeCols () {
 	    var picker = this;
 	    if (!picker.opened) { return; }
@@ -21511,6 +21723,7 @@
 	      }
 	    }
 	  };
+
 	  Picker.prototype.isPopover = function isPopover () {
 	    var picker = this;
 	    var app = picker.app;
@@ -21521,14 +21734,15 @@
 
 	    if (!picker.inline && picker.inputEl) {
 	      if (params.openIn === 'popover') { return true; }
-	      else if (app.device.ios) {
+	      if (app.device.ios) {
 	        return !!app.device.ipad;
-	      } else if (app.width >= 768) {
+	      } if (app.width >= 768) {
 	        return true;
 	      }
 	    }
 	    return false;
 	  };
+
 	  Picker.prototype.formatValue = function formatValue () {
 	    var picker = this;
 	    var value = picker.value;
@@ -21538,6 +21752,7 @@
 	    }
 	    return value.join(' ');
 	  };
+
 	  Picker.prototype.setValue = function setValue (values, transition) {
 	    var picker = this;
 	    var valueIndex = 0;
@@ -21553,10 +21768,12 @@
 	      }
 	    }
 	  };
+
 	  Picker.prototype.getValue = function getValue () {
 	    var picker = this;
 	    return picker.value;
 	  };
+
 	  Picker.prototype.updateValue = function updateValue (forceValues) {
 	    var picker = this;
 	    var newValue = forceValues || [];
@@ -21592,6 +21809,7 @@
 	      picker.$inputEl.trigger('change');
 	    }
 	  };
+
 	  Picker.prototype.initColumn = function initColumn (colEl, updateItems) {
 	    var picker = this;
 	    pickerColumn.call(picker, colEl, updateItems);
@@ -21605,6 +21823,7 @@
 	      picker.cols[index].destroy();
 	    }
 	  };
+
 	  Picker.prototype.renderToolbar = function renderToolbar () {
 	    var picker = this;
 	    if (picker.params.renderToolbar) { return picker.params.renderToolbar.call(picker, picker); }
@@ -21625,6 +21844,7 @@
 
 	    return onlyItems ? columnItemsHtml.trim() : columnHtml.trim();
 	  };
+
 	  Picker.prototype.renderInline = function renderInline () {
 	    var picker = this;
 	    var ref = picker.params;
@@ -21635,6 +21855,7 @@
 
 	    return inlineHtml;
 	  };
+
 	  Picker.prototype.renderSheet = function renderSheet () {
 	    var picker = this;
 	    var ref = picker.params;
@@ -21645,6 +21866,7 @@
 
 	    return sheetHtml;
 	  };
+
 	  Picker.prototype.renderPopover = function renderPopover () {
 	    var picker = this;
 	    var ref = picker.params;
@@ -21655,6 +21877,7 @@
 
 	    return popoverHtml;
 	  };
+
 	  Picker.prototype.render = function render () {
 	    var picker = this;
 	    if (picker.params.render) { return picker.params.render.call(picker); }
@@ -21664,6 +21887,7 @@
 	    }
 	    return picker.renderInline();
 	  };
+
 	  Picker.prototype.onOpen = function onOpen () {
 	    var picker = this;
 	    var initialized = picker.initialized;
@@ -21682,8 +21906,8 @@
 	    $el.find('.picker-column').each(function (index, colEl) {
 	      var updateItems = true;
 	      if (
-	        (!initialized && params.value) ||
-	        (initialized && value)
+	        (!initialized && params.value)
+	        || (initialized && value)
 	      ) {
 	        updateItems = false;
 	      }
@@ -21716,6 +21940,7 @@
 	    }
 	    picker.emit('local::open pickerOpen', picker);
 	  };
+
 	  Picker.prototype.onOpened = function onOpened () {
 	    var picker = this;
 
@@ -21727,6 +21952,7 @@
 	    }
 	    picker.emit('local::opened pickerOpened', picker);
 	  };
+
 	  Picker.prototype.onClose = function onClose () {
 	    var picker = this;
 	    var app = picker.app;
@@ -21749,6 +21975,7 @@
 	    }
 	    picker.emit('local::close pickerClose', picker);
 	  };
+
 	  Picker.prototype.onClosed = function onClosed () {
 	    var picker = this;
 	    picker.opened = false;
@@ -21772,6 +21999,7 @@
 	    }
 	    picker.emit('local::closed pickerClosed', picker);
 	  };
+
 	  Picker.prototype.open = function open () {
 	    var obj;
 
@@ -21826,6 +22054,7 @@
 	      picker.modal.open();
 	    }
 	  };
+
 	  Picker.prototype.close = function close () {
 	    var picker = this;
 	    var opened = picker.opened;
@@ -21842,6 +22071,7 @@
 	      picker.modal.close();
 	    }
 	  };
+
 	  Picker.prototype.init = function init () {
 	    var picker = this;
 
@@ -21866,6 +22096,7 @@
 	    }
 	    picker.emit('local::init pickerInit', picker);
 	  };
+
 	  Picker.prototype.destroy = function destroy () {
 	    var picker = this;
 	    if (picker.destroyed) { return; }
@@ -22289,10 +22520,12 @@
 	  if ( Framework7Class$$1 ) PullToRefresh.__proto__ = Framework7Class$$1;
 	  PullToRefresh.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  PullToRefresh.prototype.constructor = PullToRefresh;
+
 	  PullToRefresh.prototype.init = function init () {
 	    var ptr = this;
 	    ptr.attachEvents();
 	  };
+
 	  PullToRefresh.prototype.destroy = function destroy () {
 	    var ptr = this;
 	    ptr.emit('local::beforeDestroy ptrBeforeDestroy', ptr);
@@ -22450,10 +22683,10 @@
 	    var threshold = app.params.lazy.threshold || 0;
 
 	    return (
-	      rect.top >= (0 - threshold) &&
-	      rect.left >= (0 - threshold) &&
-	      rect.top <= (app.height + threshold) &&
-	      rect.left <= (app.width + threshold)
+	      rect.top >= (0 - threshold)
+	      && rect.left >= (0 - threshold)
+	      && rect.top <= (app.height + threshold)
+	      && rect.left <= (app.width + threshold)
 	    );
 	  },
 	  loadImage: function loadImage(imageEl, callback) {
@@ -22682,6 +22915,7 @@
 	  if ( Framework7Class$$1 ) DataTable.__proto__ = Framework7Class$$1;
 	  DataTable.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  DataTable.prototype.constructor = DataTable;
+
 	  DataTable.prototype.setCollapsibleLabels = function setCollapsibleLabels () {
 	    var table = this;
 	    if (!table.collapsible) { return; }
@@ -22694,6 +22928,7 @@
 	      }
 	    });
 	  };
+
 	  DataTable.prototype.checkSelectedHeader = function checkSelectedHeader () {
 	    var table = this;
 	    if (table.$headerEl.length > 0 && table.$headerSelectedEl.length > 0) {
@@ -22702,12 +22937,14 @@
 	      table.$headerSelectedEl.find('.data-table-selected-count').text(checkedItems);
 	    }
 	  };
+
 	  DataTable.prototype.init = function init () {
 	    var table = this;
 	    table.attachEvents();
 	    table.setCollapsibleLabels();
 	    table.checkSelectedHeader();
 	  };
+
 	  DataTable.prototype.destroy = function destroy () {
 	    var table = this;
 
@@ -22798,12 +23035,12 @@
 	      fab: fab,
 	    };
 
-	    var diffX = (fab.offset.left + (fab.width / 2)) -
-	                  (target.offset.left + (target.width / 2)) -
-	                  fab.translateX;
-	    var diffY = (fab.offset.top + (fab.height / 2)) -
-	                  (target.offset.top + (target.height / 2)) -
-	                  fab.translateY;
+	    var diffX = (fab.offset.left + (fab.width / 2))
+	                  - (target.offset.left + (target.width / 2))
+	                  - fab.translateX;
+	    var diffY = (fab.offset.top + (fab.height / 2))
+	                  - (target.offset.top + (target.height / 2))
+	                  - fab.translateY;
 	    var scaleX = target.width / fab.width;
 	    var scaleY = target.height / fab.height;
 
@@ -22818,12 +23055,12 @@
 	      target.offset = $targetEl.offset();
 	      fab.offset = $fabEl.offset();
 
-	      var diffXNew = (fab.offset.left + (fab.width / 2)) -
-	                      (target.offset.left + (target.width / 2)) -
-	                      fab.translateX;
-	      var diffYNew = (fab.offset.top + (fab.height / 2)) -
-	                      (target.offset.top + (target.height / 2)) -
-	                      fab.translateY;
+	      var diffXNew = (fab.offset.left + (fab.width / 2))
+	                      - (target.offset.left + (target.width / 2))
+	                      - fab.translateX;
+	      var diffYNew = (fab.offset.top + (fab.height / 2))
+	                      - (target.offset.top + (target.height / 2))
+	                      - fab.translateY;
 	      var scaleXNew = target.width / fab.width;
 	      var scaleYNew = target.height / fab.height;
 
@@ -22861,12 +23098,12 @@
 	    var fab = morphData.fab;
 	    if ($targetEl.length === 0) { return; }
 
-	    var diffX = (fab.offset.left + (fab.width / 2)) -
-	                  (target.offset.left + (target.width / 2)) -
-	                  fab.translateX;
-	    var diffY = (fab.offset.top + (fab.height / 2)) -
-	                  (target.offset.top + (target.height / 2)) -
-	                  fab.translateY;
+	    var diffX = (fab.offset.left + (fab.width / 2))
+	                  - (target.offset.left + (target.width / 2))
+	                  - fab.translateX;
+	    var diffY = (fab.offset.top + (fab.height / 2))
+	                  - (target.offset.top + (target.height / 2))
+	                  - fab.translateY;
 	    var scaleX = target.width / fab.width;
 	    var scaleY = target.height / fab.height;
 
@@ -23159,10 +23396,10 @@
 	      var value = sb.$inputEl.val().trim();
 	      if (
 	        (
-	          (sb.$searchContainer && sb.$searchContainer.length > 0) &&
-	          (sb.params.searchIn || sb.isVirtualList || sb.params.searchIn === sb.params.searchItem)
-	        ) ||
-	        sb.params.customSearch
+	          (sb.$searchContainer && sb.$searchContainer.length > 0)
+	          && (sb.params.searchIn || sb.isVirtualList || sb.params.searchIn === sb.params.searchItem)
+	        )
+	        || sb.params.customSearch
 	      ) {
 	        sb.search(value, true);
 	      }
@@ -23233,6 +23470,7 @@
 	  if ( FrameworkClass ) Searchbar.__proto__ = FrameworkClass;
 	  Searchbar.prototype = Object.create( FrameworkClass && FrameworkClass.prototype );
 	  Searchbar.prototype.constructor = Searchbar;
+
 	  Searchbar.prototype.clear = function clear (e) {
 	    var sb = this;
 	    if (!sb.query && e && $$1(e.target).hasClass('searchbar-clear')) {
@@ -23245,6 +23483,7 @@
 	    sb.emit('local::clear searchbarClear', sb, previousQuery);
 	    return sb;
 	  };
+
 	  Searchbar.prototype.setDisableButtonMargin = function setDisableButtonMargin () {
 	    var sb = this;
 	    if (sb.expandable) { return; }
@@ -23256,6 +23495,7 @@
 	    sb.$disableButtonEl.transition('');
 	    sb.disableButtonHasMargin = true;
 	  };
+
 	  Searchbar.prototype.enable = function enable (setFocus) {
 	    var sb = this;
 	    if (sb.enabled) { return sb; }
@@ -23306,6 +23546,7 @@
 	    }
 	    return sb;
 	  };
+
 	  Searchbar.prototype.disable = function disable () {
 	    var sb = this;
 	    if (!sb.enabled) { return sb; }
@@ -23331,12 +23572,14 @@
 	    sb.emit('local::disable searchbarDisable', sb);
 	    return sb;
 	  };
+
 	  Searchbar.prototype.toggle = function toggle () {
 	    var sb = this;
 	    if (sb.enabled) { sb.disable(); }
 	    else { sb.enable(true); }
 	    return sb;
 	  };
+
 	  Searchbar.prototype.backdropShow = function backdropShow () {
 	    var sb = this;
 	    if (sb.$backdropEl) {
@@ -23344,6 +23587,7 @@
 	    }
 	    return sb;
 	  };
+
 	  Searchbar.prototype.backdropHide = function backdropHide () {
 	    var sb = this;
 	    if (sb.$backdropEl) {
@@ -23351,6 +23595,7 @@
 	    }
 	    return sb;
 	  };
+
 	  Searchbar.prototype.search = function search (query, internal) {
 	    var sb = this;
 	    if (sb.previousQuery && query.trim() === sb.previousQuery) { return sb; }
@@ -23381,8 +23626,8 @@
 	    }
 	    // Add active/inactive classes on overlay
 	    if (
-	      ($searchContainer && $searchContainer.length && $el.hasClass('searchbar-enabled')) ||
-	      (sb.params.customSearch && $el.hasClass('searchbar-enabled'))
+	      ($searchContainer && $searchContainer.length && $el.hasClass('searchbar-enabled'))
+	      || (sb.params.customSearch && $el.hasClass('searchbar-enabled'))
 	    ) {
 	      if (query.length === 0) {
 	        sb.backdropShow();
@@ -23494,10 +23739,12 @@
 
 	    return sb;
 	  };
+
 	  Searchbar.prototype.init = function init () {
 	    var sb = this;
 	    sb.attachEvents();
 	  };
+
 	  Searchbar.prototype.destroy = function destroy () {
 	    var sb = this;
 	    sb.emit('local::beforeDestroy searchbarBeforeDestroy', sb);
@@ -23694,6 +23941,7 @@
 
 	    return data;
 	  };
+
 	  Messages.prototype.getMessagesData = function getMessagesData () {
 	    var m = this;
 	    var data = [];
@@ -23702,6 +23950,7 @@
 	    });
 	    return data;
 	  };
+
 	  Messages.prototype.renderMessage = function renderMessage (messageToRender) {
 	    var m = this;
 	    var message = Utils.extend({
@@ -23715,6 +23964,7 @@
 	    }
 	    return ("\n      <div class=\"message message-" + (message.type) + " " + (message.isTyping ? 'message-typing' : '') + "\">\n        " + (message.avatar ? ("\n        <div class=\"message-avatar\" style=\"background-image:url(" + (message.avatar) + ")\"></div>\n        ") : '') + "\n        <div class=\"message-content\">\n          " + (message.name ? ("<div class=\"message-name\">" + (message.name) + "</div>") : '') + "\n          " + (message.header ? ("<div class=\"message-header\">" + (message.header) + "</div>") : '') + "\n          <div class=\"message-bubble\">\n            " + (message.textHeader ? ("<div class=\"message-text-header\">" + (message.textHeader) + "</div>") : '') + "\n            " + (message.image ? ("<div class=\"message-image\">" + (message.image) + "</div>") : '') + "\n            " + (message.imageSrc && !message.image ? ("<div class=\"message-image\"><img src=\"" + (message.imageSrc) + "\"></div>") : '') + "\n            " + (message.text || message.isTyping ? ("<div class=\"message-text\">" + (message.text || '') + (message.isTyping ? '<div class="message-typing-indicator"><div></div><div></div><div></div></div>' : '') + "</div>") : '') + "\n            " + (message.textFooter ? ("<div class=\"message-text-footer\">" + (message.textFooter) + "</div>") : '') + "\n          </div>\n          " + (message.footer ? ("<div class=\"message-footer\">" + (message.footer) + "</div>") : '') + "\n        </div>\n      </div>\n    ");
 	  };
+
 	  Messages.prototype.renderMessages = function renderMessages (messagesToRender, method) {
 	    if ( messagesToRender === void 0 ) messagesToRender = this.messages;
 	    if ( method === void 0 ) method = this.params.newMessagesFirst ? 'prepend' : 'append';
@@ -23723,6 +23973,7 @@
 	    var html = messagesToRender.map(function (message) { return m.renderMessage(message); }).join('');
 	    m.$el[method](html);
 	  };
+
 	  Messages.prototype.isFirstMessage = function isFirstMessage () {
 	    var ref;
 
@@ -23732,6 +23983,7 @@
 	    if (m.params.firstMessageRule) { return (ref = m.params).firstMessageRule.apply(ref, args); }
 	    return false;
 	  };
+
 	  Messages.prototype.isLastMessage = function isLastMessage () {
 	    var ref;
 
@@ -23741,6 +23993,7 @@
 	    if (m.params.lastMessageRule) { return (ref = m.params).lastMessageRule.apply(ref, args); }
 	    return false;
 	  };
+
 	  Messages.prototype.isTailMessage = function isTailMessage () {
 	    var ref;
 
@@ -23750,6 +24003,7 @@
 	    if (m.params.tailMessageRule) { return (ref = m.params).tailMessageRule.apply(ref, args); }
 	    return false;
 	  };
+
 	  Messages.prototype.isSameNameMessage = function isSameNameMessage () {
 	    var ref;
 
@@ -23759,6 +24013,7 @@
 	    if (m.params.sameNameMessageRule) { return (ref = m.params).sameNameMessageRule.apply(ref, args); }
 	    return false;
 	  };
+
 	  Messages.prototype.isSameHeaderMessage = function isSameHeaderMessage () {
 	    var ref;
 
@@ -23768,6 +24023,7 @@
 	    if (m.params.sameHeaderMessageRule) { return (ref = m.params).sameHeaderMessageRule.apply(ref, args); }
 	    return false;
 	  };
+
 	  Messages.prototype.isSameFooterMessage = function isSameFooterMessage () {
 	    var ref;
 
@@ -23777,6 +24033,7 @@
 	    if (m.params.sameFooterMessageRule) { return (ref = m.params).sameFooterMessageRule.apply(ref, args); }
 	    return false;
 	  };
+
 	  Messages.prototype.isSameAvatarMessage = function isSameAvatarMessage () {
 	    var ref;
 
@@ -23786,6 +24043,7 @@
 	    if (m.params.sameAvatarMessageRule) { return (ref = m.params).sameAvatarMessageRule.apply(ref, args); }
 	    return false;
 	  };
+
 	  Messages.prototype.isCustomClassMessage = function isCustomClassMessage () {
 	    var ref;
 
@@ -23795,6 +24053,7 @@
 	    if (m.params.customClassMessageRule) { return (ref = m.params).customClassMessageRule.apply(ref, args); }
 	    return undefined;
 	  };
+
 	  Messages.prototype.layout = function layout () {
 	    var m = this;
 	    m.$el.find('.message, .messages-title').each(function (index, messageEl) {
@@ -23842,11 +24101,13 @@
 	      });
 	    });
 	  };
+
 	  Messages.prototype.clear = function clear () {
 	    var m = this;
 	    m.messages = [];
 	    m.$el.html('');
 	  };
+
 	  Messages.prototype.removeMessage = function removeMessage (messageToRemove, layout) {
 	    if ( layout === void 0 ) layout = true;
 
@@ -23872,6 +24133,7 @@
 	    if (m.params.autoLayout && layout) { m.layout(); }
 	    return m;
 	  };
+
 	  Messages.prototype.removeMessages = function removeMessages (messagesToRemove, layout) {
 	    if ( layout === void 0 ) layout = true;
 
@@ -23916,6 +24178,7 @@
 
 	    return m.addMessages([messageToAdd], animate, method);
 	  };
+
 	  Messages.prototype.addMessages = function addMessages () {
 	    var assign, assign$1;
 
@@ -24000,6 +24263,7 @@
 
 	    return m;
 	  };
+
 	  Messages.prototype.showTyping = function showTyping (message) {
 	    if ( message === void 0 ) message = {};
 
@@ -24014,6 +24278,7 @@
 	    }, message));
 	    return m;
 	  };
+
 	  Messages.prototype.hideTyping = function hideTyping () {
 	    var m = this;
 	    var typingMessageIndex;
@@ -24035,6 +24300,7 @@
 	    }
 	    return m;
 	  };
+
 	  Messages.prototype.scroll = function scroll (duration, scrollTop) {
 	    if ( duration === void 0 ) duration = 300;
 
@@ -24049,6 +24315,7 @@
 	    m.$pageContentEl.scrollTop(newScrollTop, duration);
 	    return m;
 	  };
+
 	  Messages.prototype.init = function init () {
 	    var m = this;
 	    if (!m.messages || m.messages.length === 0) {
@@ -24060,6 +24327,7 @@
 	    if (m.params.autoLayout) { m.layout(); }
 	    if (m.params.scrollMessages) { m.scroll(0); }
 	  };
+
 	  Messages.prototype.destroy = function destroy () {
 	    var m = this;
 	    m.emit('local::beforeDestroy messagesBeforeDestroy', m);
@@ -24260,35 +24528,42 @@
 	  if ( Framework7Class$$1 ) Messagebar.__proto__ = Framework7Class$$1;
 	  Messagebar.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Messagebar.prototype.constructor = Messagebar;
+
 	  Messagebar.prototype.focus = function focus () {
 	    var messagebar = this;
 	    messagebar.$textareaEl.focus();
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.blur = function blur () {
 	    var messagebar = this;
 	    messagebar.$textareaEl.blur();
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.clear = function clear () {
 	    var messagebar = this;
 	    messagebar.$textareaEl.val('').trigger('change');
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.getValue = function getValue () {
 	    var messagebar = this;
 	    return messagebar.$textareaEl.val().trim();
 	  };
+
 	  Messagebar.prototype.setValue = function setValue (value) {
 	    var messagebar = this;
 	    messagebar.$textareaEl.val(value).trigger('change');
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.setPlaceholder = function setPlaceholder (placeholder) {
 	    var messagebar = this;
 	    messagebar.$textareaEl.attr('placeholder', placeholder);
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.resizePage = function resizePage () {
 	    var messagebar = this;
 	    var params = messagebar.params;
@@ -24324,6 +24599,7 @@
 	      }
 	    }
 	  };
+
 	  Messagebar.prototype.checkEmptyState = function checkEmptyState () {
 	    var messagebar = this;
 	    var $el = messagebar.$el;
@@ -24335,6 +24611,7 @@
 	      $el.removeClass('messagebar-with-value');
 	    }
 	  };
+
 	  Messagebar.prototype.attachmentsCreate = function attachmentsCreate (innerHTML) {
 	    if ( innerHTML === void 0 ) innerHTML = '';
 
@@ -24347,6 +24624,7 @@
 	    });
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.attachmentsShow = function attachmentsShow (innerHTML) {
 	    if ( innerHTML === void 0 ) innerHTML = '';
 
@@ -24362,6 +24640,7 @@
 	    }
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.attachmentsHide = function attachmentsHide () {
 	    var messagebar = this;
 	    messagebar.$el.removeClass('messagebar-attachments-visible');
@@ -24371,6 +24650,7 @@
 	    }
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.attachmentsToggle = function attachmentsToggle () {
 	    var messagebar = this;
 	    if (messagebar.attachmentsVisible) {
@@ -24380,6 +24660,7 @@
 	    }
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.renderAttachment = function renderAttachment (attachment) {
 	    var messagebar = this;
 	    if (messagebar.params.renderAttachment) {
@@ -24387,6 +24668,7 @@
 	    }
 	    return ("\n      <div class=\"messagebar-attachment\">\n        <img src=\"" + attachment + "\">\n        <span class=\"messagebar-attachment-delete\"></span>\n      </div>\n    ");
 	  };
+
 	  Messagebar.prototype.renderAttachments = function renderAttachments () {
 	    var messagebar = this;
 	    var html;
@@ -24401,6 +24683,7 @@
 	      messagebar.$attachmentsEl.html(html);
 	    }
 	  };
+
 	  Messagebar.prototype.sheetCreate = function sheetCreate (innerHTML) {
 	    if ( innerHTML === void 0 ) innerHTML = '';
 
@@ -24413,6 +24696,7 @@
 	    });
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.sheetShow = function sheetShow (innerHTML) {
 	    if ( innerHTML === void 0 ) innerHTML = '';
 
@@ -24428,6 +24712,7 @@
 	    }
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.sheetHide = function sheetHide () {
 	    var messagebar = this;
 	    messagebar.$el.removeClass('messagebar-sheet-visible');
@@ -24437,6 +24722,7 @@
 	    }
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.sheetToggle = function sheetToggle () {
 	    var messagebar = this;
 	    if (messagebar.sheetVisible) {
@@ -24446,12 +24732,14 @@
 	    }
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.init = function init () {
 	    var messagebar = this;
 	    messagebar.attachEvents();
 	    messagebar.checkEmptyState();
 	    return messagebar;
 	  };
+
 	  Messagebar.prototype.destroy = function destroy () {
 	    var messagebar = this;
 	    messagebar.emit('local::beforeDestroy messagebarBeforeDestroy', messagebar);
@@ -30472,6 +30760,7 @@
 	  if ( Framework7Class$$1 ) PhotoBrowser.__proto__ = Framework7Class$$1;
 	  PhotoBrowser.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  PhotoBrowser.prototype.constructor = PhotoBrowser;
+
 	  PhotoBrowser.prototype.onSlideChange = function onSlideChange (swiper) {
 	    var pb = this;
 	    pb.activeIndex = swiper.activeIndex;
@@ -30517,12 +30806,14 @@
 	      if ('pause' in previousSlideVideo[0]) { previousSlideVideo[0].pause(); }
 	    }
 	  };
+
 	  PhotoBrowser.prototype.onTouchStart = function onTouchStart () {
 	    var pb = this;
 	    var swipeToClose = pb.swipeToClose;
 	    if (!swipeToClose.allow) { return; }
 	    swipeToClose.isTouched = true;
 	  };
+
 	  PhotoBrowser.prototype.onTouchMove = function onTouchMove (e) {
 	    var pb = this;
 	    var swipeToClose = pb.swipeToClose;
@@ -30546,6 +30837,7 @@
 	    swipeToClose.activeSlide.transform(("translate3d(0," + (-swipeToClose.diff) + "px,0)"));
 	    pb.swiper.$el.css('background-color', ("rgba(" + color + ", " + color + ", " + color + ", " + opacity + ")")).transition(0);
 	  };
+
 	  PhotoBrowser.prototype.onTouchEnd = function onTouchEnd () {
 	    var pb = this;
 	    var swipeToClose = pb.swipeToClose;
@@ -30596,6 +30888,7 @@
 	    var navbarHtml = ("\n      <div class=\"navbar\">\n        <div class=\"navbar-inner sliding\">\n          <div class=\"left\">\n            <a href=\"#\" class=\"link " + (isPopup ? 'popup-close' : '') + " " + (!backLinkText ? 'icon-only' : '') + " " + (!isPopup ? 'back' : '') + "\" " + (isPopup ? 'data-popup=".photo-browser-popup"' : '') + ">\n              <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n              " + (backLinkText ? ("<span>" + backLinkText + "</span>") : '') + "\n            </a>\n          </div>\n          <div class=\"title\">\n            <span class=\"photo-browser-current\"></span>\n            <span class=\"photo-browser-of\">" + (pb.params.navbarOfText) + "</span>\n            <span class=\"photo-browser-total\"></span>\n          </div>\n          <div class=\"right\"></div>\n        </div>\n      </div>\n    ").trim();
 	    return navbarHtml;
 	  };
+
 	  PhotoBrowser.prototype.renderToolbar = function renderToolbar () {
 	    var pb = this;
 	    if (pb.params.renderToolbar) { return pb.params.renderToolbar.call(pb); }
@@ -30606,30 +30899,35 @@
 	    var toolbarHtml = ("\n      <div class=\"toolbar tabbar toolbar-bottom-md\">\n        <div class=\"toolbar-inner\">\n          <a href=\"#\" class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a href=\"#\" class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
 	    return toolbarHtml;
 	  };
+
 	  PhotoBrowser.prototype.renderCaption = function renderCaption (caption, index) {
 	    var pb = this;
 	    if (pb.params.renderCaption) { return pb.params.renderCaption.call(pb, caption, index); }
 	    var captionHtml = ("\n      <div class=\"photo-browser-caption\" data-caption-index=\"" + index + "\">\n        " + caption + "\n      </div>\n    ").trim();
 	    return captionHtml;
 	  };
+
 	  PhotoBrowser.prototype.renderObject = function renderObject (photo, index) {
 	    var pb = this;
 	    if (pb.params.renderObject) { return pb.params.renderObject.call(pb, photo, index); }
 	    var objHtml = "\n      <div class=\"photo-browser-slide photo-browser-object-slide swiper-slide\" data-swiper-slide-index=\"" + index + "\">" + (photo.html ? photo.html : photo) + "</div>\n    ";
 	    return objHtml;
 	  };
+
 	  PhotoBrowser.prototype.renderLazyPhoto = function renderLazyPhoto (photo, index) {
 	    var pb = this;
 	    if (pb.params.renderLazyPhoto) { return pb.params.renderLazyPhoto.call(pb, photo, index); }
 	    var photoHtml = ("\n      <div class=\"photo-browser-slide photo-browser-slide-lazy swiper-slide\" data-swiper-slide-index=\"" + index + "\">\n          <div class=\"preloader swiper-lazy-preloader " + (pb.params.theme === 'dark' ? 'color-white' : '') + "\">" + (pb.app.theme === 'md' ? Utils.mdPreloaderContent : '') + "</div>\n          <span class=\"swiper-zoom-container\">\n              <img data-src=\"" + (photo.url ? photo.url : photo) + "\" class=\"swiper-lazy\">\n          </span>\n      </div>\n    ").trim();
 	    return photoHtml;
 	  };
+
 	  PhotoBrowser.prototype.renderPhoto = function renderPhoto (photo, index) {
 	    var pb = this;
 	    if (pb.params.renderPhoto) { return pb.params.renderPhoto.call(pb, photo, index); }
 	    var photoHtml = ("\n      <div class=\"photo-browser-slide swiper-slide\" data-swiper-slide-index=\"" + index + "\">\n        <span class=\"swiper-zoom-container\">\n          <img src=\"" + (photo.url ? photo.url : photo) + "\">\n        </span>\n      </div>\n    ").trim();
 	    return photoHtml;
 	  };
+
 	  PhotoBrowser.prototype.render = function render () {
 	    var pb = this;
 	    if (pb.params.render) { return pb.params.render.call(pb, pb.params); }
@@ -30639,19 +30937,22 @@
 	              }).join(' ')) + "\n            </div>\n            <div class=\"photo-browser-swiper-container swiper-container\">\n              <div class=\"photo-browser-swiper-wrapper swiper-wrapper\">\n                " + (pb.params.virtualSlides ? '' : pb.params.photos.map(function (photo, index) {
 	                  if (photo.html || ((typeof photo === 'string' || photo instanceof String) && photo.indexOf('<') >= 0 && photo.indexOf('>') >= 0)) {
 	                    return pb.renderObject(photo, index);
-	                  } else if (pb.params.swiper.lazy === true || (pb.params.swiper.lazy && pb.params.swiper.lazy.enabled)) {
+	                  }
+	                  if (pb.params.swiper.lazy === true || (pb.params.swiper.lazy && pb.params.swiper.lazy.enabled)) {
 	                    return pb.renderLazyPhoto(photo, index);
 	                  }
 	                  return pb.renderPhoto(photo, index);
 	                }).join(' ')) + "\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ").trim();
 	    return html;
 	  };
+
 	  PhotoBrowser.prototype.renderStandalone = function renderStandalone () {
 	    var pb = this;
 	    if (pb.params.renderStandalone) { return pb.params.renderStandalone.call(pb); }
 	    var standaloneHtml = "<div class=\"popup photo-browser-popup photo-browser-standalone popup-tablet-fullscreen\">" + (pb.render()) + "</div>";
 	    return standaloneHtml;
 	  };
+
 	  PhotoBrowser.prototype.renderPage = function renderPage () {
 	    var pb = this;
 	    if (pb.params.renderPage) { return pb.params.renderPage.call(pb); }
@@ -30659,6 +30960,7 @@
 
 	    return pageHtml;
 	  };
+
 	  PhotoBrowser.prototype.renderPopup = function renderPopup () {
 	    var pb = this;
 	    if (pb.params.renderPopup) { return pb.params.renderPopup.call(pb); }
@@ -30773,7 +31075,8 @@
 	          renderSlide: function renderSlide(photo, index) {
 	            if (photo.html || ((typeof photo === 'string' || photo instanceof String) && photo.indexOf('<') >= 0 && photo.indexOf('>') >= 0)) {
 	              return pb.renderObject(photo, index);
-	            } else if (pb.params.swiper.lazy === true || (pb.params.swiper.lazy && pb.params.swiper.lazy.enabled)) {
+	            }
+	            if (pb.params.swiper.lazy === true || (pb.params.swiper.lazy && pb.params.swiper.lazy.enabled)) {
 	              return pb.renderLazyPhoto(photo, index);
 	            }
 	            return pb.renderPhoto(photo, index);
@@ -30792,6 +31095,7 @@
 	    }
 	    pb.emit('local::open photoBrowserOpen', pb);
 	  };
+
 	  PhotoBrowser.prototype.onOpened = function onOpened () {
 	    var pb = this;
 
@@ -30800,6 +31104,7 @@
 	    }
 	    pb.emit('local::opened photoBrowserOpened', pb);
 	  };
+
 	  PhotoBrowser.prototype.onClose = function onClose () {
 	    var pb = this;
 	    if (pb.destroyed) { return; }
@@ -30815,6 +31120,7 @@
 	    }
 	    pb.emit('local::close photoBrowserClose', pb);
 	  };
+
 	  PhotoBrowser.prototype.onClosed = function onClosed () {
 	    var pb = this;
 	    if (pb.destroyed) { return; }
@@ -30950,6 +31256,7 @@
 	    pb.exposed = true;
 	    return pb;
 	  };
+
 	  PhotoBrowser.prototype.expositionDisable = function expositionDisable () {
 	    var pb = this;
 	    if (pb.params.type === 'page') {
@@ -30960,6 +31267,7 @@
 	    pb.exposed = false;
 	    return pb;
 	  };
+
 	  PhotoBrowser.prototype.expositionToggle = function expositionToggle () {
 	    var pb = this;
 	    if (pb.params.type === 'page') {
@@ -30970,6 +31278,7 @@
 	    pb.exposed = !pb.exposed;
 	    return pb;
 	  };
+
 	  PhotoBrowser.prototype.open = function open (index) {
 	    var pb = this;
 	    var type = pb.params.type;
@@ -30978,7 +31287,8 @@
 	        pb.swiper.slideTo(parseInt(index, 10));
 	      }
 	      return pb;
-	    } else if (typeof index !== 'undefined') {
+	    }
+	    if (typeof index !== 'undefined') {
 	      pb.activeIndex = index;
 	    }
 	    if (type === 'standalone') {
@@ -30992,6 +31302,7 @@
 	    }
 	    return pb;
 	  };
+
 	  PhotoBrowser.prototype.close = function close () {
 	    var pb = this;
 	    if (!pb.opened) { return pb; }
@@ -31010,6 +31321,7 @@
 	  };
 	  // eslint-disable-next-line
 	  PhotoBrowser.prototype.init = function init () {};
+
 	  PhotoBrowser.prototype.destroy = function destroy () {
 	    var pb = this;
 	    pb.emit('local::beforeDestroy photoBrowserBeforeDestroy', pb);
@@ -31227,8 +31539,8 @@
 	      notification.$el.transform('');
 
 	      if (
-	        (touchesDiff < -10 && timeDiff < 300) ||
-	        (-touchesDiff >= notificationHeight / 1)
+	        (touchesDiff < -10 && timeDiff < 300)
+	        || (-touchesDiff >= notificationHeight / 1)
 	      ) {
 	        notification.close();
 	      }
@@ -31286,6 +31598,7 @@
 	  if ( Modal$$1 ) Notification.__proto__ = Modal$$1;
 	  Notification.prototype = Object.create( Modal$$1 && Modal$$1.prototype );
 	  Notification.prototype.constructor = Notification;
+
 	  Notification.prototype.render = function render () {
 	    var notification = this;
 	    if (notification.params.render) { return notification.params.render.call(notification, notification); }
@@ -31632,6 +31945,7 @@
 	  if ( Framework7Class$$1 ) Autocomplete.__proto__ = Framework7Class$$1;
 	  Autocomplete.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Autocomplete.prototype.constructor = Autocomplete;
+
 	  Autocomplete.prototype.positionDropdown = function positionDropdown () {
 	    var obj;
 
@@ -31677,10 +31991,12 @@
 	      maxHeight: (maxHeight + "px")
 	    }, obj[paddingProp] = $listEl.length > 0 && !ac.params.expandInput ? (paddingValue + "px") : '', obj ));
 	  };
+
 	  Autocomplete.prototype.focus = function focus () {
 	    var ac = this;
 	    ac.$el.find('input[type=search]').focus();
 	  };
+
 	  Autocomplete.prototype.source = function source (query) {
 	    var ac = this;
 	    if (!ac.params.source) { return; }
@@ -31722,6 +32038,7 @@
 	      }
 	    });
 	  };
+
 	  Autocomplete.prototype.updateValues = function updateValues () {
 	    var ac = this;
 	    var valuesHTML = '';
@@ -31737,6 +32054,7 @@
 	    }
 	    ac.$el.find('.autocomplete-values ul').html(valuesHTML);
 	  };
+
 	  Autocomplete.prototype.preloaderHide = function preloaderHide () {
 	    var ac = this;
 	    if (ac.params.openIn === 'dropdown' && ac.$dropdownEl) {
@@ -31745,6 +32063,7 @@
 	      $$1('.autocomplete-preloader').removeClass('autocomplete-preloader-visible');
 	    }
 	  };
+
 	  Autocomplete.prototype.preloaderShow = function preloaderShow () {
 	    var ac = this;
 	    if (ac.params.openIn === 'dropdown' && ac.$dropdownEl) {
@@ -31753,16 +32072,19 @@
 	      $$1('.autocomplete-preloader').addClass('autocomplete-preloader-visible');
 	    }
 	  };
+
 	  Autocomplete.prototype.renderPreloader = function renderPreloader () {
 	    var ac = this;
 	    return ("\n      <div class=\"autocomplete-preloader preloader " + (ac.params.preloaderColor ? ("color-" + (ac.params.preloaderColor)) : '') + "\">" + (ac.app.theme === 'md' ? Utils.mdPreloaderContent : '') + "</div>\n    ").trim();
 	  };
+
 	  Autocomplete.prototype.renderSearchbar = function renderSearchbar () {
 	    var ac = this;
 	    if (ac.params.renderSearchbar) { return ac.params.renderSearchbar.call(ac); }
 	    var searchbarHTML = ("\n      <form class=\"searchbar\">\n        <div class=\"searchbar-inner\">\n          <div class=\"searchbar-input-wrap\">\n            <input type=\"search\" placeholder=\"" + (ac.params.searchbarPlaceholder) + "\"/>\n            <i class=\"searchbar-icon\"></i>\n            <span class=\"input-clear-button\"></span>\n          </div>\n          <span class=\"searchbar-disable-button\">" + (ac.params.searchbarDisableText) + "</span>\n        </div>\n      </form>\n    ").trim();
 	    return searchbarHTML;
 	  };
+
 	  Autocomplete.prototype.renderItem = function renderItem (item, index) {
 	    var ac = this;
 	    if (ac.params.renderItem) { return ac.params.renderItem.call(ac, item, index); }
@@ -31790,12 +32112,14 @@
 	    var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-theme-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-theme-" + (ac.params.navbarColorTheme)) : '') + "\">\n          <div class=\"left sliding\">\n            <a href=\"#\" class=\"link " + (ac.params.openIn === 'page' ? 'back' : 'popup-close') + "\" " + (ac.params.openIn === 'popup' ? 'data-popup=".autocomplete-popup"' : '') + ">\n              <i class=\"icon icon-back\"></i>\n              <span class=\"ios-only\">" + (ac.params.openIn === 'page' ? ac.params.pageBackLinkText : ac.params.popupCloseLinkText) + "</span>\n            </a>\n          </div>\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + (ac.params.preloader ? ("\n          <div class=\"right\">\n            " + (ac.renderPreloader()) + "\n          </div>\n          ") : '') + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
 	    return navbarHtml;
 	  };
+
 	  Autocomplete.prototype.renderDropdown = function renderDropdown () {
 	    var ac = this;
 	    if (ac.params.renderDropdown) { return ac.params.renderDropdown.call(ac, ac.items); }
 	    var dropdownHtml = ("\n      <div class=\"autocomplete-dropdown\">\n        <div class=\"autocomplete-dropdown-inner\">\n          <div class=\"list " + (!ac.params.expandInput ? 'no-ios-edge' : '') + "\">\n            <ul></ul>\n          </div>\n        </div>\n        " + (ac.params.preloader ? ac.renderPreloader() : '') + "\n      </div>\n    ").trim();
 	    return dropdownHtml;
 	  };
+
 	  Autocomplete.prototype.renderPage = function renderPage () {
 	    var ac = this;
 	    if (ac.params.renderPage) { return ac.params.renderPage.call(ac, ac.items); }
@@ -31803,12 +32127,14 @@
 	    var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar()) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-theme-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
 	    return pageHtml;
 	  };
+
 	  Autocomplete.prototype.renderPopup = function renderPopup () {
 	    var ac = this;
 	    if (ac.params.renderPopup) { return ac.params.renderPopup.call(ac, ac.items); }
 	    var popupHtml = ("\n      <div class=\"popup autocomplete-popup\">\n        <div class=\"view\">\n          " + (ac.renderPage()) + ";\n        </div>\n      </div>\n    ").trim();
 	    return popupHtml;
 	  };
+
 	  Autocomplete.prototype.onOpen = function onOpen (type, el) {
 	    var ac = this;
 	    var app = ac.app;
@@ -31857,6 +32183,7 @@
 
 	    ac.emit('local::open autocompleteOpen', ac);
 	  };
+
 	  Autocomplete.prototype.onOpened = function onOpened () {
 	    var ac = this;
 	    if (ac.params.openIn !== 'dropdown' && ac.params.autoFocus) {
@@ -31864,6 +32191,7 @@
 	    }
 	    ac.emit('local::opened autocompleteOpened', ac);
 	  };
+
 	  Autocomplete.prototype.onClose = function onClose () {
 	    var ac = this;
 	    if (ac.destroyed) { return; }
@@ -31885,6 +32213,7 @@
 
 	    ac.emit('local::close autocompleteClose', ac);
 	  };
+
 	  Autocomplete.prototype.onClosed = function onClosed () {
 	    var ac = this;
 	    if (ac.destroyed) { return; }
@@ -31896,6 +32225,7 @@
 
 	    ac.emit('local::closed autocompleteClosed', ac);
 	  };
+
 	  Autocomplete.prototype.openPage = function openPage () {
 	    var ac = this;
 	    if (ac.opened) { return ac; }
@@ -31926,6 +32256,7 @@
 	    });
 	    return ac;
 	  };
+
 	  Autocomplete.prototype.openPopup = function openPopup () {
 	    var ac = this;
 	    if (ac.opened) { return ac; }
@@ -31963,6 +32294,7 @@
 	    }
 	    return ac;
 	  };
+
 	  Autocomplete.prototype.openDropdown = function openDropdown () {
 	    var ac = this;
 
@@ -31986,6 +32318,7 @@
 	    ac.onOpen('dropdown', ac.$dropdownEl);
 	    ac.onOpened('dropdown', ac.$dropdownEl);
 	  };
+
 	  Autocomplete.prototype.open = function open () {
 	    var ac = this;
 	    if (ac.opened) { return ac; }
@@ -31996,6 +32329,7 @@
 	    }).join('')))]();
 	    return ac;
 	  };
+
 	  Autocomplete.prototype.close = function close () {
 	    var ac = this;
 	    if (!ac.opened) { return ac; }
@@ -32015,10 +32349,12 @@
 	    }
 	    return ac;
 	  };
+
 	  Autocomplete.prototype.init = function init () {
 	    var ac = this;
 	    ac.attachEvents();
 	  };
+
 	  Autocomplete.prototype.destroy = function destroy () {
 	    var ac = this;
 	    ac.emit('local::beforeDestroy autocompleteBeforeDestroy', ac);
@@ -32141,26 +32477,26 @@
 	    tooltip.params = Utils.extend(defaults, params);
 
 	    var ref = tooltip.params;
-	    var el = ref.el;
-	    if (!el) { return tooltip; }
+	    var targetEl = ref.targetEl;
+	    if (!targetEl) { return tooltip; }
 
-	    var $el = $$1(el);
-	    if ($el.length === 0) { return tooltip; }
+	    var $targetEl = $$1(targetEl);
+	    if ($targetEl.length === 0) { return tooltip; }
 
-	    var $tooltipEl = $$1(tooltip.render()).eq(0);
+	    var $el = $$1(tooltip.render()).eq(0);
 
 	    Utils.extend(tooltip, {
 	      app: app,
+	      $targetEl: $targetEl,
+	      targetEl: $targetEl && $targetEl[0],
 	      $el: $el,
 	      el: $el && $el[0],
-	      $tooltipEl: $tooltipEl,
-	      tooltipEl: $tooltipEl && $tooltipEl[0],
 	      text: tooltip.params.text || '',
 	      visible: false,
 	      opened: false,
 	    });
 
-	    $el[0].f7Tooltip = tooltip;
+	    $targetEl[0].f7Tooltip = tooltip;
 
 	    var touchesStart = {};
 	    var isTouched;
@@ -32176,8 +32512,8 @@
 	      var x = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
 	      var y = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
 	      var distance = Math.pow( (
-	        (Math.pow( (x - touchesStart.x), 2 )) +
-	        (Math.pow( (y - touchesStart.y), 2 ))
+	        (Math.pow( (x - touchesStart.x), 2 ))
+	        + (Math.pow( (y - touchesStart.y), 2 ))
 	      ), 0.5 );
 	      if (distance > 50) {
 	        isTouched = false;
@@ -32196,34 +32532,34 @@
 	      tooltip.hide();
 	    }
 	    function handleTransitionEnd() {
-	      if (!$tooltipEl.hasClass('tooltip-in')) {
-	        $tooltipEl.removeClass('tooltip-out').remove();
+	      if (!$el.hasClass('tooltip-in')) {
+	        $el.removeClass('tooltip-out').remove();
 	      }
 	    }
 
 	    tooltip.attachEvents = function attachEvents() {
 	      if (Support.touch) {
 	        var passive = Support.passiveListener ? { passive: true } : false;
-	        $el.on(app.touchEvents.start, handleTouchStart, passive);
+	        $targetEl.on(app.touchEvents.start, handleTouchStart, passive);
 	        app.on('touchmove', handleTouchMove);
 	        app.on('touchend:passive', handleTouchEnd);
 	        return;
 	      }
-	      $tooltipEl.on('transitionend webkitTransitionEnd', handleTransitionEnd);
-	      $el.on('mouseenter', handleMouseEnter);
-	      $el.on('mouseleave', handleMouseLeave);
+	      $el.on('transitionend webkitTransitionEnd', handleTransitionEnd);
+	      $targetEl.on('mouseenter', handleMouseEnter);
+	      $targetEl.on('mouseleave', handleMouseLeave);
 	    };
 	    tooltip.detachEvents = function detachEvents() {
 	      if (Support.touch) {
 	        var passive = Support.passiveListener ? { passive: true } : false;
-	        $el.off(app.touchEvents.start, handleTouchStart, passive);
+	        $targetEl.off(app.touchEvents.start, handleTouchStart, passive);
 	        app.off('touchmove', handleTouchMove);
 	        app.off('touchend:passive', handleTouchEnd);
 	        return;
 	      }
-	      $tooltipEl.off('transitionend webkitTransitionEnd', handleTransitionEnd);
-	      $el.off('mouseenter', handleMouseEnter);
-	      $el.off('mouseleave', handleMouseLeave);
+	      $el.off('transitionend webkitTransitionEnd', handleTransitionEnd);
+	      $targetEl.off('mouseenter', handleMouseEnter);
+	      $targetEl.off('mouseleave', handleMouseLeave);
 	    };
 
 	    // Install Modules
@@ -32237,17 +32573,18 @@
 	  if ( Framework7Class$$1 ) Tooltip.__proto__ = Framework7Class$$1;
 	  Tooltip.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Tooltip.prototype.constructor = Tooltip;
+
 	  Tooltip.prototype.position = function position (targetEl) {
 	    var tooltip = this;
-	    var $tooltipEl = tooltip.$tooltipEl;
+	    var $el = tooltip.$el;
 	    var app = tooltip.app;
-	    $tooltipEl.css({ left: '', top: '' });
+	    $el.css({ left: '', top: '' });
 	    var $targetEl = $$1(targetEl || tooltip.el);
-	    var ref = [$tooltipEl.width(), $tooltipEl.height()];
+	    var ref = [$el.width(), $el.height()];
 	    var width = ref[0];
 	    var height = ref[1];
 
-	    $tooltipEl.css({ left: '', top: '' });
+	    $el.css({ left: '', top: '' });
 
 	    var targetWidth;
 	    var targetHeight;
@@ -32306,39 +32643,42 @@
 	    }
 
 	    // Apply Styles
-	    $tooltipEl.css({ top: (top + "px"), left: (left + "px") });
+	    $el.css({ top: (top + "px"), left: (left + "px") });
 	  };
+
 	  Tooltip.prototype.show = function show (aroundEl) {
 	    var tooltip = this;
 	    var app = tooltip.app;
-	    var $tooltipEl = tooltip.$tooltipEl;
 	    var $el = tooltip.$el;
-	    app.root.append($tooltipEl);
+	    var $targetEl = tooltip.$targetEl;
+	    app.root.append($el);
 	    tooltip.position(aroundEl);
 	    var $aroundEl = $$1(aroundEl);
 	    tooltip.visible = true;
 	    tooltip.opened = true;
+	    $targetEl.trigger('tooltip:show', tooltip);
 	    $el.trigger('tooltip:show', tooltip);
-	    $tooltipEl.trigger('tooltip:show', tooltip);
-	    if ($aroundEl.length && $aroundEl[0] !== $el[0]) {
+	    if ($aroundEl.length && $aroundEl[0] !== $targetEl[0]) {
 	      $aroundEl.trigger('tooltip:show', tooltip);
 	    }
 	    tooltip.emit('local::show tooltipShow', tooltip);
-	    $tooltipEl.removeClass('tooltip-out').addClass('tooltip-in');
+	    $el.removeClass('tooltip-out').addClass('tooltip-in');
 	    return tooltip;
 	  };
+
 	  Tooltip.prototype.hide = function hide () {
 	    var tooltip = this;
-	    var $tooltipEl = tooltip.$tooltipEl;
 	    var $el = tooltip.$el;
+	    var $targetEl = tooltip.$targetEl;
 	    tooltip.visible = false;
 	    tooltip.opened = false;
+	    $targetEl.trigger('tooltip:hide', tooltip);
 	    $el.trigger('tooltip:hide', tooltip);
-	    $tooltipEl.trigger('tooltip:hide', tooltip);
 	    tooltip.emit('local::hide tooltipHide', tooltip);
-	    $tooltipEl.addClass('tooltip-out').removeClass('tooltip-in');
+	    $el.addClass('tooltip-out').removeClass('tooltip-in');
 	    return tooltip;
 	  };
+
 	  Tooltip.prototype.render = function render () {
 	    var tooltip = this;
 	    if (tooltip.params.render) { return tooltip.params.render.call(tooltip, tooltip); }
@@ -32347,6 +32687,7 @@
 	    var text = ref.text;
 	    return ("\n      <div class=\"tooltip " + (cssClass || '') + "\">\n        <div class=\"tooltip-content\">" + (text || '') + "</div>\n      </div>\n    ").trim();
 	  };
+
 	  Tooltip.prototype.setText = function setText (newText) {
 	    var tooltip = this;
 	    if (typeof newText === 'undefined') {
@@ -32354,25 +32695,27 @@
 	    }
 	    tooltip.params.text = newText;
 	    tooltip.text = newText;
-	    if (tooltip.$tooltipEl) {
-	      tooltip.$tooltipEl.children('.tooltip-content').html(newText);
+	    if (tooltip.$el) {
+	      tooltip.$el.children('.tooltip-content').html(newText);
 	    }
 	    if (tooltip.opened) {
 	      tooltip.position();
 	    }
 	    return tooltip;
 	  };
+
 	  Tooltip.prototype.init = function init () {
 	    var tooltip = this;
 	    tooltip.attachEvents();
 	  };
+
 	  Tooltip.prototype.destroy = function destroy () {
 	    var tooltip = this;
-	    if (!tooltip.$el || tooltip.destroyed) { return; }
-	    tooltip.$el.trigger('tooltip:beforedestroy', tooltip);
+	    if (!tooltip.$targetEl || tooltip.destroyed) { return; }
+	    tooltip.$targetEl.trigger('tooltip:beforedestroy', tooltip);
 	    tooltip.emit('local::beforeDestroy tooltipBeforeDestroy', tooltip);
-	    tooltip.$tooltipEl.remove();
-	    delete tooltip.$el[0].f7Tooltip;
+	    tooltip.$el.remove();
+	    delete tooltip.$targetEl[0].f7Tooltip;
 	    tooltip.detachEvents();
 	    Utils.deleteProps(tooltip);
 	    tooltip.destroyed = true;
@@ -32421,7 +32764,7 @@
 	  },
 	  params: {
 	    tooltip: {
-	      el: null,
+	      targetEl: null,
 	      text: null,
 	      cssClass: null,
 	      render: null,
@@ -32433,7 +32776,7 @@
 	      $$1(tabEl).find('.tooltip-init').each(function (index, el) {
 	        var text = $$1(el).attr('data-tooltip');
 	        if (!text) { return; }
-	        app.tooltip.create({ el: el, text: text });
+	        app.tooltip.create({ targetEl: el, text: text });
 	      });
 	    },
 	    tabBeforeRemove: function tabBeforeRemove(tabEl) {
@@ -32446,7 +32789,7 @@
 	      page.$el.find('.tooltip-init').each(function (index, el) {
 	        var text = $$1(el).attr('data-tooltip');
 	        if (!text) { return; }
-	        app.tooltip.create({ el: el, text: text });
+	        app.tooltip.create({ targetEl: el, text: text });
 	      });
 	    },
 	    pageBeforeRemove: function pageBeforeRemove(page) {
@@ -32502,6 +32845,7 @@
 	  if ( Framework7Class$$1 ) Gauge.__proto__ = Framework7Class$$1;
 	  Gauge.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Gauge.prototype.constructor = Gauge;
+
 	  Gauge.prototype.calcRadius = function calcRadius () {
 	    var gauge = this;
 	    var ref = gauge.params;
@@ -32509,11 +32853,13 @@
 	    var borderWidth = ref.borderWidth;
 	    return (size / 2) - (borderWidth / 2);
 	  };
+
 	  Gauge.prototype.calcBorderLength = function calcBorderLength () {
 	    var gauge = this;
 	    var radius = gauge.calcRadius();
 	    return 2 * Math.PI * radius;
 	  };
+
 	  Gauge.prototype.render = function render () {
 	    var gauge = this;
 	    if (gauge.params.render) { return gauge.params.render.call(gauge, gauge); }
@@ -32542,6 +32888,7 @@
 
 	    return ("\n      <svg class=\"gauge-svg\" width=\"" + size + "px\" height=\"" + (semiCircle ? size / 2 : size) + "px\" viewBox=\"0 0 " + size + " " + (semiCircle ? size / 2 : size) + "\">\n        " + (semiCircle ? ("\n          <path\n            class=\"gauge-back-semi\"\n            d=\"M" + (size - (borderWidth / 2)) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0\"\n            stroke=\"" + borderBgColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            fill=\"" + (bgColor || 'none') + "\"\n          />\n          <path\n            class=\"gauge-front-semi\"\n            d=\"M" + (size - (borderWidth / 2)) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0\"\n            stroke=\"" + borderColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            stroke-dasharray=\"" + (length / 2) + "\"\n            stroke-dashoffset=\"" + ((length / 2) * (progress - 1)) + "\"\n            fill=\"" + (borderBgColor ? 'none' : (bgColor || 'none')) + "\"\n          />\n        ") : ("\n          " + (borderBgColor ? ("\n            <circle\n              class=\"gauge-back-circle\"\n              stroke=\"" + borderBgColor + "\"\n              stroke-width=\"" + borderWidth + "\"\n              fill=\"" + (bgColor || 'none') + "\"\n              cx=\"" + (size / 2) + "\"\n              cy=\"" + (size / 2) + "\"\n              r=\"" + radius + "\"\n            ></circle>\n          ") : '') + "\n          <circle\n            class=\"gauge-front-circle\"\n            transform=\"" + ("rotate(-90 " + (size / 2) + " " + (size / 2) + ")") + "\"\n            stroke=\"" + borderColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            stroke-dasharray=\"" + length + "\"\n            stroke-dashoffset=\"" + (length * (1 - progress)) + "\"\n            fill=\"" + (borderBgColor ? 'none' : bgColor || 'none') + "\"\n            cx=\"" + (size / 2) + "\"\n            cy=\"" + (size / 2) + "\"\n            r=\"" + radius + "\"\n          ></circle>\n        ")) + "\n        " + (valueText ? ("\n          <text\n            class=\"gauge-value-text\"\n            x=\"50%\"\n            y=\"" + (semiCircle ? '100%' : '50%') + "\"\n            font-weight=\"" + valueFontWeight + "\"\n            font-size=\"" + valueFontSize + "\"\n            fill=\"" + valueTextColor + "\"\n            dy=\"" + (semiCircle ? (labelText ? -labelFontSize - 15 : -5) : 0) + "\"\n            text-anchor=\"middle\"\n            dominant-baseline=\"" + (!semiCircle && 'middle') + "\"\n          >" + valueText + "</text>\n        ") : '') + "\n        " + (labelText ? ("\n          <text\n            class=\"gauge-label-text\"\n            x=\"50%\"\n            y=\"" + (semiCircle ? '100%' : '50%') + "\"\n            font-weight=\"" + labelFontWeight + "\"\n            font-size=\"" + labelFontSize + "\"\n            fill=\"" + labelTextColor + "\"\n            dy=\"" + (semiCircle ? -5 : (valueText ? ((valueFontSize / 2) + 10) : 0)) + "\"\n            text-anchor=\"middle\"\n            dominant-baseline=\"" + (!semiCircle && 'middle') + "\"\n          >" + labelText + "</text>\n        ") : '') + "\n      </svg>\n    ").trim();
 	  };
+
 	  Gauge.prototype.update = function update (newParams) {
 	    if ( newParams === void 0 ) newParams = {};
 
@@ -32676,6 +33023,7 @@
 	    }
 	    return gauge;
 	  };
+
 	  Gauge.prototype.init = function init () {
 	    var gauge = this;
 	    var $gaugeSvgEl = $$1(gauge.render()).eq(0);
@@ -32687,6 +33035,7 @@
 	    gauge.$el.append($gaugeSvgEl);
 	    return gauge;
 	  };
+
 	  Gauge.prototype.destroy = function destroy () {
 	    var gauge = this;
 	    if (!gauge.$el || gauge.destroyed) { return; }
@@ -32914,31 +33263,37 @@
 	  if ( Framework7Class$$1 ) ViAd.__proto__ = Framework7Class$$1;
 	  ViAd.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  ViAd.prototype.constructor = ViAd;
+
 	  ViAd.prototype.start = function start () {
 	    var vi = this;
 	    if (vi.destroyed) { return; }
 	    if (vi.ad) { vi.ad.startAd(); }
 	  };
+
 	  ViAd.prototype.pause = function pause () {
 	    var vi = this;
 	    if (vi.destroyed) { return; }
 	    if (vi.ad) { vi.ad.pauseAd(); }
 	  };
+
 	  ViAd.prototype.resume = function resume () {
 	    var vi = this;
 	    if (vi.destroyed) { return; }
 	    if (vi.ad) { vi.ad.resumeAd(); }
 	  };
+
 	  ViAd.prototype.stop = function stop () {
 	    var vi = this;
 	    if (vi.destroyed) { return; }
 	    if (vi.ad) { vi.ad.stopAd(); }
 	  };
+
 	  ViAd.prototype.init = function init () {
 	    var vi = this;
 	    if (vi.destroyed) { return; }
 	    if (vi.ad) { vi.ad.initAd(); }
 	  };
+
 	  ViAd.prototype.destroy = function destroy () {
 	    var vi = this;
 	    vi.destroyed = true;
@@ -33013,12 +33368,16 @@
 	  },
 	};
 
+	var Elevation = {
+	  name: 'elevation',
+	};
+
 	var Typography = {
 	  name: 'typography',
 	};
 
 	/**
-	 * Framework7 3.0.0-beta.9
+	 * Framework7 3.0.0-beta.12
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -33026,7 +33385,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: June 15, 2018
+	 * Released on: June 24, 2018
 	 */
 
 	// Install Core Modules & Components
@@ -33093,6 +33452,7 @@
 	  Tooltip$1,
 	  Gauge$1,
 	  Vi,
+	  Elevation,
 	  Typography]);
 
 	var Utils$1 = {
@@ -33331,25 +33691,25 @@
 	    var sortableToggle = props.sortableToggle;
 
 	    return {
-	      'data-searchbar': (Utils$1.isStringProp(searchbarEnable) && searchbarEnable) ||
-	                        (Utils$1.isStringProp(searchbarDisable) && searchbarDisable) ||
-	                        (Utils$1.isStringProp(searchbarClear) && searchbarClear) ||
-	                        (Utils$1.isStringProp(searchbarToggle) && searchbarToggle) || undefined,
-	      'data-panel': (Utils$1.isStringProp(panelOpen) && panelOpen) ||
-	                    (Utils$1.isStringProp(panelClose) && panelClose) || undefined,
-	      'data-popup': (Utils$1.isStringProp(popupOpen) && popupOpen) ||
-	                    (Utils$1.isStringProp(popupClose) && popupClose) || undefined,
-	      'data-actions': (Utils$1.isStringProp(actionsOpen) && actionsOpen) ||
-	                    (Utils$1.isStringProp(actionsClose) && actionsClose) || undefined,
-	      'data-popover': (Utils$1.isStringProp(popoverOpen) && popoverOpen) ||
-	                      (Utils$1.isStringProp(popoverClose) && popoverClose) || undefined,
-	      'data-sheet': (Utils$1.isStringProp(sheetOpen) && sheetOpen) ||
-	                    (Utils$1.isStringProp(sheetClose) && sheetClose) || undefined,
-	      'data-login-screen': (Utils$1.isStringProp(loginScreenOpen) && loginScreenOpen) ||
-	                           (Utils$1.isStringProp(loginScreenClose) && loginScreenClose) || undefined,
-	      'data-sortable': (Utils$1.isStringProp(sortableEnable) && sortableEnable) ||
-	                       (Utils$1.isStringProp(sortableDisable) && sortableDisable) ||
-	                       (Utils$1.isStringProp(sortableToggle) && sortableToggle) || undefined,
+	      'data-searchbar': (Utils$1.isStringProp(searchbarEnable) && searchbarEnable)
+	                        || (Utils$1.isStringProp(searchbarDisable) && searchbarDisable)
+	                        || (Utils$1.isStringProp(searchbarClear) && searchbarClear)
+	                        || (Utils$1.isStringProp(searchbarToggle) && searchbarToggle) || undefined,
+	      'data-panel': (Utils$1.isStringProp(panelOpen) && panelOpen)
+	                    || (Utils$1.isStringProp(panelClose) && panelClose) || undefined,
+	      'data-popup': (Utils$1.isStringProp(popupOpen) && popupOpen)
+	                    || (Utils$1.isStringProp(popupClose) && popupClose) || undefined,
+	      'data-actions': (Utils$1.isStringProp(actionsOpen) && actionsOpen)
+	                    || (Utils$1.isStringProp(actionsClose) && actionsClose) || undefined,
+	      'data-popover': (Utils$1.isStringProp(popoverOpen) && popoverOpen)
+	                      || (Utils$1.isStringProp(popoverClose) && popoverClose) || undefined,
+	      'data-sheet': (Utils$1.isStringProp(sheetOpen) && sheetOpen)
+	                    || (Utils$1.isStringProp(sheetClose) && sheetClose) || undefined,
+	      'data-login-screen': (Utils$1.isStringProp(loginScreenOpen) && loginScreenOpen)
+	                           || (Utils$1.isStringProp(loginScreenClose) && loginScreenClose) || undefined,
+	      'data-sortable': (Utils$1.isStringProp(sortableEnable) && sortableEnable)
+	                       || (Utils$1.isStringProp(sortableDisable) && sortableDisable)
+	                       || (Utils$1.isStringProp(sortableToggle) && sortableToggle) || undefined,
 	    };
 	  },
 	  linkActionsClasses: function linkActionsClasses(props) {
@@ -35112,13 +35472,14 @@
 	var F7Icon = (function (superclass) {
 	  function F7Icon(props, context) {
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
 	  }
 
 	  if ( superclass ) F7Icon.__proto__ = superclass;
 	  F7Icon.prototype = Object.create( superclass && superclass.prototype );
 	  F7Icon.prototype.constructor = F7Icon;
 
-	  var prototypeAccessors = { sizeComputed: { configurable: true },iconTextComputed: { configurable: true },classes: { configurable: true },slots: { configurable: true } };
+	  var prototypeAccessors = { sizeComputed: { configurable: true },iconTextComputed: { configurable: true },classes: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
 	  prototypeAccessors.sizeComputed.get = function () {
 	    var self = this;
@@ -35206,11 +35567,16 @@
 	  };
 
 	  F7Icon.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var id = props.id;
 	    var style = props.style;
 	    return react.createElement('i', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
 	      id: id,
 	      style: Utils$1.extend({
 	        fontSize: self.sizeComputed
@@ -35219,8 +35585,49 @@
 	    }, self.iconTextComputed, this.slots['default']);
 	  };
 
+	  F7Icon.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+
+	    if (self.f7Tooltip && self.f7Tooltip.destroy) {
+	      self.f7Tooltip.destroy();
+	      self.f7Tooltip = null;
+	      delete self.f7Tooltip;
+	    }
+	  };
+
+	  F7Icon.prototype.componentDidMount = function componentDidMount () {
+	    var self = this;
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    var ref = self.props;
+	    var tooltip = ref.tooltip;
+	    if (!tooltip) { return; }
+	    self.$f7ready(function (f7) {
+	      self.f7Tooltip = f7.tooltip.create({
+	        targetEl: el,
+	        text: tooltip
+	      });
+	    });
+	  };
+
 	  prototypeAccessors.slots.get = function () {
 	    return __reactComponentSlots(this.props);
+	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
+	  F7Icon.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
+	    var this$1 = this;
+
+	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
+	      var self = this$1;
+	      if (!newText || !self.f7Tooltip) { return; }
+	      self.f7Tooltip.setText(newText);
+	    });
 	  };
 
 	  Object.defineProperties( F7Icon.prototype, prototypeAccessors );
@@ -35239,6 +35646,7 @@
 	  ifIos: String,
 	  ios: String,
 	  md: String,
+	  tooltip: String,
 	  size: [String, Number]
 	}, Mixins.colorProps));
 
@@ -35392,7 +35800,7 @@
 	    if (!tooltip) { return; }
 	    self.$f7ready(function (f7) {
 	      self.f7Tooltip = f7.tooltip.create({
-	        el: self.refs.el,
+	        targetEl: self.refs.el,
 	        text: tooltip
 	      });
 	    });
@@ -35964,7 +36372,7 @@
 	    if (!tooltip) { return; }
 	    self.$f7ready(function (f7) {
 	      self.f7Tooltip = f7.tooltip.create({
-	        el: self.refs.el,
+	        targetEl: self.refs.el,
 	        text: tooltip
 	      });
 	    });
@@ -36151,7 +36559,7 @@
 	    if (!tooltip) { return; }
 	    self.$f7ready(function (f7) {
 	      self.f7Tooltip = f7.tooltip.create({
-	        el: self.refs.el,
+	        targetEl: self.refs.el,
 	        text: tooltip
 	      });
 	    });
@@ -37265,7 +37673,7 @@
 
 	      if (tooltip) {
 	        self.f7Tooltip = f7.tooltip.create({
-	          el: self.refs.el,
+	          targetEl: el,
 	          text: tooltip
 	        });
 	      }
@@ -43984,7 +44392,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.0.0-beta.9
+	 * Framework7 React 3.0.0-beta.12
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -43992,7 +44400,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: June 15, 2018
+	 * Released on: June 24, 2018
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -46702,12 +47110,14 @@
 	  return defaultExport;
 	}(react.Component));
 
-	function Elevation () { return (
+	function Elevation$1 () { return (
 	  react.createElement( Page, null,
 	    react.createElement( Navbar$2, { title: "Elevation", backLink: "Back" }),
 	    react.createElement( Block, { strong: true },
-	      react.createElement( 'p', null, "Shadows provide important visual cues about objects’ depth and directional movement. They are the only visual cue indicating the amount of separation between surfaces. An object’s elevation determines the appearance of its shadow. The elevation values are mapped out in a \"z-space\" and range from 1 to 24." ),
-	      react.createElement( 'p', null, "Elevation can be added to any element by adding ", react.createElement( 'code', null, "elevation-1" ), ", ", react.createElement( 'code', null, "elevation-2" ), ", ..., ", react.createElement( 'code', null, "elevation-24" ), " classes" )
+	      react.createElement( 'p', null, "Shadows provide important visual cues about objects' depth and directional movement. They are the only visual cue indicating the amount of separation between surfaces. An object’s elevation determines the appearance of its shadow. The elevation values are mapped out in a \"z-space\" and range from 1 to 24." ),
+	      react.createElement( 'p', null, "Elevation can be added to any element by adding ", react.createElement( 'code', null, "elevation-0" ), ", ", react.createElement( 'code', null, "elevation-1" ), ", ..., ", react.createElement( 'code', null, "elevation-24" ), " classes." ),
+	      react.createElement( 'p', null, "To add different elevation only on hover (desktop), you can use ", react.createElement( 'code', null, "elevation-hover-0" ), ", ", react.createElement( 'code', null, "elevation-hover-1" ), ", ..., ", react.createElement( 'code', null, "elevation-hover-24" ), " classes." ),
+	      react.createElement( 'p', null, "To specify elevation only when item pressed, you can use ", react.createElement( 'code', null, "elevation-pressed-0" ), ", ", react.createElement( 'code', null, "elevation-pressed-1" ), ", ..., ", react.createElement( 'code', null, "elevation-pressed-24" ), " classes." )
 	    ),
 	    react.createElement( Block, null,
 	      react.createElement( Row, null,
@@ -46796,6 +47206,11 @@
 	        ),
 	        react.createElement( Col, null,
 	          react.createElement( 'div', { className: "elevation-demo elevation-24" }, "24")
+	        )
+	      ),
+	      react.createElement( Row, null,
+	        react.createElement( Col, null,
+	          react.createElement( 'div', { className: "elevation-demo elevation-6 elevation-hover-24 elevation-pressed-12 elevation-transition" }, "6 + hover-24 + pressed-12")
 	        )
 	      )
 	    )
@@ -51752,7 +52167,7 @@
 	          )
 	        ),
 	        react.createElement( Block, { strong: true },
-	          react.createElement( 'p', null, "Tooltips display informative text when users hover over, focus on, or tap an element." ),
+	          react.createElement( 'p', null, "Tooltips display informative text when users hover over, or tap an target element.." ),
 	          react.createElement( 'p', null, "Tooltip can be positioned around any element with any HTML content inside." )
 	        ),
 	        react.createElement( Block, { strong: true },
@@ -51772,11 +52187,11 @@
 	    var self = this;
 	    var app = self.$f7;
 	    self.iconTooltip = app.tooltip.create({
-	      el: '.icon-tooltip',
+	      targetEl: '.icon-tooltip',
 	      text: 'Tooltip text',
 	    });
 	    self.navbarTooltip = app.tooltip.create({
-	      el: '.navbar-tooltip',
+	      targetEl: '.navbar-tooltip',
 	      text: 'One more tooltip<br>with more text<br><em>and custom formatting</em>'
 	    });
 	  };
@@ -53163,7 +53578,7 @@
 	  },
 	  {
 	    path: '/elevation/',
-	    component: Elevation,
+	    component: Elevation$1,
 	  },
 	  {
 	    path: '/fab/',

@@ -1,5 +1,5 @@
 /**
- * Framework7 Vue 3.0.0-beta.11
+ * Framework7 Vue 3.0.0-beta.14
  * Build full featured iOS & Android apps using Framework7 & Vue
  * http://framework7.io/vue/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: June 19, 2018
+ * Released on: June 24, 2018
  */
 
 (function (global, factory) {
@@ -254,25 +254,25 @@
       var sortableToggle = props.sortableToggle;
 
       return {
-        'data-searchbar': (Utils.isStringProp(searchbarEnable) && searchbarEnable) ||
-                          (Utils.isStringProp(searchbarDisable) && searchbarDisable) ||
-                          (Utils.isStringProp(searchbarClear) && searchbarClear) ||
-                          (Utils.isStringProp(searchbarToggle) && searchbarToggle) || undefined,
-        'data-panel': (Utils.isStringProp(panelOpen) && panelOpen) ||
-                      (Utils.isStringProp(panelClose) && panelClose) || undefined,
-        'data-popup': (Utils.isStringProp(popupOpen) && popupOpen) ||
-                      (Utils.isStringProp(popupClose) && popupClose) || undefined,
-        'data-actions': (Utils.isStringProp(actionsOpen) && actionsOpen) ||
-                      (Utils.isStringProp(actionsClose) && actionsClose) || undefined,
-        'data-popover': (Utils.isStringProp(popoverOpen) && popoverOpen) ||
-                        (Utils.isStringProp(popoverClose) && popoverClose) || undefined,
-        'data-sheet': (Utils.isStringProp(sheetOpen) && sheetOpen) ||
-                      (Utils.isStringProp(sheetClose) && sheetClose) || undefined,
-        'data-login-screen': (Utils.isStringProp(loginScreenOpen) && loginScreenOpen) ||
-                             (Utils.isStringProp(loginScreenClose) && loginScreenClose) || undefined,
-        'data-sortable': (Utils.isStringProp(sortableEnable) && sortableEnable) ||
-                         (Utils.isStringProp(sortableDisable) && sortableDisable) ||
-                         (Utils.isStringProp(sortableToggle) && sortableToggle) || undefined,
+        'data-searchbar': (Utils.isStringProp(searchbarEnable) && searchbarEnable)
+                          || (Utils.isStringProp(searchbarDisable) && searchbarDisable)
+                          || (Utils.isStringProp(searchbarClear) && searchbarClear)
+                          || (Utils.isStringProp(searchbarToggle) && searchbarToggle) || undefined,
+        'data-panel': (Utils.isStringProp(panelOpen) && panelOpen)
+                      || (Utils.isStringProp(panelClose) && panelClose) || undefined,
+        'data-popup': (Utils.isStringProp(popupOpen) && popupOpen)
+                      || (Utils.isStringProp(popupClose) && popupClose) || undefined,
+        'data-actions': (Utils.isStringProp(actionsOpen) && actionsOpen)
+                      || (Utils.isStringProp(actionsClose) && actionsClose) || undefined,
+        'data-popover': (Utils.isStringProp(popoverOpen) && popoverOpen)
+                        || (Utils.isStringProp(popoverClose) && popoverClose) || undefined,
+        'data-sheet': (Utils.isStringProp(sheetOpen) && sheetOpen)
+                      || (Utils.isStringProp(sheetClose) && sheetClose) || undefined,
+        'data-login-screen': (Utils.isStringProp(loginScreenOpen) && loginScreenOpen)
+                             || (Utils.isStringProp(loginScreenClose) && loginScreenClose) || undefined,
+        'data-sortable': (Utils.isStringProp(sortableEnable) && sortableEnable)
+                         || (Utils.isStringProp(sortableDisable) && sortableDisable)
+                         || (Utils.isStringProp(sortableToggle) && sortableToggle) || undefined,
       };
     },
     linkActionsClasses: function linkActionsClasses(props) {
@@ -1261,6 +1261,7 @@
       ifIos: String,
       ios: String,
       md: String,
+      tooltip: String,
       size: [String, Number]
     }, Mixins.colorProps),
 
@@ -1271,6 +1272,7 @@
       var id = props.id;
       var style = props.style;
       return _h('i', {
+        ref: 'el',
         style: Utils.extend({
           fontSize: self.sizeComputed
         }, style),
@@ -1279,6 +1281,39 @@
           id: id
         }
       }, [self.iconTextComputed, this.$slots['default']]);
+    },
+
+    watch: {
+      'props.tooltip': function watchTooltip(newText) {
+        var self = this;
+        if (!newText || !self.f7Tooltip) { return; }
+        self.f7Tooltip.setText(newText);
+      }
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      var ref = self.props;
+      var tooltip = ref.tooltip;
+      if (!tooltip) { return; }
+      self.$f7ready(function (f7) {
+        self.f7Tooltip = f7.tooltip.create({
+          targetEl: el,
+          text: tooltip
+        });
+      });
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+
+      if (self.f7Tooltip && self.f7Tooltip.destroy) {
+        self.f7Tooltip.destroy();
+        self.f7Tooltip = null;
+        delete self.f7Tooltip;
+      }
     },
 
     computed: {
@@ -1600,7 +1635,7 @@
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
-          el: self.$refs.el,
+          targetEl: self.$refs.el,
           text: tooltip
         });
       });
@@ -2105,7 +2140,7 @@
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
-          el: self.$refs.el,
+          targetEl: self.$refs.el,
           text: tooltip
         });
       });
@@ -2279,7 +2314,7 @@
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
-          el: self.$refs.el,
+          targetEl: self.$refs.el,
           text: tooltip
         });
       });
@@ -3319,7 +3354,7 @@
 
         if (tooltip) {
           self.f7Tooltip = f7.tooltip.create({
-            el: self.$refs.el,
+            targetEl: el,
             text: tooltip
           });
         }
@@ -9570,7 +9605,7 @@
   };
 
   /**
-   * Framework7 Vue 3.0.0-beta.11
+   * Framework7 Vue 3.0.0-beta.14
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -9578,7 +9613,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: June 19, 2018
+   * Released on: June 24, 2018
    */
 
   var Plugin = {
