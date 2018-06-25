@@ -1,0 +1,108 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Accordion Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 App Vue Component
+    ul.docs-index
+    p App Vue component is the main Framework7 app component where all the <a href="../docs/app.html">Framework7 core initialization</a> happens and where you pass all main Framework7 parameters.
+    h2 App Components
+    p There are following components included:
+    ul
+      li <code><b>f7-app</b></code>
+    h2 App Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td params
+          td object
+          td
+          td Object with <a href="../docs/app.html#app-parameters">Framework7 parameters</a>
+        tr
+          td routes
+          td array
+          td
+          td Array with default routes for all views. Same as <code>params.routes</code> so you can use this one if you feel more comfortable with such approach
+        tr
+          td id
+          td string
+          td
+          td App element ID attribute
+    h2 Examples
+    p Passing all parameters in <code>params</code> prop
+    pre
+      code.html
+        :code
+          <template>
+            <f7-app :params="f7params">
+              <!-- ...  -->
+            </f7-app>
+          </template>
+
+          <script>
+            import AboutPage from './about.vue';
+            import ServicesPage from './services.vue';
+
+            export default {
+              data() {
+                return {
+                  f7params: {
+                    name: 'My App',
+                    id: 'com.myapp.test',
+                    // routes
+                    routes: [
+                      {
+                        path: '/about/',
+                        component: AboutPage,
+                      },
+                      {
+                        path: '/services/',
+                        component: ServicesPage,
+                      },
+                    ],
+                    // ... other params
+                  }
+                }
+              }
+            }
+          </script>
+    p Passing routes in separate prop:
+    pre
+      code.html
+        :code
+          <template>
+            <f7-app :params="f7params" :routes="routes">
+              <!-- ...  -->
+            </f7-app>
+          </template>
+
+          <script>
+            import routes from './routes';
+
+            export default {
+              data() {
+                return {
+                  f7params: {
+                    name: 'My App',
+                    id: 'com.myapp.test',
+                    // ... other params
+                  },
+                  // routes
+                  routes,
+                }
+              }
+            }
+          </script>

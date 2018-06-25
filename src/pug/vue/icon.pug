@@ -50,13 +50,17 @@ block content
           td string
           td Name of Ionicons font icon
         tr
-          td if-ios
+          td ios
           td string
           td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
         tr
-          td if-md
+          td md
           td string
           td Icon to be used in case of Material theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
+        tr
+          td tooltip
+          td string
+          td Icon <a href="../docs/tooltip.html">tooltip</a> text to show on icon hover/press
     h2 Examples
     pre
       code
@@ -82,7 +86,7 @@ block content
         | &lt;f7-icon f7="home" size="44px" color="blue"&gt;&lt;/f7-icon&gt;
         |
         | &lt;!-- Conditional icon --&gt;
-        | &lt;f7-icon if-ios="f7:home" if-md="material:home"&gt;&lt;/f7-icon&gt;
+        | &lt;f7-icon ios="f7:home" md="material:home"&gt;&lt;/f7-icon&gt;
     p Renders to:
     pre
       code

@@ -14,8 +14,6 @@
   var iconsManifest = require('./icons/manifest-icons.json');
   var useCDN = true;
   var cdnPath = '//cdn.framework7.io';
-  // var processVuePugFiles = require('./src/react-doc-generation/vue-pug-file-processing').processVuePugFiles;
-  // var processReactHtmlFiles = require('./src/react-doc-generation/react-html-file-processing').processReactHtmlFiles;
   var pkg = require('./package.json');
 
   // Get src file url
@@ -29,15 +27,22 @@
   // Pug Filter
   pug.filters['code'] = function (text) {
     return text
-    .replace( /</g, '&lt;'   )
-    .replace( />/g, '&gt;'   )
+      .replace( /</g, '&lt;'   )
+      .replace( />/g, '&gt;'   )
   }
   // Pug YAML Data
   function getYamlData(ymlPath) {
     var doc = yaml.safeLoad(fs.readFileSync(`./src/pug/${ymlPath}`, 'utf8'));
     return doc;
   }
-
+  function loadVueExampleContent(filePath) {
+    var fileContent = fs.readFileSync(filePath, 'utf-8');
+    return fileContent
+      .replace( /<f7-navbar ([a-zA-Z "=]*) back-link="([a-zA-Z]*)"><\/f7-navbar>/g, '<f7-navbar $1></f7-navbar>')
+      .replace(/import {([^}]*)} from 'framework7-vue';\n\n([ ]*)/, '')
+      .replace(/import {([^}]*)} from 'framework7-vue';\n([ ]*)/, '')
+      .replace(/\n([ ]*)components: {([^}]*)},/, '')
+  }
   /* ==================================================================
   Check CDN
   ================================================================== */
@@ -64,34 +69,6 @@
       });
   });
 
-  /*
-  function buildReactPages(cb) {
-    checkIsLocal(process.argv.slice(3));
-    processVuePugFiles();
-    var time = Date.now();
-    console.log(`Starting react pug: all`);
-    gulp.src(['./react-pug-temp/*.pug'])
-      .pipe(gulpData(getSrcFileUrl))
-      .pipe(gulpPug({
-        pug,
-        pretty: true,
-        locals: {
-          cdn: useCDN ? cdnPath : '',
-          icons: iconsManifest.icons,
-          getYamlData,
-        }
-      }))
-      .on('error', (err) => {
-        console.log(err);
-      })
-      .pipe(gulp.dest('./react/'))
-      .on('end', () => {
-        console.log(`Finished react pug in ${Date.now() - time}ms`);
-        processReactHtmlFiles(cb);
-      });
-  }
-  */
-
   // All Pug Pages
   function buildPages(cb) {
     checkIsLocal(process.argv.slice(3));
@@ -107,6 +84,7 @@
           cdn: useCDN ? cdnPath : '',
           icons: iconsManifest.icons,
           getYamlData,
+          loadVueExampleContent,
         }
       }))
       .on('error', (err) => {
@@ -116,12 +94,6 @@
       .on('end', () => {
         console.log(`Finished pug all in ${Date.now() - time}ms`);
         if(cb) cb();
-        /*
-        buildReactPages(() => {
-          console.log(`Finished pug all in ${Date.now() - time}ms`);
-          if(cb) cb();
-        });
-        */
       });
 
   }
@@ -129,13 +101,6 @@
     buildPages(cb);
   });
 
-  gulp.task('process-react-html', function (cb) {
-    processReactHtmlFiles(cb);
-  });
-
-  gulp.task('process-react-pug', function (cb) {
-    buildReactPages(cb);
-  });
 
   // Build All
   gulp.task('build', ['pug', 'less'], function (cb) {
@@ -157,7 +122,7 @@
       if (data.type !== 'changed') return;
       const filePath = data.path.split('/src/pug/')[1];
       if (filePath.indexOf('react') === 0) return;
-      if (filePath.indexOf('_') === 0) {
+      if (filePath.indexOf('_') === 0 || filePath.indexOf('_layout.pug') >= 0) {
         buildPages();
         return;
       }
@@ -179,6 +144,7 @@
             cdn: useCDN ? cdnPath : '',
             icons: iconsManifest.icons,
             getYamlData,
+            loadVueExampleContent,
           }
         }))
         .on('error', (err) => {

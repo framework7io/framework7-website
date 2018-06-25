@@ -5,6 +5,9 @@ node_modules/
 contribute/index.html
 docs/*.html
 docs-demos/*.html
+docs-demos/core/*.html
+docs-demos/react/*.html
+docs-demos/vue/*.html
 vue/*.html
 react/*.html
 plugins/index.html

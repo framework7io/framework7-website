@@ -1,23 +1,24 @@
 extends ../_docs-template
 
 block vars
-  - var title = 'Kitchen Sink | Framework7 Documentation';
+  - var activeLink = 'vue';
+  - var title = 'Framework7-Vue Kitchen Sink | Framework7 Vue Documentation';
 
 block content
   include ../_docs-demo-device
   .docs-nav
-    include ../_docs-menu
+    include ../_docs-vue-menu
   .docs-content
     +improveDocsLink
     h1 Kitchen Sink
     ul.docs-index
-    .with-device(data-device-preview="../kitchen-sink/core/index.html?theme=ios")
-      p Framework7 Kitchen Sink is a great place to get started, it has a lot of examples for all Framework7 components and covers most of aspects.
-      p It is recommended to use Kitchen Sink as a reference during development.
+    .with-device(data-device-preview="../kitchen-sink/vue/index.html?theme=ios")
+      p Framework7-Vue Kitchen Sink is a great place to get started, it has a lot of examples for all Framework7-Vue components and covers most of aspects.
+      p It is recommended to use it as a reference during development.
       h2 Source Code
-      p Core Kitchen Sink source code is located at <a href="https://github.com/framework7io/framework7/tree/master/kitchen-sink/core" target="_blank">GitHub repository</a>
+      p Vue Kitchen Sink source code is located at <a href="https://github.com/framework7io/framework7/tree/master/kitchen-sink/vue" target="_blank">GitHub repository</a>
       h2 Running Locally
-      p To run Core Kitchen Sink locally we need:
+      p To run Framework7-Vue Kitchen Sink locally we need:
       ol
         li
           p Download and unzip <a href="https://github.com/framework7io/framework7/" target="_blank">Framework7 GitHub repository</a> to a local folder
@@ -32,12 +33,12 @@ block content
           pre
             code.shell $ npm install
         li
-          p We are ready to launch Core Kitchen Sink, just execute in terminal:
+          p We are ready to launch Framework7-Vue Kitchen Sink, just execute in terminal:
           pre
-            code.shell $ npm run core:prod
+            code.shell $ npm run vue:prod
           p That command will launch Kitchen Sink with production (released) version of Framework7. To use latest development version in Kitchen Sink, use the following command instead:
           pre
-            code.shell $ npm run core:dev
+            code.shell $ npm run vue:dev
 
 
 

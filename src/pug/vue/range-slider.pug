@@ -5,6 +5,8 @@ block vars
   - var title = 'Range Slider Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
+
   .docs-nav
     include ../_docs-vue-menu
   .docs-content
@@ -72,6 +74,22 @@ block content
           td boolean
           td false
           td Defines whether the range slider is disabled or not
+        tr
+          td id
+          td string
+          td
+          td Range slider element ID attribute
+        tr
+          td input
+          td boolean
+          td false
+          td If enabled, then it will render <code>input type="range"</code> element inside as well
+        tr
+          td input-id
+          td string
+          td
+          td Input element ID attribute
+
     h2 Range Slider Events
     table.events-table
       thead
@@ -102,35 +120,7 @@ block content
         tr
           td .getValue()
           td Returns range slider value
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Default -->
-          <f7-range
-            :min="0"
-            :max="100"
-            :step="1"
-            :value="10"
-          ></f7-range>
-
-          <!-- Enable labels + color -->
-          <f7-range
-            :min="0"
-            :max="100"
-            :step="1"
-            :value="50"
-            :label="true"
-            color="orange"
-          ></f7-range>
-
-          <!-- Dual -->
-          <f7-range
-            :min="0"
-            :max="500"
-            :step="1"
-            :value="[100, 500]"
-            :label="true"
-            :dual="true"
-            color="green"
-          ></f7-range>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/range-slider.html") Examples
+      pre
+        code.html #{loadVueExampleContent('./kitchen-sink/vue/src/pages/range.vue')}

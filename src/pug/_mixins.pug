@@ -40,12 +40,12 @@ mixin vueLinkIconProps
     td
     td Name of Ionicons font icon
   tr
-    td icon-if-ios
+    td icon-ios
     td string
     td
     td Icon to be used in case of iOS theme is used. Consists of icon family and icon name divided by colon, e.g. <code>f7:home</code> or <code>ion:home</code>
   tr
-    td icon-if-md
+    td icon-md
     td string
     td
     td Icon to be used in case of MD theme is used. Consists of icon family and icon name divided by colon, e.g. <code>material:home</code> or <code>fa:home</code>
@@ -55,6 +55,11 @@ mixin vueLinkRouterProps
     td string<br>boolean
     td #
     td URL of the page to load. In case of boolean <code>href="false"</code> it won't add <code>href</code> tag
+  tr
+    td target
+    td string
+    td
+    td Value of link target attribute, e.g. <code>_blank</code>, <code>_self</code>, etc.
   tr
     td view
     td string
@@ -187,3 +192,23 @@ mixin vueLinkActionsProps
     td string<br>boolean
     td
     td CSS selector of the Sortable list to toggle on click. Or boolean property to toggle currently opened/closed Sortable list
+  tr
+    td searchbar-enable
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to be enabled on click. Or boolean property to enable the first found Searchbar
+  tr
+    td searchbar-disable
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to be disabled on click. Or boolean property to disable the first found Searchbar
+  tr
+    td searchbar-toggle
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to toggle on click. Or boolean property to toggle the first found Searchbar
+  tr
+    td searchbar-clear
+    td string<br>boolean
+    td
+    td CSS selector of the Expandable Searchbar to clear on click. Or boolean property to clear the first found Searchbar

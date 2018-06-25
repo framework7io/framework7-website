@@ -36,6 +36,11 @@ block content
           td
           td URL of the page to load (if set). Will set <code>href</code> attribute on main FAB link. In case of boolean <code>href="false"</code> it won't add <code>href</code> tag
         tr
+          td target
+          td string
+          td
+          td Value of link target attribute, e.g. <code>_blank</code>, <code>_self</code>, etc.
+        tr
           td position
           td string
           td right-bottom
@@ -56,6 +61,16 @@ block content
           td
           td String CSS selector of the FAB morph target
         tr
+          td text
+          td string
+          td
+          td FAB Button text. If specified, then it will be displayed as Extended Fab with text label
+        tr
+          td tooltip
+          td string
+          td
+          td FAB <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
+        tr
           th(colspan="4") &lt;f7-fab-buttons&gt; properties
         tr
           td position
@@ -75,6 +90,21 @@ block content
           td boolean
           td false
           td When enabled then clicking on this button will close the FAB
+        tr
+          td target
+          td string
+          td
+          td Value of link target attribute, e.g. <code>_blank</code>, <code>_self</code>, etc.
+        tr
+          td label
+          td string
+          td
+          td Button text label
+        tr
+          td tooltip
+          td string
+          td
+          td Button <a href="../docs/tooltip.html">tooltip</a> text to show on button hover/press
     h2 FAB Events
     table.events-table
       thead
@@ -92,6 +122,14 @@ block content
         tr
           td click
           td Event will be triggered after click on FAB Speed Dial button
+    h2 FAB Slots
+    p FAB Vue component (<code>&lt;f7-fab&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - child element will be inserted inside of the main FAB link <code>&lt;a&gt;</code> element. But if the child is <code>f7-fab-buttons</code>, then it will be inserted in the end of the main FAB element
+      li <code><b>link</b></code> - child element will be inserted inside of the main FAB link <code>&lt;a&gt;</code> element
+      li <code><b>root</b></code> - child element will be inserted in the end of the main FAB element
+      li <code><b>text</b></code> - child element will be inserted in the text element of the Extended FAB
+
     h2 Examples
     h4 Default FAB
     pre

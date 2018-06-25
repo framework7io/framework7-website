@@ -71,13 +71,30 @@ block content
           td
           td Enable when used in navbar/toolbar with icon only inside
         tr
+          td tooltip
+          td string
+          td
+          td Link <a href="../docs/tooltip.html">tooltip</a> text to show on link hover/press
+        tr
+          th(colspan="4") &lt;f7-link&gt; Smart Select related properties
+        tr
+          td smart-select
+          td boolean
+          td false
+          td Enables Smart Select behavior
+        tr
+          td smart-select-params
+          td object
+          td
+          td Object with <a href="../docs/smart-select.html#smart-select-parameters">Smart Select Parameters</a>
+        tr
+          th(colspan="4") &lt;f7-link&gt; icon related properties
+        +vueLinkIconProps
+        tr
           td icon-badge
           td string<br>number
           td
           td Adds badge to the icon (intended to be used in Tabbar's icons)
-        tr
-          th(colspan="4") &lt;f7-link&gt; icon related properties
-        +vueLinkIconProps
         tr
           th(colspan="4") &lt;f7-link&gt; navigation/router related properties
         +vueLinkRouterProps

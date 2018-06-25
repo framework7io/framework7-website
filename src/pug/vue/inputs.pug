@@ -76,12 +76,17 @@ block content
           td validate
           td boolean
           td false
-          td When enabled then input value will be validated on change based on passed "pattern" or based on input type
+          td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use <code>error-message</code> together with <code>error-message-force</code> props.
         tr
           td error-message
           td string
           td
           td Custom error message to show when input value is invalid
+        tr
+          td error-message-force
+          td boolean
+          td false
+          td Force error message to force. Useful in case you use custom validation and want to show/hide error message when you need it
         tr
           td info
           td string
@@ -101,7 +106,12 @@ block content
           td id
           td string
           td
-          td Input ID attribute
+          td Wrapping element ID attribute
+        tr
+          td input-id
+          td string
+          td
+          td Input element ID attribute
         tr
           td value
           td string<br>number
@@ -192,6 +202,16 @@ block content
           td string<br>number
           td
           td Value of input's native "tabindex" attribute
+        tr
+          td no-store-data
+          td boolean
+          td false
+          td Allows to ignore input value to be stored when using with <a href="../docs/form.html#form-storage">Form Storage</a>
+        tr
+          td ignore-store-data
+          td boolean
+          td false
+          td Same as previous
 
     h2 Input Events
     table.events-table

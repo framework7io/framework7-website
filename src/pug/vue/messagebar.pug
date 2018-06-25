@@ -91,6 +91,11 @@ block content
           td false
           td Makes messagebar attachments visible/active
         tr
+          td resize-page
+          td boolean
+          td true
+          td When enabled, it will resize messages page when messagebar textarea size changed
+        tr
           th(colspan="4") &lt;f7-messagebar-sheet-image&gt; properties
         tr
           td image
@@ -129,7 +134,7 @@ block content
         td .getValue()
         td Return messagebar textarea value
       tr
-        td .resizePage()
+        td .resize()
         td Force Messagebar to resize messages page depending on messagebar height/size
       tr
         td .focus()
@@ -204,7 +209,7 @@ block content
             <div slot="after-inner">After inner</div>
             <div slot="before-area">Before textarea</div>
             <div slot="after-area">After textarea</div>
-            <f7-icon if-ios="f7:arrow_up_fill" if-md="material:send" slot="send-link"></f7-icon>
+            <f7-icon ios="f7:arrow_up_fill" md="material:send" slot="send-link"></f7-icon>
             <div>Default slot</div>
           </f7-messagebar>
     p Renders to:
@@ -261,15 +266,15 @@ block content
               >
                 <!-- Link to toggle Sheet -->
                 <f7-link
-                  icon-if-ios="f7:camera_fill"
-                  icon-if-md="material:camera_alt"
+                  icon-ios="f7:camera_fill"
+                  icon-md="material:camera_alt"
                   slot="inner-start"
                   @click="sheetVisible = !sheetVisible"
                 ></f7-link>
                 <!-- Send Message Link -->
                 <f7-link
-                  icon-if-ios="f7:arrow_up_fill"
-                  icon-if-md="material:send"
+                  icon-ios="f7:arrow_up_fill"
+                  icon-md="material:send"
                   slot="inner-end"
                   @click="sendMessage"
                 ></f7-link>

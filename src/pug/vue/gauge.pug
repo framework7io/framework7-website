@@ -1,0 +1,113 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Gauge Vue Component | Framework7 Vue Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-vue-menu
+  .docs-content
+    +improveDocsLink
+    h1 Gauge Vue Component
+    ul.docs-index
+    p Framework7 comes with Gauge component. It produces nice looking fully responsive SVG gauges.
+    h2 Gauge Components
+    p There are following components included:
+    ul
+      li <code><b>f7-gauge</b></code>
+    h2 Gauge Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td id
+          td string
+          td
+          td Gauge element ID attribute
+        tr
+          td type
+          td string
+          td circle
+          td Gauge type. Can be <code>circle</code> or <code>semicircle</code>
+        tr
+          td value
+          td number
+          td 0
+          td Gauge value/percentage. Must be a number between <code>0</code> and <code>1</code>
+        tr
+          td size
+          td number
+          td 200
+          td Generated SVG image size (in px)
+        tr
+          td bg-color
+          td string
+          td transparent
+          td Gauge background color. Can be any valid color string, e.g. <code>#ff00ff</code>, <code>rgb(0,0,255)</code>, etc.
+        tr
+          td border-bg-color
+          td string
+          td #eeeeee
+          td Main border/stroke background color
+        tr
+          td border-color
+          td string
+          td #000000
+          td Main border/stroke color
+        tr
+          td border-width
+          td string
+          td 10
+          td Main border/stroke width
+        tr
+          td value-text
+          td string
+          td null
+          td Gauge value text (large text in the center of gauge)
+        tr
+          td value-text-color
+          td string
+          td #000000
+          td Value text color
+        tr
+          td value-font-size
+          td string
+          td 31
+          td Value text font size
+        tr
+          td value-font-weight
+          td string
+          td 500
+          td Value text font weight
+        tr
+          td label-text
+          td string
+          td null
+          td Gauge additional label text
+        tr
+          td label-text-color
+          td string
+          td #888888
+          td Label text color
+        tr
+          td label-font-size
+          td string
+          td 14
+          td Label text font size
+        tr
+          td label-font-weight
+          td string
+          td 400
+          td Label text font weight
+
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/gauge.html") Examples
+      pre
+        code.html #{loadVueExampleContent('./kitchen-sink/vue/src/pages/gauge.vue')}
