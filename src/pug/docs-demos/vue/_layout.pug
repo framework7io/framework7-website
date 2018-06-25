@@ -7,20 +7,19 @@ html
     meta(name='apple-mobile-web-app-capable', content='yes')
     meta(name="apple-mobile-web-app-status-bar-style", content="black")
     title My App
-    link(rel="stylesheet", href="../packages/core/css/framework7.min.css")
+    link(rel="stylesheet", href="../../packages/core/css/framework7.min.css")
     if (includeF7Icons)
-      link(rel="stylesheet" href="../../../css/framework7-icons.css")
+      link(rel="stylesheet" href="../../css/framework7-icons.css")
     if (includeMaterialIcons)
       link(href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet")
   body
     #app
-      f7-app
-        block content
-
+    block template
+    block script
     script(src="https://cdn.jsdelivr.net/npm/vue")
-    script(src="../packages/vue/framework7-vue.min.js")
-    script(src="../packages/core/js/framework7.min.js")
+    script(src="../../packages/vue/framework7-vue.min.js")
+    script(src="../../packages/core/js/framework7.min.js")
     script.
       if (Framework7.use) Framework7.use(Framework7Vue);
       else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(Framework7Vue);
@@ -37,4 +36,10 @@ html
       if (Framework7.use) Framework7.use(plugin);
       else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(plugin);
 
-    block scripts
+      if (typeof component === 'undefined') {
+        var component = {};
+      }
+      component.el = '#app',
+      component.template = '#app-template',
+
+      new Vue(component);

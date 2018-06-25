@@ -11,6 +11,7 @@
   var fs = require('fs');
   var del = require('del');
   var yaml = require('js-yaml');
+  var path = require('path');
   var iconsManifest = require('./icons/manifest-icons.json');
   var useCDN = true;
   var cdnPath = '//cdn.framework7.io';
@@ -127,6 +128,7 @@
         return;
       }
       const src = [];
+
       if (filePath.split('/')[1] && filePath.split('/')[1].indexOf('_') === 0) {
         src.push(`${filePath.split('/')[0]}/*.pug`);
         src.push(`!${filePath.split('/')[0]}/_*.pug`);
@@ -150,7 +152,7 @@
         .on('error', (err) => {
           console.log(err);
         })
-        .pipe(gulp.dest(filePath.split('/')[0] === filePath ? './' : filePath.split('/')[0]))
+        .pipe(gulp.dest(filePath.split('/')[0] === filePath ? './' : path.parse(filePath).dir))
         .on('end', () => {
           console.log(`Finished pug "${src}" in ${Date.now() - time}ms`);
           connect.reload();
