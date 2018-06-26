@@ -5,6 +5,8 @@ block vars
   - var title = 'Checkbox Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
+
   .docs-nav
     include ../_docs-vue-menu
   .docs-content
@@ -77,7 +79,7 @@ block content
     h2 Checkbox v-model
     p <code>v-model</code> <b>is not supported</b> on Checkbox vue component. Instead, just use the combination of <code>checked</code> property and <code>@change</code> event:
     pre
-      code.html
+      code.js
         :code
           <template>
             <!-- With boolean value -->
@@ -123,18 +125,57 @@ block content
               },
             };
           </script>
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Inline checkbox -->
-          <p>Lorem <f7-checkbox name="checkbox-1"></f7-checkbox> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <f7-checkbox name="checkbox-2" checked></f7-checkbox> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/checkbox.html") Examples
+      pre
+        code.html
+          :code
+            <f7-block-title>Inline</f7-block-title>
+            <f7-block strong>
+              <p>Lorem <f7-checkbox name="checkbox-1"></f7-checkbox> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <f7-checkbox name="checkbox-2" checked></f7-checkbox> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
+            </f7-block>
 
-          <!-- Checkboxes List -->
-          <f7-list>
-            <f7-list-item checkbox title="Books" name="demo-checkbox" checked></f7-list-item>
-            <f7-list-item checkbox title="Movies" name="demo-checkbox"></f7-list-item>
-            <f7-list-item checkbox title="Food" name="demo-checkbox"></f7-list-item>
-            <f7-list-item checkbox title="Drinks" name="demo-checkbox"></f7-list-item>
-          </f7-list>
+            <f7-block-title>Checkbox Group</f7-block-title>
+            <f7-list>
+              <f7-list-item checkbox title="Books" name="demo-checkbox" checked></f7-list-item>
+              <f7-list-item checkbox title="Movies" name="demo-checkbox"></f7-list-item>
+              <f7-list-item checkbox title="Food" name="demo-checkbox"></f7-list-item>
+              <f7-list-item checkbox title="Drinks" name="demo-checkbox"></f7-list-item>
+            </f7-list>
 
+            <f7-block-title>With Media Lists</f7-block-title>
+            <f7-list media-list>
+              <f7-list-item
+                checkbox
+                checked
+                name="demo-media-checkbox"
+                title="Facebook"
+                after="17:14"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></f7-list-item>
+              <f7-list-item
+                checkbox
+                name="demo-media-checkbox"
+                title="John Doe (via Twitter)"
+                after="17:11"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></f7-list-item>
+              <f7-list-item
+                checkbox
+                name="demo-media-checkbox"
+                title="Facebook"
+                after="16:48"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></f7-list-item>
+              <f7-list-item
+                checkbox
+                name="demo-media-checkbox"
+                title="John Doe (via Twitter)"
+                after="15:32"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></f7-list-item>
+            </f7-list>

@@ -2,7 +2,7 @@ extends _layout
 block vars
   - includeF7Icons = true
   - includeMaterialIcons = true
-block template
+block content
   template#app-template.
     <f7-app>
       <f7-view main>
@@ -55,7 +55,7 @@ block template
         </f7-page>
       </f7-view>
     </f7-app>
-block script
+
   script.
     var component = {
       data() {

@@ -1868,11 +1868,6 @@ ul.method-parameters .parameter-type {
 }
 @media (max-width: 960px) {
   .docs-nav {
-    margin-left: -30px;
-  }
-}
-@media (max-width: 860px) {
-  .docs-nav {
     margin-left: -230px;
     transition-duration: 300ms;
     transition-property: transform, box-shadow;
@@ -1886,6 +1881,7 @@ ul.method-parameters .parameter-type {
 @media (max-width: 800px) {
   .docs-nav {
     margin-left: -220px;
+    margin-right: 20px;
   }
 }
 .docs-nav .title {
@@ -2043,7 +2039,7 @@ ul.method-parameters .parameter-type {
   margin-top: -40px;
   margin-bottom: 10px;
 }
-@media (min-width: 861px) {
+@media (min-width: 961px) {
   .docs-nav-toggle {
     display: none;
   }

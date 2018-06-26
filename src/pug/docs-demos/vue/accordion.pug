@@ -1,74 +1,15 @@
-extends ../_docs-template
-
+extends _layout
 block vars
-  - var activeLink = 'vue';
-  - var title = 'Accordion Vue Component | Framework7 Vue Documentation';
+  - includeF7Icons = true
+  - includeMaterialIcons = true
 
 block content
-  include ../_docs-demo-device
-
-  .docs-nav
-    include ../_docs-vue-menu
-  .docs-content
-    +improveDocsLink
-    h1 Accordion Vue Component
-    ul.docs-index
-    p Accordion Vue component represents Framework7's <a href="../docs/accordion.html">Accordion</a> component.
-    h2 Accordion Components
-    p There are following components included:
-    ul
-      li <code><b>f7-accordion</b></code>
-      li <code><b>f7-accordion-item</b></code>
-      li <code><b>f7-accordion-toggle</b></code>
-      li <code><b>f7-accordion-content</b></code>
-    h2 Accordion Properties
-    table.params-table
-      thead
-        tr
-          th Prop
-          th Type
-          th Default
-          th Description
-      tbody
-        tr
-          th(colspan="4") &lt;f7-accordion-item&gt; properties
-        tr
-          td opened
-          td boolean
-          td
-          td Makes accordion item opened
-
-    h2 Accordion Events
-    table.events-table
-      thead
-        tr
-          th Event
-          th Description
-      tbody
-        tr
-          th(colspan="2") &lt;f7-accordion-item&gt; events
-        tr
-          td accordion:open
-          td Event will be triggered when accordion content starts its opening animation.
-        tr
-          td accordion:opened
-          td Event will be triggered after accordion content completes its opening animation.
-        tr
-          td accordion:close
-          td Event will be triggered when accordion content starts its closing animation.
-        tr
-          td accordion:closed
-          td Event will be triggered after accordion content completes its closing animation.
-
-    h2 Accordion List
-    p Accordion List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;f7-list&gt;</a></code>, <code><a href="list-item.html">&lt;f7-list-item&gt;</a></code> and <code>&lt;f7-accordion-content&gt;</code> components.
-    p In this case accordion events will be fired on <code>f7-list-item</code>.
-    .with-device
-      h2(data-device-preview="../docs-demos/vue/accordion.html") Examples
-      pre
-        code.html
-          :code
-            <f7-block-title>List View Accordion</f7-block-title>
+  template#app-template.
+    <f7-app>
+      <f7-view main>
+        <f7-page>
+          <f7-navbar title="Accordion"></f7-navbar>
+          <f7-block-title>List View Accordion</f7-block-title>
             <f7-list accordion-list>
               <f7-list-item accordion-item title="Lorem Ipsum">
                 <f7-accordion-content>
@@ -139,3 +80,9 @@ block content
                 <f7-accordion-content>Content {{n}}</f7-accordion-content>
               </f7-accordion-item>
             </f7-block>
+        </f7-page>
+      </f7-view>
+    </f7-app>
+
+  script.
+    var component = {}

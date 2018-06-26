@@ -5,6 +5,7 @@ block vars
   - var title = 'Photo Browser Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-vue-menu
@@ -191,49 +192,73 @@ block content
           td Disable exposition mode
     h2 Access To Photo Browser Instance
     p You can access Photo Browser initialized instance by accessing <code><b>.f7PhotoBrowser</b></code> component's property.
-    h2 Examples
-    p Here is how it can be used in Vue component and how to control it:
-    pre
-      code.html
-        :code
-          <template>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/photo-browser.html") Examples
+      pre
+        code.html
+          :code
+            <template>
+              <f7-page>
+                <f7-navbar title="Photo Browser"></f7-navbar>
 
-            <!-- Photo Browser -->
-            <f7-photo-browser
-              ref="pb"
-              :photos="photos"
-              theme="dark"
-              @open="onOpen"
-            ></f7-photo-browser>
+                <f7-block>
+                  <p>Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:</p>
+                  <f7-row>
+                    <f7-col>
+                      <f7-photo-browser :photos="photos" ref="standalone"></f7-photo-browser>
+                      <f7-button raised @click="$refs.standalone.open()">Standalone</f7-button>
+                    </f7-col>
+                    <f7-col>
+                      <f7-photo-browser :photos="photos" type="popup" ref="popup"></f7-photo-browser>
+                      <f7-button raised @click="$refs.popup.open()">Popup</f7-button>
+                    </f7-col>
+                    <f7-col>
+                      <f7-photo-browser :photos="photos" type="page" back-link-text="Back" ref="page"></f7-photo-browser>
+                      <f7-button raised @click="$refs.page.open()">Page</f7-button>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
 
-            <!-- Link To Open PB -->
-            <f7-link @click="openPhotoBrowser">Photos</f7-link>
-
-          </template>
-
-          <script>
-            export default {
-              data: function () {
-                return {
-                  photos: [
-                    {
-                      url: 'path/to/picture-1.jpg',
-                      caption: 'Picture 1'
-                    },
-                    {
-                      url: 'path/to/picture-2.jpg',
-                      caption: 'Picture 2'
-                    }
-                  ]
-                }
-              },
-              methods: {
-                openPhotoBrowser: function () {
-                  this.$refs.pb.open();
+                <f7-block>
+                  <p>Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:</p>
+                  <f7-row>
+                    <f7-col>
+                      <f7-photo-browser :photos="photos" theme="dark" ref="standaloneDark"></f7-photo-browser>
+                      <f7-button raised @click="$refs.standaloneDark.open()">Standalone</f7-button>
+                    </f7-col>
+                    <f7-col>
+                      <f7-photo-browser :photos="photos" theme="dark" type="popup" ref="popupDark"></f7-photo-browser>
+                      <f7-button raised @click="$refs.popupDark.open()">Popup</f7-button>
+                    </f7-col>
+                    <f7-col>
+                      <f7-photo-browser :photos="photos" theme="dark" type="page" back-link-text="Back" ref="pageDark"></f7-photo-browser>
+                      <f7-button raised @click="$refs.pageDark.open()">Page</f7-button>
+                    </f7-col>
+                  </f7-row>
+                </f7-block>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    photos: [
+                      {
+                        url: 'img/beach.jpg',
+                        caption: 'Amazing beach in Goa, India',
+                      },
+                      'http://placekitten.com/1024/1024',
+                      'img/lock.jpg',
+                      {
+                        url: 'img/monkey.jpg',
+                        caption: 'I met this monkey in Chinese mountains',
+                      },
+                      {
+                        url: 'img/mountains.jpg',
+                        caption: 'Beautiful mountains in Zhangjiajie, China',
+                      },
+                    ],
+                  };
                 },
-                onOpen: function () {
-                  console.log('Photo Browser is opened')
-                }
               }
-            }
-          </script>
+            </script>

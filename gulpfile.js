@@ -36,14 +36,6 @@
     var doc = yaml.safeLoad(fs.readFileSync(`./src/pug/${ymlPath}`, 'utf8'));
     return doc;
   }
-  function loadVueExampleContent(filePath) {
-    var fileContent = fs.readFileSync(filePath, 'utf-8');
-    return fileContent
-      .replace( /<f7-navbar ([a-zA-Z "=]*) back-link="([a-zA-Z]*)"><\/f7-navbar>/g, '<f7-navbar $1></f7-navbar>')
-      .replace(/import {([^}]*)} from 'framework7-vue';\n\n([ ]*)/, '')
-      .replace(/import {([^}]*)} from 'framework7-vue';\n([ ]*)/, '')
-      .replace(/\n([ ]*)components: {([^}]*)},/, '')
-  }
   /* ==================================================================
   Check CDN
   ================================================================== */
@@ -85,7 +77,6 @@
           cdn: useCDN ? cdnPath : '',
           icons: iconsManifest.icons,
           getYamlData,
-          loadVueExampleContent,
         }
       }))
       .on('error', (err) => {
@@ -146,7 +137,6 @@
             cdn: useCDN ? cdnPath : '',
             icons: iconsManifest.icons,
             getYamlData,
-            loadVueExampleContent,
           }
         }))
         .on('error', (err) => {
