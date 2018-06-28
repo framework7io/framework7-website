@@ -143,9 +143,9 @@
           console.log(err);
         })
         .pipe(gulp.dest(filePath.split('/')[0] === filePath ? './' : path.parse(filePath).dir))
+        .pipe(connect.reload())
         .on('end', () => {
           console.log(`Finished pug "${src}" in ${Date.now() - time}ms`);
-          connect.reload();
         });
     });
   });

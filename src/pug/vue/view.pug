@@ -112,21 +112,32 @@ block content
     pre
       code.html
         :code
-          <f7-views tabs>
-            <f7-view id="tab-1" main tab tab-active>...</f7-view>
-            <f7-view id="tab-2" tab>...</f7-view>
-          </f7-views>
+          <f7-app>
+            ...
+            <f7-views tabs>
+              <f7-view id="tab-1" main tab tab-active>...</f7-view>
+              <f7-view id="tab-2" tab>...</f7-view>
+            </f7-views>
+            ...
+          </f7-app>
 
           <!-- Renders to: -->
-          <div class="views tabs">
-            <div class="view view-main tab tab-active" id="tab-1">...</div>
-            <div class="view tab" id="tab-2">...</div>
+          <div class="framework7-root">
+            <div class="views tabs">
+              <div class="view view-main tab tab-active" id="tab-1">...</div>
+              <div class="view tab" id="tab-2">...</div>
+            </div>
           </div>
 
     h4 With parameters
     pre
       code.html
         :code
-          <f7-view :dynamic-navbar="true" :url="/home/" :animate="false" :iosDynamicNavbar="false">
+          <f7-view
+            :url="/home/"
+            :animate="false"
+            :ios-dynamic-navbar="false"
+            :push-state="true"
+          >
             ...
           </f7-view>

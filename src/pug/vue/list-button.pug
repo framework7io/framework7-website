@@ -5,6 +5,7 @@ block vars
   - var title = 'List Button Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-vue-menu
@@ -78,43 +79,26 @@ block content
           td click
           td Event will be triggered after click on a button
 
-    h2 Examples
-    h4 Minimal Layout
-    pre
-      code.html
-        :code
-          <f7-list>
-            <f7-list-button>Button 1</f7-list-button>
-            <f7-list-button>Button 2</f7-list-button>
-          </f7-list>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/list-button.html") Examples
+      pre
+        code
+          :code
+            <f7-list>
+              <f7-list-button title="List Button 1"></f7-list-button>
+              <f7-list-button title="List Button 2"></f7-list-button>
+              <f7-list-button title="List Button 3"></f7-list-button>
+            </f7-list>
 
-          <!-- Renders to: -->
+            <f7-list inset>
+              <f7-list-button title="List Button 1"></f7-list-button>
+              <f7-list-button title="List Button 2"></f7-list-button>
+              <f7-list-button title="List Button 3"></f7-list-button>
+            </f7-list>
 
-          <div class="list">
-            <ul>
-              <li>
-                <a href="#" class="item-link list-button">Button 1</a>
-              </li>
-              <li>
-                <a href="#" class="item-link list-button">Button 2</a>
-              </li>
-            </ul>
-          </div>
-
-    h4 Color Buttons
-    pre
-      code.html
-        :code
-          <f7-list>
-            <f7-list-button color="red">Red Button</f7-list-button>
-            <f7-list-button color="green">Green Button</f7-list-button>
-          </f7-list>
-
-    h4 Control Buttons in Inset List
-    pre
-      code.html
-        :code
-          <f7-list inset>
-            <f7-list-button panel-open="left">Open Panel</f7-list-button>
-            <f7-list-button popup-open="#my-popup">Open Popup</f7-list-button>
-          </f7-list>
+            <f7-list inset>
+              <f7-list-button title="Red List Button" color="red"></f7-list-button>
+              <f7-list-button title="Green List Button" color="green"></f7-list-button>
+              <f7-list-button title="Orange List Button" color="orange"></f7-list-button>
+            </f7-list>
+      .device-spacer
