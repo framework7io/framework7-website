@@ -4,52 +4,60 @@ block vars
   - includeMaterialIcons = true
 
 block content
-  template#app-template.
-    <f7-app>
-      <f7-view main>
-        <f7-page>
-          <f7-navbar title="Contacts List"></f7-navbar>
+  script(type="text/babel").
+    class AppComponent extends React.Component {
+      constructor() {
+        super();
 
-          <f7-list contacts-list>
-            <f7-list-group>
-              <f7-list-item title="A" group-title></f7-list-item>
-              <f7-list-item title="Aaron "></f7-list-item>
-              <f7-list-item title="Abbie"></f7-list-item>
-              <f7-list-item title="Adam"></f7-list-item>
-              <f7-list-item title="Adele"></f7-list-item>
-              <f7-list-item title="Agatha"></f7-list-item>
-              <f7-list-item title="Agnes"></f7-list-item>
-              <f7-list-item title="Albert"></f7-list-item>
-              <f7-list-item title="Alexander"></f7-list-item>
-            </f7-list-group>
-            <f7-list-group>
-              <f7-list-item title="B" group-title></f7-list-item>
-              <f7-list-item title="Bailey"></f7-list-item>
-              <f7-list-item title="Barclay"></f7-list-item>
-              <f7-list-item title="Bartolo"></f7-list-item>
-              <f7-list-item title="Bellamy"></f7-list-item>
-              <f7-list-item title="Belle"></f7-list-item>
-              <f7-list-item title="Benjamin"></f7-list-item>
-            </f7-list-group>
-            <f7-list-group>
-              <f7-list-item title="C" group-title></f7-list-item>
-              <f7-list-item title="Caiden"></f7-list-item>
-              <f7-list-item title="Calvin"></f7-list-item>
-              <f7-list-item title="Candy"></f7-list-item>
-              <f7-list-item title="Carl"></f7-list-item>
-              <f7-list-item title="Cherilyn"></f7-list-item>
-              <f7-list-item title="Chester"></f7-list-item>
-              <f7-list-item title="Chloe"></f7-list-item>
-            </f7-list-group>
-            <f7-list-group>
-              <f7-list-item title="V" group-title></f7-list-item>
-              <f7-list-item title="Vladimir"></f7-list-item>
-            </f7-list-group>
-          </f7-list>
-        </f7-page>
-      </f7-view>
-    </f7-app>
+        this.state = {
 
-
-  script.
-    var component = {}
+        };
+      }
+      render() {
+        return (
+          <App>
+            <View main>
+              <Page>
+                <Navbar title="Contacts List"></Navbar>
+                <List contactsList>
+                  <ListGroup>
+                    <ListItem title="A" groupTitle></ListItem>
+                    <ListItem title="Aaron "></ListItem>
+                    <ListItem title="Abbie"></ListItem>
+                    <ListItem title="Adam"></ListItem>
+                    <ListItem title="Adele"></ListItem>
+                    <ListItem title="Agatha"></ListItem>
+                    <ListItem title="Agnes"></ListItem>
+                    <ListItem title="Albert"></ListItem>
+                    <ListItem title="Alexander"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="B" groupTitle></ListItem>
+                    <ListItem title="Bailey"></ListItem>
+                    <ListItem title="Barclay"></ListItem>
+                    <ListItem title="Bartolo"></ListItem>
+                    <ListItem title="Bellamy"></ListItem>
+                    <ListItem title="Belle"></ListItem>
+                    <ListItem title="Benjamin"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="C" groupTitle></ListItem>
+                    <ListItem title="Caiden"></ListItem>
+                    <ListItem title="Calvin"></ListItem>
+                    <ListItem title="Candy"></ListItem>
+                    <ListItem title="Carl"></ListItem>
+                    <ListItem title="Cherilyn"></ListItem>
+                    <ListItem title="Chester"></ListItem>
+                    <ListItem title="Chloe"></ListItem>
+                  </ListGroup>
+                  <ListGroup>
+                    <ListItem title="V" groupTitle></ListItem>
+                    <ListItem title="Vladimir"></ListItem>
+                  </ListGroup>
+                </List>
+              </Page>
+            </View>
+          </App>
+        )
+      }
+    }

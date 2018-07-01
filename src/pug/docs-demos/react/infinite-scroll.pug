@@ -4,48 +4,61 @@ block vars
   - includeMaterialIcons = true
 
 block content
-  template#app-template.
-    <f7-app>
-      <f7-view main>
-        <f7-page infinite :infinite-distance="50" :infinite-preloader="showPreloader" @infinite="loadMore">
-          <f7-navbar title="Infinite Scroll"></f7-navbar>
-          <f7-block-title>Scroll bottom</f7-block-title>
-          <f7-list>
-            <f7-list-item v-for="(item, index) in items" :title="`Item ${item}`" :key="index"></f7-list-item>
-          </f7-list>
-        </f7-page>
-      </f7-view>
-    </f7-app>
+  script(type="text/babel").
+    class AppComponent extends React.Component {
+      constructor() {
+        super();
 
-  script.
-    var component = {
-      data() {
-        return {
+        this.state = {
           items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
           allowInfinite: true,
           showPreloader: true,
         };
-      },
-      methods: {
-        loadMore() {
-          const self = this;
-          if (!self.allowInfinite) return;
-          self.allowInfinite = false;
+      }
+      loadMore() {
+        const self = this;
+        if (!self.state.allowInfinite) return;
+        self.setState({ allowInfinite: false });
 
-          setTimeout(() => {
-            if (self.items.length >= 200) {
-              self.showPreloader = false;
-              return;
-            }
+        setTimeout(() => {
+          const items = self.state.items;
+          if (items.length >= 200) {
+            self.setState({ showPreloader: false });
+            return;
+          }
 
-            const itemsLength = self.items.length;
+          const itemsLength = items.length;
 
-            for (let i = 1; i <= 20; i += 1) {
-              self.items.push(itemsLength + i);
-            }
+          for (let i = 1; i <= 20; i += 1) {
+            items.push(itemsLength + i);
+          }
 
-            self.allowInfinite = true;
-          }, 1000);
-        },
-      },
+          self.setState({
+            items,
+            allowInfinite: true,
+          });
+        }, 1000);
+      }
+      render() {
+        return (
+          <App>
+            <View main>
+              <Page
+                infinite
+                infiniteDistance={50}
+                infinitePreloader={this.state.showPreloader}
+                onInfinite={this.loadMore.bind(this)}
+              >
+                <Navbar title="Infinite Scroll"></Navbar>
+                <BlockTitle>Scroll bottom</BlockTitle>
+                <List>
+                  {this.state.items.map((item, index) => (
+                    <ListItem title={`Item ${item}`} key={index}></ListItem>
+                  ))}
+                </List>
+              </Page>
+            </View>
+          </App>
+        )
+      }
     }

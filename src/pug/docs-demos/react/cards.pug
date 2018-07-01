@@ -4,150 +4,161 @@ block vars
   - includeMaterialIcons = true
 
 block content
-  template#app-template.
-    <f7-app>
-      <f7-view main>
-        <f7-page>
-          <f7-navbar title="Cards"></f7-navbar>
+  script(type="text/babel").
+    class AppComponent extends React.Component {
+      constructor() {
+        super();
 
-          <f7-block-title>Simple Cards</f7-block-title>
-          <f7-card
-            content="This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."
-          ></f7-card>
-          <f7-card
-            title="Card header"
-            content="Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions."
-            footer="Card footer"
-          ></f7-card>
-          <f7-card
-            content="Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "
-          ></f7-card>
+        this.state = {
 
-          <f7-block-title>Outline Cards</f7-block-title>
-          <f7-card
-            outline
-            content="This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."
-          ></f7-card>
-          <f7-card
-            outline
-            title="Card header"
-            content="Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions."
-            footer="Card footer"
-          ></f7-card>
-          <f7-card
-            outline
-            content="Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "
-          ></f7-card>
+        };
+      }
+      render() {
+        return (
+          <App>
+            <View main>
+              <Page>
+                <Navbar title="Cards" />
+                <BlockTitle>Simple Cards</BlockTitle>
+                <Card
+                  content="This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."
+                ></Card>
+                <Card
+                  title="Card header"
+                  content="Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions."
+                  footer="Card footer"
+                ></Card>
+                <Card
+                  content="Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "
+                ></Card>
 
-          <f7-block-title>Styled Cards</f7-block-title>
-          <f7-card class="demo-card-header-pic">
-            <f7-card-header
-              class="no-border"
-              valign="bottom"
-              style="background-image:url(http://lorempixel.com/1000/600/nature/3/)"
-            >Journey To Mountains</f7-card-header>
-            <f7-card-content>
-              <p class="date">Posted on January 21, 2015</p>
-              <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
-            </f7-card-content>
-            <f7-card-footer>
-              <f7-link>Like</f7-link>
-              <f7-link>Read more</f7-link>
-            </f7-card-footer>
-          </f7-card>
-          <f7-card class="demo-card-header-pic">
-            <f7-card-header
-              class="no-border"
-              valign="bottom"
-              style="background-image:url(http://lorempixel.com/1000/600/people/6/)"
-            >Journey To Mountains</f7-card-header>
-            <f7-card-content>
-              <p class="date">Posted on January 21, 2015</p>
-              <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
-            </f7-card-content>
-            <f7-card-footer>
-              <f7-link>Like</f7-link>
-              <f7-link>Read more</f7-link>
-            </f7-card-footer>
-          </f7-card>
+                <BlockTitle>Outline Cards</BlockTitle>
+                <Card
+                  outline
+                  content="This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."
+                ></Card>
+                <Card
+                  outline
+                  title="Card header"
+                  content="Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions."
+                  footer="Card footer"
+                ></Card>
+                <Card
+                  outline
+                  content="Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "
+                ></Card>
 
-          <f7-block-title>Facebook Cards</f7-block-title>
-          <f7-card class="demo-facebook-card">
-            <f7-card-header class="no-border">
-              <div class="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
-              <div class="demo-facebook-name">John Doe</div>
-              <div class="demo-facebook-date">Monday at 3:47 PM</div>
-            </f7-card-header>
-            <f7-card-content :padding="false">
-              <img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/>
-            </f7-card-content>
-            <f7-card-footer class="no-border">
-              <f7-link>Like</f7-link>
-              <f7-link>Comment</f7-link>
-              <f7-link>Share</f7-link>
-            </f7-card-footer>
-          </f7-card>
-          <f7-card class="demo-facebook-card">
-            <f7-card-header class="no-border">
-              <div class="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
-              <div class="demo-facebook-name">John Doe</div>
-              <div class="demo-facebook-date">Monday at 2:15 PM</div>
-            </f7-card-header>
-            <f7-card-content>
-              <p>What a nice photo i took yesterday!</p><img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/>
-              <p class="likes">Likes: 112 &nbsp;&nbsp; Comments: 43</p>
-            </f7-card-content>
-            <f7-card-footer class="no-border">
-              <f7-link>Like</f7-link>
-              <f7-link>Comment</f7-link>
-              <f7-link>Share</f7-link>
-            </f7-card-footer>
-          </f7-card>
+                <BlockTitle>Styled Cards</BlockTitle>
+                <Card className="demo-card-header-pic">
+                  <CardHeader
+                    className="no-border"
+                    valign="bottom"
+                    style={{ backgroundImage: 'url(http://lorempixel.com/1000/600/nature/3/)' }}
+                  >Journey To Mountains</CardHeader>
+                  <CardContent>
+                    <p className="date">Posted on January 21, 2015</p>
+                    <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
+                  </CardContent>
+                  <CardFooter>
+                    <Link>Like</Link>
+                    <Link>Read more</Link>
+                  </CardFooter>
+                </Card>
+                <Card className="demo-card-header-pic">
+                  <CardHeader
+                    className="no-border"
+                    valign="bottom"
+                    style={{ backgroundImage: 'url(http://lorempixel.com/1000/600/people/6/)' }}
+                  >Journey To Mountains</CardHeader>
+                  <CardContent>
+                    <p className="date">Posted on January 21, 2015</p>
+                    <p>Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...</p>
+                  </CardContent>
+                  <CardFooter>
+                    <Link>Like</Link>
+                    <Link>Read more</Link>
+                  </CardFooter>
+                </Card>
 
-          <f7-block-title>Cards With List View</f7-block-title>
-          <f7-card>
-            <f7-card-content :padding="false">
-              <f7-list>
-                <f7-list-item link="#">Link 1</f7-list-item>
-                <f7-list-item link="#">Link 2</f7-list-item>
-                <f7-list-item link="#">Link 3</f7-list-item>
-                <f7-list-item link="#">Link 4</f7-list-item>
-                <f7-list-item link="#">Link 5</f7-list-item>
-              </f7-list>
-            </f7-card-content>
-          </f7-card>
-          <f7-card title="New Reelases">
-            <f7-card-content :padding="false">
-              <f7-list medial-list>
-                <f7-list-item
-                  title="Yellow Submarine"
-                  subtitle="Beatles"
-                >
-                  <img slot="media" src="http://lorempixel.com/88/88/fashion/4" width="44"/>
-                </f7-list-item>
-                <f7-list-item
-                  title="Don't Stop Me Now"
-                  subtitle="Queen"
-                >
-                  <img slot="media" src="http://lorempixel.com/88/88/fashion/5" width="44"/>
-                </f7-list-item>
-                <f7-list-item
-                  title="Billie Jean"
-                  subtitle="Michael Jackson"
-                >
-                  <img slot="media" src="http://lorempixel.com/88/88/fashion/6" width="44"/>
-                </f7-list-item>
-              </f7-list>
-            </f7-card-content>
-            <f7-card-footer>
-              <span>January 20, 2015</span>
-              <span>5 comments</span>
-            </f7-card-footer>
-          </f7-card>
-        </f7-page>
-      </f7-view>
-    </f7-app>
+                <BlockTitle>Facebook Cards</BlockTitle>
+                <Card className="demo-facebook-card">
+                  <CardHeader className="no-border">
+                    <div className="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
+                    <div className="demo-facebook-name">John Doe</div>
+                    <div className="demo-facebook-date">Monday at 3:47 PM</div>
+                  </CardHeader>
+                  <CardContent padding={false}>
+                    <img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/>
+                  </CardContent>
+                  <CardFooter className="no-border">
+                    <Link>Like</Link>
+                    <Link>Comment</Link>
+                    <Link>Share</Link>
+                  </CardFooter>
+                </Card>
+                <Card className="demo-facebook-card">
+                  <CardHeader className="no-border">
+                    <div className="demo-facebook-avatar"><img src="http://lorempixel.com/68/68/people/1/" width="34" height="34"/></div>
+                    <div className="demo-facebook-name">John Doe</div>
+                    <div className="demo-facebook-date">Monday at 2:15 PM</div>
+                  </CardHeader>
+                  <CardContent>
+                    <p>What a nice photo i took yesterday!</p><img src="http://lorempixel.com/1000/700/nature/8/" width="100%"/>
+                    <p className="likes">Likes: 112    Comments: 43</p>
+                  </CardContent>
+                  <CardFooter className="no-border">
+                    <Link>Like</Link>
+                    <Link>Comment</Link>
+                    <Link>Share</Link>
+                  </CardFooter>
+                </Card>
 
+                <BlockTitle>Cards With List View</BlockTitle>
+                <Card>
+                  <CardContent padding={false}>
+                    <List>
+                      <ListItem link="#">Link 1</ListItem>
+                      <ListItem link="#">Link 2</ListItem>
+                      <ListItem link="#">Link 3</ListItem>
+                      <ListItem link="#">Link 4</ListItem>
+                      <ListItem link="#">Link 5</ListItem>
+                    </List>
+                  </CardContent>
+                </Card>
+                <Card title="New Reelases">
+                  <CardContent padding={false}>
+                    <List medial-list>
+                      <ListItem
+                        title="Yellow Submarine"
+                        subtitle="Beatles"
+                      >
+                        <img slot="media" src="http://lorempixel.com/88/88/fashion/4" width="44"/>
+                      </ListItem>
+                      <ListItem
+                        title="Don't Stop Me Now"
+                        subtitle="Queen"
+                      >
+                        <img slot="media" src="http://lorempixel.com/88/88/fashion/5" width="44"/>
+                      </ListItem>
+                      <ListItem
+                        title="Billie Jean"
+                        subtitle="Michael Jackson"
+                      >
+                        <img slot="media" src="http://lorempixel.com/88/88/fashion/6" width="44"/>
+                      </ListItem>
+                    </List>
+                  </CardContent>
+                  <CardFooter>
+                    <span>January 20, 2015</span>
+                    <span>5 comments</span>
+                  </CardFooter>
+                </Card>
+              </Page>
+            </View>
+          </App>
+        )
+      }
+    }
   style.
     .demo-card-header-pic .card-header {
       height: 40vw;
@@ -194,6 +205,3 @@ block content
     .demo-facebook-card .card-content-padding .likes {
       color: #8e8e93;
     }
-
-  script.
-    var component = {}
