@@ -5,9 +5,10 @@ block vars
   - var title = 'Page Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Page Vue Component
@@ -248,116 +249,126 @@ block content
               <p>Page content goes here</p>
             </div>
           </div>
-    h2 Examples
-    h4 Minimal layout
-    pre
-      code.html
-        :code
-          <f7-page name="home">
-            <p>Page content</p>
-          </f7-page>
+    .with-device
+      h2 Examples
+      h3(data-device-preview="../docs-demos/vue/infinite-scroll.html") Infinite Scroll
+      pre
+        code.html
+          :code
+            <template>
+              <f7-page
+                infinite
+                :infinite-distance="50"
+                :infinite-preloader="showPreloader"
+                @infinite="loadMore"
+              >
+                <f7-navbar title="Infinite Scroll"></f7-navbar>
+                <f7-block-title>Scroll bottom</f7-block-title>
+                <f7-list>
+                  <f7-list-item v-for="(item, index) in items" :title="`Item ${item}`" :key="index"></f7-list-item>
+                </f7-list>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+                    allowInfinite: true,
+                    showPreloader: true,
+                  };
+                },
+                methods: {
+                  loadMore() {
+                    const self = this;
+                    if (!self.allowInfinite) return;
+                    self.allowInfinite = false;
 
-          <!-- Renders to: -->
+                    setTimeout(() => {
+                      if (self.items.length >= 200) {
+                        self.showPreloader = false;
+                        return;
+                      }
 
-          <div class="page" data-name="home">
-            <div class="page-content">
-              <p>Page content</p>
-            </div>
-          </div>
-    h4 With Navbar
-    pre
-      code.html
-        :code
-          <f7-page name="home">
-            <f7-navbar title="My App"></f7-navbar>
-            <p>Page content</p>
-          </f7-page>
+                      const itemsLength = self.items.length;
 
-          <!-- Renders to: -->
+                      for (let i = 1; i <= 20; i += 1) {
+                        self.items.push(itemsLength + i);
+                      }
 
-          <div class="page" data-name="home">
-            <div class="navbar">
-              <div class="navbar-inner sliding">
-                <div class="title">My App</div>
-              </div>
-            </div>
-            <div class="page-content">
-              <p>Page content</p>
-            </div>
-          </div>
-    h4 Pull To Refresh
-    pre
-      code.html
-        :code
-          <f7-page ptr @ptr:refresh="onRefresh">
-            <f7-navbar title="My App"></f7-navbar>
-            <p>Page content</p>
-          </f7-page>
+                      self.allowInfinite = true;
+                    }, 1000);
+                  },
+                },
+              };
+            </script>
+      h3(data-device-preview="../docs-demos/vue/pull-to-refresh.html") Pull To Refresh
+      pre
+        code.html
+          :code
+            <template>
+              <f7-page ptr @ptr:refresh="loadMore">
+                <f7-navbar title="Pull To Refresh"></f7-navbar>
+                <f7-list media-list>
+                  <f7-list-item
+                    v-for="(item, index) in items"
+                    :key="index"
+                    :title="item.title"
+                    :subtitle="item.author">
+                    <img slot="media" :src="item.cover" width="44" />
+                  </f7-list-item>
 
-          <!-- Renders to: -->
+                  <f7-block-footer>
+                    <p>Just pull page down to let the magic happen.<br>Note that pull-to-refresh feature is optimised for touch and native scrolling so it may not work on desktop browser.</p>
+                  </f7-block-footer>
+                </f7-list>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    items: [
+                      {
+                        title: 'Yellow Submarine',
+                        author: 'Beatles',
+                        cover: 'http://lorempixel.com/88/88/abstract/1',
+                      },
+                      {
+                        title: 'Don\'t Stop Me Now',
+                        author: 'Queen',
+                        cover: 'http://lorempixel.com/88/88/abstract/2',
+                      },
+                      {
+                        title: 'Billie Jean',
+                        author: 'Michael Jackson',
+                        cover: 'http://lorempixel.com/88/88/abstract/3',
+                      },
+                    ],
+                    songs: ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'],
+                    authors: ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'],
+                  };
+                },
+                methods: {
+                  loadMore(event, done) {
+                    const self = this;
 
-          <div class="page">
-            <div class="navbar">
-              <div class="navbar-inner sliding">
-                <div class="title">My App</div>
-              </div>
-            </div>
-            <div class="page-content ptr-content">
-              <div class="ptr-preloader">
-                <div class="preloader"></div>
-                <div class="ptr-arrow"></div>
-              </div>
-              <p>Page content</p>
-            </div>
-          </div>
-    h4 Infinite Scroll
-    pre
-      code.html
-        :code
-          <f7-page infinite @infinite="onInfiniteScroll">
-            <f7-navbar title="My App"></f7-navbar>
-            <p>Page content</p>
-          </f7-page>
+                    setTimeout(() => {
+                      const picURL = `http://lorempixel.com/88/88/abstract/${Math.round(Math.random() * 10)}`;
+                      const song = self.songs[Math.floor(Math.random() * self.songs.length)];
+                      const author = self.authors[Math.floor(Math.random() * self.authors.length)];
 
-          <!-- Renders to: -->
+                      self.items.push({
+                        title: song,
+                        author,
+                        img: picURL,
+                      });
 
-          <div class="page">
-            <div class="navbar">
-              <div class="navbar-inner sliding">
-                <div class="title">My App</div>
-              </div>
-            </div>
-            <div class="page-content infinite-scroll-content">
-              <p>Page content</p>
-              <div class="preloader infinite-scroll-preloader"></div>
-            </div>
-          </div>
-    h4 Page Content as Tabs
-    pre
-      code.html
-        :code
-          <f7-page tabs :page-content="false">
-            <f7-navbar title="My App"></f7-navbar>
-            <f7-page-content tab tab-active id="tab-1">Tab 1 Content ...</f7-page-content>
-            <f7-page-content tab id="tab-2">Tab 2 Content ...</f7-page-content>
-            <f7-page-content tab id="tab-3">Tab 3 Content ...</f7-page-content>
-          </f7-page>
+                      done();
+                    }, 1000);
+                  },
+                },
+              };
+            </script>
 
-          <!-- Renders to: -->
 
-          <div class="page">
-            <div class="navbar">
-              <div class="navbar-inner sliding">
-                <div class="title">My App</div>
-              </div>
-            </div>
-            <div id="tab-1" class="page-content tab tab-active">
-              Tab 1 Content ...
-            </div>
-            <div id="tab-2" class="page-content tab">
-              Tab 2 Content ...
-            </div>
-            <div id="tab-3" class="page-content tab">
-              Tab 3 Content ...
-            </div>
-          </div>

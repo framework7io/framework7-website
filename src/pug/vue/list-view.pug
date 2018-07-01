@@ -5,9 +5,10 @@ block vars
   - var title = 'List Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 List Vue Component
@@ -189,8 +190,8 @@ block content
         tr
           td virtual:beforeclear
           td Event will be triggered before current DOM list will be removed and replaced with new document fragment
-    h2 List View Slots
-    p List View Vue component (<code>&lt;f7-list&gt;</code>) has additional slots for custom elements:
+    h2 List Slots
+    p List Vue component (<code>&lt;f7-list&gt;</code>) has additional slots for custom elements:
     ul
       li <code><b>before-list</b></code> - element will be inserted in the beginning of list view and right before <code>&lt;ul&gt;</code> main list
       li <code><b>after-list</b></code> - element will be inserted in the end of list view and right after <code>&lt;ul&gt;</code> main list
@@ -204,136 +205,319 @@ block content
     h2 Accordion List
     p For Accordion List usage and examples check the <a href="accordion.html">Accordion Vue Component</a> documentation.
 
-    h2 Examples
-    h4 Minimal Layout
-    pre
-      code.html
-        :code
-          <f7-list>
-            <f7-list-item title="Item 1"></f7-list-item>
-            <f7-list-item title="Item 2"></f7-list-item>
-          </f7-list>
-    p Renders to:
-    pre
-      code.html
-        :code
-          <div class="list">
-            <ul>
-              <li class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Item 1</div>
-                </div>
-              </li>
-              <li class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Item 2</div>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-    h4 With Groups
-    pre
-      code.html
-        :code
-          <f7-list>
-            <f7-list-group>
-              <f7-list-item title="Group 1" group-title></f7-list-item>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/list-view.html") Examples
+      h4 Simple List
+      pre
+        code.html
+          :code
+            <f7-block-title>Simple List</f7-block-title>
+            <f7-list simple-list>
               <f7-list-item title="Item 1"></f7-list-item>
               <f7-list-item title="Item 2"></f7-list-item>
-            </f7-list-group>
-            <f7-list-group>
-              <f7-list-item title="Group 2" group-title></f7-list-item>
-              <f7-list-item title="Item 1"></f7-list-item>
-              <f7-list-item title="Item 2"></f7-list-item>
-            </f7-list-group>
-          </f7-list>
-    p Renders to:
-    pre
-      code.html
-        :code
-          <div class="list">
-            <div class="list-group">
-              <ul>
-                <li class="list-group-title"><span>Group 1</span></li>
-                <li class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Item 1</div>
-                  </div>
-                </li>
-                <li class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Item 2</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="list-group">
-              <ul>
-                <li class="list-group-title"><span>Group 2</span></li>
-                ...
-              </ul>
-            </div>
-          </div>
-    h4 Media List
-    pre
-      code
-        :code
-          <f7-list media-list>
-            <f7-list-item title="Item 1" subtitle="Subtitle 1" text="Item 1 Text"></f7-list-item>
-            <f7-list-item title="Item 1" subtitle="Subtitle 2" text="Item 2 Text"></f7-list-item>
-          </f7-list>
-    p Renders to:
-    pre
-      code
-        :code
-          <div class="list media-list">
-            <ul>
-              <li class="item-content">
-                <div class="item-inner">
-                  <div class="item-title-row">
-                    <div class="item-title">Item 1</div>
-                  </div>
-                  <div class="item-subtitle">Subtitle 1</div>
-                  <div class="item-text">Item 1 Text</div>
-                </div>
+              <f7-list-item title="Item 3"></f7-list-item>
+            </f7-list>
+      h4 Simple List Links
+      pre
+        code.html
+          :code
+            <f7-block-title>Simple Links List</f7-block-title>
+            <f7-list>
+              <f7-list-item title="Link 1" link="#"></f7-list-item>
+              <f7-list-item title="Link 2" link="#"></f7-list-item>
+              <f7-list-item title="Link 3" link="#"></f7-list-item>
+            </f7-list>
+      h4 Data list, with icons
+      pre
+        code.html
+          :code
+            <f7-block-title>Data list, with icons</f7-block-title>
+            <f7-list>
+              <f7-list-item title="Ivan Petrov" after="CEO">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item title="John Doe" badge="5">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item title="Jenna Smith">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+            </f7-list>
+      h4 Links
+      pre
+        code.html
+          :code
+            <f7-block-title>Links</f7-block-title>
+            <f7-list>
+              <f7-list-item link="#" title="Ivan Petrov" after="CEO">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" title="John Doe" after="Cleaner">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" title="Jenna Smith">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+            </f7-list>
+      h4 Links, Header, Footer
+      pre
+        code.html
+          :code
+            <f7-block-title>Links, Header, Footer</f7-block-title>
+            <f7-list>
+              <f7-list-item link="#" header="Name" title="John Doe" after="Edit">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" header="Phone" title="+7 90 111-22-3344" after="Edit">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" header="Email" title="john@doe" footer="Home" after="Edit">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" header="Email" title="john@framework7" footer="Work" after="Edit">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+            </f7-list>
+      h4 Links, no icons
+      pre
+        code.html
+          :code
+            <f7-block-title>Links, no icons</f7-block-title>
+            <f7-list>
+              <f7-list-item link="#" title="Ivan Petrov"></f7-list-item>
+              <f7-list-item link="#" title="John Doe"></f7-list-item>
+              <f7-list-item divider title="Divider Here"></f7-list-item>
+              <f7-list-item link="#" title="Ivan Petrov"></f7-list-item>
+              <f7-list-item link="#" title="Jenna Smith"></f7-list-item>
+            </f7-list>
+      h4 Grouped with sticky titles
+      pre
+        code.html
+          :code
+            <f7-block-title>Grouped with sticky titles</f7-block-title>
+            <f7-list>
+              <f7-list-group>
+                <f7-list-item title="A" group-title></f7-list-item>
+                <f7-list-item title="Aaron "></f7-list-item>
+                <f7-list-item title="Abbie"></f7-list-item>
+                <f7-list-item title="Adam"></f7-list-item>
+              </f7-list-group>
+              <f7-list-group>
+                <f7-list-item title="B" group-title></f7-list-item>
+                <f7-list-item title="Bailey"></f7-list-item>
+                <f7-list-item title="Barclay"></f7-list-item>
+                <f7-list-item title="Bartolo"></f7-list-item>
+              </f7-list-group>
+              <f7-list-group>
+                <f7-list-item title="C" group-title></f7-list-item>
+                <f7-list-item title="Caiden"></f7-list-item>
+                <f7-list-item title="Calvin"></f7-list-item>
+                <f7-list-item title="Candy"></f7-list-item>
+              </f7-list-group>
+            </f7-list>
+      h4 Mixed and nested
+      pre
+        code.html
+          :code
+            <f7-block-title>Mixed and nested</f7-block-title>
+            <f7-list>
+              <f7-list-item link="#" title="Ivan Petrov" after="CEO">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" title="Two icons here">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item title="No icons here"></f7-list-item>
+              <li>
+                <ul>
+                  <f7-list-item link="#" title="Ivan Petrov" after="CEO">
+                    <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                  </f7-list-item>
+                  <f7-list-item link="#" title="Two icons here">
+                    <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                    <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                  </f7-list-item>
+                  <f7-list-item title="No icons here"></f7-list-item>
+                  <f7-list-item link="#" title="Ultra long text goes here, no, it is really really long">
+                    <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                  </f7-list-item>
+                  <f7-list-item title="With toggle">
+                    <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                    <f7-toggle slot="after"></f7-toggle>
+                  </f7-list-item>
+                </ul>
               </li>
-              <li class="item-content">
-                <div class="item-inner">
-                  <div class="item-title-row">
-                    <div class="item-title">Item 1</div>
-                  </div>
-                  <div class="item-subtitle">Subtitle 1</div>
-                  <div class="item-text">Item 1 Text</div>
-                </div>
-              </li>
-            </ul>
-          </div>
-    h4 With Block Footer
-    pre
-      code
-        :code
-          <f7-list>
-            <f7-list-item title="Item 1"></f7-list-item>
-            <f7-list-item title="Item 2"></f7-list-item>
-            <f7-block-footer>List Footer</f7-block-footer>
-          </f7-list>
-    p Renders to:
-    pre
-      code
-        :code
-          <div class="list">
-            <ul>
-              <li class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Item 1</div>
-                </div>
-              </li>
-              <li class="item-content">
-                <div class="item-inner">
-                  <div class="item-title">Item 2</div>
-                </div>
-              </li>
-            </ul>
-            <div class="block-footer">List Footer</div>
-          </div>
+              <f7-list-item link="#" title="Ultra long text goes here, no, it is really really long">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item title="With toggle">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                <f7-toggle slot="after"></f7-toggle>
+              </f7-list-item>
+            </f7-list>
+      h4 Mixed, inset
+      pre
+        code.html
+          :code
+            <f7-block-title>Mixed, inset</f7-block-title>
+            <f7-list>
+              <f7-list-item link="#" title="Ivan Petrov" after="CEO">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" title="Two icons here">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" title="Ultra long text goes here, no, it is really really long">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item title="With toggle">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                <f7-toggle slot="after"></f7-toggle>
+              </f7-list-item>
+              <f7-block-footer>
+                <p>Here comes some useful information about list above</p>
+              </f7-block-footer>
+            </f7-list>
+      h4 Tablet inset
+      pre
+        code.html
+          :code
+            <f7-block-title>Tablet inset</f7-block-title>
+            <f7-list tablet-inset>
+              <f7-list-item link="#" title="Ivan Petrov" after="CEO">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" title="Two icons here">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-list-item link="#" title="Ultra long text goes here, no, it is really really long">
+                <f7-icon slot="media" icon="demo-list-icon"></f7-icon>
+              </f7-list-item>
+              <f7-block-footer>
+                <p>This list block will look like "inset" only on tablets (iPad)</p>
+              </f7-block-footer>
+            </f7-list>
+      h4 Media Lists
+      pre
+        code.html
+          :code
+            <f7-block-title>Media Lists</f7-block-title>
+            <f7-block>
+              <p>Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, userc, etc.</p>
+            </f7-block>
+            <f7-block-title>Songs</f7-block-title>
+            <f7-list media-list>
+              <f7-list-item
+                link="#"
+                title="Yellow Submarine"
+                after="$15"
+                subtitle="Beatles"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="http://lorempixel.com/160/160/people/1" width="80" />
+              </f7-list-item>
+              <f7-list-item
+                link="#"
+                title="Don't Stop Me Now"
+                after="$22"
+                subtitle="Queen"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="http://lorempixel.com/160/160/people/2" width="80" />
+              </f7-list-item>
+              <f7-list-item
+                link="#"
+                title="Billie Jean"
+                after="$16"
+                subtitle="Michael Jackson"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="http://lorempixel.com/160/160/people/3" width="80" />
+              </f7-list-item>
+            </f7-list>
+      h4 Mail App
+      pre
+        code.html
+          :code
+            <f7-block-title>Mail App</f7-block-title>
+            <f7-list media-list>
+              <f7-list-item
+                link="#"
+                title="Facebook"
+                after="17:14"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></f7-list-item>
+              <f7-list-item
+                link="#"
+                title="John Doe (via Twitter)"
+                after="17:11"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></f7-list-item>
+              <f7-list-item
+                link="#"
+                title="Facebook"
+                after="16:48"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></f7-list-item>
+              <f7-list-item
+                link="#"
+                title="John Doe (via Twitter)"
+                after="15:32"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></f7-list-item>
+            </f7-list>
+      h4 Something more simple
+      pre
+        code.html
+          :code
+            <f7-block-title>Something more simple</f7-block-title>
+            <f7-list media-list>
+              <f7-list-item
+                title="Yellow Submarine"
+                subtitle="Beatles">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/1" width="44" />
+              </f7-list-item>
+              <f7-list-item
+                link="#"
+                title="Don't Stop Me Now"
+                subtitle="Queen">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/2" width="44" />
+              </f7-list-item>
+              <f7-list-item
+                title="Billie Jean"
+                subtitle="Michael Jackson">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/3" width="44" />
+              </f7-list-item>
+            </f7-list>
+      h4 Inset
+      pre
+        code.html
+          :code
+            <f7-block-title>Inset</f7-block-title>
+            <f7-list media-list inset>
+              <f7-list-item
+                link="#"
+                title="Yellow Submarine"
+                subtitle="Beatles">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/4" width="44" />
+              </f7-list-item>
+              <f7-list-item
+                link="#"
+                title="Don't Stop Me Now"
+                subtitle="Queen">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/5" width="44" />
+              </f7-list-item>
+              <f7-list-item
+                link="#"
+                title="Billie Jean"
+                subtitle="Michael Jackson">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/6" width="44" />
+              </f7-list-item>
+            </f7-list>

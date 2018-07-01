@@ -1,554 +1,656 @@
-extends ../src/pug/_docs-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'react';
   - var title = 'List Item React Component | Framework7 React Documentation';
 
 block content
+  include ../_docs-demo-device
 
-    .docs-nav
-      include ./_docs-react-menu
-    .docs-content
-      h1 List Item React Component
-      h2 Usage examples
-      h4 Minimal Layout
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 List Item React Component
+    ul.docs-index
+
+    h2 List Item Components
+    p There are following components included:
+    ul
+      li <code><b>ListItem</b></code> / <code><b>F7ListItem</b></code> - main list item element
+      li <code><b>ListItemRow</b></code> / <code><b>F7ListItemRow</b></code> - list item row element for custom layout
+      li <code><b>ListItemCell</b></code> / <code><b>F7ListItemCell</b></code> - list item cell element for custom layout
+
+    h2 List Item Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;ListItem&gt; properties
+        tr
+          td title
+          td string
+          td
+          td List item title
+        tr
+          td subtitle
+          td string
+          td
+          td List item subtitle (only for Media List)
+        tr
+          td text
+          td string
+          td
+          td List item text (only for Media List)
+        tr
+          td header
+          td string
+          td
+          td List item header text
+        tr
+          td footer
+          td string
+          td
+          td List item footer text
+        tr
+          td media
+          td string
+          td
+          td List item media image URL
+        tr
+          td after
+          td string
+          td
+          td List item label
+        tr
+          td badge
+          td string<br>number
+          td
+          td List item Badge
+        tr
+          td badgeColor
+          td string
+          td
+          td List item Badge color. One of the <a href="../docs/color-themes.html">default colors</a>
+        tr
+          td mediaItem
+          td boolean
+          td
+          td Enables Media list item for the current list item
+        tr
+          td divider
+          td boolean
+          td
+          td Converts list item to list item divider
+        tr
+          td groupTitle
+          td boolean
+          td
+          td Converts list item to list group title
+        tr
+          td noFastClick
+          td boolean
+          td
+          td Disables fast click
+        tr
+          td target
+          td boolean
+          td
+          td List item link target attribute
+        tr
+          th(colspan="4") &lt;ListItem&gt; Form inputs specific properties
+        tr
+          td inlineLabel
+          td boolean
+          td false
+          td Enables inline-styled labels for <a href="inputs.html">Form Inputs</a>. By default inherirt <code>inlineLabels</code> prop on parent <code>&lt;List&gt;</code>
+        tr
+          td itemInput
+          td boolean
+          td false
+          td Enables additional styling for <a href="inputs.html">Form Inputs</a> inside. By default will try to detect based on content
+        tr
+          td itemInputWithInfo
+          td boolean
+          td false
+          td Enables additional styling for <a href="inputs.html">Form Inputs</a> with additional info. By default will try to detect based on content
+        tr
+          th(colspan="4") &lt;ListItem&gt; Swipeout specific properties
+        tr
+          td swipeout
+          td boolean
+          td
+          td Converts list item to <a href="swipeout.html">swipeout list item</a>
+        tr
+          td swipeoutOpened
+          td boolean
+          td
+          td Defines whether swipe actions should be opened or not. Note, only one swipeout item can be opened at same  time
+        tr
+          th(colspan="4") &lt;ListItem&gt; Accordion specific properties
+        tr
+          td accordionItem
+          td boolean
+          td false
+          td Converts list item to <a href="accordion.html">accordion list item</a>
+        tr
+          td accordionItemOpened
+          td boolean
+          td false
+          td Makes accordion item opened
+        tr
+          th(colspan="4") &lt;ListItem&gt; Smart Select specific properties
+        tr
+          td smartSelect
+          td boolean
+          td false
+          td Enables Smart Select behavior
+        tr
+          td smartSelectParams
+          td object
+          td
+          td Object with <a href="../docs/smart-select.html#smart-select-parameters">Smart Select Parameters</a>
+        tr
+          th(colspan="4") &lt;ListItem&gt; Checkboxes & Radios specific properties
+        tr
+          td checkbox
+          td boolean
+          td false
+          td Enables checkbox-item
+        tr
+          td radio
+          td boolean
+          td false
+          td Enables radio-item
+        tr
+          td checked
+          td boolean
+          td false
+          td Whether the checkbox/radio input is checked
+        tr
+          td name
+          td string
+          td
+          td Checkbox/radio input name
+        tr
+          td value
+          td string<br>number
+          td
+          td Checkbox/radio input value
+        tr
+          td readonly
+          td boolean
+          td false
+          td Whether the checkbox/radio input is readonly
+        tr
+          td disabled
+          td boolean
+          td false
+          td Whether the checkbox/radio input is disabled
+        tr
+          td required
+          td boolean
+          td false
+          td Whether the checkbox/radio input is required
+        tr
+          th(colspan="4") &lt;ListItem&gt; navigation/router related properties
+        tr
+          td link
+          td boolean<br>string
+          td
+          td Enables link and link URL if specified as string. Same as <code>href</code> prop
+        tr
+        +reactLinkRouterProps
+
+    h2 List Item Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;ListItem&gt; events
+        tr
+          td click
+          td Event will be triggeres when user clicks on list item
+        tr
+          td change
+          td Event will be triggeres when "change" event occurs on list item input (radio or checkbox)
+        tr
+          td swipeout
+          td Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage
+        tr
+          td swipeoutOpen
+          td Event will be triggered when swipeout element starts its opening animation
+        tr
+          td swipeoutOpened
+          td Event will be triggered after swipeout element completes its opening animation
+        tr
+          td swipeoutClose
+          td Event will be triggered when swipeout element starts its closing animation
+        tr
+          td swipeoutClosed
+          td Event will be triggered after swipeout element completes its closing animation
+        tr
+          td swipeoutDelete
+          td Event will be triggered after swipeout element starts its delete animation
+        tr
+          td swipeoutDeleted
+          td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+        tr
+          td accordionOpen
+          td Event will be triggered when accordion content starts its opening animation.
+        tr
+          td accordionOpened
+          td Event will be triggered after accordion content completes its opening animation.
+        tr
+          td accordionClose
+          td Event will be triggered when accordion content starts its closing animation.
+        tr
+          td accordionClosed
+          td Event will be triggered after accordion content completes its closing animation.
+
+    h2 List Item Slots
+    p List Item React component (<code>&lt;ListItem&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>root-start</b></code> - element will be inserted in the beginning of <code>&lt;li&gt;</code> element
+      li <code><b>root</b></code> / <code><b>root-end</b></code> - element will be inserted in the end of <code>&lt;li&gt;</code> element
+      li <code><b>content-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-content"&gt;</code> element
+      li <code><b>content</b></code> / <code><b>content-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-content"&gt;</code> element
+      li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-inner"&gt;</code> element
+      li <code><b>default</b></code> / <code><b>inner</b></code> / <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-inner"&gt;</code> element
+      li <code><b>media</b></code> - element will be inserted inside of <code>&lt;div class="item-media"&gt;</code> element
+      li <code><b>before-title</b></code> - element will be inserted before <code>&lt;div class="item-title"&gt;</code> element
+      li <code><b>title</b></code> - element will be inserted inside of <code>&lt;div class="item-title"&gt;</code> element
+      li <code><b>after-title</b></code> - element will be inserted after <code>&lt;div class="item-title"&gt;</code> element
+      li <code><b>subtitle</b></code> - element will be inserted inside of <code>&lt;div class="item-subtitle"&gt;</code> element
+      li <code><b>text</b></code> - element will be inserted inside of <code>&lt;div class="item-text"&gt;</code> element
+      li <code><b>header</b></code> - element will be inserted inside of <code>&lt;div class="item-header"&gt;</code> element
+      li <code><b>footer</b></code> - element will be inserted inside of <code>&lt;div class="item-footer"&gt;</code> element
+      li <code><b>after-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="item-after"&gt;</code> element
+      li <code><b>after</b></code> / <code><b>after-end</b></code> - element will be inserted in the end of <code>&lt;div class="item-after"&gt;</code> element
+    pre
+      code.html
+        :code
+          <List media-list>
+            <ListItem
+              link="/home/"
+              title="Item Title"
+              subtitle="Item Subtitle"
+              text="Text"
+              after="Read more"
+              >
+                <img src="path-to-my-image.jpg" slot="media">
+                <div slot="root-start">Root Start</div>
+                <div slot="root">Root End</div>
+                <div slot="content-start">Content Start</div>
+                <div slot="content">Content End</div>
+                <div slot="media-start">Media Start</div>
+                <div slot="media">Media</div>
+                <span slot="after-start">After Start</span>
+                <span slot="after">After End</span>
+                <div slot="inner-start">Inner Start</div>
+                <div slot="inner">Inner End</div>
+                <div slot="before-title">Before Title</div>
+                <div slot="after-title">After Title</div>
+            </ListItem>
+          </List>
+
+          <!-- Renders to: -->
+
+          <div class="list media-list">
+            <ul>
+              <li>
+                <div>Root Start</div>
+                <a href="/home/" class="item-link">
+                  <div class="item-content">
+                    <div>Content Start</div>
+                    <div class="item-media">
+                      <img src="path-to-my-image.jpg">
+                    </div>
+                    <div class="item-inner">
+                      <div>Inner Start</div>
+                      <div class="item-title-row">
+                        <div>Before Title</div>
+                        <div class="item-title">Item Title</div>
+                        <div>After Title</div>
+                        <div class="item-after">
+                          <span>After Start</span>
+                          <span>Read more</span>
+                          <span>After End</span>
+                        </div>
+                      </div>
+                      <div class="item-subtitle">Item Subtitle</div>
+                      <div class="item-text">Text</div>
+                      <div>Inner End</div>
+                    </div>
+                    <div>Content End</div>
+                  </div>
+                </a>
+                <div>Root End</div>
+              </li>
+            </ul>
+          </div>
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/list-view.html") Examples
+      h4 Simple List
       pre
-        code
+        code.html
           :code
-            <List>
+            <BlockTitle>Simple List</BlockTitle>
+            <List simple-list>
               <ListItem title="Item 1"></ListItem>
               <ListItem title="Item 2"></ListItem>
-            </List>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="list-block">
-              <ul>
-                <li class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Item 1</div>
-                  </div>
-                </li>
-                <li class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Item 2</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-      h4 With Badges And Divider
-      pre
-        code
-          :code
-            <List>
-              <ListItem title="Item 1" badge="5" badgeColor="red"></ListItem>
-              <ListItem title="Item 2" badge="3" badgeColor="red"></ListItem>
-              <ListItem title="Items Divider" divider></ListItem>
               <ListItem title="Item 3"></ListItem>
-              ...
             </List>
-      p Renders to:
+      h4 Simple List Links
       pre
-        code
+        code.html
           :code
-            <div class="list-block">
-              <ul>
-                <li class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Item 1</div>
-                    <div class="item-after">
-                      <span class="badge bg-red">5</span>
-                    </div>
-                  </div>
-                </li>
-                <li class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Item 2</div>
-                    <div class="item-after">
-                      <span class="badge bg-red">3</span>
-                    </div>
-                  </div>
-                </li>
-                <li class="item-divider"><span>Items Divider</span></li>
-                <li class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Item 3</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-      h4 Links Items
-      pre
-        code
-          :code
+            <BlockTitle>Simple Links List</BlockTitle>
             <List>
-              <ListItem link="/about/" title="About"></ListItem>
-              <ListItem link="/contacts/" title="Contacts"></ListItem>
+              <ListItem title="Link 1" link="#"></ListItem>
+              <ListItem title="Link 2" link="#"></ListItem>
+              <ListItem title="Link 3" link="#"></ListItem>
             </List>
-      p Renders to:
+      h4 Data list, with icons
       pre
-        code
+        code.html
           :code
-            <div class="list-block">
-              <ul>
-                <li>
-                  <a href="/about/" class="item-link">
-                    <div class="item-content">
-                      <div class="item-inner">
-                        <div class="item-title">About</div>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a href="/contacts/" class="item-link">
-                    <div class="item-content">
-                      <div class="item-inner">
-                        <div class="item-title">Contacts</div>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </div>
-      h4 Media List Items
-      pre
-        code
-          :code
-            <List mediaList>
-              <ListItem
-                link="/item/"
-                media="<img src='image.jpg'>"
-                title="Item Title"
-                subtitle="Item Subtitle"
-                text="Some text"
-                after="Read more"
-              ></ListItem>
-            </List>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="list-block media-list">
-              <ul>
-                <li>
-                  <a href="/item/" class="item-link">
-                    <div class="item-content">
-                      <div class="item-media">
-                        <img src='image.jpg'>
-                      </div>
-                      <div class="item-inner">
-                        <div class="item-title-row">
-                          <div class="item-title">Item Title</div>
-                          <div class="item-after">Read more</div>
-                        </div>
-                        <div class="item-subtitle">Item Subtitle</div>
-                        <div class="item-text">Some text</div>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </div>
-      h2 Slot Properties
-      p List Item React component (&lt;ListItem&gt;) has additional slot properties for custom elements:
-      ul
-        li <b>rootStartSlot</b> - element will be inserted in the beginning of &lt;li&gt; element
-        li <b>rootSlot</b> - element will be inserted in the end of &lt;li&gt; element
-        li <b>contentStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-content"&gt; element
-        li <b>contentSlot</b> - element will be inserted in the end of &lt;div class="item-content"&gt; element
-        li <b>mediaStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-media"&gt; element
-        li <b>mediaSlot</b> - element will be inserted in the end of &lt;div class="item-media"&gt; element
-        li <b>innerStartSlot</b> - element will be inserted in the beginning of &lt;div class="item-inner"&gt; element
-        li <b>innerSlot</b> - element will be inserted in the end of &lt;div class="item-inner"&gt; element
-      pre
-        code
-          :code
-            <List mediaList>
-              <ListItem
-                link="/home/"
-                media="<img src='image.jpg'>"
-                title="Item Title"
-                subtitle="Item Subtitle"
-                text="Text"
-                after="Read more"
-
-                rootStartSlot={<div>Root Start</div>}
-                rootSlot={<div>Root</div>}
-                contentStartSlot={<div>Content Start</div>}
-                contentSlot={<div>Content</div>}
-                mediaStartSlot={<div>Media Start</div>}
-                mediaSlot={<div>Media</div>}
-                afterStartSlot={<span>After Start</span>}
-                afterSlot={<span>After</span>}
-                innerStartSlot={<div>Inner Start</div>}
-                innerSlot={<div>Inner</div>}
-              >
+            <BlockTitle>Data list, with icons</BlockTitle>
+            <List>
+              <ListItem title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="John Doe" badge="5">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="Jenna Smith">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
               </ListItem>
             </List>
-      p Renders to:
+      h4 Links
       pre
-        code
+        code.html
           :code
-            <div class="list-block media-list">
-              <ul>
-                <li>
-                  <div>Root Start</div>
-                  <a href="/home/" class="item-link">
-                    <div class="item-content">
-                      <div>Content Start</div>
-                      <div class="item-media">
-                        <div>Media Start</div>
-                        <img src="image.jpg">
-                        <div>Media</div>
-                      </div>
-                      <div class="item-inner">
-                        <div>Inner Start</div>
-                        <div class="item-title-row">
-                          <div class="item-title">Item Title</div>
-                          <div class="item-after">
-                            <span>After Start</span>
-                            <span>Read more</span>
-                            <span>After</span>
-                          </div>
-                        </div>
-                        <div class="item-subtitle">Item Subtitle</div>
-                        <div class="item-text">Text</div>
-                        <div>Inner</div>
-                      </div>
-                      <div>Content</div>
-                    </div>
-                  </a>
-                  <div>Root</div>
-                </li>
-              </ul>
-            </div>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td title
-            td string
-            td
-            td List item title
-          tr
-            td subtitle
-            td string
-            td
-            td List item subtitle (only for Media List)
-          tr
-            td text
-            td string
-            td
-            td List item text (only for Media List)
-          tr
-            td media
-            td string
-            td
-            td List item media (icon, image, etc)
-          tr
-            td after
-            td string
-            td
-            td List item label
-          tr
-            td badge
-            td string/number
-            td
-            td List item Badge
-          tr
-            td badge-color
-            td string
-            td
-            td List item Badge color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td media-item
-            td boolean
-            td
-            td Enables Media list item for the current list item
-          tr
-            td divider
-            td boolean
-            td
-            td Converts list item to list item divider
-          tr
-            td group-title
-            td boolean
-            td
-            td Converts list item to list group title
-          tr
-            td swipeout
-            td boolean
-            td
-            td Converts list item to <a href="swipeout-list.html">swipeout list item</a>
-          tr
-            td accordion-item
-            td boolean
-            td
-            td Converts list item to <a href="accordion-list.html">accordion list item</a>
-          tr
-            th(colspan="4") <a href="smart-select.html">Smart Select</a> properties
-          tr
-            td smart-select
-            td boolean
-            td
-            td Converts list item to smart select list item
-          tr
-            td smart-select-searchbar
-            td boolean
-            td
-            td Enables search bar for smart select page
-          tr
-            td smart-select-searchnar-placeholder
-            td string
-            td "Search"
-            td Smart select search bar search field placeholder text
-          tr
-            td smart-select-searchbar-cancel
-            td string
-            td "Cancel"
-            td Smart select search bar Cancel button text
-          tr
-            td smart-select-page-title
-            td string
-            td
-            td Smart select page title. Defaults to <code>title</code> prop
-          tr
-            td smart-select-back-text
-            td boolean
-            td "Back"
-            td Smart select page back-link text.
-          tr
-            td smart-select-back-on-select
-            td boolean
-            td
-            td Will close Smart Select page automatically after user selects any option
-          tr
-            td smart-select-open-in
-            td string
-            td "page"
-            td Defines how to open smart select: "page", "popup" or "picker"
-          tr
-            td smart-select-virtual-list
-            td boolean
-            td
-            td Enables Virtual list for smart select
-          tr
-            td smart-select-virtual-list-height
-            td number
-            td
-            td Allows to specify virtual list item height
-          tr
-            td smart-select-navbar-theme
-            td string
-            td
-            td Smart select navbar color theme. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td smart-select-form-theme
-            td string
-            td
-            td Smart select form color theme. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            th(colspan="4") <a href="checkboxes-radios.html">Checkboxes & Radios</a> properties
-          tr
-            td checkbox
-            td boolean
-            td
-            td Enables checkbox-item
-          tr
-            td radio
-            td boolean
-            td
-            td Enables radio-item
-          tr
-            td checked
-            td boolean
-            td
-            td Whether the checkbox/radio input is checked
-          tr
-            td name
-            td string
-            td
-            td Checkbox/radio input name
-          tr
-            td value
-            td string/number
-            td
-            td Checkbox/radio input value
-          tr
-            td readonly
-            td boolean
-            td
-            td Whether the checkbox/radio input is readonly
-          tr
-            td disabled
-            td boolean
-            td
-            td Whether the checkbox/radio input is disabled
-          tr
-            td required
-            td boolean
-            td
-            td Whether the checkbox/radio input is required
-          tr
-            th(colspan="4") <a href="link.html">Link</a> properties
-          tr
-            td link
-            td boolean/string
-            td
-            td Enables link and link URL if specified as string
-          tr
-            td link-open-panel
-            td string/boolean
-            td
-            td Defines panel to open. Can be "left" or "right"
-          tr
-            td link-close-panel
-            td boolean
-            td
-            td Closes panel on click
-          tr
-            td link-open-popup
-            td string/boolean
-            td
-            td CSS selector of the popup to open on click
-          tr
-            td link-close-popup
-            td string/boolean
-            td
-            td CSS selector of the popup to close on click. Or boolean property to close currently opened popup
-          tr
-            td link-open-popover
-            td string/boolean
-            td
-            td CSS selector of the popover to open on click
-          tr
-            td link-close-popover
-            td string/boolean
-            td
-            td CSS selector of the popover to close on click. Or boolean property to close currently opened popover
-          tr
-            td link-open-picker
-            td string/boolean
-            td
-            td CSS selector of the picker to open on click
-          tr
-            td link-close-picker
-            td string/boolean
-            td
-            td CSS selector of the picker to close on click. Or boolean property to close currently opened picker
-          tr
-            td link-open-login-screen
-            td string/boolean
-            td
-            td CSS selector of the login screen to open on click
-          tr
-            td link-close-login-screen
-            td string/boolean
-            td
-            td CSS selector of the login screen to close on click. Or boolean property to close currently opened login screen
-          tr
-            td link-view
-            td string
-            td
-            td CSS selector of the View to load the page
-          tr
-            td link-no-fastclick
-            td boolean
-            td
-            td Disables fast click
-          tr
-            td link-external
-            td boolean
-            td
-            td Enable to bypass Framework7's link click handler
-          tr
-            td link-back
-            td boolean
-            td
-            td Enables back navigation link
-          tr
-            td link-force
-            td boolean
-            td
-            td Force page to load and ignore previous page in history (use together with <b>back</b> prop)
-          tr
-            td link-reload
-            td boolean
-            td
-            td Reloads new page instead of the currently active one
-          tr
-            td link-animate-pages
-            td boolean
-            td
-            td Disables pages animation
-          tr
-            td link-ignore-cache
-            td boolean
-            td
-            td Ignores caching
-          tr
-            td link-page-name
-            td string
-            td
-            td Name of the page to load
-          tr
-            td link-template
-            td string
-            td
-            td Template name to load
-
-      h2 Event Properties
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td click
-            td Event will be triggeres when user clicks on list item
-          tr
-            td change
-            td Event will be triggeres when "change" event occurs on list item input (radio or checkbox)
-          tr
-            td swipeout
-            td Event will be triggered while you move swipeout element. <b>event.detail.progress</b> contains current opened progress percentage
-          tr
-            td swipeout:open
-            td Event will be triggered when swipeout element starts its opening animation
-          tr
-            td swipeout:opened
-            td Event will be triggered after swipeout element completes its opening animation
-          tr
-            td swipeout:close
-            td Event will be triggered when swipeout element starts its closing animation
-          tr
-            td swipeout:closed
-            td Event will be triggered after swipeout element completes its closing animation 
-          tr
-            td swipeout:delete
-            td Event will be triggered after swipeout element starts its delete animation 
-          tr
-            td swipeout:deleted
-            td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
-          tr
-            td accordion:open
-            td Event will be triggered when accordion content starts its opening animation.
-          tr
-            td accordion:opened
-            td Event will be triggered after accordion content completes its opening animation.
-          tr
-            td accordion:close
-            td Event will be triggered when accordion content starts its closing animation.
-          tr
-            td accordion:closed
-            td Event will be triggered after accordion content completes its closing animation.
+            <BlockTitle>Links</BlockTitle>
+            <List>
+              <ListItem link="#" title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="John Doe" after="Cleaner">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Jenna Smith">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+            </List>
+      h4 Links, Header, Footer
+      pre
+        code.html
+          :code
+            <BlockTitle>Links, Header, Footer</BlockTitle>
+            <List>
+              <ListItem link="#" header="Name" title="John Doe" after="Edit">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" header="Phone" title="+7 90 111-22-3344" after="Edit">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" header="Email" title="john@doe" footer="Home" after="Edit">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" header="Email" title="john@framework7" footer="Work" after="Edit">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+            </List>
+      h4 Links, no icons
+      pre
+        code.html
+          :code
+            <BlockTitle>Links, no icons</BlockTitle>
+            <List>
+              <ListItem link="#" title="Ivan Petrov"></ListItem>
+              <ListItem link="#" title="John Doe"></ListItem>
+              <ListItem divider title="Divider Here"></ListItem>
+              <ListItem link="#" title="Ivan Petrov"></ListItem>
+              <ListItem link="#" title="Jenna Smith"></ListItem>
+            </List>
+      h4 Grouped with sticky titles
+      pre
+        code.html
+          :code
+            <BlockTitle>Grouped with sticky titles</BlockTitle>
+            <List>
+              <ListGroup>
+                <ListItem title="A" groupTitle></ListItem>
+                <ListItem title="Aaron "></ListItem>
+                <ListItem title="Abbie"></ListItem>
+                <ListItem title="Adam"></ListItem>
+              </ListGroup>
+              <ListGroup>
+                <ListItem title="B" groupTitle></ListItem>
+                <ListItem title="Bailey"></ListItem>
+                <ListItem title="Barclay"></ListItem>
+                <ListItem title="Bartolo"></ListItem>
+              </ListGroup>
+              <ListGroup>
+                <ListItem title="C" groupTitle></ListItem>
+                <ListItem title="Caiden"></ListItem>
+                <ListItem title="Calvin"></ListItem>
+                <ListItem title="Candy"></ListItem>
+              </ListGroup>
+            </List>
+      h4 Mixed and nested
+      pre
+        code.html
+          :code
+            <BlockTitle>Mixed and nested</BlockTitle>
+            <List>
+              <ListItem link="#" title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Two icons here">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="No icons here"></ListItem>
+              <li>
+                <ul>
+                  <ListItem link="#" title="Ivan Petrov" after="CEO">
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                  </ListItem>
+                  <ListItem link="#" title="Two icons here">
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                  </ListItem>
+                  <ListItem title="No icons here"></ListItem>
+                  <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                  </ListItem>
+                  <ListItem title="With toggle">
+                    <Icon slot="media" icon="demo-list-icon"></Icon>
+                    <Toggle slot="after"></Toggle>
+                  </ListItem>
+                </ul>
+              </li>
+              <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="With toggle">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Toggle slot="after"></Toggle>
+              </ListItem>
+            </List>
+      h4 Mixed, inset
+      pre
+        code.html
+          :code
+            <BlockTitle>Mixed, inset</BlockTitle>
+            <List>
+              <ListItem link="#" title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Two icons here">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem title="With toggle">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Toggle slot="after"></Toggle>
+              </ListItem>
+              <BlockFooter>
+                <p>Here comes some useful information about list above</p>
+              </BlockFooter>
+            </List>
+      h4 Tablet inset
+      pre
+        code.html
+          :code
+            <BlockTitle>Tablet inset</BlockTitle>
+            <List tabletInset>
+              <ListItem link="#" title="Ivan Petrov" after="CEO">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Two icons here">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <ListItem link="#" title="Ultra long text goes here, no, it is really really long">
+                <Icon slot="media" icon="demo-list-icon"></Icon>
+              </ListItem>
+              <BlockFooter>
+                <p>This list block will look like "inset" only on tablets (iPad)</p>
+              </BlockFooter>
+            </List>
+      h4 Media Lists
+      pre
+        code.html
+          :code
+            <BlockTitle>Media Lists</BlockTitle>
+            <Block>
+              <p>Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, userc, etc.</p>
+            </Block>
+            <BlockTitle>Songs</BlockTitle>
+            <List mediaList>
+              <ListItem
+                link="#"
+                title="Yellow Submarine"
+                after="$15"
+                subtitle="Beatles"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="http://lorempixel.com/160/160/people/1" width="80" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Don't Stop Me Now"
+                after="$22"
+                subtitle="Queen"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="http://lorempixel.com/160/160/people/2" width="80" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Billie Jean"
+                after="$16"
+                subtitle="Michael Jackson"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              >
+                <img slot="media" src="http://lorempixel.com/160/160/people/3" width="80" />
+              </ListItem>
+            </List>
+      h4 Mail App
+      pre
+        code.html
+          :code
+            <BlockTitle>Mail App</BlockTitle>
+            <List mediaList>
+              <ListItem
+                link="#"
+                title="Facebook"
+                after="17:14"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                link="#"
+                title="John Doe (via Twitter)"
+                after="17:11"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                link="#"
+                title="Facebook"
+                after="16:48"
+                subtitle="New messages from John Doe"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+              <ListItem
+                link="#"
+                title="John Doe (via Twitter)"
+                after="15:32"
+                subtitle="John Doe (@_johndoe) mentioned you on Twitter!"
+                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+              ></ListItem>
+            </List>
+      h4 Something more simple
+      pre
+        code.html
+          :code
+            <BlockTitle>Something more simple</BlockTitle>
+            <List mediaList>
+              <ListItem
+                title="Yellow Submarine"
+                subtitle="Beatles">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/1" width="44" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Don't Stop Me Now"
+                subtitle="Queen">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/2" width="44" />
+              </ListItem>
+              <ListItem
+                title="Billie Jean"
+                subtitle="Michael Jackson">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/3" width="44" />
+              </ListItem>
+            </List>
+      h4 Inset
+      pre
+        code.html
+          :code
+            <BlockTitle>Inset</BlockTitle>
+            <List mediaList inset>
+              <ListItem
+                link="#"
+                title="Yellow Submarine"
+                subtitle="Beatles">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/4" width="44" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Don't Stop Me Now"
+                subtitle="Queen">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/5" width="44" />
+              </ListItem>
+              <ListItem
+                link="#"
+                title="Billie Jean"
+                subtitle="Michael Jackson">
+                <img slot="media" src="http://lorempixel.com/88/88/fashion/6" width="44" />
+              </ListItem>
+            </List>

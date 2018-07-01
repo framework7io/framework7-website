@@ -7,33 +7,27 @@ block vars
 block content
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Navigation Router
     ul.docs-index
     p Framework7-Vue as Framework7 itself comes with powerful and flexible router. And to make it work we must specify <a href="../docs/routes.html">Routes</a>.
-    p The only difference in Framework7-Vue is that in Vue.js we are already composing our application with Vue components, so we need to map our Pages-Vue components to the routes. It can be done by passing Vue component in <code>component</code> property of the route. Here's a basic example:
+    p The only difference in Framework7-Vue is that in Vue.js we are already composing our application with Vue components, so we need to map our Pages (Vue components) to the routes. It can be done by passing Vue component in <code>component</code> property of the route. Here's a basic example:
     pre
       code.html
         :code
           <!-- app.vue -->
           <template>
             <f7-app :params="f7params">
-              <!-- Current View/Router -->
-              <f7-view>
-                <!-- Initial Page -->
-                <f7-page>
-                  ...
-                  <f7-link href="/about/">About App</f7-link>
-                  <f7-link href="/login/">Login</f7-link>
-                </f7-page>
-              </f7-view>
+              <!-- Current View/Router, initial page will be loaded from home.vue component -->
+              <f7-view main url="/"></f7-view>
             </f7-app>
           </template>
 
           <script>
             /* Import pages components */
+            import HomePage from 'home.vue'
             import AboutPage from 'about.vue'
             import LoginPage from 'login.vue'
 
@@ -51,6 +45,10 @@ block content
                     id: 'com.myapp.test',
                     // specify routes for app
                     routes: [
+                      {
+                        path: '/',
+                        component: HomePage,
+                      },
                       {
                         path: '/about/',
                         component: AboutPage,
@@ -71,9 +69,25 @@ block content
     pre
       code.html
         :code
+          <!-- home.vue -->
+          <template>
+            <f7-page name="home">
+              <f7-navbar title="Home"></f7-navbar>
+              <!-- Page content -->
+              ...
+              <f7-link href="/about/">About Page</f7-link>
+              <f7-link href="/login/">Login Page</f7-link>
+            </f7-page>
+          </template>
+          <script>
+            export default {}
+          </script>
+
+
           <!-- about.vue -->
           <template>
             <f7-page name="about">
+              <f7-navbar title="About"></f7-navbar>
               <!-- Page content -->
             </f7-page>
           </template>
@@ -84,6 +98,7 @@ block content
           <!-- login.vue -->
           <template>
             <f7-page name="login">
+              <f7-navbar title="Login"></f7-navbar>
               <!-- Page content -->
             </f7-page>
           </template>

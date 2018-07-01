@@ -7,7 +7,7 @@ block vars
 block content
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Navbar Vue Component
@@ -183,53 +183,18 @@ block content
         :code
           <f7-navbar title="My App"></f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="title">My App</div>
-            </div>
-          </div>
     h4 Minimal layout with back link
     pre
       code.html
         :code
           <f7-navbar title="My App" back-link="Back"></f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="back link">
-                  <i class="icon icon-back"></i>
-                  <!-- Back link text rendered only for iOS theme -->
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="title">My App</div>
-            </div>
-          </div>
     h4 Without "sliding" transition effect (affects iOS theme only)
     pre
       code.html
         :code
           <f7-navbar title="My App" back-link="Back" :sliding="false"></f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner">
-              <div class="left">
-                <a href="#" class="back link">
-                  <i class="icon icon-back"></i>
-                  <!-- Back link text rendered only for iOS theme -->
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="title">My App</div>
-            </div>
-          </div>
     h4 With additional right link to open right panel
     pre
       code.html
@@ -240,25 +205,6 @@ block content
             </f7-nav-right>
           </f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="back link">
-                  <i class="icon icon-back"></i>
-                  <!-- Back link text rendered only for iOS theme -->
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="title">My App</div>
-              <div class="right">
-                <a href="#" class="link panel-open" data-panel="right">
-                  <i class="icon icon-bars"></i>
-                </a>
-              </div>
-            </div>
-          </div>
     h4 All three parts
     pre
       code.html
@@ -271,25 +217,6 @@ block content
             </f7-nav-right>
           </f7-navbar>
 
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="back link">
-                  <i class="icon icon-back"></i>
-                  <!-- Back link text rendered only for iOS theme -->
-                  <span>Back</span>
-                </a>
-              </div>
-              <div class="title">My App</div>
-              <div class="right">
-                <a href="#" class="link panel-open" data-panel="right">
-                  <i class="icon icon-bars"></i>
-                </a>
-              </div>
-            </div>
-          </div>
     h4 Full custom layout
     pre
       code.html
@@ -303,17 +230,3 @@ block content
               <f7-link>Right Link</f7-link>
             </f7-nav-right>
           </f7-navbar>
-
-          <!-- Renders to: -->
-
-          <div class="navbar">
-            <div class="navbar-inner sliding">
-              <div class="left">
-                <a href="#" class="link">Left Link</a>
-              </div>
-              <div class="title">My App</div>
-              <div class="right">
-                <a href="#" class="link">Right Link</a>
-              </div>
-            </div>
-          </div>

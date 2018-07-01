@@ -7,15 +7,13 @@ block vars
 block content
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Vue Component Extensions
     p <b>After</b> Vue mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all Vue components:
     table.methods-table
       tbody
-        tr
-          th(colspan="2") Properties
         tr
           td this.$f7ready
           td Callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:

@@ -7,7 +7,7 @@ block vars
 block content
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 View Vue Component
@@ -134,7 +134,7 @@ block content
       code.html
         :code
           <f7-view
-            :url="/home/"
+            url="/home/"
             :animate="false"
             :ios-dynamic-navbar="false"
             :push-state="true"

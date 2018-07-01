@@ -68,7 +68,7 @@
     var cbs = 0;
     var time = Date.now();
     console.log(`Starting pug: all`);
-    gulp.src(['**/*.pug', '!**/_*.pug', '!react/*.pug', '!_*.pug'], { cwd: 'src/pug' })
+    gulp.src(['**/*.pug', '!**/_*.pug', '!_*.pug'], { cwd: 'src/pug' })
       .pipe(gulpData(getSrcFileUrl))
       .pipe(gulpPug({
         pug,
@@ -113,7 +113,7 @@
       checkIsLocal(process.argv.slice(3));
       if (data.type !== 'changed') return;
       const filePath = data.path.split('/src/pug/')[1];
-      if (filePath.indexOf('react') === 0) return;
+      // if (filePath.indexOf('react') === 0) return;
       if (filePath.indexOf('_') === 0 || filePath.indexOf('_layout.pug') >= 0) {
         buildPages();
         return;

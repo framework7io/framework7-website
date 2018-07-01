@@ -8,7 +8,7 @@ block content
   include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Popup Vue Component
@@ -83,7 +83,7 @@ block content
           :code
             <template>
               <f7-page @page:beforeremove="onPageBeforeRemove">
-                <f7-navbar title="Popup" back-link="Back"></f7-navbar>
+                <f7-navbar title="Popup"></f7-navbar>
                 <f7-block>
                   <p>
                     <f7-button raised popup-open=".demo-popup">Open Popup</f7-button>

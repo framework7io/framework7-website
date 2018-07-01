@@ -1,0 +1,149 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Panel React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Panel React Component
+    ul.docs-index
+    p Panel React component represents <a href="../docs/panel.html">Side Panels</a> component.
+    h2 Panel Components
+    p There are following components included:
+    ul
+      li <code><b>Panel</b></code> / <code><b>F7Panel</b></code> - Panel element
+    h2 Panel Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td side
+          td string
+          td
+          td Panel side. Could be <code>left</code> or <code>right</code>
+        tr
+          td left
+          td boolean
+          td
+          td Shortcut prop for <code>side="left"</code>
+        tr
+          td right
+          td boolean
+          td
+          td Shortcut prop for <code>side="right"</code>
+        tr
+          td effect
+          td string
+          td
+          td Panel effect. Could be <code>cover</code> or <code>reveal</code>
+        tr
+          td cover
+          td boolean
+          td
+          td Shortcut prop for <code>effect="cover"</code>
+        tr
+          td reveal
+          td boolean
+          td
+          td Shortcut prop for <code>effect="reveal"</code>
+        tr
+          td opened
+          td boolean
+          td
+          td Allows to open/close panel and set its initial state
+    h2 Panel Methods
+    table.methods-table
+      tr
+        td .open(<span>animate</span>)
+        td Open panel
+      tr
+        td .close(<span>animate</span>)
+        td Close panel
+    h2 Panel Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          td panelOpen
+          td Event will be triggered when Panel starts its opening animation
+        tr
+          td panelOpened
+          td Event will be triggered after Panel completes its opening animation
+        tr
+          td panelClose
+          td Event will be triggered when Panel starts its closing animation
+        tr
+          td panelClosed
+          td Event will be triggered after Panel completes its closing animation
+        tr
+          td panelBackdropClick
+          td Event will be triggered when the panel backdrop is clicked
+        tr
+          td panelSwipe
+          td Event will be triggered for swipe panels during touch swipe action
+        tr
+          td panelSwipeOpen
+          td Event will be triggered in the very beginning of opening it with swipe
+        tr
+          td panelBreakpoint
+          td Event will be triggered when it becomes visible/hidden when app width matches its breakpoint
+    h2 Open And Close Panel
+    p You can control panel state, open and closing it:
+    ul
+      li using <a href="../docs/panel.html">Panel API</a>
+      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>panelOpen</code> property (to open it) and <code>panelClose</code> property to close it
+    h2 Access To Panel Instance
+    p You can access Panel initialized instance by accessing <code><b>.f7Panel</b></code> component's property.
+    .with-device
+      h2(data-device-preview="../docs-demos/react/panel.html") Examples
+      pre
+        code.html
+          :code
+            <App>
+              <!-- Left Panel with Reveal effect -->
+              <Panel left reveal>
+                <View>
+                  <Page>
+                    <Block>Left panel content</Block>
+                </View>
+              </Panel>
+
+              <!-- Right Panel with Cover effect and dark layout theme -->
+              <Panel right themeDark>
+                <View>
+                  <Page>
+                    <Block>Right panel content</Block>
+                </View>
+              </Panel>
+
+              <!-- Main view -->
+              <View main>
+                <Page>
+                  <Navbar title="Panel"></Navbar>
+
+                  <Block className="row">
+                    <Col>
+                      <Button raised panelOpen="left">Open left panel</Button>
+                    </Col>
+                    <Col>
+                      <Button raised panelOpen="right">Open right panel</Button>
+                    </Col>
+                  </Block>
+                </Page>
+              </View>
+            </App>

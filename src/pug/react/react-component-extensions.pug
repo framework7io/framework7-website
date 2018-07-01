@@ -1,0 +1,142 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'React Component Extensions | Framework7 React Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 React Component Extensions
+    ul.docs-index
+    p <b>After</b> React mounts the app and init Framework7, we will have access to Framework7's initialized instance and some other useful properties that will be available in all React components (Class components):
+    h2 Components Properties
+    table.methods-table
+      tbody
+        tr
+          td this.$f7ready
+          td Callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
+            pre
+              code.js
+                :code
+                  export default class extends React.Component {
+                    ...
+                    render() {
+                      ...
+                    },
+                    componentDidMount() {
+                      this.$f7ready((f7) => {
+                        f7.dialog.alert('Component mounted');
+                      });
+                    },
+                    ...
+                  };
+        tr
+          td this.$f7
+          td Main Framework7's initialized instance. It allows you to use any of Framework7 APIs
+        tr
+          td this.$$<br>this.Dom7
+          td Access to built-in <a href="../docs/dom7.html">Dom7</a> DOM library that utilizes most edge and high-performance methods for DOM manipulation
+        tr
+          td this.$device
+          td Access to <a href="../docs/device.html">Device</a> utilities
+        tr
+          td this.$request
+          td Access to <a href="../docs/request.html">Request</a> library for XHR requests
+        tr
+          td this.$utils
+          td Access to <a href="../docs/utils.html">Utils</a> object with few useful utilities
+        tr
+          td this.$theme
+          td Object with boolean properties with information about currently used theme (iOS or MD): <code>this.$theme.ios</code> and <code>this.$theme.material</code>
+        tr
+          td this.$f7router
+          td
+            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
+            p Framework7 Router Instance. It has a lot of useful <a href="../docs/view.html#router-api-methods-properties">Methods & Properties</a> to use for navigation
+        tr
+          td this.$f7route
+          td
+            p.important-note This property only available for components loaded with router (e.g. pages, routable modals, routable tabs). If you need to access this property in "deeper" child components, then you need to pass it down using props.
+            p Object with current route data that was used to load this page, tab or modal. It has the following properties
+            ul
+              li <code>url</code> - route URL
+              li <code>path</code> - route path
+              li <code>query</code> - object with route query. If the url is <code>/page/?id=5&foo=bar</code> then it will contain the following object <code>{id: '5', foo: 'bar'}</code>
+              li <code>params</code> - route params. If we have matching route with <code>/page/user/:userId/post/:postId/</code> path and url of the page is <code>/page/user/55/post/12/</code> then it will be the following object <code>{userId: '55', postId: '12'}</code>
+              li <code>name</code> - route name
+              li <code>hash</code> - route URL hash
+              li <code>route</code> - object with matching route from available routes
+              li <code>context</code> - context that was passed to the route
+    h2 Phenome.js
+    p Framework7-React components are build with <a target="_blank" href="https://github.com/phenomejs/phenome">Phenome.js</a>, so they are empowered with some extra features like Slots and Events.
+    h2 Slots
+    p All Framework7-React components use <code>slots</code> to distribute children across component structure. They work exactly the same as <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots">Web Component Slots</a> and <a href="https://vuejs.org/v2/guide/components-slots.html" target="_blank">Vue.js Slots</a>.
+    p For example
+    pre
+      code
+        :code
+          export detault () => (
+            <Page>
+              <p slot="fixed">I'm fixed page element</p>
+              <p>I'm in scrollable page area</p>
+              <List>
+                <ListItem>
+                  <img slot="media" src="path/to/image.png" />
+                  <span slot="title">Title 1</span>
+                  <span slot="title">Title 2</span>
+                </ListItem>
+              </List>
+            </Page>
+          )
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="page">
+            <p slot="fixed">I'm fixed page element</p>
+            <div class="page-content">
+              <p>I'm in scrollable page area</p>
+              <div class="list">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-media">
+                        <img slot="media" src="path/to/image.png" />
+                      </div>
+                      <div class="item-inner">
+                        <div class="item-title">
+                          <span slot="title">Title 1</span>
+                          <span slot="title">Title 2</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+    h2 Events
+    p All Framework7-React components support events, which are actually props, and their listeners must be assigned as <code>on$Event</code> prop.
+    p For example <code>&lt;Page&gt;</code> component supports <code>pageInit</code>, <code>pageBeforeIn</code> and other <a href="page.html#page-events">events</a>, so to handle such events:
+    pre
+      code.js
+        :code
+          export default class extends React.Component {
+            render() {
+              return (
+                <Page onPageBeforeIn={this.onPageBeforeIn.bind(this)} onPageInit={this.onPageInit.bind(this)}>
+                  ...
+                </Page>
+              )
+            }
+            onPageBeforeIn() {
+              // do something on page before in
+            }
+            onPageInit() {
+              // do something on page init
+            }
+          }

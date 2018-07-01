@@ -1442,26 +1442,36 @@ img.lazy {
   display: flex;
   justify-content: center;
 }
-.home-vue {
+.home-vue,
+.home-react {
   margin-top: 0;
   text-align: center;
 }
-.home-vue:first-child {
+.home-vue:first-child,
+.home-react:first-child {
   margin-top: 0;
 }
-.home-vue h1 {
+.home-vue h1,
+.home-react h1 {
   margin-top: 0;
   font-size: 47px;
   text-align: center;
 }
-.home-vue .text {
+.home-vue .text,
+.home-react .text {
   text-align: center;
 }
-.home-vue .pic img {
-  border-radius: 10px;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+.home-vue .pic,
+.home-react .pic {
+  display: inline-block;
+  background: #263238;
+  border-radius: 6px;
+  font-size: 0;
+  overflow: hidden;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
 }
-.home-vue a {
+.home-vue a,
+.home-react a {
   border-radius: 10em;
   display: inline-block;
   transition: 200ms;
@@ -1472,11 +1482,13 @@ img.lazy {
   line-height: 44px;
   padding: 0 40px;
 }
-.home-vue a:hover {
+.home-vue a:hover,
+.home-react a:hover {
   background: #EE350F;
   color: #fff;
 }
-.home-vue a:active {
+.home-vue a:active,
+.home-react a:active {
   background: #EE350F;
   color: #fff;
 }
