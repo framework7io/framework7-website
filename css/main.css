@@ -3097,6 +3097,82 @@ h1 + .tutorial-author {
 .sponsors-top .sponsor-join {
   font-size: 12px;
 }
+.hljs {
+  background: #253238;
+  color: #fff;
+}
+.hljs-subst {
+  color: #fff;
+}
+.hljs-meta {
+  color: #aaa;
+}
+.hljs-comment {
+  color: #536E7B;
+  font-style: italic;
+}
+.hljs-keyword {
+  color: #86DDFF;
+}
+.hljs-string {
+  color: #C2E988;
+}
+.hljs-number {
+  color: #F98C68;
+}
+.hljs-variable {
+  color: #80A8FF;
+}
+.hljs-tag {
+  color: #86DDFF;
+}
+.hljs-tag .hljs-name {
+  color: #F27076;
+}
+.hljs-tag .hljs-attr {
+  color: #FFCC63;
+  font-style: italic;
+}
+.hljs-tag .hljs-string {
+  color: #C2E988;
+}
+.hljs-built_in {
+  color: #FFCC63;
+}
+.hljs-keyword {
+  color: #C88FEC;
+  font-weight: bold;
+}
+.hljs-string {
+  color: #C2E988;
+}
+.hljs-literal,
+.hljs-params {
+  color: #F98C68;
+}
+.hljs-function {
+  color: #80A8FF;
+}
+.hljs-function .hljs-keyword {
+  color: #C88FEC;
+  font-weight: bold;
+  font-style: normal;
+}
+.hljs-selector-class {
+  color: #FFCC63;
+}
+.hljs-attribute {
+  color: #86DDFF;
+}
+.hljs-selector-tag {
+  color: #F27076;
+}
+.hljs-selector-attr {
+  color: #FFCC63;
+}
+.hljs-selector-pseudo {
+  color: #C88FEC;
+}
 pre,
 code {
   font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -3112,34 +3188,37 @@ code {
   border-radius: 4px;
   font-weight: 500;
 }
-code.hljs,
-pre code {
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 20px;
-  background: #fafafa;
-  line-height: 21px;
-  border: 1px solid #f3f3f3;
-  font-weight: normal;
-}
 pre {
   overflow: hidden;
   word-wrap: break-word;
-  font-size: 14px;
   white-space: pre-wrap;
 }
 pre code {
+  padding: 20px;
+  background: #253238;
+  color: #fff;
   display: block;
+  overflow-x: auto;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: normal;
 }
 .nowrap {
   white-space: nowrap;
 }
-.important-note code {
+.important-note code:not(.hljs) {
   background: rgba(255, 255, 255, 0.8);
 }
-.important-note code.hljs {
-  background: rgba(255, 255, 255, 0.8);
-  border: none;
+.with-device pre code {
+  font-size: 13px;
+  line-height: 19px;
+}
+.important-note pre code,
+table pre code.hljs {
+  padding: 10px;
+  font-size: 13px;
+  line-height: 19px;
 }
 footer {
   background: #f4f4f4;

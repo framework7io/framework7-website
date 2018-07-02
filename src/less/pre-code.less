@@ -1,3 +1,5 @@
+@import './hljs.less';
+
 pre, code {
   .monospace();
 }
@@ -13,34 +15,41 @@ code {
   border-radius: 4px;
   font-weight: 500;
 }
-code.hljs, pre code {
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 20px;
-  background: #fafafa;
-  line-height: 21px;
-  border: 1px solid #f3f3f3;
-  font-weight: normal;
-}
+
 pre {
   overflow: hidden;
   word-wrap: break-word;
-  font-size: 14px;
   white-space: pre-wrap;
   code {
+    padding: 20px;
+    background: #253238;
     display: block;
+    color: #fff;
+    display: block;
+    overflow-x: auto;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: normal;
   }
 }
+
 .nowrap {
   white-space: nowrap;
 }
 
 .important-note {
-  code {
+  code:not(.hljs) {
     background: rgba(255,255,255,0.8);
   }
-  code.hljs {
-    background: rgba(255,255,255,0.8);
-    border: none;
-  }
+}
+.with-device pre code {
+  font-size: 13px;
+  line-height: 19px;
+}
+.important-note pre code,
+table pre code.hljs {
+  padding: 10px;
+  font-size: 13px;
+  line-height: 19px;
 }

@@ -11,12 +11,12 @@ block content
     h1 Initialize App
     p Now you can see our HTML layout with linked required CSS and JavaScript files. Now we should initialize our app (for example in <code>my-app.js</code>):
     pre
-      code
+      code.js
         | var app = new Framework7();
     p In the example above we use <code>app</code> variable where we store Framework7 initialized instance for easy access in future. It is not necessary to name it <code>app</code>, it could be any name you like.
     p It was pretty simple. But Framework7 also provides more customization on initialization by passing object with parameters:
     pre
-      code
+      code.js
         :code
           var app = new Framework7({
             // App root element
@@ -41,12 +41,12 @@ block content
     p For list of all available app parameters check the <a href="app.html">App / Core</a> section.
     p Now after we initialized our app, we need to initialize our <a href="view.html">View</a> (<code>&lt;div class="view view-main"&gt;</code> in app layout). The View is basically the app router which is responsible for navigation:
     pre
-      code
+      code.js
         :code
           var mainView = app.views.create('.view-main');
     p So your final initialization code in <code>my-app.js</code> could look like:
     pre
-      code
+      code.js
         :code
           var app = new Framework7({
             // App root element
