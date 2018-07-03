@@ -11,7 +11,6 @@
   var fs = require('fs');
   var del = require('del');
   var yaml = require('js-yaml');
-  var iconsManifest = require('./icons/manifest-icons.json');
   var useCDN = true;
   var cdnPath = '//cdn.framework7.io';
   // var processVuePugFiles = require('./src/react-doc-generation/vue-pug-file-processing').processVuePugFiles;
@@ -64,34 +63,6 @@
       });
   });
 
-  /*
-  function buildReactPages(cb) {
-    checkIsLocal(process.argv.slice(3));
-    processVuePugFiles();
-    var time = Date.now();
-    console.log(`Starting react pug: all`);
-    gulp.src(['./react-pug-temp/*.pug'])
-      .pipe(gulpData(getSrcFileUrl))
-      .pipe(gulpPug({
-        pug,
-        pretty: true,
-        locals: {
-          cdn: useCDN ? cdnPath : '',
-          icons: iconsManifest.icons,
-          getYamlData,
-        }
-      }))
-      .on('error', (err) => {
-        console.log(err);
-      })
-      .pipe(gulp.dest('./react/'))
-      .on('end', () => {
-        console.log(`Finished react pug in ${Date.now() - time}ms`);
-        processReactHtmlFiles(cb);
-      });
-  }
-  */
-
   // All Pug Pages
   function buildPages(cb) {
     checkIsLocal(process.argv.slice(3));
@@ -105,7 +76,6 @@
         pretty: true,
         locals: {
           cdn: useCDN ? cdnPath : '',
-          icons: iconsManifest.icons,
           getYamlData,
         }
       }))
@@ -116,25 +86,11 @@
       .on('end', () => {
         console.log(`Finished pug all in ${Date.now() - time}ms`);
         if(cb) cb();
-        /*
-        buildReactPages(() => {
-          console.log(`Finished pug all in ${Date.now() - time}ms`);
-          if(cb) cb();
-        });
-        */
       });
 
   }
   gulp.task('pug', function (cb) {
     buildPages(cb);
-  });
-
-  gulp.task('process-react-html', function (cb) {
-    processReactHtmlFiles(cb);
-  });
-
-  gulp.task('process-react-pug', function (cb) {
-    buildReactPages(cb);
   });
 
   // Build All
@@ -177,7 +133,6 @@
           pretty: true,
           locals: {
             cdn: useCDN ? cdnPath : '',
-            icons: iconsManifest.icons,
             getYamlData,
           }
         }))

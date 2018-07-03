@@ -1,87 +1,4 @@
 ;(function(){
-  // init search
-  var algoliaClient;
-  var algoliaIndex;
-  var searchTimeout;
-  if (window.algoliasearch) {
-    algoliaClient = algoliasearch("5CN8U5PK9Z", "335298dc09a81387378e525c7824e262");
-    algoliaIndex = algoliaClient.initIndex('f7_docs');
-  }
-  function renderSearchResults(hits, clear) {
-    var tree = {};
-    var html = '';
-    if (clear) {
-      $('.docs-nav-searchbar div.search-results').remove();
-      return;
-    }
-    if (hits.length === 0) {
-      $('.docs-nav-searchbar div.search-results').remove();
-      $('.docs-nav-searchbar').append('<div class="search-results no-search-results">No results found<div class="algolia-logo"></div></div>');
-      return;
-    }
-    hits.forEach((hit) => {
-      var page = hit._highlightResult.page.value;
-      var section = hit._highlightResult.section.value;
-      var text = hit._highlightResult.text.value;
-      if (text.indexOf('<em') >= 100) {
-        text = '...' + text.substring(text.indexOf('<em') - 50, text.length);
-      }
-      // text = text.replace(/\n)/g, '<br>');
-      if (!tree[hit.docs]) tree[hit.docs] = {};
-      if (!tree[hit.docs][page]) tree[hit.docs][page] = { url: hit.pageUrl };
-      if (!tree[hit.docs][page][section]) tree[hit.docs][page][section] = {
-        text: text,
-        url: hit.sectionUrl,
-      };
-    });
-    var html = '<ul>' + Object.keys(tree).map(function (doc) {
-      return '<li><span>' + doc + '</span><ul>' + Object.keys(tree[doc]).map(function (page) {
-        return '<li><a href="' + tree[doc][page].url + '"><span>' + page + '</span></a><ul>' + Object.keys(tree[doc][page]).map(function (section) {
-          if (section === 'url') return '';
-          return '<li><a href="' + tree[doc][page][section].url + '"><span>' + section + '</span><small>'+tree[doc][page][section].text+'</small></a></li>';
-        }).join('') + '</ul></li>'
-      }).join('') + '</ul></li>'
-    }).join('') + '</ul>'
-    $('.docs-nav-searchbar div.search-results').remove();
-    $('.docs-nav-searchbar').append('<div class="search-results">' + html + '<div class="algolia-logo"></div></div>');
-  }
-  function searchDocs(query) {
-    if (!query) {
-      renderSearchResults([], true);
-      return;
-    }
-    algoliaIndex.search(
-      {
-        query: query,
-        attributesToRetrieve: ['docs', 'page', 'section', 'pageUrl', 'sectionUrl', 'text'],
-        hitsPerPage: 6,
-      },
-      function (err, results) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        renderSearchResults(results.hits)
-      }
-    )
-  }
-  $(document).on('input', '.docs-nav-searchbar input', function (e) {
-    var query = e.target.value.trim().toLowerCase();
-    clearTimeout(searchTimeout);
-    if (!query) {
-      $(this).removeClass('with-query');
-      renderSearchResults([], true);
-      return;
-    }
-    $(this).addClass('with-query');
-    searchTimeout = setTimeout(function () {
-      searchDocs(query);
-    }, 500);
-  });
-  $(document).on('click', '.disable-search', function () {
-    $(this).prev('input').val('').trigger('input');
-  });
-
   function handleLazyScroll() {
     var st = $(window).scrollTop();
     $('img.lazy').each(function(){
@@ -110,17 +27,6 @@
     $('header .phone .fullscreen').attr('href', url);
   });
 
-  $('.home-killer .tab-links a').click(function (e) {
-    e.preventDefault();
-    var index = $(this).index();
-    $('.home-killer .active').removeClass('active');
-    $('.home-killer video').each(function () {
-      this.pause();
-    });
-    var newVideo = $('.home-killer .tab').eq(index).addClass('active').find('video');
-    if (!Modernizr.touch) newVideo[0].play();
-    $('.home-killer .tab-links a').eq(index).addClass('active');
-  });
 
   if (window.hljs) {
     hljs.configure({tabReplace: '  '});
@@ -281,24 +187,6 @@
       }, 1000);
     });
   }
-
-  // Showcase
-  $('.showcase-apps .app-icon').click(function () {
-    var appHtml = $(this).parents('.app').html();
-    $('body').append('<div class="showcase-app-preview-backdrop"></div>')
-    $('body').append('<div class="showcase-app-preview"><span class="showcase-app-preview-close"></span>' + appHtml.replace('<h4>', '<h3>').replace('</h4>', '</h3>') + '</div>')
-    $('body').css('overflow', 'hidden');
-  });
-  $(document).on('click', '.showcase-app-preview-close, .showcase-app-preview-backdrop', function () {
-    $('.showcase-app-preview, .showcase-app-preview-backdrop').remove();
-    $('body').css('overflow', '');
-  });
-  $(document).on('click', '.app-show-shots a', function(e) {
-    e.preventDefault();
-    $(this).parent().hide().parents('.showcase-app-preview').find('.app-shots').show().find('img').each(function () {
-      $(this).attr('src', $(this).attr('data-src'));
-    });
-  });
 
   // GH Stars/Forks
   function fetchGitStats(local) {
