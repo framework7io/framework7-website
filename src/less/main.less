@@ -1,11 +1,11 @@
 .gradR(@f,@t) {
-    background: @f; 
-    background: -moz-radial-gradient(center, ellipse cover, @f 0%, @t 100%); 
+    background: @f;
+    background: -moz-radial-gradient(center, ellipse cover, @f 0%, @t 100%);
     background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,@f), color-stop(100%,@t));
-    background: -webkit-radial-gradient(center, circle cover, @f,@t); 
-    background: -o-radial-gradient(center, circle cover, @f,@t); 
+    background: -webkit-radial-gradient(center, circle cover, @f,@t);
+    background: -o-radial-gradient(center, circle cover, @f,@t);
     background: -ms-radial-gradient(center, circle cover, @f,@t);
-    background: radial-gradient(circle at center, @f,@t); 
+    background: radial-gradient(circle at center, @f,@t);
 }
 .flexbox() {
     display: -webkit-box;
@@ -89,7 +89,7 @@
     padding: 0 15px;
     box-sizing: border-box;
     font-weight: 500;
-    
+
     .transition(200ms);
     &:hover {
         background: rgba(red(@dark),green(@dark),blue(@dark),0.1);
@@ -179,7 +179,7 @@ li {
 
 // Headings
 h1, h2, h3, h4 {
-    
+
     font-weight: 300;
     color: @dark;
 }
@@ -478,7 +478,7 @@ header {
 
 // Github buttons
 .github-buttons {
-    
+
     font-size: 0;
     line-height: 18px;
     img {
@@ -548,7 +548,7 @@ footer {
     background: darken(@dark, 30%);
     color:#fff;
     color: rgba(255,255,255,0.8);
-    
+
     a {
         color: rgba(255,255,255,0.8);
         text-decoration: none;

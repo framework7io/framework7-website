@@ -355,40 +355,27 @@ header .small-links a:hover {
 .home-block h1 {
   font-size: 47px;
   margin-bottom: 20px;
-  font-weight: 4300;
+  font-weight: 500;
   margin-top: 30px;
+}
+.home-block .carbon {
+  text-align: left;
 }
 .home-block .buttons {
   margin-top: 30px;
 }
 .home-block .buttons a {
-  border-radius: 5px;
-  height: 27px;
-  line-height: 25px;
-  border: 1px solid #EE350F;
+  font-size: 18px;
   text-decoration: none;
-  font-weight: normal;
-  padding: 0 15px;
-  box-sizing: border-box;
-  font-weight: 500;
-  -webkit-transition: 200ms;
-  -moz-transition: 200ms;
-  -ms-transition: 200ms;
-  -o-transition: 200ms;
-  transition: 200ms;
-  font-size: 20px;
-  height: auto;
+  border-radius: 22px;
+  padding: 0 20px;
   display: inline-block;
-  line-height: 38px;
-  width: auto;
-  padding: 0 30px;
-  border-radius: 20px;
-}
-.home-block .buttons a:hover {
-  background: rgba(238, 53, 15, 0.1);
-}
-.home-block .buttons a + a {
-  margin-left: 20px;
+  text-align: center;
+  line-height: 44px;
+  margin: 0 20px;
+  background: #ee350f;
+  color: #fff;
+  transition: 200ms;
 }
 .content {
   padding: 40px;
