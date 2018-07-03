@@ -1108,7 +1108,7 @@ header .carbon a {
   margin-top: 50px;
 }
 .home-block h2 {
-  font-size: 47px;
+  font-size: 41px;
   letter-spacing: -1px;
   line-height: 1.25;
 }
@@ -1443,26 +1443,31 @@ img.lazy {
   justify-content: center;
 }
 .home-vue,
-.home-react {
+.home-react,
+.home-vue-react {
   margin-top: 0;
   text-align: center;
 }
 .home-vue:first-child,
-.home-react:first-child {
+.home-react:first-child,
+.home-vue-react:first-child {
   margin-top: 0;
 }
 .home-vue h1,
-.home-react h1 {
+.home-react h1,
+.home-vue-react h1 {
   margin-top: 0;
   font-size: 47px;
   text-align: center;
 }
 .home-vue .text,
-.home-react .text {
+.home-react .text,
+.home-vue-react .text {
   text-align: center;
 }
 .home-vue .pic,
-.home-react .pic {
+.home-react .pic,
+.home-vue-react .pic {
   display: inline-block;
   background: #263238;
   border-radius: 6px;
@@ -1471,7 +1476,8 @@ img.lazy {
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
 }
 .home-vue a,
-.home-react a {
+.home-react a,
+.home-vue-react a {
   border-radius: 10em;
   display: inline-block;
   transition: 200ms;
@@ -1483,14 +1489,29 @@ img.lazy {
   padding: 0 40px;
 }
 .home-vue a:hover,
-.home-react a:hover {
+.home-react a:hover,
+.home-vue-react a:hover {
   background: #EE350F;
   color: #fff;
 }
 .home-vue a:active,
-.home-react a:active {
+.home-react a:active,
+.home-vue-react a:active {
   background: #EE350F;
   color: #fff;
+}
+.home-vue-react .pics {
+  font-size: 0;
+}
+.home-vue-react .pic {
+  max-width: 60%;
+  vertical-align: top;
+}
+.home-vue-react .pic:nth-child(1) {
+  margin-top: 25px;
+}
+.home-vue-react .pic:nth-child(2) {
+  margin-left: -25%;
 }
 body.body-docs .center {
   max-width: none;
@@ -1553,7 +1574,7 @@ b.md-only,
 b.ios-only {
   display: inline-block;
   font-size: 12px;
-  font-weight: normal;
+  font-weight: 500;
   padding: 3px 6px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
@@ -2041,7 +2062,7 @@ ul.method-parameters .parameter-type {
   position: -moz-sticky;
   position: sticky;
   top: 0;
-  background: #EE350F;
+  background: #d6300d;
   cursor: pointer;
   width: 36px;
   height: 30px;
