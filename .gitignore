@@ -20,3 +20,8 @@ remote.json
 nbproject
 react-jade-temp/
 react-pug-temp/
+packages
+docs-demos/vue
+docs-demos/core
+docs-demos/react
+search-index.json
