@@ -23,5 +23,11 @@ dist/modules
 dist/framework7.esm.bundle.js
 dist/framework7.esm.js
 dist/framework7.less
-
+packages
 search-index.json
+docs-demos/core
+docs-demos/react
+docs-demos/vue
+kitchen-sink/core
+kitchen-sink/react
+kitchen-sink/vue
