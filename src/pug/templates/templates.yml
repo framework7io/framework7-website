@@ -98,8 +98,8 @@ community:
   previewUrl: https://guillaumebiton.github.io/framework7-parcel-template/
   description: Framework7 starter app template bundle up by parcel
   badges:
-  - v2
-  - Parceljs
+  - v3
+  - Parcel.js
 -
   title: App Framework
   iconUrl: http://is3.mzstatic.com/image/thumb/Purple127/v4/a5/13/be/a513bea8-7382-589f-dc30-3c032068df0c/source/350x350bb.jpg
