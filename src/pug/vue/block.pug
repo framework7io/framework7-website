@@ -5,13 +5,14 @@ block vars
   - var title = 'Block Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Block Vue Component
-    .docs-index
+    ul.docs-index
     p Block Vue component represents <a href="../docs/block.html">Block / Content Block</a> element designed (mostly) to add extra formatting and required spacing for text content.
     h2 Block Components
     p There are following components included:
@@ -81,79 +82,65 @@ block content
           td boolean
           td
           td Removes outer <a href="../docs/hairlines.html">hairlines</a> for iOS theme
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Block -->
-          <f7-block>...</f7-block>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/block.html") Examples
+      pre
+        code.html
+          :code
+            <f7-page>
+              <f7-navbar title="Content Block"></f7-navbar>
+              <p>This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.</p>
 
-          <!-- With extran highlighting and padding, additional "strong" prop -->
-          <f7-block strong>...</f7-block>
+              <f7-block>
+                <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              </f7-block>
 
-          <!-- With block title -->
-          <f7-block-title>Block Title</f7-block-title>
-          <f7-block>...</f7-block>
+              <f7-block strong>
+                <p>Here comes another text block with additional "block-strong" class. Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. </p>
+              </f7-block>
 
-          <!-- Inset -->
-          <f7-block inset>...</f7-block>
+              <f7-block-title>Block title</f7-block-title>
+              <f7-block>
+                <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              </f7-block>
 
-          <!-- With header and footer -->
-          <f7-block>
-            <f7-block-header>Block Header</f7-block-header>
-            ...
-            <f7-block-footer>Block Footer</f7-block-footer>
-          </f7-block>
+              <f7-block-title>Another ultra long content block title</f7-block-title>
+              <f7-block strong>
+                <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              </f7-block>
 
-          <!-- With header and footer outside -->
-          <f7-block-header>Block Header</f7-block-header>
-          <f7-block>
-            ...
-          </f7-block>
-          <f7-block-footer>Block Footer</f7-block-footer>
+              <f7-block-title>Inset</f7-block-title>
+              <f7-block strong inset>
+                <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              </f7-block>
 
-          <!-- With header after block title and footer outside-->
-          <f7-block-title>Block Title</f7-block-title>
-          <f7-block-header>Block Header</f7-block-header>
-          <f7-block>
-            ...
-          </f7-block>
+              <f7-block-title>Tablet Inset</f7-block-title>
+              <f7-block strong tablet-inset>
+                <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              </f7-block>
 
-    p Renders to:
-    pre
-      code
-        :code
-          <!-- Block -->
-          <div class="block">...</div>
+              <f7-block-title>With Header & Footer</f7-block-title>
+              <f7-block>
+                <f7-block-header>Block Header</f7-block-header>
+                <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                <f7-block-footer>Block Footer</f7-block-footer>
+              </f7-block>
 
-          <!-- With extran highlighting and padding, additional "strong" prop -->
-          <div class="block block-strong">...</div>
+              <f7-block-header>Block Header</f7-block-header>
+              <f7-block>
+                <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              </f7-block>
+              <f7-block-footer>Block Footer</f7-block-footer>
 
-          <!-- With block title -->
-          <div class="block-title">Block Title</div>
-          <div class="block">...</div>
+              <f7-block strong>
+                <f7-block-header>Block Header</f7-block-header>
+                <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                <f7-block-footer>Block Footer</f7-block-footer>
+              </f7-block>
 
-          <!-- Inset -->
-          <div class="block inset">...</div>
-
-          <!-- With header and footer -->
-          <div class="block">
-            <div class="block-header">Block Header</div>
-            ...
-            <div class="block-footer">Block Footer</div>
-          </div>
-
-          <!-- With header and footer outside -->
-          <div class="block-header">Block Header</div>
-          <div class="block">
-            ...
-          </div>
-          <div class="block-footer">Block Footer</div>
-
-          <!-- With header after block title and footer outside-->
-          <div class="block-title">Block Title Here</div>
-          <div class="block-header">Block Header</div>
-          <div class="block">
-            ...
-          </div>
-
+              <f7-block-header>Block Header</f7-block-header>
+              <f7-block strong>
+                <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+              </f7-block>
+              <f7-block-footer>Block Footer</f7-block-footer>
+            </f7-page>

@@ -10,7 +10,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 App / Core
-    .docs-index
+    ul.docs-index
     p When we init the app we can use the <code>new Framework7</code> constructor and pass an object with main app parameters:
     pre
       code
@@ -35,6 +35,11 @@ block content
           th Default
           th Description
       tbody
+        tr
+          td root
+          td string
+          td body
+          td App root element. If you main app layout is not a direct child of the <code>&lt;body&gt;</code> then it is required to specify root element here
         tr
           td id
           td string
@@ -65,11 +70,7 @@ block content
           td array
           td []
           td Array with default routes to all views.
-        tr
-          td root
-          td string
-          td body
-          td App root element.
+
         tr
           td data
           td function
@@ -103,6 +104,7 @@ block content
                       }
                     }
                   });
+            p Note, that <code>this</code> inside of each method points to app Framework7 instance.
         tr
           td on
           td object
@@ -258,7 +260,7 @@ block content
             },
           });
     h2 App Methods & Properties
-    p Returned Framework7 instance (<code>app</code>) contains a lot of useful properties and methods:
+    p Returned Framework7 instance <code>app</code> contains a lot of useful properties and methods:
     table.methods-table
       tbody
         tr

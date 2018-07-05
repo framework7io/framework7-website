@@ -1,0 +1,304 @@
+extends _layout
+block vars
+  - includeF7Icons = true
+  - includeMaterialIcons = true
+
+block content
+  script(type="text/babel").
+    class ToolbarPage extends React.Component {
+      constructor() {
+        super();
+        this.state = {
+          isBottom: false,
+        };
+      }
+      render() {
+        return (
+          <Page>
+            <Navbar title="Toolbar" backLink="Back"></Navbar>
+
+            <Toolbar bottomMd={this.state.isBottom}>
+              <Link>Left Link</Link>
+              <Link>Right Link</Link>
+            </Toolbar>
+
+            {this.$theme.md && (
+              <BlockTitle>Toolbar Position</BlockTitle>
+            )}
+            {this.$theme.md && (
+              <Block>
+                <p>Material (MD) theme toolbar supports both top and bottom positions. Click the following button to change its position.</p>
+                <p>
+                  <Button raised onClick={() => this.setState({isBottom: !this.state.isBottom})}>Toggle Toolbar Position</Button>
+                </p>
+              </Block>
+            )}
+
+            <Block>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi...</p>
+            </Block>
+          </Page>
+        )
+      }
+    }
+    class TabbarPage extends React.Component {
+      constructor() {
+        super();
+        this.state = {
+          isBottom: false,
+        };
+      }
+      render() {
+        return (
+          <Page pageContent={false}>
+            <Navbar title="Tabbar" backLink="Back">
+              {this.$theme.md && (
+                <NavRight>
+                  <Link iconMaterial="compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                </NavRight>
+              )}
+            </Navbar>
+
+            <Toolbar tabbar bottomMd={this.state.isBottom}>
+              <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
+              <Link tabLink="#tab-2">Tab 2</Link>
+              <Link tabLink="#tab-3">Tab 3</Link>
+            </Toolbar>
+
+            <Tabs>
+              <Tab id="tab-1" className="page-content" tabActive>
+                <Block>
+                  <p>Tab 1 content</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+                  <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+                  <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+                  <p>Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!</p>
+                  <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+                  <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+                  <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+                </Block>
+              </Tab>
+              <Tab id="tab-2" className="page-content">
+                <Block>
+                  <p>Tab 2 content</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+                  <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+                  <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+                  <p>Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!</p>
+                  <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+                  <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+                  <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+                </Block>
+              </Tab>
+              <Tab id="tab-3" className="page-content">
+                <Block>
+                  <p>Tab 3 content</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+                  <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+                  <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+                  <p>Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!</p>
+                  <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+                  <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+                  <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+                </Block>
+              </Tab>
+            </Tabs>
+          </Page>
+        )
+      }
+    }
+    class TabbarLabelsPage extends React.Component {
+      constructor() {
+        super();
+        this.state = {
+          isBottom: false,
+        };
+      }
+      render() {
+        return (
+          <Page pageContent={false}>
+            <Navbar title="Tabbar Labels" backLink="Back">
+              {this.$theme.md && (
+                <NavRight>
+                  <Link iconMaterial="compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                </NavRight>
+              )}
+            </Navbar>
+
+            <Toolbar tabbar labels bottomMd={this.state.isBottom}>
+              <Link tabLink="#tab-1" tabLinkActive text="Tab 1" iconIos="f7:email_fill" iconMd="material:email"></Link>
+              <Link tabLink="#tab-2" text="Tab 2" iconIos="f7:today_fill" iconMd="material:today"></Link>
+              <Link tabLink="#tab-3" text="Tab 3" iconIos="f7:cloud_fill" iconMd="material:file_upload"></Link>
+            </Toolbar>
+
+            <Tabs>
+              <Tab id="tab-1" className="page-content" tabActive>
+                <Block>
+                  <p>Tab 1 content</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+                  <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+                  <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+                  <p>Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!</p>
+                  <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+                  <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+                  <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+                </Block>
+              </Tab>
+              <Tab id="tab-2" className="page-content">
+                <Block>
+                  <p>Tab 2 content</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+                  <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+                  <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+                  <p>Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!</p>
+                  <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+                  <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+                  <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+                </Block>
+              </Tab>
+              <Tab id="tab-3" className="page-content">
+                <Block>
+                  <p>Tab 3 content</p>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+                  <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+                  <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+                  <p>Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!</p>
+                  <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+                  <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+                  <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+                </Block>
+              </Tab>
+            </Tabs>
+          </Page>
+        )
+      }
+    }
+    class TabbarScrollablePage extends React.Component {
+      constructor() {
+        super();
+        this.state = {
+          isBottom: false,
+        };
+      }
+      render() {
+        const tabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        return (
+          <Page pageContent={false}>
+            <Navbar title="Tabbar Scrollable" backLink="Back">
+              {this.$theme.md && (
+                <NavRight>
+                  <Link iconMaterial="compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                </NavRight>
+              )}
+            </Navbar>
+
+            <Toolbar tabbar scrollable bottomMd={this.state.isBottom}>
+              {tabs.map((tab, index) => (
+                <Link
+                  key={tab}
+                  tabLink={`#tab-${tab}`}
+                  tabLinkActive={index === 0}
+                >Tab {tab}</Link>
+              ))}
+            </Toolbar>
+
+            <Tabs>
+              {tabs.map((tab, index) => (
+                <Tab
+                  key={tab}
+                  id={`tab-${tab}`}
+                  className="page-content"
+                  tabActive={index === 0}
+                >
+                  <Block>
+                    <p><b>Tab {tab} content</b></p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+                    <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+                    <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+                    <p>Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!</p>
+                    <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+                    <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+                    <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+                  </Block>
+                </Tab>
+              ))}
+            </Tabs>
+          </Page>
+        )
+      }
+    }
+    const ToolbarHidePage = () => (
+      <Page hideToolbarOnScroll>
+        <Navbar title="Hide Toolbar On Scroll" backLink="Back"></Navbar>
+
+        <Toolbar bottom-md>
+          <Link>Left Link</Link>
+          <Link>Right Link</Link>
+        </Toolbar>
+
+        <Block strong>
+          <p>Toolbar will be hidden if you scroll bottom</p>
+        </Block>
+        <Block>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?</p>
+          <p>Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.</p>
+          <p>Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.</p>
+          <p>Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!</p>
+          <p>Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!</p>
+          <p>Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.</p>
+          <p>Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.</p>
+        </Block>
+      </Page>
+    )
+
+
+    const routes = [
+      {
+        path: '/toolbar/',
+        component: ToolbarPage,
+      },
+      {
+        path: '/tabbar/',
+        component: TabbarPage,
+      },
+      {
+        path: '/tabbar-labels/',
+        component: TabbarLabelsPage,
+      },
+      {
+        path: '/tabbar-scrollable/',
+        component: TabbarScrollablePage,
+      },
+      {
+        path: '/toolbar-hide-scroll/',
+        component: ToolbarHidePage,
+      },
+    ];
+
+    class AppComponent extends React.Component {
+      constructor() {
+        super();
+
+        this.state = {
+
+        };
+      }
+      render() {
+        return (
+          <App routes={routes}>
+            <View main>
+              <Page>
+                <Navbar title="Toolbar & Tabbar" />
+                <List>
+                  <ListItem link="/toolbar/" title="Toolbar" />
+                  <ListItem link="/tabbar/" title="Tabbar" />
+                  <ListItem link="/tabbar-labels/" title="Tabbar With Labels" />
+                  <ListItem link="/tabbar-scrollable/" title="Tabbar Scrollable" />
+                  <ListItem link="/toolbar-hide-scroll/" title="Hide Toolbar On Scroll" />
+                </List>
+              </Page>
+            </View>
+          </App>
+        )
+      }
+    }

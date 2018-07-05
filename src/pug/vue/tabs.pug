@@ -5,19 +5,20 @@ block vars
   - var title = 'Tabs Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Tabs Vue Component
-    .docs-index
+    ul.docs-index
     p Tabs allow to simply switch between different content. Tabs Vue component represents <a href="../docs/tabs.html">Tabs</a> component.
     h2 Tabs Components
     p There are following components included:
     ul
       li <code><b>f7-tabs</b></code>
-      li <code><b>f7-tab</b></code>FAB
+      li <code><b>f7-tab</b></code>
     h2 Tabs Properties
     table.params-table
       thead
@@ -78,53 +79,103 @@ block content
       li by clicking on <a href="button.html">Button</a> or <a href="link.html">Link</a> specifying related tab's ID using <code>tab-link</code> prop
       li using <a href="../docs/tabs.html">Tabs API</a>
       li using <a href="../docs/tabs.html#routable-tabs">Routable Tabs</a>
-    h2 Examples
-    pre
-      code.html
-        :code
-          <f7-tabs>
-            <f7-tab id="tab1" tab-active>Tab 1 content...</f7-tab>
-            <f7-tab id="tab2">Tab 2 content...</f7-tab>
-          </f7-tabs>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/tabs.html") Examples
+      h3 Static Tabs
+      pre
+        code
+          :code
+            <f7-page :page-content="false">
+              <f7-navbar title="Static Tabs" back-link="Back"></f7-navbar>
+              <f7-toolbar tabbar>
+                <f7-link tab-link="#tab-1" tab-link-active>Tab 1</f7-link>
+                <f7-link tab-link="#tab-2">Tab 2</f7-link>
+                <f7-link tab-link="#tab-3">Tab 3</f7-link>
+              </f7-toolbar>
+              <f7-tabs>
+                <f7-tab id="tab-1" class="page-content" tab-active>
+                  <f7-block>
+                    <p>Tab 1 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+                <f7-tab id="tab-2" class="page-content">
+                  <f7-block>
+                    <p>Tab 2 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+                <f7-tab id="tab-3" class="page-content">
+                  <f7-block>
+                    <p>Tab 3 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+              </f7-tabs>
+            </f7-page>
 
-          <!-- Renders to: -->
+      h3 Animated Tabs
+      pre
+        code
+          :code
+            <f7-page :page-content="false">
+              <f7-navbar title="Animated Tabs" back-link="Back"></f7-navbar>
+              <f7-toolbar tabbar>
+                <f7-link tab-link="#tab-1" tab-link-active>Tab 1</f7-link>
+                <f7-link tab-link="#tab-2">Tab 2</f7-link>
+                <f7-link tab-link="#tab-3">Tab 3</f7-link>
+              </f7-toolbar>
+              <f7-tabs animated>
+                <f7-tab id="tab-1" class="page-content" tab-active>
+                  <f7-block>
+                    <p>Tab 1 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+                <f7-tab id="tab-2" class="page-content">
+                  <f7-block>
+                    <p>Tab 2 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+                <f7-tab id="tab-3" class="page-content">
+                  <f7-block>
+                    <p>Tab 3 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+              </f7-tabs>
+            </f7-page>
 
-          <div class="tabs">
-            <div id="tab1" class="tab tab-active">Tab 1 content...</div>
-            <div id="tab2" class="tab">Tab 2 content...</div>
-          </div>
-    h4 Animated tabs
-    pre
-      code.html
-        :code
-          <f7-tabs animated>
-            <f7-tab id="tab1" tab-active>Tab 1 content...</f7-tab>
-            <f7-tab id="tab2">Tab 2 content...</f7-tab>
-          </f7-tabs>
-
-          <!-- Renders to: -->
-
-          <div class="tabs-animated-wrap">
-            <div class="tabs">
-              <div id="tab1" class="tab tab-active">Tab 1 content...</div>
-              <div id="tab2" class="tab">Tab 2 content...</div>
-            </div>
-          </div>
-          </div>
-    h4 Swipeable tabs
-    pre
-      code.html
-        :code
-          <f7-tabs swipeable>
-            <f7-tab id="tab1" tab-active>Tab 1 content...</f7-tab>
-            <f7-tab id="tab2">Tab 2 content...</f7-tab>
-          </f7-tabs>
-
-          <!-- Renders to: -->
-
-          <div class="tabs-swipeable-wrap">
-            <div class="tabs">
-              <div id="tab1" class="tab tab-active">Tab 1 content...</div>
-              <div id="tab2" class="tab">Tab 2 content...</div>
-            </div>
-          </div>
+      h3 Swipeable Tabs
+      pre
+        code
+          :code
+            <f7-page :page-content="false">
+              <f7-navbar title="Swipeable Tabs" back-link="Back"></f7-navbar>
+              <f7-toolbar tabbar>
+                <f7-link tab-link="#tab-1" tab-link-active>Tab 1</f7-link>
+                <f7-link tab-link="#tab-2">Tab 2</f7-link>
+                <f7-link tab-link="#tab-3">Tab 3</f7-link>
+              </f7-toolbar>
+              <f7-tabs swipeable>
+                <f7-tab id="tab-1" class="page-content" tab-active>
+                  <f7-block>
+                    <p>Tab 1 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+                <f7-tab id="tab-2" class="page-content">
+                  <f7-block>
+                    <p>Tab 2 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+                <f7-tab id="tab-3" class="page-content">
+                  <f7-block>
+                    <p>Tab 3 content</p>
+                    ...
+                  </f7-block>
+                </f7-tab>
+              </f7-tabs>
+            </f7-page>

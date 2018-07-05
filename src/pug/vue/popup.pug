@@ -5,13 +5,14 @@ block vars
   - var title = 'Popup Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Popup Vue Component
-    .docs-index
+    ul.docs-index
     p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
     p Popup Vue component represents <a href="../docs/popup.html">Popup</a> component.
     h2 Popup Components
@@ -75,29 +76,83 @@ block content
       li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>popup-open</code> property (to open it) and <code>popup-close</code> property to close it
     h2 Access To Popup Instance
     p You can access Popup initialized instance by accessing <code><b>.f7Popup</b></code> component's property.
-    h2 Examples
-    pre
-      code
-        :code
-          <!-- Popup -->
-          <f7-popup>
-            <!-- Popup content goes here -->
-          </f7-popup>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/popup.html") Examples
+      pre
+        code
+          :code
+            <template>
+              <f7-page @page:beforeremove="onPageBeforeRemove">
+                <f7-navbar title="Popup"></f7-navbar>
+                <f7-block>
+                  <p>
+                    <f7-button raised popup-open=".demo-popup">Open Popup</f7-button>
+                  </p>
+                  <p>
+                    <f7-button raised @click="popupOpened = true">Open Via Prop Change</f7-button>
+                  </p>
+                  <p>
+                    <f7-button raised @click="createPopup">Create Dynamic Popup</f7-button>
+                  </p>
+                </f7-block>
+                <f7-popup class="demo-popup" :opened="popupOpened" @popup:closed="popupOpened = false">
+                  <f7-page>
+                    <f7-navbar title="Popup Title">
+                      <f7-nav-right>
+                        <f7-link popup-close>Close</f7-link>
+                      </f7-nav-right>
+                    </f7-navbar>
+                    <f7-block>
+                      <p>Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.</p>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                      <p>Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula...</p>
+                    </f7-block>
+                  </f7-page>
+                </f7-popup>
+              </f7-page>
+            </template>
 
-          <!-- Popup which is also fullscreen on tablets -->
-          <f7-popup tablet-fullscreen>
-            <!-- Popup content goes here -->
-          </f7-popup>
-    p Renders to:
-    pre
-      code
-        :code
-          <!-- Popup -->
-          <div class="popup">
-            <!-- Popup content goes here -->
-          </div>
-
-          <!-- Popup which is also fullscreen on tablets -->
-          <div class="popup tablet-fullscreen">
-            <!-- Popup content goes here -->
-          </div>
+            <script>
+              export default {
+                data() {
+                  return {
+                    popupOpened: false,
+                  };
+                },
+                methods: {
+                  createPopup() {
+                    const self = this;
+                    // Create popup
+                    if (!self.popup) {
+                      self.popup = self.$f7.popup.create({
+                        content: `
+                          <div class="popup">
+                            <div class="page">
+                              <div class="navbar">
+                                <div class="navbar-inner">
+                                  <div class="title">Dynamic Popup</div>
+                                  <div class="right"><a href="#" class="link popup-close">Close</a></div>
+                                </div>
+                              </div>
+                              <div class="page-content">
+                                <div class="block">
+                                  <p>This popup was created dynamically</p>
+                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non...</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        `.trim(),
+                      });
+                    }
+                    // Open it
+                    self.popup.open();
+                  },
+                  onPageBeforeRemove() {
+                    const self = this;
+                    // Destroy popup when page removed
+                    if (self.popup) self.popup.destroy();
+                  },
+                },
+              };
+            </script>

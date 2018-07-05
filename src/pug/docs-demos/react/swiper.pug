@@ -1,0 +1,59 @@
+extends _layout
+block vars
+  - includeF7Icons = true
+  - includeMaterialIcons = true
+
+block content
+  script(type="text/babel").
+    class AppComponent extends React.Component {
+      constructor() {
+        super();
+
+        this.state = {
+
+        };
+      }
+      render() {
+        return (
+          <App>
+            <View main>
+              <Page>
+                <Navbar title="Swiper" />
+                <BlockTitle>Minimal Layout</BlockTitle>
+                <Swiper>
+                  <SwiperSlide>Slide 1</SwiperSlide>
+                  <SwiperSlide>Slide 2</SwiperSlide>
+                  <SwiperSlide>Slide 3</SwiperSlide>
+                </Swiper>
+
+                <BlockTitle>With all controls</BlockTitle>
+                <Swiper pagination navigation scrollbar>
+                  <SwiperSlide>Slide 1</SwiperSlide>
+                  <SwiperSlide>Slide 2</SwiperSlide>
+                  <SwiperSlide>Slide 3</SwiperSlide>
+                </Swiper>
+
+                <BlockTitle>With additional parameters</BlockTitle>
+                <Swiper navigation params={{speed:500, slidesPerView: 3, spaceBetween: 20}}>
+                  <SwiperSlide>Slide 1</SwiperSlide>
+                  <SwiperSlide>Slide 2</SwiperSlide>
+                  <SwiperSlide>Slide 3</SwiperSlide>
+                </Swiper>
+
+                <Block />
+              </Page>
+            </View>
+          </App>
+        )
+      }
+    }
+
+  style.
+    .swiper-slide {
+      background: #fff;
+      text-align: center;
+      font-size: 18px;
+      line-height: 200px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+    }

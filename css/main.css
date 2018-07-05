@@ -1,54 +1,12 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700');
-@font-face {
-  font-family: 'myriad';
-  font-style: normal;
-  font-weight: 100;
-  src: url("../fonts/myriad-set-pro_ultralight.woff") format("woff"), url("../fonts/myriad-set-pro_ultralight.ttf") format("truetype");
-  *src: url('');
-}
-@font-face {
-  font-family: 'myriad';
-  font-style: normal;
-  font-weight: 300;
-  src: url("../fonts/myriad-set-pro_thin.woff") format("woff"), url("../fonts/myriad-set-pro_thin.ttf") format("truetype");
-  *src: url('');
-}
-@font-face {
-  font-family: 'myriad';
-  font-style: normal;
-  font-weight: 400;
-  src: url("../fonts/myriad-set-pro_text.woff") format("woff"), url("../fonts/myriad-set-pro_text.ttf") format("truetype");
-  *src: url('');
-}
-@font-face {
-  font-family: 'myriad';
-  font-style: normal;
-  font-weight: 500;
-  src: url("../fonts/myriad-set-pro_medium.woff") format("woff"), url("../fonts/myriad-set-pro_medium.ttf") format("truetype");
-  *src: url('');
-}
-@font-face {
-  font-family: 'myriad';
-  font-style: normal;
-  font-weight: 600;
-  src: url("../fonts/myriad-set-pro_semibold.woff") format("woff"), url("../fonts/myriad-set-pro_semibold.ttf") format("truetype");
-  *src: url('');
-}
-@font-face {
-  font-family: 'myriad';
-  font-style: normal;
-  font-weight: 700;
-  src: url("../fonts/myriad-set-pro_bold.woff") format("woff"), url("../fonts/myriad-set-pro_bold.ttf") format("truetype");
-  *src: url('');
-}
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700');
 body {
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
   margin: 0;
   padding: 0;
   position: relative;
-  line-height: 1.5;
+  line-height: 1.75;
   background: #fff;
   min-width: 800px;
   -webkit-font-smoothing: antialiased;
@@ -143,7 +101,7 @@ h2 .code,
 h3 .code,
 h4 .code,
 h5 .code {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   font-weight: normal !important;
 }
 main {
@@ -325,6 +283,8 @@ main img {
 }
 header {
   background: #EE350F;
+  font-size: 14px;
+  line-height: 1.5;
 }
 header .logo {
   background: url('../i/logo.svg') no-repeat center;
@@ -1148,7 +1108,7 @@ header .carbon a {
   margin-top: 50px;
 }
 .home-block h2 {
-  font-size: 47px;
+  font-size: 41px;
   letter-spacing: -1px;
   line-height: 1.25;
 }
@@ -1482,26 +1442,42 @@ img.lazy {
   display: flex;
   justify-content: center;
 }
-.home-vue {
+.home-vue,
+.home-react,
+.home-vue-react {
   margin-top: 0;
   text-align: center;
 }
-.home-vue:first-child {
+.home-vue:first-child,
+.home-react:first-child,
+.home-vue-react:first-child {
   margin-top: 0;
 }
-.home-vue h1 {
+.home-vue h1,
+.home-react h1,
+.home-vue-react h1 {
   margin-top: 0;
   font-size: 47px;
   text-align: center;
 }
-.home-vue .text {
+.home-vue .text,
+.home-react .text,
+.home-vue-react .text {
   text-align: center;
 }
-.home-vue .pic img {
-  border-radius: 10px;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+.home-vue .pic,
+.home-react .pic,
+.home-vue-react .pic {
+  display: inline-block;
+  background: #263238;
+  border-radius: 6px;
+  font-size: 0;
+  overflow: hidden;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
 }
-.home-vue a {
+.home-vue a,
+.home-react a,
+.home-vue-react a {
   border-radius: 10em;
   display: inline-block;
   transition: 200ms;
@@ -1512,13 +1488,30 @@ img.lazy {
   line-height: 44px;
   padding: 0 40px;
 }
-.home-vue a:hover {
+.home-vue a:hover,
+.home-react a:hover,
+.home-vue-react a:hover {
   background: #EE350F;
   color: #fff;
 }
-.home-vue a:active {
+.home-vue a:active,
+.home-react a:active,
+.home-vue-react a:active {
   background: #EE350F;
   color: #fff;
+}
+.home-vue-react .pics {
+  font-size: 0;
+}
+.home-vue-react .pic {
+  max-width: 60%;
+  vertical-align: top;
+}
+.home-vue-react .pic:nth-child(1) {
+  margin-top: 25px;
+}
+.home-vue-react .pic:nth-child(2) {
+  margin-left: -25%;
 }
 body.body-docs .center {
   max-width: none;
@@ -1581,7 +1574,7 @@ b.md-only,
 b.ios-only {
   display: inline-block;
   font-size: 12px;
-  font-weight: normal;
+  font-weight: 500;
   padding: 3px 6px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 3px;
@@ -1805,15 +1798,21 @@ b.ios-only:before {
 .method-wrap ul:last-child {
   margin-bottom: 0;
 }
+.method-wrap .method-parameters {
+  font-size: 14px;
+}
+.method-wrap .method-parameters + .method-returns {
+  margin-top: -10px;
+}
 .method-wrap .method-returns {
   font-style: normal;
   font-style: italic;
+  font-size: 14px;
 }
 p.method,
 span.method {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
-  font-size: 15px;
   font-weight: 500;
 }
 p.method span,
@@ -1826,12 +1825,12 @@ ul.method-parameters {
   padding-left: 30px;
 }
 ul.method-parameters .parameter {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #b72f20;
   font-weight: 500;
 }
 ul.method-parameters .parameter-type {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #006700;
   font-weight: 500;
 }
@@ -1840,12 +1839,10 @@ ul.method-parameters .parameter-type {
 }
 .docs-index {
   font-size: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 6px;
+  border-left: 2px solid #666;
   margin: 1em 0;
   padding: 0;
-  padding: 20px;
-  background: #fafafa;
+  padding-left: 20px;
   list-style: none;
   font-weight: 500;
 }
@@ -1894,6 +1891,7 @@ ul.method-parameters .parameter-type {
   flex-shrink: 0;
   color: #615353;
   background: #f7f1f1;
+  background: #ffffff;
   position: relative;
   padding-top: 40px;
   padding-bottom: 40px;
@@ -1902,11 +1900,6 @@ ul.method-parameters .parameter-type {
   margin-right: 30px;
 }
 @media (max-width: 960px) {
-  .docs-nav {
-    margin-left: -30px;
-  }
-}
-@media (max-width: 860px) {
   .docs-nav {
     margin-left: -230px;
     transition-duration: 300ms;
@@ -1921,14 +1914,14 @@ ul.method-parameters .parameter-type {
 @media (max-width: 800px) {
   .docs-nav {
     margin-left: -220px;
+    margin-right: 20px;
   }
 }
 .docs-nav .title {
-  text-transform: uppercase;
-  color: #2a2424;
+  color: #181818;
   margin-bottom: 10px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
 }
 .docs-nav .subtitle {
   text-transform: uppercase;
@@ -1972,7 +1965,7 @@ ul.method-parameters .parameter-type {
   transform: translateY(-50%);
 }
 .docs-nav a {
-  color: #503737;
+  color: #3a2b2b;
   text-decoration: none;
   display: block;
   padding-right: 10px;
@@ -2052,7 +2045,7 @@ ul.method-parameters .parameter-type {
   border-radius: 15px;
   color: #000;
   transition: 400ms;
-  border: 2px solid rgba(142, 32, 9, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   font-size: 13px;
   z-index: 200;
   position: relative;
@@ -2069,7 +2062,7 @@ ul.method-parameters .parameter-type {
   position: -moz-sticky;
   position: sticky;
   top: 0;
-  background: #EE350F;
+  background: #d6300d;
   cursor: pointer;
   width: 36px;
   height: 30px;
@@ -2079,7 +2072,7 @@ ul.method-parameters .parameter-type {
   margin-top: -40px;
   margin-bottom: 10px;
 }
-@media (min-width: 861px) {
+@media (min-width: 961px) {
   .docs-nav-toggle {
     display: none;
   }
@@ -2087,12 +2080,12 @@ ul.method-parameters .parameter-type {
 .docs-nav-toggle span {
   display: block;
   height: 3px;
-  width: 70%;
+  width: 60%;
   background: #fff;
   position: relative;
   border-radius: 4px;
   top: 6px;
-  left: 15%;
+  left: 20%;
   transition: 300ms;
 }
 .docs-nav-toggle span + span {
@@ -2105,10 +2098,10 @@ ul.method-parameters .parameter-type {
   transform-origin: left bottom;
 }
 .docs-nav-visible .docs-nav-toggle span:first-child {
-  transform: translate(5px, -1.5px) rotate(45deg);
+  transform: translate(4px, -1px) rotate(45deg);
 }
 .docs-nav-visible .docs-nav-toggle span:last-child {
-  transform: translate(5px, 1px) rotate(-45deg);
+  transform: translate(4px, 0px) rotate(-45deg);
 }
 .docs-nav-visible .docs-nav-toggle span:nth-child(2) {
   opacity: 0;
@@ -2142,7 +2135,7 @@ ul.method-parameters .parameter-type {
 table {
   width: 100%;
   color: #333;
-  font-size: 13px;
+  font-size: 14px;
   margin: 1em 0 2em;
 }
 table th,
@@ -2174,9 +2167,8 @@ table.params-table td {
 table.params-table tbody td:first-child:not([colspan]),
 table.params-table tbody td:nth-child(2),
 table.params-table tbody td:nth-child(3):not(:last-child) {
-  font-size: 13px;
   color: #b72f20;
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   font-weight: 500;
 }
 table.params-table tbody td:nth-child(2) {
@@ -2230,17 +2222,16 @@ table.methods-table td {
   vertical-align: top;
 }
 table.methods-table tbody td:first-child:not(:last-child) {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
   white-space: nowrap;
-  font-size: 13px;
   font-weight: 500;
 }
 table.methods-table tbody td:first-child:not(:last-child) span {
   color: #b72f20;
 }
 table.methods-table .parameter-type {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #006700;
 }
 table.methods-table ul.method-parameters {
@@ -2273,7 +2264,7 @@ table.methods-table.dom7-table td {
   vertical-align: top;
 }
 table.methods-table.dom7-table tbody td:first-child:not(:last-child) {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
   white-space: normal;
   font-weight: 500;
@@ -2288,7 +2279,7 @@ table.params-table code {
 table.events-table tbody td:nth-child(2) span,
 table.events-table tbody td:nth-child(3) span {
   white-space: nowrap;
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #b72f20;
   font-weight: 500;
   display: block;
@@ -2298,7 +2289,7 @@ table.events-table tbody td:nth-child(3) span {
   white-space: normal;
 }
 table.events-table tbody td:first-child:not([colspan]) {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
   white-space: nowrap;
   font-weight: 500;
@@ -2316,7 +2307,7 @@ table.events-table tbody th[colspan] small {
   font-weight: 500;
 }
 table.props-table tbody td:first-child {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   color: #000;
   white-space: nowrap;
   font-weight: 500;
@@ -2420,6 +2411,8 @@ table.double-events-table tr:nth-child(4n - 4) td {
 .apps .app-description {
   margin-top: 10px;
   padding: 0 10px;
+  font-size: 14px;
+  line-height: 1.5;
 }
 .apps .app-badges {
   position: absolute;
@@ -3125,12 +3118,88 @@ h1 + .tutorial-author {
 .sponsors-top .sponsor-join {
   font-size: 12px;
 }
+.hljs {
+  background: #253238;
+  color: #fff;
+}
+.hljs-subst {
+  color: #fff;
+}
+.hljs-meta {
+  color: #aaa;
+}
+.hljs-comment {
+  color: #536E7B;
+  font-style: italic;
+}
+.hljs-keyword {
+  color: #86DDFF;
+}
+.hljs-string {
+  color: #C2E988;
+}
+.hljs-number {
+  color: #F98C68;
+}
+.hljs-variable {
+  color: #80A8FF;
+}
+.hljs-tag {
+  color: #86DDFF;
+}
+.hljs-tag .hljs-name {
+  color: #F27076;
+}
+.hljs-tag .hljs-attr {
+  color: #FFCC63;
+  font-style: italic;
+}
+.hljs-tag .hljs-string {
+  color: #C2E988;
+}
+.hljs-built_in {
+  color: #FFCC63;
+}
+.hljs-keyword {
+  color: #C88FEC;
+  font-weight: bold;
+}
+.hljs-string {
+  color: #C2E988;
+}
+.hljs-literal,
+.hljs-params {
+  color: #F98C68;
+}
+.hljs-function {
+  color: #80A8FF;
+}
+.hljs-function .hljs-keyword {
+  color: #C88FEC;
+  font-weight: bold;
+  font-style: normal;
+}
+.hljs-selector-class {
+  color: #FFCC63;
+}
+.hljs-attribute {
+  color: #86DDFF;
+}
+.hljs-selector-tag {
+  color: #F27076;
+}
+.hljs-selector-attr {
+  color: #FFCC63;
+}
+.hljs-selector-pseudo {
+  color: #C88FEC;
+}
 pre,
 code {
-  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 code {
-  font-size: 13px;
+  font-size: 14px;
   color: #333;
   font-weight: normal;
   background: #f5f5f5;
@@ -3140,33 +3209,37 @@ code {
   border-radius: 4px;
   font-weight: 500;
 }
-code.hljs,
-pre code {
-  border: 1px solid #eee;
-  border-radius: 6px;
-  padding: 20px;
-  background: #fafafa;
-  line-height: 21px;
-  border: 1px solid #f3f3f3;
-}
 pre {
   overflow: hidden;
   word-wrap: break-word;
-  font-size: 13px;
   white-space: pre-wrap;
 }
 pre code {
+  padding: 20px;
+  background: #253238;
+  color: #fff;
   display: block;
+  overflow-x: auto;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: normal;
 }
 .nowrap {
   white-space: nowrap;
 }
-.important-note code {
+.important-note code:not(.hljs) {
   background: rgba(255, 255, 255, 0.8);
 }
-.important-note code.hljs {
-  background: rgba(255, 255, 255, 0.8);
-  border: none;
+.with-device pre code {
+  font-size: 13px;
+  line-height: 19px;
+}
+.important-note pre code,
+table pre code.hljs {
+  padding: 10px;
+  font-size: 13px;
+  line-height: 19px;
 }
 footer {
   background: #f4f4f4;
@@ -3174,6 +3247,8 @@ footer {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 100;
+  font-size: 14px;
+  line-height: 1.5;
 }
 footer .center {
   padding-top: 20px;

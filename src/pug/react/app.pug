@@ -1,0 +1,89 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Accordion React Component | Framework7 React Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 App React Component
+    ul.docs-index
+    p App React component is the main Framework7 app component where all the <a href="../docs/app.html">Framework7 core initialization</a> happens and where you pass all main Framework7 parameters.
+    h2 App Components
+    p There are following components included:
+    ul
+      li <code><b>App</b></code> / <code><b>F7App</b></code>
+    h2 App Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td params
+          td object
+          td
+          td Object with <a href="../docs/app.html#app-parameters">Framework7 parameters</a>
+        tr
+          td routes
+          td array
+          td
+          td Array with default routes for all views. Same as <code>params.routes</code> so you can use this one if you feel more comfortable with such approach
+        tr
+          td id
+          td string
+          td
+          td App element ID attribute
+    h2 Examples
+    p Passing all parameters in <code>params</code> prop
+    pre
+      code.js
+        :code
+          import AboutPage from './about.jsx';
+          import ServicesPage from './services.jsx';
+
+          const f7Params = {
+            name: 'My App',
+            id: 'com.myapp.test',
+            // routes
+            routes: [
+              {
+                path: '/about/',
+                component: AboutPage,
+              },
+              {
+                path: '/services/',
+                component: ServicesPage,
+              },
+            ],
+            // ... other params
+          }
+          export default () => (
+            <App params={f7params}>
+              <!-- ...  -->
+            </App>
+          );
+    p Passing routes in separate prop:
+    pre
+      code.js
+        :code
+          import routes from './routes';
+
+          const f7Params = {
+            name: 'My App',
+            id: 'com.myapp.test',
+            // ... other params
+          };
+
+          export default () => (
+            <App params={f7params} routes={routes}>
+              ...
+            </App>
+          );

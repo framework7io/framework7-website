@@ -5,12 +5,13 @@ block vars
   - var title = 'Toggle Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Toggle Vue Component
-    .docs-index
+    ul.docs-index
     p Toggle Vue component represents <a href="../docs/toggle.html">Toggle</a> component.
     h2 Toggle Components
     p There are following components included:
@@ -68,7 +69,7 @@ block content
           th(colspan="2") &lt;f7-toggle&gt; events
         tr
           td change
-          td Event will be triggered when toggle checkbox state changed
+          td Event will be triggered when toggle checkbox state changed. This event may not occur on touch devices, so it is better to use next <code>toggle:change</code> event instead
         tr
           td toggle:change
           td Event will be triggered when toggle checkbox state changed
@@ -84,15 +85,43 @@ block content
         tr
           td .toggle()
           td Toggle checkbox state
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Checked -->
-          <f7-toggle checked></f7-toggle>
-
-          <!-- Color toggle -->
-          <f7-toggle color="red"></f7-toggle>
-
-          <!-- Disabled -->
-          <f7-toggle color="orange" disabled></f7-toggle>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/toggle.html") Examples
+      pre
+        code.html
+          :code
+            <f7-block-title>Super Heroes</f7-block-title>
+            <f7-list simple-list>
+              <f7-list-item>
+                <span>Batman</span>
+                <f7-toggle checked></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Aquaman</span>
+                <f7-toggle checked color="blue"></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Superman</span>
+                <f7-toggle checked color="red"></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Hulk</span>
+                <f7-toggle color="green"></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Spiderman (Disabled)</span>
+                <f7-toggle disabled></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Ironman (Disabled)</span>
+                <f7-toggle checked disabled></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Thor</span>
+                <f7-toggle checked color="orange"></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Wonder Woman</span>
+                <f7-toggle color="pink"></f7-toggle>
+              </f7-list-item>
+            </f7-list>

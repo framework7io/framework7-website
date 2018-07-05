@@ -11,7 +11,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Dialog
-    .docs-index
+    ul.docs-index
     p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from a user, or to notify or warn a user. Dialog, as all other modals, is part of so called "Temporary Views".
 
     p Dialog can only be opened by using JavaScript. So lets look at related App methods to work with dialogs.
@@ -179,7 +179,7 @@ block content
           td color
           td string
           td
-          td Button color, one of default colors
+          td Button color, one of <a href="color-themes.html">default colors</a>
         tr
           td close
           td boolean
@@ -229,6 +229,9 @@ block content
         tr
           td dialog.params
           td Dialog parameters
+        tr
+          td dialog.opened
+          td Boolean prop indicating whether dialog is opened or not
         tr
           th(colspan="2") Methods
         tr
@@ -563,12 +566,15 @@ block content
     p Preloader dialog is used to indicate some background activity (like Ajax request) and to block any user actions during this activity. To open Preloader dialog we should also call appropriate App method:
     .method-wrap
       p
-        span.method app.dialog.preloader(<span>title</span>)
+        span.method app.dialog.preloader(<span>title</span>, <span>color</span>)
         | - create Preloader Dialog and open it
       ul.method-parameters
         li
           span.parameter title
           |  - <span class="parameter-type">string</span>. Optional. Preloader dialog title
+        li
+          span.parameter color
+          |  - <span class="parameter-type">string</span>. Optional. Preloader color. One of the <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
     h3 Progress
     p Same as Preloader dialog but with <a href="progressbar.html">progressbar</a> instead of preloader.
@@ -585,11 +591,11 @@ block content
           |  - <span class="parameter-type">number</span>. Optional. Progressbar progress (from 0 to 100). If no <code>number</code> passed then it will have infinite progressbar.
         li
           span.parameter color
-          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of default colors
+          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
 
     .with-device
-      h2(data-device-preview="../docs-demos/dialog.html") Examples
+      h2(data-device-preview="../docs-demos/core/dialog.html") Examples
       pre
         code.xml
           :code

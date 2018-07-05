@@ -1,0 +1,69 @@
+extends _layout
+block vars
+  - includeF7Icons = true
+  - includeMaterialIcons = true
+
+block content
+  template#app-template.
+    <f7-app>
+      <f7-view main>
+        <f7-page>
+          <f7-navbar title="Photo Browser"></f7-navbar>
+
+          <f7-block>
+            <p>Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:</p>
+            <f7-row>
+              <f7-col>
+                <f7-photo-browser :photos="photos" ref="standalone" :routable-modals="false"></f7-photo-browser>
+                <f7-button raised @click="$refs.standalone.open()">Standalone</f7-button>
+              </f7-col>
+              <f7-col>
+                <f7-photo-browser :photos="photos" type="popup" ref="popup" :routable-modals="false"></f7-photo-browser>
+                <f7-button raised @click="$refs.popup.open()">Popup</f7-button>
+              </f7-col>
+              <f7-col>
+                <f7-photo-browser v-if="showPagePb" :photos="photos" type="page" back-link-text="Back" ref="page" :routable-modals="false"></f7-photo-browser>
+                <f7-button raised @click="$refs.page.open()">Page</f7-button>
+              </f7-col>
+            </f7-row>
+          </f7-block>
+
+          <f7-block>
+            <p>Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:</p>
+            <f7-row>
+              <f7-col>
+                <f7-photo-browser :photos="photos" theme="dark" ref="standaloneDark" :routable-modals="false"></f7-photo-browser>
+                <f7-button raised @click="$refs.standaloneDark.open()">Standalone</f7-button>
+              </f7-col>
+              <f7-col>
+                <f7-photo-browser :photos="photos" theme="dark" type="popup" ref="popupDark" :routable-modals="false"></f7-photo-browser>
+                <f7-button raised @click="$refs.popupDark.open()">Popup</f7-button>
+              </f7-col>
+              <f7-col>
+                <f7-photo-browser v-if="showPagePb" :photos="photos" theme="dark" type="page" back-link-text="Back" ref="pageDark" :routable-modals="false"></f7-photo-browser>
+                <f7-button raised @click="$refs.pageDark.open()">Page</f7-button>
+              </f7-col>
+            </f7-row>
+          </f7-block>
+        </f7-page>
+      </f7-view>
+    </f7-app>
+
+  script.
+    var component = {
+      data() {
+        return {
+          showPagePb: false,
+          photos: [
+            'http://placekitten.com/800/800',
+            'http://placekitten.com/1024/1024',
+          ],
+        };
+      },
+      mounted() {
+        const self = this;
+        setTimeout(()=>{
+          self.showPagePb = true;
+        },0);
+      },
+    }

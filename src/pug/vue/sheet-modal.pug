@@ -5,13 +5,14 @@ block vars
   - var title = 'Sheet Modal Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Sheet Modal Vue Component
-    .docs-index
+    ul.docs-index
     p Sheet Modal is a special overlay type which is similar to Picker/Calendar's overlay. Such modal allows to create custom picker overlays with custom content.
     p Sheet Modal Vue component represents <a href="../docs/sheet-modal.html">Sheet Modal</a> component.
     h2 Sheet Modal Components
@@ -78,21 +79,91 @@ block content
     h2 Access To Sheet Modal Instance
     p You can access Sheet Modal initialized instance by accessing <code><b>.f7Sheet</b></code> component's property.
 
-    h2 Examples
-    pre
-      code
-        :code
-          <!-- Sheet Modal -->
-          <f7-sheet>
-            <!-- Sheet Modal content goes here -->
-          </f7-sheet>
-    p Renders to:
-    pre
-      code
-        :code
-          <!-- Sheet Modal -->
-          <div class="sheet-modal">
-            <div class="sheet-modal-inner">
-              <!-- Sheet Modal content goes here -->
-            </div>
-          </div>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/sheet-modal.html") Examples
+      pre
+        code.html
+          :code
+            <template>
+              <f7-page @page:beforeremove="onPageBeforeRemove" @page:beforeout="onPageBeforeOut">
+                <f7-navbar title="Sheet Modal"></f7-navbar>
+                <f7-block>
+                  <f7-row tag="p">
+                    <f7-button class="col" raised sheet-open=".demo-sheet">Open Sheet</f7-button>
+                    <f7-button class="col" raised @click="createSheet">Create Dynamic Sheet</f7-button>
+                  </f7-row>
+                  <p>
+                    <f7-button class="col" raised @click="sheetOpened = true">Open Via Prop Change</f7-button>
+                  </p>
+                </f7-block>
+                <f7-sheet class="demo-sheet" :opened="sheetOpened" @sheet:closed="sheetOpened = false">
+                  <f7-toolbar>
+                    <div class="left"></div>
+                    <div class="right">
+                      <f7-link sheet-close>Close</f7-link>
+                    </div>
+                  </f7-toolbar>
+                  <!-- Scrollable sheet content -->
+                  <f7-page-content>
+                    <f7-block>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci...</p>
+                      <!-- ... -->
+                    </f7-block>
+                  </f7-page-content>
+                </f7-sheet>
+              </f7-page>
+            </template>
+      pre
+        code.js
+          :code
+            <script>
+            export default {
+              data() {
+                return {
+                  sheetOpened: false,
+                };
+              },
+              methods: {
+                createSheet() {
+                  const self = this;
+                  const $ = self.$$;
+                  // Create sheet modal
+                  if (!self.sheet) {
+                    self.sheet = self.$f7.sheet.create({
+                      content: `
+                        <div class="sheet-modal">
+                          <div class="toolbar">
+                            <div class="toolbar-inner justify-content-flex-end">
+                              <a href="#" class="link sheet-close">Close</a>
+                            </div>
+                          </div>
+                          <div class="sheet-modal-inner">
+                            <div class="page-content">
+                              <div class="block">
+                                <p>This sheet modal was created dynamically</p>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim...</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      `.trim(),
+                    });
+                  }
+                  // Close inline sheet
+                  if ($('.demo-sheet.modal-in').length > 0) self.$f7.sheet.close('.demo-sheet');
+                  // Open it
+                  self.sheet.open();
+                },
+                onPageBeforeOut() {
+                  const self = this;
+                  // Close opened sheets on page out
+                  self.$f7.sheet.close();
+                },
+                onPageBeforeRemove() {
+                  const self = this;
+                  // Destroy sheet modal when page removed
+                  if (self.sheet) self.sheet.destroy();
+                },
+              },
+            };
+            </script>

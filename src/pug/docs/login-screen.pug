@@ -11,7 +11,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Login Screen
-    .docs-index
+    ul.docs-index
     p Framework7 comes with ready to use Login Screen layout. It could be used inside of page or login screen (embedded) or as a standalone modal.
     h2 Login Screen Layout
     p First of all, let's look at the standalone Login Screen layout. It behaves almost in the same way as Login Screen:
@@ -182,6 +182,9 @@ block content
         tr
           td loginScreen.params
           td Login Screen parameters
+        tr
+          td loginScreen.opened
+          td Boolean prop indicating whether login screen is opened or not
         tr
           th(colspan="2") Methods
         tr
@@ -380,7 +383,7 @@ block content
     .important-note
       p Note that on login screen page we have additional "no-navbar", "no-toolbar" and "no-swipeback" classes to hide navigation element from user
     .with-device
-      h2(data-device-preview="../docs-demos/login-screen.html") Examples
+      h2(data-device-preview="../docs-demos/core/login-screen.html") Examples
       pre
         code.html
           :code

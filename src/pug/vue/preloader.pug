@@ -5,12 +5,14 @@ block vars
   - var title = 'Preloader / Spinner Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
+
   .docs-nav
-    include ../_docs-vue-menu
+    include ../_docs-menu-vue
   .docs-content
     +improveDocsLink
     h1 Preloader / Spinner Vue Component
-    .docs-index
+    ul.docs-index
     p Preloader / Spinner Vue component represents <a href="../docs/preloader.html">Preloader</a> element.
     h2 Preloader Components
     p There are following components included:
@@ -30,29 +32,93 @@ block content
           td size
           td string<br>number
           td Size of the preloader in px
-    h2 Examples
-    pre
-      code.html
-        :code
-          <!-- Preloader -->
-          <f7-preloader></f7-preloader>
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/preloader.html") Examples
+      pre
+        code.html
+          :code
+            <template>
+              <f7-page>
+                <f7-navbar title="Preloader"></f7-navbar>
 
-          <!-- Red preloader -->
-          <f7-preloader color="red"></f7-preloader>
+                <f7-block-title>Default</f7-block-title>
+                <f7-block class="row demo-preloaders align-items-stretch text-align-center">
+                  <f7-col>
+                    <f7-preloader></f7-preloader>
+                  </f7-col>
+                  <f7-col style="background: #000">
+                    <f7-preloader color="white"></f7-preloader>
+                  </f7-col>
+                  <f7-col>
+                    <f7-preloader :size="42"></f7-preloader>
+                  </f7-col>
+                  <f7-col style="background: #000">
+                    <f7-preloader :size="42" color="white"></f7-preloader>
+                  </f7-col>
+                </f7-block>
 
-          <!-- Blue with custom size -->
-          <f7-preloader color="green" size="44px"></f7-preloader>
-    p Renders to:
-    pre
-      code.html
-        :code
-          <!-- Preloader -->
-          <span class="preloader"></span>
+                <f7-block-title>Color Preloaders</f7-block-title>
+                <f7-block class="row text-align-center">
+                  <f7-col>
+                    <f7-preloader color="red"></f7-preloader>
+                  </f7-col>
+                  <f7-col>
+                    <f7-preloader color="green"></f7-preloader>
+                  </f7-col>
+                  <f7-col>
+                    <f7-preloader color="orange"></f7-preloader>
+                  </f7-col>
+                  <f7-col>
+                    <f7-preloader color="blue"></f7-preloader>
+                  </f7-col>
+                </f7-block>
 
-          <!-- Red preloader -->
-          <span class="preloader color-red"></span>
+                <f7-block-title>Multi-color (MD-theme only)</f7-block-title>
+                <f7-block class="text-align-center">
+                  <f7-preloader color="multi"></f7-preloader>
+                </f7-block>
 
-          <!-- Blue with custom size -->
-          <span class="preloader color-green" style="width:44px; height:44px"></span>
-
-
+                <f7-block-title>Preloader Modals</f7-block-title>
+                <f7-block>
+                  <p>With <b>app.preloader.show()</b> you can show small overlay with preloader indicator.</p>
+                  <p>
+                    <a class="button button-raised" @click="openIndicator">Open Small Indicator</a>
+                  </p>
+                  <p>With <b>app.dialog.preloader()</b> you can show dialog modal with preloader indicator.</p>
+                  <p>
+                    <a class="button button-raised" @click="openDialog">Open Dialog Preloader</a>
+                  </p>
+                  <p>With <b>app.dialog.preloader('My text...')</b> you can show dialog preloader modal with custom title.</p>
+                  <p>
+                    <a class="button button-raised" @click="openCustomDialog">Open Dialog Preloader</a>
+                  </p>
+                </f7-block>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                methods: {
+                  openIndicator() {
+                    const self = this;
+                    self.$f7.preloader.show();
+                    setTimeout(() => {
+                      self.$f7.preloader.hide();
+                    }, 2000);
+                  },
+                  openDialog() {
+                    const self = this;
+                    self.$f7.dialog.preloader();
+                    setTimeout(() => {
+                      self.$f7.dialog.close();
+                    }, 2000);
+                  },
+                  openCustomDialog() {
+                    const self = this;
+                    self.$f7.dialog.preloader('My text...');
+                    setTimeout(() => {
+                      self.$f7.dialog.close();
+                    }, 2000);
+                  },
+                },
+              };
+            </script>

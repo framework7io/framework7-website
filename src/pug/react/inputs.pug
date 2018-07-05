@@ -1,0 +1,598 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Input React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Input / Form Elements React Components
+    ul.docs-index
+    p Form elements allow you to create flexible and beautiful Form layout. Form elements are just well known <a href="../docs/list-view.html">List View</a> (<b><a href="list-view.html">List</a> and <a href="list-item.html">List Item</a> React components</b>) but with few additional components.
+    p Check out Framework7's <a href="../docs/inputs.html">Inputs / Form Elements</a> for their appearance.
+
+    h2 Input Components
+    p There are following components included:
+    ul
+      li <code><b>Input</b></code> / <code><b>F7Input</b></code> - input element
+      li <code><b>Label</b></code> / <code><b>F7Label</b></code> - input label element
+
+    h2 Input Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Label&gt; properties
+        tr
+          td floating
+          td boolean
+          td false
+          td Enables floating label (affects MD theme only)
+        tr
+          td inline
+          td boolean
+          td false
+          td Makes label inline
+        tr
+          th(colspan="4") &lt;Input&gt; properties
+        tr
+          td wrap
+          td boolean
+          td true
+          td Defines should the input be wraped with "item-input-wrap" element or not. Must be disabled when using outside of List View
+        tr
+          td type
+          td string
+          td
+          td Input type. All default HTML5 input type, and few special ones:
+            ul
+              li <b>textarea</b> - to render textarea element
+              li <b>select</b> - to render select element
+        tr
+          td resizable
+          td boolean
+          td false
+          td Makes textarea resizable
+        tr
+          td inputStyle
+          td string
+          td
+          td Value if input's "style" attribute, in case you need to pass extra styles
+        tr
+          td clearButton
+          td boolean
+          td false
+          td Adds input clear button that will clear input value on click
+        tr
+          td validate
+          td boolean
+          td false
+          td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use <code>error-message</code> together with <code>error-message-force</code> props.
+        tr
+          td errorMessage
+          td string
+          td
+          td Custom error message to show when input value is invalid
+        tr
+          td errorMessageForce
+          td boolean
+          td false
+          td Force error message to force. Useful in case you use custom validation and want to show/hide error message when you need it
+        tr
+          td info
+          td string
+          td
+          td Custom additional text with information about input
+        tr
+          td name
+          td string
+          td
+          td Input name
+        tr
+          td placeholder
+          td string
+          td
+          td Input placeholder
+        tr
+          td id
+          td string
+          td
+          td Wrapping element ID attribute
+        tr
+          td inputId
+          td string
+          td
+          td Input element ID attribute
+        tr
+          td value
+          td string<br>number
+          td
+          td Input value
+        tr
+          td defaultValue
+          td string<br>number
+          td
+          td Input value, in case of uncontrolled component
+        tr
+          td size
+          td string<br>number
+          td
+          td Value of input's native "size" attribute
+        tr
+          td pattern
+          td string
+          td
+          td Value of input's native "pattern" attribute
+        tr
+          td accept
+          td string<br>number
+          td
+          td Value of input's native "accept" attribute
+        tr
+          td autocomplete
+          td string
+          td
+          td Value of input's native "autocomplete" attribute
+        tr
+          td autofocus
+          td boolean
+          td false
+          td Value of input's native "autofocus" attribute
+        tr
+          td autosave
+          td string
+          td
+          td Value of input's native "autosave" attribute
+        tr
+          td checked
+          td boolean
+          td false
+          td Marks input as checked
+        tr
+          td disabled
+          td boolean
+          td false
+          td Marks input as disabled
+        tr
+          td max
+          td string<br>number
+          td
+          td Value of input's native "max" attribute
+        tr
+          td min
+          td string<br>number
+          td
+          td Value of input's native "min" attribute
+        tr
+          td step
+          td string<br>number
+          td
+          td Value of input's native "step" attribute
+        tr
+          td maxlength
+          td string<br>number
+          td
+          td Value of input's native "maxlength" attribute
+        tr
+          td minlength
+          td string<br>number
+          td
+          td Value of input's native "minlength" attribute
+        tr
+          td multiple
+          td boolean
+          td false
+          td Value of input's native "multiple" attribute
+        tr
+          td readonly
+          td boolean
+          td false
+          td Marks input as readonly
+        tr
+          td required
+          td boolean
+          td false
+          td Marks input as required
+        tr
+          td tabindex
+          td string<br>number
+          td
+          td Value of input's native "tabindex" attribute
+        tr
+          td noStoreData
+          td boolean
+          td false
+          td Allows to ignore input value to be stored when using with <a href="../docs/form.html#form-storage">Form Storage</a>
+        tr
+          td ignoreStoreData
+          td boolean
+          td false
+          td Same as previous
+
+    h2 Input Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;Input&gt; events
+        tr
+          td focus
+          td <span>(event)</span>
+          td Fired when user focused to input.
+        tr
+          td blur
+          td <span>(event)</span>
+          td Fired when user lost focus from input.
+        tr
+          td input
+          td <span>(event)</span>
+          td Fired immediately when input value changed. Note: Input event triggers after beforeinput, keypress, keyup, keydown events.
+        tr
+          td change
+          td <span>(event)</span>
+          td Fired when blur if value changed.
+        tr
+          td inputClear
+          td <span>(event)</span>
+          td Fired when input clear button clicked
+        tr
+          td textareaResize
+          td <span>(event)</span>
+          td Fired if resizable textarea resized. <code>event.detail</code> will contain object with the <code>initialHeight</code>, <code>currentHeight</code> and <code>scrollHeight</code> properties
+        tr
+          td inputEmpty
+          td <span>(event)</span>
+          td Fired when input value becomes empty
+        tr
+          td inputNotempty
+          td <span>(event)</span>
+          td Fired when input value becomes not empty
+
+    h2 Input Slots
+    p Input React component (<code>&lt;Input&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - in case of <code>type="select"</code> or <code>type="textarea"</code> - element will be placed inside of <code>select</code> or <code>textarea</code> tags. Otherwise, it will be placed instead of input element
+      li <code><b>info</b></code> - element will be inserted in <code>&lt;div class="input-info"&gt;</code> element
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/inputs.html") Examples
+      pre
+        code.html
+          :code
+            <BlockTitle>Full Layout / Inline Labels</BlockTitle>
+            <List inlineLabels noHairlinesMd>
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Name</Label>
+                <Input type="text" placeholder="Your name" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Password</Label>
+                <Input type="password" placeholder="Your password" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>E-mail</Label>
+                <Input type="email" placeholder="Your e-mail" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>URL</Label>
+                <Input type="url" placeholder="URL" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Phone</Label>
+                <Input type="tel" placeholder="Your phone number" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Gender</Label>
+                <Input type="select" placeholder="Please choose...">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Birthday</Label>
+                <Input type="date" value="2014-04-30" placeholder="Please choose..."></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Date time</Label>
+                <Input type="datetime-local" placeholder="Please choose..."></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Range</Label>
+                <Input id="range-id" type="range" value="50" min="0" max="100" step="1"></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Textarea</Label>
+                <Input type="textarea" placeholder="Bio"></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Resizable</Label>
+                <Input type="textarea" resizable placeholder="Bio"></Input>
+              </ListItem>
+
+            </List>
+
+            <BlockTitle>Full Layout / Stacked Labels</BlockTitle>
+            <List noHairlinesMd>
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Name</Label>
+                <Input type="text" placeholder="Your name" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Password</Label>
+                <Input type="password" placeholder="Your password" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>E-mail</Label>
+                <Input type="email" placeholder="Your e-mail" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>URL</Label>
+                <Input type="url" placeholder="URL" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Phone</Label>
+                <Input type="tel" placeholder="Your phone number" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Gender</Label>
+                <Input type="select" placeholder="Please choose...">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Birthday</Label>
+                <Input type="date" value="2014-04-30" placeholder="Please choose..."></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Date time</Label>
+                <Input type="datetime-local" placeholder="Please choose..."></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Range</Label>
+                <Input type="range" value="50" min="0" max="100" step="1"></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Textarea</Label>
+                <Input type="textarea" placeholder="Bio"></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Resizable</Label>
+                <Input type="textarea" resizable placeholder="Bio"></Input>
+              </ListItem>
+            </List>
+
+            <BlockTitle>Floating Labels (MD-theme only)</BlockTitle>
+            <List noHairlinesMd>
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label floating>Name</Label>
+                <Input type="text" placeholder="Your name" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label floating>Password</Label>
+                <Input type="password" placeholder="Your password" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label floating>E-mail</Label>
+                <Input type="email" placeholder="Your e-mail" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label floating>URL</Label>
+                <Input type="url" placeholder="URL" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label floating>Phone</Label>
+                <Input type="tel" placeholder="Your phone number" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label floating>Bio</Label>
+                <Input type="textarea" placeholder="Bio" resizable></Input>
+              </ListItem>
+            </List>
+
+            <BlockTitle>Validation + Additional Info</BlockTitle>
+            <List noHairlinesMd>
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Name</Label>
+                <Input type="text" placeholder="Your name" info='Default "required" validation' required validate clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Fruit</Label>
+                <Input type="text" placeholder="Type 'apple' or 'banana'" required validate pattern="apple|banana" clearButton>
+                  <span slot="info">Pattern validation (<b>apple|banana</b>)</span>
+                </Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>E-mail</Label>
+                <Input type="email" placeholder="Your e-mail" info='Default e-mail validation' required validate clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>URL</Label>
+                <Input type="url" placeholder="Your URL" info='Default URL validation' required validate clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Label>Number</Label>
+                <Input type="text" placeholder="Enter number" info='With custom error message' errorMessage="Only numbers please!" required validate pattern="[0-9]*" clearButton></Input>
+              </ListItem>
+
+            </List>
+
+            <BlockTitle>Icon + Input</BlockTitle>
+            <List noHairlinesMd>
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Input type="text" placeholder="Your name" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Input type="password" placeholder="Your password" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Input type="email" placeholder="Your e-mail" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Icon icon="demo-list-icon" slot="media"></Icon>
+                <Input type="url" placeholder="URL" clearButton></Input>
+              </ListItem>
+
+            </List>
+
+            <BlockTitle>Label + Input</BlockTitle>
+            <List noHairlinesMd>
+              <ListItem>
+                <Label>Name</Label>
+                <Input type="text" placeholder="Your name" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Label>Password</Label>
+                <Input type="password" placeholder="Your password" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Label>E-mail</Label>
+                <Input type="email" placeholder="Your e-mail" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Label>URL</Label>
+                <Input type="url" placeholder="URL" clearButton></Input>
+              </ListItem>
+            </List>
+
+            <BlockTitle>Only Inputs</BlockTitle>
+            <List noHairlinesMd>
+              <ListItem>
+                <Input type="text" placeholder="Your name" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="password" placeholder="Your password" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="email" placeholder="Your e-mail" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="url" placeholder="URL" clearButton></Input>
+              </ListItem>
+            </List>
+
+            <BlockTitle>Inputs + Additional Info</BlockTitle>
+            <List noHairlinesMd>
+              <ListItem>
+                <Input type="text" placeholder="Your name" info="Full name please" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="password" placeholder="Your password" info="8 characters minimum" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="email" placeholder="Your e-mail" info="Your work e-mail address" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="url" placeholder="URL" info="Your website URL" clearButton></Input>
+              </ListItem>
+            </List>
+
+            <BlockTitle>Only Inputs Inset</BlockTitle>
+            <List inset>
+              <ListItem>
+                <Input type="text" placeholder="Your name" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="password" placeholder="Your password" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="email" placeholder="Your e-mail" clearButton></Input>
+              </ListItem>
+
+              <ListItem>
+                <Input type="url" placeholder="URL" clearButton></Input>
+              </ListItem>
+            </List>

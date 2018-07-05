@@ -9,7 +9,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 Routes
-    .docs-index
+    ul.docs-index
     h2 Define Routes
     p First of all, when we init the Framework7 app we should pass default routes using <code>routes</code> array parameter:
     pre
@@ -40,7 +40,7 @@ block content
                   },
                 },
                 on: {
-                  pageAfterIn: function (e, page) {
+                  pageAfterIn: function test (e, page) {
                     // do something after page gets into the view
                   },
                   pageInit: function (e, page) {
@@ -213,6 +213,24 @@ block content
             br
             | function(route, resolve, reject)
           td Route redirect. We need to specify here redirect <b>url</b> (not path)
+        tr
+          th(colspan="4") Before Enter/Leave
+        tr
+          td beforeEnter
+          td
+            | function(routeTo, routeFrom, resolve, reject)
+            br
+            br
+            | array
+          td Function (or array of functions) that will be executed before route load/enter. To proceed route loading <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+        tr
+          td beforeLeave
+          td
+            | function(routeTo, routeFrom, resolve, reject)
+            br
+            br
+            | array
+          td Function (or array of functions) that will be executed before route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
     p Here is an example for most of the possible options:
     pre
       code.js
@@ -638,6 +656,83 @@ block content
       li when you click on link with <code>/login-screen-ajax/</code> href attribute it will perform Ajax request to <code>login-screen.html</code> file and open it as a Login Screen,
       li when you click on link with <code>/popup-component/</code> href attribute it will perform Ajax request to <code>popup-component.html</code> file, parse it as a Router Component and open it as a Popup,
       li when you click on link with <code>/secured-content/</code> href attribute it will load page from <code>secured-page.html</code> if user is logged in or open Login Screen from <code>login-screen.html</code> file is user is not logged in.
+
+    h2 Route Before Enter/Leave
+    p <code>beforeEnter</code> and <code>beforeLeave</code> route hooks can be very useful if you need to do additional checks, execute additional actions or load/send something before route load (enter) and unload (leave). It can be single method or array of methods to be executed. For example:
+    pre
+      code.js
+        :code
+          routes = [
+            {
+              path: 'profile',
+              url: 'profile.html',
+              beforeEnter: function (routeTo, routeFrom, resolve, reject) {
+                if (/* some condition to check user is logged in */) {
+                  resolve();
+                } else {
+                  // don't allow to visit this page for unauthenticated users
+                  reject();
+                }
+              },
+
+            },
+            {
+              path: 'profile-edit',
+              url: 'profile.html',
+              beforeLeave: function (routeTo, routeFrom, resolve, reject) {
+                if (/* user didn't save edited form */) {
+                  app.dialog.confirm(
+                    'Are you sure you want to leave this page without saving data?',
+                    function () {
+                      // proceed navigation
+                      resolve();
+                    },
+                    function () {
+                      // stay on page
+                      reject();
+                    }
+                  )
+                } else {
+                  resolve();
+                }
+              }
+            }
+          ]
+    p And of course there are multiple hooks are supported when passed as array of functions:
+    pre
+      code.js
+        :code
+          function checkAuth(to, from, resolve, reject) {
+            if (/* some condition to check user is logged in */) {
+              resolve();
+            } else {
+              reject();
+            }
+          }
+          function checkPermission(to, from, resolve, reject) {
+            if (/* some condition to check user edit permission */) {
+              resolve();
+            } else {
+              reject();
+            }
+          }
+
+          routes = [
+            {
+              path: '/profile/',
+              url: 'profile.html',
+              // check if the user is logged in
+              beforeEnter: checkAuth,
+            },
+            {
+              path: '/profile-edit/',
+              url: 'profile-edit.html',
+              // check if the user is logged in and has required permission
+              beforeEnter: [checkAuth, checkPermission],
+            }
+          ]
+
+
     h2 Redirect & Alias
     h3 Alias
     p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
@@ -698,6 +793,8 @@ block content
       li when we request <code>/baz/</code> (without query) nothing will happen
     .important-note
       p Note in redirects we pass URL, not the route path like in alias
+
+
 
 
 

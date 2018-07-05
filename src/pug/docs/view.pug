@@ -9,7 +9,7 @@ block content
   .docs-content
     +improveDocsLink
     h1 View / Router
-    .docs-index
+    ul.docs-index
     p <strong>View</strong> (&lt;div class="view"&gt;) - is a separate visual part of the app with its own settings, navigation and history. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app.
     h2 View Layout
     p Let's look at view HTML structure:
@@ -217,6 +217,26 @@ block content
           td array
           td
           td Array with additional <a href="routes.html">routes</a> that will extend global app routes. This additional routes will only be available for the current View
+        tr
+          td routesBeforeEnter
+          td
+            | function(to, from, resolve, reject)
+            br
+            br
+            | array
+          td
+          td Function (or array of functions) that will be executed before <b>every</b> route load/enter. To proceed route loading <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+            p Same as <a href="routes.html#route-before-enter-leave">route beforeEnter</a> but will work for every route
+        tr
+          td routesBeforeLeave
+          td
+            | function(to, from, resolve, reject)
+            br
+            br
+            | array
+          td
+          td Function (or array of functions) that will be executed before <b>every</b> route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+            p Same as <a href="routes.html#route-before-enter-leave">route beforeLeave</a> but will work for every route
         tr
           th(colspan="4") Elements Removal
         tr

@@ -1,0 +1,148 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Block React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Block React Component
+    ul.docs-index
+    p Block React component represents <a href="../docs/block.html">Block / Content Block</a> element designed (mostly) to add extra formatting and required spacing for text content.
+    h2 Block Components
+    p There are following components included:
+    ul
+      li <code><b>Block</b></code> / <code><b>F7Block</b></code> - main block element
+      li <code><b>BlockTitle</b></code> / <code><b>F7BlockTitle</b></code> - block title. Can be used before Block or List View
+      li <code><b>BlockHeader</b></code> / <code><b>F7BlockHeader</b></code> - extra header element. Can be used both inside and outside of block elements
+      li <code><b>BlockFooter</b></code> / <code><b>F7BlockFooter</b></code> - extra footer element. Can be used both inside and outside of block elements
+    h2 Block Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Block&gt; properties
+        tr
+          td inset
+          td boolean
+          td
+          td Makes block inset
+        tr
+          td tabletInset
+          td boolean
+          td
+          td Makes block inset on tablets, but not on phones
+        tr
+          td strong
+          td boolean
+          td
+          td Adds extra highlighting and padding block content
+        tr
+          td accordionList
+          td boolean
+          td
+          td Makes block wrapper for accordion items
+        tr
+          td tabs
+          td boolean
+          td
+          td Adds additional "tabs" class to make the block tabs wrapper
+        tr
+          td tab
+          td boolean
+          td
+          td Adds additional "tab" class when block should be used as a Tab
+        tr
+          td tabActive
+          td boolean
+          td
+          td Adds additional "tab-active" class when block used as a Tab and makes it active tab
+        tr
+          td noHairlines
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a>
+        tr
+          td noHairlinesMd
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for MD theme
+        tr
+          td noHairlinesIos
+          td boolean
+          td
+          td Removes outer <a href="../docs/hairlines.html">hairlines</a> for iOS theme
+    .with-device
+      h2(data-device-preview="../docs-demos/react/block.html") Examples
+      pre
+        code.html
+          :code
+            export default () => (
+              <Page>
+                <Navbar title="Content Block"></Navbar>
+                <p>This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.</p>
+
+                <Block>
+                  <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </Block>
+
+                <Block strong>
+                  <p>Here comes another text block with additional "block-strong" class. Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. </p>
+                </Block>
+
+                <BlockTitle>Block title</BlockTitle>
+                <Block>
+                  <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </Block>
+
+                <BlockTitle>Another ultra long content block title</BlockTitle>
+                <Block strong>
+                  <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </Block>
+
+                <BlockTitle>Inset</BlockTitle>
+                <Block strong inset>
+                  <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </Block>
+
+                <BlockTitle>Tablet Inset</BlockTitle>
+                <Block strong tabletInset>
+                  <p>Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </Block>
+
+                <BlockTitle>With Header & Footer</BlockTitle>
+                <Block>
+                  <BlockHeader>Block Header</BlockHeader>
+                  <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                  <BlockFooter>Block Footer</BlockFooter>
+                </Block>
+
+                <BlockHeader>Block Header</BlockHeader>
+                <Block>
+                  <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </Block>
+                <BlockFooter>Block Footer</BlockFooter>
+
+                <Block strong>
+                  <BlockHeader>Block Header</BlockHeader>
+                  <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                  <BlockFooter>Block Footer</BlockFooter>
+                </Block>
+
+                <BlockHeader>Block Header</BlockHeader>
+                <Block strong>
+                  <p>Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. </p>
+                </Block>
+                <BlockFooter>Block Footer</BlockFooter>
+              </Page>
+            );
