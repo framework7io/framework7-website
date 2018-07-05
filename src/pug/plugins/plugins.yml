@@ -6,6 +6,7 @@
   description: Keypad plugin extends Framework7 with additional custom keyboards
   badges:
   - v2
+  - v3
 
 -
   title: Feeds
@@ -15,6 +16,7 @@
   description: Brings easy RSS feeds integration into Framework7 app
   badges:
   - v2
+  - v3
 
 -
   title: 3D Panels
@@ -24,6 +26,7 @@
   description: 3D Panels plugin converts "reveal"-effect panels to great looking 3D panels
   badges:
   - v2
+  - v3
 
 -
   title: Up scroller
@@ -36,6 +39,7 @@
   description: Plugin shows a small blue button at the top of the screen once the user has started scrolling down a bit
   badges:
   - v2
+  - v3
 
 -
   title: Welcome Screen / Intro Tutorial
@@ -48,6 +52,7 @@
   description: Plugin will display a fullscreen swipeable modal window to guide the user through a welcome screen / tutorial
   badges:
   - v2
+  - v3
 
 -
   title: Tour Guide
