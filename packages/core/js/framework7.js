@@ -1,5 +1,5 @@
 /**
- * Framework7 3.0.0-beta.17
+ * Framework7 3.0.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: July 2, 2018
+ * Released on: July 5, 2018
  */
 
 (function (global, factory) {
@@ -5841,11 +5841,11 @@
   function processRouteQueue (to, from, resolve, reject) {
     var router = this;
     function enterNextRoute() {
-      if (router.params.beforeEnter || to.route.beforeEnter) {
+      if (to && to.route && (router.params.routesBeforeEnter || to.route.beforeEnter)) {
         router.allowPageChange = false;
         processQueue(
           router,
-          router.params.beforeEnter,
+          router.params.routesBeforeEnter,
           to.route.beforeEnter,
           to,
           from,
@@ -5862,11 +5862,11 @@
       }
     }
     function leaveCurrentRoute() {
-      if (router.params.beforeLeave || from.route.beforeLeave) {
+      if (from && from.route && (router.params.routesBeforeLeave || from.route.beforeLeave)) {
         router.allowPageChange = false;
         processQueue(
           router,
-          router.params.beforeLeave,
+          router.params.routesBeforeLeave,
           from.route.beforeLeave,
           to,
           from,
@@ -9032,13 +9032,14 @@
         // eslint-disable-next-line
         if (clickedLink.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
           var target = clickedLink.attr('target');
-          if (url && (target === '_system' || target === '_blank' || target === '_browser')) {
+          if (
+            url
+            && win.cordova
+            && win.cordova.InAppBrowser
+            && (target === '_system' || target === '_blank')
+          ) {
             e.preventDefault();
-            if (target !== '_browser' && win.cordova && win.cordova.InAppBrowser) {
-              win.cordova.InAppBrowser.open(url, target);
-            } else {
-              win.open(url, target);
-            }
+            win.cordova.InAppBrowser.open(url, target);
           }
           return;
         }
@@ -9476,6 +9477,9 @@
         // Delays
         iosPageLoadDelay: 0,
         materialPageLoadDelay: 0,
+        // Routes hooks
+        routesBeforeEnter: null,
+        routesBeforeLeave: null,
       },
     },
     static: {

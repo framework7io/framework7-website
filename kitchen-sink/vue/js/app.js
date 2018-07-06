@@ -369,12 +369,12 @@
     /**
      * Show production mode tip message on boot?
      */
-    productionTip: "development" !== 'production',
+    productionTip: "production" !== 'production',
 
     /**
      * Whether to enable devtools
      */
-    devtools: "development" !== 'production',
+    devtools: "production" !== 'production',
 
     /**
      * Whether to record perf
@@ -573,94 +573,6 @@
   /*  */
 
   var warn = noop;
-  var tip = noop;
-  var generateComponentTrace = (noop); // work around flow check
-  var formatComponentName = (noop);
-
-  {
-    var hasConsole = typeof console !== 'undefined';
-    var classifyRE = /(?:^|[-_])(\w)/g;
-    var classify = function (str) { return str
-      .replace(classifyRE, function (c) { return c.toUpperCase(); })
-      .replace(/[-_]/g, ''); };
-
-    warn = function (msg, vm) {
-      var trace = vm ? generateComponentTrace(vm) : '';
-
-      if (hasConsole && (!config.silent)) {
-        console.error(("[Vue warn]: " + msg + trace));
-      }
-    };
-
-    tip = function (msg, vm) {
-      if (hasConsole && (!config.silent)) {
-        console.warn("[Vue tip]: " + msg + (
-          vm ? generateComponentTrace(vm) : ''
-        ));
-      }
-    };
-
-    formatComponentName = function (vm, includeFile) {
-      if (vm.$root === vm) {
-        return '<Root>'
-      }
-      var options = typeof vm === 'function' && vm.cid != null
-        ? vm.options
-        : vm._isVue
-          ? vm.$options || vm.constructor.options
-          : vm || {};
-      var name = options.name || options._componentTag;
-      var file = options.__file;
-      if (!name && file) {
-        var match = file.match(/([^/\\]+)\.vue$/);
-        name = match && match[1];
-      }
-
-      return (
-        (name ? ("<" + (classify(name)) + ">") : "<Anonymous>") +
-        (file && includeFile !== false ? (" at " + file) : '')
-      )
-    };
-
-    var repeat = function (str, n) {
-      var res = '';
-      while (n) {
-        if (n % 2 === 1) { res += str; }
-        if (n > 1) { str += str; }
-        n >>= 1;
-      }
-      return res
-    };
-
-    generateComponentTrace = function (vm) {
-      if (vm._isVue && vm.$parent) {
-        var tree = [];
-        var currentRecursiveSequence = 0;
-        while (vm) {
-          if (tree.length > 0) {
-            var last = tree[tree.length - 1];
-            if (last.constructor === vm.constructor) {
-              currentRecursiveSequence++;
-              vm = vm.$parent;
-              continue
-            } else if (currentRecursiveSequence > 0) {
-              tree[tree.length - 1] = [last, currentRecursiveSequence];
-              currentRecursiveSequence = 0;
-            }
-          }
-          tree.push(vm);
-          vm = vm.$parent;
-        }
-        return '\n\nfound in\n\n' + tree
-          .map(function (vm, i) { return ("" + (i === 0 ? '---> ' : repeat(' ', 5 + i * 2)) + (Array.isArray(vm)
-              ? ((formatComponentName(vm[0])) + "... (" + (vm[1]) + " recursive calls)")
-              : formatComponentName(vm))); })
-          .join('\n')
-      } else {
-        return ("\n\n(found in " + (formatComponentName(vm)) + ")")
-      }
-    };
-  }
 
   /*  */
 
@@ -1003,10 +915,6 @@
         if (newVal === value || (newVal !== newVal && value !== value)) {
           return
         }
-        /* eslint-enable no-self-compare */
-        if (customSetter) {
-          customSetter();
-        }
         if (setter) {
           setter.call(obj, newVal);
         } else {
@@ -1024,10 +932,6 @@
    * already exist.
    */
   function set (target, key, val) {
-    if (isUndef(target) || isPrimitive(target)
-    ) {
-      warn(("Cannot set reactive property on undefined, null, or primitive value: " + ((target))));
-    }
     if (Array.isArray(target) && isValidArrayIndex(key)) {
       target.length = Math.max(target.length, key);
       target.splice(key, 1, val);
@@ -1039,10 +943,6 @@
     }
     var ob = (target).__ob__;
     if (target._isVue || (ob && ob.vmCount)) {
-      warn(
-        'Avoid adding reactive properties to a Vue instance or its root $data ' +
-        'at runtime - declare it upfront in the data option.'
-      );
       return val
     }
     if (!ob) {
@@ -1058,20 +958,12 @@
    * Delete a property and trigger change if necessary.
    */
   function del (target, key) {
-    if (isUndef(target) || isPrimitive(target)
-    ) {
-      warn(("Cannot delete reactive property on undefined, null, or primitive value: " + ((target))));
-    }
     if (Array.isArray(target) && isValidArrayIndex(key)) {
       target.splice(key, 1);
       return
     }
     var ob = (target).__ob__;
     if (target._isVue || (ob && ob.vmCount)) {
-      warn(
-        'Avoid deleting properties on a Vue instance or its root $data ' +
-        '- just set it to null.'
-      );
       return
     }
     if (!hasOwn(target, key)) {
@@ -1106,21 +998,6 @@
    * value into the final value.
    */
   var strats = config.optionMergeStrategies;
-
-  /**
-   * Options with restrictions
-   */
-  {
-    strats.el = strats.propsData = function (parent, child, vm, key) {
-      if (!vm) {
-        warn(
-          "option \"" + key + "\" can only be used during instance " +
-          'creation with the `new` keyword.'
-        );
-      }
-      return defaultStrat(parent, child)
-    };
-  }
 
   /**
    * Helper that recursively merges two data objects together.
@@ -1194,12 +1071,6 @@
   ) {
     if (!vm) {
       if (childVal && typeof childVal !== 'function') {
-        warn(
-          'The "data" option should be a function ' +
-          'that returns a per-instance value in component ' +
-          'definitions.',
-          vm
-        );
 
         return parentVal
       }
@@ -1244,7 +1115,6 @@
   ) {
     var res = Object.create(parentVal || null);
     if (childVal) {
-      assertObjectType(key, childVal, vm);
       return extend(res, childVal)
     } else {
       return res
@@ -1272,9 +1142,6 @@
     if (childVal === nativeWatch) { childVal = undefined; }
     /* istanbul ignore if */
     if (!childVal) { return Object.create(parentVal || null) }
-    {
-      assertObjectType(key, childVal, vm);
-    }
     if (!parentVal) { return childVal }
     var ret = {};
     extend(ret, parentVal);
@@ -1303,7 +1170,7 @@
     vm,
     key
   ) {
-    if (childVal && "development" !== 'production') {
+    if (childVal && "production" !== 'production') {
       assertObjectType(key, childVal, vm);
     }
     if (!parentVal) { return childVal }
@@ -1324,31 +1191,6 @@
   };
 
   /**
-   * Validate component names
-   */
-  function checkComponents (options) {
-    for (var key in options.components) {
-      validateComponentName(key);
-    }
-  }
-
-  function validateComponentName (name) {
-    if (!/^[a-zA-Z][\w-]*$/.test(name)) {
-      warn(
-        'Invalid component name: "' + name + '". Component names ' +
-        'can only contain alphanumeric characters and the hyphen, ' +
-        'and must start with a letter.'
-      );
-    }
-    if (isBuiltInTag(name) || config.isReservedTag(name)) {
-      warn(
-        'Do not use built-in or reserved HTML elements as component ' +
-        'id: ' + name
-      );
-    }
-  }
-
-  /**
    * Ensure all props option syntax are normalized into the
    * Object-based format.
    */
@@ -1364,8 +1206,6 @@
         if (typeof val === 'string') {
           name = camelize(val);
           res[name] = { type: null };
-        } else {
-          warn('props must be strings when using array syntax.');
         }
       }
     } else if (isPlainObject(props)) {
@@ -1376,12 +1216,6 @@
           ? val
           : { type: val };
       }
-    } else {
-      warn(
-        "Invalid value for option \"props\": expected an Array or an Object, " +
-        "but got " + (toRawType(props)) + ".",
-        vm
-      );
     }
     options.props = res;
   }
@@ -1404,12 +1238,6 @@
           ? extend({ from: key }, val)
           : { from: val };
       }
-    } else {
-      warn(
-        "Invalid value for option \"inject\": expected an Array or an Object, " +
-        "but got " + (toRawType(inject)) + ".",
-        vm
-      );
     }
   }
 
@@ -1447,9 +1275,6 @@
     child,
     vm
   ) {
-    {
-      checkComponents(child);
-    }
 
     if (typeof child === 'function') {
       child = child.options;
@@ -1508,12 +1333,6 @@
     if (hasOwn(assets, PascalCaseId)) { return assets[PascalCaseId] }
     // fallback to prototype chain
     var res = assets[id] || assets[camelizedId] || assets[PascalCaseId];
-    if (warnMissing && !res) {
-      warn(
-        'Failed to resolve ' + type.slice(0, -1) + ': ' + id,
-        options
-      );
-    }
     return res
   }
 
@@ -1552,9 +1371,6 @@
       observe(value);
       toggleObserving(prevShouldObserve);
     }
-    {
-      assertProp(prop, key, value, vm, absent);
-    }
     return value
   }
 
@@ -1567,15 +1383,6 @@
       return undefined
     }
     var def = prop.default;
-    // warn against non-factory defaults for Object & Array
-    if (isObject(def)) {
-      warn(
-        'Invalid default value for prop "' + key + '": ' +
-        'Props with type Object/Array must use a factory function ' +
-        'to return the default value.',
-        vm
-      );
-    }
     // the raw prop value was also undefined from previous render,
     // return previous default value to avoid unnecessary watcher trigger
     if (vm && vm.$options.propsData &&
@@ -1589,84 +1396,6 @@
     return typeof def === 'function' && getType(prop.type) !== 'Function'
       ? def.call(vm)
       : def
-  }
-
-  /**
-   * Assert whether a prop is valid.
-   */
-  function assertProp (
-    prop,
-    name,
-    value,
-    vm,
-    absent
-  ) {
-    if (prop.required && absent) {
-      warn(
-        'Missing required prop: "' + name + '"',
-        vm
-      );
-      return
-    }
-    if (value == null && !prop.required) {
-      return
-    }
-    var type = prop.type;
-    var valid = !type || type === true;
-    var expectedTypes = [];
-    if (type) {
-      if (!Array.isArray(type)) {
-        type = [type];
-      }
-      for (var i = 0; i < type.length && !valid; i++) {
-        var assertedType = assertType(value, type[i]);
-        expectedTypes.push(assertedType.expectedType || '');
-        valid = assertedType.valid;
-      }
-    }
-    if (!valid) {
-      warn(
-        "Invalid prop: type check failed for prop \"" + name + "\"." +
-        " Expected " + (expectedTypes.map(capitalize).join(', ')) +
-        ", got " + (toRawType(value)) + ".",
-        vm
-      );
-      return
-    }
-    var validator = prop.validator;
-    if (validator) {
-      if (!validator(value)) {
-        warn(
-          'Invalid prop: custom validator check failed for prop "' + name + '".',
-          vm
-        );
-      }
-    }
-  }
-
-  var simpleCheckRE = /^(String|Number|Boolean|Function|Symbol)$/;
-
-  function assertType (value, type) {
-    var valid;
-    var expectedType = getType(type);
-    if (simpleCheckRE.test(expectedType)) {
-      var t = typeof value;
-      valid = t === expectedType.toLowerCase();
-      // for primitive wrapper objects
-      if (!valid && t === 'object') {
-        valid = value instanceof type;
-      }
-    } else if (expectedType === 'Object') {
-      valid = isPlainObject(value);
-    } else if (expectedType === 'Array') {
-      valid = Array.isArray(value);
-    } else {
-      valid = value instanceof type;
-    }
-    return {
-      valid: valid,
-      expectedType: expectedType
-    }
   }
 
   /**
@@ -1722,9 +1451,6 @@
   }
 
   function logError (err, vm, info) {
-    {
-      warn(("Error in " + info + ": \"" + (err.toString()) + "\""), vm);
-    }
     /* istanbul ignore else */
     if ((inBrowser || inWeex) && typeof console !== 'undefined') {
       console.error(err);
@@ -1849,83 +1575,6 @@
 
   /*  */
 
-  /* not type checking this file because flow doesn't play well with Proxy */
-
-  var initProxy;
-
-  {
-    var allowedGlobals = makeMap(
-      'Infinity,undefined,NaN,isFinite,isNaN,' +
-      'parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
-      'Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,' +
-      'require' // for Webpack/Browserify
-    );
-
-    var warnNonPresent = function (target, key) {
-      warn(
-        "Property or method \"" + key + "\" is not defined on the instance but " +
-        'referenced during render. Make sure that this property is reactive, ' +
-        'either in the data option, or for class-based components, by ' +
-        'initializing the property. ' +
-        'See: https://vuejs.org/v2/guide/reactivity.html#Declaring-Reactive-Properties.',
-        target
-      );
-    };
-
-    var hasProxy =
-      typeof Proxy !== 'undefined' && isNative(Proxy);
-
-    if (hasProxy) {
-      var isBuiltInModifier = makeMap('stop,prevent,self,ctrl,shift,alt,meta,exact');
-      config.keyCodes = new Proxy(config.keyCodes, {
-        set: function set (target, key, value) {
-          if (isBuiltInModifier(key)) {
-            warn(("Avoid overwriting built-in modifier in config.keyCodes: ." + key));
-            return false
-          } else {
-            target[key] = value;
-            return true
-          }
-        }
-      });
-    }
-
-    var hasHandler = {
-      has: function has (target, key) {
-        var has = key in target;
-        var isAllowed = allowedGlobals(key) || key.charAt(0) === '_';
-        if (!has && !isAllowed) {
-          warnNonPresent(target, key);
-        }
-        return has || !isAllowed
-      }
-    };
-
-    var getHandler = {
-      get: function get (target, key) {
-        if (typeof key === 'string' && !(key in target)) {
-          warnNonPresent(target, key);
-        }
-        return target[key]
-      }
-    };
-
-    initProxy = function initProxy (vm) {
-      if (hasProxy) {
-        // determine which proxy handler to use
-        var options = vm.$options;
-        var handlers = options.render && options.render._withStripped
-          ? getHandler
-          : hasHandler;
-        vm._renderProxy = new Proxy(vm, handlers);
-      } else {
-        vm._renderProxy = vm;
-      }
-    };
-  }
-
-  /*  */
-
   var seenObjects = new _Set();
 
   /**
@@ -1959,18 +1608,6 @@
       i = keys.length;
       while (i--) { _traverse(val[keys[i]], seen); }
     }
-  }
-
-  {
-    var perf = inBrowser && window.performance;
-    /* istanbul ignore if */
-    if (
-      perf &&
-      perf.mark &&
-      perf.measure &&
-      perf.clearMarks &&
-      perf.clearMeasures
-    ) ;
   }
 
   /*  */
@@ -2022,12 +1659,7 @@
       old = oldOn[name];
       event = normalizeEvent(name);
       /* istanbul ignore if */
-      if (isUndef(cur)) {
-        warn(
-          "Invalid handler for event \"" + (event.name) + "\": got " + String(cur),
-          vm
-        );
-      } else if (isUndef(old)) {
+      if (isUndef(cur)) ; else if (isUndef(old)) {
         if (isUndef(cur.fns)) {
           cur = on[name] = createFnInvoker(cur);
         }
@@ -2100,22 +1732,6 @@
     if (isDef(attrs) || isDef(props)) {
       for (var key in propOptions) {
         var altKey = hyphenate(key);
-        {
-          var keyInLowerCase = key.toLowerCase();
-          if (
-            key !== keyInLowerCase &&
-            attrs && hasOwn(attrs, keyInLowerCase)
-          ) {
-            tip(
-              "Prop \"" + keyInLowerCase + "\" is passed to component " +
-              (formatComponentName(tag || Ctor)) + ", but the declared prop name is" +
-              " \"" + key + "\". " +
-              "Note that HTML attributes are case-insensitive and camelCased " +
-              "props need to use their kebab-case equivalents when using in-DOM " +
-              "templates. You should probably use \"" + altKey + "\" instead of \"" + key + "\"."
-            );
-          }
-        }
         checkProp(res, props, key, altKey, true) ||
         checkProp(res, attrs, key, altKey, false);
       }
@@ -2303,10 +1919,6 @@
       });
 
       var reject = once(function (reason) {
-        warn(
-          "Failed to resolve async component: " + (String(factory)) +
-          (reason ? ("\nReason: " + reason) : '')
-        );
         if (isDef(factory.errorComp)) {
           factory.error = true;
           forceRender();
@@ -2346,7 +1958,7 @@
             setTimeout(function () {
               if (isUndef(factory.resolved)) {
                 reject(
-                  "timeout (" + (res.timeout) + "ms)"
+                  null
                 );
               }
             }, res.timeout);
@@ -2493,18 +2105,6 @@
 
     Vue.prototype.$emit = function (event) {
       var vm = this;
-      {
-        var lowerCaseEvent = event.toLowerCase();
-        if (lowerCaseEvent !== event && vm._events[lowerCaseEvent]) {
-          tip(
-            "Event \"" + lowerCaseEvent + "\" is emitted in component " +
-            (formatComponentName(vm)) + " but the handler is registered for \"" + event + "\". " +
-            "Note that HTML attributes are case-insensitive and you cannot use " +
-            "v-on to listen to camelCase events when using in-DOM templates. " +
-            "You should probably use \"" + (hyphenate(event)) + "\" instead of \"" + event + "\"."
-          );
-        }
-      }
       var cbs = vm._events[event];
       if (cbs) {
         cbs = cbs.length > 1 ? toArray(cbs) : cbs;
@@ -2590,7 +2190,6 @@
   /*  */
 
   var activeInstance = null;
-  var isUpdatingChildComponent = false;
 
   function initLifecycle (vm) {
     var options = vm.$options;
@@ -2720,23 +2319,6 @@
     vm.$el = el;
     if (!vm.$options.render) {
       vm.$options.render = createEmptyVNode;
-      {
-        /* istanbul ignore if */
-        if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') ||
-          vm.$options.el || el) {
-          warn(
-            'You are using the runtime-only build of Vue where the template ' +
-            'compiler is not available. Either pre-compile the templates into ' +
-            'render functions, or use the compiler-included build.',
-            vm
-          );
-        } else {
-          warn(
-            'Failed to mount component: template or render function not defined.',
-            vm
-          );
-        }
-      }
     }
     callHook(vm, 'beforeMount');
 
@@ -2770,9 +2352,6 @@
     parentVnode,
     renderChildren
   ) {
-    {
-      isUpdatingChildComponent = true;
-    }
 
     // determine whether component has slot children
     // we need to do this before overwriting $options._renderChildren
@@ -2822,10 +2401,6 @@
     if (hasChildren) {
       vm.$slots = resolveSlots(renderChildren, parentVnode.context);
       vm.$forceUpdate();
-    }
-
-    {
-      isUpdatingChildComponent = false;
     }
   }
 
@@ -2889,15 +2464,9 @@
     popTarget();
   }
 
-  /*  */
-
-
-  var MAX_UPDATE_COUNT = 100;
-
   var queue = [];
   var activatedChildren = [];
   var has = {};
-  var circular = {};
   var waiting = false;
   var flushing = false;
   var index = 0;
@@ -2908,9 +2477,6 @@
   function resetSchedulerState () {
     index = queue.length = activatedChildren.length = 0;
     has = {};
-    {
-      circular = {};
-    }
     waiting = flushing = false;
   }
 
@@ -2938,21 +2504,6 @@
       id = watcher.id;
       has[id] = null;
       watcher.run();
-      // in dev build, check and stop circular updates.
-      if (has[id] != null) {
-        circular[id] = (circular[id] || 0) + 1;
-        if (circular[id] > MAX_UPDATE_COUNT) {
-          warn(
-            'You may have an infinite update loop ' + (
-              watcher.user
-                ? ("in watcher with expression \"" + (watcher.expression) + "\"")
-                : "in a component render function."
-            ),
-            watcher.vm
-          );
-          break
-        }
-      }
     }
 
     // keep copies of post queues before resetting state
@@ -3067,7 +2618,7 @@
     this.newDeps = [];
     this.depIds = new _Set();
     this.newDepIds = new _Set();
-    this.expression = expOrFn.toString();
+    this.expression = '';
     // parse expression for getter
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn;
@@ -3075,12 +2626,6 @@
       this.getter = parsePath(expOrFn);
       if (!this.getter) {
         this.getter = function () {};
-        warn(
-          "Failed watching path: \"" + expOrFn + "\" " +
-          'Watcher only accepts simple dot-delimited paths. ' +
-          'For full control, use a function instead.',
-          vm
-        );
       }
     }
     this.value = this.lazy
@@ -3291,25 +2836,7 @@
       var value = validateProp(key, propsOptions, propsData, vm);
       /* istanbul ignore else */
       {
-        var hyphenatedKey = hyphenate(key);
-        if (isReservedAttribute(hyphenatedKey) ||
-            config.isReservedAttr(hyphenatedKey)) {
-          warn(
-            ("\"" + hyphenatedKey + "\" is a reserved attribute and cannot be used as component prop."),
-            vm
-          );
-        }
-        defineReactive(props, key, value, function () {
-          if (vm.$parent && !isUpdatingChildComponent) {
-            warn(
-              "Avoid mutating a prop directly since the value will be " +
-              "overwritten whenever the parent component re-renders. " +
-              "Instead, use a data or computed property based on the prop's " +
-              "value. Prop being mutated: \"" + key + "\"",
-              vm
-            );
-          }
-        });
+        defineReactive(props, key, value);
       }
       // static props are already proxied on the component's prototype
       // during Vue.extend(). We only need to proxy props defined at
@@ -3330,11 +2857,6 @@
       : data || {};
     if (!isPlainObject(data)) {
       data = {};
-      warn(
-        'data functions should return an object:\n' +
-        'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
-        vm
-      );
     }
     // proxy data on instance
     var keys = Object.keys(data);
@@ -3343,21 +2865,7 @@
     var i = keys.length;
     while (i--) {
       var key = keys[i];
-      {
-        if (methods && hasOwn(methods, key)) {
-          warn(
-            ("Method \"" + key + "\" has already been defined as a data property."),
-            vm
-          );
-        }
-      }
-      if (props && hasOwn(props, key)) {
-        warn(
-          "The data property \"" + key + "\" is already declared as a prop. " +
-          "Use prop default value instead.",
-          vm
-        );
-      } else if (!isReserved(key)) {
+      if (props && hasOwn(props, key)) ; else if (!isReserved(key)) {
         proxy(vm, "_data", key);
       }
     }
@@ -3389,12 +2897,6 @@
     for (var key in computed) {
       var userDef = computed[key];
       var getter = typeof userDef === 'function' ? userDef : userDef.get;
-      if (getter == null) {
-        warn(
-          ("Getter is missing for computed property \"" + key + "\"."),
-          vm
-        );
-      }
 
       if (!isSSR) {
         // create internal watcher for the computed property.
@@ -3411,12 +2913,6 @@
       // at instantiation here.
       if (!(key in vm)) {
         defineComputed(vm, key, userDef);
-      } else {
-        if (key in vm.$data) {
-          warn(("The computed property \"" + key + "\" is already defined in data."), vm);
-        } else if (vm.$options.props && key in vm.$options.props) {
-          warn(("The computed property \"" + key + "\" is already defined as a prop."), vm);
-        }
       }
     }
   }
@@ -3442,14 +2938,6 @@
         ? userDef.set
         : noop;
     }
-    if (sharedPropertyDefinition.set === noop) {
-      sharedPropertyDefinition.set = function () {
-        warn(
-          ("Computed property \"" + key + "\" was assigned to but it has no setter."),
-          this
-        );
-      };
-    }
     Object.defineProperty(target, key, sharedPropertyDefinition);
   }
 
@@ -3471,27 +2959,6 @@
   function initMethods (vm, methods) {
     var props = vm.$options.props;
     for (var key in methods) {
-      {
-        if (methods[key] == null) {
-          warn(
-            "Method \"" + key + "\" has an undefined value in the component definition. " +
-            "Did you reference the function correctly?",
-            vm
-          );
-        }
-        if (props && hasOwn(props, key)) {
-          warn(
-            ("Method \"" + key + "\" has already been defined as a prop."),
-            vm
-          );
-        }
-        if ((key in vm) && isReserved(key)) {
-          warn(
-            "Method \"" + key + "\" conflicts with an existing Vue instance method. " +
-            "Avoid defining component methods that start with _ or $."
-          );
-        }
-      }
       vm[key] = methods[key] == null ? noop : bind(methods[key], vm);
     }
   }
@@ -3533,18 +3000,6 @@
     dataDef.get = function () { return this._data };
     var propsDef = {};
     propsDef.get = function () { return this._props };
-    {
-      dataDef.set = function (newData) {
-        warn(
-          'Avoid replacing instance root $data. ' +
-          'Use nested data properties instead.',
-          this
-        );
-      };
-      propsDef.set = function () {
-        warn("$props is readonly.", this);
-      };
-    }
     Object.defineProperty(Vue.prototype, '$data', dataDef);
     Object.defineProperty(Vue.prototype, '$props', propsDef);
 
@@ -3590,14 +3045,7 @@
       Object.keys(result).forEach(function (key) {
         /* istanbul ignore else */
         {
-          defineReactive(vm, key, result[key], function () {
-            warn(
-              "Avoid mutating an injected value directly since the changes will be " +
-              "overwritten whenever the provided component re-renders. " +
-              "injection being mutated: \"" + key + "\"",
-              vm
-            );
-          });
+          defineReactive(vm, key, result[key]);
         }
       });
       toggleObserving(true);
@@ -3632,8 +3080,6 @@
             result[key] = typeof provideDefault === 'function'
               ? provideDefault.call(vm)
               : provideDefault;
-          } else {
-            warn(("Injection \"" + key + "\" not found"), vm);
           }
         }
       }
@@ -3691,12 +3137,6 @@
     if (scopedSlotFn) { // scoped slot
       props = props || {};
       if (bindObject) {
-        if (!isObject(bindObject)) {
-          warn(
-            'slot v-bind without argument expects an Object',
-            this
-          );
-        }
         props = extend(extend({}, bindObject), props);
       }
       nodes = scopedSlotFn(props) || fallback;
@@ -3704,13 +3144,6 @@
       var slotNodes = this.$slots[name];
       // warn duplicate slot usage
       if (slotNodes) {
-        if (slotNodes._rendered) {
-          warn(
-            "Duplicate presence of slot \"" + name + "\" found in the same render tree " +
-            "- this will likely cause render errors.",
-            this
-          );
-        }
         slotNodes._rendered = true;
       }
       nodes = slotNodes || fallback;
@@ -3778,12 +3211,7 @@
     isSync
   ) {
     if (value) {
-      if (!isObject(value)) {
-        warn(
-          'v-bind without argument expects an Object or Array value',
-          this
-        );
-      } else {
+      if (!isObject(value)) ; else {
         if (Array.isArray(value)) {
           value = toObject(value);
         }
@@ -3884,12 +3312,7 @@
 
   function bindObjectListeners (data, value) {
     if (value) {
-      if (!isPlainObject(value)) {
-        warn(
-          'v-on without argument expects an Object value',
-          this
-        );
-      } else {
+      if (!isPlainObject(value)) ; else {
         var on = data.on = data.on ? extend({}, data.on) : {};
         for (var key in value) {
           var existing = on[key];
@@ -4158,9 +3581,6 @@
     // if at this stage it's not a constructor or an async component factory,
     // reject.
     if (typeof Ctor !== 'function') {
-      {
-        warn(("Invalid Component definition: " + (String(Ctor))), context);
-      }
       return
     }
 
@@ -4317,11 +3737,6 @@
     normalizationType
   ) {
     if (isDef(data) && isDef((data).__ob__)) {
-      warn(
-        "Avoid using observed data object as vnode data: " + (JSON.stringify(data)) + "\n" +
-        'Always create fresh vnode data objects in each render!',
-        context
-      );
       return createEmptyVNode()
     }
     // object syntax in v-bind
@@ -4331,17 +3746,6 @@
     if (!tag) {
       // in case of component :is set to falsy value
       return createEmptyVNode()
-    }
-    // warn against non-primitive key
-    if (isDef(data) && isDef(data.key) && !isPrimitive(data.key)
-    ) {
-      {
-        warn(
-          'Avoid using non-primitive value as key, ' +
-          'use string/number value instead.',
-          context
-        );
-      }
     }
     // support single function children as default scoped slot
     if (Array.isArray(children) &&
@@ -4448,12 +3852,8 @@
 
     /* istanbul ignore else */
     {
-      defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
-        !isUpdatingChildComponent && warn("$attrs is readonly.", vm);
-      }, true);
-      defineReactive(vm, '$listeners', options._parentListeners || emptyObject, function () {
-        !isUpdatingChildComponent && warn("$listeners is readonly.", vm);
-      }, true);
+      defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
+      defineReactive(vm, '$listeners', options._parentListeners || emptyObject, null, true);
     }
   }
 
@@ -4470,14 +3870,6 @@
       var ref = vm.$options;
       var render = ref.render;
       var _parentVnode = ref._parentVnode;
-
-      // reset _rendered flag on slots for duplicate slot check
-      {
-        for (var key in vm.$slots) {
-          // $flow-disable-line
-          vm.$slots[key]._rendered = false;
-        }
-      }
 
       if (_parentVnode) {
         vm.$scopedSlots = _parentVnode.data.scopedSlots || emptyObject;
@@ -4496,27 +3888,11 @@
         // or previous vnode to prevent render error causing blank component
         /* istanbul ignore else */
         {
-          if (vm.$options.renderError) {
-            try {
-              vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e);
-            } catch (e) {
-              handleError(e, vm, "renderError");
-              vnode = vm._vnode;
-            }
-          } else {
-            vnode = vm._vnode;
-          }
+          vnode = vm._vnode;
         }
       }
       // return empty vnode in case the render function errored out
       if (!(vnode instanceof VNode)) {
-        if (Array.isArray(vnode)) {
-          warn(
-            'Multiple root nodes returned from render function. Render function ' +
-            'should return a single root node.',
-            vm
-          );
-        }
         vnode = createEmptyVNode();
       }
       // set parent
@@ -4552,7 +3928,7 @@
       }
       /* istanbul ignore else */
       {
-        initProxy(vm);
+        vm._renderProxy = vm;
       }
       // expose real self
       vm._self = vm;
@@ -4650,10 +4026,6 @@
   }
 
   function Vue (options) {
-    if (!(this instanceof Vue)
-    ) {
-      warn('Vue is a constructor and should be called with the `new` keyword');
-    }
     this._init(options);
   }
 
@@ -4718,9 +4090,6 @@
       }
 
       var name = extendOptions.name || Super.options.name;
-      if (name) {
-        validateComponentName(name);
-      }
 
       var Sub = function VueComponent (options) {
         this._init(options);
@@ -4800,10 +4169,6 @@
         if (!definition) {
           return this.options[type + 's'][id]
         } else {
-          /* istanbul ignore if */
-          if (type === 'component') {
-            validateComponentName(id);
-          }
           if (type === 'component' && isPlainObject(definition)) {
             definition.name = definition.name || id;
             definition = this.options._base.extend(definition);
@@ -4958,13 +4323,6 @@
     // config
     var configDef = {};
     configDef.get = function () { return config; };
-    {
-      configDef.set = function () {
-        warn(
-          'Do not replace the Vue.config object, set individual fields instead.'
-        );
-      };
-    }
     Object.defineProperty(Vue, 'config', configDef);
 
     // exposed util methods.
@@ -5225,9 +4583,6 @@
     if (typeof el === 'string') {
       var selected = document.querySelector(el);
       if (!selected) {
-        warn(
-          'Cannot find element: ' + el
-        );
         return document.createElement('div')
       }
       return selected
@@ -5443,24 +4798,6 @@
       }
     }
 
-    function isUnknownElement$$1 (vnode, inVPre) {
-      return (
-        !inVPre &&
-        !vnode.ns &&
-        !(
-          config.ignoredElements.length &&
-          config.ignoredElements.some(function (ignore) {
-            return isRegExp(ignore)
-              ? ignore.test(vnode.tag)
-              : ignore === vnode.tag
-          })
-        ) &&
-        config.isUnknownElement(vnode.tag)
-      )
-    }
-
-    var creatingElmInVPre = 0;
-
     function createElm (
       vnode,
       insertedVnodeQueue,
@@ -5488,19 +4825,6 @@
       var children = vnode.children;
       var tag = vnode.tag;
       if (isDef(tag)) {
-        {
-          if (data && data.pre) {
-            creatingElmInVPre++;
-          }
-          if (isUnknownElement$$1(vnode, creatingElmInVPre)) {
-            warn(
-              'Unknown custom element: <' + tag + '> - did you ' +
-              'register the component correctly? For recursive components, ' +
-              'make sure to provide the "name" option.',
-              vnode.context
-            );
-          }
-        }
 
         vnode.elm = vnode.ns
           ? nodeOps.createElementNS(vnode.ns, tag)
@@ -5514,10 +4838,6 @@
             invokeCreateHooks(vnode, insertedVnodeQueue);
           }
           insert(parentElm, vnode.elm, refElm);
-        }
-
-        if (data && data.pre) {
-          creatingElmInVPre--;
         }
       } else if (isTrue(vnode.isComment)) {
         vnode.elm = nodeOps.createComment(vnode.text);
@@ -5603,9 +4923,6 @@
 
     function createChildren (vnode, children, insertedVnodeQueue) {
       if (Array.isArray(children)) {
-        {
-          checkDuplicateKeys(children);
-        }
         for (var i = 0; i < children.length; ++i) {
           createElm(children[i], insertedVnodeQueue, vnode.elm, null, true, children, i);
         }
@@ -5737,10 +5054,6 @@
       // during leaving transitions
       var canMove = !removeOnly;
 
-      {
-        checkDuplicateKeys(newCh);
-      }
-
       while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
         if (isUndef(oldStartVnode)) {
           oldStartVnode = oldCh[++oldStartIdx]; // Vnode has been moved left
@@ -5790,24 +5103,6 @@
         addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
       } else if (newStartIdx > newEndIdx) {
         removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
-      }
-    }
-
-    function checkDuplicateKeys (children) {
-      var seenKeys = {};
-      for (var i = 0; i < children.length; i++) {
-        var vnode = children[i];
-        var key = vnode.key;
-        if (isDef(key)) {
-          if (seenKeys[key]) {
-            warn(
-              ("Duplicate keys detected: '" + key + "'. This may cause an update error."),
-              vnode.context
-            );
-          } else {
-            seenKeys[key] = true;
-          }
-        }
       }
     }
 
@@ -5889,8 +5184,6 @@
         }
       }
     }
-
-    var hydrationBailed = false;
     // list of modules that can skip create hook during hydration because they
     // are already rendered on the client or has no need for initialization
     // Note: style is excluded because it relies on initial clone for future
@@ -5910,12 +5203,6 @@
         vnode.isAsyncPlaceholder = true;
         return true
       }
-      // assert node match
-      {
-        if (!assertNodeMatch(elm, vnode, inVPre)) {
-          return false
-        }
-      }
       if (isDef(data)) {
         if (isDef(i = data.hook) && isDef(i = i.init)) { i(vnode, true /* hydrating */); }
         if (isDef(i = vnode.componentInstance)) {
@@ -5933,15 +5220,6 @@
             // v-html and domProps: innerHTML
             if (isDef(i = data) && isDef(i = i.domProps) && isDef(i = i.innerHTML)) {
               if (i !== elm.innerHTML) {
-                /* istanbul ignore if */
-                if (typeof console !== 'undefined' &&
-                  !hydrationBailed
-                ) {
-                  hydrationBailed = true;
-                  console.warn('Parent: ', elm);
-                  console.warn('server innerHTML: ', i);
-                  console.warn('client innerHTML: ', elm.innerHTML);
-                }
                 return false
               }
             } else {
@@ -5958,14 +5236,6 @@
               // if childNode is not null, it means the actual childNodes list is
               // longer than the virtual children list.
               if (!childrenMatch || childNode) {
-                /* istanbul ignore if */
-                if (typeof console !== 'undefined' &&
-                  !hydrationBailed
-                ) {
-                  hydrationBailed = true;
-                  console.warn('Parent: ', elm);
-                  console.warn('Mismatching childNodes vs. VNodes: ', elm.childNodes, children);
-                }
                 return false
               }
             }
@@ -5989,17 +5259,6 @@
         elm.data = vnode.text;
       }
       return true
-    }
-
-    function assertNodeMatch (node, vnode, inVPre) {
-      if (isDef(vnode.tag)) {
-        return vnode.tag.indexOf('vue-component') === 0 || (
-          !isUnknownElement$$1(vnode, inVPre) &&
-          vnode.tag.toLowerCase() === (node.tagName && node.tagName.toLowerCase())
-        )
-      } else {
-        return node.nodeType === (vnode.isComment ? 8 : 3)
-      }
     }
 
     return function patch (oldVnode, vnode, hydrating, removeOnly, parentElm, refElm) {
@@ -6033,14 +5292,6 @@
               if (hydrate(oldVnode, vnode, insertedVnodeQueue)) {
                 invokeInsertHook(vnode, insertedVnodeQueue, true);
                 return oldVnode
-              } else {
-                warn(
-                  'The client-side rendered virtual DOM tree is not matching ' +
-                  'server-rendered content. This is likely caused by incorrect ' +
-                  'HTML markup, for example nesting block-level elements inside ' +
-                  '<p>, or missing <tbody>. Bailing hydration and performing ' +
-                  'full client-side render.'
-                );
               }
             }
             // either not server-rendered, or hydration failed.
@@ -7077,10 +6328,6 @@
         : duration
     );
 
-    if (explicitEnterDuration != null) {
-      checkDuration(explicitEnterDuration, 'enter', vnode);
-    }
-
     var expectsCSS = css !== false && !isIE9;
     var userWantsControl = getHookArgumentsLength(enterHook);
 
@@ -7185,10 +6432,6 @@
         : duration
     );
 
-    if (isDef(explicitLeaveDuration)) {
-      checkDuration(explicitLeaveDuration, 'leave', vnode);
-    }
-
     var cb = el._leaveCb = once(function () {
       if (el.parentNode && el.parentNode._pending) {
         el.parentNode._pending[vnode.key] = null;
@@ -7246,23 +6489,6 @@
       if (!expectsCSS && !userWantsControl) {
         cb();
       }
-    }
-  }
-
-  // only used in dev mode
-  function checkDuration (val, name, vnode) {
-    if (typeof val !== 'number') {
-      warn(
-        "<transition> explicit " + name + " duration is not a valid number - " +
-        "got " + (JSON.stringify(val)) + ".",
-        vnode.context
-      );
-    } else if (isNaN(val)) {
-      warn(
-        "<transition> explicit " + name + " duration is NaN - " +
-        'the duration expression might be incorrect.',
-        vnode.context
-      );
     }
   }
 
@@ -7412,11 +6638,6 @@
     var value = binding.value;
     var isMultiple = el.multiple;
     if (isMultiple && !Array.isArray(value)) {
-      warn(
-        "<select multiple v-model=\"" + (binding.expression) + "\"> " +
-        "expects an Array value for its binding, but got " + (Object.prototype.toString.call(value).slice(8, -1)),
-        vm
-      );
       return
     }
     var selected, option;
@@ -7627,25 +6848,7 @@
         return
       }
 
-      // warn multiple elements
-      if (children.length > 1) {
-        warn(
-          '<transition> can only be used on a single element. Use ' +
-          '<transition-group> for lists.',
-          this.$parent
-        );
-      }
-
       var mode = this.mode;
-
-      // warn invalid mode
-      if (mode && mode !== 'in-out' && mode !== 'out-in'
-      ) {
-        warn(
-          'invalid <transition> mode: ' + mode,
-          this.$parent
-        );
-      }
 
       var rawChild = children[0];
 
@@ -7763,10 +6966,6 @@
             children.push(c);
             map[c.key] = c
             ;(c.data || (c.data = {})).transition = transitionData;
-          } else {
-            var opts = c.componentOptions;
-            var name = opts ? (opts.Ctor.options.name || opts.tag || '') : c.tag;
-            warn(("<transition-group> children must be keyed: <" + name + ">"));
           }
         }
       }
@@ -7928,26 +7127,6 @@
   /* istanbul ignore next */
   if (inBrowser) {
     setTimeout(function () {
-      {
-        if (devtools) {
-          devtools.emit('init', Vue);
-        } else if (
-          isChrome
-        ) {
-          console[console.info ? 'info' : 'log'](
-            'Download the Vue Devtools extension for a better development experience:\n' +
-            'https://github.com/vuejs/vue-devtools'
-          );
-        }
-      }
-      if (typeof console !== 'undefined'
-      ) {
-        console[console.info ? 'info' : 'log'](
-          "You are running Vue in development mode.\n" +
-          "Make sure to turn on production mode when deploying for production.\n" +
-          "See more tips at https://vuejs.org/guide/deployment.html"
-        );
-      }
     }, 0);
   }
 
@@ -13735,30 +12914,30 @@
     return router[direction](redirect, options);
   }
 
-  function preRoute (routePreRoute, to, from, resolve, reject) {
-    var router = this;
-    var preRoutes = [];
-    if (Array.isArray(routePreRoute)) {
-      preRoutes.push.apply(preRoutes, routePreRoute);
-    } else if (routePreRoute && typeof routePreRoute === 'function') {
-      preRoutes.push(routePreRoute);
+  function processQueue(router, routerQueue, routeQueue, to, from, resolve, reject) {
+    var queue = [];
+
+    if (Array.isArray(routeQueue)) {
+      queue.push.apply(queue, routeQueue);
+    } else if (routeQueue && typeof routeQueue === 'function') {
+      queue.push(routeQueue);
     }
-    if (router.params.preRoute) {
-      if (Array.isArray(router.params.preRoute)) {
-        preRoutes.push.apply(preRoutes, router.params.preRoute);
+    if (routerQueue) {
+      if (Array.isArray(routerQueue)) {
+        queue.push.apply(queue, routerQueue);
       } else {
-        preRoutes.push(router.params.preRoute);
+        queue.push(routerQueue);
       }
     }
 
     function next() {
-      if (preRoutes.length === 0) {
+      if (queue.length === 0) {
         resolve();
         return;
       }
-      var preRoute = preRoutes.shift();
+      var queueItem = queue.shift();
 
-      preRoute.call(
+      queueItem.call(
         router,
         to,
         from,
@@ -13771,6 +12950,53 @@
       );
     }
     next();
+  }
+
+  function processRouteQueue (to, from, resolve, reject) {
+    var router = this;
+    function enterNextRoute() {
+      if (to && to.route && (router.params.routesBeforeEnter || to.route.beforeEnter)) {
+        router.allowPageChange = false;
+        processQueue(
+          router,
+          router.params.routesBeforeEnter,
+          to.route.beforeEnter,
+          to,
+          from,
+          function () {
+            router.allowPageChange = true;
+            resolve();
+          },
+          function () {
+            reject();
+          }
+        );
+      } else {
+        resolve();
+      }
+    }
+    function leaveCurrentRoute() {
+      if (from && from.route && (router.params.routesBeforeLeave || from.route.beforeLeave)) {
+        router.allowPageChange = false;
+        processQueue(
+          router,
+          router.params.routesBeforeLeave,
+          from.route.beforeLeave,
+          to,
+          from,
+          function () {
+            router.allowPageChange = true;
+            enterNextRoute();
+          },
+          function () {
+            reject();
+          }
+        );
+      } else {
+        enterNextRoute();
+      }
+    }
+    leaveCurrentRoute();
   }
 
   function refreshPage() {
@@ -14385,24 +13611,17 @@
       router.allowPageChange = true;
     }
 
-    if (router.params.preRoute || route.route.preRoute) {
-      router.allowPageChange = false;
-      preRoute.call(
-        router,
-        route.route.preRoute,
-        route,
-        router.currentRoute,
-        function () {
-          router.allowPageChange = true;
-          resolve();
-        },
-        function () {
-          reject();
-        }
-      );
-    } else {
-      resolve();
-    }
+    processRouteQueue.call(
+      router,
+      route,
+      router.currentRoute,
+      function () {
+        resolve();
+      },
+      function () {
+        reject();
+      }
+    );
 
     // Return Router
     return router;
@@ -15203,9 +14422,10 @@
     return router;
   }
   function back() {
+    var ref;
+
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
-
     var navigateUrl;
     var navigateOptions;
     if (typeof args[0] === 'object') {
@@ -15218,7 +14438,7 @@
     var router = this;
     var app = router.app;
     if (!router.view) {
-      app.views.main.router.back(navigateUrl, navigateOptions);
+      (ref = app.views.main.router).back.apply(ref, args);
       return router;
     }
 
@@ -15263,13 +14483,30 @@
     }
     var $previousPage = router.$el.children('.page-current').prevAll('.page-previous').eq(0);
     if (!navigateOptions.force && $previousPage.length > 0) {
-      if (router.params.pushState && $previousPage[0].f7Page && router.history[router.history.length - 2] !== $previousPage[0].f7Page.route.url) {
-        router.back(router.history[router.history.length - 2], Utils.extend(navigateOptions, { force: true }));
+      if (router.params.pushState
+        && $previousPage[0].f7Page
+        && router.history[router.history.length - 2] !== $previousPage[0].f7Page.route.url
+      ) {
+        router.back(
+          router.history[router.history.length - 2],
+          Utils.extend(navigateOptions, { force: true })
+        );
         return router;
       }
-      router.loadBack({ el: $previousPage }, Utils.extend(navigateOptions, {
-        route: $previousPage[0].f7Page.route,
-      }));
+
+      var previousPageRoute = $previousPage[0].f7Page.route;
+      processRouteQueue.call(
+        router,
+        previousPageRoute,
+        router.currentRoute,
+        function () {
+          router.loadBack({ el: $previousPage }, Utils.extend(navigateOptions, {
+            route: previousPageRoute,
+          }));
+        },
+        function () {}
+      );
+
       return router;
     }
 
@@ -15365,23 +14602,20 @@
       router.allowPageChange = true;
     }
 
-    if (router.params.preRoute || route.route.preRoute) {
-      router.allowPageChange = false;
-      preRoute.call(
+    if (options.preload) {
+      resolve();
+    } else {
+      processRouteQueue.call(
         router,
-        route.route.preRoute,
         route,
         router.currentRoute,
         function () {
-          router.allowPageChange = true;
           resolve();
         },
         function () {
           reject();
         }
       );
-    } else {
-      resolve();
     }
 
     // Return Router
@@ -16912,13 +16146,14 @@
         // eslint-disable-next-line
         if (clickedLink.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
           var target = clickedLink.attr('target');
-          if (url && (target === '_system' || target === '_blank' || target === '_browser')) {
+          if (
+            url
+            && win.cordova
+            && win.cordova.InAppBrowser
+            && (target === '_system' || target === '_blank')
+          ) {
             e.preventDefault();
-            if (target !== '_browser' && win.cordova && win.cordova.InAppBrowser) {
-              win.cordova.InAppBrowser.open(url, target);
-            } else {
-              win.open(url, target);
-            }
+            win.cordova.InAppBrowser.open(url, target);
           }
           return;
         }
@@ -17356,6 +16591,9 @@
         // Delays
         iosPageLoadDelay: 0,
         materialPageLoadDelay: 0,
+        // Routes hooks
+        routesBeforeEnter: null,
+        routesBeforeLeave: null,
       },
     },
     static: {
@@ -39100,7 +38338,7 @@
   };
 
   /**
-   * Framework7 3.0.0-beta.15
+   * Framework7 3.0.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -39108,7 +38346,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: July 1, 2018
+   * Released on: July 5, 2018
    */
 
   // Install Core Modules & Components
@@ -40193,7 +39431,7 @@
     }
   };
 
-  var F7Badge = {
+  var f7Badge = {
     name: 'f7-badge',
     props: Object.assign({
       id: [String, Number]
@@ -40408,7 +39646,7 @@
     }
   };
 
-  var F7Icon = {
+  var f7Icon = {
     name: 'f7-icon',
     props: Object.assign({
       id: [String, Number],
@@ -40669,7 +39907,7 @@
       var iosThemeIcon = iconIfIos || iconIos;
 
       if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
-        iconEl = _h(F7Icon, {
+        iconEl = _h(f7Icon, {
           attrs: {
             material: iconMaterial,
             ion: iconIon,
@@ -40813,7 +40051,7 @@
 
   };
 
-  var F7CardContent = {
+  var f7CardContent = {
     name: 'f7-card-content',
     props: Object.assign({
       id: [String, Number],
@@ -40850,7 +40088,7 @@
     }
   };
 
-  var F7CardFooter = {
+  var f7CardFooter = {
     name: 'f7-card-footer',
     props: Object.assign({
       id: [String, Number]
@@ -40880,7 +40118,7 @@
     }
   };
 
-  var F7CardHeader = {
+  var f7CardHeader = {
     name: 'f7-card-header',
     props: Object.assign({
       id: [String, Number]
@@ -40944,11 +40182,11 @@
       }, Mixins.colorClasses(props));
 
       if (title || self.$slots && self.$slots.header) {
-        headerEl = _h(F7CardHeader, [title, this.$slots['header']]);
+        headerEl = _h(f7CardHeader, [title, this.$slots['header']]);
       }
 
       if (content || self.$slots && self.$slots.content) {
-        contentEl = _h(F7CardContent, {
+        contentEl = _h(f7CardContent, {
           attrs: {
             padding: padding
           }
@@ -40956,7 +40194,7 @@
       }
 
       if (footer || self.$slots && self.$slots.footer) {
-        footerEl = _h(F7CardFooter, [footer, this.$slots['footer']]);
+        footerEl = _h(f7CardFooter, [footer, this.$slots['footer']]);
       }
 
       return _h('div', {
@@ -41675,7 +40913,7 @@
     }
   };
 
-  var F7Toggle = {
+  var f7Toggle = {
     name: 'f7-toggle',
     props: Object.assign({
       id: [String, Number],
@@ -41793,7 +41031,7 @@
     }
   };
 
-  var F7Range = {
+  var f7Range = {
     name: 'f7-range',
     props: Object.assign({
       id: [String, Number],
@@ -41946,7 +41184,7 @@
     }
   };
 
-  var F7Input = {
+  var f7Input = {
     name: 'f7-input',
     props: Object.assign({
       type: String,
@@ -42107,7 +41345,7 @@
       } else if (slotsDefault && slotsDefault.length > 0 || !type) {
         inputEl = slotsDefault;
       } else if (type === 'toggle') {
-        inputEl = _h(F7Toggle, {
+        inputEl = _h(f7Toggle, {
           on: {
             change: self.onChangeBound
           },
@@ -42121,7 +41359,7 @@
           }
         });
       } else if (type === 'range') {
-        inputEl = _h(F7Range, {
+        inputEl = _h(f7Range, {
           on: {
             rangeChange: self.onChangeBound
           },
@@ -42355,7 +41593,7 @@
     }
   };
 
-  var F7Link = {
+  var f7Link = {
     name: 'f7-link',
     props: Object.assign({
       id: [String, Number],
@@ -42423,7 +41661,7 @@
       var iconBadgeEl;
 
       if (text) {
-        if (badge) { badgeEl = _h(F7Badge, {
+        if (badge) { badgeEl = _h(f7Badge, {
           attrs: {
             color: badgeColor
           }
@@ -42438,14 +41676,14 @@
 
       if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
         if (iconBadge) {
-          iconBadgeEl = _h(F7Badge, {
+          iconBadgeEl = _h(f7Badge, {
             attrs: {
               color: badgeColor
             }
           }, [iconBadge]);
         }
 
-        iconEl = _h(F7Icon, {
+        iconEl = _h(f7Icon, {
           attrs: {
             material: iconMaterial,
             f7: iconF7,
@@ -43115,7 +42353,7 @@
         }
 
         if (badge) {
-          badgeEl = _h(F7Badge, {
+          badgeEl = _h(f7Badge, {
             attrs: {
               color: badgeColor
             }
@@ -44714,7 +43952,7 @@
         class: 'toolbar-inner'
       }, [slotsInnerStart, _h('div', {
         class: 'messagebar-area'
-      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(F7Input, {
+      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(f7Input, {
         ref: 'area',
         on: {
           input: self.onInputBound,
@@ -44732,7 +43970,7 @@
           resizable: resizable,
           value: value
         }
-      }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(F7Link, {
+      }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(f7Link, {
         on: {
           click: self.onClickBound
         }
@@ -45243,7 +44481,7 @@
     }
   };
 
-  var F7NavLeft = {
+  var f7NavLeft = {
     name: 'f7-nav-left',
     props: Object.assign({
       id: [String, Number],
@@ -45266,7 +44504,7 @@
       var linkEl;
 
       if (backLink) {
-        linkEl = _h(F7Link, {
+        linkEl = _h(f7Link, {
           class: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
           on: {
             click: this.onBackClick.bind(this)
@@ -45348,7 +44586,7 @@
     }
   };
 
-  var F7NavTitle = {
+  var f7NavTitle = {
     name: 'f7-nav-title',
     props: Object.assign({
       id: [String, Number],
@@ -45440,7 +44678,7 @@
 
       if (inner) {
         if (backLink) {
-          leftEl = _h(F7NavLeft, {
+          leftEl = _h(f7NavLeft, {
             on: {
               backClick: self.onBackClick.bind(self)
             },
@@ -45453,7 +44691,7 @@
         }
 
         if (title || subtitle) {
-          titleEl = _h(F7NavTitle, {
+          titleEl = _h(f7NavTitle, {
             attrs: {
               title: title,
               subtitle: subtitle
@@ -45535,7 +44773,7 @@
     }
   };
 
-  var F7PageContent = {
+  var f7PageContent = {
     name: 'f7-page-content',
     props: Object.assign({
       id: [String, Number],
@@ -45870,7 +45108,7 @@
         }, [slotsFixed, slotsStatic, slotsDefault]);
       }
 
-      var pageContentEl = _h(F7PageContent, {
+      var pageContentEl = _h(f7PageContent, {
         attrs: {
           ptr: ptr,
           ptrDistance: ptrDistance,
@@ -48852,7 +48090,7 @@
   };
 
   /**
-   * Framework7 Vue 3.0.0-beta.15
+   * Framework7 Vue 3.0.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -48860,22 +48098,22 @@
    *
    * Released under the MIT License
    *
-   * Released on: July 1, 2018
+   * Released on: July 5, 2018
    */
 
   var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
-      f7NavLeft: F7NavLeft,
-      f7NavTitle: F7NavTitle,
+      f7NavLeft: f7NavLeft,
+      f7NavTitle: f7NavTitle,
       f7NavRight: f7NavRight,
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: F7Link,
+      f7Link: f7Link,
       f7Searchbar: f7Searchbar,
-      f7Icon: F7Icon,
+      f7Icon: f7Icon,
     },
   };
 
@@ -48886,7 +48124,7 @@
       f7Block: f7Block,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: F7Link,
+      f7Link: f7Link,
     },
   };
 
@@ -48898,7 +48136,7 @@
       f7Block: f7Block,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: F7Link,
+      f7Link: f7Link,
     },
   };
 
@@ -48934,7 +48172,7 @@
       f7Navbar: f7Navbar,
       f7BlockTitle: f7BlockTitle,
       f7Block: f7Block,
-      f7Link: F7Link,
+      f7Link: f7Link,
       f7Button: f7Button,
       f7Actions: f7Actions,
       f7ActionsGroup: f7ActionsGroup,
@@ -49378,11 +48616,11 @@
       f7Navbar: f7Navbar,
       f7NavRight: f7NavRight,
       f7Toolbar: f7Toolbar,
-      f7Link: F7Link,
-      f7Badge: F7Badge,
+      f7Link: f7Link,
+      f7Badge: f7Badge,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Icon: F7Icon,
+      f7Icon: f7Icon,
     },
   };
 
@@ -49490,7 +48728,7 @@
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
-      f7NavTitle: F7NavTitle,
+      f7NavTitle: f7NavTitle,
     },
     data: function data() {
       var date = new Date();
@@ -49597,12 +48835,12 @@
       f7Block: f7Block,
       f7BlockTitle: f7BlockTitle,
       f7Card: f7Card,
-      f7CardHeader: F7CardHeader,
-      f7CardContent: F7CardContent,
-      f7CardFooter: F7CardFooter,
+      f7CardHeader: f7CardHeader,
+      f7CardContent: f7CardContent,
+      f7CardFooter: f7CardFooter,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: F7Link,
+      f7Link: f7Link,
     },
   };
 
@@ -49625,7 +48863,7 @@
       f7BlockTitle: f7BlockTitle,
       f7Chip: f7Chip,
       f7Block: f7Block,
-      f7Icon: F7Icon,
+      f7Icon: f7Icon,
     },
     methods: {
       deleteChip: function deleteChip(e) {
@@ -49665,8 +48903,8 @@
       f7Navbar: f7Navbar,
       f7Page: f7Page,
       f7BlockTitle: f7BlockTitle,
-      f7Link: F7Link,
-      f7Icon: F7Icon,
+      f7Link: f7Link,
+      f7Icon: f7Icon,
     },
   };
 
@@ -49787,13 +49025,13 @@
 
   var Fab$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button","back-link":"Back"}}),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"right-top"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"left"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"right-bottom"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"top"}},[_c('f7-fab-button',{attrs:{"label":"Action 1"}},[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',{attrs:{"label":"Action 2"}},[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',{attrs:{"label":"Third Action"}},[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"left-bottom"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"top"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"left-top"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"bottom"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"center-center"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"center"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("4")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"center-bottom","text":"Create"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Fab: f7Fab, f7FabButtons: f7FabButtons, f7FabButton: f7FabButton, f7Icon: F7Icon, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Fab: f7Fab, f7FabButtons: f7FabButtons, f7FabButton: f7FabButton, f7Icon: f7Icon, f7Block: f7Block,
     },
   };
 
   var FabMorph = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button Morph","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{staticClass:"fab-morph-target",attrs:{"tabbar":"","labels":"","bottom-md":""}},[_c('f7-link',{attrs:{"tab-link":"","tab-link-active":"","icon-ios":"f7:email_fill","icon-md":"material:email","text":"Inbox"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:today","icon-md":"material:today","text":"Calendar"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:cloud","icon-md":"material:file_upload","text":"Upload"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"right-bottom","morph-to":".toolbar.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"left-bottom","morph-to":".demo-fab-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"center-bottom","morph-to":".demo-fab-fullscreen-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('div',{staticClass:"list links-list demo-fab-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])]),_vm._v(" "),_c('div',{staticClass:"demo-fab-fullscreen-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('f7-block-title',[_vm._v("Choose Something")]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])])],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7Toolbar: f7Toolbar, f7Fab: f7Fab, f7Icon: F7Icon, f7Link: F7Link,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7Toolbar: f7Toolbar, f7Fab: f7Fab, f7Icon: f7Icon, f7Link: f7Link,
     },
   };
 
@@ -49905,9 +49143,9 @@
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Icon: F7Icon,
+      f7Icon: f7Icon,
       f7Label: f7Label,
-      f7Input: F7Input,
+      f7Input: f7Input,
     },
   };
 
@@ -49931,8 +49169,8 @@
       f7ListItemCell: f7ListItemCell,
       f7ListItemRow: f7ListItemRow,
       f7BlockFooter: f7BlockFooter,
-      f7Icon: F7Icon,
-      f7Toggle: F7Toggle,
+      f7Icon: f7Icon,
+      f7Toggle: f7Toggle,
     },
   };
 
@@ -49951,9 +49189,9 @@
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
-      f7Link: F7Link,
+      f7Link: f7Link,
       f7LoginScreen: f7LoginScreen,
-      f7Input: F7Input,
+      f7Input: f7Input,
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7Block: f7Block,
@@ -49989,7 +49227,7 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7Label: f7Label,
-      f7Input: F7Input,
+      f7Input: f7Input,
       f7ListButton: f7ListButton,
       f7BlockFooter: f7BlockFooter,
     },
@@ -50023,7 +49261,7 @@
       f7MessagebarAttachment: f7MessagebarAttachment,
       f7MessagebarSheet: f7MessagebarSheet,
       f7MessagebarSheetImage: f7MessagebarSheetImage,
-      f7Link: F7Link,
+      f7Link: f7Link,
     },
     data: function data() {
       return {
@@ -50238,7 +49476,7 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7NavRight: f7NavRight,
-      f7Link: F7Link,
+      f7Link: f7Link,
     },
   };
 
@@ -50575,7 +49813,7 @@
       f7Popup: f7Popup,
       f7Block: f7Block,
       f7NavRight: f7NavRight,
-      f7Link: F7Link,
+      f7Link: f7Link,
       f7Button: f7Button,
     },
     data: function data() {
@@ -50612,7 +49850,7 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7Block: f7Block,
-      f7Link: F7Link,
+      f7Link: f7Link,
       f7Button: f7Button,
     },
   };
@@ -50780,11 +50018,11 @@
       f7Navbar: f7Navbar,
       f7Page: f7Page,
       f7BlockTitle: f7BlockTitle,
-      f7Range: F7Range,
+      f7Range: f7Range,
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7ListItemCell: f7ListItemCell,
-      f7Icon: F7Icon,
+      f7Icon: f7Icon,
     },
     data: function data() {
       return {
@@ -50819,7 +50057,7 @@
       f7Subnavbar: f7Subnavbar,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: F7Link,
+      f7Link: f7Link,
       f7NavRight: f7NavRight,
     },
   };
@@ -50829,11 +50067,11 @@
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7Sheet: f7Sheet,
-      f7PageContent: F7PageContent,
+      f7PageContent: f7PageContent,
       f7Toolbar: f7Toolbar,
       f7Block: f7Block,
       f7Button: f7Button,
-      f7Link: F7Link,
+      f7Link: f7Link,
       f7Row: f7Row,
     },
     data: function data() {
@@ -50887,8 +50125,8 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7NavRight: f7NavRight,
-      f7Link: F7Link,
-      f7Icon: F7Icon,
+      f7Link: f7Link,
+      f7Icon: f7Icon,
     },
   };
 
@@ -51133,7 +50371,7 @@
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Icon: F7Icon,
+      f7Icon: f7Icon,
       f7SwipeoutActions: f7SwipeoutActions,
       f7SwipeoutButton: f7SwipeoutButton,
       f7Block: f7Block,
@@ -51200,25 +50438,25 @@
 
   var TabsStatic = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
     },
   };
 
   var TabsAnimated = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
     },
   };
 
   var TabsSwipeable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
     },
   };
 
   var TabsRoutable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
     },
   };
 
@@ -51360,13 +50598,13 @@
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Toggle: F7Toggle,
+      f7Toggle: f7Toggle,
     },
   };
 
   var ToolbarTabbar = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),(_vm.$theme.md)?_c('f7-block-title',[_vm._v("Toolbar Position")]):_vm._e(),_vm._v(" "),(_vm.$theme.md)?_c('f7-block',[_c('p',[_vm._v("Material (MD) theme toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)]):_vm._e()],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: F7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: f7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
@@ -51377,7 +50615,7 @@
 
   var Tabbar = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
@@ -51388,7 +50626,7 @@
 
   var TabbarLabels = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:email_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:today_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
@@ -51399,7 +50637,7 @@
 
   var TabbarScrollable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])})),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}))],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
     data: function data() {
       return {
@@ -51415,7 +50653,7 @@
 
   var ToolbarHideScroll = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom-md":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: F7Link, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: f7Link, f7Block: f7Block,
     },
   };
 
@@ -51424,8 +50662,8 @@
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7NavRight: f7NavRight,
-      f7Link: F7Link,
-      f7Icon: F7Icon,
+      f7Link: f7Link,
+      f7Icon: f7Icon,
       f7Block: f7Block,
       f7BlockTitle: f7BlockTitle,
       f7Button: f7Button,
@@ -51671,14 +50909,6 @@
 
   var validateFormat = function validateFormat(format) {};
 
-  {
-    validateFormat = function validateFormat(format) {
-      if (format === undefined) {
-        throw new Error('invariant requires an error message argument');
-      }
-    };
-  }
-
   function invariant(condition, format, a, b, c, d, e, f) {
     validateFormat(format);
 
@@ -51711,10 +50941,6 @@
    */
 
   var emptyObject$1 = {};
-
-  {
-    Object.freeze(emptyObject$1);
-  }
 
   var emptyObject_1 = emptyObject$1;
 
@@ -51753,1589 +50979,30 @@
 
   var emptyFunction_1 = emptyFunction;
 
-  /**
-   * Similar to invariant but only logs a warning if the condition is not met.
-   * This can be used to log issues in development environments in critical
-   * paths. Removing the logging code for production environments will keep the
-   * same logic and follow the same code paths.
-   */
-
-  var warning = emptyFunction_1;
-
-  {
-    var printWarning = function printWarning(format) {
-      var arguments$1 = arguments;
-
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments$1[_key];
-      }
-
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    };
-
-    warning = function warning(condition, format) {
-      var arguments$1 = arguments;
-
-      if (format === undefined) {
-        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-      }
-
-      if (format.indexOf('Failed Composite propType: ') === 0) {
-        return; // Ignore CompositeComponent proptype check.
-      }
-
-      if (!condition) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          args[_key2 - 2] = arguments$1[_key2];
-        }
-
-        printWarning.apply(undefined, [format].concat(args));
-      }
-    };
-  }
-
-  var warning_1 = warning;
-
-  /**
-   * Copyright (c) 2013-present, Facebook, Inc.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE file in the root directory of this source tree.
-   */
-
-  var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
-
-  var ReactPropTypesSecret_1 = ReactPropTypesSecret;
-
-  {
-    var invariant$1 = invariant_1;
-    var warning$1 = warning_1;
-    var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
-    var loggedTypeFailures = {};
-  }
-
-  /**
-   * Assert that the values match with the type specs.
-   * Error messages are memorized and will only be shown once.
-   *
-   * @param {object} typeSpecs Map of name to a ReactPropType
-   * @param {object} values Runtime values that need to be type-checked
-   * @param {string} location e.g. "prop", "context", "child context"
-   * @param {string} componentName Name of the component for error messages.
-   * @param {?Function} getStack Returns the component stack.
-   * @private
-   */
-  function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
-    {
-      for (var typeSpecName in typeSpecs) {
-        if (typeSpecs.hasOwnProperty(typeSpecName)) {
-          var error;
-          // Prop type validation may throw. In case they do, we don't want to
-          // fail the render phase where it didn't fail before. So we log it.
-          // After these have been cleaned up, we'll let them throw.
-          try {
-            // This is intentionally an invariant that gets caught. It's the same
-            // behavior as without this statement except with a better message.
-            invariant$1(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'the `prop-types` package, but received `%s`.', componentName || 'React class', location, typeSpecName, typeof typeSpecs[typeSpecName]);
-            error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$1);
-          } catch (ex) {
-            error = ex;
-          }
-          warning$1(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
-          if (error instanceof Error && !(error.message in loggedTypeFailures)) {
-            // Only monitor this failure once because there tends to be a lot of the
-            // same error.
-            loggedTypeFailures[error.message] = true;
-
-            var stack = getStack ? getStack() : '';
-
-            warning$1(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
-          }
-        }
-      }
-    }
-  }
-
-  var checkPropTypes_1 = checkPropTypes;
-
-  var react_development = createCommonjsModule(function (module) {
-
-
-
-  {
-    (function() {
-
-  var _assign = objectAssign;
-  var invariant = invariant_1;
-  var emptyObject = emptyObject_1;
-  var warning = warning_1;
-  var emptyFunction = emptyFunction_1;
-  var checkPropTypes = checkPropTypes_1;
-
-  // TODO: this is special because it gets imported during build.
-
-  var ReactVersion = '16.4.0';
-
-  // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
-  // nor polyfill, then a plain number is used for performance.
-  var hasSymbol = typeof Symbol === 'function' && Symbol.for;
-
-  var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
-  var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
-  var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
-  var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
-  var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
-  var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
-  var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace;
-  var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
-  var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
-  var REACT_TIMEOUT_TYPE = hasSymbol ? Symbol.for('react.timeout') : 0xead1;
-
-  var MAYBE_ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-  var FAUX_ITERATOR_SYMBOL = '@@iterator';
-
-  function getIteratorFn(maybeIterable) {
-    if (maybeIterable === null || typeof maybeIterable === 'undefined') {
-      return null;
-    }
-    var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
-    if (typeof maybeIterator === 'function') {
-      return maybeIterator;
-    }
-    return null;
-  }
-  // Helps identify side effects in begin-phase lifecycle hooks and setState reducers:
-
-
-  // In some cases, StrictMode should also double-render lifecycles.
-  // This can be confusing for tests though,
-  // And it can be bad for performance in production.
-  // This feature flag can be used to control the behavior:
-
-
-  // To preserve the "Pause on caught exceptions" behavior of the debugger, we
-  // replay the begin phase of a failed component inside invokeGuardedCallback.
-
-
-  // Warn about deprecated, async-unsafe lifecycles; relates to RFC #6:
-
-
-  // Warn about legacy context API
-
-
-  // Gather advanced timing metrics for Profiler subtrees.
-
-
-  // Fires getDerivedStateFromProps for state *or* props changes
-
-
-  // Only used in www builds.
-
-  /**
-   * Forked from fbjs/warning:
-   * https://github.com/facebook/fbjs/blob/e66ba20ad5be433eb54423f2b097d829324d9de6/packages/fbjs/src/__forks__/warning.js
-   *
-   * Only change is we use console.warn instead of console.error,
-   * and do nothing when 'console' is not supported.
-   * This really simplifies the code.
-   * ---
-   * Similar to invariant but only logs a warning if the condition is not met.
-   * This can be used to log issues in development environments in critical
-   * paths. Removing the logging code for production environments will keep the
-   * same logic and follow the same code paths.
-   */
-
-  var lowPriorityWarning = function () {};
-
-  {
-    var printWarning = function (format) {
-      var arguments$1 = arguments;
-
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments$1[_key];
-      }
-
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.warn(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    };
-
-    lowPriorityWarning = function (condition, format) {
-      var arguments$1 = arguments;
-
-      if (format === undefined) {
-        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-      }
-      if (!condition) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          args[_key2 - 2] = arguments$1[_key2];
-        }
-
-        printWarning.apply(undefined, [format].concat(args));
-      }
-    };
-  }
-
-  var lowPriorityWarning$1 = lowPriorityWarning;
-
-  var didWarnStateUpdateForUnmountedComponent = {};
-
-  function warnNoop(publicInstance, callerName) {
-    {
-      var _constructor = publicInstance.constructor;
-      var componentName = _constructor && (_constructor.displayName || _constructor.name) || 'ReactClass';
-      var warningKey = componentName + '.' + callerName;
-      if (didWarnStateUpdateForUnmountedComponent[warningKey]) {
-        return;
-      }
-      warning(false, "Can't call %s on a component that is not yet mounted. " + 'This is a no-op, but it might indicate a bug in your application. ' + 'Instead, assign to `this.state` directly or define a `state = {};` ' + 'class property with the desired state in the %s component.', callerName, componentName);
-      didWarnStateUpdateForUnmountedComponent[warningKey] = true;
-    }
-  }
-
-  /**
-   * This is the abstract API for an update queue.
-   */
-  var ReactNoopUpdateQueue = {
-    /**
-     * Checks whether or not this composite component is mounted.
-     * @param {ReactClass} publicInstance The instance we want to test.
-     * @return {boolean} True if mounted, false otherwise.
-     * @protected
-     * @final
-     */
-    isMounted: function (publicInstance) {
-      return false;
-    },
-
-    /**
-     * Forces an update. This should only be invoked when it is known with
-     * certainty that we are **not** in a DOM transaction.
-     *
-     * You may want to call this when you know that some deeper aspect of the
-     * component's state has changed but `setState` was not called.
-     *
-     * This will not invoke `shouldComponentUpdate`, but it will invoke
-     * `componentWillUpdate` and `componentDidUpdate`.
-     *
-     * @param {ReactClass} publicInstance The instance that should rerender.
-     * @param {?function} callback Called after component is updated.
-     * @param {?string} callerName name of the calling function in the public API.
-     * @internal
-     */
-    enqueueForceUpdate: function (publicInstance, callback, callerName) {
-      warnNoop(publicInstance, 'forceUpdate');
-    },
-
-    /**
-     * Replaces all of the state. Always use this or `setState` to mutate state.
-     * You should treat `this.state` as immutable.
-     *
-     * There is no guarantee that `this.state` will be immediately updated, so
-     * accessing `this.state` after calling this method may return the old value.
-     *
-     * @param {ReactClass} publicInstance The instance that should rerender.
-     * @param {object} completeState Next state.
-     * @param {?function} callback Called after component is updated.
-     * @param {?string} callerName name of the calling function in the public API.
-     * @internal
-     */
-    enqueueReplaceState: function (publicInstance, completeState, callback, callerName) {
-      warnNoop(publicInstance, 'replaceState');
-    },
-
-    /**
-     * Sets a subset of the state. This only exists because _pendingState is
-     * internal. This provides a merging strategy that is not available to deep
-     * properties which is confusing. TODO: Expose pendingState or don't use it
-     * during the merge.
-     *
-     * @param {ReactClass} publicInstance The instance that should rerender.
-     * @param {object} partialState Next partial state to be merged with state.
-     * @param {?function} callback Called after component is updated.
-     * @param {?string} Name of the calling function in the public API.
-     * @internal
-     */
-    enqueueSetState: function (publicInstance, partialState, callback, callerName) {
-      warnNoop(publicInstance, 'setState');
-    }
-  };
-
-  /**
-   * Base class helpers for the updating state of a component.
-   */
-  function Component(props, context, updater) {
-    this.props = props;
-    this.context = context;
-    this.refs = emptyObject;
-    // We initialize the default updater but the real one gets injected by the
-    // renderer.
-    this.updater = updater || ReactNoopUpdateQueue;
-  }
-
-  Component.prototype.isReactComponent = {};
-
-  /**
-   * Sets a subset of the state. Always use this to mutate
-   * state. You should treat `this.state` as immutable.
-   *
-   * There is no guarantee that `this.state` will be immediately updated, so
-   * accessing `this.state` after calling this method may return the old value.
-   *
-   * There is no guarantee that calls to `setState` will run synchronously,
-   * as they may eventually be batched together.  You can provide an optional
-   * callback that will be executed when the call to setState is actually
-   * completed.
-   *
-   * When a function is provided to setState, it will be called at some point in
-   * the future (not synchronously). It will be called with the up to date
-   * component arguments (state, props, context). These values can be different
-   * from this.* because your function may be called after receiveProps but before
-   * shouldComponentUpdate, and this new state, props, and context will not yet be
-   * assigned to this.
-   *
-   * @param {object|function} partialState Next partial state or function to
-   *        produce next partial state to be merged with current state.
-   * @param {?function} callback Called after state is updated.
-   * @final
-   * @protected
-   */
-  Component.prototype.setState = function (partialState, callback) {
-    !(typeof partialState === 'object' || typeof partialState === 'function' || partialState == null) ? invariant(false, 'setState(...): takes an object of state variables to update or a function which returns an object of state variables.') : void 0;
-    this.updater.enqueueSetState(this, partialState, callback, 'setState');
-  };
-
-  /**
-   * Forces an update. This should only be invoked when it is known with
-   * certainty that we are **not** in a DOM transaction.
-   *
-   * You may want to call this when you know that some deeper aspect of the
-   * component's state has changed but `setState` was not called.
-   *
-   * This will not invoke `shouldComponentUpdate`, but it will invoke
-   * `componentWillUpdate` and `componentDidUpdate`.
-   *
-   * @param {?function} callback Called after update is complete.
-   * @final
-   * @protected
-   */
-  Component.prototype.forceUpdate = function (callback) {
-    this.updater.enqueueForceUpdate(this, callback, 'forceUpdate');
-  };
-
-  /**
-   * Deprecated APIs. These APIs used to exist on classic React classes but since
-   * we would like to deprecate them, we're not going to move them over to this
-   * modern base class. Instead, we define a getter that warns if it's accessed.
-   */
-  {
-    var deprecatedAPIs = {
-      isMounted: ['isMounted', 'Instead, make sure to clean up subscriptions and pending requests in ' + 'componentWillUnmount to prevent memory leaks.'],
-      replaceState: ['replaceState', 'Refactor your code to use setState instead (see ' + 'https://github.com/facebook/react/issues/3236).']
-    };
-    var defineDeprecationWarning = function (methodName, info) {
-      Object.defineProperty(Component.prototype, methodName, {
-        get: function () {
-          lowPriorityWarning$1(false, '%s(...) is deprecated in plain JavaScript React classes. %s', info[0], info[1]);
-          return undefined;
-        }
-      });
-    };
-    for (var fnName in deprecatedAPIs) {
-      if (deprecatedAPIs.hasOwnProperty(fnName)) {
-        defineDeprecationWarning(fnName, deprecatedAPIs[fnName]);
-      }
-    }
-  }
-
-  function ComponentDummy() {}
-  ComponentDummy.prototype = Component.prototype;
-
-  /**
-   * Convenience component with default shallow equality check for sCU.
-   */
-  function PureComponent(props, context, updater) {
-    this.props = props;
-    this.context = context;
-    this.refs = emptyObject;
-    this.updater = updater || ReactNoopUpdateQueue;
-  }
-
-  var pureComponentPrototype = PureComponent.prototype = new ComponentDummy();
-  pureComponentPrototype.constructor = PureComponent;
-  // Avoid an extra prototype jump for these methods.
-  _assign(pureComponentPrototype, Component.prototype);
-  pureComponentPrototype.isPureReactComponent = true;
-
-  // an immutable object with a single mutable value
-  function createRef() {
-    var refObject = {
-      current: null
-    };
-    {
-      Object.seal(refObject);
-    }
-    return refObject;
-  }
-
-  /**
-   * Keeps track of the current owner.
-   *
-   * The current owner is the component who should own any components that are
-   * currently being constructed.
-   */
-  var ReactCurrentOwner = {
-    /**
-     * @internal
-     * @type {ReactComponent}
-     */
-    current: null
-  };
-
-  var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-  var RESERVED_PROPS = {
-    key: true,
-    ref: true,
-    __self: true,
-    __source: true
-  };
-
-  var specialPropKeyWarningShown = void 0;
-  var specialPropRefWarningShown = void 0;
-
-  function hasValidRef(config) {
-    {
-      if (hasOwnProperty.call(config, 'ref')) {
-        var getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
-        if (getter && getter.isReactWarning) {
-          return false;
-        }
-      }
-    }
-    return config.ref !== undefined;
-  }
-
-  function hasValidKey(config) {
-    {
-      if (hasOwnProperty.call(config, 'key')) {
-        var getter = Object.getOwnPropertyDescriptor(config, 'key').get;
-        if (getter && getter.isReactWarning) {
-          return false;
-        }
-      }
-    }
-    return config.key !== undefined;
-  }
-
-  function defineKeyPropWarningGetter(props, displayName) {
-    var warnAboutAccessingKey = function () {
-      if (!specialPropKeyWarningShown) {
-        specialPropKeyWarningShown = true;
-        warning(false, '%s: `key` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName);
-      }
-    };
-    warnAboutAccessingKey.isReactWarning = true;
-    Object.defineProperty(props, 'key', {
-      get: warnAboutAccessingKey,
-      configurable: true
-    });
-  }
-
-  function defineRefPropWarningGetter(props, displayName) {
-    var warnAboutAccessingRef = function () {
-      if (!specialPropRefWarningShown) {
-        specialPropRefWarningShown = true;
-        warning(false, '%s: `ref` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName);
-      }
-    };
-    warnAboutAccessingRef.isReactWarning = true;
-    Object.defineProperty(props, 'ref', {
-      get: warnAboutAccessingRef,
-      configurable: true
-    });
-  }
-
-  /**
-   * Factory method to create a new React element. This no longer adheres to
-   * the class pattern, so do not use new to call it. Also, no instanceof check
-   * will work. Instead test $$typeof field against Symbol.for('react.element') to check
-   * if something is a React Element.
-   *
-   * @param {*} type
-   * @param {*} key
-   * @param {string|object} ref
-   * @param {*} self A *temporary* helper to detect places where `this` is
-   * different from the `owner` when React.createElement is called, so that we
-   * can warn. We want to get rid of owner and replace string `ref`s with arrow
-   * functions, and as long as `this` and owner are the same, there will be no
-   * change in behavior.
-   * @param {*} source An annotation object (added by a transpiler or otherwise)
-   * indicating filename, line number, and/or other information.
-   * @param {*} owner
-   * @param {*} props
-   * @internal
-   */
-  var ReactElement = function (type, key, ref, self, source, owner, props) {
-    var element = {
-      // This tag allows us to uniquely identify this as a React Element
-      $$typeof: REACT_ELEMENT_TYPE,
-
-      // Built-in properties that belong on the element
-      type: type,
-      key: key,
-      ref: ref,
-      props: props,
-
-      // Record the component responsible for creating this element.
-      _owner: owner
-    };
-
-    {
-      // The validation flag is currently mutative. We put it on
-      // an external backing store so that we can freeze the whole object.
-      // This can be replaced with a WeakMap once they are implemented in
-      // commonly used development environments.
-      element._store = {};
-
-      // To make comparing ReactElements easier for testing purposes, we make
-      // the validation flag non-enumerable (where possible, which should
-      // include every environment we run tests in), so the test framework
-      // ignores it.
-      Object.defineProperty(element._store, 'validated', {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: false
-      });
-      // self and source are DEV only properties.
-      Object.defineProperty(element, '_self', {
-        configurable: false,
-        enumerable: false,
-        writable: false,
-        value: self
-      });
-      // Two elements created in two different places should be considered
-      // equal for testing purposes and therefore we hide it from enumeration.
-      Object.defineProperty(element, '_source', {
-        configurable: false,
-        enumerable: false,
-        writable: false,
-        value: source
-      });
-      if (Object.freeze) {
-        Object.freeze(element.props);
-        Object.freeze(element);
-      }
-    }
-
-    return element;
-  };
-
-  /**
-   * Create and return a new ReactElement of the given type.
-   * See https://reactjs.org/docs/react-api.html#createelement
-   */
-  function createElement(type, config, children) {
-    var arguments$1 = arguments;
-
-    var propName = void 0;
-
-    // Reserved names are extracted
-    var props = {};
-
-    var key = null;
-    var ref = null;
-    var self = null;
-    var source = null;
-
-    if (config != null) {
-      if (hasValidRef(config)) {
-        ref = config.ref;
-      }
-      if (hasValidKey(config)) {
-        key = '' + config.key;
-      }
-
-      self = config.__self === undefined ? null : config.__self;
-      source = config.__source === undefined ? null : config.__source;
-      // Remaining properties are added to a new props object
-      for (propName in config) {
-        if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-          props[propName] = config[propName];
-        }
-      }
-    }
-
-    // Children can be more than one argument, and those are transferred onto
-    // the newly allocated props object.
-    var childrenLength = arguments.length - 2;
-    if (childrenLength === 1) {
-      props.children = children;
-    } else if (childrenLength > 1) {
-      var childArray = Array(childrenLength);
-      for (var i = 0; i < childrenLength; i++) {
-        childArray[i] = arguments$1[i + 2];
-      }
-      {
-        if (Object.freeze) {
-          Object.freeze(childArray);
-        }
-      }
-      props.children = childArray;
-    }
-
-    // Resolve default props
-    if (type && type.defaultProps) {
-      var defaultProps = type.defaultProps;
-      for (propName in defaultProps) {
-        if (props[propName] === undefined) {
-          props[propName] = defaultProps[propName];
-        }
-      }
-    }
-    {
-      if (key || ref) {
-        if (typeof props.$$typeof === 'undefined' || props.$$typeof !== REACT_ELEMENT_TYPE) {
-          var displayName = typeof type === 'function' ? type.displayName || type.name || 'Unknown' : type;
-          if (key) {
-            defineKeyPropWarningGetter(props, displayName);
-          }
-          if (ref) {
-            defineRefPropWarningGetter(props, displayName);
-          }
-        }
-      }
-    }
-    return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
-  }
-
-  /**
-   * Return a function that produces ReactElements of a given type.
-   * See https://reactjs.org/docs/react-api.html#createfactory
-   */
-
-
-  function cloneAndReplaceKey(oldElement, newKey) {
-    var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
-
-    return newElement;
-  }
-
-  /**
-   * Clone and return a new ReactElement using element as the starting point.
-   * See https://reactjs.org/docs/react-api.html#cloneelement
-   */
-  function cloneElement(element, config, children) {
-    var arguments$1 = arguments;
-
-    !!(element === null || element === undefined) ? invariant(false, 'React.cloneElement(...): The argument must be a React element, but you passed %s.', element) : void 0;
-
-    var propName = void 0;
-
-    // Original props are copied
-    var props = _assign({}, element.props);
-
-    // Reserved names are extracted
-    var key = element.key;
-    var ref = element.ref;
-    // Self is preserved since the owner is preserved.
-    var self = element._self;
-    // Source is preserved since cloneElement is unlikely to be targeted by a
-    // transpiler, and the original source is probably a better indicator of the
-    // true owner.
-    var source = element._source;
-
-    // Owner will be preserved, unless ref is overridden
-    var owner = element._owner;
-
-    if (config != null) {
-      if (hasValidRef(config)) {
-        // Silently steal the ref from the parent.
-        ref = config.ref;
-        owner = ReactCurrentOwner.current;
-      }
-      if (hasValidKey(config)) {
-        key = '' + config.key;
-      }
-
-      // Remaining properties override existing props
-      var defaultProps = void 0;
-      if (element.type && element.type.defaultProps) {
-        defaultProps = element.type.defaultProps;
-      }
-      for (propName in config) {
-        if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-          if (config[propName] === undefined && defaultProps !== undefined) {
-            // Resolve default props
-            props[propName] = defaultProps[propName];
-          } else {
-            props[propName] = config[propName];
-          }
-        }
-      }
-    }
-
-    // Children can be more than one argument, and those are transferred onto
-    // the newly allocated props object.
-    var childrenLength = arguments.length - 2;
-    if (childrenLength === 1) {
-      props.children = children;
-    } else if (childrenLength > 1) {
-      var childArray = Array(childrenLength);
-      for (var i = 0; i < childrenLength; i++) {
-        childArray[i] = arguments$1[i + 2];
-      }
-      props.children = childArray;
-    }
-
-    return ReactElement(element.type, key, ref, self, source, owner, props);
-  }
-
-  /**
-   * Verifies the object is a ReactElement.
-   * See https://reactjs.org/docs/react-api.html#isvalidelement
-   * @param {?object} object
-   * @return {boolean} True if `object` is a valid component.
-   * @final
-   */
-  function isValidElement(object) {
-    return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-  }
-
-  var ReactDebugCurrentFrame = {};
-
-  {
-    // Component that is being worked on
-    ReactDebugCurrentFrame.getCurrentStack = null;
-
-    ReactDebugCurrentFrame.getStackAddendum = function () {
-      var impl = ReactDebugCurrentFrame.getCurrentStack;
-      if (impl) {
-        return impl();
-      }
-      return null;
-    };
-  }
-
-  var SEPARATOR = '.';
-  var SUBSEPARATOR = ':';
-
-  /**
-   * Escape and wrap key so it is safe to use as a reactid
-   *
-   * @param {string} key to be escaped.
-   * @return {string} the escaped key.
-   */
-  function escape(key) {
-    var escapeRegex = /[=:]/g;
-    var escaperLookup = {
-      '=': '=0',
-      ':': '=2'
-    };
-    var escapedString = ('' + key).replace(escapeRegex, function (match) {
-      return escaperLookup[match];
-    });
-
-    return '$' + escapedString;
-  }
-
-  /**
-   * TODO: Test that a single child and an array with one item have the same key
-   * pattern.
-   */
-
-  var didWarnAboutMaps = false;
-
-  var userProvidedKeyEscapeRegex = /\/+/g;
-  function escapeUserProvidedKey(text) {
-    return ('' + text).replace(userProvidedKeyEscapeRegex, '$&/');
-  }
-
-  var POOL_SIZE = 10;
-  var traverseContextPool = [];
-  function getPooledTraverseContext(mapResult, keyPrefix, mapFunction, mapContext) {
-    if (traverseContextPool.length) {
-      var traverseContext = traverseContextPool.pop();
-      traverseContext.result = mapResult;
-      traverseContext.keyPrefix = keyPrefix;
-      traverseContext.func = mapFunction;
-      traverseContext.context = mapContext;
-      traverseContext.count = 0;
-      return traverseContext;
-    } else {
-      return {
-        result: mapResult,
-        keyPrefix: keyPrefix,
-        func: mapFunction,
-        context: mapContext,
-        count: 0
-      };
-    }
-  }
-
-  function releaseTraverseContext(traverseContext) {
-    traverseContext.result = null;
-    traverseContext.keyPrefix = null;
-    traverseContext.func = null;
-    traverseContext.context = null;
-    traverseContext.count = 0;
-    if (traverseContextPool.length < POOL_SIZE) {
-      traverseContextPool.push(traverseContext);
-    }
-  }
-
-  /**
-   * @param {?*} children Children tree container.
-   * @param {!string} nameSoFar Name of the key path so far.
-   * @param {!function} callback Callback to invoke with each child found.
-   * @param {?*} traverseContext Used to pass information throughout the traversal
-   * process.
-   * @return {!number} The number of children in this subtree.
-   */
-  function traverseAllChildrenImpl(children, nameSoFar, callback, traverseContext) {
-    var type = typeof children;
-
-    if (type === 'undefined' || type === 'boolean') {
-      // All of the above are perceived as null.
-      children = null;
-    }
-
-    var invokeCallback = false;
-
-    if (children === null) {
-      invokeCallback = true;
-    } else {
-      switch (type) {
-        case 'string':
-        case 'number':
-          invokeCallback = true;
-          break;
-        case 'object':
-          switch (children.$$typeof) {
-            case REACT_ELEMENT_TYPE:
-            case REACT_PORTAL_TYPE:
-              invokeCallback = true;
-          }
-      }
-    }
-
-    if (invokeCallback) {
-      callback(traverseContext, children,
-      // If it's the only child, treat the name as if it was wrapped in an array
-      // so that it's consistent if the number of children grows.
-      nameSoFar === '' ? SEPARATOR + getComponentKey(children, 0) : nameSoFar);
-      return 1;
-    }
-
-    var child = void 0;
-    var nextName = void 0;
-    var subtreeCount = 0; // Count of children found in the current subtree.
-    var nextNamePrefix = nameSoFar === '' ? SEPARATOR : nameSoFar + SUBSEPARATOR;
-
-    if (Array.isArray(children)) {
-      for (var i = 0; i < children.length; i++) {
-        child = children[i];
-        nextName = nextNamePrefix + getComponentKey(child, i);
-        subtreeCount += traverseAllChildrenImpl(child, nextName, callback, traverseContext);
-      }
-    } else {
-      var iteratorFn = getIteratorFn(children);
-      if (typeof iteratorFn === 'function') {
-        {
-          // Warn about using Maps as children
-          if (iteratorFn === children.entries) {
-            !didWarnAboutMaps ? warning(false, 'Using Maps as children is unsupported and will likely yield ' + 'unexpected results. Convert it to a sequence/iterable of keyed ' + 'ReactElements instead.%s', ReactDebugCurrentFrame.getStackAddendum()) : void 0;
-            didWarnAboutMaps = true;
-          }
-        }
-
-        var iterator = iteratorFn.call(children);
-        var step = void 0;
-        var ii = 0;
-        while (!(step = iterator.next()).done) {
-          child = step.value;
-          nextName = nextNamePrefix + getComponentKey(child, ii++);
-          subtreeCount += traverseAllChildrenImpl(child, nextName, callback, traverseContext);
-        }
-      } else if (type === 'object') {
-        var addendum = '';
-        {
-          addendum = ' If you meant to render a collection of children, use an array ' + 'instead.' + ReactDebugCurrentFrame.getStackAddendum();
-        }
-        var childrenString = '' + children;
-        invariant(false, 'Objects are not valid as a React child (found: %s).%s', childrenString === '[object Object]' ? 'object with keys {' + Object.keys(children).join(', ') + '}' : childrenString, addendum);
-      }
-    }
-
-    return subtreeCount;
-  }
-
-  /**
-   * Traverses children that are typically specified as `props.children`, but
-   * might also be specified through attributes:
-   *
-   * - `traverseAllChildren(this.props.children, ...)`
-   * - `traverseAllChildren(this.props.leftPanelChildren, ...)`
-   *
-   * The `traverseContext` is an optional argument that is passed through the
-   * entire traversal. It can be used to store accumulations or anything else that
-   * the callback might find relevant.
-   *
-   * @param {?*} children Children tree object.
-   * @param {!function} callback To invoke upon traversing each child.
-   * @param {?*} traverseContext Context for traversal.
-   * @return {!number} The number of children in this subtree.
-   */
-  function traverseAllChildren(children, callback, traverseContext) {
-    if (children == null) {
-      return 0;
-    }
-
-    return traverseAllChildrenImpl(children, '', callback, traverseContext);
-  }
-
-  /**
-   * Generate a key string that identifies a component within a set.
-   *
-   * @param {*} component A component that could contain a manual key.
-   * @param {number} index Index that is used if a manual key is not provided.
-   * @return {string}
-   */
-  function getComponentKey(component, index) {
-    // Do some typechecking here since we call this blindly. We want to ensure
-    // that we don't block potential future ES APIs.
-    if (typeof component === 'object' && component !== null && component.key != null) {
-      // Explicit key
-      return escape(component.key);
-    }
-    // Implicit key determined by the index in the set
-    return index.toString(36);
-  }
-
-  function forEachSingleChild(bookKeeping, child, name) {
-    var func = bookKeeping.func,
-        context = bookKeeping.context;
-
-    func.call(context, child, bookKeeping.count++);
-  }
-
-  /**
-   * Iterates through children that are typically specified as `props.children`.
-   *
-   * See https://reactjs.org/docs/react-api.html#react.children.foreach
-   *
-   * The provided forEachFunc(child, index) will be called for each
-   * leaf child.
-   *
-   * @param {?*} children Children tree container.
-   * @param {function(*, int)} forEachFunc
-   * @param {*} forEachContext Context for forEachContext.
-   */
-  function forEachChildren(children, forEachFunc, forEachContext) {
-    if (children == null) {
-      return children;
-    }
-    var traverseContext = getPooledTraverseContext(null, null, forEachFunc, forEachContext);
-    traverseAllChildren(children, forEachSingleChild, traverseContext);
-    releaseTraverseContext(traverseContext);
-  }
-
-  function mapSingleChildIntoContext(bookKeeping, child, childKey) {
-    var result = bookKeeping.result,
-        keyPrefix = bookKeeping.keyPrefix,
-        func = bookKeeping.func,
-        context = bookKeeping.context;
-
-
-    var mappedChild = func.call(context, child, bookKeeping.count++);
-    if (Array.isArray(mappedChild)) {
-      mapIntoWithKeyPrefixInternal(mappedChild, result, childKey, emptyFunction.thatReturnsArgument);
-    } else if (mappedChild != null) {
-      if (isValidElement(mappedChild)) {
-        mappedChild = cloneAndReplaceKey(mappedChild,
-        // Keep both the (mapped) and old keys if they differ, just as
-        // traverseAllChildren used to do for objects as children
-        keyPrefix + (mappedChild.key && (!child || child.key !== mappedChild.key) ? escapeUserProvidedKey(mappedChild.key) + '/' : '') + childKey);
-      }
-      result.push(mappedChild);
-    }
-  }
-
-  function mapIntoWithKeyPrefixInternal(children, array, prefix, func, context) {
-    var escapedPrefix = '';
-    if (prefix != null) {
-      escapedPrefix = escapeUserProvidedKey(prefix) + '/';
-    }
-    var traverseContext = getPooledTraverseContext(array, escapedPrefix, func, context);
-    traverseAllChildren(children, mapSingleChildIntoContext, traverseContext);
-    releaseTraverseContext(traverseContext);
-  }
-
-  /**
-   * Maps children that are typically specified as `props.children`.
-   *
-   * See https://reactjs.org/docs/react-api.html#react.children.map
-   *
-   * The provided mapFunction(child, key, index) will be called for each
-   * leaf child.
-   *
-   * @param {?*} children Children tree container.
-   * @param {function(*, int)} func The map function.
-   * @param {*} context Context for mapFunction.
-   * @return {object} Object containing the ordered map of results.
-   */
-  function mapChildren(children, func, context) {
-    if (children == null) {
-      return children;
-    }
-    var result = [];
-    mapIntoWithKeyPrefixInternal(children, result, null, func, context);
-    return result;
-  }
-
-  /**
-   * Count the number of children that are typically specified as
-   * `props.children`.
-   *
-   * See https://reactjs.org/docs/react-api.html#react.children.count
-   *
-   * @param {?*} children Children tree container.
-   * @return {number} The number of children.
-   */
-  function countChildren(children) {
-    return traverseAllChildren(children, emptyFunction.thatReturnsNull, null);
-  }
-
-  /**
-   * Flatten a children object (typically specified as `props.children`) and
-   * return an array with appropriately re-keyed children.
-   *
-   * See https://reactjs.org/docs/react-api.html#react.children.toarray
-   */
-  function toArray(children) {
-    var result = [];
-    mapIntoWithKeyPrefixInternal(children, result, null, emptyFunction.thatReturnsArgument);
-    return result;
-  }
-
-  /**
-   * Returns the first child in a collection of children and verifies that there
-   * is only one child in the collection.
-   *
-   * See https://reactjs.org/docs/react-api.html#react.children.only
-   *
-   * The current implementation of this function assumes that a single child gets
-   * passed without a wrapper, but the purpose of this helper function is to
-   * abstract away the particular structure of children.
-   *
-   * @param {?object} children Child collection structure.
-   * @return {ReactElement} The first and only `ReactElement` contained in the
-   * structure.
-   */
-  function onlyChild(children) {
-    !isValidElement(children) ? invariant(false, 'React.Children.only expected to receive a single React element child.') : void 0;
-    return children;
-  }
-
-  function createContext(defaultValue, calculateChangedBits) {
-    if (calculateChangedBits === undefined) {
-      calculateChangedBits = null;
-    } else {
-      {
-        !(calculateChangedBits === null || typeof calculateChangedBits === 'function') ? warning(false, 'createContext: Expected the optional second argument to be a ' + 'function. Instead received: %s', calculateChangedBits) : void 0;
-      }
-    }
-
-    var context = {
-      $$typeof: REACT_CONTEXT_TYPE,
-      _calculateChangedBits: calculateChangedBits,
-      _defaultValue: defaultValue,
-      _currentValue: defaultValue,
-      // As a workaround to support multiple concurrent renderers, we categorize
-      // some renderers as primary and others as secondary. We only expect
-      // there to be two concurrent renderers at most: React Native (primary) and
-      // Fabric (secondary); React DOM (primary) and React ART (secondary).
-      // Secondary renderers store their context values on separate fields.
-      _currentValue2: defaultValue,
-      _changedBits: 0,
-      _changedBits2: 0,
-      // These are circular
-      Provider: null,
-      Consumer: null
-    };
-
-    context.Provider = {
-      $$typeof: REACT_PROVIDER_TYPE,
-      _context: context
-    };
-    context.Consumer = context;
-
-    {
-      context._currentRenderer = null;
-      context._currentRenderer2 = null;
-    }
-
-    return context;
-  }
-
-  function forwardRef(render) {
-    {
-      !(typeof render === 'function') ? warning(false, 'forwardRef requires a render function but was given %s.', render === null ? 'null' : typeof render) : void 0;
-
-      if (render != null) {
-        !(render.defaultProps == null && render.propTypes == null) ? warning(false, 'forwardRef render functions do not support propTypes or defaultProps. ' + 'Did you accidentally pass a React component?') : void 0;
-      }
-    }
-
-    return {
-      $$typeof: REACT_FORWARD_REF_TYPE,
-      render: render
-    };
-  }
-
-  var describeComponentFrame = function (name, source, ownerName) {
-    return '\n    in ' + (name || 'Unknown') + (source ? ' (at ' + source.fileName.replace(/^.*[\\\/]/, '') + ':' + source.lineNumber + ')' : ownerName ? ' (created by ' + ownerName + ')' : '');
-  };
-
-  function isValidElementType(type) {
-    return typeof type === 'string' || typeof type === 'function' ||
-    // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-    type === REACT_FRAGMENT_TYPE || type === REACT_ASYNC_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_TIMEOUT_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE);
-  }
-
-  function getComponentName(fiber) {
-    var type = fiber.type;
-
-    if (typeof type === 'function') {
-      return type.displayName || type.name;
-    }
-    if (typeof type === 'string') {
-      return type;
-    }
-    switch (type) {
-      case REACT_ASYNC_MODE_TYPE:
-        return 'AsyncMode';
-      case REACT_CONTEXT_TYPE:
-        return 'Context.Consumer';
-      case REACT_FRAGMENT_TYPE:
-        return 'ReactFragment';
-      case REACT_PORTAL_TYPE:
-        return 'ReactPortal';
-      case REACT_PROFILER_TYPE:
-        return 'Profiler(' + fiber.pendingProps.id + ')';
-      case REACT_PROVIDER_TYPE:
-        return 'Context.Provider';
-      case REACT_STRICT_MODE_TYPE:
-        return 'StrictMode';
-      case REACT_TIMEOUT_TYPE:
-        return 'Timeout';
-    }
-    if (typeof type === 'object' && type !== null) {
-      switch (type.$$typeof) {
-        case REACT_FORWARD_REF_TYPE:
-          var functionName = type.render.displayName || type.render.name || '';
-          return functionName !== '' ? 'ForwardRef(' + functionName + ')' : 'ForwardRef';
-      }
-    }
-    return null;
-  }
-
-  /**
-   * ReactElementValidator provides a wrapper around a element factory
-   * which validates the props passed to the element. This is intended to be
-   * used only in DEV and could be replaced by a static type checker for languages
-   * that support it.
-   */
-
-  var currentlyValidatingElement = void 0;
-  var propTypesMisspellWarningShown = void 0;
-
-  var getDisplayName = function () {};
-  var getStackAddendum = function () {};
-
-  {
-    currentlyValidatingElement = null;
-
-    propTypesMisspellWarningShown = false;
-
-    getDisplayName = function (element) {
-      if (element == null) {
-        return '#empty';
-      } else if (typeof element === 'string' || typeof element === 'number') {
-        return '#text';
-      } else if (typeof element.type === 'string') {
-        return element.type;
-      } else if (element.type === REACT_FRAGMENT_TYPE) {
-        return 'React.Fragment';
-      } else {
-        return element.type.displayName || element.type.name || 'Unknown';
-      }
-    };
-
-    getStackAddendum = function () {
-      var stack = '';
-      if (currentlyValidatingElement) {
-        var name = getDisplayName(currentlyValidatingElement);
-        var owner = currentlyValidatingElement._owner;
-        stack += describeComponentFrame(name, currentlyValidatingElement._source, owner && getComponentName(owner));
-      }
-      stack += ReactDebugCurrentFrame.getStackAddendum() || '';
-      return stack;
-    };
-  }
-
-  function getDeclarationErrorAddendum() {
-    if (ReactCurrentOwner.current) {
-      var name = getComponentName(ReactCurrentOwner.current);
-      if (name) {
-        return '\n\nCheck the render method of `' + name + '`.';
-      }
-    }
-    return '';
-  }
-
-  function getSourceInfoErrorAddendum(elementProps) {
-    if (elementProps !== null && elementProps !== undefined && elementProps.__source !== undefined) {
-      var source = elementProps.__source;
-      var fileName = source.fileName.replace(/^.*[\\\/]/, '');
-      var lineNumber = source.lineNumber;
-      return '\n\nCheck your code at ' + fileName + ':' + lineNumber + '.';
-    }
-    return '';
-  }
-
-  /**
-   * Warn if there's no key explicitly set on dynamic arrays of children or
-   * object keys are not valid. This allows us to keep track of children between
-   * updates.
-   */
-  var ownerHasKeyUseWarning = {};
-
-  function getCurrentComponentErrorInfo(parentType) {
-    var info = getDeclarationErrorAddendum();
-
-    if (!info) {
-      var parentName = typeof parentType === 'string' ? parentType : parentType.displayName || parentType.name;
-      if (parentName) {
-        info = '\n\nCheck the top-level render call using <' + parentName + '>.';
-      }
-    }
-    return info;
-  }
-
-  /**
-   * Warn if the element doesn't have an explicit key assigned to it.
-   * This element is in an array. The array could grow and shrink or be
-   * reordered. All children that haven't already been validated are required to
-   * have a "key" property assigned to it. Error statuses are cached so a warning
-   * will only be shown once.
-   *
-   * @internal
-   * @param {ReactElement} element Element that requires a key.
-   * @param {*} parentType element's parent's type.
-   */
-  function validateExplicitKey(element, parentType) {
-    if (!element._store || element._store.validated || element.key != null) {
-      return;
-    }
-    element._store.validated = true;
-
-    var currentComponentErrorInfo = getCurrentComponentErrorInfo(parentType);
-    if (ownerHasKeyUseWarning[currentComponentErrorInfo]) {
-      return;
-    }
-    ownerHasKeyUseWarning[currentComponentErrorInfo] = true;
-
-    // Usually the current owner is the offender, but if it accepts children as a
-    // property, it may be the creator of the child that's responsible for
-    // assigning it a key.
-    var childOwner = '';
-    if (element && element._owner && element._owner !== ReactCurrentOwner.current) {
-      // Give the component that originally created this child.
-      childOwner = ' It was passed a child from ' + getComponentName(element._owner) + '.';
-    }
-
-    currentlyValidatingElement = element;
-    {
-      warning(false, 'Each child in an array or iterator should have a unique "key" prop.' + '%s%s See https://fb.me/react-warning-keys for more information.%s', currentComponentErrorInfo, childOwner, getStackAddendum());
-    }
-    currentlyValidatingElement = null;
-  }
-
-  /**
-   * Ensure that every element either is passed in a static location, in an
-   * array with an explicit keys property defined, or in an object literal
-   * with valid key property.
-   *
-   * @internal
-   * @param {ReactNode} node Statically passed child of any type.
-   * @param {*} parentType node's parent's type.
-   */
-  function validateChildKeys(node, parentType) {
-    if (typeof node !== 'object') {
-      return;
-    }
-    if (Array.isArray(node)) {
-      for (var i = 0; i < node.length; i++) {
-        var child = node[i];
-        if (isValidElement(child)) {
-          validateExplicitKey(child, parentType);
-        }
-      }
-    } else if (isValidElement(node)) {
-      // This element was passed in a valid location.
-      if (node._store) {
-        node._store.validated = true;
-      }
-    } else if (node) {
-      var iteratorFn = getIteratorFn(node);
-      if (typeof iteratorFn === 'function') {
-        // Entry iterators used to provide implicit keys,
-        // but now we print a separate warning for them later.
-        if (iteratorFn !== node.entries) {
-          var iterator = iteratorFn.call(node);
-          var step = void 0;
-          while (!(step = iterator.next()).done) {
-            if (isValidElement(step.value)) {
-              validateExplicitKey(step.value, parentType);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Given an element, validate that its props follow the propTypes definition,
-   * provided by the type.
-   *
-   * @param {ReactElement} element
-   */
-  function validatePropTypes(element) {
-    var componentClass = element.type;
-    if (typeof componentClass !== 'function') {
-      return;
-    }
-    var name = componentClass.displayName || componentClass.name;
-    var propTypes = componentClass.propTypes;
-    if (propTypes) {
-      currentlyValidatingElement = element;
-      checkPropTypes(propTypes, element.props, 'prop', name, getStackAddendum);
-      currentlyValidatingElement = null;
-    } else if (componentClass.PropTypes !== undefined && !propTypesMisspellWarningShown) {
-      propTypesMisspellWarningShown = true;
-      warning(false, 'Component %s declared `PropTypes` instead of `propTypes`. Did you misspell the property assignment?', name || 'Unknown');
-    }
-    if (typeof componentClass.getDefaultProps === 'function') {
-      !componentClass.getDefaultProps.isReactClassApproved ? warning(false, 'getDefaultProps is only used on classic React.createClass ' + 'definitions. Use a static property named `defaultProps` instead.') : void 0;
-    }
-  }
-
-  /**
-   * Given a fragment, validate that it can only be provided with fragment props
-   * @param {ReactElement} fragment
-   */
-  function validateFragmentProps(fragment) {
-    currentlyValidatingElement = fragment;
-
-    var keys = Object.keys(fragment.props);
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      if (key !== 'children' && key !== 'key') {
-        warning(false, 'Invalid prop `%s` supplied to `React.Fragment`. ' + 'React.Fragment can only have `key` and `children` props.%s', key, getStackAddendum());
-        break;
-      }
-    }
-
-    if (fragment.ref !== null) {
-      warning(false, 'Invalid attribute `ref` supplied to `React.Fragment`.%s', getStackAddendum());
-    }
-
-    currentlyValidatingElement = null;
-  }
-
-  function createElementWithValidation(type, props, children) {
-    var arguments$1 = arguments;
-
-    var validType = isValidElementType(type);
-
-    // We warn in this case but don't throw. We expect the element creation to
-    // succeed and there will likely be errors in render.
-    if (!validType) {
-      var info = '';
-      if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
-        info += ' You likely forgot to export your component from the file ' + "it's defined in, or you might have mixed up default and named imports.";
-      }
-
-      var sourceInfo = getSourceInfoErrorAddendum(props);
-      if (sourceInfo) {
-        info += sourceInfo;
-      } else {
-        info += getDeclarationErrorAddendum();
-      }
-
-      info += getStackAddendum() || '';
-
-      var typeString = void 0;
-      if (type === null) {
-        typeString = 'null';
-      } else if (Array.isArray(type)) {
-        typeString = 'array';
-      } else {
-        typeString = typeof type;
-      }
-
-      warning(false, 'React.createElement: type is invalid -- expected a string (for ' + 'built-in components) or a class/function (for composite ' + 'components) but got: %s.%s', typeString, info);
-    }
-
-    var element = createElement.apply(this, arguments);
-
-    // The result can be nullish if a mock or a custom function is used.
-    // TODO: Drop this when these are no longer allowed as the type argument.
-    if (element == null) {
-      return element;
-    }
-
-    // Skip key warning if the type isn't valid since our key validation logic
-    // doesn't expect a non-string/function type and can throw confusing errors.
-    // We don't want exception behavior to differ between dev and prod.
-    // (Rendering will throw with a helpful message and as soon as the type is
-    // fixed, the key warnings will appear.)
-    if (validType) {
-      for (var i = 2; i < arguments.length; i++) {
-        validateChildKeys(arguments$1[i], type);
-      }
-    }
-
-    if (type === REACT_FRAGMENT_TYPE) {
-      validateFragmentProps(element);
-    } else {
-      validatePropTypes(element);
-    }
-
-    return element;
-  }
-
-  function createFactoryWithValidation(type) {
-    var validatedFactory = createElementWithValidation.bind(null, type);
-    validatedFactory.type = type;
-    // Legacy hook: remove it
-    {
-      Object.defineProperty(validatedFactory, 'type', {
-        enumerable: false,
-        get: function () {
-          lowPriorityWarning$1(false, 'Factory.type is deprecated. Access the class directly ' + 'before passing it to createFactory.');
-          Object.defineProperty(this, 'type', {
-            value: type
-          });
-          return type;
-        }
-      });
-    }
-
-    return validatedFactory;
-  }
-
-  function cloneElementWithValidation(element, props, children) {
-    var arguments$1 = arguments;
-
-    var newElement = cloneElement.apply(this, arguments);
-    for (var i = 2; i < arguments.length; i++) {
-      validateChildKeys(arguments$1[i], newElement.type);
-    }
-    validatePropTypes(newElement);
-    return newElement;
-  }
-
-  var React = {
-    Children: {
-      map: mapChildren,
-      forEach: forEachChildren,
-      count: countChildren,
-      toArray: toArray,
-      only: onlyChild
-    },
-
-    createRef: createRef,
-    Component: Component,
-    PureComponent: PureComponent,
-
-    createContext: createContext,
-    forwardRef: forwardRef,
-
-    Fragment: REACT_FRAGMENT_TYPE,
-    StrictMode: REACT_STRICT_MODE_TYPE,
-    unstable_AsyncMode: REACT_ASYNC_MODE_TYPE,
-    unstable_Profiler: REACT_PROFILER_TYPE,
-
-    createElement: createElementWithValidation,
-    cloneElement: cloneElementWithValidation,
-    createFactory: createFactoryWithValidation,
-    isValidElement: isValidElement,
-
-    version: ReactVersion,
-
-    __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: {
-      ReactCurrentOwner: ReactCurrentOwner,
-      // Used by renderers to avoid bundling object-assign twice in UMD bundles:
-      assign: _assign
-    }
-  };
-
-  {
-    _assign(React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED, {
-      // These should not be included in production.
-      ReactDebugCurrentFrame: ReactDebugCurrentFrame,
-      // Shim for React DOM 16.0.0 which still destructured (but not used) this.
-      // TODO: remove in React 17.0.
-      ReactComponentTreeHook: {}
-    });
-  }
-
-
-
-  var React$2 = Object.freeze({
-  	default: React
-  });
-
-  var React$3 = ( React$2 && React ) || React$2;
-
-  // TODO: decide on the top-level export form.
-  // This is hacky but makes it work with both Rollup and Jest.
-  var react = React$3.default ? React$3.default : React$3;
-
-  module.exports = react;
-    })();
-  }
-  });
+  var r="function"===typeof Symbol&&Symbol.for,t=r?Symbol.for("react.element"):60103,u=r?Symbol.for("react.portal"):60106,v=r?Symbol.for("react.fragment"):60107,w$1=r?Symbol.for("react.strict_mode"):60108,x=r?Symbol.for("react.profiler"):60114,y=r?Symbol.for("react.provider"):60109,z=r?Symbol.for("react.context"):60110,A$1=r?Symbol.for("react.async_mode"):60111,B$1=
+  r?Symbol.for("react.forward_ref"):60112;var C$1="function"===typeof Symbol&&Symbol.iterator;function D(a){
+  var arguments$1 = arguments;
+  for(var b=arguments.length-1,e="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=0;c<b;c++){ e+="&args[]="+encodeURIComponent(arguments$1[c+1]); }invariant_1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",e);}
+  var E={isMounted:function(){return !1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}};function F(a,b,e){this.props=a;this.context=b;this.refs=emptyObject_1;this.updater=e||E;}F.prototype.isReactComponent={};F.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?D("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};F.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function G(){}
+  G.prototype=F.prototype;function H(a,b,e){this.props=a;this.context=b;this.refs=emptyObject_1;this.updater=e||E;}var I=H.prototype=new G;I.constructor=H;objectAssign(I,F.prototype);I.isPureReactComponent=!0;var J={current:null},K=Object.prototype.hasOwnProperty,L={key:!0,ref:!0,__self:!0,__source:!0};
+  function M(a,b,e){
+  var arguments$1 = arguments;
+  var c=void 0,d={},g=null,h=null;if(null!=b){ for(c in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(g=""+b.key),b){ K.call(b,c)&&!L.hasOwnProperty(c)&&(d[c]=b[c]); } }var f=arguments.length-2;if(1===f){ d.children=e; }else if(1<f){for(var l=Array(f),m=0;m<f;m++){ l[m]=arguments$1[m+2]; }d.children=l;}if(a&&a.defaultProps){ for(c in f=a.defaultProps,f){ void 0===d[c]&&(d[c]=f[c]); } }return {$$typeof:t,type:a,key:g,ref:h,props:d,_owner:J.current}}
+  function N(a){return "object"===typeof a&&null!==a&&a.$$typeof===t}function escape(a){var b={"=":"=0",":":"=2"};return "$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var O=/\/+/g,P=[];function Q(a,b,e,c){if(P.length){var d=P.pop();d.result=a;d.keyPrefix=b;d.func=e;d.context=c;d.count=0;return d}return {result:a,keyPrefix:b,func:e,context:c,count:0}}function R(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>P.length&&P.push(a);}
+  function S(a,b,e,c){var d=typeof a;if("undefined"===d||"boolean"===d){ a=null; }var g=!1;if(null===a){ g=!0; }else { switch(d){case "string":case "number":g=!0;break;case "object":switch(a.$$typeof){case t:case u:g=!0;}} }if(g){ return e(c,a,""===b?"."+T(a,0):b),1; }g=0;b=""===b?".":b+":";if(Array.isArray(a)){ for(var h=0;h<a.length;h++){d=a[h];var f=b+T(d,h);g+=S(d,f,e,c);} }else if(null===a||"undefined"===typeof a?f=null:(f=C$1&&a[C$1]||a["@@iterator"],f="function"===typeof f?f:null),"function"===typeof f){ for(a=f.call(a),
+  h=0;!(d=a.next()).done;){ d=d.value,f=b+T(d,h++),g+=S(d,f,e,c); } }else{ "object"===d&&(e=""+a,D("31","[object Object]"===e?"object with keys {"+Object.keys(a).join(", ")+"}":e,"")); }return g}function T(a,b){return "object"===typeof a&&null!==a&&null!=a.key?escape(a.key):b.toString(36)}function U(a,b){a.func.call(a.context,b,a.count++);}
+  function V(a,b,e){var c=a.result,d=a.keyPrefix;a=a.func.call(a.context,b,a.count++);Array.isArray(a)?W(a,c,e,emptyFunction_1.thatReturnsArgument):null!=a&&(N(a)&&(b=d+(!a.key||b&&b.key===a.key?"":(""+a.key).replace(O,"$&/")+"/")+e,a={$$typeof:t,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}),c.push(a));}function W(a,b,e,c,d){var g="";null!=e&&(g=(""+e).replace(O,"$&/")+"/");b=Q(b,g,c,d);null==a||S(a,"",V,b);R(b);}
+  var X={Children:{map:function(a,b,e){if(null==a){ return a; }var c=[];W(a,c,null,b,e);return c},forEach:function(a,b,e){if(null==a){ return a; }b=Q(null,null,b,e);null==a||S(a,"",U,b);R(b);},count:function(a){return null==a?0:S(a,"",emptyFunction_1.thatReturnsNull,null)},toArray:function(a){var b=[];W(a,b,null,emptyFunction_1.thatReturnsArgument);return b},only:function(a){N(a)?void 0:D("143");return a}},createRef:function(){return {current:null}},Component:F,PureComponent:H,createContext:function(a,b){void 0===b&&(b=null);a={$$typeof:z,
+  _calculateChangedBits:b,_defaultValue:a,_currentValue:a,_currentValue2:a,_changedBits:0,_changedBits2:0,Provider:null,Consumer:null};a.Provider={$$typeof:y,_context:a};return a.Consumer=a},forwardRef:function(a){return {$$typeof:B$1,render:a}},Fragment:v,StrictMode:w$1,unstable_AsyncMode:A$1,unstable_Profiler:x,createElement:M,cloneElement:function(a,b,e){
+  var arguments$1 = arguments;
+  null===a||void 0===a?D("267",a):void 0;var c=void 0,d=objectAssign({},a.props),g=a.key,h=a.ref,f=a._owner;if(null!=b){void 0!==b.ref&&(h=b.ref,f=J.current);void 0!==
+  b.key&&(g=""+b.key);var l=void 0;a.type&&a.type.defaultProps&&(l=a.type.defaultProps);for(c in b){ K.call(b,c)&&!L.hasOwnProperty(c)&&(d[c]=void 0===b[c]&&void 0!==l?l[c]:b[c]); }}c=arguments.length-2;if(1===c){ d.children=e; }else if(1<c){l=Array(c);for(var m=0;m<c;m++){ l[m]=arguments$1[m+2]; }d.children=l;}return {$$typeof:t,type:a.type,key:g,ref:h,props:d,_owner:f}},createFactory:function(a){var b=M.bind(null,a);b.type=a;return b},isValidElement:N,version:"16.4.0",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:J,
+  assign:objectAssign}},Y={default:X},Z=Y&&X||Y;var react_production_min=Z.default?Z.default:Z;
 
   var react = createCommonjsModule(function (module) {
 
   {
-    module.exports = react_development;
+    module.exports = react_production_min;
   }
   });
 
@@ -53347,7 +51014,7 @@
 
   var RoutablePopup = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)},staticRenderFns: [],
     components: {
-      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: F7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
+      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: f7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
     },
   };
 

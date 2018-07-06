@@ -734,6 +734,12 @@ header .carbon a {
   line-height: 1;
   margin-bottom: 20px;
 }
+.internal-header .title .version {
+  vertical-align: super;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline;
+}
 .internal-header ul.nav {
   list-style: none;
   margin: 0;

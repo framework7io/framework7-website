@@ -17,6 +17,8 @@
   var cdnPath = '//cdn.framework7.io';
   var pkg = require('./package.json');
 
+  const releaseMeta = require('./src/release-meta');
+
   // Get src file url
   function getSrcFileUrl(file) {
     const srcFileUrl = `${pkg.repository.url}/edit/master/src/pug/${file.path.split('/src/pug/')[1]}`;
@@ -74,6 +76,7 @@
         pug,
         pretty: true,
         locals: {
+          release: releaseMeta,
           cdn: useCDN ? cdnPath : '',
           icons: iconsManifest.icons,
           getYamlData,
@@ -134,6 +137,7 @@
           pug,
           pretty: true,
           locals: {
+            release: releaseMeta,
             cdn: useCDN ? cdnPath : '',
             icons: iconsManifest.icons,
             getYamlData,

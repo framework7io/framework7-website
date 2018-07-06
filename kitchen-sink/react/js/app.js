@@ -6440,30 +6440,30 @@
 	  return router[direction](redirect, options);
 	}
 
-	function preRoute (routePreRoute, to, from, resolve, reject) {
-	  var router = this;
-	  var preRoutes = [];
-	  if (Array.isArray(routePreRoute)) {
-	    preRoutes.push.apply(preRoutes, routePreRoute);
-	  } else if (routePreRoute && typeof routePreRoute === 'function') {
-	    preRoutes.push(routePreRoute);
+	function processQueue(router, routerQueue, routeQueue, to, from, resolve, reject) {
+	  var queue = [];
+
+	  if (Array.isArray(routeQueue)) {
+	    queue.push.apply(queue, routeQueue);
+	  } else if (routeQueue && typeof routeQueue === 'function') {
+	    queue.push(routeQueue);
 	  }
-	  if (router.params.preRoute) {
-	    if (Array.isArray(router.params.preRoute)) {
-	      preRoutes.push.apply(preRoutes, router.params.preRoute);
+	  if (routerQueue) {
+	    if (Array.isArray(routerQueue)) {
+	      queue.push.apply(queue, routerQueue);
 	    } else {
-	      preRoutes.push(router.params.preRoute);
+	      queue.push(routerQueue);
 	    }
 	  }
 
 	  function next() {
-	    if (preRoutes.length === 0) {
+	    if (queue.length === 0) {
 	      resolve();
 	      return;
 	    }
-	    var preRoute = preRoutes.shift();
+	    var queueItem = queue.shift();
 
-	    preRoute.call(
+	    queueItem.call(
 	      router,
 	      to,
 	      from,
@@ -6476,6 +6476,53 @@
 	    );
 	  }
 	  next();
+	}
+
+	function processRouteQueue (to, from, resolve, reject) {
+	  var router = this;
+	  function enterNextRoute() {
+	    if (to && to.route && (router.params.routesBeforeEnter || to.route.beforeEnter)) {
+	      router.allowPageChange = false;
+	      processQueue(
+	        router,
+	        router.params.routesBeforeEnter,
+	        to.route.beforeEnter,
+	        to,
+	        from,
+	        function () {
+	          router.allowPageChange = true;
+	          resolve();
+	        },
+	        function () {
+	          reject();
+	        }
+	      );
+	    } else {
+	      resolve();
+	    }
+	  }
+	  function leaveCurrentRoute() {
+	    if (from && from.route && (router.params.routesBeforeLeave || from.route.beforeLeave)) {
+	      router.allowPageChange = false;
+	      processQueue(
+	        router,
+	        router.params.routesBeforeLeave,
+	        from.route.beforeLeave,
+	        to,
+	        from,
+	        function () {
+	          router.allowPageChange = true;
+	          enterNextRoute();
+	        },
+	        function () {
+	          reject();
+	        }
+	      );
+	    } else {
+	      enterNextRoute();
+	    }
+	  }
+	  leaveCurrentRoute();
 	}
 
 	function refreshPage() {
@@ -7090,24 +7137,17 @@
 	    router.allowPageChange = true;
 	  }
 
-	  if (router.params.preRoute || route.route.preRoute) {
-	    router.allowPageChange = false;
-	    preRoute.call(
-	      router,
-	      route.route.preRoute,
-	      route,
-	      router.currentRoute,
-	      function () {
-	        router.allowPageChange = true;
-	        resolve();
-	      },
-	      function () {
-	        reject();
-	      }
-	    );
-	  } else {
-	    resolve();
-	  }
+	  processRouteQueue.call(
+	    router,
+	    route,
+	    router.currentRoute,
+	    function () {
+	      resolve();
+	    },
+	    function () {
+	      reject();
+	    }
+	  );
 
 	  // Return Router
 	  return router;
@@ -7908,9 +7948,10 @@
 	  return router;
 	}
 	function back() {
+	  var ref;
+
 	  var args = [], len = arguments.length;
 	  while ( len-- ) args[ len ] = arguments[ len ];
-
 	  var navigateUrl;
 	  var navigateOptions;
 	  if (typeof args[0] === 'object') {
@@ -7923,7 +7964,7 @@
 	  var router = this;
 	  var app = router.app;
 	  if (!router.view) {
-	    app.views.main.router.back(navigateUrl, navigateOptions);
+	    (ref = app.views.main.router).back.apply(ref, args);
 	    return router;
 	  }
 
@@ -7968,13 +8009,30 @@
 	  }
 	  var $previousPage = router.$el.children('.page-current').prevAll('.page-previous').eq(0);
 	  if (!navigateOptions.force && $previousPage.length > 0) {
-	    if (router.params.pushState && $previousPage[0].f7Page && router.history[router.history.length - 2] !== $previousPage[0].f7Page.route.url) {
-	      router.back(router.history[router.history.length - 2], Utils.extend(navigateOptions, { force: true }));
+	    if (router.params.pushState
+	      && $previousPage[0].f7Page
+	      && router.history[router.history.length - 2] !== $previousPage[0].f7Page.route.url
+	    ) {
+	      router.back(
+	        router.history[router.history.length - 2],
+	        Utils.extend(navigateOptions, { force: true })
+	      );
 	      return router;
 	    }
-	    router.loadBack({ el: $previousPage }, Utils.extend(navigateOptions, {
-	      route: $previousPage[0].f7Page.route,
-	    }));
+
+	    var previousPageRoute = $previousPage[0].f7Page.route;
+	    processRouteQueue.call(
+	      router,
+	      previousPageRoute,
+	      router.currentRoute,
+	      function () {
+	        router.loadBack({ el: $previousPage }, Utils.extend(navigateOptions, {
+	          route: previousPageRoute,
+	        }));
+	      },
+	      function () {}
+	    );
+
 	    return router;
 	  }
 
@@ -8070,23 +8128,20 @@
 	    router.allowPageChange = true;
 	  }
 
-	  if (router.params.preRoute || route.route.preRoute) {
-	    router.allowPageChange = false;
-	    preRoute.call(
+	  if (options.preload) {
+	    resolve();
+	  } else {
+	    processRouteQueue.call(
 	      router,
-	      route.route.preRoute,
 	      route,
 	      router.currentRoute,
 	      function () {
-	        router.allowPageChange = true;
 	        resolve();
 	      },
 	      function () {
 	        reject();
 	      }
 	    );
-	  } else {
-	    resolve();
 	  }
 
 	  // Return Router
@@ -9617,13 +9672,14 @@
 	      // eslint-disable-next-line
 	      if (clickedLink.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
 	        var target = clickedLink.attr('target');
-	        if (url && (target === '_system' || target === '_blank' || target === '_browser')) {
+	        if (
+	          url
+	          && win.cordova
+	          && win.cordova.InAppBrowser
+	          && (target === '_system' || target === '_blank')
+	        ) {
 	          e.preventDefault();
-	          if (target !== '_browser' && win.cordova && win.cordova.InAppBrowser) {
-	            win.cordova.InAppBrowser.open(url, target);
-	          } else {
-	            win.open(url, target);
-	          }
+	          win.cordova.InAppBrowser.open(url, target);
 	        }
 	        return;
 	      }
@@ -10061,6 +10117,9 @@
 	      // Delays
 	      iosPageLoadDelay: 0,
 	      materialPageLoadDelay: 0,
+	      // Routes hooks
+	      routesBeforeEnter: null,
+	      routesBeforeLeave: null,
 	    },
 	  },
 	  static: {
@@ -31805,7 +31864,7 @@
 	};
 
 	/**
-	 * Framework7 3.0.0-beta.16
+	 * Framework7 3.0.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -31813,7 +31872,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: July 1, 2018
+	 * Released on: July 5, 2018
 	 */
 
 	// Install Core Modules & Components
@@ -42508,7 +42567,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.0.0-beta.16
+	 * Framework7 React 3.0.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -42516,7 +42575,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: July 1, 2018
+	 * Released on: July 5, 2018
 	 */
 
 	var AccordionContent = F7AccordionContent;
