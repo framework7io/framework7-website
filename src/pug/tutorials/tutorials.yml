@@ -1,4 +1,14 @@
 -
+  date: July 9, 2018
+  video: false
+  title: "Migration To Framework7 v3"
+  url: https://blog.framework7.io/migration-to-framework7-v3-928a21a1eac9
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v3
+-
   video: true
   date: May 28th, 2018
   title: "Deploy Framework7 apps to Android with PhoneGap Cordova | Beginner Tutorial"
