@@ -31864,7 +31864,7 @@
 	};
 
 	/**
-	 * Framework7 3.0.0
+	 * Framework7 3.0.1
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -31872,7 +31872,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: July 5, 2018
+	 * Released on: July 10, 2018
 	 */
 
 	// Install Core Modules & Components
@@ -32745,7 +32745,7 @@
 	    var className = props.className;
 	    var id = props.id;
 	    var style = props.style;
-	    var classes = Utils$1.classNames.apply(Utils$1, [ className, 'actions-group' ].concat( Mixins.colorClasses(props) ));
+	    var classes = Utils$1.classNames(className, 'actions-group', Mixins.colorClasses(props));
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
@@ -42567,7 +42567,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.0.0
+	 * Framework7 React 3.0.1
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -42575,7 +42575,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: July 5, 2018
+	 * Released on: July 10, 2018
 	 */
 
 	var AccordionContent = F7AccordionContent;
