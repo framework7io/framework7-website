@@ -21,6 +21,14 @@ official:
   badges:
   - v3
 -
+  title: React
+  iconUrl: '#{cdn}/i/templates/f7-react.svg'
+  url: https://github.com/framework7io/framework7-template-react
+  description: Framework7-React starter app template with hot-reload & css extraction
+  badges:
+  - v3
+  - React
+-
   title: Vue.js Simple
   iconUrl: '#{cdn}/i/templates/f7-vue-simple.svg'
   url: https://github.com/framework7io/framework7-template-vue-simple
