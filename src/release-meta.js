@@ -1,4 +1,4 @@
 module.exports = {
-  version: '3.0.6',
+  version: '3.0.7',
   date: 'July 20, 2018'
 }
