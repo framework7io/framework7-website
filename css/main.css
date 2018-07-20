@@ -3243,9 +3243,16 @@ pre code {
 }
 .important-note pre code,
 table pre code.hljs {
-  padding: 10px;
+  padding: 5px;
   font-size: 13px;
   line-height: 19px;
+  border-radius: 4px;
+}
+table pre:first-child {
+  margin-top: 0;
+}
+table pre:last-child {
+  margin-bottom: 0;
 }
 footer {
   background: #f4f4f4;

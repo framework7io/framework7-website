@@ -69,6 +69,11 @@ block content
           th Description
       tbody
         tr
+          td calendarType
+          td string
+          td gregorian
+          td Calendar type, can be <code>gregorian</code> or <code>jalali</code>
+        tr
           td value
           td array
           td
@@ -97,22 +102,38 @@ block content
         tr
           td monthNames
           td array
-          td ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December']
+          td
+            pre
+              code.js
+                :code
+                  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December']
           td Array with full month names
         tr
           td monthNamesShort
           td array
-          td ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+          td
+            pre
+              code.js
+                :code
+                  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
           td Array with short month names
         tr
           td dayNames
           td array
-          td ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+          td
+            pre
+              code.js
+                :code
+                  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
           td Array with week day names
         tr
           td dayNamesShort
           td array
-          td ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+          td
+            pre
+              code.js
+                :code
+                  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
           td Array with week day short names
         tr
           td firstDay
@@ -124,6 +145,22 @@ block content
           td array
           td [0, 6]
           td Array with index numeber of weekend days, by default it is Saturday and Sunday
+        tr
+          td jalali
+          td object
+          td
+            pre
+              code
+                :code
+                  {
+                    monthNames: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
+                    monthNamesShort: ['فَر', 'اُر', 'خُر', 'تیر', 'مُر', 'شَه', 'مهر', 'آب', 'آذر', 'دی', 'بَه', 'اِس'],
+                    dayNames: ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'],
+                    dayNamesShort: ['1ش', '۲ش', '۳ش', '۴ش', '۵ش', 'ج', 'ش'],
+                    firstDay: 6, // Saturday
+                    weekendDays: [5], // Friday
+                  }
+          td Object with configuration for Jalali type calendar
         tr
           td dateFormat
           td string
@@ -150,6 +187,16 @@ block content
           td boolean
           td false
           td Enable to enable range picker. Not compatible with <code>multiple</code>
+        tr
+          td rangePickerMinDays
+          td number
+          td 1
+          td Minimum days that need to be selected when <code>rangePicker</code> enabled
+        tr
+          td rangePickerMaxDays
+          td number
+          td 0
+          td Maximum days allowed to be selected when <code>rangePicker</code> enabled. <code>0</code> means no maximum
         tr
           td direction
           td string
