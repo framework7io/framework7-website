@@ -91,6 +91,9 @@
     margin-bottom: 30px;
   }
   .feat-app {
+    width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
     &:hover {
       .feat-app-icon img{
         transform: scale(1.1);
@@ -121,13 +124,11 @@
     font-size: 17px;
     text-decoration: none;
     display: block;
-    line-height: 1.3;
+    line-height: 1.2;
     color:#000;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow:ellipsis;
     margin-left: 5px;
     margin-right: 5px;
+    margin-bottom: 5px;
     transition: 400ms;
   }
   .feat-app-author {

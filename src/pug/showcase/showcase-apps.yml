@@ -1,5 +1,32 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/tripline.jpg"
+  iconRounded: true
+  title: "Tripline - Your maps are your stories"
+  author:
+    url: https://www.tripline.net/
+    name: Tripline, Inc.
+  links:
+    appstore: https://itunes.apple.com/us/app/tripline/id417133912
+    googleplay: https://play.google.com/store/apps/details?id=net.tripline
+    website: https://www.tripline.net/
+  description: |
+    Tripline is a fun, easy-to-use app for planning and sharing vacations, adventures, trips around town and lists of your favorite places. If you like exploring the world and keeping a record of your travels, Tripline is for you!
+    All of the maps you create in the app are also available on the Tripline website (www.tripline.net) There, you can import places and photos from from Instagram, Facebook, Foursquare, Twitter, Instagram, Tripit and much more.
+    Install today and join the millions of world travelers who are creating their adventures on Tripline.
+  features:
+  - Make better plans by visualizing your route before you go
+  - Make your maps social by adding travelers and followers
+  - Upload or import photos to bring your maps to life
+  - Embed your Tripline maps anywhere, just like a video
+  screenshots:
+  - "#{cdn}/i/showcase/tripline-1.png"
+  - "#{cdn}/i/showcase/tripline-2.png"
+  - "#{cdn}/i/showcase/tripline-3.png"
+  - "#{cdn}/i/showcase/tripline-4.png"
+  - "#{cdn}/i/showcase/tripline-5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/coolwebsites_logo.png"
   iconRounded: true
   title: "Cool Websites"
