@@ -17,7 +17,7 @@ block content
     p Let's look on layout structure of swipeout element in your list views:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list">
             <ul>
               <!-- Additional "swipeout" class on li -->
@@ -58,7 +58,7 @@ block content
     p If you have only "item-content" you can simplify layout by adding "item-content" class to "swipeout-content":
     pre
       code.html
-        :code
+        :code(lang="html")
           <li class="swipeout">
             <div class="swipeout-content item-content">
               <div class="item-media">...</div>
@@ -136,7 +136,7 @@ block content
           p Overswipe button will have additonal <code><b>swipeout-overswipe-active</b></code> class during overswipe which you can use for additional styling of such state
     pre
       code.html
-        :code
+        :code(lang="html")
           <li class="swipeout">
             <div class="swipeout-content">
               <a href="#" class="item-content item-link">
@@ -226,7 +226,7 @@ block content
     p To change these parameters we need to pass them on app init under <code>swipeout</code> property, for example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             swipeout: {
               noFollow: true,
@@ -321,13 +321,13 @@ block content
       h2(data-device-preview="../docs-demos/core/swipeout.html") Examples
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
             var $$ = Dom7;
       h4 Swipe to delete with confirm modal
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout">
@@ -369,7 +369,7 @@ block content
       h4 Swipe to delete without confirm
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout">
@@ -404,7 +404,7 @@ block content
       h4 Swipe for actions
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout">
@@ -452,7 +452,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var moreActions = app.actions.create({
               buttons: [
                 [
@@ -481,7 +481,7 @@ block content
       h4 With callback on remove
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout deleted-callback">
@@ -515,14 +515,14 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             $$('.deleted-callback').on('swipeout:deleted', function () {
               app.dialog.alert('Thanks, item removed!');
             });
       h4 With actions on left side (swipe to right)
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout">
@@ -557,7 +557,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             $$('.alert-reply').on('click', function () {
               app.dialog.alert('Reply');
             });
@@ -567,7 +567,7 @@ block content
       h4 On both sides with overswipes
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list media-list">
               <ul>
                 <li class="swipeout">

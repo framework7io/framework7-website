@@ -16,7 +16,7 @@ block content
     p Messagebar layour is pretty simple:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="toolbar messagebar">
             <div class="toolbar-inner">
               <div class="messagebar-area">
@@ -37,7 +37,7 @@ block content
     p Messagebar place is very important, it should be inside of <code>page</code> and right before <code>page-content</code>:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <!-- navbar -->
             <div class="navbar">...</div>
@@ -54,7 +54,7 @@ block content
     p If need additional sheet with, for example, images that we can attach to message then we use extra block designed for this:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="messagebar-sheet">
             <!-- selectable sheet image -->
             <label class="checkbox messagebar-sheet-image" style="background-image:url(path/to/image1.png)">
@@ -77,7 +77,7 @@ block content
     p Messages attachments block is designed to display currently attached message items/images:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="messagebar-attachments">
             <!-- image attachment -->
             <div class="messagebar-attachment">
@@ -380,7 +380,7 @@ block content
     p If you don't need to use Messagebar API and your Messagebar is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code><b>messagebar-init</b></code> class to messagebar element, and all required parameters can be passed using <code><b>data-</b></code> attributes:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="toolbar messagebar messagebar-init" data-max-height="200">
             <div class="toolbar-inner">
               <div class="messagebar-area">
@@ -395,7 +395,7 @@ block content
       h2(data-device-preview="../docs-demos/core/messagebar.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner">
@@ -423,7 +423,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

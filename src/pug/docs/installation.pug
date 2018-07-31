@@ -32,13 +32,13 @@ block content
     p Framework7 can also be imported as an ES-next module:
     pre
       code.js
-        :code
+        :code(lang="js")
           import Framework7 from 'framework7';
     p Framework7 has modular structure and <b>by default it exports only core Framework7 with core components</b>.
     p And if you need additional components they must be included additionally:
     pre
       code.js
-        :code
+        :code(lang="js")
           // Import core framework
           import Framework7 from 'framework7';
 
@@ -56,7 +56,7 @@ block content
     p In addition to <code>default</code> export it has named export for <code>Template7</code>, <code>Dom7</code>, <code>Request</code>, <code>Device</code>, <code>Utils</code> and <code>Support</code> libraries:
     pre
       code.js
-        :code
+        :code(lang="js")
           import Framework7, { Device, Request } from 'framework7';
 
           var app = new Framework({/*...*/});
@@ -69,7 +69,7 @@ block content
     p If you need to include Framework7 with all components, we can include its another script bundle with all components installed:
     pre
       code.js
-        :code
+        :code(lang="js")
           // Import framework with all components
           import Framework7 from 'framework7/framework7.esm.bundle.js';
 

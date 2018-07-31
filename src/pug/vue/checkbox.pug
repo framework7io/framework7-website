@@ -70,7 +70,7 @@ block content
     p Checkboxes List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;f7-list&gt;</a></code>, <code><a href="list-item.html">&lt;f7-list-item&gt;</a></code>.
     pre
       code.html
-        :code
+        :code(lang="html")
           <f7-list>
             <!-- Additional "checkbox" prop to enable checkbox list item -->
             <f7-list-item checkbox value="check_1" checked title="Checkbox 1"></f7-list-item>
@@ -80,7 +80,7 @@ block content
     p <code>v-model</code> <b>is not supported</b> on Checkbox vue component. Instead, just use the combination of <code>checked</code> property and <code>@change</code> event:
     pre
       code.js
-        :code
+        :code(lang="js")
           <template>
             <!-- With boolean value -->
             <f7-checkbox :checked="jobIsDone" @change="jobIsDone = $event.target.checked"></f7-checkbox>
@@ -129,7 +129,7 @@ block content
       h2(data-device-preview="../docs-demos/vue/checkbox.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <f7-block-title>Inline</f7-block-title>
             <f7-block strong>
               <p>Lorem <f7-checkbox name="checkbox-1"></f7-checkbox> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <f7-checkbox name="checkbox-2" checked></f7-checkbox> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>

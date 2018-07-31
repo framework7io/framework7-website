@@ -17,7 +17,7 @@ block content
     p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with <code>&lt;select&gt;</code> inside and additional <code><b>smart-select</b></code> class on <code>item-link</code>:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list">
             <ul>
               <!-- Smart select item -->
@@ -51,7 +51,7 @@ block content
     p For single option we may also use <code><b>data-option-color</b></code> and <code><b>data-option-class</b></code> attributes to add specific option color or css class for additional styling
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             <a href="#" class="item-link smart-select">
               <select name="fruits">
@@ -72,7 +72,7 @@ block content
     p We can also use multiple select and group options using <code>&lt;optgroup&gt;</code>. So if we add <code>multiple</code> attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             <a href="#" class="item-link smart-select">
               <!-- "multiple" attribute for multiple select-->
@@ -105,7 +105,7 @@ block content
     p With multiple select we can also use <b>maxlength</b> attribute to limit number of possible selected items:
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             <a href="#" class="item-link smart-select">
               <!-- "maxlength" attribute to limit number of possible selected items -->
@@ -524,7 +524,7 @@ block content
     p If you don't need to use Smart Select API and your Smart Select is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>smart-select-init</code> class:
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             <!-- Add smart-select-init class -->
             <a href="#" class="item-link smart-select smart-select-init">
@@ -545,13 +545,13 @@ block content
     p In this case if you need to access created Smart Select instance you can use the <code>app.smartSelect.get</code> app method:
     pre
       code.js
-        :code
+        :code(lang="js")
           var smartSelect = app.smartSelect.get('.smart-select');
 
     p When using auto init you may need to pass additional parameters. In this case you may pass all additional parameters via <code>data-</code> attributes on smart select element:
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             <!-- Pass parameters as kebab-case data attributes -->
             <a href="#" class="item-link smart-select smart-select-init" data-open-in="popup" data-virtual-list="true" data-page-back-link-text="Go back">
@@ -573,7 +573,7 @@ block content
       h2(data-device-preview="../docs-demos/core/smart-select.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <!-- Default Setup -->
             <li>
               <a class="item-link smart-select smart-select-init">

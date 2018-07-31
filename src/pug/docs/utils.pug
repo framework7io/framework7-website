@@ -15,7 +15,7 @@ block content
     p It is avaialable as a <code><b>utils</b></code> property of Framework7 class (<code>Framework7.utils</code>) and same property on initialized app instance (<code>app.utils</code>):
     pre
       code.js
-        :code
+        :code(lang="js")
           // If we need it in place where we don't have access to app instance or before we init the app
           var now = Framework7.utils.now();
 
@@ -116,7 +116,7 @@ block content
 
     pre
       code.js
-        :code
+        :code(lang="js")
           app.utils.nextFrame(function() {
             // do something on next frame
           });
@@ -136,7 +136,7 @@ block content
       p.method-returns returns timeout ID
     pre
       code.js
-        :code
+        :code(lang="js")
           app.utils.nextTick(function() {
             // do something on next tick
           });
@@ -148,7 +148,7 @@ block content
         span - returns current timestamp in ms
     pre
       code.js
-        :code
+        :code(lang="js")
           var time = app.utils.now();
           setTimeout(function () {
             var timeDiff = app.utils.now() - now;

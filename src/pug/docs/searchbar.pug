@@ -16,7 +16,7 @@ block content
     h2 Searchbar Layout
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="searchbar-backdrop"></div>
           <form class="searchbar">
             <div class="searchbar-inner">
@@ -45,7 +45,7 @@ block content
       li It can be a direct child of page and if page has also fixed Navbar and/or Toolbar then it must be AFTER Navbar and Toolbar:
         pre
           code.html
-            :code
+            :code(lang="html")
               <div class="page">
                 <div class="navbar">...</div>
                 <div class="toolbar">...</div>
@@ -60,7 +60,7 @@ block content
       li It can be placed inside of Subnavbar which is inside of the Navbar (recommended way):
         pre
           code.html
-            :code
+            :code(lang="html")
               <div class="page page-with-subnavbar">
                 <div class="navbar">
                   <div class="navbar-inner">
@@ -81,7 +81,7 @@ block content
     p In this case Searchbar is just part of the scrollable page content:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>
             <div class="page-content">
@@ -96,7 +96,7 @@ block content
     p Expandable Searchbar is hidden when disabled and becomes visible when we enable it. Its layout is pretty strict, it must be placed inside of Navbar:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">
               <div class="navbar-inner">
@@ -141,7 +141,7 @@ block content
     p For example:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>
             <div class="page-content">
@@ -524,7 +524,7 @@ block content
     p If you don't need to use Searchbar API and your Searchbar is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code><b>searchbar-init</b></code> class to searchbar element, and all required parameters can be passed using <code><b>data-</b></code> attributes:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>
             <div class="page-content">
@@ -553,7 +553,7 @@ block content
       h2(data-device-preview="../docs-demos/core/searchbar.html")
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner">
@@ -614,7 +614,7 @@ block content
             </div>
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7();
 
           // create searchbar

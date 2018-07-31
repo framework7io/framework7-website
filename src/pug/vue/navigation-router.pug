@@ -16,7 +16,7 @@ block content
     p The only difference in Framework7-Vue is that in Vue.js we are already composing our application with Vue components, so we need to map our Pages (Vue components) to the routes. It can be done by passing Vue component in <code>component</code> property of the route. Here's a basic example:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- app.vue -->
           <template>
             <f7-app :params="f7params">
@@ -68,7 +68,7 @@ block content
 
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- home.vue -->
           <template>
             <f7-page name="home">
@@ -111,7 +111,7 @@ block content
     p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
     pre
       code.js
-        :code
+        :code(lang="js")
           {
             path: '/about',
             async(routeTo, routeFrom, resolve, reject) {
@@ -128,7 +128,7 @@ block content
     p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>$f7router</b> property of component:
     pre
       code.html
-        :code
+        :code(lang="html")
           <f7-link @click="$f7router.navigate('/about/')">About</f7-link>
           <f7-link @click="$f7router.back()">Go Back</f7-link>
     .important-note

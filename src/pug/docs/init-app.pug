@@ -17,7 +17,7 @@ block content
     p It was pretty simple. But Framework7 also provides more customization on initialization by passing object with parameters:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             // App root element
             root: '#app',
@@ -42,12 +42,12 @@ block content
     p Now after we initialized our app, we need to initialize our <a href="view.html">View</a> (<code>&lt;div class="view view-main"&gt;</code> in app layout). The View is basically the app router which is responsible for navigation:
     pre
       code.js
-        :code
+        :code(lang="js")
           var mainView = app.views.create('.view-main');
     p So your final initialization code in <code>my-app.js</code> could look like:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             // App root element
             root: '#app',

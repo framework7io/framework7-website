@@ -15,22 +15,23 @@ block content
     h2 Accordion Layout
     p Common Accordion layout could be treat as the following:
     pre
-      code.xml
-        | &lt;div class="accordion-list"&gt;
-        |     &lt;div class="accordion-item"&gt;
-        |         &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-        |         &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="accordion-item accordion-item-opened"&gt;
-        |         &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-        |         &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="accordion-item"&gt;
-        |         &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-        |         &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-        |     &lt;/div&gt;
-        |     ...
-        | &lt;/div&gt;
+      code.html
+        :code(lang="html")
+          | &lt;div class="accordion-list"&gt;
+          |     &lt;div class="accordion-item"&gt;
+          |         &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
+          |         &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="accordion-item accordion-item-opened"&gt;
+          |         &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
+          |         &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     &lt;div class="accordion-item"&gt;
+          |         &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
+          |         &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
+          |     &lt;/div&gt;
+          |     ...
+          | &lt;/div&gt;
     p Where
     ul
       li <code>accordion-list</code> - list of accordion items set. Optional class
@@ -43,127 +44,130 @@ block content
     h2 Collapsible Layout
     p If you want to use single separate collapsible element you may just omit "accordion-list" wrapper element:
     pre
-      code.xml
-        | &lt;!-- Single collapsible element --&gt;
-        | &lt;div class="accordion-item"&gt;
-        |     &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-        |     &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-        | &lt;/div&gt;
-        |
-        | &lt;!-- Another separate collapsible element --&gt;
-        | &lt;div class="accordion-item"&gt;
-        |     &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
-        |     &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
-        | &lt;/div&gt;
+      code.html
+        :code(lang="html")
+          | &lt;!-- Single collapsible element --&gt;
+          | &lt;div class="accordion-item"&gt;
+          |     &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
+          |     &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
+          | &lt;/div&gt;
+          |
+          | &lt;!-- Another separate collapsible element --&gt;
+          | &lt;div class="accordion-item"&gt;
+          |     &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
+          |     &lt;div class="accordion-item-content"&gt;...&lt;/div&gt;
+          | &lt;/div&gt;
     h2 Accordion List View
     p If you use list view as accordion you may use "item-link" element instead of "accordion-toggle":
     pre
-      code.xml
-        | &lt;div class="list accordion-list"&gt;
-        |     &lt;ul&gt;
-        |         &lt;li class="accordion-item"&gt;
-        |             &lt;a href="" class="item-link item-content"&gt;
-        |                 &lt;div class="item-inner"&gt;
-        |                     &lt;div class="item-title"&gt;Item 1&lt;/div&gt;
-        |                 &lt;/div&gt;
-        |             &lt;/a&gt;
-        |             &lt;div class="accordion-item-content"&gt;Item 1 content ...&lt;/div&gt;
-        |         &lt;/li&gt;
-        |         &lt;li class="accordion-item"&gt;
-        |             &lt;a href="" class="item-link item-content"&gt;
-        |                 &lt;div class="item-inner"&gt;
-        |                     &lt;div class="item-title"&gt;Item 2&lt;/div&gt;
-        |                 &lt;/div&gt;
-        |             &lt;/a&gt;
-        |             &lt;div class="accordion-item-content"&gt;Item 2 content ...&lt;/div&gt;
-        |         &lt;/li&gt;
-        |     &lt;/ul&gt;
-        | &lt;/div&gt;
+      code.html
+        :code(lang="html")
+          | &lt;div class="list accordion-list"&gt;
+          |     &lt;ul&gt;
+          |         &lt;li class="accordion-item"&gt;
+          |             &lt;a href="" class="item-link item-content"&gt;
+          |                 &lt;div class="item-inner"&gt;
+          |                     &lt;div class="item-title"&gt;Item 1&lt;/div&gt;
+          |                 &lt;/div&gt;
+          |             &lt;/a&gt;
+          |             &lt;div class="accordion-item-content"&gt;Item 1 content ...&lt;/div&gt;
+          |         &lt;/li&gt;
+          |         &lt;li class="accordion-item"&gt;
+          |             &lt;a href="" class="item-link item-content"&gt;
+          |                 &lt;div class="item-inner"&gt;
+          |                     &lt;div class="item-title"&gt;Item 2&lt;/div&gt;
+          |                 &lt;/div&gt;
+          |             &lt;/a&gt;
+          |             &lt;div class="accordion-item-content"&gt;Item 2 content ...&lt;/div&gt;
+          |         &lt;/li&gt;
+          |     &lt;/ul&gt;
+          | &lt;/div&gt;
     .with-device
       h2(data-device-preview="../docs-demos/core/accordion.html") Example
       pre
-        code.xml
-          | &lt;!-- List View --&gt;
-          | &lt;div class="block-title"&gt;List View Accordion&lt;/div&gt;
-          | &lt;div class="list accordion-list"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li class="accordion-item"&gt;&lt;a href="#" class="item-content item-link"&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Item 1&lt;/div&gt;
-          |         &lt;/div&gt;&lt;/a&gt;
-          |       &lt;div class="accordion-item-content"&gt;
-          |         &lt;div class="block"&gt;
-          |           &lt;p&gt;Item 1 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
-          |         &lt;/div&gt;
-          |       &lt;/div&gt;
-          |     &lt;/li&gt;
-          |     &lt;li class="accordion-item"&gt;&lt;a href="#" class="item-content item-link"&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Item 2&lt;/div&gt;
-          |         &lt;/div&gt;&lt;/a&gt;
-          |       &lt;div class="accordion-item-content"&gt;
-          |         &lt;div class="block"&gt;
-          |           &lt;p&gt;Item 2 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
-          |         &lt;/div&gt;
-          |       &lt;/div&gt;
-          |     &lt;/li&gt;
-          |     ...
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
-          |
-          | &lt;!-- Separate collapsibles - omit "accordion-list" class--&gt;
-          | &lt;div class="block-title"&gt;Separate Collapsibles&lt;/div&gt;
-          | &lt;div class="list"&gt;
-          |   &lt;ul&gt;
-          |     &lt;li class="accordion-item"&gt;&lt;a href="#" class="item-content item-link"&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Item 1&lt;/div&gt;
-          |         &lt;/div&gt;&lt;/a&gt;
-          |       &lt;div class="accordion-item-content"&gt;
-          |         &lt;div class="block"&gt;
-          |           &lt;p&gt;Item 1 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
-          |         &lt;/div&gt;
-          |       &lt;/div&gt;
-          |     &lt;/li&gt;
-          |     &lt;li class="accordion-item"&gt;&lt;a href="#" class="item-content item-link"&gt;
-          |         &lt;div class="item-inner"&gt;
-          |           &lt;div class="item-title"&gt;Item 2&lt;/div&gt;
-          |         &lt;/div&gt;&lt;/a&gt;
-          |       &lt;div class="accordion-item-content"&gt;
-          |         &lt;div class="block"&gt;
-          |           &lt;p&gt;Item 2 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
-          |         &lt;/div&gt;
-          |       &lt;/div&gt;
-          |     &lt;/li&gt;
-          |     ...
-          |   &lt;/ul&gt;
-          | &lt;/div&gt;
-          |
-          | &lt;!-- Custom Accordion --&gt;
-          | &lt;div class="block-title"&gt;Custom Accordion&lt;/div&gt;
-          | &lt;div class="block accordion-list custom-accordion"&gt;
-          |   &lt;div class="accordion-item"&gt;
-          |     &lt;div class="accordion-item-toggle"&gt;
-          |       &lt;i class="icon icon-plus"&gt;+&lt;/i&gt;
-          |       &lt;i class="icon icon-minus"&gt;-&lt;/i&gt;
-          |       &lt;span&gt;Item 1&lt;/span&gt;
-          |     &lt;/div&gt;
-          |     &lt;div class="accordion-item-content"&gt;
-          |       &lt;p&gt;Item 1 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="accordion-item"&gt;
-          |     &lt;div class="accordion-item-toggle"&gt;
-          |       &lt;i class="icon icon-plus"&gt;+&lt;/i&gt;
-          |       &lt;i class="icon icon-minus"&gt;-&lt;/i&gt;
-          |       &lt;span&gt;Item 2&lt;/span&gt;
-          |     &lt;/div&gt;
-          |     &lt;div class="accordion-item-content"&gt;
-          |       &lt;p&gt;Item 2 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
-          |     &lt;/div&gt;
-          |   &lt;/div&gt;
-          |   ...
-          | &lt;/div&gt;
+        code.html
+          :code(lang="html")
+            | &lt;!-- List View --&gt;
+            | &lt;div class="block-title"&gt;List View Accordion&lt;/div&gt;
+            | &lt;div class="list accordion-list"&gt;
+            |   &lt;ul&gt;
+            |     &lt;li class="accordion-item"&gt;&lt;a href="#" class="item-content item-link"&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Item 1&lt;/div&gt;
+            |         &lt;/div&gt;&lt;/a&gt;
+            |       &lt;div class="accordion-item-content"&gt;
+            |         &lt;div class="block"&gt;
+            |           &lt;p&gt;Item 1 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
+            |         &lt;/div&gt;
+            |       &lt;/div&gt;
+            |     &lt;/li&gt;
+            |     &lt;li class="accordion-item"&gt;&lt;a href="#" class="item-content item-link"&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Item 2&lt;/div&gt;
+            |         &lt;/div&gt;&lt;/a&gt;
+            |       &lt;div class="accordion-item-content"&gt;
+            |         &lt;div class="block"&gt;
+            |           &lt;p&gt;Item 2 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
+            |         &lt;/div&gt;
+            |       &lt;/div&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;
+            |
+            | &lt;!-- Separate collapsibles - omit "accordion-list" class--&gt;
+            | &lt;div class="block-title"&gt;Separate Collapsibles&lt;/div&gt;
+            | &lt;div class="list"&gt;
+            |   &lt;ul&gt;
+            |     &lt;li class="accordion-item"&gt;&lt;a href="#" class="item-content item-link"&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Item 1&lt;/div&gt;
+            |         &lt;/div&gt;&lt;/a&gt;
+            |       &lt;div class="accordion-item-content"&gt;
+            |         &lt;div class="block"&gt;
+            |           &lt;p&gt;Item 1 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
+            |         &lt;/div&gt;
+            |       &lt;/div&gt;
+            |     &lt;/li&gt;
+            |     &lt;li class="accordion-item"&gt;&lt;a href="#" class="item-content item-link"&gt;
+            |         &lt;div class="item-inner"&gt;
+            |           &lt;div class="item-title"&gt;Item 2&lt;/div&gt;
+            |         &lt;/div&gt;&lt;/a&gt;
+            |       &lt;div class="accordion-item-content"&gt;
+            |         &lt;div class="block"&gt;
+            |           &lt;p&gt;Item 2 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
+            |         &lt;/div&gt;
+            |       &lt;/div&gt;
+            |     &lt;/li&gt;
+            |     ...
+            |   &lt;/ul&gt;
+            | &lt;/div&gt;
+            |
+            | &lt;!-- Custom Accordion --&gt;
+            | &lt;div class="block-title"&gt;Custom Accordion&lt;/div&gt;
+            | &lt;div class="block accordion-list custom-accordion"&gt;
+            |   &lt;div class="accordion-item"&gt;
+            |     &lt;div class="accordion-item-toggle"&gt;
+            |       &lt;i class="icon icon-plus"&gt;+&lt;/i&gt;
+            |       &lt;i class="icon icon-minus"&gt;-&lt;/i&gt;
+            |       &lt;span&gt;Item 1&lt;/span&gt;
+            |     &lt;/div&gt;
+            |     &lt;div class="accordion-item-content"&gt;
+            |       &lt;p&gt;Item 1 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
+            |     &lt;/div&gt;
+            |   &lt;/div&gt;
+            |   &lt;div class="accordion-item"&gt;
+            |     &lt;div class="accordion-item-toggle"&gt;
+            |       &lt;i class="icon icon-plus"&gt;+&lt;/i&gt;
+            |       &lt;i class="icon icon-minus"&gt;-&lt;/i&gt;
+            |       &lt;span&gt;Item 2&lt;/span&gt;
+            |     &lt;/div&gt;
+            |     &lt;div class="accordion-item-content"&gt;
+            |       &lt;p&gt;Item 2 content. Lorem ipsum dolor sit amet...&lt;/p&gt;
+            |     &lt;/div&gt;
+            |   &lt;/div&gt;
+            |   ...
+            | &lt;/div&gt;
 
     h2 Accordion App Methods
     p Accordion also has a JavaScript API that allows you to open and close them programmatically. Lets look at some Accordion App methods:
@@ -244,7 +248,7 @@ block content
           td Event will be triggered after accordion content completes its closing animation
     pre
       code
-        :code
+        :code(lang="js")
           var app = new Framework7();
 
           var $ = Dom7;

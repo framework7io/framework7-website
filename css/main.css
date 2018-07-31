@@ -3133,82 +3133,6 @@ h1 + .tutorial-author {
 .sponsors-top .sponsor-join {
   font-size: 12px;
 }
-.hljs {
-  background: #253238;
-  color: #fff;
-}
-.hljs-subst {
-  color: #fff;
-}
-.hljs-meta {
-  color: #aaa;
-}
-.hljs-comment {
-  color: #536E7B;
-  font-style: italic;
-}
-.hljs-keyword {
-  color: #86DDFF;
-}
-.hljs-string {
-  color: #C2E988;
-}
-.hljs-number {
-  color: #F98C68;
-}
-.hljs-variable {
-  color: #80A8FF;
-}
-.hljs-tag {
-  color: #86DDFF;
-}
-.hljs-tag .hljs-name {
-  color: #F27076;
-}
-.hljs-tag .hljs-attr {
-  color: #FFCC63;
-  font-style: italic;
-}
-.hljs-tag .hljs-string {
-  color: #C2E988;
-}
-.hljs-built_in {
-  color: #FFCC63;
-}
-.hljs-keyword {
-  color: #C88FEC;
-  font-weight: bold;
-}
-.hljs-string {
-  color: #C2E988;
-}
-.hljs-literal,
-.hljs-params {
-  color: #F98C68;
-}
-.hljs-function {
-  color: #80A8FF;
-}
-.hljs-function .hljs-keyword {
-  color: #C88FEC;
-  font-weight: bold;
-  font-style: normal;
-}
-.hljs-selector-class {
-  color: #FFCC63;
-}
-.hljs-attribute {
-  color: #86DDFF;
-}
-.hljs-selector-tag {
-  color: #F27076;
-}
-.hljs-selector-attr {
-  color: #FFCC63;
-}
-.hljs-selector-pseudo {
-  color: #C88FEC;
-}
 pre,
 code {
   font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -3243,8 +3167,11 @@ pre code {
 .nowrap {
   white-space: nowrap;
 }
-.important-note code:not(.hljs) {
+.important-note code {
   background: rgba(255, 255, 255, 0.8);
+}
+.important-note pre code {
+  background: #253238;
 }
 .with-device pre code {
   font-size: 13px;
@@ -3262,6 +3189,67 @@ table pre:first-child {
 }
 table pre:last-child {
   margin-bottom: 0;
+}
+code .punctuation {
+  color: #86DDFF;
+}
+code .operator {
+  color: #C88FEC;
+}
+code .keyword {
+  color: #C88FEC;
+}
+code .function {
+  color: #80A8FF;
+}
+code .string {
+  color: #C2E988;
+}
+code .tag {
+  color: #F27076;
+}
+code .attr-name {
+  color: #FFCC63;
+  font-style: italic;
+}
+code .script {
+  color: #fff;
+}
+code .spread {
+  color: #fff;
+}
+code .attr-value {
+  color: #C2E988;
+}
+code .class-name {
+  color: #FFCC63;
+}
+code .comment {
+  color: #536E7B;
+  font-style: italic;
+}
+code .number,
+code .boolean {
+  color: #F98C68;
+}
+code .constant {
+  color: #F27076;
+}
+code .context {
+  color: #FF506E;
+  font-style: italic;
+}
+code .built-in {
+  color: #FFCC63;
+}
+code .literal {
+  color: #F98C68;
+}
+code .selector {
+  color: #FFCC63;
+}
+code .property {
+  color: #B1CCD7;
 }
 footer {
   background: #f4f4f4;

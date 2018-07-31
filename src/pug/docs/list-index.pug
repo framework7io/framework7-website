@@ -17,7 +17,7 @@ block content
     p Single List Index layout is pretty simple:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>
 
@@ -248,14 +248,14 @@ block content
     p If you don't need to use List Index API and your List Index is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>list-index-init</code> class:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Add list-index-init class -->
           <div class="list-index list-index-init"></div>
 
     p In this case if you need to access created List Index instance you can use the <code>app.listIndex.get</code> app method:
     pre
       code.js
-        :code
+        :code(lang="js")
           var listIndex = app.listIndex.get('.list-index');
 
           var indexes = listIndex.indexes;
@@ -263,7 +263,7 @@ block content
     p When using auto init you may need to pass additional parameters. you can set all available parameters via <code>data-</code> attributes on list index element:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             ...
 
@@ -285,7 +285,7 @@ block content
       h2(data-device-preview="../docs-demos/core/list-index.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -328,7 +328,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var listIndex = app.listIndex.create({

@@ -17,7 +17,7 @@ block content
     p First of all, let's look at the standalone Login Screen layout. It behaves almost in the same way as Login Screen:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="login-screen">
             <!-- Default view-page layout -->
             <div class="view">
@@ -232,7 +232,7 @@ block content
     p According to above note:
     pre
       code.xml
-        :code
+        :code(lang="xml")
           <!-- In data-login-screen attribute we specify CSS selector of login screen we need to open -->
           <p><a href="#" data-login-screen=".my-login-screen" class="login-screen-open">Open Login Screen</a></p>
 
@@ -343,7 +343,7 @@ block content
     p It is also possible to embed Login Screen into the page or popup. Let's look on the example of Login Screen inside of page:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page no-navbar no-toolbar no-swipeback">
             <div class="page-content login-screen-content">
               <div class="login-screen-title">My App</div>
@@ -386,7 +386,7 @@ block content
       h2(data-device-preview="../docs-demos/core/login-screen.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <body>
               ...
                 <div class="page-content">
@@ -446,7 +446,7 @@ block content
             </body>
       pre
         code.js
-          :code
+          :code(lang="js")
             var $$ = Dom7;
 
             var app = new Framework7({

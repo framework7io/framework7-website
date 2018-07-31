@@ -43,7 +43,7 @@ block content
     p If you put tabs inside of scrollable <code>&lt;div class="page-content"&gt;</code> then they will have mutual scrolling - scrolling one tab will basically scroll the all tabs as well. To avoid this (if this is a case), it is recommended to make each tab as page-content, in this case each tab will have own scrolling:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>
             <!-- tabs is a direct child of page -->
@@ -80,7 +80,7 @@ block content
     p Such notation as above uses ID attributes to specify tabs we need to switch to. But sometimes we may have situation when we need to switch few tabs using one tab-link, for this case we may use classes instead of IDs and <code><b>data-tab</b></code> attribute for tab-link. For example:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Top Tabs -->
           <div class="tabs tabs-top">
             <div class="tab tab1 tab-active">...</div>
@@ -107,7 +107,7 @@ block content
     p Why single Tab could not be a seprate View with its own navigation and layout? It can, so you can just switch Views as tabs. In this case we will have kind of Tabbed app structure, where each tab represents separate View:
     pre
       code.html
-        :code
+        :code(lang="html")
           <body>
             <!-- App root -->
             <div id="app">
@@ -154,7 +154,7 @@ block content
     p It is also possible to switch tabs with simple transition. This requires additional <code><b>div class="tabs-animated-wrap"</b></code> wrapper for <code>div class="tabs"</code>:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Tabs animated wrapper, required to switch tabs with transition -->
           <div class="tabs-animated-wrap">
 
@@ -184,7 +184,7 @@ block content
     p In this example let's put tab links in Subnavbar and we will use <b>page-content</b> as <b>tab</b> to keep scrolling position for each tab separately:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Tabs swipeable wrapper, required to switch tabs with swipes -->
           <div class="tabs-swipeable-wrap">
             <!-- Tabs, tabs wrapper -->
@@ -282,7 +282,7 @@ block content
     p First of all we need to specify tabs routes in app routes. Let's assume we have a page with routable tabs on <code>/tabs/</code> route:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             {
               // Page main route
@@ -325,7 +325,7 @@ block content
     p On the <code>/tabs/index.html</code> page we may have the following structure, for example:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">
               <div class="navbar-inner">
@@ -405,7 +405,7 @@ block content
       h3 Static Tabs
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -449,7 +449,7 @@ block content
       h3 Animated Tabs
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -496,7 +496,7 @@ block content
       h3 Swipeable Tabs
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -543,7 +543,7 @@ block content
       h3 Routable Tabs
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7({
               routes: [
                 {
@@ -592,7 +592,7 @@ block content
             });
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">

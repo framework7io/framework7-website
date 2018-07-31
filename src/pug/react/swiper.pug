@@ -70,7 +70,7 @@ block content
       li <code><b>after-wrapper</b></code> - element will be inserted right after <code>&lt;div class="swiper-wrapper"&gt;</code> element
     pre
       code.html
-        :code
+        :code(lang="html")
           <Swiper>
             <div slot="before-wrapper">Before Wrapper</div>
             <div slot="after-wrapper">After Wrapper</div>
@@ -93,7 +93,7 @@ block content
       h4 Minimal layout
       pre
         code.html
-          :code
+          :code(lang="html")
             <Swiper>
               <SwiperSlide>Slide 1</SwiperSlide>
               <SwiperSlide>Slide 2</SwiperSlide>
@@ -102,7 +102,7 @@ block content
       h4 With all controls
       pre
         code.html
-          :code
+          :code(lang="html")
             <Swiper pagination navigation scrollbar>
               <SwiperSlide>Slide 1</SwiperSlide>
               <SwiperSlide>Slide 2</SwiperSlide>
@@ -113,7 +113,7 @@ block content
       p You can pass any additional <a href="http://idangero.us/swiper/api" target="_blank">Swiper API</a> parameters using <code>params</code> property:
       pre
         code.html
-          :code
+          :code(lang="html")
             <Swiper navigation params={{speed:500, slidesPerView: 3, spaceBetween: 20}}>
               <SwiperSlide>Slide 1</SwiperSlide>
               <SwiperSlide>Slide 2</SwiperSlide>

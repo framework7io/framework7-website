@@ -16,7 +16,7 @@ block content
     h2 Messages Layout
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="page-content messages-content">
               <div class="messages">
@@ -84,7 +84,7 @@ block content
     p Here is a full single message layout:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="message">
             <div class="message-avatar" style="background-image:url(path/to/avatar)"></div>
             <div class="message-content">
@@ -462,7 +462,7 @@ block content
     p If you don't need to use Messages API and your Messages is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code><b>messages-init</b></code> class to messages element, and all required parameters can be passed using <code><b>data-</b></code> attributes:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="messages messages-init" data-new-messages-first="true">
             ...
           </div>
@@ -472,7 +472,7 @@ block content
       h2(data-device-preview="../docs-demos/core/messages.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner">
@@ -604,7 +604,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

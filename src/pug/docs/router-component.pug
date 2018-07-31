@@ -80,7 +80,7 @@ block content
     p So the example route with page component may look like:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             // ...
             {
@@ -150,7 +150,7 @@ block content
           td Dom7 instance with component HTML element
             pre
               code.js
-                :code
+                :code(lang="js")
                   this.$el.find('p').addClass('red')
         tr
           td $<br>$$<br>$dom7
@@ -158,7 +158,7 @@ block content
           td <a href="dom7.html">Dom7</a> library:
             pre
               code.js
-                :code
+                :code(lang="js")
                   this.$$('p').text('hello world')
         tr
           td $app
@@ -166,7 +166,7 @@ block content
           td Framework7 app instance
             pre
               code.js
-                :code
+                :code(lang="js")
                   this.$app.dialog.alert('Hello world!')
         tr
           td $root
@@ -174,7 +174,7 @@ block content
           td Root data and methods you have specified in <code>data</code> and <code>methods</code> properties on app init
             pre
               code.js
-                :code
+                :code(lang="js")
                   var app = new Framework7({
                     // root data
                     data: function () {
@@ -204,7 +204,7 @@ block content
           td Related router instance
             pre
               code.js
-                :code
+                :code(lang="js")
                   this.$router.back(); //navigate back
         tr
           td $theme
@@ -212,7 +212,7 @@ block content
           td Object with <code>md</code> and <code>ios</code> boolean properties which indicating current theme. For example:
             pre
               code.js
-                :code
+                :code(lang="js")
                   if (this.$theme.ios) { /* do something when iOS theme is active */ }
                   if (this.$theme.md) { /* do something when MD theme is active */ }
         tr
@@ -226,7 +226,7 @@ block content
     p Component page events handlers can be passed in <code>on</code> component property. They are usual DOM <a href="page.html#page-events">Page Events</a>. Because they are DOM events, they accept <code>event</code> as first agrument, and <a href="page.html#page-data">Page Data</a> as second argument. There only difference with usual DOM events is that their context (<code>this</code>) bound to component context and event handler name must be specified in camelCase format (#[code page:init] -> #[code pageInit]):
     pre
       code.js
-        :code
+        :code(lang="js")
           ...
           data: function () {
             return {
@@ -261,7 +261,7 @@ block content
     p Such event handlers are processed only on initial rendering, or for elements patched with VDOM. <b>If you add such element to DOM manually it won't work!</b>
     pre
       code.js
-        :code
+        :code(lang="js")
           {
             // ...
             methods: {
@@ -280,7 +280,7 @@ block content
     p It is not very comfortable to specify all component routes under same routes array, especially if we have a lot of such routes. This is why we can use <code>componentUrl</code> instead and out component into single file:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             ...
             {
@@ -292,7 +292,7 @@ block content
     p And in <code>some-page.html</code>:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- component template -->
           <template>
             <div class="page">
@@ -346,7 +346,7 @@ block content
           </script>
     p Well, now it is much cleaner. The <code>&lt;template&gt;</code> and <code>&lt;style&gt;</code> tags will be automatically converted to the same properties of exported component.
     p You may think that it is not valid to have a direct <code>return</code> statement in script, but it is ok because parser puts the content of the script tag into function body.
-    h3 ES Template Literals
+    h3 ES Template Literals
     .important-note
       p
         b The feature available from Framework7 version 3.1.0.
@@ -358,7 +358,7 @@ block content
 
     pre
       code.js
-        :code
+        :code(lang="js")
           var a = 5;
           var b = 10;
           console.log(`Fifteen is ${a + b} and not ${2 * a + b}.`);
@@ -366,7 +366,7 @@ block content
     p To enable your component template being treated as template literal we need to add <code>es</code> attribute to <code>&lt;template&gt;</code> tag. The template from previous example will look like:
     pre
       code.js
-        :code
+        :code(lang="js")
           <template>
             <div class="page">
               <div class="navbar">
@@ -391,7 +391,7 @@ block content
     p In case you want to scope component styles in single file component to this component only, you may add <code><b>scoped</b></code> attribute to component <code>&lt;style&gt;</code> tag:
     pre
       code.html
-        :code
+        :code(lang="html")
           <template>
             <!-- component template -->
           </template>
@@ -414,7 +414,7 @@ block content
     p When scoped style added component element will have additional <code>data-scope="[unique_id]"</code> where [unique_id] is the unique timestamp. And all styles will be refactored to have this unique scope id, for example:
     pre
       code.css
-        :code
+        :code(lang="css")
           [data-scope="1515740589328"] p {
             color: red;
           }
@@ -424,18 +424,18 @@ block content
     p In case you need to use more complex selector with including component parent reference, then you may use <code><b>{{this}}</b></code> keword to reference the component:
     pre
       code.html
-        :code
+        :code(lang="html")
           <template>
             <!-- component template -->
           </template>
 
           <!-- style has additional "scoped" attribute -->
           <style scoped>
-            <!-- all paragraphs in this component will be red under iOS theme -->
+            /* all paragraphs in this component will be red under iOS theme */
             html.ios {{this}} p {
               color: red;
             }
-            <!-- all paragraphs in this component will be green under MD theme -->
+            /* all paragraphs in this component will be green under MD theme */
             html.md {{this}} p {
               color: green;
             }
@@ -457,7 +457,7 @@ block content
 
     pre
      code.html
-      :code
+      :code(lang="html")
         <template>
           <div class="page">
             <div class="navbar">

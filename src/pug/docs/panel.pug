@@ -16,7 +16,7 @@ block content
     p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of the app root element (or &lt;body&gt; in case there is no root element in use):
     pre
       code.html
-        :code
+        :code(lang="html")
           <body>
             <!-- App root element -->
             <div id="#app">
@@ -37,7 +37,7 @@ block content
     p After we added panels we need to choose opening effect for each panel. There could be one of two effects: <b>"Reveal"</b> (when panel moves out whole app's content) or <b>"Cover"</b> (when panel overlays app's content). If you want to use "Reveal" effect you should add additional <code><b>panel-reveal</b></code> class to Panel, or <code><b>panel-cover</b></code> for cover effect:
     pre
       code.html
-        :code
+        :code(lang="html")
           <body>
             <!-- App root element -->
             <div id="#app">
@@ -112,7 +112,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework({
             panel: {
               swipe: 'left',
@@ -215,7 +215,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var panel = app.panel.create({
             el: '.panel-left',
           })
@@ -302,7 +302,7 @@ block content
     p According to above note:
     pre
       code.html
-        :code
+        :code(lang="html")
           <body>
             <div id="app">
               <!-- Left Panel with Reveal effect -->
@@ -480,7 +480,7 @@ block content
       h2(data-device-preview="../docs-demos/core/panel.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <body>
               <div id="app">
                 <div class="panel panel-left panel-reveal">
@@ -518,7 +518,7 @@ block content
             </body>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

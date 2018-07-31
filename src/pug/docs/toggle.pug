@@ -16,7 +16,7 @@ block content
     p Layout is pretty simple:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Toggle element -->
           <label class="toggle">
             <!-- Toggle input -->
@@ -27,7 +27,7 @@ block content
     p Inside of Simple List:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list simple-list">
             <ul>
               ...
@@ -42,7 +42,7 @@ block content
     p Inside of usual List (preferable in <code>item-after</code>):
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list">
             <ul>
               ...
@@ -63,7 +63,7 @@ block content
     p Toggle supports all <a href="color-themes.html">default colors</a>. So to change its color just add color-[color] class to toggle element.
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- red toggle -->
           <label class="toggle color-red">...</label>
 
@@ -233,7 +233,7 @@ block content
     p If you don't need to use toggle API and your toggle is inside of page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>toggle-init</code> class:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Add toggle-init class -->
           <label class="toggle toggle-init">
             <input type="checkbox">
@@ -242,7 +242,7 @@ block content
     p In this case if you need to access created Toggle instance you can use the <code>app.toggle.get</code> app method:
     pre
       code.js
-        :code
+        :code(lang="js")
           var toggle = app.toggle.get('.toggle');
 
           if (toggle.checked) {

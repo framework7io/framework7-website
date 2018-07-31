@@ -18,7 +18,7 @@ block content
     p To enable Infinite Scroll you need to add additional <code><b>infinite-scroll-content</b></code> class to any scrollable container, particularly to our page scrolling area - <code>&lt;div class="page-content"&gt;</code>:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
               <div class="page-content infinite-scroll-content infinite-scroll-top">
                   ...
@@ -37,7 +37,7 @@ block content
     p If you need to use infinite scroll on top of the page (when it scrolled to top), you need to add additional <code><b>infinite-scroll-top</b></code> class to "page-content":
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
               <div class="page-content infinite-scroll-content infinite-scroll-top">
                   <div class="preloader infinite-scroll-preloader"></div>
@@ -98,7 +98,7 @@ block content
       h2(data-device-preview="../docs-demos/core/infinite-scroll.html") Example
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page" data-page="home">
               ...
               <div class="page-content infinite-scroll-content">
@@ -131,7 +131,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

@@ -15,7 +15,7 @@ block content
     p It is avaialable as a <code><b>request</b></code> property of Framework7 class (<code>Framework7.request</code>) and same property on initialized app instance (<code>app.request</code>):
     pre
       code.js
-        :code
+        :code(lang="js")
           // If we need it in place where we don't have access to app instance or before we init the app
           Framework7.request.get('somepage.html', function (data) {
             console.log(data);
@@ -204,7 +204,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7();
 
           var $$ = Dom7;
@@ -243,7 +243,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7();
 
           var $$ = Dom7;
@@ -278,7 +278,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           Framework7.request.json('items.json', function (data) {
             console.log(data);
           });
@@ -318,7 +318,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7();
 
           var $$ = Dom7;
@@ -342,7 +342,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           // After the following setup all XHR requests will have additional 'Autorization' header
           Framework7.request.setup({
             headers: {

@@ -1,4 +1,16 @@
-@import './hljs.less';
+@codeMain: #fff;
+@codeBg: #253238;
+@codeComment: #536E7B;
+@codeMeta: #aaa;
+@codeOrange: #F98C68;
+@codeRed: #F27076;
+@codeYellow: #FFCC63;
+@codeGreen: #C2E988;
+@codeLightBlue: #86DDFF;
+@codeBlue: #80A8FF;
+@codePurple: #C88FEC;
+@codePink: #FF506E;
+@codeGray: #B1CCD7;
 
 pre, code {
   .monospace();
@@ -20,9 +32,9 @@ pre {
   white-space: pre-wrap;
   code {
     padding: 20px;
-    background: #253238;
+    background: @codeBg;
     display: block;
-    color: #fff;
+    color: @codeMain;
     display: block;
     overflow-x: auto;
     border-radius: 6px;
@@ -36,8 +48,11 @@ pre {
 }
 
 .important-note {
-  code:not(.hljs) {
+  code {
     background: rgba(255,255,255,0.8);
+  }
+  pre code {
+    background: @codeBg;
   }
 }
 .with-device pre code {
@@ -57,5 +72,67 @@ table pre {
   }
   &:last-child {
     margin-bottom: 0;
+  }
+}
+code {
+  .punctuation {
+    color: @codeLightBlue;
+  }
+  .operator {
+    color: @codePurple;
+  }
+  .keyword {
+    color: @codePurple;
+  }
+  .function {
+    color: @codeBlue;
+  }
+  .string {
+    color: @codeGreen;
+  }
+  .tag {
+    color: @codeRed;
+  }
+  .attr-name {
+    color: @codeYellow;
+    font-style: italic;
+  }
+  .script {
+    color: #fff;
+  }
+  .spread  {
+    color: #fff;
+  }
+  .attr-value {
+    color: @codeGreen;
+  }
+  .class-name {
+    color: @codeYellow;
+  }
+  .comment {
+    color: @codeComment;
+    font-style: italic;
+  }
+  .number, .boolean {
+    color: @codeOrange;
+  }
+  .constant {
+    color: @codeRed;
+  }
+  .context {
+    color: @codePink;
+    font-style: italic;
+  }
+  .built-in {
+    color: @codeYellow;
+  }
+  .literal {
+    color: @codeOrange;
+  }
+  .selector {
+    color: @codeYellow;
+  }
+  .property {
+    color: @codeGray;
   }
 }

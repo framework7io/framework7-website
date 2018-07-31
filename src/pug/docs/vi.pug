@@ -38,7 +38,7 @@ block content
     p Now when we have our vi placement id we may set it up in Framework7 on the app initialization:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             /*
               common app bundle id must match the one
@@ -55,7 +55,7 @@ block content
     p That is all, now we can use Framework7’s vi API to create and show ads. In simplest way just call the following method when you need to show an ad:
     pre
       code.js
-        :code
+        :code(lang="js")
           app.vi.createAd();
     h2 vi App Methods
     p Let's look at available vi app methods and properties:
@@ -246,7 +246,7 @@ block content
       p All parameters can be used in global app parameters under <code>vi</code> property to set defaults for all vi ads. For example:
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7({
               /*
                 common app bundle id must match the one
@@ -262,7 +262,7 @@ block content
       p In this case when we create vi ad, we need to pass parameters that we want to override:
       pre
         code.js
-          :code
+          :code(lang="js")
             var viAd = app.vi.createAd({
               // disable autoplay for this ad
               autoplay: false,
@@ -395,7 +395,7 @@ block content
       h2(data-device-preview="../docs-demos/core/vi.html") Examples
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7({
               id: 'io.framework7.testapp',
               vi: {

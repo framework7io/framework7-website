@@ -111,12 +111,12 @@ block content
     p In iOS theme Navbar has thin border on the bottom. To disable this border you need to add <code><b>no-hairline</b></code> class to navbar element:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="navbar no-hairline">...</div>
     p In MD theme Navbar has shadow. To disable this shadow you need to add <code><b>no-shadow</b></code> class to navbar element:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="navbar no-shadow">...</div>
     h2 Navbar Type
     p Now let's look where we can place our Navbar in DOM. There are several rules to place Navbar.
@@ -124,7 +124,7 @@ block content
     p Static navbar position is the probably most rarely used layout type. In this case Navbar is just part of the scrollable page content:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <!-- Scrollable page content -->
             <div class="page-content">
@@ -138,7 +138,7 @@ block content
     p Fixed navbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed toolbar then it must be BEFORE the toolbar:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <!-- Fixed navbar goes ALWAYS FIRST -->
             <div class="navbar">...</div>
@@ -157,7 +157,7 @@ block content
     p If we need only one common navbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="view">
             <!-- View common navbar -->
             <div class="navbar">...</div>
@@ -168,7 +168,7 @@ block content
     p If we need only one common navbar / navbar for all views then it must be a direct child of Views element and be BEFORE all views.
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="views tabs">
             <!-- Views common navbar -->
             <div class="navbar">...</div>
@@ -187,7 +187,7 @@ block content
     p If you want to disable it you need to pass <code>iosDynamicNavbar: false</code> for required View on its initialisation or in global <a href="app.html#app-parameters">app parameters</a> for all views. For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           // Disable globally
           var app = new Framework7({
             view: {
@@ -214,7 +214,7 @@ block content
         p For better look you should keep identic transition type for the same Navbar parts through different pages.
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- No additional classes, all elements will have "fade" effect on page transition -->
           <div class="navbar">
             <div class="navbar-inner">
@@ -322,7 +322,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             navbar: {
               hideOnPageScroll: true,
@@ -344,7 +344,7 @@ block content
     p For example:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">
               ...
@@ -373,7 +373,7 @@ block content
       h3 Static Navbar
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="page-content">
                 <!-- Static Navbar -->
@@ -398,7 +398,7 @@ block content
       h3 Fixed Navbar
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <!-- Fixed/Dynamic Navbar -->
               <div class="navbar">
@@ -422,7 +422,7 @@ block content
       h3 Navbar API
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -446,7 +446,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
@@ -460,7 +460,7 @@ block content
       h3 Hide On Scroll
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">

@@ -17,7 +17,7 @@ block content
     p Let's look on how to integrate pull to refresh to page:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <!-- Page content must have additional "ptr-content" class -->
             <div class="page-content ptr-content" data-ptr-distance="55">
@@ -91,7 +91,7 @@ block content
     p If we created PTR manually or used <code>app.ptr.get</code> method we will PTR initialized instance with useful methods and properties:
     pre
       code.js
-        :code
+        :code(lang="js")
           // init ptr manually
           var ptr = app.ptr.create('.ptr-content');
 
@@ -233,7 +233,7 @@ block content
       h2(data-device-preview="../docs-demos/core/pull-to-refresh.html") Example
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page-content ptr-content">
               <div class="ptr-preloader">
                 <div class="preloader"></div>
@@ -273,7 +273,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

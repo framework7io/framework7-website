@@ -102,7 +102,7 @@ block content
     p In this case if you need to access created Swiper instance you can use the <code>app.swiper.get</code> app method:
     pre
       code.js
-        :code
+        :code(lang="js")
           var swiper = app.swiper.get('.swiper-container');
 
           swiper.slideNext();
@@ -136,7 +136,7 @@ block content
       h2(data-device-preview="../docs-demos/core/swiper.html") Examples
       pre
         code.css
-          :code
+          :code(lang="css")
             /* A bit of demo styles */;
             .demo-swiper .swiper-slide {
               font-size: 25px;
@@ -169,7 +169,7 @@ block content
       h4 Default
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="swiper-container swiper-init demo-swiper">
               <div class="swiper-wrapper">
                 <div class="swiper-slide">Slide 1</div>
@@ -187,7 +187,7 @@ block content
       h4 1 Slide Per View, 50px Between
       pre
         code.html
-          :code
+          :code(lang="html")
             <div data-pagination='{"el": ".swiper-pagination"}' data-space-between="50" class="swiper-container swiper-init demo-swiper">
               <div class="swiper-pagination"></div>
               <div class="swiper-wrapper">
@@ -206,7 +206,7 @@ block content
       h4 2 Slides Per View, 20px Between
       pre
         code.html
-          :code
+          :code(lang="html")
             <div data-pagination='{"el": ".swiper-pagination"}' data-space-between="20" data-slides-per-view="2" class="swiper-container swiper-init demo-swiper">
               <div class="swiper-pagination"></div>
               <div class="swiper-wrapper">
@@ -225,7 +225,7 @@ block content
       h4 3 Slides Per View, 10px Between
       pre
         code.html
-          :code
+          :code(lang="html")
             <div data-pagination='{"el": ".swiper-pagination"}' data-space-between="10" data-slides-per-view="3" class="swiper-container swiper-init demo-swiper">
               <div class="swiper-pagination"></div>
               <div class="swiper-wrapper">
@@ -244,7 +244,7 @@ block content
       h4 Auto Slides Per View + Centered
       pre
         code.html
-          :code
+          :code(lang="html")
             <div data-pagination='{"el": ".swiper-pagination"}' data-space-between="10" data-slides-per-view="auto" data-centered-slides="true" class="swiper-container swiper-init demo-swiper demo-swiper-auto">
               <div class="swiper-pagination"></div>
               <div class="swiper-wrapper">
@@ -263,7 +263,7 @@ block content
       h4 Vertical, 10px Between
       pre
         code.html
-          :code
+          :code(lang="html")
             <div data-pagination='{"el": ".swiper-pagination"}' data-space-between="10" data-direction="vertical" class="swiper-container swiper-init demo-swiper">
               <div class="swiper-pagination"></div>
               <div class="swiper-wrapper">
@@ -277,7 +277,7 @@ block content
       h4 Slow speed
       pre
         code.html
-          :code
+          :code(lang="html")
             <div data-speed="900" data-pagination='{"el": ".swiper-pagination"}' data-space-between="50" class="swiper-container swiper-init demo-swiper">
               <div class="swiper-pagination"></div>
               <div class="swiper-wrapper">

@@ -27,7 +27,7 @@ block content
     p Now, when Framework7 did its job on this part, we can control Statusbar behavior, we need to add <code><b>&lt;div class="statusbar"&gt;</b></code> as a direct child of app root element:
     pre
       code.html
-        :code
+        :code(lang="html")
           <body>
             <!-- App root element -->
             <div id="app">
@@ -69,7 +69,7 @@ block content
     p It is possible to control some default statusbar behavior by passing statusbar related parameters on app init under <code>statusbar</code> property:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             statusbar: {
               iosOverlaysWebView: true,

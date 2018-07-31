@@ -38,14 +38,14 @@ block content
     p Framework7-Vue can also be imported as an ES-next module:
     pre
       code.js
-        :code
+        :code(lang="js")
           import Framework7Vue from 'framework7-vue'
     .important-note
       p <b>By default it exports only core Framework7-Vue plugin without any components</b>.
     p And if you need additional components they must be imported additionally:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- some-page.vue -->
           <template>
             ...
@@ -67,7 +67,7 @@ block content
     p If you need to include all Framework7-Vue components, we can include its another script bundle with all Vue components registered:
     pre
       code.js
-        :code
+        :code(lang="js")
           // Import framework with all components
           import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js';
 

@@ -128,7 +128,7 @@ block content
     p If we need to add list item header/footer text in addition to item's title we can use <code>item-header</code> and <code>item-footer</code> elements:
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             <div class="item-content">
               <div class="item-media">
@@ -150,7 +150,7 @@ block content
     p Of course in most cases we need to use list view elements as links (&lt;a&gt;) to other pages or data. In this case we need to wrap <code>item-content</code> with <code>&lt;a class="item-link"&gt;</code> element:
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             &lt;a href="#" class="item-link"&gt;
               &lt;div class="item-content"&gt;
@@ -162,7 +162,7 @@ block content
     p If your links contains nothing except "item-content" then we can just use link as "item-content":
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             &lt;a href="#" class="item-link item-content"&gt;
               &lt;div class="item-media"&gt;...&lt;/div&gt;
@@ -177,7 +177,7 @@ block content
     p List button is a simplified list link item, usefule in case you need to trigger simple self-explaining actions:
     pre
       code.html
-        :code
+        :code(lang="html")
           <li>
             <a class="item-link list-button">List Button 1</a>
           </li>
@@ -192,7 +192,7 @@ block content
         | &lt;li class="item-divider"&gt;Divider title here&lt;/li&gt;
     pre
       code.html
-        :code
+        :code(lang="html")
            &lt;div class="list"&gt;
              &lt;ul&gt;
                &lt;!-- List items --&gt;
@@ -211,7 +211,7 @@ block content
     p Sometimes we need to group list view elements inside of single list block. In this case we need to additional <code>list-group</code> elements:
     pre
       code.html
-        :code
+        :code(lang="html")
            &lt;div class="list"&gt;
              &lt;!-- First group--&gt;
              &lt;div class="list-group"&gt;
@@ -239,7 +239,7 @@ block content
     p In case we need list with simple items structure that have only titles, we may use Simple List modification. In this case we need additional class <code>simple-list</code> on list block with plain <code>&lt;li&gt;</code> items layout:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list simple-list">
             <ul>
               <li>Item 1</li>
@@ -253,7 +253,7 @@ block content
     p In case we need list with simple link items structure that have only titles, we may use Links List modification. In this case we need additional class <code>links-list</code> on list block with plain <code>&lt;li&gt;&lt;a&gt;...&lt;/a&gt;&lt;/li&gt;</code> items layout:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list links-list">
             <ul>
               <li>
@@ -273,7 +273,7 @@ block content
     p And of course it has a bit more complex layout:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Media list block has additional "media-list" class -->
           <div class="list media-list">
             <ul>
@@ -321,7 +321,7 @@ block content
     p In you case you need some custom list item layout with table-like structure you may use additional list elements <code>item-row</code> and <code>item-cell</code>:
     pre
       code.html
-        :code
+        :code(lang="html")
           <li class="item-content">
             <div class="item-inner item-cell">
               <div class="item-row">
@@ -352,7 +352,7 @@ block content
       h4 Simple List
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list simple-list">
               <ul>
                 <li>Item 1</li>
@@ -363,7 +363,7 @@ block content
       h4 Links List
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list links-list">
               <ul>
                 <li><a href="#">Link 1</a></li>
@@ -374,7 +374,7 @@ block content
       h4 List With Icons
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li>
@@ -408,7 +408,7 @@ block content
       h4 Links
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li>
@@ -442,7 +442,7 @@ block content
       h4 Links, Header, Footer
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li>
@@ -500,7 +500,7 @@ block content
       h4 Links Without Icons
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li>
@@ -537,7 +537,7 @@ block content
       h4 Grouped with sticky titles
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <div class="list-group">
                 <ul>
@@ -621,7 +621,7 @@ block content
       h4 Mixed and nested
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li>
@@ -723,7 +723,7 @@ block content
       h4 Mixed, inset
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list inset">
               <ul>
                 <li>
@@ -773,7 +773,7 @@ block content
       h4 Tablet inset
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list tablet-inset">
               <ul>
                 <li>
@@ -809,7 +809,7 @@ block content
       h4 Media List / Songs
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list media-list">
               <ul>
                 <li>
@@ -854,7 +854,7 @@ block content
       h4 Media List / Mail App
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list media-list">
               <ul>
                 <li>
@@ -910,7 +910,7 @@ block content
       h4 With centered chevron icon
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list media-list chevron-center">
               <ul>
                 <li>
@@ -942,7 +942,7 @@ block content
       h4 Media List / Something more simple
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list media-list">
               <ul>
                 <li>
@@ -983,7 +983,7 @@ block content
       h4 Media List / Inset
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list media-list inset">
               <ul>
                 <li>
@@ -1024,7 +1024,7 @@ block content
       h4 List Buttons
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li>
@@ -1041,7 +1041,7 @@ block content
       h4 Inset List Buttons
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list inset">
               <ul>
                 <li>
@@ -1058,7 +1058,7 @@ block content
       h4 Custom Table-like Layout
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="list">
               <ul>
                 <li>

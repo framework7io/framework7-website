@@ -1,9 +1,14 @@
 const jsdom = require('jsdom').jsdom;
 const jQuery = require('jquery');
 const fs = require('fs');
-const currentData = require('./search-index.json');
-
 const searchData = [];
+
+let currentData = [];
+try {
+  currentData = require('../search-index.json') || [];
+} catch (e) {
+  // no index
+}
 
 function generateTitleHash(title) {
   return title.trim()

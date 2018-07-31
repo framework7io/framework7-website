@@ -15,7 +15,7 @@ block content
     p Let's look at view HTML structure:
     pre
       code.html
-        :code
+        :code(lang="html")
           <body>
             <!-- app root -->
             <div id="app">
@@ -42,7 +42,7 @@ block content
       p Only one "Views" element is allowed!
     pre
       code.html
-        :code
+        :code(lang="html")
           <body>
             <!-- app root -->
             <div id="app">
@@ -555,7 +555,7 @@ block content
           td Refresh/reload current page. Actually same as:
             pre
               code.js
-                :code
+                :code(lang="js")
                   router.navigate(router.currentRoute.url, {
                     reloadCurrent: true,
                     ignoreCache: true,
@@ -585,7 +585,7 @@ block content
     p It may be not very comfortable to use router methods all the time to navigate between pages. In many cases we can just use <a href="link.html">links</a> to navigate between pages. And we can pass additional navigation parameters using <code>data-</code> attributes:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- same as router.navigate('/somepage/'); -->
           <a href="/somepage/">Some Page</a>
 
@@ -604,7 +604,7 @@ block content
     p But if we need to load page in another view we can specify this view's CSS selector in link's <code>data-view</code> attribute
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- left view -->
           <div class="view view-init view-left" data-name="left">
             ...
@@ -785,7 +785,7 @@ block content
     p If you don't need to use View API and your View is inside of DOM on a moment of app initialization then it can be auto initialized with just adding additional <code>view-init</code> class:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Add view-init class -->
           <div class="view view-init">
             ...
@@ -805,7 +805,7 @@ block content
       li Otherwise, we can access it by passed <code>name</code> parameter like <code>app.views.home</code>
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- main view -->
           <div class="view view-main view-init">
             ...
@@ -817,14 +817,14 @@ block content
           </div>
     pre
       code.js
-        :code
+        :code(lang="js")
           var mainView = app.views.main;
           var homeView = app.views.home;
     h2 Initial Page Route
     p Initial page can also be loaded correctly using <a href="routes.html">Routes</a>. In app layout we must leave View blank:
     pre
       code.html
-        :code
+        :code(lang="html")
           <body>
             <div id="app">
               <div class="view view-main"></div>
@@ -833,7 +833,7 @@ block content
     p In routes we may specify "home" route, for example:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes: [
             {
               path: '/',
@@ -844,7 +844,7 @@ block content
     p And when we init the View, we need to specify it is default URL:
     pre
       code.js
-        :code
+        :code(lang="js")
           app.views.create('.view-main', {
             url: '/'
           })

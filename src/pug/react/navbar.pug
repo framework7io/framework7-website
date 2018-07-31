@@ -158,7 +158,7 @@ block content
       li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="navbar-inner"&gt;</code> element
     pre
       code.html
-        :code
+        :code(lang="html")
           <Navbar title="My App">
             <div slot="before-inner">Before Inner</div>
             <div slot="after-inner">After Inner</div>
@@ -180,25 +180,25 @@ block content
     h4 Minimal layout
     pre
       code.html
-        :code
+        :code(lang="html")
           <Navbar title="My App"></Navbar>
 
     h4 Minimal layout with back link
     pre
       code.html
-        :code
+        :code(lang="html")
           <Navbar title="My App" backLink="Back"></Navbar>
 
     h4 Without "sliding" transition effect (affects iOS theme only)
     pre
       code.html
-        :code
+        :code(lang="html")
           <Navbar title="My App" backLink="Back" sliding="{false}"></Navbar>
 
     h4 With additional right link to open right panel
     pre
       code.html
-        :code
+        :code(lang="html")
           <Navbar title="My App" backLink="Back">
             <NavRight>
               <Link icon="icon-bars" panelOpen="right"></Link>
@@ -208,7 +208,7 @@ block content
     h4 All three parts
     pre
       code.html
-        :code
+        :code(lang="html")
           <Navbar>
             <NavLeft backLink="Back"></NavLeft>
             <NavTitle>My App</NavTitle>
@@ -220,7 +220,7 @@ block content
     h4 Full custom layout
     pre
       code.html
-        :code
+        :code(lang="html")
           <Navbar>
             <NavLeft>
               <Link>Left Link</Link>

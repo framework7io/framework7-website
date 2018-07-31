@@ -17,7 +17,7 @@ block content
     p Let's look at the simple plain app structure, where we don't use any bundlers in our app, just a plain html + js files. Full layout again, but with script:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- index.html -->
 
           <!DOCTYPE html>
@@ -54,7 +54,7 @@ block content
           </html>
     pre
       code.js
-        :code
+        :code(lang="js")
           /* my-app.js */
 
           // First of all, we need to initialize/enable Framework7 Vue plugin:
@@ -90,7 +90,7 @@ block content
     p If you use Webpack, Rollup or another bundler with ES-next modules support, we may have the following structure:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- index.html -->
 
           <!DOCTYPE html>
@@ -107,7 +107,7 @@ block content
           </html>
     pre
       code.js
-        :code
+        :code(lang="js")
           /* my-app.js */
 
           // Import Vue
@@ -133,7 +133,7 @@ block content
           });
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- app.vue -->
 
           <template>

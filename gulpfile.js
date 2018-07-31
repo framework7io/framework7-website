@@ -16,7 +16,7 @@
   var useCDN = true;
   var cdnPath = '//cdn.framework7.io';
   var pkg = require('./package.json');
-
+  const highlight = require('./src/highlight');
   const releaseMeta = require('./src/release-meta');
 
   // Get src file url
@@ -28,10 +28,9 @@
   }
 
   // Pug Filter
-  pug.filters['code'] = function (text) {
-    return text
-      .replace( /</g, '&lt;'   )
-      .replace( />/g, '&gt;'   )
+  pug.filters['code'] = function (code, { lang } = {}) {
+    code = highlight(code, lang);
+    return code;
   }
   // Pug YAML Data
   function getYamlData(ymlPath) {

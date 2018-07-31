@@ -17,12 +17,12 @@ block content
     p Layout is pretty simple:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="preloader"></div>
     p MD theme uses more complex preloader layout as it has more complex animation. Usually if it is inside of page or created withing some API methods F7 will add this additional inner layout automatically. But if you will add it manually using, lets say, direct DOM manipulation then you may need to add full layout which is required for MD theme:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Full preloader layout for MD theme -->
           <div class="preloader">
             <span class="preloader-inner">
@@ -84,7 +84,7 @@ block content
       h2 Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="block-title">Default</div>
             <div class="block block-strong align-items-stretch text-align-center">
               <div class="row text-align-center">
@@ -105,7 +105,7 @@ block content
             </div>
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="block-title">Color Preloaders</div>
             <div class="block block-strong">
               <div class="row">
@@ -125,14 +125,14 @@ block content
             </div>
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="block-title">Multi-color (MD-theme only)</div>
             <div class="block block-strong text-align-center">
               <div class="preloader color-multi"></div>
             </div>
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="block-title">Preloader Modals</div>
             <div class="block block-strong">
               <p>With <b>app.preloader.show()</b> you can show small overlay with preloader indicator.</p>
@@ -142,7 +142,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

@@ -15,7 +15,7 @@ block content
     p First of all let's look at the basic plugin's JS structure. It is basically an object:
     pre
       code.js
-        :code
+        :code(lang="js")
           var myPlugin = {
             // Module Name
             name: 'demo-module',
@@ -84,7 +84,7 @@ block content
     p After we have our plugin, we need to install it on required Class. To install plugin we must call `.use()` method on class. For example, if this is an common Framework7 plugin:
     pre
       code.js
-        :code
+        :code(lang="js")
           Framework7.use(myPlugin);
     .important-note
       p Plugin must be installed before class initialization (before calling <code>new Framework7()</code>)
@@ -92,7 +92,7 @@ block content
     p Let's create simple Debug demo plugin. It will do nothing, just log some events:
     pre
       code.js
-        :code
+        :code(lang="js")
           /* framework7.debug.js */
 
           var debugEnabled = false;
@@ -152,7 +152,7 @@ block content
         | &lt;/body&gt;
     pre
       code.js
-        :code
+        :code(lang="js")
           /* myapp.js */
 
           // install plugin first

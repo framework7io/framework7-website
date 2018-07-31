@@ -122,10 +122,10 @@
     $('.home-killer .tab-links a').eq(index).addClass('active');
   });
 
-  if (window.hljs) {
-    hljs.configure({tabReplace: '  '});
-    hljs.initHighlightingOnLoad();
-  }
+  // if (window.hljs) {
+  //   hljs.configure({tabReplace: '  '});
+  //   hljs.initHighlightingOnLoad();
+  // }
 
   // Clickable titles
   if ($('.docs-content').length > 0) {

@@ -17,7 +17,7 @@ block content
     p It is recommended to use inputs with <a href="list-view.html">List View</a>:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list">
             <ul>
               ...
@@ -47,7 +47,7 @@ block content
     p By default inputs list is displayed with stacked labels. Stacked labels always appear on top of the input:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list">
             <ul>
               ...
@@ -72,7 +72,7 @@ block content
     p If you want to use inline labels then you can additional <code>inline-labels</code> class to the whole list or <code>inline-label</code> class to the single item:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list inline-labels">
             <ul>
               ...
@@ -105,7 +105,7 @@ block content
     p To add floating label, we need to use <code>item-floating-label</code> class instead of item-label. In iOS theme it will be displayed as default stacked label.
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list">
             <ul>
               ...
@@ -127,7 +127,7 @@ block content
     p It is also possible to additional information about form input:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="list">
             <ul>
               ...
@@ -163,7 +163,7 @@ block content
           td Supported types: <code><b>text</code></b>, <code><b>password</code></b>, <code><b>email</code></b>, <code><b>tel</code></b>, <code><b>url</code></b>, <code><b>date</code></b>, <code><b>number</code></b>, <code><b>datetime-local</code></b>
             pre
               code.html
-                :code
+                :code(lang="html")
                   ...
                     <div class="item-input-wrap">
                       <input type="text">
@@ -213,7 +213,7 @@ block content
     p To make textarea automatically resize based on its content we may just add <code>resizable</code> class:
     pre
       code.html
-        :code
+        :code(lang="html")
           <textarea class="resizable"></textarea>
     h2 Validation
     p Framework7 supports <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation" target="_blank">HTML5 validation</a> based on <code>validity</code> input property. With enabled validation, there will appear validation error messages in case of input has invalid value.
@@ -221,7 +221,7 @@ block content
     p Value validation depends on input <code>type</code>. For example <code>input type="email"</code> will be validated to match email pattern, etc. It is default browser behavior. In case you want to add custom rule to validate input value, then it must be done using <code>pattern</code> input attribute:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- default validation, check for value is not empty -->
           <input type="text" placeholder="Your name" required validate>
 
@@ -283,7 +283,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             input: {
               scrollIntoViewOnFocus: true,
@@ -363,7 +363,7 @@ block content
       h2(data-device-preview="../docs-demos/core/inputs.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="block-title">Full Layout / Inline Labels</div>
             <div class="list inline-labels no-hairlines-md">
               <ul>

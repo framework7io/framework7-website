@@ -39,12 +39,12 @@ block content
     p In iOS theme Toolbar/Tabbar has thin border on the top. To disable this border you need to add <code><b>no-hairline</b></code> class to toolbar element:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="toolbar no-hairline">...</div>
     p In MD theme Toolbar/Tabbar has shadow. To disable this shadow you need to add <code><b>no-shadow</b></code> class to toolbar element:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="toolbar no-shadow">...</div>
 
     h2 Toolbar Type
@@ -53,7 +53,7 @@ block content
     p Static toolbar position is the probably most rarely used layout type. In this case Toolbar / Tabbar is just part of the scrollable page content:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <!-- Fixed navbar goes first -->
             <div class="navbar">...</div>
@@ -70,7 +70,7 @@ block content
     p Fixed toolbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed Navbar then it must be <b>AFTER Navbar</b>:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <!-- Fixed navbar goes first -->
             <div class="navbar">...</div>
@@ -89,7 +89,7 @@ block content
     p If we need only one common toolbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="view">
             <!-- View common toolbar -->
             <div class="toolbar">...</div>
@@ -100,7 +100,7 @@ block content
     p If we need only one common toolbar / tabbar for all views then it must be a direct child of Views element and be <b>BEFORE all views</b>. Such layout mainly used in multiple views/tabbed app layout with toolbar
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="views tabs">
             <!-- Views common toolbar / tabbar -->
             <div class="toolbar tabbar">...</div>
@@ -161,7 +161,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             toolbar: {
               hideOnPageScroll: true,
@@ -174,7 +174,7 @@ block content
     p Tab bar layout is almost the same as for Toolbar, but Tab bar has additional <code><b>tabbar</b></code> class:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="toolbar tabbar">
             <div class="toolbar-inner">
               <a href="#tab1" class="tab-link tab-link-active">
@@ -189,7 +189,7 @@ block content
     p In MD Theme Tabbar also located on top of the app right below the Navbar. And if you need to have Tabbar on bottom you can do it by just using addional <code><b>toolbar-bottom-md</b></code> class:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="toolbar tabbar toolbar-bottom-md">
             <div class="toolbar-inner">
               ...
@@ -206,7 +206,7 @@ block content
     p If you need to use Tabbar icons with labels we need one more "tabbar-labels" class on Tabbar, and to put &lt;span class="tabbar-label"&gt; inside of link:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="toolbar tabbar tabbar-labels">
             <div class="toolbar-inner">
               <a href="#tab1" class="tab-link tab-link-active">
@@ -226,7 +226,7 @@ block content
     p All we need to make Tabbar scrollable is just to add additional <code><b>tabbar-scrollable</b></code> class to the Tabbar:
     pre
       code.html
-        :code
+        :code(lang="html")
           <!-- Additional "tabbar-scrollable" class -->
           <div class="toolbar tabbar tabbar-scrollable">
             <div class="toolbar-inner">
@@ -253,7 +253,7 @@ block content
     p For example:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">
               ...
@@ -290,7 +290,7 @@ block content
       h3 Static Toolbar
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -313,7 +313,7 @@ block content
       h3 Fixed Toolbar
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -336,7 +336,7 @@ block content
       h3 Toolbar API
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -359,7 +359,7 @@ block content
             </div>
       pre
         code.js
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
@@ -373,7 +373,7 @@ block content
       h3 Hide On Scroll
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -397,7 +397,7 @@ block content
       h3 Tabbar
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -440,7 +440,7 @@ block content
       h3 Tabbar With Labels
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                   ...
@@ -474,7 +474,7 @@ block content
       h3 Scrollable Tabbar
       pre
         code.html
-          :code
+          :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...

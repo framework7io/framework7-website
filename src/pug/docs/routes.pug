@@ -14,7 +14,7 @@ block content
     p First of all, when we init the Framework7 app we should pass default routes using <code>routes</code> array parameter:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             routes: [
               {
@@ -59,7 +59,7 @@ block content
     p If you have a multi-view/router app and you want to have some View/Router to have <b>own strict routes</b> and don't want default routes be available in this <a href="view.html">View</a>, then you may specify the same <code>routes</code> parameter on View init:
     pre
       code.js
-        :code
+        :code(lang="js")
           var view1 = app.views.create('.view-1', {
             routes: [
               {
@@ -75,7 +75,7 @@ block content
     p If you have a multi-view/router app and you want to have some View/Router to have <b>additional routes</b> and don't want these additional routes are available in other Views, then you may specify the <code>routesAdd</code> parameter on View init:
     pre
       code.js
-        :code
+        :code(lang="js")
           // This view will support all global routes + own additional routes
           var view2 = app.views.create('.view-2', {
             // These routes are only available in this view
@@ -136,7 +136,7 @@ block content
             p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression, e.g.
             pre
               code.js
-                :code
+                :code(lang="js")
                   {
                     path: '/users/:userId/posts/:postId',
                     url: 'http://myapp.com/posts/{{userId}}/{{postId}}'
@@ -234,7 +234,7 @@ block content
     p Here is an example for most of the possible options:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes: [
             // Load via Ajax
             {
@@ -324,7 +324,7 @@ block content
     p Route path matching is handled by <a href="https://github.com/pillarjs/path-to-regexp" target="_blank">Path To Regexp</a> library, so everything what is supported there is supported in Framework7 as well. For example, if you want to add default route which match all paths, we can use regular expression like:
     pre
       code.js
-        :code
+        :code(lang="js")
           // Default route, match to all pages (e.g. 404 page)
           {
             path: '(.*)',
@@ -392,7 +392,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             {
               path: '/foo/',
@@ -409,7 +409,7 @@ block content
     p It is possible to add all page events inside of route for this page using <code>on</code> route property. For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           var app = new Framework7({
             routes: [
               // ...
@@ -441,7 +441,7 @@ block content
     p It is possible to have nested routes (routes in routes) as well:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             {
               path: '/faq/',
@@ -466,7 +466,7 @@ block content
     p What does it mean? To get better understanding, actually (under the hood) such routes will be merged into the following ones:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             {
               path: '/faq/',
@@ -507,7 +507,7 @@ block content
     p First of all we need to specify tabs routes in app routes. Lets assume we have a page with routable tabs on /tabs/ route:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             {
               path: '/about-me/',
@@ -546,7 +546,7 @@ block content
     p On the <code>/about-me/</code> page we may have the following structure for example:
     pre
       code.html
-        :code
+        :code(lang="html")
           <div class="page">
             <div class="navbar">
               <div class="navbar-inner">
@@ -578,7 +578,7 @@ block content
       li with routable modals you can load modal itself and its content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             ...
             // Creates popup from passed HTML string
@@ -661,7 +661,7 @@ block content
     p <code>beforeEnter</code> and <code>beforeLeave</code> route hooks can be very useful if you need to do additional checks, execute additional actions or load/send something before route load (enter) and unload (leave). It can be single method or array of methods to be executed. For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             {
               path: 'profile',
@@ -701,7 +701,7 @@ block content
     p And of course there are multiple hooks are supported when passed as array of functions:
     pre
       code.js
-        :code
+        :code(lang="js")
           function checkAuth(to, from, resolve, reject) {
             if (/* some condition to check user is logged in */) {
               resolve();
@@ -738,7 +738,7 @@ block content
     p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             {
               path: '/foo/',
@@ -763,7 +763,7 @@ block content
     p For example:
     pre
       code.js
-        :code
+        :code(lang="js")
           routes = [
             {
               path: '/foo/',

@@ -70,7 +70,7 @@ block content
     p Radios List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;f7-list&gt;</a></code>, <code><a href="list-item.html">&lt;f7-list-item&gt;</a></code>.
     pre
       code.html
-        :code
+        :code(lang="html")
           <f7-list>
             <!-- Additional "radio" prop to enable radio list item -->
             <f7-list-item radio value="check_1" name="demo-radio" checked title="Radio 1"></f7-list-item>
@@ -80,7 +80,7 @@ block content
     p <code>v-model</code> <b>is not supported</b> on Radio vue component. Instead, just use the combination of <code>checked</code> property and <code>@change</code> event:
     pre
       code.html
-        :code
+        :code(lang="html")
           <template>
             <f7-radio
               name="fruit"
@@ -116,7 +116,7 @@ block content
       h2(data-device-preview="../docs-demos/vue/radio.html") Examples
       pre
         code.html
-          :code
+          :code(lang="html")
             <f7-block-title>Inline</f7-block-title>
             <f7-block strong>
               <p>Lorem <f7-radio name="demo-radio-inline"></f7-radio> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <f7-radio name="demo-radio-inline" checked></f7-radio> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>
