@@ -213,6 +213,21 @@ block content
           td
           td Function to format value in required format. It accepts current value and must return new formatted value;
         tr
+          td manualInputMode
+          td boolean
+          td false
+          td Enables manual input mode. This mode allows to type value from keyboar and check fractional part with defined accurancy. Also, <code>step</code> parameter is ignored when typing in this mode.
+        tr
+          td decimalPoint
+          td number
+          td 4
+          td Number of digits after dot, when in manual input mode.
+        tr
+          td buttonsEndInputMode
+          td boolean
+          td true
+          td Disables manual input mode on Stepper's minus or plus button click.
+        tr
           td on
           td object
           td
@@ -935,4 +950,22 @@ block content
                   </div>
                 </li>
               </ul>
+            </div>
+      h4 Manual input
+      p It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.
+      pre
+        code.html
+          :code
+            <div class="block block-strong text-align-center">
+              <div class="row">
+                <div class="col">
+                  <div class="stepper stepper-fill stepper-init" data-wraps="true" data-autorepeat="true" data-autorepeat-dynamic="true" data-decimal-point="2" data-manual-input-mode="true">
+                    <div class="stepper-button-minus"></div>
+                    <div class="stepper-input-wrap">
+                      <input type="text" value="0" min="0" max="1000" step="1">
+                    </div>
+                    <div class="stepper-button-plus"></div>
+                  </div>
+                </div>
+              </div>
             </div>

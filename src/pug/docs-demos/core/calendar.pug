@@ -144,15 +144,27 @@ block scripts
       dateFormat: 'MM dd yyyy',
     });
     // With events
-    var today = new Date();
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     var weekLater = new Date().setDate(today.getDate() + 7);
     var calendarEvents = app.calendar.create({
         inputEl: '#demo-calendar-events',
         dateFormat: 'M dd yyyy',
-        events: {
-          from: today,
-          to: weekLater
-        }
+        events: [
+          {
+            from: today,
+            to: weekLater
+          },
+          //- more events this day
+          {
+            date: today,
+            color: '#ff0000'
+          },
+          {
+            date: today,
+            color: '#00ff00'
+          },
+        ]
     });
     // Disabled
     var today = new Date();

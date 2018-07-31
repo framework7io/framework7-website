@@ -87,7 +87,23 @@ block content
           td events
           td Date Range
           td
-          td Dates with events. Will be marked with additonal "dot" on calendar day. Parameter accepts so called <b>Date Ranges</b> (look below for details)
+          td
+            p Dates with events. Will be marked with additonal "dot" on calendar day. Parameter accepts so called <b>Date Range</b> (look below for details).
+            p If you want to indicate that day has few different events, it is possible to indicate this with multiple different color dots. In this case, you need to pass date range as array where each object will have #[code date] and #[code color] properties, e.g.
+            pre
+              code.js
+                :code
+                  [
+                    {
+                      date: new Date(2018, 4, 11),
+                      color: '#2196f3',
+                    },
+                    // same date but different color, one more dot will be added to this day
+                    {
+                      date: new Date(2018, 4, 11),
+                      color: '#4caf50',
+                    },
+                  ]
         tr
           td rangesClasses
           td array
@@ -393,7 +409,7 @@ block content
       code.js
         | var calendar = app.calendar.create({
         |     ...
-        |     //Disabled 10th November 2015 and 11th November 2015:
+        |     // Disabled 10th November 2015 and 11th November 2015:
         |     disabled: [new Date(2015, 10, 10), new Date(2015, 10, 11)],
         |     ...
         | });
@@ -436,25 +452,47 @@ block content
         |     },
         |     ...
         | });
+    p Or object with #[code date] property:
+    pre
+      code.js
+        :code
+          var calendar = app.calendar.create({
+              ...
+              // Disabled 1th December 2015
+              disabled: {
+                  date: new Date(2015, 11, 1)
+              },
+              ...
+          });
     p Or array with mixed dates and objects:
     pre
       code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     events: [
-        |         new Date(2015, 9, 1),
-        |         new Date(2015, 9, 5),
-        |         {
-        |             from: new Date(2015, 9, 10),
-        |             to: new Date(2015, 9, 15)
-        |         },
-        |         {
-        |             from: new Date(2015, 9, 20),
-        |             to: new Date(2015, 9, 31)
-        |         }
-        |     ],
-        |     ...
-        | });
+        :code
+          var calendar = app.calendar.create({
+              ...
+              events: [
+                  new Date(2015, 9, 1),
+                  new Date(2015, 9, 5),
+                  {
+                      from: new Date(2015, 9, 10),
+                      to: new Date(2015, 9, 15)
+                  },
+                  {
+                      from: new Date(2015, 9, 20),
+                      to: new Date(2015, 9, 31)
+                  },
+                  {
+                      date: new Date(2015, 11, 1),
+                      color: '#ff0000'
+                  },
+                  // same date but one more color dot will be added
+                  {
+                      date: new Date(2015, 11, 1),
+                      color: '#00ff00'
+                  },
+              ],
+              ...
+          });
     h3 rangesClasses
     p <b>rangesClasses</b> parameter accepts array of objects with Date Range and class names for this range:
     pre
@@ -880,15 +918,27 @@ block content
       pre
         code.js
           :code
-            var today = new Date();
+            var now = new Date();
+            var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             var weekLater = new Date().setDate(today.getDate() + 7);
             var calendarEvents = app.calendar.create({
                 inputEl: '#demo-calendar-events',
                 dateFormat: 'M dd yyyy',
-                events: {
-                  from: today,
-                  to: weekLater
-                }
+                events: [
+                  {
+                    from: today,
+                    to: weekLater
+                  },
+                  //- more events this day
+                  {
+                    date: today,
+                    color: '#ff0000'
+                  },
+                  {
+                    date: today,
+                    color: '#00ff00'
+                  },
+                ]
             });
 
       h4 Disabled Dates

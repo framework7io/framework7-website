@@ -564,6 +564,9 @@ block content
           td router.clearPreviousHistory()
           td Clear router previous pages history and remove all previous pages from DOM
         tr
+          td router.updateCurrentUrl(<span>url</span>)
+          td Updates current route url, and updates `router.currentRoute` properties (query, params, hash, etc.) based on passed url. This method doesn't load or reload any content. It just changes current route url.
+        tr
           td router.on(<span>event</span>, <span>handler</span>)
           td Add event handler
         tr
@@ -665,6 +668,10 @@ block content
           td routeChanged
           td <span>(newRoute, previousRoute, router)</span>
           td Event will be fired on current route change and after page transitions
+        tr
+          td routeUrlUpdate
+          td <span>(newRoute, router)</span>
+          td Event will be fired when #[code router.updateCurrentUrl] method called
         tr
           th(colspan="3") XHR Events
         tr

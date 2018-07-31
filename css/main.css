@@ -104,6 +104,12 @@ h5 .code {
   font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
   font-weight: normal !important;
 }
+blockquote {
+  font-style: italic;
+  margin: 2em 0;
+  padding: 10px 0 10px 20px;
+  border-left: 3px solid #000;
+}
 main {
   padding-top: 40px;
   padding-bottom: 40px;
