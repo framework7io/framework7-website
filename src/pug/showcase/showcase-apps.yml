@@ -1,3 +1,41 @@
+
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/greety.jpg"
+  iconRounded: true
+  title: "Greety"
+  author:
+    url: https://greety.app/
+    name: Mukhamedkarimova Aneliya
+  links:
+    appstore: https://itunes.apple.com/us/app/greety/id1411585380
+    website: https://greety.app/
+  description: |
+Greety is a fast and easy way to send your warm wishes to each and every contact from your 1000+ list!
+
+CHOOSE A BIRTHDAY CARD
+Thanks to Unsplash you have an amazing variety of beautiful cards. Choose any to send for your contacts, you can change it any time you want. 
+
+WRITE YOUR WISHES
+Greety is perfect to keep your best and exclusive wishes for everyone you want to greet. You can change a text any time you want together with a card or you can do it before sending for particular contact. For your convenience #name and #surname hashtags help you to personalize each message. 
+
+GET REMINDERS AND SEND “HAPPY BIRTHDAY”
+You will receive notifications every morning if someone in your contact list has a birthday today. Please make sure that you fill in Birthday field for each of your contacts with accuracy. 
+After choosing a contact for greetings you can send your wishes in any convenient way – via email, WhatsApp, Messenger, iMessage, etc. 
+If you want to add something special – words or specific emoji to the text for a particular contact, you have a possibility to do it before tapping Send button. 
+
+RATE THE APPLICATION 
+This is our first application, and we would appreciate any comments and reviews. We develop it with a hope to help you provide a kind attention to your network.
+
+LANGUAGES
+Arabic (support right-to-left interface), English, Japanese, Russian
+  screenshots:
+  - "#{cdn}/i/showcase/greety-1.png"
+  - "#{cdn}/i/showcase/greety-2.png"
+  - "#{cdn}/i/showcase/greety-3.png"
+  - "#{cdn}/i/showcase/greety-4.png"
+  - "#{cdn}/i/showcase/greety-5.png"
+  - "#{cdn}/i/showcase/greety-6.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/tripline.jpg"
