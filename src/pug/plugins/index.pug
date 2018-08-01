@@ -15,7 +15,7 @@ block content
       .app
         a.app-icon(href=app.url, target="_blank", data-hover-text="Plugin Page")
           if (app.iconUrl)
-            img(src=app.iconUrl)
+            img(src=app.iconUrl.replace('#{cdn}', cdn))
           else if (app.icon)
             .img(style='background-color: ' + app.icon.bgColor + '; color: ' + app.icon.textColor) #{app.icon.text}
 

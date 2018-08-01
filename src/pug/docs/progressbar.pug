@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Progressbar| Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Progressbar
-    .docs-index
+    ul.docs-index
     p In addition to <a href="preloader.html">Preloader</a> Framework7 also comes with fancy animated determinate and infinite/indeterminate progressbars to indicate activity.
 
     h2 Determinate Progressbar
@@ -110,7 +110,7 @@ block content
           span.parameter el
           |  - <span class="parameter-type">string</span> or <span class="parameter-type">HTMLElement</span>. Progressbar element container or element containing progressbar element. If string - CSS selector of such element. If not specified then it will look for such element under the app root element.
 
-    .with-device(data-device-preview="../docs-demos/progressbar.html")
+    .with-device(data-device-preview="../docs-demos/core/progressbar.html")
       h2 Examples
       pre
         code.html

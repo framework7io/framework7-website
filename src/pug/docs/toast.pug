@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Toast | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Toast
-    .docs-index
+    ul.docs-index
     p Toasts provide brief feedback about an operation through a message on the screen.
     h2 Toast App Methods
     p Let's look at related App methods to work with Toast:
@@ -66,6 +66,15 @@ block content
           span.parameter animate
           |  - <span class="parameter-type">boolean</span>. Close Toast with animation.
       p.method-returns Method returns Toast's instance
+    .method-wrap
+      p
+        span.method app.toast.show(<span>parameters</span>)
+        | - create Toast instance and show immediately
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with toast parameters
+      p.method-returns Method returns created Toast's instance
     h2 Toast Parameters
     p Now let's look at list of available parameters we need to create Toast:
     table.params-table
@@ -116,6 +125,11 @@ block content
           td string
           td
           td Additional css class to add
+        tr
+          td destroyOnClose
+          td boolean
+          td false
+          td Destroys toast instance on close
         tr
           td render
           td function
@@ -287,7 +301,7 @@ block content
           td <span>toast</span>
           td app
     .with-device
-      h2(data-device-preview="../docs-demos/toast.html") Examples
+      h2(data-device-preview="../docs-demos/core/toast.html") Examples
       pre
         code
           :code

@@ -1,0 +1,13 @@
+diamond:
+platinum:
+gold:
+silver:
+-
+  title: Tommy
+  link: http://mytommy.com
+  imageUrl: "#{cdn}/i/sponsors/tommy.png"
+-
+  title: securCom
+  link: https://www.securcom.me/
+  imageUrl: "#{cdn}/i/sponsors/securcom.png"
+topSupporter:

@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Autocomplete | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Autocomplete
-    .docs-index
+    ul.docs-index
     p Framework7 comes with mobile-friendly and touch optimized Autocomplete component.
     p Autocomplete could be used in standalone mode or as a dropdown.
     h2 Autocomplete App Methods
@@ -217,6 +217,11 @@ block content
           td
           td String with CSS selector or HTMLElement of related text input
         tr
+          td inputEvents
+          td string
+          td input
+          td Allows to configure input events used to handle Autcomplete actions and source request. Can be changed for example to <code>change keyup compositionend</code> if you use keyboard with composition of Chinese characters
+        tr
           td highlightMatches
           td boolean
           td true
@@ -241,6 +246,11 @@ block content
           td boolean
           td false
           td If <code>true</code> then input which is used as <b>item-input</b> in List View will be expanded to full screen wide during dropdown visible.
+        tr
+          td dropdownContainerEl
+          td string<br>HTMLElement
+          td
+          td By default dropdown will be added to parent page-content element. You can specify here different element where to add dropdown element
         tr
           th(colspan="4") Render functions
         tr
@@ -438,7 +448,7 @@ block content
           td autocompleteBeforeDestroy
           td app
     .with-device
-      h2(data-device-preview="../docs-demos/autocomplete.html") Examples
+      h2(data-device-preview="../docs-demos/core/autocomplete.html") Examples
       pre
         code.js
           :code

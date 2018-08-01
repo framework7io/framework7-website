@@ -1,0 +1,345 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'List Index | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 List Index
+    ul.docs-index
+    p List Index allows to access a particular section of the list view instantly without scrolling through each section.
+    h2 List Index Layout
+    p Single List Index layout is pretty simple:
+    pre
+      code.html
+        :code
+          <div class="page">
+            <div class="navbar">...</div>
+
+            <!-- List Index element, must be a direct child of page -->
+            <div class="list-index"></div>
+
+            <!-- Scrollable page content -->
+            <div class="page-content">...</div>
+          </div>
+
+    h2 List Index App Methods
+    p Let's look at related App methods to work with List Index:
+    .method-wrap
+      p
+        span.method app.listIndex.create(<span>parameters</span>)
+        | - create List Index instance
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">object</span>. Object with list index parameters
+      p.method-returns Method returns created List Index's instance
+
+    .method-wrap
+      p
+        span.method app.listIndex.destroy(<span>el</span>)
+        | - destroy List Index instance
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) or <span class="parameter-type">object</span>. List Index element or List Index instance to destroy.
+    .method-wrap
+      p
+        span.method app.listIndex.get(<span>el</span>)
+        | - get List Index instance by HTML element
+      ul.method-parameters
+        li
+          span.parameter el
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). List Index element.
+      p.method-returns Method returns List Index's instance
+
+    h2 List Index Parameters
+    p Now let's look at list of available parameters we need to create List Index:
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td el
+          td HTMLElement<br>string
+          td
+          td List Index element. HTMLElement or string with CSS selector of list index element
+        tr
+          td listEl
+          td HTMLElement<br>string
+          td
+          td Related List View element. HTMLElement or string with CSS selector of List View element
+        tr
+          td indexes
+          td array<br>string
+          td auto
+          td Array with indexes. If not passed then it will automatically generate it based on <code>item-divider</code> and <code>list-group-title</code> elements inside of passed List View element in <code>listEl</code> parameter
+        tr
+          td scrollList
+          td boolean
+          td true
+          td Will automatically scroll related List View to the selected index
+        tr
+          td label
+          td boolean
+          td false
+          td Enables label bubble with selected index when you swipe over list index
+        tr
+          td iosItemHeight
+          td number
+          td 14
+          td Single index item height. It is required to calculate dynamic index and how many indexes fit on the screen. For iOS theme
+        tr
+          td mdItemHeight
+          td number
+          td 14
+          td Single index item height. It is required to calculate dynamic index and how many indexes fit on the screen. For MD theme
+        tr
+          td on
+          td object
+          td
+          td Object with events handlers. For example:
+            pre
+              code
+                :code
+                  var listIndex = app.listIndex.create({
+                    el: '.list-index'
+                    on: {
+                      select: function () {
+                        console.log('Index selected')
+                      },
+                    },
+                  })
+
+    h2 List Index Methods & Properties
+    p So to create List Index we have to call:
+    pre
+      code
+        :code
+          var listIndex = app.listIndex.create({ /* parameters */ })
+    p After that we have its initialized instance (like <code>listIndex</code> variable in example above) with useful methods and properties:
+    table.methods-table
+      tbody
+        tr
+          th(colspan="2") Properties
+        tr
+          td listIndex.app
+          td Link to global app instance
+        tr
+          td listIndex.el
+          td List index HTML element
+        tr
+          td listIndex.$el
+          td Dom7 instance with list index HTML element
+        tr
+          td listIndex.ul
+          td Dynamically created inner <code>&lt;ul&gt;</code> HTML element
+        tr
+          td listIndex.$ul
+          td Dom7 instance with dynamically created inner <code>&lt;ul&gt;</code> HTML element
+        tr
+          td listIndex.listEl
+          td Related List HTML element, passed in <code>listEl</code> parameter
+        tr
+          td listIndex.$listEl
+          td Dom7 instance with related List HTML element, passed in <code>listEl</code> parameter
+        tr
+          td listIndex.indexes
+          td Array with calculated indexes
+        tr
+          td listIndex.params
+          td List index parameters
+        tr
+          th(colspan="2") Methods
+        tr
+          td listIndex.update()
+          td Recalculates indexes, sizes and rerenders list index
+        tr
+          td listIndex.scrollToList(<span>itemContent</span>)
+          td Scrolls related list to specified index content
+        tr
+          td listIndex.destroy()
+          td Destroys list index instance
+        tr
+          td listIndex.on(<span>event</span>, <span>handler</span>)
+          td Add event handler
+        tr
+          td listIndex.once(<span>event</span>, <span>handler</span>)
+          td Add event handler that will be removed after it was fired
+        tr
+          td listIndex.off(<span>event</span>, <span>handler</span>)
+          td Remove event handler
+        tr
+          td listIndex.off(<span>event</span>)
+          td Remove all handlers for specified event
+        tr
+          td listIndex.emit(<span>event</span>, <span>...args</span>)
+          td Fire event on instance
+
+    h2 List Index Events
+    p List Index will fire the following DOM events on list index element and events on app and list index instance:
+    h3 DOM Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td listindex:select
+          td List Index Element<span>&lt;div class="list-index"&gt;</span>
+          td Event will be triggered on index select rather by click or swiping
+        tr
+          td listindex:click
+          td List Index Element<span>&lt;div class="list-index"&gt;</span>
+          td Event will be triggered on index click
+        tr
+          td listindex:beforedestroy
+          td List Index Element<span>&lt;div class="list-index"&gt;</span>
+          td Event will be triggered right before List Index instance will be destroyed
+    h3 App and List Index Instance Events
+    p List Index instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>listIndex</code>.
+    table.events-table.double-events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Target
+          th Description
+      tbody
+        tr
+          td select
+          td <span>(listIndex, itemContent)</span>
+          td listIndex
+          td(rowspan="2") Event will be triggered on index select rather by click or swiping. As an argument event handler receives list index instance and selected index item content
+        tr
+          td listIndexSelect
+          td <span>(listIndex, itemContent)</span>
+          td app
+        tr
+          td click
+          td <span>(listIndex, itemContent)</span>
+          td listIndex
+          td(rowspan="2") Event will be triggered on index click. As an argument event handler receives list index instance and clicked index item content
+        tr
+          td listIndexClick
+          td <span>(listIndex, itemContent)</span>
+          td app
+        tr
+          td beforeDestroy
+          td <span>(listIndex)</span>
+          td listIndex
+          td(rowspan="2") Event will be triggered right before List Index instance will be destroyed. As an argument event handler receives list index instance
+        tr
+          td listIndexBeforeDestroy
+          td <span>(listIndex)</span>
+          td app
+    h2 List Index Auto Initialization
+    p If you don't need to use List Index API and your List Index is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>list-index-init</code> class:
+    pre
+      code.html
+        :code
+          <!-- Add list-index-init class -->
+          <div class="list-index list-index-init"></div>
+
+    p In this case if you need to access created List Index instance you can use the <code>app.listIndex.get</code> app method:
+    pre
+      code.js
+        :code
+          var listIndex = app.listIndex.get('.list-index');
+
+          var indexes = listIndex.indexes;
+          // do something with indexes
+    p When using auto init you may need to pass additional parameters. you can set all available parameters via <code>data-</code> attributes on list index element:
+    pre
+      code.html
+        :code
+          <div class="page">
+            ...
+
+            <!-- parameters set via data- attributes -->
+            <div class="list-index"
+              data-list-el=".contacts-list"
+              data-label="true"
+              data-indexes="auto"
+            ></div>
+
+            <div class="page-content">
+              <div class="list contacts-list">
+                ...
+              </div>
+            </div>
+          </div>
+
+    .with-device
+      h2(data-device-preview="../docs-demos/core/list-index.html") Examples
+      pre
+        code.html
+          :code
+            <div class="page">
+              <div class="navbar">
+                ...
+              </div>
+
+              <!-- List index element -->
+              <div class="list-index"></div>
+
+              <div class="page-content">
+
+                <!-- Contacts list -->
+                <div class="list simple-list contacts-list">
+                  <div class="list-group">
+                    <ul>
+                      <li class="list-group-title">A</li>
+                      <li>Aaron</li>
+                      <li>Adam</li>
+                      ...
+                    </ul>
+                  </div>
+                  <div class="list-group">
+                    <ul>
+                      <li class="list-group-title">B</li>
+                      <li>Benjamin</li>
+                      <li>Blake</li>
+                      <li>Bobby</li>
+                    </ul>
+                  </div>
+                  <div class="list-group">
+                    <ul>
+                      <li class="list-group-title">C</li>
+                      <li>Caleb</li>
+                      <li>Callum</li>
+                      ...
+                    </ul>
+                  </div>
+                  ...
+                </div>
+              </div>
+            </div>
+      pre
+        code.js
+          :code
+            var app = new Framework7();
+
+            var listIndex = app.listIndex.create({
+              // ".list-index" element
+              el: '.list-index',
+              // List el where to look indexes and scroll for
+              listEl: '.contacts-list',
+              // Generate indexes automatically based on ".list-group-title" and ".item-divider"
+              indexes: 'auto',
+              // Scroll list on indexes click and touchmove
+              scrollList: true,
+              // Enable bubble label when swiping over indexes
+              label: true,
+            });

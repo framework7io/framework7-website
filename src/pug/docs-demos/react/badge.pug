@@ -1,0 +1,27 @@
+extends _layout
+block vars
+  - includeF7Icons = true
+  - includeMaterialIcons = true
+
+block content
+  script(type="text/babel").
+    class AppComponent extends React.Component {
+      constructor() {
+        super();
+
+        this.state = {
+
+        };
+      }
+      render() {
+        return (
+          <App>
+            <View main>
+              <Page>
+
+              </Page>
+            </View>
+          </App>
+        )
+      }
+    }

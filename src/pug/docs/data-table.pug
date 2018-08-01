@@ -1,20 +1,20 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Data Table | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Data Table
-    .docs-index
+    ul.docs-index
     p Data tables display sets of raw data. They usually appear in desktop enterprise products
     .with-device
-      h2(data-device-preview="../docs-demos/data-table.html") Data Table Layout
+      h2(data-device-preview="../docs-demos/core/data-table.html") Data Table Layout
       p Common Data Table layout could be treated as the following:
       pre
         code.html
@@ -46,6 +46,7 @@ block content
           :code
             <div class="data-table card">
               <table>
+                <thead>
                 ...
                 </thead>
                 <tbody>
@@ -64,7 +65,64 @@ block content
                 li <code>label-cell</code> - main label cell (only one such kind of cell per row, usually first cell)
                 li <code>numeric-cell</code> - cell to display numeric data (right-aligned)
                 li <code>tablet-only</code> - additional class to show this cell/column only on wide tablet devices (iPad)
-      h2(data-device-preview="../docs-demos/data-table-selectable.html") Selectable Rows
+      h2(data-device-preview="../docs-demos/core/data-table-pagination-footer.html") Pagination Footer
+      pre
+        code.html
+          :code
+            <div class="card data-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="label-cell">Desert (100g serving)</th>
+                    <th class="numeric-cell">Calories</th>
+                    <th class="numeric-cell">Fat (g)</th>
+                    <th class="numeric-cell">Carbs</th>
+                    <th class="numeric-cell">Protein (g)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="label-cell">Frozen yogurt</td>
+                    <td class="numeric-cell">159</td>
+                    <td class="numeric-cell">6.0</td>
+                    <td class="numeric-cell">24</td>
+                    <td class="numeric-cell">4.0</td>
+                  </tr>
+                  ...
+                </tbody>
+              </table>
+              <div class="data-table-footer">
+                <div class="data-table-rows-select">
+                  Per page:
+                  <div class="input input-dropdown">
+                    <select>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="all">All</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="data-table-pagination">
+                  <span class="data-table-pagination-label">1-5 of 10</span>
+                  <a href="#" class="link disabled">
+                    <i class="icon icon-prev color-gray"></i>
+                  </a>
+                  <a href="#" class="link">
+                    <i class="icon icon-next color-gray"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+      p Where
+      ul
+        li <code>data-table-footer</code> - data table footer main element
+          ul
+            li <code>data-table-rows-select</code> - container with amount per page select
+            li <code>data-table-pagination</code> - container with information about current page and prev/next navigation buttons
+              ul
+                li <code>data-table-pagination-label</code> - current paging label
+      h2(data-device-preview="../docs-demos/core/data-table-selectable.html") Selectable Rows
       pre
         code.html
           :code
@@ -115,7 +173,61 @@ block content
                     <i class="icon-checkbox"></i>
                   </label>
                 </td>
-      h2(data-device-preview="../docs-demos/data-table-title.html") Table Title/Header
+      h2(data-device-preview="../docs-demos/core/data-table-head-inputs.html") Inputs In Table Head
+      p Such tables are widely used in admin interfaces for filtering or search data
+      pre
+        code
+          :code
+            <div class="card data-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="input-cell">
+                      <span class="table-head-label">ID</span>
+                      <div class="input" style="width: 50px">
+                        <input type="number" placeholder="Filter">
+                      </div>
+                    </th>
+                    <th class="input-cell">
+                      <span class="table-head-label">Name</span>
+                      <div class="input">
+                        <input type="text" placeholder="Filter">
+                      </div>
+                    </th>
+                    ...
+                    <th class="input-cell">
+                      <span class="table-head-label">Gender</span>
+                      <div class="input input-dropdown">
+                        <select>
+                          <option value="All">All</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                        </select>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>john@doe.com</td>
+                    <td>Male</td>
+                  </tr>
+                  ...
+                </tbody>
+              </table>
+            </div>
+      p Where
+      ul
+        li
+          p <code>input-cell</code> - additional class on table cell required to display input
+        li
+          p <code>&lt;span class="table-head-label"&gt;</code> - input label
+        li
+          p <code>&lt;div class="input"&gt;</code> - input container
+
+      h2(data-device-preview="../docs-demos/core/data-table-title.html") Table Title/Header
       p When data table is used within <a href="./cards.html">Card</a> it is possible to use additional data table title with actions in card header.
       h4 With title and actions
       pre
@@ -323,7 +435,7 @@ block content
         li <code>data-table-links</code> - alternate/additional table actions
         li <code>actions-cell</code> - action links/icons cell
 
-      h2(data-device-preview="../docs-demos/data-table-sortable.html") Sortable
+      h2(data-device-preview="../docs-demos/core/data-table-sortable.html") Sortable
       pre
         code.html
           :code
@@ -351,7 +463,7 @@ block content
                           <i class="icon-checkbox"></i>
                         </label>
                       </th>
-                      <th class="label-cell sortable-cell sortable-active">Desert (100g serving)</th>
+                      <th class="label-cell sortable-cell sortable-cell-active">Desert (100g serving)</th>
                       <th class="numeric-cell sortable-cell">Calories</th>
                       <th class="numeric-cell sortable-cell">Fat (g)</th>
                       <th class="numeric-cell sortable-cell">Carbs</th>
@@ -380,13 +492,13 @@ block content
       p Where
       ul
         li <code>sortable-cell</code> - additional class to make cell/column is sortable
-        li <code>sortable-active</code> - additional class to specify active/default sortable cell/column
+        li <code>sortable-cell-active</code> - additional class to specify active/default sortable cell/column
         li <code>sortable-asc</code> - additional class to specify current sorting as ascending (default)
         li <code>sortable-desc</code> - additional class to specify current sorting as descending
       .important-note
         p Note, <b>there is no actual sortable logic</b> provided by framework. Actual sorting logic should be realized manually
 
-      h2(data-device-preview="../docs-demos/data-table-collapsible.html") Collapsible
+      h2(data-device-preview="../docs-demos/core/data-table-collapsible.html") Collapsible
       p The following table will be collapsed to kind of List View on small screens:
       pre
         code.html

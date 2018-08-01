@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Radio | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Radio
-    .docs-index
+    ul.docs-index
     h2 Radio Layout
     p Radio layout is pretty simple:
     pre
@@ -64,7 +64,7 @@ block content
         li Radio input (<code>&lt;input type="radio"&gt;</code>) must be a first child of <code>item-content</code>
         li Radio icon must be <b>after</b> radio input
     .with-device
-      h2(data-device-preview="../docs-demos/radio.html") Examples
+      h2(data-device-preview="../docs-demos/core/radio.html") Examples
       h4 Inline
       pre
         code.html

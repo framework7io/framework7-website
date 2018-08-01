@@ -1,130 +1,129 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'List View (Table View) | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
-  .docs-content.with-device
-    .full-width
-      h1 List View (Table View)
-      .docs-index
-      p List views are versatile and powerful user interface compontents frequently found in apps. A list view presents data in a scrollable list of multiple rows that may be divided into sections/groups.
-      p List views have many purposes:
-      ul
-        li To let users navigate through hierarchically structured data
-        li To present an indexed list of items
-        li To display detail information and controls in visually distinct groupings
-        li To present a selectable list of options
-      h2 List View Block
-      p List block is your list view elements wrapper.
-      p So first of all, all your list view elements should be wrapped with <code>&lt;div class="list"&gt;</code> element:
-      pre
-        code.html
-          | &lt;div class="list"&gt;
-          |     &lt;ul&gt;
-          |         ... list elements here ...
-          |     &lt;/ul&gt;
-          | &lt;/div&gt;
-      p To remove hairlines (thin borders) around list block we need additional <code><b>no-harilines</b></code> class:
-      pre
-        code.html
-          | &lt;div class="list no-hairlines"&gt;
-          |     &lt;ul&gt;
-          |         ... list elements here ...
-          |     &lt;/ul&gt;
-          | &lt;/div&gt;
-      p To remove hairlines (thin borders) between list items we need additional <code><b>no-harilines-between</b></code> class:
-      pre
-        code.html
-          | &lt;div class="list no-hairlines-between"&gt;
-          |     &lt;ul&gt;
-          |         ... list elements here ...
-          |     &lt;/ul&gt;
-          | &lt;/div&gt;
-      p To make list block inset we need additional <code><b>inset</b></code> class:
-      pre
-        code.html
-          | &lt;div class="list inset"&gt;
-          |     &lt;ul&gt;
-          |         ... list elements here ...
-          |     &lt;/ul&gt;
-          | &lt;/div&gt;
-      p To make block inset only on large screens we need to use <code><b>tablet-inset</b></code> class instead:
-      pre
-        code.html
-          | &lt;div class="list tablet-inset"&gt;
-          |     &lt;ul&gt;
-          |         ... list elements here ...
-          |     &lt;/ul&gt;
-          | &lt;/div&gt;
-      h2 List Item
-      pre
-        code.html
-          | &lt;div class="list no-hairlines"&gt;
-          |     &lt;ul&gt;
-          |         ... list elements here ...
-          |     &lt;/ul&gt;
-          | &lt;/div&gt;
+  .docs-content
+    +improveDocsLink
+    h1 List View (Table View)
+    ul.docs-index
+    p List views are versatile and powerful user interface compontents frequently found in apps. A list view presents data in a scrollable list of multiple rows that may be divided into sections/groups.
+    p List views have many purposes:
+    ul
+      li To let users navigate through hierarchically structured data
+      li To present an indexed list of items
+      li To display detail information and controls in visually distinct groupings
+      li To present a selectable list of options
+    h2 List View Block
+    p List block is your list view elements wrapper.
+    p So first of all, all your list view elements should be wrapped with <code>&lt;div class="list"&gt;</code> element:
+    pre
+      code.html
+        | &lt;div class="list"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    p To remove hairlines (thin borders) around list block we need additional <code><b>no-harilines</b></code> class:
+    pre
+      code.html
+        | &lt;div class="list no-hairlines"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    p To remove hairlines (thin borders) between list items we need additional <code><b>no-harilines-between</b></code> class:
+    pre
+      code.html
+        | &lt;div class="list no-hairlines-between"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    p To make list block inset we need additional <code><b>inset</b></code> class:
+    pre
+      code.html
+        | &lt;div class="list inset"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    p To make block inset only on large screens we need to use <code><b>tablet-inset</b></code> class instead:
+    pre
+      code.html
+        | &lt;div class="list tablet-inset"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
+    h2 List Item
+    pre
+      code.html
+        | &lt;div class="list no-hairlines"&gt;
+        |     &lt;ul&gt;
+        |         ... list elements here ...
+        |     &lt;/ul&gt;
+        | &lt;/div&gt;
 
-      p Single list element has pretty complex but flexible layout:
-      pre
-        code
-          | &lt;li&gt;
-          |     &lt;div class="item-content"&gt;
-          |         &lt;div class="item-media"&gt;
-          |             &lt;i class="icon my-icon"&gt;&lt;/i&gt;
-          |         &lt;/div&gt;
-          |         &lt;div class="item-inner"&gt;
-          |             &lt;div class="item-title"&gt;
-          |                 List element title
-          |             &lt;/div&gt;
-          |             &lt;div class="item-after"&gt;
-          |                 List element label
-          |             &lt;/div&gt;
-          |         &lt;/div&gt;
-          |     &lt;/div&gt;
-          | &lt;/li&gt;
-      p Where:
+    p Single list element has pretty complex but flexible layout:
+    pre
+      code
+        | &lt;li&gt;
+        |     &lt;div class="item-content"&gt;
+        |         &lt;div class="item-media"&gt;
+        |             &lt;i class="icon my-icon"&gt;&lt;/i&gt;
+        |         &lt;/div&gt;
+        |         &lt;div class="item-inner"&gt;
+        |             &lt;div class="item-title"&gt;
+        |                 List element title
+        |             &lt;/div&gt;
+        |             &lt;div class="item-after"&gt;
+        |                 List element label
+        |             &lt;/div&gt;
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/li&gt;
+    p Where:
+    ul
+      li
+        p <code>item-content</code> - main flex wrapper for <code>item-media</code> and <code>item-inner</code>. <strong>Requred</strong> element.
       ul
         li
-          p <code>item-content</code> - main flex wrapper for <code>item-media</code> and <code>item-inner</code>. <strong>Requred</strong> element.
+          p <code>item-media</code> - container for your media element like icon, image, etc. <strong>Optional</strong> element.
+        li
+          p <code>item-inner</code> - main flex wrapper for <code>item-title</code> and <code>item-after</code>. <strong>Requred</strong> element.
         ul
           li
-            p <code>item-media</code> - container for your media element like icon, image, etc. <strong>Optional</strong> element.
+            p <code>item-title</code> - single-line list item title. <strong>Required</strong> element.
           li
-            p <code>item-inner</code> - main flex wrapper for <code>item-title</code> and <code>item-after</code>. <strong>Requred</strong> element.
-          ul
-            li
-              p <code>item-title</code> - single-line list item title. <strong>Required</strong> element.
-            li
-              p <code>item-after</code> - list item label. Could countain any additional HTML elements, like label text, or badge, or switch/toggle or button, etc. <strong>Optional</strong> element.
-      .important-note
-        ul
-          li
-            p Because .item-content is actually CSS flex-box element, note that <strong><code>item-media</code> and <code>item-inner</code> should be direct children of <code>item-content</code></strong>!
-          li
-            p For the same reason <strong><code>item-title</code> and <code>item-after</code> should be direct children of <code>item-inner</code></strong>!
-      p Also note that if your list item has nothing additional, you can user <code>item-content</code> class on <code>&lt;li&gt;</code> element:
-      pre
-        code.html
-          | &lt;li class="item-content"&gt;
-          |     &lt;div class="item-media"&gt;
-          |         &lt;i class="icon my-icon"&gt;&lt;/i&gt;
-          |     &lt;/div&gt;
-          |     &lt;div class="item-inner"&gt;
-          |         &lt;div class="item-title"&gt;
-          |             List element title
-          |         &lt;/div&gt;
-          |         &lt;div class="item-after"&gt;
-          |             List element label
-          |         &lt;/div&gt;
-          |     &lt;/div&gt;
-          | &lt;/li&gt;
+            p <code>item-after</code> - list item label. Could countain any additional HTML elements, like label text, or badge, or switch/toggle or button, etc. <strong>Optional</strong> element.
+    .important-note
+      ul
+        li
+          p Because .item-content is actually CSS flex-box element, note that <strong><code>item-media</code> and <code>item-inner</code> should be direct children of <code>item-content</code></strong>!
+        li
+          p For the same reason <strong><code>item-title</code> and <code>item-after</code> should be direct children of <code>item-inner</code></strong>!
+    p Also note that if your list item has nothing additional, you can user <code>item-content</code> class on <code>&lt;li&gt;</code> element:
+    pre
+      code.html
+        | &lt;li class="item-content"&gt;
+        |     &lt;div class="item-media"&gt;
+        |         &lt;i class="icon my-icon"&gt;&lt;/i&gt;
+        |     &lt;/div&gt;
+        |     &lt;div class="item-inner"&gt;
+        |         &lt;div class="item-title"&gt;
+        |             List element title
+        |         &lt;/div&gt;
+        |         &lt;div class="item-after"&gt;
+        |             List element label
+        |         &lt;/div&gt;
+        |     &lt;/div&gt;
+        | &lt;/li&gt;
     h2 List Item Header/Footer
     p If we need to add list item header/footer text in addition to item's title we can use <code>item-header</code> and <code>item-footer</code> elements:
     pre
@@ -173,6 +172,18 @@ block content
     .important-note
       p
         strong Note that <code>item-inner</code> has additional right padding and chevron icon when it is in <code>item-link</code>
+      p To remove this chevron icon and extra padding, you can add <code>no-chevron</code> class to link item or to containing list
+    h2 List Button
+    p List button is a simplified list link item, usefule in case you need to trigger simple self-explaining actions:
+    pre
+      code.html
+        :code
+          <li>
+            <a class="item-link list-button">List Button 1</a>
+          </li>
+          <li>
+            <a class="item-link list-button">List Button 2</a>
+          </li>
 
     h2 List Divider
     p List divider is a simple list element with title to visually divide one list items from another:
@@ -304,6 +315,8 @@ block content
             p <code>item-subtitle</code> - additional single-line title. <strong>Optional</strong> element.
           li
             p <code>item-text</code> - additional two-lines container for detailed description. <strong>Optional</strong> element.
+    .important-note
+      p When you use Link Item (item-link) in media list it will render chevron icon (<code>&gt;</code>) at the level of <code>item-title</code>. If you want to move this chevron to the center of item, then you need to add <code>chevron-center</code> class to this item or to the containing list
     h2 Custom Table-like Elements
     p In you case you need some custom list item layout with table-like structure you may use additional list elements <code>item-row</code> and <code>item-cell</code>:
     pre
@@ -335,7 +348,7 @@ block content
           </li>
 
     .with-device
-      h2(data-device-preview="../docs-demos/list-view.html") Examples
+      h2(data-device-preview="../docs-demos/core/list-view.html") Examples
       h4 Simple List
       pre
         code.html
@@ -894,6 +907,38 @@ block content
                 </li>
               </ul>
             </div>
+      h4 With centered chevron icon
+      pre
+        code.html
+          :code
+            <div class="list media-list chevron-center">
+              <ul>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">Facebook</div>
+                        <div class="item-after">17:14</div>
+                      </div>
+                      <div class="item-subtitle">New messages from John Doe</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="item-link item-content">
+                    <div class="item-inner">
+                      <div class="item-title-row">
+                        <div class="item-title">John Doe (via Twitter)</div>
+                        <div class="item-after">17:11</div>
+                      </div>
+                      <div class="item-subtitle">John Doe (@_johndoe) mentioned you on Twitter!</div>
+                      <div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
       h4 Media List / Something more simple
       pre
         code.html
@@ -973,6 +1018,40 @@ block content
                       <div class="item-subtitle">Michael Jackson</div>
                     </div>
                   </a>
+                </li>
+              </ul>
+            </div>
+      h4 List Buttons
+      pre
+        code.html
+          :code
+            <div class="list">
+              <ul>
+                <li>
+                  <a href="#" class="item-link list-button">Button 1</a>
+                </li>
+                <li>
+                  <a href="#" class="item-link list-button">Button 2</a>
+                </li>
+                <li>
+                  <a href="#" class="item-link list-button">Button 3</a>
+                </li>
+              </ul>
+            </div>
+      h4 Inset List Buttons
+      pre
+        code.html
+          :code
+            <div class="list inset">
+              <ul>
+                <li>
+                  <a href="#" class="item-link list-button">Button 1</a>
+                </li>
+                <li>
+                  <a href="#" class="item-link list-button">Button 2</a>
+                </li>
+                <li>
+                  <a href="#" class="item-link list-button">Button 3</a>
                 </li>
               </ul>
             </div>

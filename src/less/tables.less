@@ -1,7 +1,7 @@
 table {
   width: 100%;
   color: #333;
-  font-size: 13px;
+  font-size: 14px;
   margin: 1em 0 2em;
   th,td {
     padding: 8px 5px;
@@ -42,8 +42,7 @@ table.params-table {
     vertical-align: top;
   }
   tbody {
-    td:first-child, td:nth-child(2), td:nth-child(3):not(:last-child) {
-      font-size: 13px;
+    td:first-child:not([colspan]), td:nth-child(2), td:nth-child(3):not(:last-child) {
       color: @darkColor;
       .monospace();
       font-weight: 500;
@@ -94,7 +93,6 @@ table.methods-table {
     .monospace();
     color:#000;
     white-space: nowrap;
-    font-size: 13px;
     font-weight: 500;
     span {
       color: @darkColor;
@@ -179,7 +177,6 @@ table.double-events-table {
     td {
       border: none;
     }
-
   }
   tr:nth-child(4n - 5) {
     background: #fafafa;

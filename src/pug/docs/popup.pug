@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Popup | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Popup
-    .docs-index
+    ul.docs-index
     p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
     h2 Popup Layout
     p Popup layout is pretty simple:
@@ -179,6 +179,9 @@ block content
           td popup.params
           td Popup parameters
         tr
+          td popup.opened
+          td Boolean prop indicating whether popup is opened or not
+        tr
           th(colspan="2") Methods
         tr
           td popup.open(<span>animate</span>)
@@ -242,9 +245,9 @@ block content
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="page-content">
-                ...
+                <div class="page-content">
+                  ...
+                </div>
               </div>
             </div>
             ...
@@ -333,7 +336,7 @@ block content
           td <span>popup</span>
           td app
     .with-device
-      h2(data-device-preview="../docs-demos/popup.html") Examples
+      h2(data-device-preview="../docs-demos/core/popup.html") Examples
       pre
         code.xml
           :code

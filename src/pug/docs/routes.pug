@@ -1,15 +1,15 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Routes | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Routes
-    .docs-index
+    ul.docs-index
     h2 Define Routes
     p First of all, when we init the Framework7 app we should pass default routes using <code>routes</code> array parameter:
     pre
@@ -40,7 +40,7 @@ block content
                   },
                 },
                 on: {
-                  pageAfterIn: function (e, page) {
+                  pageAfterIn: function test (e, page) {
                     // do something after page gets into the view
                   },
                   pageInit: function (e, page) {
@@ -91,7 +91,7 @@ block content
             ],
           })
     h2 Route Properties
-    p Ok, now will see what each route property means:
+    p Ok, now we will see what each route property means:
     table.params-table
       thead
         tr
@@ -116,7 +116,7 @@ block content
           td array
           td Array with nested routes
         tr
-          th(colspan="4") Content Related Propertues<br><small>The following route properties define how (from where/what) content should be loaded</small>
+          th(colspan="4") Content Related Properties<br><small>The following route properties define how (from where/what) content should be loaded</small>
         tr
           td el
           td HTMLElement
@@ -132,7 +132,15 @@ block content
         tr
           td url
           td string
-          td Load page content via Ajax
+          td Load page content via Ajax.
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression, e.g.
+            pre
+              code.js
+                :code
+                  {
+                    path: '/users/:userId/posts/:postId',
+                    url: 'http://myapp.com/posts/{{userId}}/{{postId}}'
+                  }
         tr
           td template
           td string<br>function
@@ -141,6 +149,7 @@ block content
           td templateUrl
           td string
           td Load page content from url via Ajax, and compile it using Template7
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression
         tr
           td component
           td object
@@ -149,6 +158,7 @@ block content
           td componentUrl
           td string
           td load pages as a component via Ajax
+            p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression
         tr
           td async
           td function(routeTo, routeFrom, resolve, reject)
@@ -203,7 +213,25 @@ block content
             br
             | function(route, resolve, reject)
           td Route redirect. We need to specify here redirect <b>url</b> (not path)
-    p Here is an example for most of possible options:
+        tr
+          th(colspan="4") Before Enter/Leave
+        tr
+          td beforeEnter
+          td
+            | function(routeTo, routeFrom, resolve, reject)
+            br
+            br
+            | array
+          td Function (or array of functions) that will be executed before route load/enter. To proceed route loading <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+        tr
+          td beforeLeave
+          td
+            | function(routeTo, routeFrom, resolve, reject)
+            br
+            br
+            | array
+          td Function (or array of functions) that will be executed before route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+    p Here is an example for most of the possible options:
     pre
       code.js
         :code
@@ -273,7 +301,7 @@ block content
                 // Requested route
                 console.log(routeTo);
                 // Get external data and return template7 template
-                $.getJSON('http://some-endpoint/', function (data) {
+                app.request.json('http://some-endpoint/', function (data) {
                   resolve(
                     // How and what to load: template
                     {
@@ -304,7 +332,7 @@ block content
           },
 
     h2 Route Options
-    p Let's look at additional route options that can be passed in <code>options</code> property:
+    p Lets look at additional route options that can be passed in <code>options</code> property:
     table.params-table
       thead
         tr
@@ -368,7 +396,7 @@ block content
           routes = [
             {
               path: '/foo/',
-              async(routeTo, routeFrom, resole, reject) {
+              async(routeTo, routeFrom, resolve, reject) {
                 if (userIsLoggedIn) {
                   resolve({ url: 'secured.html' })
                 } else {
@@ -406,7 +434,9 @@ block content
               // ...
             ],
           });
-    p Please note, that such route events are actually DOM events, so each such handler will accept <code>event</code> as a first argument with the event itself and <code>page</code> as the second argument with <a href="page.html#page-data">page data</a>.
+    .important-note
+      p Please note, that such route events are actually DOM events, so each such handler will accept <code>event</code> as a first argument with the event itself and <code>page</code> as the second argument with <a href="page.html#page-data">page data</a>.
+      p Also, context of such event handler (<code>this</code>) will point to related <a href="view.html#router-api-methods-properties">Router instance</a>.
     h2 Nested Routes
     p It is possible to have nested routes (routes in routes) as well:
     pre
@@ -455,7 +485,7 @@ block content
               url: './pages/monitors.html',
             },
           ];
-    p So let's say we are on a <code>/catalog/</code> page and have the following links:
+    p So lets say we are on a <code>/catalog/</code> page and have the following links:
     ol
       li
         p <code>&lt;a href="computers/"&gt;Computers</a></code> - will work as expected. Link will be merged with the current route (<code>/catalog/</code> + <code>computers/</code>) and we will have <code>/catalog/computers/</code> which we have in our routes.
@@ -474,7 +504,7 @@ block content
       li Second, when navigating to such route you can load a page with required tab opened.
       li Third, with enabled Push State, the same tab will be opened when you navigate back and forward in history.
       li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
-    p First of all we need to specify tabs routes in app routes. Let's assume we have a page with routable tabs on /tabs/ route:
+    p First of all we need to specify tabs routes in app routes. Lets assume we have a page with routable tabs on /tabs/ route:
     pre
       code.js
         :code
@@ -626,6 +656,83 @@ block content
       li when you click on link with <code>/login-screen-ajax/</code> href attribute it will perform Ajax request to <code>login-screen.html</code> file and open it as a Login Screen,
       li when you click on link with <code>/popup-component/</code> href attribute it will perform Ajax request to <code>popup-component.html</code> file, parse it as a Router Component and open it as a Popup,
       li when you click on link with <code>/secured-content/</code> href attribute it will load page from <code>secured-page.html</code> if user is logged in or open Login Screen from <code>login-screen.html</code> file is user is not logged in.
+
+    h2 Route Before Enter/Leave
+    p <code>beforeEnter</code> and <code>beforeLeave</code> route hooks can be very useful if you need to do additional checks, execute additional actions or load/send something before route load (enter) and unload (leave). It can be single method or array of methods to be executed. For example:
+    pre
+      code.js
+        :code
+          routes = [
+            {
+              path: 'profile',
+              url: 'profile.html',
+              beforeEnter: function (routeTo, routeFrom, resolve, reject) {
+                if (/* some condition to check user is logged in */) {
+                  resolve();
+                } else {
+                  // don't allow to visit this page for unauthenticated users
+                  reject();
+                }
+              },
+
+            },
+            {
+              path: 'profile-edit',
+              url: 'profile.html',
+              beforeLeave: function (routeTo, routeFrom, resolve, reject) {
+                if (/* user didn't save edited form */) {
+                  app.dialog.confirm(
+                    'Are you sure you want to leave this page without saving data?',
+                    function () {
+                      // proceed navigation
+                      resolve();
+                    },
+                    function () {
+                      // stay on page
+                      reject();
+                    }
+                  )
+                } else {
+                  resolve();
+                }
+              }
+            }
+          ]
+    p And of course there are multiple hooks are supported when passed as array of functions:
+    pre
+      code.js
+        :code
+          function checkAuth(to, from, resolve, reject) {
+            if (/* some condition to check user is logged in */) {
+              resolve();
+            } else {
+              reject();
+            }
+          }
+          function checkPermission(to, from, resolve, reject) {
+            if (/* some condition to check user edit permission */) {
+              resolve();
+            } else {
+              reject();
+            }
+          }
+
+          routes = [
+            {
+              path: '/profile/',
+              url: 'profile.html',
+              // check if the user is logged in
+              beforeEnter: checkAuth,
+            },
+            {
+              path: '/profile-edit/',
+              url: 'profile-edit.html',
+              // check if the user is logged in and has required permission
+              beforeEnter: [checkAuth, checkPermission],
+            }
+          ]
+
+
     h2 Redirect & Alias
     h3 Alias
     p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
@@ -686,6 +793,8 @@ block content
       li when we request <code>/baz/</code> (without query) nothing will happen
     .important-note
       p Note in redirects we pass URL, not the route path like in alias
+
+
 
 
 

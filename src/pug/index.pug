@@ -5,6 +5,12 @@ html
     title Framework7 - Full Featured Mobile HTML Framework For Building iOS & Android Apps
     meta(property="og:image", content=cdn + "/i/f7-banner.jpg")
     meta(name="viewport" content="width=device-width, viewport-fit=cover")
+    meta(name="twitter:card", content="summary")
+    meta(name="twitter:site", content="@framework7io")
+    meta(name="twitter:creator", content="@framework7io")
+    meta(name="twitter:title", content="Framework7")
+    meta(name="twitter:description", content="A free and open source mobile HTML framework to develop hybrid mobile apps or web apps with iOS & Android native look and feel")
+    meta(name="twitter:image", content="https://avatars0.githubusercontent.com/u/31954178?s=200&v=4")
     link(rel="stylesheet", href=cdn + "/css/normalize.css")
     link(rel="stylesheet", href=cdn + "/css/main.css")
     link(rel="shortcut icon" href="/i/favicon.png")
@@ -42,21 +48,21 @@ html
               a(href="/showcase/") Apps Showcase
               a(href="http://forum.framework7.io") Forum
           include _carbon
-          .release-info MIT Licensed, v2.0.5 released on January 2, 2017
+          .release-info MIT Licensed, v#{release.version} released on #{release.date}
           .patreon-github
             include _github-buttons
             include _patreon
         .phone
-          iframe(src="kitchen-sink/?theme=ios", frameborder="0", scrolling="no")
+          iframe(src="kitchen-sink/core/?theme=ios", frameborder="0", scrolling="no")
           .statusbar
           .theme-switch
-            a(href="kitchen-sink/?theme=ios", target="_blank").active
+            a(href="kitchen-sink/core/?theme=ios", target="_blank").active
               .theme-icon
                 .logo-apple
                 span iOS
               .fullscreen
                 i
-            a(href="kitchen-sink/?theme=md", target="_blank")
+            a(href="kitchen-sink/core/?theme=md", target="_blank")
               .theme-icon
                 .logo-android
                 span MD
@@ -157,6 +163,15 @@ html
           p Framework7 partnered with <a href="http://vi.ai" target="_blank"><b>vi</b></a> to bring you the best mobile video ad experience on the market. <b>vi</b>'s interstitial ads can be placed into your app experience at your discretion, showing full screen video ads
           p This allows you to easily add video advertising to your Framework7 app and enables you to earn money from your apps right out-of-the-box.
         .clearfix
+      .home-block.home-vue-react
+        .text
+          h1 Use With Vue.js & React.js
+          p In addition to vanilla JS library, Framework7 comes with Vue.js & React.js components to bring components-syntax, structured data and data bindings to with power and simplicity of Vue.js & React.js
+        .pics
+          .pic
+            img(src=cdn + "/i/vue-intro.png", style="max-width: 680px; width: 100%")
+          .pic
+            img(src=cdn + "/i/react-intro.png", style="max-width: 680px; width: 100%")
       .home-block.home-more
         .text
           h2 Many More Features...
@@ -172,7 +187,7 @@ html
             p Framework7 doesn't use and does not depend on any third party libraries. That is why it is ultra lightweight, performance and flexible.
           .feat
             h3 Clear JS API
-            p No need to learn something new With Framework7. It has ultra clear and easy JavaScript API methods to control every part of your app.
+            p No need to learn something new with Framework7. It has ultra clear and easy JavaScript API methods to control every part of your app.
           .feat
             h3 High-performance Animation
             p It is all about performance and Framework7 uses only high performance hardware accelerated css animations and transitions to achieve the best result.
@@ -185,16 +200,17 @@ html
           .feat
             h3 Dom7 - Custom Dom Library
             p As said above Framework7 doesn't use any third party library, even for DOM operation, even jQuery. It has its own custom DOM library that utilizes most edge and high-performance methods for DOM manipulation. You can also use it and you don’t need to learn something new for that, it has the same syntax as well known jQuery library with support of the most popular and widely used methods and jQuery-like chaining.
-      .home-block.home-vue
-        .text
-          h1 Framework7 Vue
-          p Bring components-syntax, structured data and data bindings to Framework7 with power and simplicity of Vue.js
-        .pic
-          img(src=cdn + "/i/vue-intro.png", width="700")
+
       .home-block.home-featured
         .center
           h2 Featured iOS Apps Made With Framework7
           .feat-apps
+            .feat-app
+              a(href="https://itunes.apple.com/us/app/tripline/id417133912", target="_blank").feat-app-icon.feat-app-icon-rounded
+                img(src=cdn + "/i/showcase/tripline.jpg")
+              a(href="https://itunes.apple.com/us/app/tripline/id417133912", target="_blank").feat-app-title Tripline - Your maps are your stories
+              .feat-app-author by
+                a(href="https://www.tripline.net/", target="_blank") Tripline, Inc.
             .feat-app
               a(href="https://itunes.apple.com/us/app/brief-customer-messaging/id1248044218?mt=8", target="_blank").feat-app-icon.feat-app-icon-rounded
                 img(src=cdn + "/i/showcase/brief.jpg")

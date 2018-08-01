@@ -1,26 +1,26 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Badge | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Badge
     ul.docs-index
-    p Badges are used to display indicate count numbers and labels on different elements of app.
+    p Badges are used to display/indicate count numbers and labels on different elements of your app.
     h2 Badge Layout
-    p Badge has super simple layout, just an element with <code><b>badge</b></code> class:
+    p Badges have a super simple layout, it's just an element with a <code><b>badge</b></code> class:
     pre
       code.html
         :code
           <span class="badge">32</span>
     h2 Badge Colors
-    p Badge support all <a href="color-themes.html">default colors</a>:
+    p Badges support all <a href="color-themes.html">default colors</a>:
     pre
       code.html
         :code
@@ -30,7 +30,7 @@ block content
           <!-- Red badge -->
           <span class="badge color-red">15</span>
     .with-device
-      h2(data-device-preview="../docs-demos/badge.html") Examples
+      h2(data-device-preview="../docs-demos/core/badge.html") Examples
       pre
         code.html
           :code

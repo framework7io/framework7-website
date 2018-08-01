@@ -1,15 +1,15 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Page | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Page
     ul.docs-index
     p Page is one of the main components (containers) used to display app content.
@@ -23,11 +23,11 @@ block content
             </div>
           </div>
     h3 Page Name
-    p As you may note each page has <code>data-name</code> attribute with unique page name. It is not required but can be useful within "page events" or within "page callbacks" and help us to define which page is loaded to make required manipulations.
+    p As you may note, each page has a <code>data-name</code> attribute with a unique page name. It's not required but can be useful within "page events" or "page callbacks". It can help us to define which page is loaded and available so you can make required manipulations to the page.
     h3 Page Content
-    p All visual content (like list views, forms, etc.) we should put inside of <code>&lt;div class="page-content"&gt;</code> that should be a child of <code>&lt;div class="page"&gt;</code>. It is required for correct styling, layout and scrolling
+    p All visual content (like list views, forms, etc.) should put inside of <code>&lt;div class="page-content"&gt;</code> which should be a child of <code>&lt;div class="page"&gt;</code>. It's required for correct styling, layout and scrolling.
     h2 Page Events
-    p Now, let's look at one of the most important part of page navigation - page events. These events allow us to manipulate just loaded pages by executing JavaScript for specific pages:
+    p Now lets look at one of the most important parts of page navigation, "page events". <b>Page Events</b> allow us to manipulate just loaded pages by executing JavaScript for those specific pages:
     table.events-table
       thead
         tr
@@ -67,7 +67,7 @@ block content
           td page:beforeremove
           td Page Element<span>&lt;div class="page"&gt;</span>
           td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
-    p Let's see how we can use these events. There are two ways to add page events handler:
+    p Lets see how we can use these events. There are two ways to add page event handlers:
     pre
       code.js
         :code
@@ -81,7 +81,7 @@ block content
             // Do something here when page with data-name="about" attribute loaded and initialized
           })
     h2 Page Loading Sequence Classes
-    p When new pages is loading and transitioned to the view (main visible part of the) it has different classes on page element.
+    p When a new page is loading and transitioned into the view (main visible part of the app) it has different classes on page element.
     p When we load/open new page the following happens:
     ol
       li Currently active page has <code><b>page-current</b></code> class.
@@ -100,13 +100,13 @@ block content
       li Page that we go back to will have additional <code><b>page-previous</b></code> class set on its element.
       li Router element (<code>&lt;div class="view"&gt;</code>) will have additional <code><b>router-transition-backward</b></code> class that does the following:
         ul
-          li page with <code>page-previos</code> (page that we go back to) class moves into the view
+          li page with <code>page-previous</code> (page that we go back to) class moves into the view
           li page with <code>page-current</code> (current page) class moves out of the view
       li After transition completed, the new page that we returned to will have <code><b>page-current</b></code> class
       li And the page that was previously active will have <code><b>page-next</b></code> class. In case this page was added to DOM dynamically, it will be removed from DOM.
 
     h2 Page Data
-    p As you may see it is pretty easy, but hey, how to determine which page is loaded in first option when we use only one handler? For this case we have Page Dage in event details:
+    p As you may see it is pretty easy, but how do you determine which page is loaded when we use only one handler? For this case we have Page Data in the event details:
     pre
       code.js
         :code
@@ -184,7 +184,16 @@ block content
         tr
           td page.route
           td <span class="parameter-type">object</span>
-          td Route associated with this page
+          td Route associated with this page, object with current route data that was used to load this page. It has the following properties
+            ul
+              li <code>url</code> - route URL
+              li <code>path</code> - route path
+              li <code>query</code> - object with route query. If the url is <code>/page/?id=5&foo=bar</code> then it will contain the following object <code>{id: '5', foo: 'bar'}</code>
+              li <code>params</code> - route params. If we have matching route with <code>/page/user/:userId/post/:postId/</code> path and url of the page is <code>/page/user/55/post/12/</code> then it will be the following object <code>{userId: '55', postId: '12'}</code>
+              li <code>name</code> - route name
+              li <code>hash</code> - route URL hash
+              li <code>route</code> - object with matching route from available routes
+              li <code>context</code> - context that was passed to the route
         tr
           td page.pageFrom
           td <span class="parameter-type">object</span>
@@ -193,12 +202,8 @@ block content
           td page.context
           td <span class="parameter-type">object</span>
           td Template7 context that was passed for this page when using Template7 pages
-        tr
-          td page.fromPage
-          td <span class="parameter-type">object</span>
-          td Page Data object of the previously active page
     h2 Access To Page Data
-    p If you don't use page events/callbacks and need to access page data it is possible via <code>f7Page</code> property on its HTMLElement:
+    p If you don't use page events/callbacks and need to access to page data, it is possible via the <code>f7Page</code> property on its HTMLElement:
     pre
       code.js
         :code

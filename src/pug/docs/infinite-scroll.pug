@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Infinite Scroll | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Infinite Scroll
-    .docs-index
+    ul.docs-index
     p Infinite Scroll allows to load additional content or do any other required action when page scroll is near to the bottom.
 
     h2 Infinite Scroll Layout
@@ -30,7 +30,7 @@ block content
       li
         p <code>div class="page-content infinite-scroll-content"</code> our infinite scroll container
       li
-        p <code>data-distance</code> attribute allows to configure distance from the bottom of page (in px) to trigger infinite scroll event. By default, if not specified, it is <b>50</b> (px)
+        p <code>data-infinite-distance</code> attribute allows to configure distance from the bottom of page (in px) to trigger infinite scroll event. By default, if not specified, it is <b>50</b> (px)
       li
         p <code>div class="preloader infinite-scroll-preloader"</code> <a href="preloader.html">preloader</a> with few additional styles to be used with infinite scroll
     h2 Infinite Scroll On Top
@@ -95,7 +95,7 @@ block content
           td Event will be triggered when page scroll reaches specified (in data-distance attribute) distance to the bottom.
 
     .with-device
-      h2(data-device-preview="../docs-demos/infinite-scroll.html") Example
+      h2(data-device-preview="../docs-demos/core/infinite-scroll.html") Example
       pre
         code.html
           :code

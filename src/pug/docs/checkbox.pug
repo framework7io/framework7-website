@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Checkbox | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Checkbox
-    .docs-index
+    ul.docs-index
     h2 Checkbox Layout
     p Checkbox layout is pretty simple:
     pre
@@ -64,7 +64,7 @@ block content
         li Checkbox input (<code>&lt;input type="checkbox"&gt;</code>) must be a first child of <code>item-content</code>
         li Checkbox icon must be <b>after</b> checkbox input
     .with-device
-      h2(data-device-preview="../docs-demos/checkbox.html") Examples
+      h2(data-device-preview="../docs-demos/core/checkbox.html") Examples
       h4 Inline
       pre
         code.html

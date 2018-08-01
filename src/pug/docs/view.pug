@@ -1,15 +1,15 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'View / Router | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 View / Router
-    .docs-index
+    ul.docs-index
     p <strong>View</strong> (&lt;div class="view"&gt;) - is a separate visual part of the app with its own settings, navigation and history. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app.
     h2 View Layout
     p Let's look at view HTML structure:
@@ -96,7 +96,7 @@ block content
       p There could be situation when we need to get currently active View, because instead of main app view we may also have view in opened popup, popover, opened panel, tabs, etc. This method allows to get the View instance of currently active/visible/"most-top" view.
       p For example, if you have initilized View in panel, and panel is currently opened, then this method will return panel's view. Or, if you use app with tab bar layout, where each tab is view, then this method will return currently active/visible tab-view
       p
-        span.method app.views.current()
+        span.method app.views.current
         |  - get currently active/visible View instance.
 
       ul.method-parameters
@@ -179,11 +179,6 @@ block content
           td true
           td When enabled it will restore page scroll top when you get back to this page
         tr
-          td unloadTabContent
-          td boolean
-          td true
-          td Unloads routable tab content (removes tab inner content) when tab becomes visible. Only for routable tabs
-        tr
           td iosPageLoadDelay
           td number
           td 0
@@ -193,6 +188,23 @@ block content
           td number
           td 0
           td Delay (in ms) after new page will be loaded and inserted to DOM and before it will be transitioned. Can be increased a bit to improve performance. Will have effect only under MD theme
+        tr
+        tr
+          td passRouteQueryToRequest
+          td boolean
+          td true
+          td When enabled then router will pass route url query to request url query (for <code>url</code>, <code>templateUrl</code> and <code>componentUrl</code> <a href="routes.html#route-properties">route properties</a>)
+            p If you have the following route:
+            p <code>{ path: '/somepage/', url: 'http://myserver/page/' }</code>
+            p and you will click link with <b>/somepage/?foo=bar</b> url then it will load page from <b>http://myserver/page/?foo=bar</b> url
+        tr
+          td passRouteParamsToRequest
+          td boolean
+          td false
+          td When enabled then router will pass current route parameters to request url query (for <code>url</code>, <code>templateUrl</code> and <code>componentUrl</code> <a href="routes.html#route-properties">route properties</a>)
+            p If you have the following route:
+            p <code>{ path: '/user/:userId/posts/:postId/', url: 'http://myserver/userpost/' }</code>
+            p and you will click link with <b>/user/11/posts/12/</b> url then it will load page from <b>http://myserver/userpost/?userId=11&postId=12</b> url
         tr
           th(colspan="4") Routes
         tr
@@ -205,6 +217,26 @@ block content
           td array
           td
           td Array with additional <a href="routes.html">routes</a> that will extend global app routes. This additional routes will only be available for the current View
+        tr
+          td routesBeforeEnter
+          td
+            | function(to, from, resolve, reject)
+            br
+            br
+            | array
+          td
+          td Function (or array of functions) that will be executed before <b>every</b> route load/enter. To proceed route loading <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+            p Same as <a href="routes.html#route-before-enter-leave">route beforeEnter</a> but will work for every route
+        tr
+          td routesBeforeLeave
+          td
+            | function(to, from, resolve, reject)
+            br
+            br
+            | array
+          td
+          td Function (or array of functions) that will be executed before <b>every</b> route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+            p Same as <a href="routes.html#route-before-enter-leave">route beforeLeave</a> but will work for every route
         tr
           th(colspan="4") Elements Removal
         tr
@@ -222,6 +254,11 @@ block content
           td number
           td 0
           td Timeout to remove elements (in case of <code>removeElementsWithTimeout: true</code>)
+        tr
+          td unloadTabContent
+          td boolean
+          td true
+          td Unloads routable tab content (removes tab inner content) when tab becomes visible. Only for routable tabs
         tr
           th(colspan="4") XHR Cache
         tr
@@ -262,32 +299,58 @@ block content
           td true
           td This option (when enabled) gives more native look for dynamic navbar left back-link icon animation. Useful only when you use dynamic navbar with default back-link icon on left side set as "sliding".
         tr
-          th(colspan="4") Swipe back (iOS theme only)
+          th(colspan="4") Swipe back
         tr
           td iosSwipeBack
           td boolean
           td true
-          td Enable/disable ability to swipe back from left edge of screen to get to the previous page.
+          td Enable/disable ability to swipe back from left edge of screen to get to the previous page. For iOS theme
         tr
           td iosSwipeBackThreshold
           td number
           td 0
-          td Value in px. Swipe back action will start if "touch distance" will be more than this value.
+          td Value in px. Swipe back action will start if "touch distance" will be more than this value. For iOS theme
         tr
           td iosSwipeBackActiveArea
           td number
           td 30
-          td Value in px. Width of invisible left edge of the screen that triggers swipe back action
+          td Value in px. Width of invisible left edge of the screen that triggers swipe back action. For iOS theme
         tr
           td iosSwipeBackAnimateShadow
           td boolean
           td true
-          td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance
+          td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance. For iOS theme
         tr
           td iosSwipeBackAnimateOpacity
           td boolean
           td true
-          td Enable/disable opacity animation during swipe back action. You can disable it to improve performance
+          td Enable/disable opacity animation during swipe back action. You can disable it to improve performance. For iOS theme
+        tr
+          td mdSwipeBack
+          td boolean
+          td false
+          td Enable/disable ability to swipe back from left edge of screen to get to the previous page. For MD theme
+        tr
+          td mdSwipeBackThreshold
+          td number
+          td 0
+          td Value in px. Swipe back action will start if "touch distance" will be more than this value. For MD theme
+        tr
+          td mdSwipeBackActiveArea
+          td number
+          td 30
+          td Value in px. Width of invisible left edge of the screen that triggers swipe back action. For MD theme
+        tr
+          td mdSwipeBackAnimateShadow
+          td boolean
+          td true
+          td Enable/disable box-shadow animation during swipe back action. You can disable it to improve performance. For MD theme
+        tr
+          td mdSwipeBackAnimateOpacity
+          td boolean
+          td false
+          td Enable/disable opacity animation during swipe back action. You can disable it to improve performance. For MD theme
+
         tr
           th(colspan="4") Push State
         tr
@@ -447,6 +510,7 @@ block content
               li <code>name</code> - route name
               li <code>hash</code> - route URL hash
               li <code>route</code> - object with matching route from available routes
+              li <code>context</code> - context that was passed to the route
         tr
           td router.previousRoute
           td Object with previously active route data. Same object format as <code>currentRoute</code>
@@ -465,6 +529,7 @@ block content
                   li <span class="parameter">reloadCurrent</span> (<span class="parameter-type">boolean</span>) - replace the current page with the new one from route
                   li <span class="parameter">reloadPrevious</span> (<span class="parameter-type">boolean</span>) - replace the previous page in history with the new one from route
                   li <span class="parameter">reloadAll</span> (<span class="parameter-type">boolean</span>) - load new page and remove all previous pages from history and DOM
+                  li <span class="parameter">clearPreviousHistory</span> (<span class="parameter-type">boolean</span>) - previous pages history will be cleared after reloading/navigate to the specified route
                   li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
                   li <span class="parameter">history</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in router history
                   li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
@@ -484,7 +549,23 @@ block content
                   li <span class="parameter">animate</span> (<span class="parameter-type">boolean</span>) - whether the page should be animated or not (overwrites default router settings)
                   li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
                   li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
-                  li <span class="parameter">force</span> (<span class="parameter-type">boolean</span>) - if set to <code></code> then it will ignore previos page in history and load specified one
+                  li <span class="parameter">force</span> (<span class="parameter-type">boolean</span>) - if set to <code>true</code> then it will ignore previous page in history and load specified one
+        tr
+          td router.refreshPage()
+          td Refresh/reload current page. Actually same as:
+            pre
+              code.js
+                :code
+                  router.navigate(router.currentRoute.url, {
+                    reloadCurrent: true,
+                    ignoreCache: true,
+                  });
+        tr
+          td router.clearPreviousHistory()
+          td Clear router previous pages history and remove all previous pages from DOM
+        tr
+          td router.updateCurrentUrl(<span>url</span>)
+          td Updates current route url, and updates `router.currentRoute` properties (query, params, hash, etc.) based on passed url. This method doesn't load or reload any content. It just changes current route url.
         tr
           td router.on(<span>event</span>, <span>handler</span>)
           td Add event handler
@@ -588,23 +669,27 @@ block content
           td <span>(newRoute, previousRoute, router)</span>
           td Event will be fired on current route change and after page transitions
         tr
+          td routeUrlUpdate
+          td <span>(newRoute, router)</span>
+          td Event will be fired when #[code router.updateCurrentUrl] method called
+        tr
           th(colspan="3") XHR Events
         tr
           td routerAjaxStart
-          td <span>(xhr)</span>
-          td Event will be fired after router XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc
+          td <span>(xhr, options)</span>
+          td Event will be fired after router XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc. As an arguments receives XHR object and navigating <code>options</code> object
         tr
           td routerAjaxSuccess
-          td <span>(xhr)</span>
-          td Event will be fired when the request succeeds
+          td <span>(xhr, options)</span>
+          td Event will be fired when the request succeeds. As an arguments receives XHR object and navigating <code>options</code> object
         tr
           td routerAjaxError
-          td <span>(xhr)</span>
-          td Event will be fired if the request fails
+          td <span>(xhr, options)</span>
+          td Event will be fired if the request fails. As an arguments receives XHR object and navigating <code>options</code> object
         tr
           td routerAjaxComplete
-          td <span>(xhr)</span>
-          td Event will be fired when the request finishes
+          td <span>(xhr, options)</span>
+          td Event will be fired when the request finishes. As an arguments receives XHR object and navigating <code>options</code> object
         tr
           th(colspan="3") Swipe Back Events
         tr

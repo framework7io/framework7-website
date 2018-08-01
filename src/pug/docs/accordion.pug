@@ -1,15 +1,15 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Accordion | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Accordion / Collapsible
     ul.docs-index
     h2 Accordion Layout
@@ -80,7 +80,7 @@ block content
         |     &lt;/ul&gt;
         | &lt;/div&gt;
     .with-device
-      h2(data-device-preview="../docs-demos/accordion.html") Example
+      h2(data-device-preview="../docs-demos/core/accordion.html") Example
       pre
         code.xml
           | &lt;!-- List View --&gt;
@@ -165,8 +165,8 @@ block content
           |   ...
           | &lt;/div&gt;
 
-    h2 Accordion JavaScript API
-    p Accordion also has JavaScript API that allows you to open and close them programmatically. Let's look on appropriate App's methods:
+    h2 Accordion App Methods
+    p Accordion also has a JavaScript API that allows you to open and close them programmatically. Lets look at some Accordion App methods:
     .method-wrap
       p
         span.method app.accordion.open(<span>el</span>)</span> - open specified accordion item

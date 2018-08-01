@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Popover | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Popover
-    .docs-index
+    ul.docs-index
     p Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
     .important-note
       p Note that is not recommended to use Popover on small screens (iPhone). On small screens you should use <a href="action-sheet.html">Action Sheet</a> instead.
@@ -218,6 +218,9 @@ block content
           td popover.params
           td Popover parameters
         tr
+          td popover.opened
+          td Boolean prop indicating whether popover is opened or not
+        tr
           th(colspan="2") Methods
         tr
           td popover.open(<span>targetEl</span>, <span>animate</span>)
@@ -371,7 +374,7 @@ block content
 
 
     .with-device
-      h2(data-device-preview="../docs-demos/popover.html") Examples
+      h2(data-device-preview="../docs-demos/core/popover.html") Examples
       pre
         code.html
           :code

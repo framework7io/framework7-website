@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Navbar | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Navbar
-    .docs-index
+    ul.docs-index
     p Navbar is a fixed area at the top of a screen that contains Page title and navigation elements.
     p Navbar has 3 main parts: Left, Title and Right. Each part may contain any HTML content, but it is recommended to use them in the following way:
     ul
@@ -184,33 +184,34 @@ block content
     p.ios-only Dynamic Navbar is supported only in iOS Theme
     p One of the iOS-theme awesome features is the dynamic navbar. Navbar's elements will slide and fade during pages transition and swipe back when dynamic navbar is enabled.
     p It is enabled by default when you use <code>Fixed-positioned</code> navbars, when Navbar is a direct child of the page.
-    p If you want to disable it you need to pass <code>dynamicNavbar: false</code> for required View on its initialisation or in global <a href="app.html#app-parameters">app parameters</a> for all views. For example:
+    p If you want to disable it you need to pass <code>iosDynamicNavbar: false</code> for required View on its initialisation or in global <a href="app.html#app-parameters">app parameters</a> for all views. For example:
     pre
       code.js
         :code
           // Disable globally
           var app = new Framework7({
             view: {
-              dynamicNavbar: false,
+              iosDynamicNavbar: false,
             },
           });
 
           // Disable only for view on its initialisation
           var mainView = app.views.create('.view-main', {
-            dynamicNavbar: false,
+            iosDynamicNavbar: false,
           });
+    .important-note
+      p Note that when Dynamic Navbar (<code>iosDynamicNavbar</code>) is enabled and <code>iosSeparateDynamicNavbar</code> parameter is enabled (by default), Navbar HTML element will be detached from the page and moved under View HTML element. In this case to access page related dynamic navbar element use <code>app.navbar.getElByPage(pageEl)</code> <a href="#navbar-app-methods">method</a>
     h3 Dynamic Navbar Layout
     p Dynamic Navbar layout is the same as for usual Navbar, the only difference is that you can add additional classes to the Navbar parts (Left, Title, Right) to tell which type of transition effect you want on this part:
-    .important-note
-      ul
-        li
-          p By default (if there is no additional classes) each Navbar part has <b>"Fade"</b> transition effect
-        li
-          p If you add <code><b>sliding</b></code> class to any of Navbar parts then it will have <b>"Sliding"</b> effect
-        li
-          p If you add <code><b>sliding</b></code> class to the <code>navbar-inner</code> then <b>all</b> Navbar parts will have <b>"Sliding"</b> effect
-        li
-          p For better look you should keep identic transition type for the same Navbar parts through different pages.
+    ul
+      li
+        p By default (if there is no additional classes) each Navbar part has <b>"Fade"</b> transition effect
+      li
+        p If you add <code><b>sliding</b></code> class to any of Navbar parts then it will have <b>"Sliding"</b> effect
+      li
+        p If you add <code><b>sliding</b></code> class to the <code>navbar-inner</code> then <b>all</b> Navbar parts will have <b>"Sliding"</b> effect
+      li
+        p For better look you should keep identic transition type for the same Navbar parts through different pages.
     pre
       code.html
         :code
@@ -368,7 +369,7 @@ block content
         |   &lt;/div&gt;
         | &lt;/div&gt;
     .with-device
-      h2(data-device-preview="../docs-demos/navbar.html") Examples
+      h2(data-device-preview="../docs-demos/core/navbar.html") Examples
       h3 Static Navbar
       pre
         code.html

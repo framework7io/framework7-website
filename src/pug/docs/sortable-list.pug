@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Sortable List | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Sortable List
-    .docs-index
+    ul.docs-index
     p Sortable lists is an extension of <a href="list-view.html">List View</a> that allows you to sort list view elements.
     h2 Sortable List Layout
     p Let's look at layout structure of sortable lists in your list views:
@@ -58,6 +58,31 @@ block content
         li
           span.parameter listEl
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Sortable list block element.
+    h2 Sortable App Parameters
+    p It is possible to configure global sortable behavior on app initialisation by passing sortable related paremeters under <code>sortable</code> property.
+    table.params-table
+      thead
+        tr
+          th Parameter
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          td moveElements
+          td boolean
+          td true
+          td When enabled then it will move (reorder) HTML elements according to new sortable order. It is useful to disable it if you use other library for DOM manipulation, like React or Vue
+    p To change these parameters we need to pass them on app init under <code>sortable</code> property, for example:
+    pre
+      code.js
+        :code
+          var app = new Framework7({
+            sortable: {
+              moveElements: false
+            }
+          });
+
     h2 Sortable Events
     p Sortable will fire the following DOM events on sortable list block element and events on app instance:
     h3 DOM Events
@@ -118,7 +143,7 @@ block content
         li
           p If you have more than one sortable list in app, you need to specify appropriate sortable list via additional <code><b>data-sortable=".sortable"</b></code> attribute on this HTML element with CSS selector of required sortable list
     .with-device
-      h2(data-device-preview="../docs-demos/sortable.html") Examples
+      h2(data-device-preview="../docs-demos/core/sortable.html") Examples
       pre
         code.html
           :code

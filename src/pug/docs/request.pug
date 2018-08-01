@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Request | Framework7 Documentation';
 
 block content
@@ -9,8 +8,9 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Request / Ajax
-    .docs-index
+    ul.docs-index
     p Framework7 comes with handy Request library to work with XHR requests (Ajax) right from the box.
     p It is avaialable as a <code><b>request</b></code> property of Framework7 class (<code>Framework7.request</code>) and same property on initialized app instance (<code>app.request</code>):
     pre
@@ -134,11 +134,13 @@ block content
           td function (xhr, parameters)
           td
           td A pre-request callback function that will be called before XHR opened. Can be used to modify XHR object
+            p.important-note If you <code>return false</code> in this callback it will cancel the request
         tr
           td beforeSend
           td function (xhr)
           td
-          td A pre-request callback function that will be called after XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc
+          td A pre-request callback function that will be called after XHR opened and before XHR send. Can be used to modify the XHR object before it is sent. Use this callback to set custom headers, etc.
+            p.important-note If you <code>return false</code> in this callback it will cancel the request
         tr
           td error
           td function (xhr, status)
@@ -250,10 +252,10 @@ block content
             $$('.login').html(data);
             console.log('Load was performed');
           });
-    h3 GetJSON
+    h3 Json
     .method-wrap
       p
-        span.method app.request.getJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
+        span.method app.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
         span - Load JSON-encoded data from the server using a GET HTTP request
       ul.method-parameters
         li
@@ -271,19 +273,57 @@ block content
       p.method-returns Method nothing returns
     .method-wrap
       p
-        span.method Framework7.request.getJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
+        span.method Framework7.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
       p.method-returns Method returns nothing
     p For example:
     pre
       code.js
         :code
-          Framework7.request.getJSON('items.json', function (data) {
+          Framework7.request.json('items.json', function (data) {
             console.log(data);
           });
 
           var app = new Framework7();
 
-          app.request.getJSON('users.json', function (data) {
+          app.request.json('users.json', function (data) {
+            console.log(data);
+          });
+    h3 PostJSON
+    .method-wrap
+      p
+        span.method app.request.postJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Send JSON data using a HTTP POST request
+      ul.method-parameters
+        li
+          span.parameter url
+          |  - <span class="parameter-type">string</span> - Request url
+        li
+          span.parameter data
+          |  - <span class="parameter-type">object</span> - A plain object
+        li
+          span.parameter success
+          |  - <span class="parameter-type">function (data, status, xhr)</span> - A callback function that is executed if the request succeeds. <em>Optional</em>
+        li
+          span.parameter error
+          |  - <span class="parameter-type">function (xhr, status)</span> - A callback function that is executed if the request fails. <em>Optional</em>
+        li
+          span.parameter dataType
+          |  - <span class="parameter-type">string</span> - The type of data that you're expecting back from the server. Could be <code>text</code> or <code>json</code>. By default is <code>json</code>. <em>Optional</em>
+      p.method-returns Returns plain XHR object
+    .method-wrap
+      p
+        span.method Framework7.request.postJSON(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>, <span>dataType</span>)
+        span - Send JSON data using a HTTP POST request
+      p.method-returns Returns plain XHR object
+    p For example:
+    pre
+      code.js
+        :code
+          var app = new Framework7();
+
+          var $$ = Dom7;
+
+          app.request.postJSON('http://api.myapp.com', { username:'foo', password: 'bar' }, function (data) {
             console.log(data);
           });
     h2 Request Setup

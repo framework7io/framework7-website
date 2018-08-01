@@ -1,22 +1,22 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Dialog | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Dialog
-    .docs-index
-    p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from user, or to notify or warn user. Dialog as all other modals is part of so called "Temporary Views".
+    ul.docs-index
+    p Dialog is a small content pane that pops up over App's main content. Dialogs are usualy used to ask something from a user, or to notify or warn a user. Dialog, as all other modals, is part of so called "Temporary Views".
 
-    p Dialog can be opened only using JavaScript. So let's look at related App methods to work with dialogs
+    p Dialog can only be opened by using JavaScript. So lets look at related App methods to work with dialogs.
     h2 Dialog App Methods
-    p Let's look at related App methods to work with Dialog:
+    p Lets look at related App methods to work with Dialog:
     .method-wrap
       p
         span.method app.dialog.create(<span>parameters</span>)
@@ -70,7 +70,7 @@ block content
       p.method-returns Method returns Dialog's instance
 
     h2 Dialog Parameters
-    p Now let's look at list of available parameters we need to create Dialog:
+    p Now lets look at list of available parameters we need to create Dialog:
     table.params-table
       thead
         tr
@@ -125,6 +125,11 @@ block content
           td false
           td Enables vertical buttons layout
         tr
+          td destroyOnClose
+          td boolean
+          td false
+          td When enabled will automatically destroy Dialog on close
+        tr
           td onClick
           td function(dialog, index)
           td
@@ -174,7 +179,7 @@ block content
           td color
           td string
           td
-          td Button color, one of default colors
+          td Button color, one of <a href="color-themes.html">default colors</a>
         tr
           td close
           td boolean
@@ -186,12 +191,17 @@ block content
           td
           td Additional button CSS class
         tr
+          td keyCodes
+          td array
+          td []
+          td Array with keyboard keycodes that will be used to trigger button click. For example, key code <code>13</code> means that button click will be triggered on Enter key press
+        tr
           td onClick
           td function(dialog, e)
           td
           td Callback function that will be executed after click on this button
     h2 Dialog Methods & Properties
-    p So to create Dialog we have to call:
+    p So to create a Dialog we have to call:
     pre
       code
         :code
@@ -219,6 +229,9 @@ block content
         tr
           td dialog.params
           td Dialog parameters
+        tr
+          td dialog.opened
+          td Boolean prop indicating whether dialog is opened or not
         tr
           th(colspan="2") Methods
         tr
@@ -360,14 +373,14 @@ block content
           td <span>dialog</span>
           td app
     h2 Dialog Shortcuts
-    p There are few shortcuts dialog app methods which makes creation of commonly used dialogs much easier.
-    p First let's check global app parameters which help to configure such shortcuts and also be used for localisation purpose.
+    p There are a few shortcut methods which that make creating dialogs much easier.
+    p First lets check the global app parameters which help to configure such shortcuts and also used for localization purposes.
     h3 Dialog Shortcuts Parameters
-    p The following global dialog shortcuts parameters can be passed on <a href="init-app.html">app initialization</a> under <code>dialog</code> property:
+    p The following global dialog shortcut parameters can be passed on <a href="init-app.html">app initialization</a> under <code>dialog</code> property:
     pre
       code.js
         :code
-          var app = new Framewrk7({
+          var app = new Framework7({
             dialog: {
               // set default title for all dialog shortcuts
               title: 'My App',
@@ -419,7 +432,17 @@ block content
           td string
           td Loading...
           td Default title for Progress dialog
-    p Now let's look at available dialog shortcuts
+        tr
+          td destroyPredefinedDialogs
+          td boolean
+          td true
+          td Will automatically destroy all predefined dialogs (Alert, Confirm, Prompt, etc.) on close
+        tr
+          td keyboardActions
+          td boolean
+          td true
+          td Enables keyboard shortcuts (Enter and Esc) keys for predefined dialogs (Alert, Confirm, Prompt, Login, Password) "Ok" and "Cancel" buttons
+    p Now lets look at available dialog shortcuts
     h3 Alert
     p To create Alert dialog we need to use the following app methods:
     .method-wrap
@@ -444,7 +467,7 @@ block content
       p.method-returns Method returns created Dialog's instance
 
     h3 Confirm
-    p Confirm dialog usualy used when it is required to confirm some action. To open Confirm modal we should also call one of the following App methods:
+    p Confirm dialog is usualy used when it is required to confirm some action. To open the Confirm modal we should also call one of the following App methods:
     .method-wrap
       p
         span.method app.dialog.confirm(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
@@ -469,7 +492,7 @@ block content
         | - create Confirm Dialog with default title and open it
       p.method-returns Method returns created Dialog's instance
     h3 Prompt
-    p Prompt dialog used when it is required to get some data/answer from user. To open Prompt dialog we should also call one of the following App methods:
+    p Prompt dialog is used when it is required to get some data/answer from user. To open Prompt dialog we should also call one of the following App methods:
     .method-wrap
       p
         span.method app.dialog.prompt(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
@@ -516,7 +539,7 @@ block content
         | - create Login Dialog with default title and open it
       p.method-returns Method returns created Dialog's instance
     h3 Password
-    p Password dialog is useful in case you need to request only password
+    p Password dialog is useful in case you need to request only the password
     .method-wrap
       p
         span.method app.dialog.password(<span>text</span>, <span>title</span>, <span>callbackOk</span>, <span>callbackCancel</span>)
@@ -543,12 +566,15 @@ block content
     p Preloader dialog is used to indicate some background activity (like Ajax request) and to block any user actions during this activity. To open Preloader dialog we should also call appropriate App method:
     .method-wrap
       p
-        span.method app.dialog.preloader(<span>title</span>)
+        span.method app.dialog.preloader(<span>title</span>, <span>color</span>)
         | - create Preloader Dialog and open it
       ul.method-parameters
         li
           span.parameter title
           |  - <span class="parameter-type">string</span>. Optional. Preloader dialog title
+        li
+          span.parameter color
+          |  - <span class="parameter-type">string</span>. Optional. Preloader color. One of the <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
     h3 Progress
     p Same as Preloader dialog but with <a href="progressbar.html">progressbar</a> instead of preloader.
@@ -565,11 +591,11 @@ block content
           |  - <span class="parameter-type">number</span>. Optional. Progressbar progress (from 0 to 100). If no <code>number</code> passed then it will have infinite progressbar.
         li
           span.parameter color
-          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of default colors
+          |  - <span class="parameter-type">string</span>. Optional. Progressbar color. One of <a href="color-themes.html">default colors</a>
       p.method-returns Method returns created Dialog's instance
 
     .with-device
-      h2(data-device-preview="../docs-demos/dialog.html") Examples
+      h2(data-device-preview="../docs-demos/core/dialog.html") Examples
       pre
         code.xml
           :code

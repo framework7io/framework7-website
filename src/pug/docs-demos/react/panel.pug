@@ -1,0 +1,50 @@
+extends _layout
+block vars
+  - includeF7Icons = true
+  - includeMaterialIcons = true
+
+block content
+  script(type="text/babel").
+    class AppComponent extends React.Component {
+      constructor() {
+        super();
+
+        this.state = {
+
+        };
+      }
+      render() {
+        return (
+          <App>
+            <Panel left reveal>
+              <View>
+                <Page>
+                  <Block>Left panel content</Block>
+                </Page>
+              </View>
+            </Panel>
+            <Panel right themeDark>
+              <View>
+                <Page>
+                  <Block>Right panel content</Block>
+                </Page>
+              </View>
+            </Panel>
+            <View main>
+              <Page>
+                <Navbar title="Panel"></Navbar>
+
+                <Block className="row">
+                  <Col>
+                    <Button raised panelOpen="left">Open left panel</Button>
+                  </Col>
+                  <Col>
+                    <Button raised panelOpen="right">Open right panel</Button>
+                  </Col>
+                </Block>
+              </Page>
+            </View>
+          </App>
+        )
+      }
+    }

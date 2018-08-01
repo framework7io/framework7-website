@@ -5,82 +5,102 @@ block vars
   - var title = 'Popover Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Popover Vue Component
-      p Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
-      p Popover Vue component represents <a href="../docs/popover.html">Popover</a> component.
-      h2 Usage example
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Popover Vue Component
+    ul.docs-index
+    p Popover compontent is used to manage the presentation of content in a popover. You use popovers to present information temporarily. The popover remains visible until the user taps outside of the popover window or you explicitly dismiss it.
+    p Popover Vue component represents <a href="../docs/popover.html">Popover</a> component.
+    h2 Popover Components
+    p There are following components included:
+    ul
+      li <code><b>f7-popover</b></code>
+    h2 Popover Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;f7-popover&gt; properties
+        tr
+          td opened
+          td boolean
+          td Allows to open/close Popover and set its initial state
+        tr
+          td target
+          td string<br>object
+          td HTML element or string CSS selector of Popover target element
+    h2 Popover Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;f7-popover&gt; methods
+      tr
+        td .open(<span>target</span>, <span>animate</span>)
+        td Open popover around <code>target</code> element
+      tr
+        td .close(<span>animate</span>)
+        td Close popover
+    h2 Popover Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-popover&gt; events
+        tr
+          td popover:open
+          td Event will be triggered when Popover starts its opening animation
+        tr
+          td popover:opened
+          td Event will be triggered after Popover completes its opening animation
+        tr
+          td popover:close
+          td Event will be triggered when Popover starts its closing animation
+        tr
+          td popover:closed
+          td Event will be triggered after Popover completes its closing animation
+    h2 Open And Close Popover
+    p You can control Popover state, open and closing it:
+    ul
+      li using <a href="../docs/popover.html">Popover API</a>
+      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>popover-open</code> property (to open it) and <code>popover-close</code> property to close it
+    h2 Access To Popover Instance
+    p You can access Popover initialized instance by accessing <code><b>.f7Popover</b></code> component's property.
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/popover.html") Examples
       pre
         code
           :code
-            <!-- Popover -->
-            <f7-popover>
-              <!-- Popover content goes here -->
-            </f7-popover>
-      p Renders to:
-      pre
-        code
-          :code
-            <!-- Popover -->
-            <div class="popover">
-              <div class="popover-angle"></div>
-              <div class="popover-content">
-                <!-- Popover content goes here -->
-              </div>
-            </div>
-      h2 Properties
-      p Popover component has no any properties
-      //- table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Description
-        tbody
-          tr
-            td theme
-            td string
-            td Popover theme color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td layout
-            td string
-            td Popover layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>
-          tr
-            td opened
-            td boolean
-            td Allows to open/close Popover and set its initial state
-      h2 Methods
-      table.methods-table
-        tr
-          td .open(<span>target</span>, <span>animated</span>)
-          td Open popover around <b>target</b> element
-        tr
-          td .close(<span>animated</span>)
-          td Close popover
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td popover:open
-            td Event will be triggered when Popover starts its opening animation
-          tr
-            td popover:opened
-            td Event will be triggered after Popover completes its opening animation
-          tr
-            td popover:close
-            td Event will be triggered when Popover starts its closing animation
-          tr
-            td popover:closed
-            td Event will be triggered after Popover completes its closing animation
-      h2 Open and close Popover
-      p You can control Popover state, open and closing it:
-      ul
-        li using its <a href="../docs/popover.html#using-javascript">JavaScript API</a>
-        li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>open-popover</code> property (to open it) and <code>close-popover</code> property to close it
+            <f7-page>
+              <f7-navbar title="Popover"></f7-navbar>
+              <f7-toolbar bottom-md>
+                <f7-link>Dummy Link</f7-link>
+                <f7-link popover-open=".popover-menu">Open Popover</f7-link>
+              </f7-toolbar>
+
+              <f7-block>
+                <p><f7-button raised popover-open=".popover-menu">Open popover on me</f7-button></p>
+                <p>Mauris fermentum neque et luctus venenatis. Vivamus a sem rhoncus, ornare tellus eu, euismod mauris. In porta turpis at semper convallis. Duis adipiscing leo eu nulla lacinia, quis rhoncus metus condimentum. Etiam nec malesuada nibh. Maecenas quis lacinia nisl, vel posuere dolor. Vestibulum condimentum, nisl ac vulputate egestas, neque enim dignissim elit, rhoncus volutpat magna enim a est. Aenean sit amet ligula neque. Cras suscipit rutrum enim. Nam a odio facilisis, elementum tellus non, <f7-link popover-open=".popover-menu">popover</f7-link> tortor. Pellentesque felis eros, dictum vitae lacinia quis, lobortis vitae ipsum. Cras vehicula bibendum lorem quis imperdiet.</p>
+                <p>In hac habitasse platea dictumst. Etiam varius, ante vel ornare facilisis, velit massa rutrum dolor, ac porta magna magna lacinia nunc. Curabitur <f7-link popover-open=".popover-menu">popover!</f7-link> cursus laoreet. Aenean vel tempus augue. Pellentesque in imperdiet nibh. Mauris rhoncus nulla id sem suscipit volutpat. Pellentesque ac arcu in nisi viverra pulvinar. Nullam nulla orci, bibendum sed ligula non, ullamcorper iaculis mi. In hac habitasse platea dictumst. Praesent varius at nisl eu luctus. Cras aliquet porta est. Quisque elementum quis dui et consectetur. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sed laoreet purus. Pellentesque eget ante ante.</p>
+                <p>Duis et ultricies nibh. Sed facilisis turpis urna, ac imperdiet erat venenatis eu. Proin sit amet faucibus tortor, et varius sem. Etiam vitae lacinia neque. Aliquam nisi purus, interdum in arcu sed, ultrices rutrum arcu. Nulla mi turpis, consectetur vel enim quis, facilisis viverra dui. Aliquam quis convallis tortor, quis semper ligula. Morbi ullamcorper <f7-link popover-open=".popover-menu">one more popover</f7-link> massa at accumsan. Etiam purus odio, posuere in ligula vitae, viverra ultricies justo. Vestibulum nec interdum nisi. Aenean ac consectetur velit, non malesuada magna. Sed pharetra vehicula augue, vel venenatis lectus gravida eget. Curabitur lacus tellus, venenatis eu arcu in, interdum auctor nunc. Nunc non metus neque. Suspendisse viverra lectus sed risus aliquet, vel accumsan dolor feugiat.</p>
+              </f7-block>
+              <f7-popover class="popover-menu">
+                <f7-list>
+                  <f7-list-item link="#" popover-close title="Dialog"></f7-list-item>
+                  <f7-list-item link="#" popover-close title="Tabs"></f7-list-item>
+                  <f7-list-item link="#" popover-close title="Side Panels"></f7-list-item>
+                  <f7-list-item link="#" popover-close title="List View"></f7-list-item>
+                  <f7-list-item link="#" popover-close title="Form Inputs"></f7-list-item>
+                </f7-list>
+              </f7-popover>
+            </f7-page>

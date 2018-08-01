@@ -1,18 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Swiper Slider | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
-
+    +improveDocsLink
     h1 Swiper Slider
-    .docs-index
+    ul.docs-index
     p Framework7 comes with powerful and most modern touch slider ever - <a href="http://www.idangero.us/swiper/">Swiper Slider</a> with super flexible configuration and lot, lot of features.
     h2 Swiper Slider HTML Layout
     p Swiper HTML layout is pretty simple:
@@ -86,7 +85,7 @@ block content
     h2 Swiper API (Parameters, Methods And Properties)
     p Сheck out <a href="http://www.idangero.us/swiper/api/#parameters" target="_blank">Swiper API Website</a> for the most relevant API parameters and methods.
     .important-note
-      p Note that Framework7's version of Swiper doesn't contain <b>Keyboard, History, Hash Navigatio and Mousewheel</b> modules as they are desktop only things
+      p Note that Framework7's version of Swiper doesn't contain <b>Keyboard, History, Hash Navigation and Mousewheel</b> modules as they are desktop only things
     h2 Swiper Auto Initialization
     p If you don't need to use Swiper API and your Swiper is inside of the page and <b>presented in DOM on moment of page initialization</b> then it can be auto initialized with just adding additional <code>swiper-init</code> class:
     pre
@@ -134,7 +133,7 @@ block content
         |     &lt;/div&gt;
         | &lt;/div&gt;
     .with-device
-      h2(data-device-preview="../docs-demos/swiper.html") Examples
+      h2(data-device-preview="../docs-demos/core/swiper.html") Examples
       pre
         code.css
           :code

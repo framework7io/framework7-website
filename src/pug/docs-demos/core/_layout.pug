@@ -1,0 +1,33 @@
+block vars
+doctype
+html
+  head
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover")
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name="apple-mobile-web-app-status-bar-style", content="black")
+    title My App
+    link(rel="stylesheet", href="../../packages/core/css/framework7.min.css")
+    if (includeF7Icons)
+      link(rel="stylesheet" href="../../css/framework7-icons.css")
+    if (includeMaterialIcons)
+      link(href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet")
+  body
+    #app
+      block content
+
+    script(type="text/javascript", src="../../packages/core/js/framework7.min.js")
+    script.
+      var theme = 'ios';
+      if (location.href.indexOf('theme=md') >= 0) theme = 'md';
+      var plugin = {
+        params: {
+          theme: theme,
+          root: '#app',
+        }
+      };
+      if (Framework7.use) Framework7.use(plugin);
+      else if (Framework7.Class && Framework7.Class.use) Framework7.Class.use(plugin);
+
+    block scripts

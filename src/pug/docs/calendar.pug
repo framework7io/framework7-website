@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Calendar / Datepicker | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Calendar / Datepicker
-    .docs-index
+    ul.docs-index
     p Calendar is a touch optimized component that provides an easy way to handle dates.
     p Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).
     h2 Calendar App Methods
@@ -69,6 +69,11 @@ block content
           th Description
       tbody
         tr
+          td calendarType
+          td string
+          td gregorian
+          td Calendar type, can be <code>gregorian</code> or <code>jalali</code>
+        tr
           td value
           td array
           td
@@ -82,7 +87,23 @@ block content
           td events
           td Date Range
           td
-          td Dates with events. Will be marked with additonal "dot" on calendar day. Parameter accepts so called <b>Date Ranges</b> (look below for details)
+          td
+            p Dates with events. Will be marked with additonal "dot" on calendar day. Parameter accepts so called <b>Date Range</b> (look below for details).
+            p If you want to indicate that day has few different events, it is possible to indicate this with multiple different color dots. In this case, you need to pass date range as array where each object will have #[code date] and #[code color] properties, e.g.
+            pre
+              code.js
+                :code
+                  [
+                    {
+                      date: new Date(2018, 4, 11),
+                      color: '#2196f3',
+                    },
+                    // same date but different color, one more dot will be added to this day
+                    {
+                      date: new Date(2018, 4, 11),
+                      color: '#4caf50',
+                    },
+                  ]
         tr
           td rangesClasses
           td array
@@ -97,22 +118,38 @@ block content
         tr
           td monthNames
           td array
-          td ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December']
+          td
+            pre
+              code.js
+                :code
+                  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December']
           td Array with full month names
         tr
           td monthNamesShort
           td array
-          td ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+          td
+            pre
+              code.js
+                :code
+                  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
           td Array with short month names
         tr
           td dayNames
           td array
-          td ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+          td
+            pre
+              code.js
+                :code
+                  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
           td Array with week day names
         tr
           td dayNamesShort
           td array
-          td ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+          td
+            pre
+              code.js
+                :code
+                  ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
           td Array with week day short names
         tr
           td firstDay
@@ -124,6 +161,23 @@ block content
           td array
           td [0, 6]
           td Array with index numeber of weekend days, by default it is Saturday and Sunday
+        tr
+          td jalali
+          td object
+          td
+            pre
+              code
+                :code
+                  {
+                    monthNames: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
+                    monthNamesShort: ['فَر', 'اُر', 'خُر', 'تیر', 'مُر', 'شَه', 'مهر', 'آب', 'آذر', 'دی', 'بَه', 'اِس'],
+                    dayNames: ['یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'],
+                    dayNamesShort: ['1ش', '۲ش', '۳ش', '۴ش', '۵ش', 'ج', 'ش'],
+                    firstDay: 6, // Saturday
+                    weekendDays: [5], // Friday
+                    ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند']
+                  }
+          td Object with configuration for Jalali type calendar
         tr
           td dateFormat
           td string
@@ -150,6 +204,16 @@ block content
           td boolean
           td false
           td Enable to enable range picker. Not compatible with <code>multiple</code>
+        tr
+          td rangePickerMinDays
+          td number
+          td 1
+          td Minimum days that need to be selected when <code>rangePicker</code> enabled
+        tr
+          td rangePickerMaxDays
+          td number
+          td 0
+          td Maximum days allowed to be selected when <code>rangePicker</code> enabled. <code>0</code> means no maximum
         tr
           td direction
           td string
@@ -345,7 +409,7 @@ block content
       code.js
         | var calendar = app.calendar.create({
         |     ...
-        |     //Disabled 10th November 2015 and 11th November 2015:
+        |     // Disabled 10th November 2015 and 11th November 2015:
         |     disabled: [new Date(2015, 10, 10), new Date(2015, 10, 11)],
         |     ...
         | });
@@ -388,25 +452,47 @@ block content
         |     },
         |     ...
         | });
+    p Or object with #[code date] property:
+    pre
+      code.js
+        :code
+          var calendar = app.calendar.create({
+              ...
+              // Disabled 1th December 2015
+              disabled: {
+                  date: new Date(2015, 11, 1)
+              },
+              ...
+          });
     p Or array with mixed dates and objects:
     pre
       code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     events: [
-        |         new Date(2015, 9, 1),
-        |         new Date(2015, 9, 5),
-        |         {
-        |             from: new Date(2015, 9, 10),
-        |             to: new Date(2015, 9, 15)
-        |         },
-        |         {
-        |             from: new Date(2015, 9, 20),
-        |             to: new Date(2015, 9, 31)
-        |         }
-        |     ],
-        |     ...
-        | });
+        :code
+          var calendar = app.calendar.create({
+              ...
+              events: [
+                  new Date(2015, 9, 1),
+                  new Date(2015, 9, 5),
+                  {
+                      from: new Date(2015, 9, 10),
+                      to: new Date(2015, 9, 15)
+                  },
+                  {
+                      from: new Date(2015, 9, 20),
+                      to: new Date(2015, 9, 31)
+                  },
+                  {
+                      date: new Date(2015, 11, 1),
+                      color: '#ff0000'
+                  },
+                  // same date but one more color dot will be added
+                  {
+                      date: new Date(2015, 11, 1),
+                      color: '#00ff00'
+                  },
+              ],
+              ...
+          });
     h3 rangesClasses
     p <b>rangesClasses</b> parameter accepts array of objects with Date Range and class names for this range:
     pre
@@ -672,7 +758,7 @@ block content
           td calendarBeforeDestroy
           td app
     .with-device
-      h2(data-device-preview="../docs-demos/calendar.html") Examples
+      h2(data-device-preview="../docs-demos/core/calendar.html") Examples
       h4 Default Setup
       pre
         code.html
@@ -832,15 +918,27 @@ block content
       pre
         code.js
           :code
-            var today = new Date();
+            var now = new Date();
+            var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             var weekLater = new Date().setDate(today.getDate() + 7);
             var calendarEvents = app.calendar.create({
                 inputEl: '#demo-calendar-events',
                 dateFormat: 'M dd yyyy',
-                events: {
-                  from: today,
-                  to: weekLater
-                }
+                events: [
+                  {
+                    from: today,
+                    to: weekLater
+                  },
+                  //- more events this day
+                  {
+                    date: today,
+                    color: '#ff0000'
+                  },
+                  {
+                    date: today,
+                    color: '#00ff00'
+                  },
+                ]
             });
 
       h4 Disabled Dates

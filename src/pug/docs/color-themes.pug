@@ -1,18 +1,18 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Color Themes | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Color Themes
-    .docs-index
-    .with-device(data-device-preview="../docs-demos/color-themes.html")
+    ul.docs-index
+    .with-device(data-device-preview="../docs-demos/core/color-themes.html")
       p Framework7 comes with 9 ready to use default color themes. Note that colors a bit vary for iOS and MD themes to match official guide lines.
       table
         thead
@@ -96,7 +96,7 @@ block content
 
 
       h2 Apply Color Themes
-      p It is easy to apply color themes. All you need is just to add <code>theme-[color]</code> class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
+      p It is easy to apply color themes. All you need is just to add <code>color-theme-[color]</code> class to the required parent element. It could be body, app root, view, page, navbar, toolbar, list-block, etc. For example:
       pre
         code
           | &lt;body class="color-theme-red"&gt;

@@ -5,21 +5,50 @@ block vars
   - var title = 'Smart Select Vue Component | Framework7 Vue Documentation';
 
 block content
+  include ../_docs-demo-device
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Smart Select Vue Component
-      p Smart Select allows you to easily convert your usual form selects to dynamic pages with grouped radio inputs. You can see such feature in many native apps.
-      p Smart Select is not a separate component, but just a particular case of using <a href="list.html">&lt;f7-list&gt;</a> and <a href="list-item.html">&lt;f7-list-item&gt;</a> components.
-      h2 Usage example
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Smart Select Vue Component
+    ul.docs-index
+    p Smart Select allows you to easily convert your usual form selects to dynamic pages with grouped radio inputs. You can see such feature in many native apps.
+    p It is not a separate Vue component, but just a particular case of using <a href="list-view.html">&lt;f7-list&gt;</a> and <a href="list-item.html">&lt;f7-list-item&gt;</a> components with Framework7's <a href="../docs/smart-select.html">Smart Select</a> component.
+
+    h2 Smart Select Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-list-item&gt;  properties
+        tr
+          td smart-select
+          td boolean
+          td
+          td Enables Smart Select behavior
+        tr
+          td smart-select-params
+          td object
+          td
+          td Object with <a href="../docs/smart-select.html#smart-select-parameters">Smart Select Parameters</a>
+
+    h2 Access To Smart Select Instance
+    p You can access Smart Select initialized instance by accessing <code><b>.f7SmartSelect</b></code> property of <code>&lt;f7-list-item&gt;</code> component.
+
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/smart-select.html") Examples
       pre
         code
           :code
-            <f7-list form>
-              <!-- Enables Smart Select behavior by adding "smart-select" prop -->
-              <f7-list-item smart-select title="Fruit">
-                <!-- Select with values inside -->
+            <f7-list>
+
+              <f7-list-item title="Fruit" smart-select>
                 <select name="fruits">
                   <option value="apple" selected>Apple</option>
                   <option value="pineapple">Pineapple</option>
@@ -30,9 +59,9 @@ block content
                   <option value="banana">Banana</option>
                 </select>
               </f7-list-item>
-              <!-- Multiple Smart Select With Searchbar -->
-              <f7-list-item smart-select smart-select-searchbar title="Car">
-                <select name="car" multiple="multiple">
+
+              <f7-list-item title="Car" smart-select :smart-select-params="{openIn: 'popup', searchbar: true, searchbarPlaceholder: 'Search car'}">
+                <select name="car" multiple>
                   <optgroup label="Japanese">
                     <option value="honda" selected>Honda</option>
                     <option value="lexus">Lexus</option>
@@ -55,82 +84,23 @@ block content
                   </optgroup>
                 </select>
               </f7-list-item>
-              <!-- With back on select -->
-              <f7-list-item smart-select smart-select-back-on-select title="Mac or Windows">
+
+              <f7-list-item title="Mac or Windows" smart-select :smart-select-params="{openIn: 'sheet'}">
                 <select name="mac-windows">
-                  <option value="mac">Mac</option>
+                  <option value="mac" selected>Mac</option>
                   <option value="windows">Windows</option>
                 </select>
               </f7-list-item>
+              <f7-list-item title="Super Hero" smart-select :smart-select-params="{openIn: 'popover'}">
+                <select name="superhero" multiple>
+                  <option value="Batman" selected>Batman</option>
+                  <option value="Superman">Superman</option>
+                  <option value="Hulk">Hulk</option>
+                  <option value="Spiderman">Spiderman</option>
+                  <option value="Ironman">Ironman</option>
+                  <option value="Thor">Thor</option>
+                  <option value="Wonder Woman">Wonder Woman</option>
+                </select>
+              </f7-list-item>
+
             </f7-list>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            th(colspan="4") <a href="list-item.html">&lt;f7-list-item&gt;</a>'s Smart Select specific properties
-          tr
-            td smart-select
-            td boolean
-            td
-            td Converts list item to smart select list item
-          tr
-            td smart-select-searchbar
-            td boolean
-            td
-            td Enables search bar for smart select page
-          tr
-            td smart-select-searchnar-placeholder
-            td string
-            td "Search"
-            td Smart select search bar search field placeholder text
-          tr
-            td smart-select-searchbar-cancel
-            td string
-            td "Cancel"
-            td Smart select search bar Cancel button text
-          tr
-            td smart-select-page-title
-            td string
-            td
-            td Smart select page title. Defaults to <code>title</code> prop
-          tr
-            td smart-select-back-text
-            td boolean
-            td "Back"
-            td Smart select page back-link text.
-          tr
-            td smart-select-back-on-select
-            td boolean
-            td
-            td Will close Smart Select page automatically after user selects any option
-          tr
-            td smart-select-open-in
-            td string
-            td "page"
-            td Defines how to open smart select: "page", "popup" or "picker"
-          tr
-            td smart-select-virtual-list
-            td boolean
-            td
-            td Enables Virtual list for smart select
-          tr
-            td smart-select-virtual-list-height
-            td number
-            td
-            td Allows to specify virtual list item height
-          tr
-            td smart-select-navbar-theme
-            td string
-            td
-            td Smart select navbar color theme. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td smart-select-form-theme
-            td string
-            td
-            td Smart select form color theme. One of <a href="../docs/color-themes.html">default colors</a>

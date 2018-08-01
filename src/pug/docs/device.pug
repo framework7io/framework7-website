@@ -1,15 +1,15 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Device | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Device
-    .docs-index
+    ul.docs-index
     p Framework7 comes with Device detection library with which contains useful information about device and platform.
     p It is avaialable as a <code><b>device</b></code> property of Framework7 class (<code>Framework7.device</code>) and same property on initialized app instance (<code>app.device</code>):
     pre
@@ -38,7 +38,7 @@ block content
           td android
           td <code>true</code> for Android device
         tr
-          td windows
+          td windowsPhone
           td <code>true</code> for Windows Phone device
         tr
           td desktop
@@ -61,6 +61,18 @@ block content
         tr
           td phonegap
           td alias for <code>cordova</code> prop
+        tr
+          td windows
+          td <code>true</code> for desktop windows
+        tr
+          td macos
+          td <code>true</code> for desktop macOs
+        tr
+          td ie
+          td <code>true</code> for Internet Explorer browser
+        tr
+          td edge
+          td <code>true</code> for Edge browser
         tr
           td webView
           td <code>true</code> if app runs in web view - webapp installed to home screen

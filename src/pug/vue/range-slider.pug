@@ -1,0 +1,216 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Range Slider Vue Component | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Range Slider Vue Component
+    ul.docs-index
+    p Range Slider Vue component represents <a href="../docs/range-slider.html">Range Slider</a> component.
+    h2 Range Slider Components
+    p There are following components included:
+    ul
+      li <code><b>f7-range</b></code>
+    h2 Range Slider Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-range&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Range Slider
+        tr
+          td value
+          td number<br>array<br>string
+          td
+          td Range Slider value, must be array in case of dual range slider
+        tr
+          td min
+          td number<br>string
+          td
+          td Minimum value
+        tr
+          td max
+          td number<br>string
+          td
+          td Maximum value
+        tr
+          td step
+          td number<br>string
+          td 1
+          td Maximum value
+        tr
+          td label
+          td boolean
+          td false
+          td Enables additional label around range slider knob
+        tr
+          td dual
+          td boolean
+          td false
+          td Enables dual range slider
+        tr
+          td draggable-bar
+          td boolean
+          td true
+          td When enabled it is also possible to interact with range slider (change value) on range bar click and swipe.
+        tr
+          td disabled
+          td boolean
+          td false
+          td Defines whether the range slider is disabled or not
+        tr
+          td id
+          td string
+          td
+          td Range slider element ID attribute
+        tr
+          td input
+          td boolean
+          td false
+          td If enabled, then it will render <code>input type="range"</code> element inside as well
+        tr
+          td input-id
+          td string
+          td
+          td Input element ID attribute
+
+    h2 Range Slider Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-range&gt; events
+        tr
+          td range:change
+          td Event will be triggered when Range Slider value has been changed
+        tr
+          td range:changed
+          td Event will be triggered on slider knob release after value change
+    h2 Range Slider Methods
+    table.methods-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-range&gt; methods
+        tr
+          td .setValue(<span>newValue</span>)
+          td Set new range slider value
+        tr
+          td .getValue()
+          td Returns range slider value
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/range-slider.html") Examples
+      pre
+        code.html
+          :code
+            <template>
+              <f7-page>
+                <f7-navbar title="Range Slider"></f7-navbar>
+
+                <f7-block-title>Volume</f7-block-title>
+                <f7-list simple-list>
+                  <f7-list-item>
+                    <f7-list-item-cell class="width-auto flex-shrink-0">
+                      <f7-icon ios="f7:volume_mute_fill" md="material:volume_mute"></f7-icon>
+                    </f7-list-item-cell>
+                    <f7-list-item-cell class="flex-shrink-3">
+                      <f7-range
+                        :min="0"
+                        :max="100"
+                        :step="1"
+                        :value="10"
+                      ></f7-range>
+                    </f7-list-item-cell>
+                    <f7-list-item-cell class="width-auto flex-shrink-0">
+                      <f7-icon ios="f7:volume_fill" md="material:volume_up"></f7-icon>
+                    </f7-list-item-cell>
+                  </f7-list-item>
+                </f7-list>
+
+                <f7-block-title>Brightness</f7-block-title>
+                <f7-list simple-list>
+                  <f7-list-item>
+                    <f7-list-item-cell class="width-auto flex-shrink-0">
+                      <f7-icon ios="f7:circle" md="material:brightness_low"></f7-icon>
+                    </f7-list-item-cell>
+                    <f7-list-item-cell class="flex-shrink-3">
+                      <f7-range
+                        :min="0"
+                        :max="100"
+                        :step="1"
+                        :value="50"
+                        :label="true"
+                        color="orange"
+                      ></f7-range>
+                    </f7-list-item-cell>
+                    <f7-list-item-cell class="width-auto flex-shrink-0">
+                      <f7-icon ios="f7:circle_half" md="material:brightness_high"></f7-icon>
+                    </f7-list-item-cell>
+                  </f7-list-item>
+                </f7-list>
+
+                <f7-block-title class="display-flex justify-content-space-between">Price Filter <span>${{priceMin}} - ${{priceMax}}</span></f7-block-title>
+                <f7-list simple-list>
+                  <f7-list-item>
+                    <f7-list-item-cell class="width-auto flex-shrink-0">
+                      <f7-icon ios="f7:circle" md="material:brightness_low"></f7-icon>
+                    </f7-list-item-cell>
+                    <f7-list-item-cell class="flex-shrink-3">
+                      <f7-range
+                        :min="0"
+                        :max="500"
+                        :step="1"
+                        :value="[priceMin, priceMax]"
+                        :label="true"
+                        :dual="true"
+                        color="green"
+                        @range:change="onPriceChange"
+                      ></f7-range>
+                    </f7-list-item-cell>
+                    <f7-list-item-cell class="width-auto flex-shrink-0">
+                      <f7-icon ios="f7:circle_half" md="material:brightness_high"></f7-icon>
+                    </f7-list-item-cell>
+                  </f7-list-item>
+                </f7-list>
+              </f7-page>
+            </template>
+
+            <script>
+              export default {
+                data() {
+                  return {
+                    priceMin: 200,
+                    priceMax: 400,
+                  };
+                },
+                methods: {
+                  onPriceChange(values) {
+                    this.priceMin = values[0];
+                    this.priceMax = values[1];
+                  },
+                },
+              };
+            </script>
+

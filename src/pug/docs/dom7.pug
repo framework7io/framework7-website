@@ -1,15 +1,15 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Dom7 - Custom DOM Library | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Dom7 - Custom DOM Library
-    .docs-index
+    ul.docs-index
     p Framework7 doesn't use any third party library, even for DOM manipulation. It has its own custom DOM7 - DOM library that utilizes most edge and high-performance methods for DOM manipulation. You don’t need to learn something new, its usage is very simple because it has the same syntax as well known jQuery library with support of the most popular and widely used methods and jQuery-like chaining.
     p To start use it there is a <code>Dom7</code> global window function, but we recommend to assign it to some local variable with more handy name, like <code>$$</code>, but not to "$" to prevent confilicts with other libraries like jQuery or Zepto:
     pre

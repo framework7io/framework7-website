@@ -1,4 +1,52 @@
 -
+  date: July 9, 2018
+  video: false
+  title: "Migration To Framework7 v3"
+  url: https://blog.framework7.io/migration-to-framework7-v3-928a21a1eac9
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v3
+-
+  video: true
+  date: May 28th, 2018
+  title: "Deploy Framework7 apps to Android with PhoneGap Cordova | Beginner Tutorial"
+  url: https://www.timo-ernst.net/blog/2018/05/28/deploy-framework7-apps-to-android-with-phonegap-cordova-beginner-tutorial/
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+-
+  video: true
+  date: April 11, 2018
+  title: "How to use Framework7 V2 Router | Video Tutorial"
+  url: https://www.timo-ernst.net/blog/2018/04/11/how-to-use-framework7-v2-router-tutorial/
+  author:
+    name: Timo Ernst
+    url: https://www.timo-ernst.net
+  badges:
+  - v2
+-
+  date: Jan 14, 2018
+  video: false
+  title: "Migration To Framework7 v2"
+  url: https://blog.framework7.io/migration-to-framework7-v2-eb6dc38ede3b
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v2
+-
+  date: Sep 8, 2017
+  video: false
+  title: "Mastering Framework7 v2 Router"
+  url: https://blog.framework7.io/mastering-v2-router-958ea2dbd24f
+  author:
+    name: Vladimir Kharlampidi
+    url: https://twitter.com/nolimits4web
+  badges:
+  - v2
+-
   date: July 24, 2017
   video: true
   title: "Video Tutorial: How to use Vuex with Framework7"

@@ -1,18 +1,18 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Button | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
-  .docs-content.with-device
+  .docs-content
+    +improveDocsLink
     h1 Button
-    .docs-index
-    p Framework7 comes with a bunch of ready to use buttons. All you need is to just add appropriate classes to your links or submit/button inputs:
+    ul.docs-index
+    p Framework7 comes with a bunch of ready to use buttons. All you need to do is add the appropriate classes to your links or submit/button inputs:
     h2 Button Layout
     p Button layout is pretty simple. Just add <code>button</code> class to links or submit/button inputs:
     pre
@@ -118,7 +118,7 @@ block content
           td Raised segmented &nbsp;
             b.md-only This will have effect only in MD theme
     .with-device
-      h2(data-device-preview="../docs-demos/button.html") Examples
+      h2(data-device-preview="../docs-demos/core/button.html") Examples
       h4 Usual Buttons
       p Add <code>button</code> class.
       pre

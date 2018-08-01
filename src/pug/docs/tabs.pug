@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Tabs | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Tabs
-    .docs-index
+    ul.docs-index
     p Tabs allow to simply switch between different content.
     h2 Tabs Layout
     p Let's look at Tabs layout:
@@ -209,11 +209,25 @@ block content
     p We can control tabs using the following app methods:
     .method-wrap
       p
-        span.method app.tab.show(<span>tabEl</span>, <span>animate</span>)</span>
+        span.method app.tab.show(<span>tabEl</span>, <span>animate</span>)
       ul.method-parameters
         li
           span.parameter tabEl
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Tab to show. Requred
+        li
+          span.parameter animate
+          |  - <span class="parameter-type">boolean</span> - Should it become visible with animation or not (in case of animated or swipeable tabs). <em>Optional</em>
+        li.method-returns This method returns object with <code>newTabEl</code> and <code>oldTabEl</code> properties with shown and hidden tabs HTML elements
+    .method-wrap
+      p
+        span.method app.tab.show(<span>tabEl</span>, <span>tabLinkEl</span>, <span>animate</span>)
+      ul.method-parameters
+        li
+          span.parameter tabEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Tab to show. Requred
+        li
+          span.parameter tabLinkEl
+          |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of Tab link/button to be activated with this tab. Useful to pass in case you have a complex layout to tell Framework7 which tab link/button must be activated
         li
           span.parameter animate
           |  - <span class="parameter-type">boolean</span> - Should it become visible with animation or not (in case of animated or swipeable tabs). <em>Optional</em>
@@ -321,9 +335,9 @@ block content
             <div class="toolbar tabbar">
               <div class="toolbar-inner">
                 <!-- additional "data-route-tab-id" must match to tab's ID in the specified routes -->
-                <a href="./" class="tab-link" data-route-tab-id="tab-1">Tab 1</a>
-                <a href="./tab-2/" class="tab-link" data-route-tab-id="tab-2">Tab 2</a>
-                <a href="./tab-3/" class="tab-link" data-route-tab-id="tab-3">Tab 3</a>
+                <a href="/" class="tab-link" data-route-tab-id="tab-1">Tab 1</a>
+                <a href="/tab-2/" class="tab-link" data-route-tab-id="tab-2">Tab 2</a>
+                <a href="/tab-3/" class="tab-link" data-route-tab-id="tab-3">Tab 3</a>
               </div>
             </div>
             <!-- Additional "tabs-routable" is required on tabs -->
@@ -387,7 +401,7 @@ block content
               li <code>tabRoute</code> - new tab route
 
     .with-device
-      h2(data-device-preview="../docs-demos/tabs.html") Examples
+      h2(data-device-preview="../docs-demos/core/tabs.html") Examples
       h3 Static Tabs
       pre
         code.html

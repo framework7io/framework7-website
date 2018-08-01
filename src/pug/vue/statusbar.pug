@@ -2,100 +2,34 @@ extends ../_docs-template
 
 block vars
   - var activeLink = 'vue';
-  - var title = 'Status Bar Vue Component | Framework7 Vue Documentation';
+  - var title = 'Statusbar Vue Component | Framework7 Vue Documentation';
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Status Bar Vue Component
-      p Status Bar Vue component represents <a href="../docs/status-bar.html">Status bar overlay</a> in Framework7.
-      h2 Usage example
-      pre
-        code
-          | &lt;div id="app"&gt;
-          |   &lt;!-- Should be placed as the first child in the app root --&gt;
-          |   &lt;f7-statusbar&gt;&lt;/f7-statusbar&gt;
-          |   ...
-          | &lt;/div&gt;
-      p Renders to:
-      pre
-        code
-          | &lt;div id="app"&gt;
-          |   &lt;div class="statusbar-overlay"&gt;&lt;/div&gt;
-          |   ...
-          | &lt;/div&gt;
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td side
-            td string
-            td 
-            td Panel side. Could be "left" or "right"
-          tr
-            td left
-            td boolean
-            td 
-            td Shortcut prop for <code>side="left"</code>
-          tr
-            td right
-            td boolean
-            td 
-            td Shortcut prop for <code>side="right"</code>
-          tr
-            td effect
-            td string
-            td 
-            td Panel effect. Could be "cover" or "reveal"
-          tr
-            td cover
-            td boolean
-            td 
-            td Shortcut prop for <code>effect="cover"</code>
-          tr
-            td reveal
-            td boolean
-            td 
-            td Shortcut prop for <code>effect="reveal"</code>
-          tr
-            td theme
-            td string
-            td 
-            td Panel theme color. One of <a href="../docs/color-themes.html">default colors</a>
-          tr
-            td layout
-            td string
-            td 
-            td Panel layout theme. One of <a href="../docs/color-themes.html#layout-themes">default layout themes</a>
-          tr
-            td opened
-            td boolean
-            td 
-            td Allows to open/close panel and set its initial state
-      h2 Events
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td panel:open
-            td Event will be triggered when Panel starts its opening animation
-          tr
-            td panel:opened
-            td Event will be triggered after Panel completes its opening animation
-          tr
-            td panel:close
-            td Event will be triggered when Panel starts its closing animation
-          tr
-            td panel:closed
-            td Event will be triggered after Panel completes its closing animation
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Statusbar Vue Component
+    ul.docs-index
+    p Statusbar Vue component represents <a href="../docs/statusbar.html">Statusbar</a> in Framework7.
+    h2 Statusbar Components
+    p There are following components included:
+    ul
+      li <code><b>f7-statusbar</b></code>
+    h2 Examples
+    pre
+      code.html
+        | &lt;f7-app&gt;
+        |   &lt;!-- Should be placed as the first child in the app root --&gt;
+        |   &lt;f7-statusbar&gt;&lt;/f7-statusbar&gt;
+        |   ...
+        | &lt;/f7-app&gt;
+    p Renders to:
+    pre
+      code.html
+        | &lt;div class="framework7-root"&gt;
+        |   &lt;div class="statusbar"&gt;&lt;/div&gt;
+        |   ...
+        | &lt;/div&gt;
+

@@ -1,0 +1,187 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Link React Component | Framework7 React Documentation';
+
+block content
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Link React Component
+    ul.docs-index
+    p Link is main component to create links for navigation, custom actions, switching tabs, open/close panels, etc.
+
+    h2 Link Components
+    p There are following components included:
+    ul
+      li <code><b>Link</b></code> / <code><b>F7Link</b></code>
+
+    h2 Link Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Link&gt; properties
+        tr
+          td noLinkClass
+          td boolean
+          td
+          td Removes "link" class
+        tr
+          td tabLink
+          td string<br>boolean
+          td
+          td Enables tab link and specify CSS selector of the target tab (if specified as a string)
+        tr
+          td tabLinkActive
+          td boolean
+          td
+          td Makes this tab link active
+        tr
+          td text
+          td string
+          td
+          td Link text
+        tr
+          td noFastClick
+          td boolean
+          td
+          td Disables fast click
+        tr
+          td badge
+          td string<br>number
+          td
+          td Badge count
+        tr
+          td badgeColor
+          td string
+          td
+          td Badge color. One of the <a href="../docs/color-themes.html">default colors</a>
+        tr
+          td iconOnly
+          td boolean
+          td
+          td Enable when used in navbar/toolbar with icon only inside
+        tr
+          td tooltip
+          td string
+          td
+          td Link <a href="../docs/tooltip.html">tooltip</a> text to show on link hover/press
+        tr
+          th(colspan="4") &lt;Link&gt; Smart Select related properties
+        tr
+          td smartSelect
+          td boolean
+          td false
+          td Enables Smart Select behavior
+        tr
+          td smartSelectParams
+          td object
+          td
+          td Object with <a href="../docs/smart-select.html#smart-select-parameters">Smart Select Parameters</a>
+        tr
+          th(colspan="4") &lt;Link&gt; icon related properties
+        +reactLinkIconProps
+        tr
+          td iconBadge
+          td string<br>number
+          td
+          td Adds badge to the icon (intended to be used in Tabbar's icons)
+        tr
+          th(colspan="4") &lt;Link&gt; navigation/router related properties
+        +reactLinkRouterProps
+        tr
+          th(colspan="4") &lt;Link&gt; action related properties
+        +reactLinkActionsProps
+
+    h2 Link Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Link&gt; events
+        tr
+          td click
+          td Event will be triggered after click on a link
+
+    h2 Examples
+    h4 Navigation Link
+    pre
+      code.html
+        :code
+          <Link href="/about/">About</Link>
+
+    h4 Back Navigation Link
+    pre
+      code.html
+        :code
+          <Link back>Back</Link>
+
+    h4 With Router Parameters
+    pre
+      code.html
+        :code
+          <Link href="/about/" animate={false} ignoreCache={true}>About</Link>
+
+    h4 External Link
+    pre
+      code.html
+        :code
+          <Link href="http://google.com" external>Google</Link>
+
+    h4 Tab Link
+    pre
+      code.html
+        :code
+          <!-- Tabs -->
+          <Tabs>
+            <Tab id="tab-1" tabActive>Tab 1</Tab>
+            <Tab id="tab-1">Tab 2</Tab>
+          </Tabs>
+          <!-- Switch Between Tabs -->
+          <Link tabLink="#tab-1" tabLinkActive>Show Tab 1</Link>
+          <Link tabLink="#tab-2">Show Tab 2</Link>
+
+    h4 Routable Tabs
+    pre
+      code.html
+        :code
+          <!-- Tabs -->
+          <Tabs>
+            <Tab id="tab-1"></Tab>
+            <Tab id="tab-2"></Tab>
+          </Tabs>
+          <!-- Switch Between Tabs -->
+          <Link tabLink routeTabId="tab-1" href="/tabs/">Show Tab 1</Link>
+          <Link tabLink routeTabId="tab-2" href="/tabs/tab-2/">Show Tab 2</Link>
+
+    h4 Open And Close Panel
+    pre
+      code.html
+        :code
+          <Link panelOpen="left">Open Left Panel</Link>
+          <Link panelClose>Close Panel</Link>
+
+    h4 Open and Close Popup
+    pre
+      code.html
+        :code
+          <Link popupOpen="#my-popup">Open Popup</Link>
+          <Link popupClose="#my-popup">Close Popup</Link>
+
+    h4 With Icon & Color
+    pre
+      code.html
+        :code
+          <Link iconF7="home" text="Home" color="red"></Link>

@@ -1,13 +1,13 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'App HTML Layout | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 App HTML Layout
     p First thing we should do for our App is to create <code>index.html</code> file with app's skeleton. Let's look at basic app layout:
     pre
@@ -24,7 +24,7 @@ block content
               <meta name="theme-color" content="#2196f3">
               <!-- Your app title -->
               <title>My App</title>
-              <!-- Path to Framework7 Library CSS, Material Theme -->
+              <!-- Path to Framework7 Library CSS -->
               <link rel="stylesheet" href="path/to/framework7.min.css">
               <!-- Path to your custom app styles-->
               <link rel="stylesheet" href="path/to/my-app.css">
@@ -33,7 +33,7 @@ block content
               <!-- App root element -->
               <div id="app">
                 <!-- Statusbar overlay -->
-                <div class="statusbar">
+                <div class="statusbar"></div>
 
                 <!-- Your main view, should have "view-main" class -->
                 <div class="view view-main">

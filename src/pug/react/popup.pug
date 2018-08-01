@@ -1,0 +1,158 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Popup React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Popup React Component
+    ul.docs-index
+    p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
+    p Popup React component represents <a href="../docs/popup.html">Popup</a> component.
+    h2 Popup Components
+    p There are following components included:
+    ul
+      li <code><b>Popup</b></code> / <code><b>F7Popup</b></code> - popup element
+    h2 Popup Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;Popup&gt; properties
+        tr
+          td tabletFullscreen
+          td boolean
+          td Defines whether the popup should be displayed fullscreen on tablets or not
+        tr
+          td opened
+          td boolean
+          td Allows to open/close Popup and set its initial state
+    h2 Popup Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;Popup&gt; methods
+      tr
+        td .open(<span>animate</span>)
+        td Open popup
+      tr
+        td .close(<span>animate</span>)
+        td Close popup
+    h2 Popup Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Popup&gt; events
+        tr
+          td popupOpen
+          td Event will be triggered when Popup starts its opening animation
+        tr
+          td popupOpened
+          td Event will be triggered after Popup completes its opening animation
+        tr
+          td popupClose
+          td Event will be triggered when Popup starts its closing animation
+        tr
+          td popupClosed
+          td Event will be triggered after Popup completes its closing animation
+    h2 Open And Close Popup
+    p You can control Popup state, open and closing it:
+    ul
+      li using <a href="../docs/popup.html">Popup API</a>
+      li by passing <code>true</code> or <code>false</code> to its <code>opened</code> prop
+      li by clicking on <a href="link.html">Link</a> or <a href="button.html">Button</a> with relevant <code>popupOpen</code> property (to open it) and <code>popupClose</code> property to close it
+    h2 Access To Popup Instance
+    p You can access Popup initialized instance by accessing <code><b>.f7Popup</b></code> component's property.
+    .with-device
+      h2(data-device-preview="../docs-demos/react/popup.html") Examples
+      pre
+        code.js
+          :code
+            export default class extends React.Component {
+              constructor(props) {
+                super(props);
+
+                this.state = {
+                  popupOpened: false,
+                }
+              }
+              render() {
+                return (
+                  <Page onPageBeforeRemove={this.onPageBeforeRemove.bind(this)}>
+                    <Navbar title="Popup"></Navbar>
+                    <Block>
+                      <p>Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".</p>
+                      <p>
+                        <Button raised popupOpen=".demo-popup">Open Popup</Button>
+                      </p>
+                      <p>
+                        <Button raised onClick={() => this.setState({ popupOpened : true })}>Open Via Prop Change</Button>
+                      </p>
+                      <p>
+                        <Button raised onClick={this.createPopup.bind(this)}>Create Dynamic Popup</Button>
+                      </p>
+                    </Block>
+                    <Popup className="demo-popup" opened={this.state.popupOpened} onPopupClosed={() => this.setState({popupOpened : false})}>
+                      <Page>
+                        <Navbar title="Popup Title">
+                          <NavRight>
+                            <Link popupClose>Close</Link>
+                          </NavRight>
+                        </Navbar>
+                        <Block>
+                          <p>Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.</p>
+                          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>
+                          <p>Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.</p>
+                        </Block>
+                      </Page>
+                    </Popup>
+                  </Page>
+                )
+              }
+              createPopup() {
+                const self = this;
+                // Create popup
+                if (!self.popup) {
+                  self.popup = self.$f7.popup.create({
+                    content: `
+                      <div class="popup">
+                        <div class="page">
+                          <div class="navbar">
+                            <div class="navbar-inner">
+                              <div class="title">Dynamic Popup</div>
+                              <div class="right"><a href="#" class="link popup-close">Close</a></div>
+                            </div>
+                          </div>
+                          <div class="page-content">
+                            <div class="block">
+                              <p>This popup was created dynamically</p>
+                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    `.trim(),
+                  });
+                }
+                // Open it
+                self.popup.open();
+              }
+              onPageBeforeRemove() {
+                const self = this;
+                // Destroy popup when page removed
+                if (self.popup) self.popup.destroy();
+              }
+            };

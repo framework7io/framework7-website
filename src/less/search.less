@@ -1,0 +1,125 @@
+.search-results {
+  position: absolute;
+  background: #fff;
+  background: @primaryColor;
+  padding-top: 10px;
+  z-index: 100;
+  box-shadow: 10px 10px 40px rgba(0,0,0,0.2);
+  top: 100%;
+  left: 0px;
+  margin-top: -10px;
+  width: 300px;
+  color: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+  .algolia-logo {
+    height: 20px;
+    background: #fff;
+    &:after {
+      content: '';
+      display: block;
+      float: right;
+      width: 100px;
+      height: 20px;
+      background: url(../i/algolia.svg) no-repeat center top;
+      background-size: 100% auto;
+      margin-right: 20px;
+    }
+  }
+}
+@media (max-width: 860px) {
+  .docs-nav .search-results {
+    transition-duration: 300ms;
+    transform: translateX(-110px);
+  }
+  .docs-nav:not(.docs-nav-visible) .search-results {
+    box-shadow: none;
+  }
+  .docs-nav-visible .search-results {
+    transform: translateX(0px);
+  }
+}
+.search-results.no-search-results {
+  color: #333;
+  background: #fff;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+}
+.search-results ul {
+  margin: 0;
+  padding: 0;
+  ul {
+    background: #fff;
+  }
+  li > span, li > a > span {
+    display: block;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  a {
+    color: #333;
+  }
+  a:hover {
+    color: @primaryColor;
+    em, small {
+      color: @primaryColor;
+    }
+  }
+  em {
+    font-weight: bold !important;
+    font-style: italic !important;
+    color: #000;
+  }
+  > li {
+    margin: 0 !important;
+  }
+  > li > span {
+    background: @primaryColor;
+    color: #fff;
+    font-size: 15px;
+    padding: 5px 10px;
+  }
+  > li > ul {
+    margin: 0;
+  }
+  > li > ul > li {
+    margin: 0;
+    padding: 5px 0 5px 10px;
+    + li {
+      border-top: 1px solid rgba(0,0,0,0.4);
+    }
+  }
+  > li > ul > li > span {
+    display: block;
+  }
+  ul ul li {
+    padding: 5px 0;
+    margin: 0;
+    a {
+      display: block;
+    }
+    span {
+      display: block;
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    + li {
+      border-top: 1px solid rgba(0,0,0,0.2);
+    }
+  }
+  small {
+    font-size: 12px;
+    display: block;
+    line-height: 15px;
+    max-height: 45px;
+    position: relative;
+    overflow: hidden;
+    color: #666;
+    em {
+      color: #333;
+    }
+  }
+}

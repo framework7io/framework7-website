@@ -1,0 +1,127 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Toggle React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Toggle React Component
+    ul.docs-index
+    p Toggle React component represents <a href="../docs/toggle.html">Toggle</a> component.
+    h2 Toggle Components
+    p There are following components included:
+    ul
+      li <code><b>Toggle</b></code> / <code><b>F7Toggle</b></code>
+    h2 Toggle Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Toggle&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Toggle
+        tr
+          td name
+          td string
+          td
+          td Toggle input name
+        tr
+          td value
+          td string<br>number
+          td
+          td Toggle input value
+        tr
+          td checked
+          td boolean
+          td false
+          td Defines whether the toggle input is checked or not
+        tr
+          td disabled
+          td boolean
+          td false
+          td Defines whether the toggle input is disabled or not
+        tr
+          td readonly
+          td boolean
+          td false
+          td Defines whether the toggle input is readonly or not
+    h2 Toggle Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Toggle&gt; events
+        tr
+          td change
+          td Event will be triggered when toggle checkbox state changed. This event may not occur on touch devices, so it is better to use next <code>toggle:change</code> event instead
+        tr
+          td toggleChange
+          td Event will be triggered when toggle checkbox state changed
+    h2 Toggle Methods
+    table.methods-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;Toggle&gt; methods
+        tr
+          td .toggle()
+          td Toggle checkbox state
+    .with-device
+      h2(data-device-preview="../docs-demos/react/toggle.html") Examples
+      pre
+        code.html
+          :code
+            <BlockTitle>Super Heroes</BlockTitle>
+            <List simpleList>
+              <ListItem>
+                <span>Batman</span>
+                <Toggle defaultChecked />
+              </ListItem>
+              <ListItem>
+                <span>Aquaman</span>
+                <Toggle defaultChecked color="blue" />
+              </ListItem>
+              <ListItem>
+                <span>Superman</span>
+                <Toggle defaultChecked color="red" />
+              </ListItem>
+              <ListItem>
+                <span>Hulk</span>
+                <Toggle color="green" />
+              </ListItem>
+              <ListItem>
+                <span>Spiderman (Disabled)</span>
+                <Toggle disabled />
+              </ListItem>
+              <ListItem>
+                <span>Ironman (Disabled)</span>
+                <Toggle defaultChecked disabled />
+              </ListItem>
+              <ListItem>
+                <span>Thor</span>
+                <Toggle defaultChecked color="orange" />
+              </ListItem>
+              <ListItem>
+                <span>Wonder Woman</span>
+                <Toggle color="pink" />
+              </ListItem>
+            </List>

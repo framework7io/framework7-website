@@ -1,137 +1,538 @@
-extends ../src/pug/_docs-template
+extends ../_docs-template
 
 block vars
   - var activeLink = 'react';
-  - var title = 'Message Bar React Component | Framework7 React Documentation';
+  - var title = 'Messagebar React Component | Framework7 React Documentation';
 
 block content
+  include ../_docs-demo-device
 
-    .docs-nav
-      include ./_docs-react-menu
-    .docs-content
-      h1 Message Bar React Component
-      p Message Bar React component represents Framework7's <a href="../docs/messagebar.html">Message Bar</a> component.
-      h2 Usage example
-      pre
-        code
-          :code
-            <Messagebar placeholder="Message" sendLink="Send" onSubmit={onSubmit}></Messagebar>
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="toolbar messagebar">
-              <div class="toolbar-inner">
-                <textarea placeholder="Message"></textarea>
-                <a href="#" class="link">Send</a>
-              </div>
-            </div>
-      h2 Slot Properties
-      p Message Bar React component has additional slots for custom elements:
-      ul
-        li <b>beforeInnerSlot</b> - element will be inserted right before &lt;div class="toolbar-inner"&gt; element
-        li <b>afterInnerSlot</b> - element will be inserted right after &lt;div type="toolbar-inner"&gt; element
-        li <b>beforeTextareaSlot</b> - element will be inserted right before textarea
-        li <b>afterTextareaSlot</b> - element will be inserted right after textarea
-        li <b>sendLinkSlot</b> - element will be inserted inside of send link
-      pre
-        code
-          :code
-            <Messagebar 
-              placeholder="Message"
-              onSubmit={onSubmit}
-              beforeInnerSlot={<div>Before inner</div>}
-              afterInnerSlot={<div>After inner</div>}
-              beforeTextareaSlot={<div>Before textarea</div>}
-              afterTextareaSlot={<div>After textarea</div>}
-              sendLinkSlot={<span>Send</span>}              
-            >
-              Text goes here
-            </Messagebar>
-            
-      p Renders to:
-      pre
-        code
-          :code
-            <div class="toolbar messagebar">
-              <div>Before inner</div>
-              <div class="toolbar-inner">
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Messagebar React Component
+    ul.docs-index
+    p Messagebar React component represents Framework7's <a href="../docs/messagebar.html">Messagebar</a> component.
+    h2 Messagebar Components
+    p There are following components included:
+    ul
+      li <code><b>Messagebar</b></code> / <code><b>F7Messagebar</b></code> - main messagebar element
+      li <code><b>MessagebarSheet</b></code> / <code><b>F7MessagebarSheet</b></code> - messagebar sheet element
+      li <code><b>MessagebarSheetImage</b></code> / <code><b>F7MessagebarSheetImage</b></code> - messagebar sheet image item
+      li <code><b>MessagebarSheetItem</b></code> / <code><b>F7MessagebarSheetItem</b></code> - messagebar sheet item
+      li <code><b>MessagebarAttachments</b></code> / <code><b>F7MessagebarAttachments</b></code> - messagebar attachments element
+      li <code><b>MessagebarAttachment</b></code> / <code><b>F7MessagebarAttachment</b></code> - single messagebar attachment element
+    p
+      img(src=cdn + "/i/docs/messagebar-vue.jpg", style="max-width: 950px; width: 100%")
+    h2 Messagebar Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Messagebar&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Messagebar
+        tr
+          td name
+          td string
+          td
+          td Textarea "name" attribute
+        tr
+          td placeholder
+          td string
+          td Message
+          td Textarea placeholder text
+        tr
+          td value
+          td string<br>number
+          td
+          td Textarea value
+        tr
+          td readonly
+          td boolean
+          td false
+          td Sets "readonly" textarea attribute
+        tr
+          td disabled
+          td boolean
+          td false
+          td Sets "disbled" textarea attribute
+        tr
+          td sendLink
+          td string
+          td
+          td Enables Send link and specifies its text. This property will be ignored in case you use <code>send-link</code> slot
+        tr
+          td maxHeight
+          td number
+          td
+          td Defines resizeable textarea max height
+        tr
+          td resizable
+          td bolean
+          td true
+          td Enables resizeable textarea
+        tr
+          td sheetVisible
+          td boolean
+          td false
+          td Makes messagebar sheet visible/active
+        tr
+          td attachmentsVisible
+          td boolean
+          td false
+          td Makes messagebar attachments visible/active
+        tr
+          td resizePage
+          td boolean
+          td true
+          td When enabled, it will resize messages page when messagebar textarea size changed
+        tr
+          th(colspan="4") &lt;MessagebarSheetImage&gt; properties
+        tr
+          td image
+          td string
+          td
+          td Sheet image URL
+        tr
+          td checked
+          td boolean
+          td false
+          td Indicates whether this sheet image-item is checked or not
+        tr
+          th(colspan="4") &lt;MessagebarAttachment&gt; properties
+        tr
+          td image
+          td string
+          td
+          td Attachment image URL
+        tr
+          td deletable
+          td boolean
+          td true
+          td Defines whether the attachment is deletable or not. In case of deletable the additional delete button will be rendered
+
+    h2 Messagebar Methods
+    table.methods-table
+      tr
+        th(colspan="2") &lt;Messagebar&gt; methods
+      tr
+        td .clear()
+        td Clear textarea and update/reset its size
+      tr
+        td .setValue(<span>newValue</span>)
+        td Set messagebar textarea value/text
+      tr
+        td .getValue()
+        td Return messagebar textarea value
+      tr
+        td .resize()
+        td Force Messagebar to resize messages page depending on messagebar height/size
+      tr
+        td .focus()
+        td Focus messagebar textarea
+      tr
+        td .blur()
+        td Remove focus from messagebar textarea
+
+
+    h2 Messagebar Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Arguments
+          th Description
+      tbody
+        tr
+          th(colspan="3") &lt;Messagebar&gt; events
+        tr
+          td change
+          td <span>(event)</span>
+          td Event will be triggered when "change" event occurs on messagebar textarea element
+        tr
+          td input
+          td <span>(event)</span>
+          td Event will be triggered when "input" event occurs on messagebar textarea element
+        tr
+          td focus
+          td <span>(event)</span>
+          td Event will be triggered when "focus" event occurs on messagebar textarea element
+        tr
+          td blur
+          td <span>(event)</span>
+          td Event will be triggered when "blur" event occurs on messagebar textarea element
+        tr
+          td submit<br>send
+          td <span>(value, clear)</span>
+          td Event will be triggered when user clicks on messagebar "send link"
+        tr
+          th(colspan="3") &lt;MessagebarSheetImage&gt; events
+        tr
+          td change
+          td <span>(event)</span>
+          td Event will be triggered on sheet item checkbox change
+        tr
+          th(colspan="3") &lt;MessagebarAttachment&gt; events
+        tr
+          td attachmentClick
+          td <span>(event)</span>
+          td Event will be triggered on attachment click
+        tr
+          td attachmentDelete
+          td <span>(event)</span>
+          td Event will be triggered on attachment delete button click
+    h2 Messagebar Slots
+    p Messagebar React component has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - element will be inserted in the end of <code>&lt;div class="toolbar-inner"&gt;</code>. element
+      li <code><b>before-area</b></code> - element will be inserted right before textarea. Messagebar attachments go here
+      li <code><b>after-area</b></code> - element will be inserted right after textarea
+      li <code><b>send-link</b></code> - element will be inserted inside of send link
+      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="toolbar-inner"&gt;</code>. element
+      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="toolbar-inner"&gt;</code>. element. Messagebar sheet goes here
+      li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="toolbar-inner"&gt;</code>. element
+      li <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="toolbar-inner"&gt;</code>. element. Same as <code>default</code> slot
+    pre
+      code
+        :code
+          <Messagebar placeholder="Message" @submit="onSubmit">
+            <div slot="before-inner">Before inner</div>
+            <div slot="after-inner">After inner</div>
+            <div slot="before-area">Before textarea</div>
+            <div slot="after-area">After textarea</div>
+            <Icon ios="f7:arrow_up_fill" md="material:send" slot="send-link"></Icon>
+            <div>Default slot</div>
+          </Messagebar>
+    p Renders to:
+    pre
+      code
+        :code
+          <div class="toolbar messagebar">
+            <div>Before inner</div>
+            <div class="toolbar-inner">
+              <div class="messagebar-area">
                 <div>Before textarea</div>
                 <textarea placeholder="Message"></textarea>
                 <div>After textarea</div>
-                <a href="#" class="link"><span>Send</span></a>
-                <div>Default slot</div>
               </div>
-              <div>After inner</div>
+              <a href="#" class="link"><i class="icon f7-icons">arrow_up_fill</i></a>
+              <div>Default slot</div>
             </div>
-      h2 Properties
-      table.params-table
-        thead
-          tr
-            th Prop
-            th Type
-            th Default
-            th Description
-        tbody
-          tr
-            td init
-            td boolean
-            td true
-            td Initializes Message Bar
-          tr
-            td name
-            td string
-            td 
-            td Textarea "name" attribute
-          tr
-            td placeholder
-            td string
-            td "Message"
-            td Textarea placeholder text
-          tr
-            td value
-            td string/number
-            td 
-            td Textarea value
-          tr
-            td readonly
-            td boolean
-            td 
-            td Sets "readonly" textarea attribute
-          tr
-            td disabled
-            td boolean
-            td 
-            td Sets "disbled" textarea attribute
-          tr
-            td send-link
-            td string
-            td
-            td Enables Send link and specifies its text or its inner HTML. This property will be ignored in case you use "send-link" slot
-          tr
-            td max-height
-            td number
-            td
-            td Defines resizeable textarea max height
-      h2 Event Properties
-      table.events-table
-        thead
-          tr
-            th Event
-            th Description
-        tbody
-          tr
-            td change
-            td Event will be triggered when "change" event occurs on message bar textarea element
-          tr
-            td input
-            td Event will be triggered when "input" event occurs on message bar textarea element
-          tr
-            td focus
-            td Event will be triggered when "focus" event occurs on message bar textarea element
-          tr
-            td blur
-            td Event will be triggered when "blur" event occurs on message bar textarea element
-          tr
-            td submit
-            td Event will be triggered when user clicks on message bar "send link"
+            <div>After inner</div>
+          </div>
+
+    h2 Access To Messagebar Instance
+    p If you use automatic initalization to init Messagebar (with <code>init={true}</code> prop) and need to use its <a href="../docs/messagebar.html#messagebar-methods-properties">Methods and Properties</a> you can access its initialized instance by accessing <code><b>.f7Messagebar</b></code> component's property.
+
+    .with-device
+      h2(data-device-preview="../docs-demos/react/messages.html") Examples
+      p Here is how the full example of Messages page where it can be used together with <a href="messages.html">Messages</a>:
+      pre
+        code.html
+          :code
+            export default class extends React.Component {
+              constructor(props) {
+                super(props);
+
+                this.state = {
+                  attachments: [],
+                  sheetVisible: false,
+                  typingMessage: null,
+                  messagesData: [
+                    {
+                      type: 'sent',
+                      text: 'Hi, Kate',
+                    },
+                    {
+                      type: 'sent',
+                      text: 'How are you?',
+                    },
+                    {
+                      name: 'Kate',
+                      type: 'received',
+                      text: 'Hi, I am good!',
+                      avatar: 'http://lorempixel.com/100/100/people/9',
+                    },
+                    {
+                      name: 'Blue Ninja',
+                      type: 'received',
+                      text: 'Hi there, I am also fine, thanks! And how are you?',
+                      avatar: 'http://lorempixel.com/100/100/people/7',
+                    },
+                    {
+                      type: 'sent',
+                      text: 'Hey, Blue Ninja! Glad to see you ;)',
+                    },
+                    {
+                      type: 'sent',
+                      text: 'Hey, look, cutest kitten ever!',
+                    },
+                    {
+                      type: 'sent',
+                      image: 'http://lorempixel.com/200/260/cats/4/',
+
+                    },
+                    {
+                      name: 'Kate',
+                      type: 'received',
+                      text: 'Nice!',
+                      avatar: 'http://lorempixel.com/100/100/people/9',
+                    },
+                    {
+                      name: 'Kate',
+                      type: 'received',
+                      text: 'Like it very much!',
+                      avatar: 'http://lorempixel.com/100/100/people/9',
+                    },
+                    {
+                      name: 'Blue Ninja',
+                      type: 'received',
+                      text: 'Awesome!',
+                      avatar: 'http://lorempixel.com/100/100/people/7',
+                    },
+                  ],
+                  images: [
+                    'http://lorempixel.com/300/300/cats/1/',
+                    'http://lorempixel.com/200/300/cats/2/',
+                    'http://lorempixel.com/400/300/cats/3/',
+                    'http://lorempixel.com/300/150/cats/4/',
+                    'http://lorempixel.com/150/300/cats/5/',
+                    'http://lorempixel.com/300/300/cats/6/',
+                    'http://lorempixel.com/300/300/cats/7/',
+                    'http://lorempixel.com/200/300/cats/8/',
+                    'http://lorempixel.com/400/300/cats/9/',
+                    'http://lorempixel.com/300/150/cats/10/',
+                  ],
+                  people: [
+                    {
+                      name: 'Kate Johnson',
+                      avatar: 'http://lorempixel.com/100/100/people/9',
+                    },
+                    {
+                      name: 'Blue Ninja',
+                      avatar: 'http://lorempixel.com/100/100/people/7',
+                    },
+                  ],
+                  answers: [
+                    'Yes!',
+                    'No',
+                    'Hm...',
+                    'I am not sure',
+                    'And what about you?',
+                    'May be ;)',
+                    'Lorem ipsum dolor sit amet, consectetur',
+                    'What?',
+                    'Are you sure?',
+                    'Of course',
+                    'Need to think about it',
+                    'Amazing!!!',
+                  ],
+                  responseInProgress: false,
+                }
+              }
+              render() {
+                return (
+                  <Page>
+                    <Navbar title="Messsages"></Navbar>
+
+                    <Messagebar
+                      placeholder={this.placeholder}
+                      ref={(el) => {this.messagebarComponent = el}}
+                      attachmentsVisible={this.attachmentsVisible}
+                      sheetVisible={this.state.sheetVisible}
+                    >
+                      <Link
+                        iconIos="f7:camera_fill"
+                        iconMd="material:camera_alt"
+                        slot="inner-start"
+                        onClick={() => {this.setState({sheetVisible: !this.state.sheetVisible})}}
+                      ></Link>
+                      <Link
+                        iconIos="f7:arrow_up_fill"
+                        iconMd="material:send"
+                        slot="inner-end"
+                        onClick={this.sendMessage.bind(this)}
+                      ></Link>
+                      <MessagebarAttachments>
+                        {this.state.attachments.map((image, index) => (
+                          <MessagebarAttachment
+                            key={index}
+                            image={image}
+                            onAttachmentDelete={() => this.deleteAttachment(image)}
+                          ></MessagebarAttachment>
+                        ))}
+                      </MessagebarAttachments>
+                      <MessagebarSheet>
+                        {this.state.images.map((image, index) => (
+                          <MessagebarSheetImage
+                            key={index}
+                            image={image}
+                            checked={this.state.attachments.indexOf(image) >= 0}
+                            onChange={this.handleAttachment.bind(this)}
+                          ></MessagebarSheetImage>
+                        ))}
+                      </MessagebarSheet>
+                    </Messagebar>
+
+                    <Messages ref={(el) => {this.messagesComponent = el}}>
+                      <MessagesTitle><b>Sunday, Feb 9,</b> 12:58</MessagesTitle>
+
+                      {this.state.messagesData.map((message, index) => (
+                        <Message
+                          key={index}
+                          type={message.type}
+                          image={message.image}
+                          name={message.name}
+                          avatar={message.avatar}
+                          first={this.isFirstMessage(message, index)}
+                          last={this.isLastMessage(message, index)}
+                          tail={this.isTailMessage(message, index)}
+                        >
+                          {message.text && (
+                            <span slot="text" dangerouslySetInnerHTML={{__html: message.text}} />
+                          )}
+                        </Message>
+                      ))}
+                      {this.state.typingMessage && (
+                        <Message
+                          type="received"
+                          typing={true}
+                          first={true}
+                          last={true}
+                          tail={true}
+                          header={`${this.state.typingMessage.name} is typing`}
+                          avatar={this.state.typingMessage.avatar}
+                        ></Message>
+                      )}
+                    </Messages>
+                  </Page>
+                )
+              }
+
+              get attachmentsVisible() {
+                const self = this;
+                return self.state.attachments.length > 0;
+              }
+              get placeholder() {
+                const self = this;
+                return self.state.attachments.length > 0 ? 'Add comment or Send' : 'Message';
+              }
+              componentDidMount() {
+                const self = this;
+                self.$f7ready(() => {
+                  self.messagebar = self.messagebarComponent.f7Messagebar;
+                  self.messages = self.messagesComponent.f7Messages;
+                });
+              }
+              isFirstMessage(message, index) {
+                const self = this;
+                const previousMessage = self.state.messagesData[index - 1];
+                if (message.isTitle) return false;
+                if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+                return false;
+              }
+              isLastMessage(message, index) {
+                const self = this;
+                const nextMessage = self.state.messagesData[index + 1];
+                if (message.isTitle) return false;
+                if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                return false;
+              }
+              isTailMessage(message, index) {
+                const self = this;
+                const nextMessage = self.state.messagesData[index + 1];
+                if (message.isTitle) return false;
+                if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+                return false;
+              }
+              deleteAttachment(image) {
+                const self = this;
+                const attachments = self.state.attachments;
+                const index = attachments.indexOf(image);
+                attachments.splice(index, 1);
+                self.setState({ attachments });
+              }
+              handleAttachment(e) {
+                const self = this;
+                const attachments = self.state.attachments;
+                const index = self.$$(e.target).parents('label.checkbox').index();
+                const image = self.state.images[index];
+                if (e.target.checked) {
+                  // Add to attachments
+                  attachments.unshift(image);
+                } else {
+                  // Remove from attachments
+                  attachments.splice(attachments.indexOf(image), 1);
+                }
+                self.setState({ attachments });
+              }
+              sendMessage() {
+                const self = this;
+                const text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
+                const messagesToSend = [];
+                self.state.attachments.forEach((attachment) => {
+                  messagesToSend.push({
+                    image: attachment,
+                  });
+                });
+                if (text.trim().length) {
+                  messagesToSend.push({
+                    text,
+                  });
+                }
+                if (messagesToSend.length === 0) {
+                  return;
+                }
+
+                self.setState({
+                  // Reset attachments
+                  attachments: [],
+                  // Hide sheet
+                  sheetVisible: false,
+                  // Send message
+                  messagesData: [...self.state.messagesData, ...messagesToSend],
+                });
+                self.messagebar.clear();
+
+                // Focus area
+                if (text.length) self.messagebar.focus();
+
+                // Mock response
+                if (self.state.responseInProgress) return;
+                self.setState({
+                  responseInProgress: true,
+                })
+                setTimeout(() => {
+                  const answer = self.state.answers[Math.floor(Math.random() * self.state.answers.length)];
+                  const person = self.state.people[Math.floor(Math.random() * self.state.people.length)];
+                  self.setState({
+                    typingMessage: {
+                      name: person.name,
+                      avatar: person.avatar,
+                    },
+                  });
+                  setTimeout(() => {
+                    self.setState({
+                      messagesData: [...self.state.messagesData, {
+                        text: answer,
+                        type: 'received',
+                        name: person.name,
+                        avatar: person.avatar,
+                      }],
+                      typingMessage: null,
+                      responseInProgress: false,
+                    });
+                  }, 4000);
+                }, 1000);
+              }
+            };

@@ -5,21 +5,92 @@ official:
   url: https://github.com/framework7io/framework7-template-single-view
   previewUrl: https://framework7io.github.io/framework7-template-single-view/
   badges:
-  - v2
+  - v3
 -
   title: Tabbed Views
   iconUrl: '#{cdn}/i/templates/tabs.svg'
   url: https://github.com/framework7io/framework7-template-tabs
   previewUrl: https://framework7io.github.io/framework7-template-tabs/
   badges:
-  - v2
+  - v3
 -
   title: Split View
   iconUrl: '#{cdn}/i/templates/split-view.svg'
   url: https://github.com/framework7io/framework7-template-split-view
   previewUrl: https://framework7io.github.io/framework7-template-split-view/
   badges:
+  - v3
+-
+  title: React
+  iconUrl: '#{cdn}/i/templates/f7-react.svg'
+  url: https://github.com/framework7io/framework7-template-react
+  description: Framework7-React starter app template with hot-reload & css extraction
+  badges:
+  - v3
+  - React
+-
+  title: Vue.js Simple
+  iconUrl: '#{cdn}/i/templates/f7-vue-simple.svg'
+  url: https://github.com/framework7io/framework7-template-vue-simple
+  previewUrl: https://framework7io.github.io/framework7-template-vue-simple/
+  description: Simple Framework7-Vue starter app template in a single HTML file
+  badges:
+  - v3
+  - Vue
+-
+  title: Vue.js Webpack
+  iconUrl: '#{cdn}/i/templates/f7-vue-webpack.svg'
+  url: https://github.com/framework7io/framework7-template-vue-webpack
+  description: Framework7-Vue Webpack starter app template with hot-reload & css extraction
+  badges:
+  - v3
+  - Vue
+-
+  title: Vue.js Browserify
+  iconUrl: '#{cdn}/i/templates/f7-vue-browserify.svg'
+  url: https://github.com/framework7io/framework7-template-vue-browserify
+  description: Framework7-Vue Browserify starter app template with hot-reload & css extraction
+  badges:
   - v2
+  - Vue
+
+phonegap:
+-
+  title: Blank PhoneGap template
+  iconUrl: https://phonegap.com/uploads/artwork/PhoneGap-Symbol-Black.svg
+  author:
+    url: https://github.com/phonegap
+    name: Adobe PhoneGap Team
+  url: https://github.com/phonegap/phonegap-template-vue-f7-blank
+  description: A Blank PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
+  badges:
+  - v2
+  - PhoneGap
+  - Vue
+-
+  title: Split View / Panel PhoneGap template
+  iconUrl: https://phonegap.com/uploads/artwork/PhoneGap-Symbol-Black.svg
+  author:
+    url: https://github.com/phonegap
+    name: Adobe PhoneGap Team
+  url: https://github.com/phonegap/phonegap-template-vue-f7-split-panel
+  description: A Split View / Panel PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
+  badges:
+  - v2
+  - PhoneGap
+  - Vue
+-
+  title: TabBar PhoneGap template
+  iconUrl: https://phonegap.com/uploads/artwork/PhoneGap-Symbol-Black.svg
+  author:
+    url: https://github.com/phonegap
+    name: Adobe PhoneGap Team
+  url: https://github.com/phonegap/phonegap-template-vue-f7-tabs
+  description: A TabBar PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
+  badges:
+  - v2
+  - PhoneGap
+  - Vue
 
 community:
 -
@@ -35,8 +106,8 @@ community:
   previewUrl: https://guillaumebiton.github.io/framework7-parcel-template/
   description: Framework7 starter app template bundle up by parcel
   badges:
-  - v2
-  - Parceljs
+  - v3
+  - Parcel.js
 -
   title: App Framework
   iconUrl: http://is3.mzstatic.com/image/thumb/Purple127/v4/a5/13/be/a513bea8-7382-589f-dc30-3c032068df0c/source/350x350bb.jpg
@@ -54,17 +125,17 @@ community:
   title: F7 - Vue - Webpack - Cordova
   icon:
     text: F7 Vue Webpack Cordova
-    bgColor: '#333'
+    bgColor: '#21a8f3'
     textColor: '#fff'
   author:
-    url: https://github.com/centrual
-    name: Oğuz Özcan
-  url: https://github.com/centrual/cordova-template-framework7-vue-webpack
+    url: https://github.com/caiobiodere
+    name: Caio Biodere
+  url: https://github.com/caiobiodere/cordova-template-framework7-vue-webpack
   description: Framework7 - Vue - Webpack Cordova Template with Webpack Dev Server and Hot Module Replacement
   badges:
   - Cordova
   - Vue
-  - v1
+  - v2
 -
   title: PGChat
   icon:

@@ -1,21 +1,21 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Contacts List (Table View) | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Contacts List
     p Contacts lists indended to display list of personal people contacts.
     p Contacts list is a particular case of grouped <a href="list-view.html">List View</a> with one difference.
     p The only difference is what we nedd to add additional <code><b>contacts-list</b></code> class to the list view element (<code>&lt;div class="list"&gt;</code>)
     .with-device
-      h3(data-device-preview="../docs-demos/contacts-list.html") Example
+      h3(data-device-preview="../docs-demos/core/contacts-list.html") Example
       pre
         code
           | &lt;div class="page-content"&gt;

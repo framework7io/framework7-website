@@ -1,16 +1,16 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Virtual List | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Virtual List
-    .docs-index
+    ul.docs-index
     p Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 components which work with lists such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.
     h2 Virtual List Layout
     p Virtual List HTML layout is pretty simple, it is almost the same as for usual <a href="list-view.html">List View</a> with only difference: you need to leave it empty:
@@ -71,6 +71,16 @@ block content
           td HTMLElement<br>string
           td
           td Target List Block element. In case of <code>string</code> - CSS selector of list block element
+        tr
+          td ul
+          td HTMLElement<br>string
+          td
+          td List element <code>&lt;ul&gt;</code> inside of List block.
+        tr
+          td createUl
+          td boolean
+          td true
+          td Will automatically create <code>&lt;ul&gt;</code> element inside of Virtual List block. If disabled, then virtual list can be used on any block element without <code>ul &gt; li</code> structure
         tr
           td items
           td array
@@ -145,9 +155,9 @@ block content
           th(colspan="4") Searchbar
         tr
           td searchByItem
-          td function(query, index, item)
+          td function(query, item, index)
           td
-          td Search function that will be used by <a href="searchbar.html">Searchbar</a>, it receives search query, item index and item itself. If item matches to search query you need to return <code>true</code>, otherwise this function should return <code>false</code>
+          td Search function that will be used by <a href="searchbar.html">Searchbar</a>, it receives search query, item itself and item index. If item matches to search query you need to return <code>true</code>, otherwise this function should return <code>false</code>
         tr
           td searchAll
           td function(query, items)
@@ -299,7 +309,7 @@ block content
           td app
 
     .with-device
-      h2(data-device-preview="../docs-demos/virtual-list.html") Examples
+      h2(data-device-preview="../docs-demos/core/virtual-list.html") Examples
       pre
         code.html
           :code

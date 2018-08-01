@@ -1,0 +1,309 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Toolbar Vue Component | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Toolbar Vue Component
+    ul.docs-index
+    p Toolbar is a fixed (with Fixed and Through layout types) area at the bottom of a screen that contains navigation elements. Toolbar does not have any parts, just plain links inside
+    p Toolbar Vue component represents <a href="../docs/toolbar-tabbar.html">Toolbar</a> component.
+
+    h2 Toolbar Components
+    p There are following components included:
+    ul
+      li <code><b>f7-toolbar</b></code>
+
+    h2 Toolbar Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-toolbar&gt; properties
+        tr
+          td inner
+          td boolean
+          td true
+          td When enabled (by default), it will put all the content within internal `toolbar-inner` element. Disable it only in case you want to put totally custom layout inside
+        tr
+          td bottom-md
+          td boolean
+          td false
+          td Defines whether the Toolbar should be on bottom or not (MD theme only)
+        tr
+          td tabbar
+          td boolean
+          td false
+          td Defines whether the Toolbar is also a Tabbar or not
+        tr
+          td labels
+          td boolean
+          td false
+          td Enables Tabbar with labels (affects only when <code>tabbar: true</code>)
+        tr
+          td scrollable
+          td boolean
+          td false
+          td Enables scrollable Tabbar (affects only when <code>tabbar: true</code>)
+        tr
+          td no-shadow
+          td boolean
+          td
+          td Disable shadow rendering for Material theme
+        tr
+          td no-hairline
+          td boolean
+          td false
+          td Disable toolbar/tabbar top thin border (hairline) for iOS theme
+        tr
+          td hidden
+          td boolean
+          td false
+          td Makes toolbar hidden
+
+    h2 Toolbar Methods
+    table.methods-table
+      td
+        th(colspan="2") &lt;f7-toolbar&gt; methods
+      tr
+        td .hide(<span>animate</span>)
+        td Hide toolbar
+      tr
+        td .show(<span>animate</span>)
+        td Show toolbar
+
+    h2 Toolbar Slots
+    p Toolbar Vue component (<code>&lt;f7-toolbar&gt;</code>) has additional slots for custom elements:
+    ul
+      li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="toolbar-inner"&gt;</code> element
+      li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="toolbar-inner"&gt;</code> element
+      li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="toolbar-inner"&gt;</code> element
+    pre
+      code.html
+        :code
+          <f7-toolbar>
+            <div slot="before-inner">Before Inner</div>
+            <div slot="after-inner">After Inner</div>
+            <!-- Goes to default slot: -->
+            <f7-link>Left Link</f7-link>
+            <f7-link>Right Link</f7-link>
+          </f7-toolbar>
+
+          <!-- Renders to: -->
+
+          <div class="toolbar">
+            <div>Before Inner</div>
+            <div class="toolbar-inner">
+              <a href="#" class="link">Left Link</a>
+              <a href="#" class="link">Right Link</a>
+            </div>
+            <div>After Inner</div>
+          </div>
+
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/toolbar-tabbar.html") Examples
+      h3 Toolbar
+      pre
+        code
+          :code
+            <template>
+              <f7-page>
+                <f7-navbar title="Toolbar" back-link="Back"></f7-navbar>
+                <f7-toolbar :bottom-md="isBottom">
+                  <f7-link>Left Link</f7-link>
+                  <f7-link>Right Link</f7-link>
+                </f7-toolbar>
+                <f7-block-title v-if="$theme.md">Toolbar Position</f7-block-title>
+                <f7-block v-if="$theme.md">
+                  <p>Material (MD) theme toolbar supports both top and bottom positions. Click the following button to change its position.</p>
+                  <p>
+                    <f7-button raised @click="isBottom = !isBottom">Toggle Toolbar Position</f7-button>
+                  </p>
+                </f7-block>
+                <f7-block>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi...</p>
+                </f7-block>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    isBottom: false,
+                  };
+                }
+              }
+            </script>
+      h3 Tabbar
+      pre
+        code
+          :code
+            <template>
+              <f7-page :page-content="false">
+                <f7-navbar title="Tabbar" back-link="Back">
+                  <f7-nav-right v-if="$theme.md">
+                    <f7-link icon-material="compare_arrows" @click="isBottom != isBottom"></f7-link>
+                  </f7-nav-right>
+                </f7-navbar>
+                <f7-toolbar tabbar :bottom-md="isBottom">
+                  <f7-link tab-link="#tab-1" tab-link-active>Tab 1</f7-link>
+                  <f7-link tab-link="#tab-2">Tab 2</f7-link>
+                  <f7-link tab-link="#tab-3">Tab 3</f7-link>
+                </f7-toolbar>
+
+                <f7-tabs>
+                  <f7-tab id="tab-1" class="page-content" tab-active>
+                    <f7-block>
+                      <p>Tab 1 content</p>
+                      ...
+                    </f7-block>
+                  </f7-tab>
+                  <f7-tab id="tab-2" class="page-content">
+                    <f7-block>
+                      <p>Tab 2 content</p>
+                      ...
+                    </f7-block>
+                  </f7-tab>
+                  <f7-tab id="tab-3" class="page-content">
+                    <f7-block>
+                      <p>Tab 3 content</p>
+                      ...
+                    </f7-block>
+                  </f7-tab>
+                </f7-tabs>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    isBottom: false,
+                  };
+                }
+              }
+            </script>
+      h3 Tabbar Labels
+      pre
+        code
+          :code
+            <template>
+              <f7-page :page-content="false">
+                <f7-navbar title="Tabbar Labels" back-link="Back">
+                  <f7-nav-right v-if="$theme.md">
+                    <f7-link icon-material="compare_arrows" @click="isBottom != isBottom"></f7-link>
+                  </f7-nav-right>
+                </f7-navbar>
+                <f7-toolbar tabbar labels :bottom-md="isBottom">
+                  <f7-link tab-link="#tab-1" tab-link-active text="Tab 1" icon-ios="f7:email_fill" icon-md="material:email"></f7-link>
+                  <f7-link tab-link="#tab-2" text="Tab 2" icon-ios="f7:today_fill" icon-md="material:today"></f7-link>
+                  <f7-link tab-link="#tab-3" text="Tab 3" icon-ios="f7:cloud_fill" icon-md="material:file_upload"></f7-link>
+                </f7-toolbar>
+
+                <f7-tabs>
+                  <f7-tab id="tab-1" class="page-content" tab-active>
+                    <f7-block>
+                      <p>Tab 1 content</p>
+                      ...
+                    </f7-block>
+                  </f7-tab>
+                  <f7-tab id="tab-2" class="page-content">
+                    <f7-block>
+                      <p>Tab 2 content</p>
+                      ...
+                    </f7-block>
+                  </f7-tab>
+                  <f7-tab id="tab-3" class="page-content">
+                    <f7-block>
+                      <p>Tab 3 content</p>
+                      ...
+                    </f7-block>
+                  </f7-tab>
+                </f7-tabs>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    isBottom: false,
+                  };
+                }
+              }
+            </script>
+      h3 Tabbar Scrollable
+      pre
+        code
+          :code
+            <template>
+              <f7-page :page-content="false">
+                <f7-navbar title="Tabbar Scrollable" back-link="Back">
+                  <f7-nav-right v-if="$theme.md">
+                    <f7-link icon-material="compare_arrows" @click="isBottom != isBottom"></f7-link>
+                  </f7-nav-right>
+                </f7-navbar>
+                <f7-toolbar tabbar scrollable :bottom-md="isBottom">
+                  <f7-link
+                    v-for="(tab, index) in tabs"
+                    :key="tab"
+                    :tab-link="`#tab-${tab}`"
+                    :tab-link-active="index === 0"
+                    >Tab {{tab}}</f7-link>
+                </f7-toolbar>
+                <f7-tabs>
+                  <f7-tab
+                    v-for="(tab, index) in tabs"
+                    :key="tab"
+                    :id="`tab-${tab}`"
+                    class="page-content"
+                    :tab-active="index === 0"
+                  >
+                    <f7-block>
+                      <p><b>Tab {{tab}} content</b></p>
+                      ...
+                    </f7-block>
+                  </f7-tab>
+                </f7-tabs>
+              </f7-page>
+            </template>
+            <script>
+              export default {
+                data() {
+                  return {
+                    tabs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    isBottom: false,
+                  };
+                }
+              }
+            </script>
+      h3 Hide Toolbar On Scroll
+      pre
+        code
+          :code
+            <template>
+              <f7-page hide-toolbar-on-scroll>
+                <f7-navbar title="Hide Toolbar On Scroll" back-link="Back"></f7-navbar>
+                <f7-toolbar bottom-md>
+                  <f7-link>Left Link</f7-link>
+                  <f7-link>Right Link</f7-link>
+                </f7-toolbar>
+                <f7-block strong>
+                  <p>Toolbar will be hidden if you scroll bottom</p>
+                </f7-block>
+                <f7-block>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.</p>
+                  ...
+                </f7-block>
+              </f7-page>
+            </template>

@@ -1,7 +1,6 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Touch Ripple | Framework7 Documentation';
 
 block content
@@ -9,8 +8,9 @@ block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Touch Ripple
-    .docs-index
+    ul.docs-index
     p.md-only Touch Ripple is supported only in Material Theme
     p Framework7 Material Theme comes with great an dynamic implementation of Material Touch Ripple effect.
     p It is enabled by default for Material theme. Touch Ripple is a part of the built-in <b>Fast Clicks</b> library, so Fast Clicks should be also enabled.

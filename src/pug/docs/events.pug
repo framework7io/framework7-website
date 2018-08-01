@@ -1,15 +1,15 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Events | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Events
-    .docs-index
+    ul.docs-index
     p Most of Framework7 components that is built with classes/constructors (including Framework7 class itself) have kind of event emitter API.
     p It allows us easily to emit and handle all kind of events, including events between components.
     h2 Events Handlers in Parameters

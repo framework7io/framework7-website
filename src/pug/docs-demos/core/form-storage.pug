@@ -1,0 +1,51 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Form Storage
+          .right
+      .page-content
+        .block Just fill up the form below and then go to any other page, or try to close this site, and when you will back here form fields will keep your data.
+        form(id="my-form").list.form-store-data
+          ul
+            li
+              .item-content.item-input
+                .item-inner
+                  .item-title.item-label Name
+                  .item-input-wrap
+                    input(type="text", name="name", placeholder="Your name")
+            li
+              .item-content.item-input
+                .item-inner
+                  .item-title.item-label E-mail
+                  .item-input-wrap
+                    input(type="email", name="email", placeholder="E-mail")
+            li
+              .item-content.item-input
+                .item-inner
+                  .item-title.item-label Ignore from storage
+                  .item-input-wrap
+                    input.no-store-data(type="text", name="text", placeholder="This value won't be stored")
+            li
+              .item-content.item-input
+                .item-inner
+                  .item-title.item-label Gender
+                  .item-input-wrap
+                    select(name="gender")
+                      option(value="male", selected) Male
+                      option(value="female") Female
+            li
+              .item-content
+                .item-inner
+                  .item-title Switch
+                  .item-after
+                    label.toggle
+                      input(type="checkbox", name="switch", value="yes")
+                      i.toggle-icon
+
+block scripts
+  script.
+    var app = new Framework7();

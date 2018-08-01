@@ -1,13 +1,13 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'iPhone X Styles | Framework7 Documentation';
 
 block content
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 iPhone X Styles
     p With the iPhone X release, Apple introduced so called "safe areas", when the app UI must include additional top/bottom spacing (to consider top notch and new bottom bar) in portrait orientation and additional left/righ spacing (to consider left/right notch) in landscape orientation.
     p In portrait orientation Framework7 will do required styles modifications automatically, but in landscape orientation some additional classes must be added to elements:
@@ -78,7 +78,7 @@ block content
                 </div>
               </div>
             </div>
-            <script src="../dist/js/framework7.min.js"></script>
+            <script src="../packages/core/js/framework7.min.js"></script>
             <script src="js/routes.js"></script>
             <script src="js/app.js"></script>
           </body>

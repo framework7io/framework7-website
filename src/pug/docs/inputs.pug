@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Inputs / Form Inputs | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Inputs / Form Inputs
-    .docs-index
+    ul.docs-index
     p Form inputs allow you to create flexible and beautiful Form layouts.
     h2 Inputs Layout
     p It is recommended to use inputs with <a href="list-view.html">List View</a>:
@@ -181,7 +181,7 @@ block content
             pre
               code
                 | ...
-                |   &lt;div class="item-input"&gt;
+                |   &lt;div class="item-input-wrap"&gt;
                 |     &lt;select&gt;...&lt;/select"&gt;
                 |   &lt;/div&gt;
                 | ...
@@ -270,6 +270,16 @@ block content
           td boolean
           td false
           td Tweaks behavior of previous parameter to scroll input into the <b>center of view</b> on input focus
+        tr
+          td scrollIntoViewDuration
+          td number
+          td 0
+          td Default duration for scrolling input into view
+        tr
+          td scrollIntoViewAlways
+          td boolean
+          td false
+          td When enabled will scroll input into view no matter is it outside of view or not
     p For example:
     pre
       code.js
@@ -286,12 +296,13 @@ block content
     table.methods-table
       tbody
         tr
-          td app.input.scrollIntoView(<span>inputEl, duration, centered</span>)
+          td app.input.scrollIntoView(<span>inputEl, duration, centered</span>, <span>force</span>)
           td Scroll input into view
             ul.method-parameters
               li <span class="parameter">inputEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required input element to get into view. Required
               li <span class="parameter">duration</span> - <span class="parameter-type">number</span> - scrolling duration in ms.
               li <span class="parameter">centered</span> - <span class="parameter-type">boolean</span> - defines whether it must be scrolled into the center of view or not.
+              li <span class="parameter">force</span> - <span class="parameter-type">boolean</span> - scrolls input into view no matter is it outside of view or not.
         tr
           td app.input.focus(<span>inputEl</span>)
           td Will add additional required styles and classes on input like when it is focused
@@ -318,7 +329,7 @@ block content
             ul.method-parameters
               li <span class="parameter">inputEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required textarea element. Required.
         tr
-          td app.input.validate(<span>containerEl</span>)
+          td app.input.validateInputs(<span>containerEl</span>)
           td Validate all inputs in passed container
             ul.method-parameters
               li <span class="parameter">containerEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required element with inputs inside to validate. Required.
@@ -349,7 +360,7 @@ block content
           td Input Element<span>&lt;input/textarea&gt;</span>
           td Event will be triggered after input value will be cleared by clicking on input clear button
     .with-device
-      h2(data-device-preview="../docs-demos/inputs.html") Examples
+      h2(data-device-preview="../docs-demos/core/inputs.html") Examples
       pre
         code.html
           :code

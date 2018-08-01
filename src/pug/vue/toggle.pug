@@ -1,0 +1,127 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Toggle Vue Component | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Toggle Vue Component
+    ul.docs-index
+    p Toggle Vue component represents <a href="../docs/toggle.html">Toggle</a> component.
+    h2 Toggle Components
+    p There are following components included:
+    ul
+      li <code><b>f7-toggle</b></code>
+    h2 Toggle Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-toggle&gt; properties
+        tr
+          td init
+          td boolean
+          td true
+          td Initializes Toggle
+        tr
+          td name
+          td string
+          td
+          td Toggle input name
+        tr
+          td value
+          td string<br>number
+          td
+          td Toggle input value
+        tr
+          td checked
+          td boolean
+          td false
+          td Defines whether the toggle input is checked or not
+        tr
+          td disabled
+          td boolean
+          td false
+          td Defines whether the toggle input is disabled or not
+        tr
+          td readonly
+          td boolean
+          td false
+          td Defines whether the toggle input is readonly or not
+    h2 Toggle Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-toggle&gt; events
+        tr
+          td change
+          td Event will be triggered when toggle checkbox state changed. This event may not occur on touch devices, so it is better to use next <code>toggle:change</code> event instead
+        tr
+          td toggle:change
+          td Event will be triggered when toggle checkbox state changed
+    h2 Toggle Methods
+    table.methods-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-toggle&gt; methods
+        tr
+          td .toggle()
+          td Toggle checkbox state
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/toggle.html") Examples
+      pre
+        code.html
+          :code
+            <f7-block-title>Super Heroes</f7-block-title>
+            <f7-list simple-list>
+              <f7-list-item>
+                <span>Batman</span>
+                <f7-toggle checked></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Aquaman</span>
+                <f7-toggle checked color="blue"></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Superman</span>
+                <f7-toggle checked color="red"></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Hulk</span>
+                <f7-toggle color="green"></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Spiderman (Disabled)</span>
+                <f7-toggle disabled></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Ironman (Disabled)</span>
+                <f7-toggle checked disabled></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Thor</span>
+                <f7-toggle checked color="orange"></f7-toggle>
+              </f7-list-item>
+              <f7-list-item>
+                <span>Wonder Woman</span>
+                <f7-toggle color="pink"></f7-toggle>
+              </f7-list-item>
+            </f7-list>

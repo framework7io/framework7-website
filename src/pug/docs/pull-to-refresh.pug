@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Pull To Refresh | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Pull To Refresh
-    .docs-index
+    ul.docs-index
     p Pull to refresh is a special component that can be used to initiate the refreshing of a page’s contents.
     h2 Pull To Refresh Layout
     p Let's look on how to integrate pull to refresh to page:
@@ -230,7 +230,7 @@ block content
           td app
           td <span>(ptr)</span>
     .with-device
-      h2(data-device-preview="../docs-demos/pull-to-refresh.html") Example
+      h2(data-device-preview="../docs-demos/core/pull-to-refresh.html") Example
       pre
         code.html
           :code

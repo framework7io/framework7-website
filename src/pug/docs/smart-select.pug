@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Smart select | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Smart Select
-    .docs-index
+    ul.docs-index
     p Smart select allows you to easily convert your usual form selects to dynamic pages with <a href="checkboxes-radios.html">grouped radio inputs</a>. You can see such feature in many native iOS apps
     h2 Smart Select Layout
     p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with <code>&lt;select&gt;</code> inside and additional <code><b>smart-select</b></code> class on <code>item-link</code>:
@@ -221,6 +221,11 @@ block content
           td
           td Smart Select element. Can be useful if you already have Smart Select element in your HTML and want to create new instance using this element
         tr
+          td view
+          td object
+          td
+          td Link to initialized View instance which is required for Smart Select to work. By default, if not specified, it will be opened in parent View.
+        tr
           td valueEl
           td HTMLElement
           td
@@ -323,7 +328,7 @@ block content
           td
           td Function to render smart select page, must return full page HTML string
         tr
-          td renderSmart Select
+          td renderPopup
           td function(items)
           td
           td Function to render smart select popup, must return full popup HTML string
@@ -565,7 +570,7 @@ block content
             </a>
           </li>
     .with-device
-      h2(data-device-preview="../docs-demos/smart-select.html") Examples
+      h2(data-device-preview="../docs-demos/core/smart-select.html") Examples
       pre
         code.html
           :code

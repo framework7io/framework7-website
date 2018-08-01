@@ -1,0 +1,214 @@
+extends _layout
+block content
+  .view.view-main.view-init
+    .page
+      .navbar
+        .navbar-inner
+          .left
+          .title Calendar
+          .right
+      .page-content
+        <div class="block-title">Default setup</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Your birth date" readonly="readonly" id="demo-calendar-default"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="block-title">Custom date format</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select date" readonly="readonly" id="demo-calendar-date-format"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="block-title">Multiple Values</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select multiple dates" readonly="readonly" id="demo-calendar-multiple"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="block-title">Range Picker</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select date range" readonly="readonly" id="demo-calendar-range"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="block-title">Open in Mondal</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select date" readonly="readonly" id="demo-calendar-modal"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="block-title">With Events</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select date" readonly="readonly" id="demo-calendar-events"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="block-title">Disabled Dates</div>
+        <div class="list no-hairlines-md">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Select date" readonly="readonly" id="demo-calendar-disabled"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="block-title">Inline with custom toolbar</div>
+        <div class="block block-strong no-padding">
+          <div id="demo-calendar-inline-container"></div>
+        </div>
+block scripts
+  script.
+    var app = new Framework7();
+
+    // Default
+    var calendarDefault = app.calendar.create({
+      inputEl: '#demo-calendar-default',
+    });
+    // With custom date format
+    var calendarDateFormat = app.calendar.create({
+      inputEl: '#demo-calendar-date-format',
+      dateFormat: 'DD, MM dd, yyyy'
+    });
+    // With multiple values
+    var calendarMultiple = app.calendar.create({
+      inputEl: '#demo-calendar-multiple',
+      dateFormat: 'M dd yyyy',
+      multiple: true
+    });
+    // Range Picker
+    var calendarRange = app.calendar.create({
+      inputEl: '#demo-calendar-range',
+      dateFormat: 'M dd yyyy',
+      rangePicker: true
+    });
+    // Custom modal
+    var calendarModal = app.calendar.create({
+      inputEl: '#demo-calendar-modal',
+      openIn: 'customModal',
+      header: true,
+      footer: true,
+      dateFormat: 'MM dd yyyy',
+    });
+    // With events
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var weekLater = new Date().setDate(today.getDate() + 7);
+    var calendarEvents = app.calendar.create({
+        inputEl: '#demo-calendar-events',
+        dateFormat: 'M dd yyyy',
+        events: [
+          {
+            from: today,
+            to: weekLater
+          },
+          //- more events this day
+          {
+            date: today,
+            color: '#ff0000'
+          },
+          {
+            date: today,
+            color: '#00ff00'
+          },
+        ]
+    });
+    // Disabled
+    var today = new Date();
+    var weekLater = new Date().setDate(today.getDate() + 7);
+    var calendarDisabled = app.calendar.create({
+        inputEl: '#demo-calendar-disabled',
+        dateFormat: 'M dd yyyy',
+        disabled: {
+          from: today,
+          to: weekLater
+        }
+    });
+    // Inline with custom toolbar
+    var $$ = Dom7;
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December'];
+    var calendarInline = app.calendar.create({
+      containerEl: '#demo-calendar-inline-container',
+      value: [new Date()],
+      weekHeader: false,
+      renderToolbar: function () {
+        return '<div class="toolbar calendar-custom-toolbar no-shadow">' +
+          '<div class="toolbar-inner">' +
+            '<div class="left">' +
+              '<a href="#" class="link icon-only"><i class="icon icon-back ' + (app.theme === 'md' ? 'color-black' : '') + '"></i></a>' +
+            '</div>' +
+            '<div class="center"></div>' +
+            '<div class="right">' +
+              '<a href="#" class="link icon-only"><i class="icon icon-forward ' + (app.theme === 'md' ? 'color-black' : '') + '"></i></a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      },
+      on: {
+        init: function (c) {
+          $$('.calendar-custom-toolbar .center').text(monthNames[c.currentMonth] +', ' + c.currentYear);
+          $$('.calendar-custom-toolbar .left .link').on('click', function () {
+            calendarInline.prevMonth();
+          });
+          $$('.calendar-custom-toolbar .right .link').on('click', function () {
+            calendarInline.nextMonth();
+          });
+        },
+        monthYearChangeStart: function (c) {
+          $$('.calendar-custom-toolbar .center').text(monthNames[c.currentMonth] +', ' + c.currentYear);
+        }
+      }
+    });

@@ -1,18 +1,18 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Content Block Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
-    h1 Block / Content block
+    +improveDocsLink
+    h1 Block / Content Block
     p Content blocks designed (mostly) to add extra formatting and required spacing for text content:
-    .docs-index
+    ul.docs-index
     h2 Block
     p To add content block element just add <code>&lt;div&gt;</code> with <b>block</b> class:
     pre
@@ -92,7 +92,7 @@ block content
           </div>
           <div class="block-footer">Block Footer</div>
 
-    .with-device(data-device-preview="../docs-demos/block.html")
+    .with-device(data-device-preview="../docs-demos/core/block.html")
       h2 Examples
       pre
         code.html

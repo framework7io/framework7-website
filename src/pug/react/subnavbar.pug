@@ -1,0 +1,77 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'react';
+  - var title = 'Subnavbar React Component | Framework7 React Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-react
+  .docs-content
+    +improveDocsLink
+    h1 Subnavbar React Component
+    ul.docs-index
+    p Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.
+    p Subnavbar React component represents <a href="../docs/subnavbar.html">Subnavbar</a> component.
+    h2 Subnavbar Components
+    p There are following components included:
+    ul
+      li <code><b>Subnavbar</b></code> / <code><b>F7Subnavbar</b></code>
+    h2 Subnavbar Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;Subnavbar&gt; properties
+        tr
+          td sliding
+          td boolean
+          td
+          td Enables "sliding" effect
+        tr
+          td title
+          td string
+          td
+          td Subnvabar title
+        tr
+          td inner
+          td boolean
+          td true
+          td When enabled the additional "subnavbar-inner" wrapper element will be added
+    .with-device
+      h2(data-device-preview="../docs-demos/react/subnavbar.html") Examples
+      pre
+        code
+          :code
+            export default () => (
+              <Page pageContent={false}>
+                <Navbar title="Subnavbar">
+                  <Subnavbar>
+                    <Segmented raised>
+                      <Button tabLink="#tab1" tabLinkActive>Tab 1</Button>
+                      <Button tabLink="#tab2">Tab 2</Button>
+                    </Segmented>
+                  </Subnavbar>
+                </Navbar>
+                <Tabs>
+                  <Tab id="tab1" tabActive className="page-content">
+                    <Block>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nisi nisi, tincidunt ut eleifend non, sagittis a elit. Sed consequat odio at leo varius viverra...</p>
+                    </Block>
+                  </Tab>
+                  <Tab id="tab2" className="page-content">
+                    <Block>
+                      <p>Donec iaculis posuere massa sed dignissim. Praesent id nibh nec massa mollis egestas. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas...</p>
+                    </Block>
+                  </Tab>
+                </Tabs>
+              </Page>
+            )
+

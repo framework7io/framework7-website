@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Preloader | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Preloader
-    .docs-index
+    ul.docs-index
     p Framework7 has a nice preloader indicator. Preloader is made with SVG and animated with CSS so it can be easily resized.
     h2 Preloader Layout
     p Layout is pretty simple:
@@ -54,8 +54,12 @@ block content
     p Let's look at related app methods to work with Preloader overlay
     .method-wrap
       p
-        span.method app.preloader.show()
+        span.method app.preloader.show(<span>color</span>)
         | - show Preloader overlay
+      ul.method-parameters
+        li
+          span.parameter parameters
+          |  - <span class="parameter-type">color</span>. Preloader color, one of the <a href="color-themes.html">default colors</a>
     .method-wrap
       p
         span.method app.preloader.hide()
@@ -76,7 +80,7 @@ block content
           });
     .important-note
       p Opening Preloader overlay will also add <code>with-modal-preloader</code> class to &lt;html&gt; element.
-    .with-device(data-device-preview="../docs-demos/preloader.html")
+    .with-device(data-device-preview="../docs-demos/core/preloader.html")
       h2 Examples
       pre
         code.html

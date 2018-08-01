@@ -1,17 +1,17 @@
 extends ../_docs-template
 
 block vars
-  - var activeLink = 'docs';
   - var title = 'Typography | Framework7 Documentation';
 
 block content
-  include _docs-demo-device
+  include ../_docs-demo-device
 
   .docs-nav
     include ../_docs-menu
   .docs-content
+    +improveDocsLink
     h1 Typography
-    .docs-index
+    ul.docs-index
     p Framework7 comes with a lot of additional CSS helper classes to help you with extra styling and formatting.
     h2 Content Spacing
     h3 Margin

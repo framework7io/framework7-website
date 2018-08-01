@@ -1,3 +1,292 @@
+
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/greety.jpg"
+  iconRounded: true
+  title: "Greety"
+  author:
+    url: https://greety.app/
+    name: Mukhamedkarimova Aneliya
+  links:
+    appstore: https://itunes.apple.com/us/app/greety/id1411585380
+    website: https://greety.app/
+  description: |
+Greety is a fast and easy way to send your warm wishes to each and every contact from your 1000+ list!
+
+CHOOSE A BIRTHDAY CARD
+Thanks to Unsplash you have an amazing variety of beautiful cards. Choose any to send for your contacts, you can change it any time you want. 
+
+WRITE YOUR WISHES
+Greety is perfect to keep your best and exclusive wishes for everyone you want to greet. You can change a text any time you want together with a card or you can do it before sending for particular contact. For your convenience #name and #surname hashtags help you to personalize each message. 
+
+GET REMINDERS AND SEND “HAPPY BIRTHDAY”
+You will receive notifications every morning if someone in your contact list has a birthday today. Please make sure that you fill in Birthday field for each of your contacts with accuracy. 
+After choosing a contact for greetings you can send your wishes in any convenient way – via email, WhatsApp, Messenger, iMessage, etc. 
+If you want to add something special – words or specific emoji to the text for a particular contact, you have a possibility to do it before tapping Send button. 
+
+RATE THE APPLICATION 
+This is our first application, and we would appreciate any comments and reviews. We develop it with a hope to help you provide a kind attention to your network.
+
+LANGUAGES
+Arabic (support right-to-left interface), English, Japanese, Russian
+  screenshots:
+  - "#{cdn}/i/showcase/greety-1.png"
+  - "#{cdn}/i/showcase/greety-2.png"
+  - "#{cdn}/i/showcase/greety-3.png"
+  - "#{cdn}/i/showcase/greety-4.png"
+  - "#{cdn}/i/showcase/greety-5.png"
+  - "#{cdn}/i/showcase/greety-6.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/tripline.jpg"
+  iconRounded: true
+  title: "Tripline - Your maps are your stories"
+  author:
+    url: https://www.tripline.net/
+    name: Tripline, Inc.
+  links:
+    appstore: https://itunes.apple.com/us/app/tripline/id417133912
+    googleplay: https://play.google.com/store/apps/details?id=net.tripline
+    website: https://www.tripline.net/
+  description: |
+    Tripline is a fun, easy-to-use app for planning and sharing vacations, adventures, trips around town and lists of your favorite places. If you like exploring the world and keeping a record of your travels, Tripline is for you!
+    All of the maps you create in the app are also available on the Tripline website (www.tripline.net) There, you can import places and photos from from Instagram, Facebook, Foursquare, Twitter, Instagram, Tripit and much more.
+    Install today and join the millions of world travelers who are creating their adventures on Tripline.
+  features:
+  - Make better plans by visualizing your route before you go
+  - Make your maps social by adding travelers and followers
+  - Upload or import photos to bring your maps to life
+  - Embed your Tripline maps anywhere, just like a video
+  screenshots:
+  - "#{cdn}/i/showcase/tripline-1.png"
+  - "#{cdn}/i/showcase/tripline-2.png"
+  - "#{cdn}/i/showcase/tripline-3.png"
+  - "#{cdn}/i/showcase/tripline-4.png"
+  - "#{cdn}/i/showcase/tripline-5.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/coolwebsites_logo.png"
+  iconRounded: true
+  title: "Cool Websites"
+  author:
+    url: http://www.alapan.me/
+    name: Alapan Das
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.myapp2.com&hl=en
+  description: |
+    The Internet is an ocean of opportunities. Nowadays we can find a website or two for anything we need. But there are few who stand out from the crowd. Cool Websites is a collection of websites which provide value to users like us. Over the years I have come across so many useful/entertaining/interesting websites that are not known to many. They are not limited to any particular genre and in almost all aspects of our life, websites like these can be found. I have tried to curate a list of such websites.
+  features:
+  - Simple Layout
+  - List of Websites where you can learn for free.
+  - List of websites where you can make money (Legally!)
+  - List of websites which has something unique (Miscellaneous) - like Rainymood or Similarsites or Mathway
+  screenshots:
+  - "#{cdn}/i/showcase/coolwebsites_1.jpg"
+  - "#{cdn}/i/showcase/coolwebsites_2.jpg"
+  - "#{cdn}/i/showcase/coolwebsites_3.jpg"
+  - "#{cdn}/i/showcase/coolwebsites_4.jpg"
+  - "#{cdn}/i/showcase/coolwebsites_5.jpg"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/eztrip_io.png"
+  iconRounded: true
+  title: "EzTrip.io - Trip management"
+  author:
+    url: https://www.eztrip.io/
+    name: Carlos Duarte
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=io.eztrip.travelmgt
+    appstore: https://itunes.apple.com/us/app/eztrip-io/id1338065929?ls=1&mt=8
+    website: https://www.eztrip.io/
+  description: |
+    EzTrip.io is a travel and expense management system that will assist you to better control all the steps of your business or personal travel.
+  features:
+  - Organize and keep track of receipts
+  - Record all your rewards programs
+  - Import itineraries from Carlson Wagonlit Travel
+  - Manage multiple trips
+  - Report of your travels
+  screenshots:
+  - "#{cdn}/i/showcase/eztrip_io1.png"
+  - "#{cdn}/i/showcase/eztrip_io2.png"
+  - "#{cdn}/i/showcase/eztrip_io3.png"
+  - "#{cdn}/i/showcase/eztrip_io4.png"
+  - "#{cdn}/i/showcase/eztrip_io5.png"
+  - "#{cdn}/i/showcase/eztrip_io6.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/strongsdict-icon-1024.png"
+  iconRounded: true
+  title: "StrongsDict – Strongsdict App Strong's Greek and Hebrew Dictionary"
+  author:
+    url: https://www.flagsoft.com
+    name: Michael Mustun
+  links:
+    appstore: https://itunes.apple.com/ch/app/strongsdict-greek-hebrew-dict/id961026356?mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.flagsoft.Strongsdict
+    website: https://www.flagsoft.com/cmswp/apps/strongs-dict/
+  description: |
+    Strongsdict is the full Strong's Dictionary Greek and Hebrew at your fingertips. Greek and Hebrew Strong's dictionary, full featured with a full test search engine. Contains 14197 entries which is the complete Greek and Hebrews Strong's dictionary found in the original book. This is the Strong's Dictionary, Greek as it appears in the printed version of 1870 by Strong. Main features - Infinity scroll, you can scroll through the whole book - Table of contents for Greek and Hebrew - Search without diacritics. Diacritics are accents and breathing marks, etc. Example search for "אדם" or "אדמ" or "אָדָם" which is A-D-M, Adam; or "משה" (M-S-He) Moshe, Moses - Copy and paste words or search keywords in Greek or Hebrew or English from other sources like internet pages or from other Apps - You can search for words, numbers and keywords in English, Greek and Hebrew - Sharing with Facebook, Twitter, WhatsApp, Email, SMS or Copy to Clipboard Examples - "Aaron", "David", "Abraham", "water" or any subject or name or keyword - "G2222" - search for Greek Strong's number 2222 - "H2222" - search for Hebrew Strong's number 2222 Just add a dot . at the end to get more precise search results - "Aaron.", "David.", "Abraham." - search with a point at the end to get more precise results - "G2222.", "H2222." - search for one entry only with a dot at the end Search without or with diacritics - "אדם" or "אדמ" or "אָדָם" - searches for A-D-M (Adam) - "משה" - search for M-S-He (Moshe, Moses) Install Greek and Hebrew keyboards - Go to Settings General Keyboard Keyboards Add New Keyboard... and choose Greek and Hebrew Support - Please contact us with the integrated direct contact (DDC) within the App if you have new ideas or for support. We are listening.
+  features:
+  - Infinity scroll, you can scroll through the whole book
+  - Table of contents for Greek and Hebrew - Search without diacritics. Diacritics are accents and breathing marks, etc. Example search for "אדם" or "אדמ" or "אָדָם" which is A-D-M, Adam; or "משה" (M-S-He) Moshe, Moses
+  - Copy and paste words or search keywords in Greek or Hebrew or English from other sources like internet pages or from other Apps
+  - You can search for words, numbers and keywords in English, Greek and Hebrew
+  - Sharing with Facebook, Twitter, WhatsApp, Email, SMS or Copy to Clipboard Examples
+  - search for one entry only with a dot at the end Search without or with diacritics
+  screenshots:
+  - "#{cdn}/i/showcase/strongsdict-ios-01.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-02.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-03.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-04.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-05.png"
+  - "#{cdn}/i/showcase/strongsdict-ios-06.png"
+  - "#{cdn}/i/showcase/strongsdict-android-01.png"
+  - "#{cdn}/i/showcase/strongsdict-android-02.png"
+  - "#{cdn}/i/showcase/strongsdict-android-03.png"
+  - "#{cdn}/i/showcase/strongsdict-android-04.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/tabelafipebrasil.png"
+  iconRounded: true
+  title: "Tabela Fipe Brasil"
+  author:
+    url: https://www.tabelafipebrasil.com
+    name: Shark Tech Apps
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.sharktechapps.tabelafipebrasil
+    appstore: https://itunes.apple.com/app/id1374297261
+    website: https://www.tabelafipebrasil.com/
+  description: |
+    Prices of all Cars, Motorbikes and Trucks for sale in Brazil.
+  features:
+  - Price for Cars, Motorbikes and Trucks
+  - Search vehicles
+  - Historical values
+  - Favorites
+  - Updated values
+
+  screenshots:
+  - "#{cdn}/i/showcase/tabelafipebrasil1.png"
+  - "#{cdn}/i/showcase/tabelafipebrasil2.png"
+  - "#{cdn}/i/showcase/tabelafipebrasil3.png"
+  - "#{cdn}/i/showcase/tabelafipebrasil4.png"
+  - "#{cdn}/i/showcase/tabelafipebrasil5.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/ratingsdekhekya.png"
+  iconRounded: true
+  title: "Ratings Dekhe Kya?"
+  author:
+    url: https://www.linkedin.com/in/kapil-prabhudesai-ba088a88/
+    name: Kapil Prabhudessai
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=in.aryawebstudio.ratingsdekhekya
+    website: http://ratingsdekhekya.in/
+  description: |
+    India's best movie ratings comparison app
+  features:
+  - Movie ratings from top websites
+  - Movie trailers, posters, release dates, and stars
+
+  screenshots:
+  - "#{cdn}/i/showcase/ratingsdekhekya1.png"
+  - "#{cdn}/i/showcase/ratingsdekhekya2.png"
+  - "#{cdn}/i/showcase/ratingsdekhekya3.png"
+  - "#{cdn}/i/showcase/ratingsdekhekya4.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/azan.png"
+  iconRounded: true
+  title: "Azan Times"
+  author:
+    url: https://play.google.com/store/apps/dev?id=5380895901111777097
+    name: Rashid NK
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=org.islamicmajlis.salahtimes&hl=en
+  description: |
+       Prayer time, Islamic Azan time,Salah time.
+  features:
+  - Prayer time for all locations, all country
+  - English, Malayalam support,
+  - Place search
+  screenshots:
+  - "#{cdn}/i/showcase/azan1.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/halicon.png"
+  iconRounded: true
+  title: "Hal – Construction solution"
+  author:
+    url: http://www.hal-web.com/
+    name: Hal Team
+  links:
+    appstore: https://itunes.apple.com/us/app/%D8%AD%D9%84/id1194820433?mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.arapeak.solution
+    website: http://www.hal.sa/
+  description: |
+       We provide you with the best experience in the field of construction work so that the work professionally and punctuality in the agreed period and professional transparency.
+  features:
+  - Provide construction services
+  - provide expert technician in Electrician,pluber,loader...etc
+  - Supply all construction material In Riyadh
+  - In app two language features (Supports Arabic, En)
+  - geolocation, photopicker
+  screenshots:
+  - "#{cdn}/i/showcase/hals1.png"
+  - "#{cdn}/i/showcase/hals2.png"
+  - "#{cdn}/i/showcase/hals3.png"
+#########
+-
+  iconUrl: "#{cdn}/i/showcase/tascadalmerita.png"
+  iconRounded: true
+  title: "iTasca – Tasca d’Almerita Wine and Estates"
+  author:
+    url: http://www.cofficegroup.com/
+    name: Coffice s.r.l.
+  links:
+    appstore: https://itunes.apple.com/it/app/itasca-tasca-dalmerita/id560984078
+    googleplay: https://play.google.com/store/apps/details?id=it.tascadalmerita.iTasca
+    website: http://www.tascadalmerita.it/
+  description: |
+      Enjoy sicilian wines through the five Estates of the well-known wine-making family, Tasca d’Almerita. Discover the Tasca family’s love for the culture of the different terroirs where their estates are located, and for the wines that come from them.
+  features:
+  - Wine and Estates list and search engine
+  - Video and photo galleries
+  - Wine Taste recorder and manager
+  - In app multilanguage features (Supports It, En,De)
+  - Offline mode available
+  - geolocation, photopicker
+  screenshots:
+  - "#{cdn}/i/showcase/tascadalmerita_1.png"
+  - "#{cdn}/i/showcase/tascadalmerita_2.png"
+  - "#{cdn}/i/showcase/tascadalmerita_3.png"
+  - "#{cdn}/i/showcase/tascadalmerita_4.png"
+  - "#{cdn}/i/showcase/tascadalmerita_5.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/tomatoid.png"
+  iconRounded: true
+  title: "Tomatoid: Time tracking"
+  author:
+    url: https://www.petrnagy.cz/
+    name: Petr Nagy
+  links:
+    appstore: https://itunes.apple.com/us/app/tomatoid/id1320161270
+    website: https://www.tomatoid.com/mobile
+  description: |
+      Combines time tracking, pomodoro technique and to-do lists into one simple app.
+  features:
+  - Time tracker
+  - Pomodoro timer
+  - Task manager
+  - Projects management, clients, labels, stats, history
+  screenshots:
+  - "#{cdn}/i/showcase/tomatoid-ios-1.png"
+  - "#{cdn}/i/showcase/tomatoid-ios-2.png"
+  - "#{cdn}/i/showcase/tomatoid-ios-3.png"
+  - "#{cdn}/i/showcase/tomatoid-ios-4.png"
+  - "#{cdn}/i/showcase/tomatoid-ios-5.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/brief.jpg"
@@ -2185,3 +2474,4 @@
   - "#{cdn}/i/showcase/gunluc1.png"
   - "#{cdn}/i/showcase/gunluc2.png"
   - "#{cdn}/i/showcase/gunluc3.png"
+

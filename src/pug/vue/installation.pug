@@ -6,35 +6,74 @@ block vars
 
 block content
 
-    .docs-nav
-      include ../_docs-vue-menu
-    .docs-content
-      h1 Installation
-      p It is really easy to build your app with Framework7 and <a href="https://vuejs.org/" target="_blank">Vue</a>. To get started we need to install Framework7, Vue, Framework7 Vue plugin. You can skip this step and use one of the ready to use <a href="templates.html">starter app templates</a>.
-      h4 1. Install Framework7
-      p There are few ways to install Framework7:
-      ul
-        li Download it from <a href="https://github.com/nolimits4web/Framework7/releases">Framework7 GitHub repository</a>
-        li Using <a href="https://npmjs.com">NPM</a>:
-          pre
-            code
-              :code
-                $ npm install framework7
-        li Using <a href="https://bower.io/">Bower</a>:
-          pre
-            code
-              :code
-                $ bower install framework7
-      p In the downloaded/installed package we need files from the <b>dist/</b> folder.
-      h4 2. Install Vue
-      p Read about how to install Vue on the official <a href="https://vuejs.org/v2/guide/installation.html" target="_blank">Vue Installation Guide</a>.
-      h4 3. Install Framework7 Vue Plugin
-      p Now we need the Framework7 plugin for Vue:
-      ul
-        li Download it from <a href="https://github.com/nolimits4web/Framework7-Vue/releases">Framework7 Vue GitHub repository</a>
-        li Using <a href="https://npmjs.com">NPM</a>:
-          pre
-            code
-              :code
-                $ npm install framework7-vue
-      p In the downloaded/installed package we need files from the <b>dist/</b> folder.
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Installation
+    p It is really easy to build your app with Framework7 and Vue. To get started we need to install Framework7, Vue, Framework7-Vue plugin. You can skip this step and use one of the ready to use <a href="/templates/">starter app templates</a>.
+    h4 1. Install Framework7
+    p First of all we need to <a href="../docs/installation.html">install Framework7</a> library itself.
+    h4 2. Install Vue
+    p Read about how to install Vue on the official <a href="https://vuejs.org/v2/guide/installation.html" target="_blank">Vue Installation Guide</a>.
+    h4 3. Install Framework7-Vue Plugin
+    p Now we need the Framework7-Vue plugin for Vue, we can do it with two ways:
+    ul
+      li
+        p
+          b Download From GitHub Repository
+        p We can download required Framework7-Vue files from <a href="https://github.com/framework7io/framework7/releases">Framework7 GitHub repository</a>.
+      li
+        p
+          b Install From NPM
+        p We can also install Framework7-Vue from NPM:
+        pre
+          code
+            :code
+              $ npm install framework7-vue
+
+    h2 ES Module
+    .important-note
+      p This feature currently can be used in bundlers like Webpack and Rollup
+    p Framework7-Vue can also be imported as an ES-next module:
+    pre
+      code.js
+        :code
+          import Framework7Vue from 'framework7-vue'
+    .important-note
+      p <b>By default it exports only core Framework7-Vue plugin without any components</b>.
+    p And if you need additional components they must be imported additionally:
+    pre
+      code.html
+        :code
+          <!-- some-page.vue -->
+          <template>
+            ...
+          </template>
+          <script>
+            // Import F7 components you need
+            import { f7List, f7ListItem, f7Navbar } from 'framework7-vue';
+
+            export default {
+              // register F7 Vue components in required Vue component
+              components: {
+                f7List,
+                f7ListItem,
+                f7Navbar,
+              }
+            }
+          </script>
+    h2 ES Module Bundle
+    p If you need to include all Framework7-Vue components, we can include its another script bundle with all Vue components registered:
+    pre
+      code.js
+        :code
+          // Import framework with all components
+          import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js';
+
+    h2 App HTML Layout
+    p Now when we have downloaded/installed Framework7-Vue, we can start from creating <a href="app-layout.html">App Layout</a>.
+
+
+
+
