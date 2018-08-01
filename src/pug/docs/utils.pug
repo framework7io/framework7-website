@@ -4,13 +4,11 @@ block vars
   - var title = 'Utils | Framework7 Documentation';
 
 block content
-
   .docs-nav
     include ../_docs-menu
   .docs-content
-    +improveDocsLink
     h1 Utils
-    ul.docs-index
+    .docs-index
     p Framework7 utils is a set of helper methods that used internally and can be handy during development as well.
     p It is avaialable as a <code><b>utils</b></code> property of Framework7 class (<code>Framework7.utils</code>) and same property on initialized app instance (<code>app.utils</code>):
     pre
@@ -149,7 +147,7 @@ block content
     pre
       code.js
         :code
-          var time = app.utils.now();
+          var now = app.utils.now();
           setTimeout(function () {
             var timeDiff = app.utils.now() - now;
             console.log(timeDiff + 'ms past');
