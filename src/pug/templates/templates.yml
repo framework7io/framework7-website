@@ -94,6 +94,21 @@ phonegap:
 
 community:
 -
+  title: Facebook API JavaScript SDK get all Albums and Photos
+  icon:
+    text: Facebook API JavaScript SDK get all Albums and Photos
+    bgColor: '#3B5998'
+    textColor: '#fff'
+  author:
+    url: https://websitebeaver.com/facebook-api-javascript-sdk-get-all-albums-and-photos
+    name: WebsiteBeaver
+  url: https://github.com/WebsiteBeaver/facebook-api-javascript-sdk-get-all-albums-and-photos
+  description: Get all Facebook albums and photos with its API.
+  badges:
+  - v3
+  - Facebook API
+-
+-
   title: Framework7 Parceljs starter app
   icon:
     text: F7 Parcel
