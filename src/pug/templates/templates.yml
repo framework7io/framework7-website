@@ -103,7 +103,6 @@ community:
     url: https://websitebeaver.com/facebook-api-javascript-sdk-get-all-albums-and-photos
     name: WebsiteBeaver
   url: https://github.com/WebsiteBeaver/facebook-api-javascript-sdk-get-all-albums-and-photos
-  previewUrl: https://guillaumebiton.github.io/framework7-parcel-template/
   description: Get all Facebook albums and photos with its API.
   badges:
   - v3
