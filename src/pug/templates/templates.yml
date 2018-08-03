@@ -96,7 +96,7 @@ community:
 -
   title: Facebook API JavaScript SDK get all Albums and Photos
   icon:
-    text: Facebook API JavaScript SDK get all Albums and Photos
+    text: Get all Facebook Photos
     bgColor: '#3B5998'
     textColor: '#fff'
   author:
