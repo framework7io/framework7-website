@@ -14,9 +14,7 @@ block content
     ul.docs-index
     h2 Panel Layout
     p Let's look how to add Side Panels to our App. We may include up to 2 panels to our App, one on left side and another one on right side. We should add panels' HTML right in the beginning of the app root element (or &lt;body&gt; in case there is no root element in use):
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <body>
             <!-- App root element -->
             <div id="#app">
@@ -35,9 +33,7 @@ block content
           </body>
     h2 Panel Effect
     p After we added panels we need to choose opening effect for each panel. There could be one of two effects: <b>"Reveal"</b> (when panel moves out whole app's content) or <b>"Cover"</b> (when panel overlays app's content). If you want to use "Reveal" effect you should add additional <code><b>panel-reveal</b></code> class to Panel, or <code><b>panel-cover</b></code> for cover effect:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <body>
             <!-- App root element -->
             <div id="#app">
@@ -110,9 +106,7 @@ block content
           td true
           td Enable/disable ability to close panel by clicking outside of panel (on panel's backdrop)
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework({
             panel: {
               swipe: 'left',
@@ -213,9 +207,7 @@ block content
           td
           td Can be <code>cover</code> or <code>reveal</code>. If not passed then will be determined based on <code>panel-cover</code> or <code>panel-reveal</code> element classes
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var panel = app.panel.create({
             el: '.panel-left',
           })
@@ -300,9 +292,7 @@ block content
         li
           p If you want to specify which panel should opened/closed, then it could be done via additional <code><b>data-panel="left</b></code> attribute on this HTML element
     p According to above note:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <body>
             <div id="app">
               <!-- Left Panel with Reveal effect -->
@@ -478,9 +468,7 @@ block content
           td <span>(panel)</span>
     .with-device
       h2(data-device-preview="../docs-demos/core/panel.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <body>
               <div id="app">
                 <div class="panel panel-left panel-reveal">
@@ -516,9 +504,7 @@ block content
                 </div>
               </div>
             </body>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

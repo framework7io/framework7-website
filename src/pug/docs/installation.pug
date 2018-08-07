@@ -20,25 +20,18 @@ block content
         p
           b Install From NPM
         p We can also install Framework7 from NPM:
-        pre
-          code
-            :code
-              $ npm install framework7
+        :code              $ npm install framework7
 
     p From the downloaded Core package we will need files from <code>css</code> and <code>js</code> folders
     h2 ES Module
     .important-note
       p This feature currently can be used in bundlers like Webpack and Rollup
     p Framework7 can also be imported as an ES-next module:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           import Framework7 from 'framework7';
     p Framework7 has modular structure and <b>by default it exports only core Framework7 with core components</b>.
     p And if you need additional components they must be included additionally:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // Import core framework
           import Framework7 from 'framework7';
 
@@ -54,9 +47,7 @@ block content
           var app = new Framework({/*...*/});
     p Such modular structure provides best tree-shaking results and package size optimization.
     p In addition to <code>default</code> export it has named export for <code>Template7</code>, <code>Dom7</code>, <code>Request</code>, <code>Device</code>, <code>Utils</code> and <code>Support</code> libraries:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           import Framework7, { Device, Request } from 'framework7';
 
           var app = new Framework({/*...*/});
@@ -67,9 +58,7 @@ block content
 
     h2 ES Module Bundle
     p If you need to include Framework7 with all components, we can include its another script bundle with all components installed:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // Import framework with all components
           import Framework7 from 'framework7/framework7.esm.bundle.js';
 

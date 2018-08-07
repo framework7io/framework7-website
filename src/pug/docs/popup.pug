@@ -15,9 +15,7 @@ block content
     p Popup is a popup window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called "Temporary Views".
     h2 Popup Layout
     p Popup layout is pretty simple:
-    pre
-      code.xml
-        :code(lang="html")
+    :code(lang="html")
           &lt;body&gt;
             ...
             &lt;div class="popup"&gt;
@@ -26,9 +24,7 @@ block content
           &lt;/body&gt;
     h2 Popup Size
     p By default Popup has a bit different size on phones and tablets (iPad). On phones it is fullscreen while on tablets it is 630px width and height. If you want to make it fullscreen size on tablets, you should add additional "<b>popup-tablet-fullscreen</b>" class to the required popup:
-    pre
-      code.xml
-        :code(lang="html")
+    :code(lang="html")
           &lt;body&gt;
             ...
             &lt;!-- This popup has fullscreen size on tablets --&gt;
@@ -130,9 +126,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var popup = app.popup.create({
                     content: '<div class="popup">...</div>',
                     on: {
@@ -143,9 +137,7 @@ block content
                   })
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>popup</code> property to set defaults for all popups. For example:
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               popup: {
                 closeByBackdropClick: false,
@@ -153,9 +145,7 @@ block content
             });
     h2 Popup Methods & Properties
     p So to create Popup we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var popup = app.popup.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>popup</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -228,9 +218,7 @@ block content
         li
           p If you have more than one popup in DOM, you need to specify appropriate popup via additional <b>data-popup=".my-popup"</b> attribute on this HTML element
     p According to above note:
-    pre
-      code.xml
-        :code(lang="xml")
+    :code(lang="xml")
           <!-- In data-popup attribute we specify CSS selector of popup we need to open -->
           <p><a href="#" data-popup=".my-popup" class="popup-open">Open Popup</a></p>
 
@@ -339,9 +327,7 @@ block content
           td app
     .with-device
       h2(data-device-preview="../docs-demos/core/popup.html") Examples
-      pre
-        code.xml
-          :code(lang="xml")
+      :code(lang="xml")
             <body>
               ...
                 <div class="page-content">
@@ -371,9 +357,7 @@ block content
                 </div>
               </div>
             </body>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

@@ -14,9 +14,7 @@ block content
     ul.docs-index
     h2 Accordion Layout
     p Common Accordion layout could be treat as the following:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="accordion-list"&gt;
               &lt;div class="accordion-item"&gt;
                   &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
@@ -43,9 +41,7 @@ block content
           li <code>accordion-item-expanded</code> - single expandend/opened accordion item
     h2 Collapsible Layout
     p If you want to use single separate collapsible element you may just omit "accordion-list" wrapper element:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;!-- Single collapsible element --&gt;
           &lt;div class="accordion-item"&gt;
               &lt;div class="accordion-item-toggle"&gt;...&lt;/div&gt;
@@ -59,9 +55,7 @@ block content
           &lt;/div&gt;
     h2 Accordion List View
     p If you use list view as accordion you may use "item-link" element instead of "accordion-toggle":
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="list accordion-list"&gt;
               &lt;ul&gt;
                   &lt;li class="accordion-item"&gt;
@@ -84,9 +78,7 @@ block content
           &lt;/div&gt;
     .with-device
       h2(data-device-preview="../docs-demos/core/accordion.html") Example
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             &lt;!-- List View --&gt;
             &lt;div class="block-title"&gt;List View Accordion&lt;/div&gt;
             &lt;div class="list accordion-list"&gt;
@@ -244,9 +236,7 @@ block content
           td accordionClosed
           td <span>(el)</span>
           td Event will be triggered after accordion content completes its closing animation
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7();
 
           var $ = Dom7;

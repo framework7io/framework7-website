@@ -62,9 +62,7 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Autocomplete element to close.
       p.method-returns Method returns Autocomplete's instance
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var autocomplete = app.autocomplete.create({
             inputEl: '#autocomplete-dropdown',
             openIn: 'dropdown',
@@ -290,9 +288,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var autocomplete = app.autocomplete.create({
                     ...
                     on: {
@@ -303,9 +299,7 @@ block content
                   })
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>autocomplete</code> property to set defaults for all autcompletes. For example:
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               autocomplete: {
                 openIn: 'popup',
@@ -449,9 +443,7 @@ block content
           td app
     .with-device
       h2(data-device-preview="../docs-demos/core/autocomplete.html") Examples
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
@@ -459,9 +451,7 @@ block content
             // Fruits data demo array
             var fruits = ('Apple Apricot Avocado Banana Melon Orange Peach Pear Pineapple').split(' ');
       h4 Simple Dropdown Autocomplete
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Simple Dropdown Autocomplete</div>
               <ul>
@@ -475,9 +465,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteDropdownSimple = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown',
               openIn: 'dropdown',
@@ -497,9 +485,7 @@ block content
             });
 
       h4 Dropdown With Input Expand
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Input Expand</div>
               <ul>
@@ -513,9 +499,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteDropdownExpand = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-expand',
               openIn: 'dropdown',
@@ -536,9 +520,7 @@ block content
             });
 
       h4 Dropdown With All Values
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With All Values</div>
               <ul>
@@ -552,9 +534,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteDropdownAll = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-all',
               openIn: 'dropdown',
@@ -569,9 +549,7 @@ block content
               }
             });
       h4 Dropdown With Placeholder
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Placeholder</div>
               <ul>
@@ -586,9 +564,7 @@ block content
               </ul>
             </div>
 
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteDropdownPlaceholder = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-placeholder',
               openIn: 'dropdown',
@@ -609,9 +585,7 @@ block content
             });
 
       h4 Dropdown With Typeahead
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Typeahead</div>
               <ul>
@@ -625,9 +599,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteDropdownTypeahead = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-typeahead',
               openIn: 'dropdown',
@@ -649,9 +621,7 @@ block content
             });
 
       h4 Dropdown With Ajax-Data
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Ajax-Data</div>
               <ul>
@@ -665,9 +635,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteDropdownAjax = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-ajax',
               openIn: 'dropdown',
@@ -711,9 +679,7 @@ block content
             });
 
       h4 Dropdown With Ajax-Data + Typeahead
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list no-hairlines-md">
               <div class="block-header">Dropdown With Ajax-Data + Typeahead</div>
               <ul>
@@ -727,9 +693,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteDropdownAjaxTypeahead = app.autocomplete.create({
               inputEl: '#autocomplete-dropdown-ajax-typeahead',
               openIn: 'dropdown',
@@ -773,9 +737,7 @@ block content
               }
             });
       h4 Searchbar Dropdown
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -797,9 +759,7 @@ block content
               </div>
               ...
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var searchbar = app.searchbar.create({
               el: '#searchbar-autocomplete',
               customSearch: true,
@@ -828,9 +788,7 @@ block content
               }
             })
       h4 Simple Standalone Autocomplete
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             div class="list">
               <div class="block-header">Simple Standalone Autocomplete</div>
               <ul>
@@ -845,9 +803,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteStandaloneSimple = app.autocomplete.create({
               openIn: 'page', //open in page
               openerEl: '#autocomplete-standalone', //link that opens autocomplete
@@ -877,9 +833,7 @@ block content
             });
 
       h4 Popup Autocomplete
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <div class="block-header">Popup Autocomplete</div>
               <ul>
@@ -894,9 +848,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteStandalonePopup = app.autocomplete.create({
               openIn: 'popup', //open in page
               openerEl: '#autocomplete-standalone-popup', //link that opens autocomplete
@@ -925,9 +877,7 @@ block content
             });
 
       h4 Multiple Values
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <div class="block-header">Multiple Values</div>
               <ul>
@@ -942,9 +892,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteStandaloneMultiple = app.autocomplete.create({
               openIn: 'page', //open in page
               openerEl: '#autocomplete-standalone-multiple', //link that opens autocomplete
@@ -974,9 +922,7 @@ block content
             });
 
       h4 Standalone With Ajax-Data
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <div class="block-header">With Ajax-Data</div>
               <ul>
@@ -991,9 +937,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var autocompleteStandaloneAjax = app.autocomplete.create({
               openIn: 'page', //open in page
               openerEl: '#autocomplete-standalone-ajax', //link that opens autocomplete

@@ -20,17 +20,15 @@ block content
         p Install <a href="http://nodejs.org/" target="_blank">Node.js</a> (if not installed)
       li
         p Install Gulp (if not installed) by executing the following command in terminal:
-        pre
-          code.shell $ npm install --global gulp
+        :code
+          $ npm install --global gulp
       li
         p Now, we need to install required dependencies. Go to the folder with downloaded and unzipped Framework7 repository and execute in terminal:
-        pre
-          code.shell $ npm install
+        :code
+          $ npm install
       li Copy <code>scripts/build-config.js</code> file to some place in the downloaded folder and rename it let's say to <code>scripts/my-config.js</code>
       li Open this file and remove components that you don't need or modify color theme and included colors:
-        pre
-          code.js
-            :code(lang="js")
+        :code(lang="js")
               /* my-config.js */
               const config = {
                 target: 'universal',
@@ -127,44 +125,27 @@ block content
 
       li
         p Now, we are ready to build custom version of Framework7. We need to execute:
-        pre
-          code.shell
-            :code
-              $ npm run build-core:prod -- --config scripts/my-config.js --output path/to/output/folder
+        :code              $ npm run build-core:prod -- --config scripts/my-config.js --output path/to/output/folder
       li
         p That is all. Now you should see newly generated js and css files in specified output folder
       li
         p If you are in hurry and want to see how its working then do follow step 1 to 4
-        pre
-          code.shell
-            :code
-              $ npm run build-core:dev
+        :code              $ npm run build-core:dev
         p The result is available in build/ folder.
       li
         p To build production version of Framework7:
-        pre
-          code.shell
-            :code
-              $ npm run build-core:prod
+        :code              $ npm run build-core:prod
         p Production version will be available in dist/ folder.
       li Run Kitchen Sink with development environment
-        pre
-          code.shell
-            :code
-              $ npm run core:dev
+        :code              $ npm run core:dev
       li Run Kitchen Sink with Production environment
-        pre
-          code.shell
-            :code
-              $ npm run core:prod
+        :code              $ npm run core:prod
       li Kitchen Sink is live
         p Visit http://localhost:3000/kitchen-sink/core/ From Youre Browser
 
     h2 ES Modules
     p If you use bundler like Webpack or Rollup you can use only required Framework7 JS components without that build process and by importing only required components:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // Import core framework
           import Framework7 from 'framework7';
 
@@ -330,9 +311,7 @@ block content
     h2 Less.js
     p Framework7 styles are build with <a href="http://lesscss.org/" target="_blank">Less.js</a>. If you use Less and NPM in your app/project then you can easily create custom framework7 stylesheet with only components you need.
     p Create your own <code>framework7.less</code> file:
-    pre
-      code.less
-        :code(lang="less")
+    :code(lang="less")
           // core
           @import url('path/to/node_modules/framework7/framework7.less');
 
@@ -341,9 +320,7 @@ block content
           @import url('path/to/node_modules/framework7/components/calendar/calendar.less');
           @import url('path/to/node_modules/framework7/components/popup/popup.less');
     p We can go even further and specify Framework7's main color theme and required colors in custom <code>framework7.less</code> file:
-    pre
-      code.less
-        :code(lang="less")
+    :code(lang="less")
           // core
           @import url('path/to/node_modules/framework7/framework7.less');
 

@@ -73,9 +73,7 @@ block content
           td Event will be triggered when radio input state changed
     h2 Radios List
     p Radios List is not a separate component, but just a particular case of using <code><a href="list-view.html">&lt;List&gt;</a></code>, <code><a href="list-item.html">&lt;ListItem&gt;</a></code>.
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <List>
             {/* Additional "radio" prop to enable radio list item */}
             <ListItem radio value="check_1" name="demo-radio" checked title="Radio 1"></ListItem>
@@ -84,9 +82,7 @@ block content
 
     .with-device
       h2(data-device-preview="../docs-demos/react/radio.html") Examples
-      pre
-        code.jsx
-          :code(lang="jsx")
+      :code(lang="jsx")
             <BlockTitle>Inline</BlockTitle>
             <Block strong>
               <p>Lorem <Radio name="demo-radio-inline" value="inline-1"/> ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi <Radio name="demo-radio-inline" value="inline-2" defaultChecked /> ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!</p>

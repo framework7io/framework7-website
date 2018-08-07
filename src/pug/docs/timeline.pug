@@ -16,9 +16,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/timeline-vertical.html") Vertical Timeline
       p Common Vertical Timeline layout could be treated as the following:
-      pre
-        code
-          :code(lang="html")
+      :code(lang="html")
             &lt;div class="timeline"&gt;
               &lt;div class="timeline-item"&gt;
                 &lt;div class="timeline-item-date"&gt;21 &lt;small&gt;DEC&lt;/small&gt;&lt;/div&gt;
@@ -52,9 +50,7 @@ block content
                     li <code>timeline-item-subtitle</code> - item subtitle. Optional
                     li <code>timeline-item-text</code> - item text. Optional
       h3 Vertical Timeline Example
-      pre
-        code
-          :code(lang="html")
+      :code(lang="html")
             &lt;!-- Timeline --&gt;
             &lt;div class="timeline"&gt;
               &lt;!-- Timeline item --&gt;
@@ -137,9 +133,7 @@ block content
       h3(data-device-preview="../docs-demos/core/timeline-vertical-sides.html") Vertical Timeline Side By Side
       p There is another "side-by-side" mode available for Vertical Timeline where each next item will be on different side. To enable "side-by-side" mode you need to add <code>timeline-sides</code> class to main <code>timeline</code> element. It is also possible to enable this mode only for tablet devices by adding <code>tablet-sides</code> class to main timeline element.
       p To force timeline element to required side we may use additional <code>timeline-item-left</code> and <code>timeline-item-right</code> classes on single timeline item element <code>timeline-item</code>
-      pre
-        code
-          :code(lang="html")
+      :code(lang="html")
             &lt;!-- Each next item will on different side --&gt;
             &lt;div class="block-title"&gt;Side By Side&lt;/div&gt;
             &lt;div class="timeline timeline-sides"&gt;
@@ -219,9 +213,7 @@ block content
       h2(data-device-preview="../docs-demos/core/timeline-horizontal.html") Horizontal Timeline
       p Horizontal Timeline has the same layout as Vertical but witha addional <code>timeline-horizontal</code> class on main <code>timeline</code> element.
       p We can also control columns per view in timeline by using <a href="grid.html">Layout Grid</a> columns' classes like <code>col-33</code> and <code>tablet-20</code> (to define column width for large tablet screens).
-      pre
-        code
-          :code(lang="html")
+      :code(lang="html")
             &lt;!--
             Additional "timeline-horizontal" class to enable Horizontal timeline
             Additional "col-50" to define column width (50%)
@@ -298,9 +290,7 @@ block content
             &lt;/div&gt;
       h2(data-device-preview="../docs-demos/core/timeline-calendar.html") Calendar Timeline
       p Calendar Timeline has almost the same layout as Horizontal but with additional Year and Month wrapping elements, so the structure should be the following:
-      pre
-        code
-          :code(lang="html")
+      :code(lang="html")
             &lt;div class="timeline timeline-horizontal"&gt;
               &lt;!-- Timeline Year --&gt;
               &lt;div class="timeline-year"&gt;
@@ -337,9 +327,7 @@ block content
                 ...
               &lt;/div&gt;
             &lt;/div&gt;
-      pre
-        code
-          :code(lang="html")
+      :code(lang="html")
             &lt;!--
             Additional "timeline-horizontal" class to enable Horizontal timeline
             Additional "col-33" to define column width (33%)

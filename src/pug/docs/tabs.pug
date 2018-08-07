@@ -15,9 +15,7 @@ block content
     p Tabs allow to simply switch between different content.
     h2 Tabs Layout
     p Let's look at Tabs layout:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           <!-- Tabs wrapper, shoud have "tabs" class. Required element -->
           <div class="tabs">
             <!-- First tab, should have "tab" class and unique id attribute -->
@@ -41,9 +39,7 @@ block content
       li <code>div class="tab tab-active"</code> - single active tab. Tab which is active (visible) by default, should have additional <code><b>tab-active</b></code> class
     h3 Scrollable Tabs
     p If you put tabs inside of scrollable <code>&lt;div class="page-content"&gt;</code> then they will have mutual scrolling - scrolling one tab will basically scroll the all tabs as well. To avoid this (if this is a case), it is recommended to make each tab as page-content, in this case each tab will have own scrolling:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>
             <!-- tabs is a direct child of page -->
@@ -64,9 +60,7 @@ block content
     h2 Switching Between Tabs
     p After we have our tabs layout we need some contoller so user can switch between them.
     p To make it work we need to create links (<code>&lt;a&gt;</code> tags) with <code><strong>tab-link</strong></code> class and <code>href</code> attribute equal to the <code>id</code> attribute of target tab:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
            &lt;!-- Link that activates first tab, has the same href attribute (#tab1) as the id attribute of first tab (tab1)  --&gt;
            &lt;a href="#tab1" class="tab-link tab-link-active"&gt;Tab 1&lt;/a&gt;
 
@@ -79,9 +73,7 @@ block content
       p As you may see, first link also has <code><strong>tab-link-active</strong></code> class. It is not required, but if all such links will be on the same DOM tree level (the same-level children of mutual parent), then script will also change this <code>tab-link-active</code> class on link related to the active tab. It is useful when your "active" link has different visual style (like buttons in <a href="button.html#segmented-control">Segmented Control</a> or links in <a href="toolbar-tabbar.html#tabbar">Tabbar</a>)
     h2 Switch Multiple Tabs
     p Such notation as above uses ID attributes to specify tabs we need to switch to. But sometimes we may have situation when we need to switch few tabs using one tab-link, for this case we may use classes instead of IDs and <code><b>data-tab</b></code> attribute for tab-link. For example:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Top Tabs -->
           <div class="tabs tabs-top">
             <div class="tab tab1 tab-active">...</div>
@@ -106,9 +98,7 @@ block content
     p Where <code><b>data-tab</b></code> attribute of tab-link with CSS selector of target tab/tabs
     h2 Views As Tabs
     p Why single Tab could not be a seprate View with its own navigation and layout? It can, so you can just switch Views as tabs. In this case we will have kind of Tabbed app structure, where each tab represents separate View:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <body>
             <!-- App root -->
             <div id="app">
@@ -153,9 +143,7 @@ block content
 
     h2 Animated Tabs
     p It is also possible to switch tabs with simple transition. This requires additional <code><b>div class="tabs-animated-wrap"</b></code> wrapper for <code>div class="tabs"</code>:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Tabs animated wrapper, required to switch tabs with transition -->
           <div class="tabs-animated-wrap">
 
@@ -183,9 +171,7 @@ block content
     h2 Swipeable Tabs
     p It is also possible to switch tabs with swipes. This requires additional <code><b>div class="tabs-swipeable-wrap"</b></code> wrapper for <code>div class="tabs"</code>.
     p In this example let's put tab links in Subnavbar and we will use <b>page-content</b> as <b>tab</b> to keep scrolling position for each tab separately:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Tabs swipeable wrapper, required to switch tabs with swipes -->
           <div class="tabs-swipeable-wrap">
             <!-- Tabs, tabs wrapper -->
@@ -281,9 +267,7 @@ block content
       li Third, with enabled Push State, the same tab will be opened when you navigate back and forward in history.
       li And the last but not least, when using routable tabs you can load tab content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     p First of all we need to specify tabs routes in app routes. Let's assume we have a page with routable tabs on <code>/tabs/</code> route:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             {
               // Page main route
@@ -324,9 +308,7 @@ block content
             }
           ]
     p On the <code>/tabs/index.html</code> page we may have the following structure, for example:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <div class="navbar">
               <div class="navbar-inner">
@@ -404,9 +386,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/tabs.html") Examples
       h3 Static Tabs
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -448,9 +428,7 @@ block content
               </div>
             </div>
       h3 Animated Tabs
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -495,9 +473,7 @@ block content
             </div>
 
       h3 Swipeable Tabs
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -542,9 +518,7 @@ block content
             </div>
 
       h3 Routable Tabs
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               routes: [
                 {
@@ -591,9 +565,7 @@ block content
                 },
               ]
             });
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">

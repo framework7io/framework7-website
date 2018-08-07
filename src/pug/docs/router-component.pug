@@ -78,9 +78,7 @@ block content
     .important-note
       p All lifecycle hooks and methods automatically have their <code>this</code> context bound to the component context, so that you can access component data and methods. This means <b>you should not use an arrow function to define a lifecycle method</b> (e.g. <code>created: () => this.doSomething()</code>). The reason is arrow functions bind the parent context, so <code>this</code> will not be the component instance as you expect and <code>this.doSomething</code> will be undefined.
     p So the example route with page component may look like:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             // ...
             {
@@ -148,33 +146,25 @@ block content
           td $el
           td object
           td Dom7 instance with component HTML element
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   this.$el.find('p').addClass('red')
         tr
           td $<br>$$<br>$dom7
           td function
           td <a href="dom7.html">Dom7</a> library:
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   this.$$('p').text('hello world')
         tr
           td $app
           td object
           td Framework7 app instance
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   this.$app.dialog.alert('Hello world!')
         tr
           td $root
           td object
           td Root data and methods you have specified in <code>data</code> and <code>methods</code> properties on app init
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   var app = new Framework7({
                     // root data
                     data: function () {
@@ -202,17 +192,13 @@ block content
           td $router
           td Router instance
           td Related router instance
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   this.$router.back(); //navigate back
         tr
           td $theme
           td object
           td Object with <code>md</code> and <code>ios</code> boolean properties which indicating current theme. For example:
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   if (this.$theme.ios) { /* do something when iOS theme is active */ }
                   if (this.$theme.md) { /* do something when MD theme is active */ }
         tr
@@ -224,9 +210,7 @@ block content
             p.important-note Note, that direct assignment to component state won't trigger layout update. If we use #[code this.foo = 'bar'] it will not be updated. Use <code>$setState()</code> whenever you need to update component layout!
     h2 Component Page Events
     p Component page events handlers can be passed in <code>on</code> component property. They are usual DOM <a href="page.html#page-events">Page Events</a>. Because they are DOM events, they accept <code>event</code> as first agrument, and <a href="page.html#page-data">Page Data</a> as second argument. There only difference with usual DOM events is that their context (<code>this</code>) bound to component context and event handler name must be specified in camelCase format (#[code page:init] -> #[code pageInit]):
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           ...
           data: function () {
             return {
@@ -259,9 +243,7 @@ block content
     h2 DOM Events Handling
     p Note that additional <code>@</code> attribute in component template. It is a shorthand method to assign event listener to the specified element. Specified event handler will be searched in component <code>methods</code>.
     p Such event handlers are processed only on initial rendering, or for elements patched with VDOM. <b>If you add such element to DOM manually it won't work!</b>
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           {
             // ...
             methods: {
@@ -278,9 +260,7 @@ block content
           }
     h2 Single File Component
     p It is not very comfortable to specify all component routes under same routes array, especially if we have a lot of such routes. This is why we can use <code>componentUrl</code> instead and out component into single file:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             ...
             {
@@ -290,9 +270,7 @@ block content
             ..
           ];
     p And in <code>some-page.html</code>:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- component template -->
           <template>
             <div class="page">
@@ -356,17 +334,13 @@ block content
 
     p Template literals are string literals allowing embedded expressions. You can use multi-line strings and string interpolation features with them. They were called "template strings" in prior editions of the ES2015 specification.
 
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var a = 5;
           var b = 10;
           console.log(`Fifteen is ${a + b} and not ${2 * a + b}.`);
 
     p To enable your component template being treated as template literal we need to add <code>es</code> attribute to <code>&lt;template&gt;</code> tag. The template from previous example will look like:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <template es>
             <div class="page">
               <div class="navbar">
@@ -389,9 +363,7 @@ block content
 
     h3 Scoped Styles
     p In case you want to scope component styles in single file component to this component only, you may add <code><b>scoped</b></code> attribute to component <code>&lt;style&gt;</code> tag:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <template>
             <!-- component template -->
           </template>
@@ -412,9 +384,7 @@ block content
             }
           </script>
     p When scoped style added component element will have additional <code>data-scope="[unique_id]"</code> where [unique_id] is the unique timestamp. And all styles will be refactored to have this unique scope id, for example:
-    pre
-      code.css
-        :code(lang="css")
+    :code(lang="css")
           [data-scope="1515740589328"] p {
             color: red;
           }
@@ -422,9 +392,7 @@ block content
             text-decoration: none;
           }
     p In case you need to use more complex selector with including component parent reference, then you may use <code><b>{{this}}</b></code> keword to reference the component:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <template>
             <!-- component template -->
           </template>
@@ -455,9 +423,7 @@ block content
     p So how does Framework7 router component VDOM rendering works? Component template is converted to VDOM instead of directly inserting to DOM. Later, when component state changes, it creates new VDOM and compares it with previous VDOM. And based on that diff it patches real DOM by changing only elements and attributes that need to be changed. And all this happens automatically!
     p Let's look at that user profile component example that will auto update layout when we request user data:
 
-    pre
-     code.html
-      :code(lang="html")
+    :code(lang="html")
         <template>
           <div class="page">
             <div class="navbar">
@@ -518,9 +484,7 @@ block content
 
     p When rendering lists, an ideal value for <code>key</code> would be the unique id of each item:
 
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <template>
             ...
             <ul>
@@ -551,9 +515,7 @@ block content
 
     p Same with auto-initialized components like <a href="./range-slider.html">Range Slider</a>, <a href="./gauge.html">Gauge</a> and others that should be automatically initialized (if they have <code>range-slider-init</code>, <code>gauge-init</code>) when they added to DOM, and automatically destroyed when they removed from DOM. So such elements must be also indentified with unique keys.
 
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <template>
             <div class="page">
               ...

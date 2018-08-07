@@ -15,9 +15,7 @@ block content
     p After we have our <a href="app-layout.html">app layout</a> now we need to mount Vue components and initialize the app. You can read about all possible Framework7 initialization parameters in appropriate <a href="../docs/app.html#app-parameters">Framework7 App Parameters</a> section.
     h2 Plain Initiliazation Structure
     p Let's look at the simple plain app structure, where we don't use any bundlers in our app, just a plain html + js files. Full layout again, but with script:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- index.html -->
 
           <!DOCTYPE html>
@@ -52,9 +50,7 @@ block content
               <script type="text/javascript" src="path/to/my-app.js"></script>
             </body>
           </html>
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           /* my-app.js */
 
           // First of all, we need to initialize/enable Framework7 Vue plugin:
@@ -88,9 +84,7 @@ block content
           })
     h2 With Bundlers
     p If you use Webpack, Rollup or another bundler with ES-next modules support, we may have the following structure:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- index.html -->
 
           <!DOCTYPE html>
@@ -105,9 +99,7 @@ block content
               <script type="text/javascript" src="path/to/my-app.js"></script>
             </body>
           </html>
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           /* my-app.js */
 
           // Import Vue
@@ -131,9 +123,7 @@ block content
             render: (h) => h(App),
             // ...
           });
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- app.vue -->
 
           <template>

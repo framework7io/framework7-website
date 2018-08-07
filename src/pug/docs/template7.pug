@@ -17,9 +17,7 @@ block content
 
     h2 Performance Tips
     p Template7 is fast and you can make it works even faster in your apps. The slowest part (but still very fast in T7) in all this compilation/rendering process is the compilation from string to pure JS function when you do <code>Template7.compile()</code>. So don't compile the same templates multiple times, one time will be enough:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           // Initialize app
           var app = new Framework7();
 

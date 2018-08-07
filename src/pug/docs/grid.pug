@@ -14,9 +14,7 @@ block content
     ul.docs-index
     p Framework7 comes with flexible layout grid that allows you place your content as you need.
     h2 Grid Layout
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;!-- Each "cells" row should be wrapped with div class="row" --&gt;
           &lt;div class="row"&gt;
               &lt;!-- Each "cell" has col-[width in percents] class --&gt;
@@ -30,9 +28,7 @@ block content
               &lt;div class="col-33"&gt;33%&lt;/div&gt;
           &lt;/div&gt;
     p By defaul all "cells" has 15px gap between each other for iOS theme and 16px gap for MD theme. If you want "cells" without gap, you should add additional <code><b>no-gap</b></code> class to "row":
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;!-- Additional "no-gap" class on row to remove space between cells --&gt;
           &lt;div class="row no-gap"&gt;
               &lt;!-- Each "cell" has col-[width in percents] class --&gt;
@@ -71,9 +67,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/grid.html") Examples
       p By default grid columns (cells) has no any visual styles, we'll add them for this demo:
-      pre
-        code.css
-          :code(lang="css")
+      :code(lang="css")
             div[class*="col"] {
               background: #fff;
               text-align: center;
@@ -83,9 +77,7 @@ block content
               margin-bottom: 15px;
               font-size: 12px;
             }
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Columns with gap</div>
             <div class="block">
               <div class="row">
@@ -128,9 +120,7 @@ block content
                 <div class="col-20">20% (.col-20)</div>
               </div>
             </div>
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">No gap between columns</div>
             <div class="block">
               <div class="row no-gap">
@@ -173,9 +163,7 @@ block content
                 <div class="col-20">20% (.col-20)</div>
               </div>
             </div>
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Nested</div>
             <div class="block">
               <div class="row">
@@ -193,9 +181,7 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Responsive Grid</div>
             <div class="block">
               <p>Grid cells have different size on Phone/Tablet</p>

@@ -36,9 +36,7 @@ block content
       li App bundle id (e.g. <code>io.framework7.testapp</code>)
       li Placement id (e.g. <code>pltd4o7ibb9rc653x14</code>)
     p Now when we have our vi placement id we may set it up in Framework7 on the app initialization:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             /*
               common app bundle id must match the one
@@ -53,9 +51,7 @@ block content
           });
     h4 4. Show Ad
     p That is all, now we can use Framework7’s vi API to create and show ads. In simplest way just call the following method when you need to show an ad:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           app.vi.createAd();
     h2 vi App Methods
     p Let's look at available vi app methods and properties:
@@ -232,9 +228,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code
+            :code(lang="js")
                   var viAd = app.vi.createAd({
                     on: {
                       stopped: function () {
@@ -244,9 +238,7 @@ block content
                   })
     .important-note
       p All parameters can be used in global app parameters under <code>vi</code> property to set defaults for all vi ads. For example:
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               /*
                 common app bundle id must match the one
@@ -260,19 +252,15 @@ block content
               }
             });
       p In this case when we create vi ad, we need to pass parameters that we want to override:
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var viAd = app.vi.createAd({
               // disable autoplay for this ad
               autoplay: false,
             })
     h2 vi Ad Methods & Properties
     p So to create vi ad we have to call:
-    pre
-      code
-        :code
-          var viAd = app.vi.create({ /* parameters */ })
+    :code(lang="js")
+      var viAd = app.vi.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>viAd</code> variable in example above) with useful methods and properties:
     table.methods-table
       tbody
@@ -393,9 +381,7 @@ block content
           td Event will be triggered when vi SDK loaded and ready to be used
     .with-device
       h2(data-device-preview="../docs-demos/core/vi.html") Examples
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               id: 'io.framework7.testapp',
               vi: {

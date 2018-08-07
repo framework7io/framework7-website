@@ -15,9 +15,7 @@ block content
     p Toolbar is a fixed area at the bottom of a screen that contains navigation elements.
     h2 Toolbar HTML Layout
     p Toolbar layout is very simple:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="toolbar"&gt;
               &lt;div class="toolbar-inner"&gt;
                   &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
@@ -27,9 +25,7 @@ block content
           &lt;/div&gt;
     p By default, all Toolbar elements (links) equally spaced along toolbar - they have equal space between each other.
     p In MD Theme Toolbar/Tabbar is usually on top of the app right below the Navbar. But if you really need to have Toolbar on bottom you can do it by just using addional <code><b>toolbar-bottom-md</b></code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="toolbar toolbar-bottom-md"&gt;
               &lt;div class="toolbar-inner"&gt;
                   &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
@@ -39,23 +35,17 @@ block content
           &lt;/div&gt;
     h3 Theme-specific Styling
     p In iOS theme Toolbar/Tabbar has thin border on the top. To disable this border you need to add <code><b>no-hairline</b></code> class to toolbar element:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="toolbar no-hairline">...</div>
     p In MD theme Toolbar/Tabbar has shadow. To disable this shadow you need to add <code><b>no-shadow</b></code> class to toolbar element:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="toolbar no-shadow">...</div>
 
     h2 Toolbar Type
     p Now let's look where we can place our Toolbar / Tabbar in DOM. There are several rules to place Toolbar.
     h3 Static Toolbar
     p Static toolbar position is the probably most rarely used layout type. In this case Toolbar / Tabbar is just part of the scrollable page content:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <!-- Fixed navbar goes first -->
             <div class="navbar">...</div>
@@ -70,9 +60,7 @@ block content
           </div>
     h3 Fixed Toolbar
     p Fixed toolbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed Navbar then it must be <b>AFTER Navbar</b>:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <!-- Fixed navbar goes first -->
             <div class="navbar">...</div>
@@ -89,9 +77,7 @@ block content
         strong Fixed Toolbar/Tabbar must always be a direct child of a page and AFTER the Navbar (if fixed navbar is used on this page)
     h3 Common Toolbar
     p If we need only one common toolbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="view">
             <!-- View common toolbar -->
             <div class="toolbar">...</div>
@@ -100,9 +86,7 @@ block content
             <div class="page">...</div>
           </div>
     p If we need only one common toolbar / tabbar for all views then it must be a direct child of Views element and be <b>BEFORE all views</b>. Such layout mainly used in multiple views/tabbed app layout with toolbar
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="views tabs">
             <!-- Views common toolbar / tabbar -->
             <div class="toolbar tabbar">...</div>
@@ -161,9 +145,7 @@ block content
           td true
           td Set to <code>false</code> and hidden Toolbar/Tabbar will not become visible when you scroll page to top everytime. They will become visible only at the most top scroll position, in the beginning of the page
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             toolbar: {
               hideOnPageScroll: true,
@@ -174,9 +156,7 @@ block content
     p Tabbar is a particular case of Toolbar, but it contains icons (or icons with labels) instead of plain links and inteded to be used with <a href="tabs.html">Tabs</a>.
     h3 Tabbar Layout
     p Tab bar layout is almost the same as for Toolbar, but Tab bar has additional <code><b>tabbar</b></code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="toolbar tabbar">
             <div class="toolbar-inner">
               <a href="#tab1" class="tab-link tab-link-active">
@@ -189,9 +169,7 @@ block content
             </div>
           </div>
     p In MD Theme Tabbar also located on top of the app right below the Navbar. And if you need to have Tabbar on bottom you can do it by just using addional <code><b>toolbar-bottom-md</b></code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="toolbar tabbar toolbar-bottom-md">
             <div class="toolbar-inner">
               ...
@@ -206,9 +184,7 @@ block content
           p On wide screen (tablet) all links will be centered with minimal width equal to 105px
     h3 Tabbar With Labels
     p If you need to use Tabbar icons with labels we need one more "tabbar-labels" class on Tabbar, and to put &lt;span class="tabbar-label"&gt; inside of link:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="toolbar tabbar tabbar-labels">
             <div class="toolbar-inner">
               <a href="#tab1" class="tab-link tab-link-active">
@@ -226,9 +202,7 @@ block content
     h3 Scrollable Tabbar
     p When you have a lot of links and they all don't fit into view, then it could be useful to use scrollable Tabbar. It allows to swipe/scroll through tab links.
     p All we need to make Tabbar scrollable is just to add additional <code><b>tabbar-scrollable</b></code> class to the Tabbar:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Additional "tabbar-scrollable" class -->
           <div class="toolbar tabbar tabbar-scrollable">
             <div class="toolbar-inner">
@@ -253,9 +227,7 @@ block content
       li <code><b>keep-bars-on-scroll</b></code> - to keep Navbar and Toolbar on page scroll
       li <code><b>keep-toolbar-on-scroll</b></code> - to keep Toolbar on page scroll
     p For example:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <div class="navbar">
               ...
@@ -279,9 +251,7 @@ block content
 
     p If you have common single Toolbar / Tabbar across all pages/views of your app you can hide/show Toolbar/Tabbar automatically for some pages where you don't need it.
     p To make it work all you need is to add <code><b>no-toolbar</b></code> class to loaded page (<code>&lt;div class="page no-toolbar"&gt;</code>):
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;!-- Page has additional "no-toolbar" class --&gt;
           &lt;div class="page no-toolbar"&gt;
             &lt;div class="page-content"&gt;
@@ -291,9 +261,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/toolbar-tabbar.html") Examples
       h3 Static Toolbar
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -314,9 +282,7 @@ block content
               </div>
             </div>
       h3 Fixed Toolbar
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -337,9 +303,7 @@ block content
               </div>
             </div>
       h3 Toolbar API
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -360,9 +324,7 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
@@ -374,9 +336,7 @@ block content
               app.toolbar.show('.toolbar');
             });
       h3 Hide On Scroll
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -398,9 +358,7 @@ block content
               </div>
             </div>
       h3 Tabbar
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -441,9 +399,7 @@ block content
             </div>
 
       h3 Tabbar With Labels
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                   ...
@@ -475,9 +431,7 @@ block content
               </div>
             </div>
       h3 Scrollable Tabbar
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...

@@ -15,9 +15,7 @@ block content
     p Pull to refresh is a special component that can be used to initiate the refreshing of a page’s contents.
     h2 Pull To Refresh Layout
     p Let's look on how to integrate pull to refresh to page:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <!-- Page content must have additional "ptr-content" class -->
             <div class="page-content ptr-content" data-ptr-distance="55">
@@ -89,9 +87,7 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). PTR element (<code>ptr-content</code>). Required.
     h2 Pull To Refresh Methods & Properties
     p If we created PTR manually or used <code>app.ptr.get</code> method we will PTR initialized instance with useful methods and properties:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // init ptr manually
           var ptr = app.ptr.create('.ptr-content');
 
@@ -231,9 +227,7 @@ block content
           td <span>(ptr)</span>
     .with-device
       h2(data-device-preview="../docs-demos/core/pull-to-refresh.html") Example
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page-content ptr-content">
               <div class="ptr-preloader">
                 <div class="preloader"></div>
@@ -271,9 +265,7 @@ block content
                 </ul>
               </div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

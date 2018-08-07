@@ -33,7 +33,7 @@
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>');
 
-    code = highlight(code, lang);
+    code = `<pre><code class="${lang || ''}">${highlight(code, lang)}</pre></code>`;
     return code;
   }
   // Pug YAML Data

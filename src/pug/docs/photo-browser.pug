@@ -45,9 +45,7 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Photo Browser element.
       p.method-returns Method returns Photo Browser's instance
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var photoBrowser = app.photoBrowser.create({
             photos: [
               'path/to/photo-1.jpg'
@@ -144,9 +142,7 @@ block content
           td object
           td
           td Swiper parameters. By default equals to:
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   swiper: {
                     initialSlide: 0,
                     spaceBetween: 20,
@@ -220,9 +216,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var photoBrowser = app.photoBrowser.create({
                     ...
                     on: {
@@ -234,9 +228,7 @@ block content
 
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>photoBrowser</code> property to set defaults for all photo browsers. For example:
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               photoBrowser: {
                 type: 'popup',
@@ -244,9 +236,7 @@ block content
             });
     h3 Photos Array
     p When we initialize Photo Browser we need to pass array with photos/videos in <code>photos</code> parameter. Let's look at different variations of this array:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // If we need photo browser with just photos we may pass array with string urls:
           var photos = [
               'image1.jpg',
@@ -495,9 +485,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/photo-browser.html") Examples
 
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             &lt;div class="page-content"&gt;
               &lt;div class="block-title"&gt;Light Theme&lt;/div&gt;
               &lt;div class="block row"&gt;
@@ -511,9 +499,7 @@ block content
                 &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-popup-dark"&gt;Popup&lt;/a&gt;&lt;/div&gt;
               &lt;/div&gt;
             &lt;/div&gt;
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

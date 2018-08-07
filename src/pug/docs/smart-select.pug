@@ -15,9 +15,7 @@ block content
     p Smart select allows you to easily convert your usual form selects to dynamic pages with <a href="checkboxes-radios.html">grouped radio inputs</a>. You can see such feature in many native iOS apps
     h2 Smart Select Layout
     p Smart select layout is pretty simple. It is a well known <a href="list-view.html">List View</a> link with <code>&lt;select&gt;</code> inside and additional <code><b>smart-select</b></code> class on <code>item-link</code>:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="list">
             <ul>
               <!-- Smart select item -->
@@ -49,9 +47,7 @@ block content
     h3 Custom Option Icons, Colors and Images
     p You can also specify Smart Select page' list view element custom icon, image or color. We need to use additional <code><b>data-option-icon</b></code>, <code><b>data-option-image</b></code> attributes on smart select <code>&lt;select&gt;</code> (to set default image for all options) or on <code>&lt;option&gt;</code> to set image or icon on single option.
     p For single option we may also use <code><b>data-option-color</b></code> and <code><b>data-option-class</b></code> attributes to add specific option color or css class for additional styling
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <li>
             <a href="#" class="item-link smart-select">
               <select name="fruits">
@@ -70,9 +66,7 @@ block content
 
     h3 Multiple Select And &lt;optgroup&gt;
     p We can also use multiple select and group options using <code>&lt;optgroup&gt;</code>. So if we add <code>multiple</code> attribute to our select then radio buttons on smart select page will be automatically converted to checkboxes:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <li>
             <a href="#" class="item-link smart-select">
               <!-- "multiple" attribute for multiple select-->
@@ -103,9 +97,7 @@ block content
           </li>
     h3 Multiple Select and maxlength
     p With multiple select we can also use <b>maxlength</b> attribute to limit number of possible selected items:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <li>
             <a href="#" class="item-link smart-select">
               <!-- "maxlength" attribute to limit number of possible selected items -->
@@ -136,9 +128,7 @@ block content
           </li>
     h3 Different Display Value
     p Using <code><b>data-display-as</b></code> attribute on options we can show selected value in different way:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           <li>
             <a href="#" class="item-link smart-select">
               <select name="days">
@@ -349,9 +339,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var smartSelect = app.smartSelect.create({
                     ...
                     on: {
@@ -363,9 +351,7 @@ block content
 
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>smartSelect</code> property to set defaults for all smart selects. For example:
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               smartSelect: {
                 pageTitle: 'Select Option',
@@ -374,9 +360,7 @@ block content
             });
     h2 Smart Select Methods & Properties
     p So to create Smart Select we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var smartSelect = app.smartSelect.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>smartSelect</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -522,9 +506,7 @@ block content
 
     h2 Smart Select Auto Initialization
     p If you don't need to use Smart Select API and your Smart Select is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>smart-select-init</code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <li>
             <!-- Add smart-select-init class -->
             <a href="#" class="item-link smart-select smart-select-init">
@@ -543,15 +525,11 @@ block content
             </a>
           </li>
     p In this case if you need to access created Smart Select instance you can use the <code>app.smartSelect.get</code> app method:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var smartSelect = app.smartSelect.get('.smart-select');
 
     p When using auto init you may need to pass additional parameters. In this case you may pass all additional parameters via <code>data-</code> attributes on smart select element:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <li>
             <!-- Pass parameters as kebab-case data attributes -->
             <a href="#" class="item-link smart-select smart-select-init" data-open-in="popup" data-virtual-list="true" data-page-back-link-text="Go back">
@@ -571,9 +549,7 @@ block content
           </li>
     .with-device
       h2(data-device-preview="../docs-demos/core/smart-select.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <!-- Default Setup -->
             <li>
               <a class="item-link smart-select smart-select-init">

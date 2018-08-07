@@ -24,9 +24,7 @@ block content
 
     h2 Navbar HTML Layout
     p Navbar layout is pretty simple and self explaining:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="navbar"&gt;
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;Left&lt;/div&gt;
@@ -39,9 +37,7 @@ block content
       p So if you use plain text in Title part it will have ellipsis (...) on the end when cuted. But you need to take care about it if you have some custom elements there.
     h3 Navbar With Links
     p To add links in Left or Right part you just need to add the plain <code>&lt;a&gt;</code> tag with additional <code>link</code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="navbar"&gt;
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;
@@ -55,9 +51,7 @@ block content
           &lt;/div&gt;
     h3 Multiple Links
     p Nothing extraordinary. Just add more <code>&lt;a class="link"</code> to the required part:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="navbar"&gt;
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;
@@ -72,9 +66,7 @@ block content
           &lt;/div&gt;
     h3 Links With Icons + Text
     p Here comes a little difference. In this case we need to <strong>wrap link's text with</strong> <code>&lt;span&gt;</code> element. It is required for correct spacing between icon and "word", and for animation:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="navbar"&gt;
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;
@@ -94,9 +86,7 @@ block content
           &lt;/div&gt;
     h3 Links With Icons Only
     p If need links with icons and without text we need to additional <code><b>icon-only</b></code> class to links. With this class link will have fixed size so we can't miss it with finger:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="navbar"&gt;
               &lt;div class="navbar-inner"&gt;
                   &lt;div class="left"&gt;
@@ -114,22 +104,16 @@ block content
           &lt;/div&gt;
     h3 Theme-specific Styling
     p In iOS theme Navbar has thin border on the bottom. To disable this border you need to add <code><b>no-hairline</b></code> class to navbar element:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="navbar no-hairline">...</div>
     p In MD theme Navbar has shadow. To disable this shadow you need to add <code><b>no-shadow</b></code> class to navbar element:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="navbar no-shadow">...</div>
     h2 Navbar Type
     p Now let's look where we can place our Navbar in DOM. There are several rules to place Navbar.
     h3 Static Navbar
     p Static navbar position is the probably most rarely used layout type. In this case Navbar is just part of the scrollable page content:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <!-- Scrollable page content -->
             <div class="page-content">
@@ -141,9 +125,7 @@ block content
           </div>
     h3 Fixed Navbar
     p Fixed navbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed toolbar then it must be BEFORE the toolbar:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <!-- Fixed navbar goes ALWAYS FIRST -->
             <div class="navbar">...</div>
@@ -160,9 +142,7 @@ block content
         strong Fixed Navbar must always be a direct child of a page and BEFORE the toolbar (if fixed toolbar is used on this page)
     h3 Common Navbar
     p If we need only one common navbar for all pages in View then it must be a direct child of this view and be BEFORE all pages in view:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="view">
             <!-- View common navbar -->
             <div class="navbar">...</div>
@@ -171,9 +151,7 @@ block content
             <div class="page">...</div>
           </div>
     p If we need only one common navbar / navbar for all views then it must be a direct child of Views element and be BEFORE all views.
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="views tabs">
             <!-- Views common navbar -->
             <div class="navbar">...</div>
@@ -190,9 +168,7 @@ block content
     p One of the iOS-theme awesome features is the dynamic navbar. Navbar's elements will slide and fade during pages transition and swipe back when dynamic navbar is enabled.
     p It is enabled by default when you use <code>Fixed-positioned</code> navbars, when Navbar is a direct child of the page.
     p If you want to disable it you need to pass <code>iosDynamicNavbar: false</code> for required View on its initialisation or in global <a href="app.html#app-parameters">app parameters</a> for all views. For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // Disable globally
           var app = new Framework7({
             view: {
@@ -217,9 +193,7 @@ block content
         p If you add <code><b>sliding</b></code> class to the <code>navbar-inner</code> then <b>all</b> Navbar parts will have <b>"Sliding"</b> effect
       li
         p For better look you should keep identic transition type for the same Navbar parts through different pages.
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- No additional classes, all elements will have "fade" effect on page transition -->
           <div class="navbar">
             <div class="navbar-inner">
@@ -325,9 +299,7 @@ block content
           td When enabled then it will try to position title at the center in iOS theme. Sometime (with some custom design) it may not needed. <span class="ios-only">This will have effect only in iOS theme</span>
 
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             navbar: {
               hideOnPageScroll: true,
@@ -347,9 +319,7 @@ block content
       li <code><b>keep-bars-on-scroll</b></code> - to keep Navbar and Toolbar on page scroll
       li <code><b>keep-navbar-on-scroll</b></code> - to keep Navbar on page scroll
     p For example:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <div class="navbar">
               ...
@@ -365,9 +335,7 @@ block content
 
     p If you have common single Navbar across all pages/views of your app you can hide/show Navbar automatically for some pages where you don't need it.
     p To make it work all you need is to add <code><b>no-navbar</b></code> class to loaded page (<code>&lt;div class="page no-navbar"&gt;</code>):
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;!-- Page has additional "no-navbar" class --&gt;
           &lt;div class="page no-navbar"&gt;
             &lt;div class="page-content"&gt;
@@ -377,9 +345,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/navbar.html") Examples
       h3 Static Navbar
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="page-content">
                 <!-- Static Navbar -->
@@ -402,9 +368,7 @@ block content
               </div>
             </div>
       h3 Fixed Navbar
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <!-- Fixed/Dynamic Navbar -->
               <div class="navbar">
@@ -426,9 +390,7 @@ block content
               </div>
             </div>
       h3 Navbar API
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -450,9 +412,7 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
@@ -464,9 +424,7 @@ block content
               app.navbar.show('.navbar');
             });
       h3 Hide On Scroll
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">

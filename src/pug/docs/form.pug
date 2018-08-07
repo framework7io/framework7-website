@@ -86,9 +86,7 @@ block content
             td Event will be triggered on <code>app.form.fillFromData</code> call
 
       h3 Form Data Example
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <form class="list" id="my-form">
               <ul>
                 <li>
@@ -142,9 +140,7 @@ block content
               <div class="col"><a class="button convert-form-to-data" href="#">Get Data</a></div>
               <div class="col"><a class="button fill-form-from-data" href="#">Fill Form</a></div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;
@@ -234,9 +230,7 @@ block content
               span (form, data)
             td Event will be triggered right after for data saved
       h3 Form Storage Example
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <form class="list form-store-data" id="my-form">
               <ul>
                 <li>
@@ -305,9 +299,7 @@ block content
 
     h3 Send form data on submit
     p To enable Ajax form and send data automatically on submit, we just need to add <code><b>form-ajax-submit</b></code> class to form:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;form action="send-here.html" method="GET" class="form-ajax-submit"&gt;
               ...
           &lt;/form&gt;
@@ -323,9 +315,7 @@ block content
 
     h3 Send form data on input change
     p Mostly we don't use "submit" buttons in apps, so in this cases we need to submit form data when user changes any form fields. For this case we need to use <code><b>form-ajax-submit-onchange</b></code> class:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
          &lt;form action="send-here.html" method="GET" class="form-ajax-submit-onchange"&gt;
              ...
          &lt;/form&gt;
@@ -357,9 +347,7 @@ block content
           td formajax:error
           td Form Element<span>&lt;form class="form-ajax-submit"&gt;</span>
           td Event will be triggered on Ajax request error
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
          var app = new Framework7();
 
          var $$ = Dom7;
@@ -399,9 +387,7 @@ block content
           td app
           td <span>(formEl, data, xhr)</span>
           td Event will be triggered on Ajax request error
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7();
 
           app.on('formAjaxSuccess', function (formEl, data, xhr) {

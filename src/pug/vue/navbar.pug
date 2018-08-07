@@ -156,9 +156,7 @@ block content
       li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="navbar-inner"&gt;</code> element
       li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="navbar-inner"&gt;</code> element
       li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="navbar-inner"&gt;</code> element
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-navbar title="My App">
             <div slot="before-inner">Before Inner</div>
             <div slot="after-inner">After Inner</div>
@@ -178,27 +176,19 @@ block content
 
     h2 Examples
     h4 Minimal layout
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-navbar title="My App"></f7-navbar>
 
     h4 Minimal layout with back link
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-navbar title="My App" back-link="Back"></f7-navbar>
 
     h4 Without "sliding" transition effect (affects iOS theme only)
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-navbar title="My App" back-link="Back" :sliding="false"></f7-navbar>
 
     h4 With additional right link to open right panel
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-navbar title="My App" back-link="Back">
             <f7-nav-right>
               <f7-link icon="icon-bars" panel-open="right"></f7-link>
@@ -206,9 +196,7 @@ block content
           </f7-navbar>
 
     h4 All three parts
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-navbar>
             <f7-nav-left back-link="Back"></f7-nav-left>
             <f7-nav-title>My App</f7-nav-title>
@@ -218,9 +206,7 @@ block content
           </f7-navbar>
 
     h4 Full custom layout
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-navbar>
             <f7-nav-left>
               <f7-link>Left Link</f7-link>

@@ -11,9 +11,7 @@ block content
     +improveDocsLink
     h1 Fast Clicks
     p Fast clicks is a built-in library that removes click delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script by using <code>touch.fastClicks:false</code> <a href="app.html#app-parameters">App parameter</a>:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             touch: {
               // Disable fast clicks
@@ -22,8 +20,6 @@ block content
           });
     h2 no-fastclick Class
     p If you want to disable Fast Clicks on some specific element then just add <code>no-fastclick</code> class to the required element
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;a href="#"&gt;Fast Click&lt;/a&gt;
           &lt;a href="#" class="no-fastclick"&gt;Usual Click&lt;/a&gt;

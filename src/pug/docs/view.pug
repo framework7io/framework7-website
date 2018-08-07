@@ -13,9 +13,7 @@ block content
     p <strong>View</strong> (&lt;div class="view"&gt;) - is a separate visual part of the app with its own settings, navigation and history. So it is some kind of app in app. Such kind of functionality allows you easily manipulate each part of your app.
     h2 View Layout
     p Let's look at view HTML structure:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <body>
             <!-- app root -->
             <div id="app">
@@ -40,9 +38,7 @@ block content
     p In case we have the app with multiple views in app root, so called "Tabbed Views" app, we must wrap our views with additional <code>&lt;div class="views"&gt;</code> element.
     .important-note
       p Only one "Views" element is allowed!
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <body>
             <!-- app root -->
             <div id="app">
@@ -390,9 +386,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var view = app.views.create('.view-main', {
                     on: {
                       pageInit: function () {
@@ -402,9 +396,7 @@ block content
                   })
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>view</code> property to set defaults for all views. For example:
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               view: {
                 iosDynamicNavbar: false,
@@ -413,9 +405,7 @@ block content
             });
     h2 View Methods & Properties
     p So to create View we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var view = app.views.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>view</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -553,9 +543,7 @@ block content
         tr
           td router.refreshPage()
           td Refresh/reload current page. Actually same as:
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   router.navigate(router.currentRoute.url, {
                     reloadCurrent: true,
                     ignoreCache: true,
@@ -583,9 +571,7 @@ block content
           td Fire event on instance
     h2 Linking Between Pages & Views
     p It may be not very comfortable to use router methods all the time to navigate between pages. In many cases we can just use <a href="link.html">links</a> to navigate between pages. And we can pass additional navigation parameters using <code>data-</code> attributes:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- same as router.navigate('/somepage/'); -->
           <a href="/somepage/">Some Page</a>
 
@@ -602,9 +588,7 @@ block content
       li If link is in inside of not initialized view then it will load page in main view
       li If link is in inside of initialized view then it will load page in this view (if other view is not specified in view's <code>linksView</code> parameter)
     p But if we need to load page in another view we can specify this view's CSS selector in link's <code>data-view</code> attribute
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- left view -->
           <div class="view view-init view-left" data-name="left">
             ...
@@ -783,9 +767,7 @@ block content
               li <code>modal</code> - modal instance
     h2 View Auto Initialization
     p If you don't need to use View API and your View is inside of DOM on a moment of app initialization then it can be auto initialized with just adding additional <code>view-init</code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Add view-init class -->
           <div class="view view-init">
             ...
@@ -793,9 +775,7 @@ block content
     p But what about View parameters. In this case we may pass them in <code>data-</code> attributes.
     .important-note
       p Parameters that used in camelCase, for example <code>pushState</code>, in data- attributes should be used as kebab-case as <b>data-push-state</b>
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;!-- view parameters in data- attributes --&gt;
           &lt;div class="view view-init" data-url="/" data-name="home" data-push-state="true"&gt;
             ...
@@ -804,9 +784,7 @@ block content
     ul
       li In case if it is main view, we may use <code>app.views.main</code> to get main view instance
       li Otherwise, we can access it by passed <code>name</code> parameter like <code>app.views.home</code>
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- main view -->
           <div class="view view-main view-init">
             ...
@@ -816,25 +794,19 @@ block content
           <div class="view view-init" data-name="home">
             ...
           </div>
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var mainView = app.views.main;
           var homeView = app.views.home;
     h2 Initial Page Route
     p Initial page can also be loaded correctly using <a href="routes.html">Routes</a>. In app layout we must leave View blank:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <body>
             <div id="app">
               <div class="view view-main"></div>
             </div>
           </body>
     p In routes we may specify "home" route, for example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes: [
             {
               path: '/',
@@ -843,9 +815,7 @@ block content
             ...
           ]
     p And when we init the View, we need to specify it is default URL:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           app.views.create('.view-main', {
             url: '/'
           })

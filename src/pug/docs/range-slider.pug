@@ -15,9 +15,7 @@ block content
     h2 Range Slider Layout
     h3 Single Range
     p Single range slider layout is pretty simple:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Range Slider element -->
           <div class="range-slider">
             <!-- range input -->
@@ -25,16 +23,12 @@ block content
           </div>
     h3 Dual Range
     p Dual range slider is more simpler as it doesn't require input element because input:range doesn't support dual range:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Range Slider element -->
           <div class="range-slider"></div>
     h2 Range Slider Colors
     p Range Slider supports all <a href="color-themes.html">default colors</a>. So to change its color just add color-[color] class to range slider element.
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- red range -->
           <div class="range-slider color-red">...</div>
 
@@ -150,9 +144,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var range = app.range.create({
                     el: '.range-slider'
                     on: {
@@ -164,9 +156,7 @@ block content
 
     h2 Range Slider Methods & Properties
     p So to create Range Slider we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var range = app.range.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>range</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -300,17 +290,13 @@ block content
           td app
     h2 Range Slider Auto Initialization
     p If you don't need to use Range Slider API and your Range Slider is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>range-slider-init</code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Add range-slider-init class -->
           <div class="range-slider range-slider-init">
             <input type="range" min="0" max="100" step="1" value="10">
           </div>
     p In this case if you need to access created Range Slider instance you can use the <code>app.range.get</code> app method:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var range = app.range.get('.range-slider');
 
           if (range.value > 50) {
@@ -320,18 +306,14 @@ block content
     ul
       li
         p In you case you use single-range slider and you have input:range inside, then <code>step</code>, <code>min</code>, <code>max</code>, <code>value</code> parameters can be set from same input attributes:
-        pre
-          code.html
-            :code(lang="html")
+        :code(lang="html")
               <!-- min, max, step, value parameters will be set for same input attributes -->
               <div class="range-slider range-slider-init">
                 <input type="range" min="0" max="100" step="1" value="10">
               </div>
       li
         p Otherwise, if you don't have input:range inside or you use dual range input you can set all available parameters via <code>data-</code> attributes on range slider element.
-        pre
-          code.html
-            :code(lang="html")
+        :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div
                 class="range-slider range-slider-init"
@@ -342,9 +324,7 @@ block content
                 data-value="50"
               ></div>
         p In case you have dual range slider, then you need to pass to values using <code>data-value-left</code> and <code>data-value-right</code> attributes:
-        pre
-          code.html
-            :code(lang="html")
+        :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div
                 class="range-slider range-slider-init"
@@ -359,9 +339,7 @@ block content
 
     .with-device
       h2(data-device-preview="../docs-demos/core/range-slider.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Volume</div>
             <div class="list simple-list">
               <ul>
@@ -384,9 +362,7 @@ block content
               </ul>
             </div>
 
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Brightness</div>
             <div class="list simple-list">
               <ul>
@@ -408,9 +384,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title display-flex justify-content-space-between">Price Filter <span class="price-value">$200 - $400</span></div>
             <div class="list simple-list">
               <ul>
@@ -441,9 +415,7 @@ block content
               </ul>
             </div>
       p Handle price change:
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             $$('#price-filter').on('range:change', function (e, range) {
               $$('.price-value').text('$'+(range.value[0])+' - $'+(range.value[1]));
             });

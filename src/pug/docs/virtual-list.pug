@@ -14,9 +14,7 @@ block content
     p Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 components which work with lists such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.
     h2 Virtual List Layout
     p Virtual List HTML layout is pretty simple, it is almost the same as for usual <a href="list-view.html">List View</a> with only difference: you need to leave it empty:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;!-- Virtual List --&gt;
           &lt;div class="list virtual-list"&gt;
             &lt;!-- keep it empty --&gt;
@@ -166,9 +164,7 @@ block content
           td Search function that will be used by <a href="searchbar.html">Searchbar</a>, it receives search query and array with all items. You need to loop through items and return array with indexes of matched items
     h2 Virtual List Methods & Properties
     p So to create Virtual List we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var virtualList = app.virtualList.create({ /* parameters */ })
     p After we initialize Virtual List we have its initialized instance in variable (like <code>virtualList</code> variable in example above) with helpful methods and properties:
     table.methods-table
@@ -311,9 +307,7 @@ block content
 
     .with-device
       h2(data-device-preview="../docs-demos/core/virtual-list.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner sliding">
@@ -342,9 +336,7 @@ block content
                 <div class="list virtual-list media-list searchbar-found"></div>
               </div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             // Dummy items array

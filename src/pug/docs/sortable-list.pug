@@ -15,9 +15,7 @@ block content
     p Sortable lists is an extension of <a href="list-view.html">List View</a> that allows you to sort list view elements.
     h2 Sortable List Layout
     p Let's look at layout structure of sortable lists in your list views:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;!-- Additional "sortable" class on list block --&gt;
           &lt;div class="list sortable"&gt;
               &lt;li&gt;
@@ -75,9 +73,7 @@ block content
           td true
           td When enabled then it will move (reorder) HTML elements according to new sortable order. It is useful to disable it if you use other library for DOM manipulation, like React or Vue
     p To change these parameters we need to pass them on app init under <code>sortable</code> property, for example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             sortable: {
               moveElements: false
@@ -145,9 +141,7 @@ block content
           p If you have more than one sortable list in app, you need to specify appropriate sortable list via additional <code><b>data-sortable=".sortable"</b></code> attribute on this HTML element with CSS selector of required sortable list
     .with-device
       h2(data-device-preview="../docs-demos/core/sortable.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner">
@@ -206,9 +200,7 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             app.on('sortableSort', function (listEl, indexes) {

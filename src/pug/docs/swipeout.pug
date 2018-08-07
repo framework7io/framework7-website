@@ -15,9 +15,7 @@ block content
     p Swipeout is an extension of <a href="list-view.html">list view</a> that allows you to swipe over list elements to reveal hidden menu with  available actions, like swipe-to-delete.
     h2 Swipeout Layout
     p Let's look on layout structure of swipeout element in your list views:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="list">
             <ul>
               <!-- Additional "swipeout" class on li -->
@@ -56,9 +54,7 @@ block content
     .important-note
       p Note that <code><strong>swipeout-content</strong></code> and <code><strong>swipeout-actions-left/right</strong></code> should be direct children of <strong>&lt;li&gt;</strong>
     p If you have only "item-content" you can simplify layout by adding "item-content" class to "swipeout-content":
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <li class="swipeout">
             <div class="swipeout-content item-content">
               <div class="item-media">...</div>
@@ -70,9 +66,7 @@ block content
             </div>
           </li>
     p If you use <a href="list-view.html#link-item">link items</a> the layout will be following:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;li class="swipeout"&gt;
             &lt;div class="swipeout-content"&gt;
               &lt;a href="#" class="item-content item-link"&gt;
@@ -87,9 +81,7 @@ block content
           &lt;/li&gt;
     h2 Swipe To Delete
     p Framework7 supports this frequently used feature from the box without single line of JavaScript. All you need is to add <code><b>swipeout-delete</b></code> class to swipeout actions buttons:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;li class="swipeout"&gt;
             &lt;div class="swipeout-content item-content"&gt;
               &lt;div class="item-media"&gt;...&lt;/div&gt;
@@ -101,9 +93,7 @@ block content
             &lt;/div&gt;
           &lt;/li&gt;
     p It is also possible to call Confirm modal when user clicks on "Delete" button, and element will be removed only after confirmation. To make delete on confirmation you need to add additional <code><b>data-confirm</b></code> and <code><b>data-confirm-title</b></code> (optional) attributes to Delete link:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;li class="swipeout"&gt;
             &lt;div class="swipeout-content item-content"&gt;
               &lt;div class="item-media"&gt;...&lt;/div&gt;
@@ -116,9 +106,7 @@ block content
           &lt;/li&gt;
     h2 Overswipe
     p Swipeouts also support "overswipe" actions that will be triggered automatically if you swipe actions too much. In this case we need to add <code><b>swipeout-overswipe</b></code> class to required actions button:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;li class="swipeout"&gt;
             &lt;div class="swipeout-content item-content"&gt;
               &lt;div class="item-media"&gt;...&lt;/div&gt;
@@ -138,9 +126,7 @@ block content
           p With overswipe, script will automatically trigger "click" event on overswipe button, so you need to add appropriate event listener to this button
         li
           p Overswipe button will have additonal <code><b>swipeout-overswipe-active</b></code> class during overswipe which you can use for additional styling of such state
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <li class="swipeout">
             <div class="swipeout-content">
               <a href="#" class="item-content item-link">
@@ -228,9 +214,7 @@ block content
           td 0
           td Delay in ms to remove swipeout item if <code>removeElementsWithTimeout</code> is enabled.
     p To change these parameters we need to pass them on app init under <code>swipeout</code> property, for example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             swipeout: {
               noFollow: true,
@@ -323,15 +307,11 @@ block content
           td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
     .with-device
       h2(data-device-preview="../docs-demos/core/swipeout.html") Examples
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
             var $$ = Dom7;
       h4 Swipe to delete with confirm modal
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout">
@@ -371,9 +351,7 @@ block content
               </ul>
             </div>
       h4 Swipe to delete without confirm
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout">
@@ -406,9 +384,7 @@ block content
               </ul>
             </div>
       h4 Swipe for actions
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout">
@@ -454,9 +430,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var moreActions = app.actions.create({
               buttons: [
                 [
@@ -483,9 +457,7 @@ block content
               moreActions.open();
             });
       h4 With callback on remove
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout deleted-callback">
@@ -517,16 +489,12 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             $$('.deleted-callback').on('swipeout:deleted', function () {
               app.dialog.alert('Thanks, item removed!');
             });
       h4 With actions on left side (swipe to right)
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="swipeout">
@@ -559,9 +527,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             $$('.alert-reply').on('click', function () {
               app.dialog.alert('Reply');
             });
@@ -569,9 +535,7 @@ block content
               app.dialog.alert('Forward');
             });
       h4 On both sides with overswipes
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list media-list">
               <ul>
                 <li class="swipeout">

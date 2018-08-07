@@ -12,9 +12,7 @@ block content
     ul.docs-index
     p Framework7 comes with Device detection library with which contains useful information about device and platform.
     p It is avaialable as a <code><b>device</b></code> property of Framework7 class (<code>Framework7.device</code>) and same property on initialized app instance (<code>app.device</code>):
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // If we need it in place where we don't have access to app instance or before we init the app
           if (Framework7.device.ios) {
             console.log('It is iOS device');
@@ -96,33 +94,23 @@ block content
     h2 Device Related Classes
     p Also this Device detecting library adds additional classes on <code>&lt;html&gt;</code> element which can help you with different CSS styles for different OS and platforms.
     p So if you open app with iOS 7.1 device you may have the following classes:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;html class="ios device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-pixel-ratio-1"&gt;
           ...
     p If you open app with iOS 7.1 device with retina screen and your app running in full screen mode:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;html class="device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-retina device-pixel-ratio-2 with-statusbar"&gt;
           ...
     p If you open app on iPhone X and your app running in full screen mode:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;html class="device-ios device-iphone-x device-ios-11 device-ios-11-0 device-ios-gt-6 device-ios-gt-7 device-ios-gt-8 device-ios-gt-9 device-ios-gt-10 device-retina device-pixel-ratio-3 with-statusbar"&gt;
           ...
     p If you open app with Android 4.4 device you will have the following classes:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;html class="device-android device-android-4 device-android-4-4"&gt;
           ...
     p In other words classes calculated by the following rule:
-    pre
-      code.nohighlight
-        :code
+    :code
           device-[os]
           device-[os major version]
           device-[os full version]

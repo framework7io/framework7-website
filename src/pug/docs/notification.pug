@@ -141,9 +141,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var notification = app.notification.create({
                     title: 'John Doe'
                     text: 'Hello, how are you?',
@@ -155,9 +153,7 @@ block content
                   })
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>notification</code> property to set defaults for all notifications. For example:
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               notification: {
                 title: 'My App',
@@ -166,9 +162,7 @@ block content
             });
     h2 Notification Methods & Properties
     p So to create Notification we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var notification = app.notification.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>notification</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -303,9 +297,7 @@ block content
           td app
     .with-device
       h2(data-device-preview="../docs-demos/core/notification.html") Examples
-      pre
-        code
-          :code(lang="html")
+      :code(lang="html")
             <div class="block">
               <p>
                 <a class="button button-raised open-full" href="#">Full-layout notification</a>
@@ -320,9 +312,7 @@ block content
                 <a class="button button-raised open-callback-on-close" href="#">Callback on close</a>
               </p>
             </div>
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

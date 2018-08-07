@@ -14,9 +14,7 @@ block content
     ul.docs-index
     h2 Stepper Layout
     p Single stepper layout is pretty simple:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Stepper element -->
           <div class="stepper">
             <!-- Stepper minus/decrement button -->
@@ -30,9 +28,7 @@ block content
             <div class="stepper-button-plus"></div>
           </div>
     p If you don't need an input element but still need to keep the value:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Stepper element -->
           <div class="stepper">
             <div class="stepper-button-minus"></div>
@@ -41,9 +37,7 @@ block content
             <div class="stepper-button-plus"></div>
           </div>
     p And if you don't need to display value between stepper buttons:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Stepper element -->
           <div class="stepper">
             <div class="stepper-button-minus"></div>
@@ -232,9 +226,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var stepper = app.stepper.create({
                     el: '.stepper'
                     on: {
@@ -246,9 +238,7 @@ block content
 
     h2 Stepper Methods & Properties
     p So to create Stepper we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var stepper = app.stepper.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>stepper</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -375,9 +365,7 @@ block content
           td app
     h2 Stepper Auto Initialization
     p If you don't need to use Stepper API and your Stepper is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>stepper-init</code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Add stepper-init class -->
           <div class="stepper stepper-init">
             <div class="stepper-button-minus"></div>
@@ -387,9 +375,7 @@ block content
             <div class="stepper-button-plus"></div>
           </div>
     p In this case if you need to access created Stepper instance you can use the <code>app.stepper.get</code> app method:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var stepper = app.stepper.get('.stepper');
 
           if (stepper.value > 50) {
@@ -399,9 +385,7 @@ block content
     ul
       li
         p If you use stepper with input then <code>step</code>, <code>min</code>, <code>max</code>, <code>value</code> parameters can be set from same input attributes:
-        pre
-          code.html
-            :code(lang="html")
+        :code(lang="html")
               <!-- min, max, step, value parameters will be set for same input attributes -->
               <div class="stepper stepper-init">
                 <div class="stepper-button-minus"></div>
@@ -412,9 +396,7 @@ block content
               </div>
       li
         p Otherwise, if you don't have input inside, you can set all available parameters via <code>data-</code> attributes on stepper element.
-        pre
-          code.html
-            :code(lang="html")
+        :code(lang="html")
               <!-- parameters set via data- attributes -->
               <div
                 class="stepper stepper-init"
@@ -431,9 +413,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/stepper.html") Examples
       h4 Shape and size
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -575,9 +555,7 @@ block content
             </div>
 
       h4 Raised (MD-theme only)
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -718,9 +696,7 @@ block content
               </div>
             </div>
       h4 Colors
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -807,9 +783,7 @@ block content
               </div>
             </div>
       h4 Without input element
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -829,9 +803,7 @@ block content
               </div>
             </div>
       h4 Custom min, max and step
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -853,9 +825,7 @@ block content
               </div>
             </div>
       h4 Autorepeat (Tap & hold)
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -883,9 +853,7 @@ block content
 
       h4 Wraps
       p In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">
@@ -900,9 +868,7 @@ block content
               </div>
             </div>
       h4 Custom value element
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="item-content">
@@ -930,9 +896,7 @@ block content
               </ul>
             </div>
       h4 Custom value format
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="list">
               <ul>
                 <li class="item-content">
@@ -953,9 +917,7 @@ block content
             </div>
       h4 Manual input
       p It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block block-strong text-align-center">
               <div class="row">
                 <div class="col">

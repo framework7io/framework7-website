@@ -68,9 +68,7 @@ block content
     ul
       li <code><b>before-wrapper</b></code> - element will be inserted right before <code>&lt;div class="swiper-wrapper"&gt;</code> element
       li <code><b>after-wrapper</b></code> - element will be inserted right after <code>&lt;div class="swiper-wrapper"&gt;</code> element
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-swiper>
             <div slot="before-wrapper">Before Wrapper</div>
             <div slot="after-wrapper">After Wrapper</div>
@@ -91,18 +89,14 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/vue/swiper.html") Examples
       h4 Minimal layout
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <f7-swiper>
               <f7-swiper-slide>Slide 1</f7-swiper-slide>
               <f7-swiper-slide>Slide 2</f7-swiper-slide>
               <f7-swiper-slide>Slide 3</f7-swiper-slide>
             </f7-swiper>
       h4 With all controls
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <f7-swiper pagination navigation scrollbar>
               <f7-swiper-slide>Slide 1</f7-swiper-slide>
               <f7-swiper-slide>Slide 2</f7-swiper-slide>
@@ -111,9 +105,7 @@ block content
 
       h4 With additional parameters
       p You can pass any additional <a href="http://idangero.us/swiper/api" target="_blank">Swiper API</a> parameters using <code>params</code> property:
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <f7-swiper navigation :params="{speed:500, slidesPerView: 3, spaceBetween: 20}">
               <f7-swiper-slide>Slide 1</f7-swiper-slide>
               <f7-swiper-slide>Slide 2</f7-swiper-slide>

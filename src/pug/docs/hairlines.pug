@@ -16,16 +16,12 @@ block content
       li "bottom" and "right" hairlines are made using <code>:after</code> pseudo elements
       li "left" and "top" hairlines are made using <code>:before</code> pseudo elements
     p So, for example, if you want to change navbar's bottom hairline color, you need to change <b>background-color</b> of <code>:after</code> element:
-    pre
-      code
-        :code(lang="css")
+    :code(lang="css")
           .navbar:after {
             background-color: red;
           }
     p To remove bottom hairline on navbar and top hairline on toolbar:
-    pre
-      code
-        :code(lang="css")
+    :code(lang="css")
           .navbar:after {
             display:none;
           }
@@ -36,9 +32,7 @@ block content
     h2 no-hairline Class
     p This helper class can be used to remove hairline. Currently it is supported on Navbar, Toolbar, Subnavbar, Searchbar, Card and its elements (card header, footer).
     P To remove hairline from navbar:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           &lt;div class="navbar no-hairline"&gt;
               ...
           &lt;/div&gt;
@@ -51,9 +45,7 @@ block content
       li <code>no-hairlines-between-md</code> does the same but only for MD theme.
       li <code>no-hairlines-between-ios</code> does the same but only for MD theme.
 
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           <!-- remove outer hairlines -->
           <div class="list no-hairlines">
             ...

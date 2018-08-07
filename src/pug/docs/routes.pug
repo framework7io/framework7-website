@@ -12,9 +12,7 @@ block content
     ul.docs-index
     h2 Define Routes
     p First of all, when we init the Framework7 app we should pass default routes using <code>routes</code> array parameter:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             routes: [
               {
@@ -57,9 +55,7 @@ block content
           });
     p Routes defined on app init are default routes, they will be available for any View/Router in the app.
     p If you have a multi-view/router app and you want to have some View/Router to have <b>own strict routes</b> and don't want default routes be available in this <a href="view.html">View</a>, then you may specify the same <code>routes</code> parameter on View init:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var view1 = app.views.create('.view-1', {
             routes: [
               {
@@ -73,9 +69,7 @@ block content
             ],
           });
     p If you have a multi-view/router app and you want to have some View/Router to have <b>additional routes</b> and don't want these additional routes are available in other Views, then you may specify the <code>routesAdd</code> parameter on View init:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // This view will support all global routes + own additional routes
           var view2 = app.views.create('.view-2', {
             // These routes are only available in this view
@@ -134,9 +128,7 @@ block content
           td string
           td Load page content via Ajax.
             p Also supports dynamic route params from <a href="#route-path">route path</a> using <code>{{paramName}}</code> expression, e.g.
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   {
                     path: '/users/:userId/posts/:postId',
                     url: 'http://myapp.com/posts/{{userId}}/{{postId}}'
@@ -232,9 +224,7 @@ block content
             | array
           td Function (or array of functions) that will be executed before route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
     p Here is an example for most of the possible options:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes: [
             // Load via Ajax
             {
@@ -322,9 +312,7 @@ block content
     p As stated above, the route's <code>path</code> property means the path/url that will be displayed in browser window address bar (if <code>pushState</code> enabled) when the following route will be loaded either by api or clicking on a link with same path.
     p There is also support for dynamic paths. So if you have the following path in your route <code>/blog/users/:userId/posts/:postId/</code> and click the link with the with the <code>/blog/users/12/posts/25</code> href then on loaded page we access <code>route.params</code> object containing <code>{ userId: 12, postId: 25 }</code>
     p Route path matching is handled by <a href="https://github.com/pillarjs/path-to-regexp" target="_blank">Path To Regexp</a> library, so everything what is supported there is supported in Framework7 as well. For example, if you want to add default route which match all paths, we can use regular expression like:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // Default route, match to all pages (e.g. 404 page)
           {
             path: '(.*)',
@@ -390,9 +378,7 @@ block content
       p
         b Note that until you call <code>resolve</code> or <code>reject</code> in async method, routing will be blocked!
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             {
               path: '/foo/',
@@ -407,9 +393,7 @@ block content
           ]
     h2 Route Events
     p It is possible to add all page events inside of route for this page using <code>on</code> route property. For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             routes: [
               // ...
@@ -439,9 +423,7 @@ block content
       p Also, context of such event handler (<code>this</code>) will point to related <a href="view.html#router-api-methods-properties">Router instance</a>.
     h2 Nested Routes
     p It is possible to have nested routes (routes in routes) as well:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             {
               path: '/faq/',
@@ -464,9 +446,7 @@ block content
             }
           ];
     p What does it mean? To get better understanding, actually (under the hood) such routes will be merged into the following ones:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             {
               path: '/faq/',
@@ -505,9 +485,7 @@ block content
       li Third, with enabled Push State, the same tab will be opened when you navigate back and forward in history.
       li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     p First of all we need to specify tabs routes in app routes. Lets assume we have a page with routable tabs on /tabs/ route:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             {
               path: '/about-me/',
@@ -544,9 +522,7 @@ block content
             }
           ]
     p On the <code>/about-me/</code> page we may have the following structure for example:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <div class="navbar">
               <div class="navbar-inner">
@@ -576,9 +552,7 @@ block content
       li it provides opportunity to open modals by usual links instead of so called special links or API,
       li with enabled Push State, the same modal will be opened when you refresh browser, navigate back and forward in history,
       li with routable modals you can load modal itself and its content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             ...
             // Creates popup from passed HTML string
@@ -659,9 +633,7 @@ block content
 
     h2 Route Before Enter/Leave
     p <code>beforeEnter</code> and <code>beforeLeave</code> route hooks can be very useful if you need to do additional checks, execute additional actions or load/send something before route load (enter) and unload (leave). It can be single method or array of methods to be executed. For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             {
               path: 'profile',
@@ -699,9 +671,7 @@ block content
             }
           ]
     p And of course there are multiple hooks are supported when passed as array of functions:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           function checkAuth(to, from, resolve, reject) {
             if (/* some condition to check user is logged in */) {
               resolve();
@@ -736,9 +706,7 @@ block content
     h2 Redirect & Alias
     h3 Alias
     p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             {
               path: '/foo/',
@@ -761,9 +729,7 @@ block content
       li if we pass <code>redirect</code> as a <code>string</code>, we must pass here direct redirect url
       li if we pass <code>redirect</code> as a <code>function</code>, we need to call function's resolve parameter with redirect url
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           routes = [
             {
               path: '/foo/',

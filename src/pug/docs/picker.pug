@@ -53,9 +53,7 @@ block content
           |  - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector). Picker element to close.
       p.method-returns Method returns Picker's instance
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var picker = app.picker.create({
             input: '#picker-input',
             cols: [
@@ -196,9 +194,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var picker = app.picker.create({
                     ...
                     on: {
@@ -209,9 +205,7 @@ block content
                   })
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>picker</code> property to set defaults for all pickers. For example:
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               picker: {
                 rotateEffect: true,
@@ -353,10 +347,9 @@ block content
           td Fire event on instance
     h3 Column Methods & Properties
     p Each column in <code>picker.cols</code> array also has its own useful methods and properties.
-    pre
-      code
-        | //Get first column
-        | var col = picker.cols[0];
+    :code(lang="js")
+      //Get first column
+      var col = picker.cols[0];
 
     table.methods-table
       tbody
@@ -490,9 +483,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/picker.html") Examples
       h4 Picker With Single Value
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Picker with single value</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -507,9 +498,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var pickerDevice = app.picker.create({
               inputEl: '#demo-picker-device',
               cols: [
@@ -521,9 +510,7 @@ block content
             });
 
       h4 Two Values and 3D-Rotate Effect
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">2 values and 3d-rotate effect</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -538,9 +525,7 @@ block content
                 </li>
               </ul>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var pickerDescribe = app.picker.create({
               inputEl: '#demo-picker-describe',
                 rotateEffect: true,
@@ -556,9 +541,7 @@ block content
             });
 
       h4 Dependent Values
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Dependent values</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -574,9 +557,7 @@ block content
               </ul>
             </div>
 
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var carVendors = {
               Japanese : ['Honda', 'Lexus', 'Mazda', 'Nissan', 'Toyota'],
               German : ['Audi', 'BMW', 'Mercedes', 'Volkswagen', 'Volvo'],
@@ -606,9 +587,7 @@ block content
             });
 
       h4 Custom toolbar
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Custom toolbar</div>
             <div class="list no-hairlines-md">
               <ul>
@@ -624,9 +603,7 @@ block content
               </ul>
             </div>
 
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var pickerCustomToolbar = app.picker.create({
               inputEl: '#demo-picker-custom-toolbar',
               rotateEffect: true,
@@ -673,9 +650,7 @@ block content
             });
 
       h4 Inline Picker / Date-time
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Inline Picker / Date-time</div>
             <div class="list no-margin">
               <ul>
@@ -694,9 +669,7 @@ block content
               <div id="demo-picker-date-container"></div>
             </div>
 
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var today = new Date();
             var pickerInline = app.picker.create({
               containerEl: '#demo-picker-date-container',

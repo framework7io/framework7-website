@@ -15,9 +15,7 @@ block content
     p List Index allows to access a particular section of the list view instantly without scrolling through each section.
     h2 List Index Layout
     p Single List Index layout is pretty simple:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <div class="navbar">...</div>
 
@@ -108,9 +106,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var listIndex = app.listIndex.create({
                     el: '.list-index'
                     on: {
@@ -122,9 +118,7 @@ block content
 
     h2 List Index Methods & Properties
     p So to create List Index we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var listIndex = app.listIndex.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>listIndex</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -246,24 +240,18 @@ block content
           td app
     h2 List Index Auto Initialization
     p If you don't need to use List Index API and your List Index is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>list-index-init</code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Add list-index-init class -->
           <div class="list-index list-index-init"></div>
 
     p In this case if you need to access created List Index instance you can use the <code>app.listIndex.get</code> app method:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var listIndex = app.listIndex.get('.list-index');
 
           var indexes = listIndex.indexes;
           // do something with indexes
     p When using auto init you may need to pass additional parameters. you can set all available parameters via <code>data-</code> attributes on list index element:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             ...
 
@@ -283,9 +271,7 @@ block content
 
     .with-device
       h2(data-device-preview="../docs-demos/core/list-index.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 ...
@@ -326,9 +312,7 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var listIndex = app.listIndex.create({

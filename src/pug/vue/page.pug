@@ -233,9 +233,7 @@ block content
     ul
       li <code><b>default</b></code> - element will be inserted as a child of  "page-content", if <code>page-content</code> prop is enabled (by default)
       li <code><b>fixed</b></code> - element will be inserted as a direct child of "page" right before "page-content"
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <f7-page>
             <div slot="fixed">Fixed element</div>
             <p>Page content goes here</p>
@@ -252,9 +250,7 @@ block content
     .with-device
       h2 Examples
       h3(data-device-preview="../docs-demos/vue/infinite-scroll.html") Infinite Scroll
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <template>
               <f7-page
                 infinite
@@ -303,9 +299,7 @@ block content
               };
             </script>
       h3(data-device-preview="../docs-demos/vue/pull-to-refresh.html") Pull To Refresh
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <template>
               <f7-page ptr @ptr:refresh="loadMore">
                 <f7-navbar title="Pull To Refresh"></f7-navbar>

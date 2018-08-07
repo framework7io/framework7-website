@@ -15,9 +15,7 @@ block content
     p After we have our <a href="app-layout.html">app layout</a> now we need to mount React components and initialize the app. You can read about all possible Framework7 initialization parameters in appropriate <a href="../docs/app.html#app-parameters">Framework7 App Parameters</a> section.
 
     p We have the following HTML structure in our index file:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- index.html -->
 
           <!DOCTYPE html>
@@ -33,9 +31,7 @@ block content
             </body>
           </html>
     p In addition, if you're using Create React App, Webpack or Browserify, you might typically have a root-level app.js or index.js file that mounts your root app component:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // app.js
 
           // Import React
@@ -62,9 +58,7 @@ block content
             document.getElementById('app')
           )
     p Your root App.jsx component will typically have a top-level Framework7App component. This component is used to configure your app:
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           // App.jsx
 
           import { App, View, Page, Navbar, Toolbar, Link } from 'framework7-react';

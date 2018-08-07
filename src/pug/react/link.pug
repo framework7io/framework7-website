@@ -117,33 +117,23 @@ block content
 
     h2 Examples
     h4 Navigation Link
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Link href="/about/">About</Link>
 
     h4 Back Navigation Link
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Link back>Back</Link>
 
     h4 With Router Parameters
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Link href="/about/" animate={false} ignoreCache={true}>About</Link>
 
     h4 External Link
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Link href="http://google.com" external>Google</Link>
 
     h4 Tab Link
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           {/* Tabs  */}
           <Tabs>
             <Tab id="tab-1" tabActive>Tab 1</Tab>
@@ -154,9 +144,7 @@ block content
           <Link tabLink="#tab-2">Show Tab 2</Link>
 
     h4 Routable Tabs
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           {/* Tabs  */}
           <Tabs>
             <Tab id="tab-1"></Tab>
@@ -167,21 +155,15 @@ block content
           <Link tabLink routeTabId="tab-2" href="/tabs/tab-2/">Show Tab 2</Link>
 
     h4 Open And Close Panel
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Link panelOpen="left">Open Left Panel</Link>
           <Link panelClose>Close Panel</Link>
 
     h4 Open and Close Popup
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Link popupOpen="#my-popup">Open Popup</Link>
           <Link popupClose="#my-popup">Close Popup</Link>
 
     h4 With Icon & Color
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Link iconF7="home" text="Home" color="red"></Link>

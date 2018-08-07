@@ -14,9 +14,7 @@ block content
     ul.docs-index
     p Page is one of the main components (containers) used to display app content.
     h2 Page Layout
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page" data-name="home">
             <div class="page-content">
               ... scrollable page content goes here ...
@@ -68,9 +66,7 @@ block content
           td Page Element<span>&lt;div class="page"&gt;</span>
           td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
     p Lets see how we can use these events. There are two ways to add page event handlers:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // Option 1. Using one 'page:init' handler for all pages
           $$(document).on('page:init', function (e) {
             // Do something here when page loaded and initialized
@@ -107,18 +103,14 @@ block content
 
     h2 Page Data
     p As you may see it is pretty easy, but how do you determine which page is loaded when we use only one handler? For this case we have Page Data in the event details:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // In page events:
           $$(document).on('page:init', function (e) {
             // Page Data contains all required information about loaded and initialized page
             var page = e.detail;
           })
     p Or in case the event handler was assigned using Dom7 like in example above then it will be passed in second argument:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // In page events:
           $$(document).on('page:init', function (e, page) {
             console.log(page);
@@ -204,9 +196,7 @@ block content
           td Template7 context that was passed for this page when using Template7 pages
     h2 Access To Page Data
     p If you don't use page events/callbacks and need to access to page data, it is possible via the <code>f7Page</code> property on its HTMLElement:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var $$ = Dom7;
 
           var page = $$('.page[data-name="somepage"]')[0].f7Page;

@@ -90,9 +90,7 @@ block content
       li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="toolbar-inner"&gt;</code> element
       li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="toolbar-inner"&gt;</code> element
       li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="toolbar-inner"&gt;</code> element
-    pre
-      code.html
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Toolbar>
             <div slot="before-inner">Before Inner</div>
             <div slot="after-inner">After Inner</div>
@@ -115,9 +113,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/react/toolbar-tabbar.html") Examples
       h3 Toolbar
-      pre
-        code
-          :code(lang="jsx")
+      :code(lang="jsx")
             export default class extends React.Component{
               constructor() {
                 this.state = {
@@ -154,9 +150,7 @@ block content
               }
             }
       h3 Tabbar
-      pre
-        code
-          :code(lang="jsx")
+      :code(lang="jsx")
             export default class extends React.Component{
               constructor() {
                 this.state = {
@@ -205,9 +199,7 @@ block content
               }
 
       h3 Tabbar Labels
-      pre
-        code
-          :code(lang="jsx")
+      :code(lang="jsx")
             export default class extends React.Component{
               constructor() {
                 this.state = {
@@ -257,9 +249,7 @@ block content
             }
 
       h3 Tabbar Scrollable
-      pre
-        code
-          :code(lang="jsx")
+      :code(lang="jsx")
             export default class extends React.Component{
               constructor() {
                 this.state = {
@@ -309,9 +299,7 @@ block content
             }
 
       h3 Hide Toolbar On Scroll
-      pre
-        code
-          :code(lang="jsx")
+      :code(lang="jsx")
             export default () => (
               <Page hideToolbarOnScroll>
                 <Navbar title="Hide Toolbar On Scroll" backLink="Back"></Navbar>

@@ -68,9 +68,7 @@ block content
     ul
       li <code><b>before-wrapper</b></code> - element will be inserted right before <code>&lt;div class="swiper-wrapper"&gt;</code> element
       li <code><b>after-wrapper</b></code> - element will be inserted right after <code>&lt;div class="swiper-wrapper"&gt;</code> element
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Swiper>
             <div slot="before-wrapper">Before Wrapper</div>
             <div slot="after-wrapper">After Wrapper</div>
@@ -91,18 +89,14 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/react/swiper.html") Examples
       h4 Minimal layout
-      pre
-        code.jsx
-          :code(lang="jsx")
+      :code(lang="jsx")
             <Swiper>
               <SwiperSlide>Slide 1</SwiperSlide>
               <SwiperSlide>Slide 2</SwiperSlide>
               <SwiperSlide>Slide 3</SwiperSlide>
             </Swiper>
       h4 With all controls
-      pre
-        code.jsx
-          :code(lang="jsx")
+      :code(lang="jsx")
             <Swiper pagination navigation scrollbar>
               <SwiperSlide>Slide 1</SwiperSlide>
               <SwiperSlide>Slide 2</SwiperSlide>
@@ -111,9 +105,7 @@ block content
 
       h4 With additional parameters
       p You can pass any additional <a href="http://idangero.us/swiper/api" target="_blank">Swiper API</a> parameters using <code>params</code> property:
-      pre
-        code.jsx
-          :code(lang="jsx")
+      :code(lang="jsx")
             <Swiper navigation params={{speed:500, slidesPerView: 3, spaceBetween: 20}}>
               <SwiperSlide>Slide 1</SwiperSlide>
               <SwiperSlide>Slide 2</SwiperSlide>

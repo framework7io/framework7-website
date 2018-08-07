@@ -14,9 +14,7 @@ block content
     ul.docs-index
     p Framework7-React as Framework7 itself comes with powerful and flexible router. And to make it work we must specify <a href="../docs/routes.html">Routes</a>.
     p The only difference in Framework7-React is that in React.js we are already composing our application with React components, so we need to map our Pages (React components) to the routes. It can be done by passing React component in <code>component</code> property of the route. Here's a basic example:
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           // App.jsx
 
           // Import pages components
@@ -56,9 +54,7 @@ block content
             </App>
           )
 
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           // home.jsx
           export default () => (
             <Page name="home">
@@ -68,9 +64,7 @@ block content
               <Link href="/login/">Login Page</Link>
             </Page>
           )
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           // about.jsx
           export default () => (
             <Page name="about">
@@ -79,9 +73,7 @@ block content
               ...
             </Page>
           )
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           // login.jsx
           export default () => (
             <Page name="login">
@@ -96,9 +88,7 @@ block content
 
     h2 Async Lazy Components
     p With Webpack it is possible to load page components on demand, it is possible with F7's async route, for example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           {
             path: '/about/',
             async(routeTo, routeFrom, resolve, reject) {
@@ -114,9 +104,7 @@ block content
 
     h2 Router API
     p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>$f7router</b> property of component:
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Link onClick={() => this.$f7router.navigate('/about/')}>About</Link>
           <Link onClick={() => this.$f7router.back()}>Go Back</Link>
     .important-note

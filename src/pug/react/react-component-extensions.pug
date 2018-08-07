@@ -19,9 +19,7 @@ block content
         tr
           td this.$f7ready
           td Callback function that will be executed when Framework7 fully intialized. Useful to use in components when you need to access Framework7 API and to be sure it is ready. So it is safe to put all Framework7 related logic into this callback. As an argument it receives initialized Framework7 instance. For example:
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   export default class extends React.Component {
                     ...
                     render() {
@@ -76,9 +74,7 @@ block content
     h2 Slots
     p All Framework7-React components use <code>slots</code> to distribute children across component structure. They work exactly the same as <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots">Web Component Slots</a> and <a href="https://vuejs.org/v2/guide/components-slots.html" target="_blank">Vue.js Slots</a>.
     p For example
-    pre
-      code
-        :code(lang="jsx")
+    :code(lang="jsx")
           export default () => (
             <Page>
               <p slot="fixed">I'm fixed page element</p>
@@ -93,9 +89,7 @@ block content
             </Page>
           )
     p Renders to:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <p slot="fixed">I'm fixed page element</p>
             <div class="page-content">
@@ -122,9 +116,7 @@ block content
     h2 Events
     p All Framework7-React components support events, which are actually props, and their listeners must be assigned as <code>on$Event</code> prop.
     p For example <code>&lt;Page&gt;</code> component supports <code>pageInit</code>, <code>pageBeforeIn</code> and other <a href="page.html#page-events">events</a>, so to handle such events:
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           export default class extends React.Component {
             render() {
               return (

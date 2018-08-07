@@ -14,9 +14,7 @@ block content
     ul.docs-index
     h2 Toggle Layout
     p Layout is pretty simple:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Toggle element -->
           <label class="toggle">
             <!-- Toggle input -->
@@ -25,9 +23,7 @@ block content
             <span class="toggle-icon"></span>
           </label>
     p Inside of Simple List:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="list simple-list">
             <ul>
               ...
@@ -40,9 +36,7 @@ block content
               </li>
           </div>
     p Inside of usual List (preferable in <code>item-after</code>):
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="list">
             <ul>
               ...
@@ -61,9 +55,7 @@ block content
           </div>
     h2 Toggle Colors
     p Toggle supports all <a href="color-themes.html">default colors</a>. So to change its color just add color-[color] class to toggle element.
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- red toggle -->
           <label class="toggle color-red">...</label>
 
@@ -118,9 +110,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var toggle = app.toggle.create({
                     el: '.toggle'
                     on: {
@@ -132,9 +122,7 @@ block content
 
     h2 Toggle Methods & Properties
     p So to create Toggle we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var toggle = app.toggle.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>toggle</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -231,18 +219,14 @@ block content
           td app
     h2 Toggle Auto Initialization
     p If you don't need to use toggle API and your toggle is inside of page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code>toggle-init</code> class:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Add toggle-init class -->
           <label class="toggle toggle-init">
             <input type="checkbox">
             <span class="toggle-icon"></span>
           </label>
     p In this case if you need to access created Toggle instance you can use the <code>app.toggle.get</code> app method:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var toggle = app.toggle.get('.toggle');
 
           if (toggle.checked) {
@@ -250,9 +234,7 @@ block content
           }
     .with-device
       h2(data-device-preview="../docs-demos/core/toggle.html") Examples
-      pre
-        code
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Super Heroes</div>
             <div class="list simple-list">
               <ul>

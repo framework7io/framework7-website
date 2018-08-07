@@ -25,9 +25,7 @@ block content
     p With this <code><strong>with-statusbar</strong></code> class (when app in full screen mode) the app root element has additional padding on top to move a whole app's content on size of Statusbar.
     h2 Statusbar Layout
     p Now, when Framework7 did its job on this part, we can control Statusbar behavior, we need to add <code><b>&lt;div class="statusbar"&gt;</b></code> as a direct child of app root element:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <body>
             <!-- App root element -->
             <div id="app">
@@ -39,17 +37,13 @@ block content
     p This <code><strong>statusbar</strong></code> div is always fixed on top of screen and hidden by default. It becomes visible only when app is in full screen mode and <code>html</code> has <code>with-statusbar</code> class.
     h2 Statusbar Styling
     p If we need to change statusbar background color we may use simple CSS rule:
-    pre
-      code.css
-        :code(lang="css")
+    :code(lang="css")
           .statusbar {
             background: pink;
           }
     p Such logic allows pretty flexible control over Statusbar background and we can change its background dynamically.
     p For example, we have dark left-side panel with cover effect. We may change Statusbar background to more dark color when panel opened:
-    pre
-      code.css
-        :code(lang="css")
+    :code(lang="css")
            /* Default Statusbar background */
            .statusbar {
              background: pink;
@@ -69,9 +63,7 @@ block content
           p In cordova apps Statusbar text color is always black by default. It can be with cordova plugin <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a> and using its api or Framework7 Statusbar API
     h2 Statusbar App Parameters
     p It is possible to control some default statusbar behavior by passing statusbar related parameters on app init under <code>statusbar</code> property:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             statusbar: {
               iosOverlaysWebView: true,

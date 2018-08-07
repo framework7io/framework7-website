@@ -202,9 +202,7 @@ block content
       li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="toolbar-inner"&gt;</code>. element. Messagebar sheet goes here
       li <code><b>inner-start</b></code> - element will be inserted in the beginning of <code>&lt;div class="toolbar-inner"&gt;</code>. element
       li <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="toolbar-inner"&gt;</code>. element. Same as <code>default</code> slot
-    pre
-      code
-        :code(lang="jsx")
+    :code(lang="jsx")
           <Messagebar placeholder="Message" onSubmit="this.onSubmit">
             <div slot="before-inner">Before inner</div>
             <div slot="after-inner">After inner</div>
@@ -214,9 +212,7 @@ block content
             <div>Default slot</div>
           </Messagebar>
     p Renders to:
-    pre
-      code
-        :code
+    :code
           <div class="toolbar messagebar">
             <div>Before inner</div>
             <div class="toolbar-inner">
@@ -237,9 +233,7 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/react/messages.html") Examples
       p Here is how the full example of Messages page where it can be used together with <a href="messages.html">Messages</a>:
-      pre
-        code.jsx
-          :code(lang="jsx")
+      :code(lang="jsx")
             export default class extends React.Component {
               constructor(props) {
                 super(props);

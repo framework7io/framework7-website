@@ -14,9 +14,7 @@ block content
     ul.docs-index
     p Messages component will help you with visualisation of comments and messaging system in your app.
     h2 Messages Layout
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
             <div class="page-content messages-content">
               <div class="messages">
@@ -82,9 +80,7 @@ block content
         p <code>message</code> - single message
     h3 Single Message Layout
     p Here is a full single message layout:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="message">
             <div class="message-avatar" style="background-image:url(path/to/avatar)"></div>
             <div class="message-content">
@@ -206,9 +202,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var messages = app.messages.create({
                     el: '.messages',
                     on: {
@@ -331,9 +325,7 @@ block content
           td Defines whether it should be rendered as a message or as a messages title
     h2 Messages Methods & Properties
     p So to create Messages we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var messages = app.messages.create({ /* parameters */ })
     p After we initialize Messages we have its initialized instance in variable (like <code>messages</code> variable in example above) with helpful methods and properties:
     table.methods-table
@@ -460,9 +452,7 @@ block content
           td app
     h2 Messages Auto Initialization
     p If you don't need to use Messages API and your Messages is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding additional <code><b>messages-init</b></code> class to messages element, and all required parameters can be passed using <code><b>data-</b></code> attributes:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="messages messages-init" data-new-messages-first="true">
             ...
           </div>
@@ -470,9 +460,7 @@ block content
       p Parameters that used in camelCase, for example <b>newMessagesFirst</b>, in data- attributes should be used in kebab-case as <b>data-new-messages-first</b>
     .with-device
       h2(data-device-preview="../docs-demos/core/messages.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner">
@@ -602,9 +590,7 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

@@ -112,9 +112,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var tooltip = app.tooltip.create({
                     targetEl: '.some-link'
                     on: {
@@ -126,9 +124,7 @@ block content
 
     h2 Tooltip Methods & Properties
     p So to create Tooltip we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var tooltip = app.tooltip.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>tooltip</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -254,26 +250,20 @@ block content
           td app
     h2 Tooltip Auto Initialization
     p If you don't need to use Tooltip API and your Tooltip target element is inside of the page and presented in DOM on moment of page initialization then it can be auto initialized with just adding <code>tooltip-init</code> class to target element, and specifying tooltip text in its <code>data-tooltip</code> attribute:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Add tooltip-init class and specify tooltip text in data-tooltip attribute -->
           <a href="/profile/" class="link tooltip-init profile-link" data-tooltip="Profile settings">
             <i class="profile-icon"></i>
           </a>
     p In this case if you need to access created Tooltip instance you can use the <code>app.tooltip.get</code> app method:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var tooltip = app.tooltip.get('.profile-link');
           // change tooltip text
           tooltip.setText('Profile');
 
     .with-device
       h2(data-device-preview="../docs-demos/core/tooltip.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <!-- navbar with link with tooltip -->
             <div class="navbar">
               <div class="navbar-inner sliding">
@@ -297,9 +287,7 @@ block content
 
             <!-- button with auto init tooltip -->
             <a class="button button-round button-outline button-small tooltip-init" data-tooltip="Button tooltip text">Button with Tooltip</a>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             // icons tooltip. One tooltip for all icons with "icon-tooltip" class
             var iconTooltip = app.tooltip.create({
               targetEl: '.icon-tooltip',

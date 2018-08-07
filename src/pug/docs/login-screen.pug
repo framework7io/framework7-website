@@ -15,9 +15,7 @@ block content
     p Framework7 comes with ready to use Login Screen layout. It could be used inside of page or login screen (embedded) or as a standalone modal.
     h2 Login Screen Layout
     p First of all, let's look at the standalone Login Screen layout. It behaves almost in the same way as Login Screen:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="login-screen">
             <!-- Default view-page layout -->
             <div class="view">
@@ -148,9 +146,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var login screen = app.loginScreen.create({
                     content: '<div class="login-screen">...</div>',
                     on: {
@@ -161,9 +157,7 @@ block content
                   })
     h2 Login Screen Methods & Properties
     p So to create Login Screen we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var loginScreen = app.loginScreen.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>loginScreen</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -230,9 +224,7 @@ block content
         li
           p If you have more than one login screen in DOM, you need to specify appropriate login screen via additional <b>data-login-screen=".my-login-screen"</b> attribute on this HTML element
     p According to above note:
-    pre
-      code.xml
-        :code(lang="html")
+    :code(lang="html")
           <!-- In data-login-screen attribute we specify CSS selector of login screen we need to open -->
           <p><a href="#" data-login-screen=".my-login-screen" class="login-screen-open">Open Login Screen</a></p>
 
@@ -341,9 +333,7 @@ block content
           td app
     h2 Embedded Login Screen
     p It is also possible to embed Login Screen into the page or popup. Let's look on the example of Login Screen inside of page:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page no-navbar no-toolbar no-swipeback">
             <div class="page-content login-screen-content">
               <div class="login-screen-title">My App</div>
@@ -384,9 +374,7 @@ block content
       p Note that on login screen page we have additional "no-navbar", "no-toolbar" and "no-swipeback" classes to hide navigation element from user
     .with-device
       h2(data-device-preview="../docs-demos/core/login-screen.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <body>
               ...
                 <div class="page-content">
@@ -444,9 +432,7 @@ block content
               </div>
               ...
             </body>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var $$ = Dom7;
 
             var app = new Framework7({

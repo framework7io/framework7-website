@@ -144,9 +144,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var dialog = app.dialog.create({
                     text: 'Hello World',
                     on: {
@@ -202,9 +200,7 @@ block content
           td Callback function that will be executed after click on this button
     h2 Dialog Methods & Properties
     p So to create a Dialog we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var dialog = app.dialog.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>dialog</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -377,9 +373,7 @@ block content
     p First lets check the global app parameters which help to configure such shortcuts and also used for localization purposes.
     h3 Dialog Shortcuts Parameters
     p The following global dialog shortcut parameters can be passed on <a href="init-app.html">app initialization</a> under <code>dialog</code> property:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             dialog: {
               // set default title for all dialog shortcuts
@@ -596,9 +590,7 @@ block content
 
     .with-device
       h2(data-device-preview="../docs-demos/core/dialog.html") Examples
-      pre
-        code.xml
-          :code(lang="html")
+      :code(lang="html")
             <body>
               ...
                 <div class="page-content">
@@ -636,9 +628,7 @@ block content
                 </div>
               ...
             </body>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

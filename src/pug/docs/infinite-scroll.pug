@@ -16,9 +16,7 @@ block content
 
     h2 Infinite Scroll Layout
     p To enable Infinite Scroll you need to add additional <code><b>infinite-scroll-content</b></code> class to any scrollable container, particularly to our page scrolling area - <code>&lt;div class="page-content"&gt;</code>:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
               <div class="page-content infinite-scroll-content infinite-scroll-top">
                   ...
@@ -35,9 +33,7 @@ block content
         p <code>div class="preloader infinite-scroll-preloader"</code> <a href="preloader.html">preloader</a> with few additional styles to be used with infinite scroll
     h2 Infinite Scroll On Top
     p If you need to use infinite scroll on top of the page (when it scrolled to top), you need to add additional <code><b>infinite-scroll-top</b></code> class to "page-content":
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="page">
               <div class="page-content infinite-scroll-content infinite-scroll-top">
                   <div class="preloader infinite-scroll-preloader"></div>
@@ -96,9 +92,7 @@ block content
 
     .with-device
       h2(data-device-preview="../docs-demos/core/infinite-scroll.html") Example
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="page" data-page="home">
               ...
               <div class="page-content infinite-scroll-content">
@@ -129,9 +123,7 @@ block content
                 <div class="preloader infinite-scroll-preloader"></div>
               </div>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

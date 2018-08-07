@@ -13,9 +13,7 @@ block content
     ul.docs-index
     p Framework7 comes with handy Request library to work with XHR requests (Ajax) right from the box.
     p It is avaialable as a <code><b>request</b></code> property of Framework7 class (<code>Framework7.request</code>) and same property on initialized app instance (<code>app.request</code>):
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // If we need it in place where we don't have access to app instance or before we init the app
           Framework7.request.get('somepage.html', function (data) {
             console.log(data);
@@ -161,9 +159,7 @@ block content
           td object
           td
           td An object of numeric HTTP codes and functions to be called when the response has the corresponding code. For example, the following will alert when the response status is a 404:
-            pre
-              code.js
-                :code(lang="js")
+            :code(lang="js")
                   app.request({
                     url: 'somepage.html',
                     statusCode: {
@@ -203,9 +199,7 @@ block content
         span - Load data from the server using a HTTP GET request
       p.method-returns Returns plain XHR object
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7();
 
           var $$ = Dom7;
@@ -242,9 +236,7 @@ block content
         span - Load data from the server using a HTTP POST request
       p.method-returns Returns plain XHR object
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7();
 
           var $$ = Dom7;
@@ -277,9 +269,7 @@ block content
         span.method Framework7.request.json(<span>url</span>, <span>data</span>, <span>success</span>, <span>error</span>)
       p.method-returns Method returns nothing
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           Framework7.request.json('items.json', function (data) {
             console.log(data);
           });
@@ -317,9 +307,7 @@ block content
         span - Send JSON data using a HTTP POST request
       p.method-returns Returns plain XHR object
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7();
 
           var $$ = Dom7;
@@ -341,9 +329,7 @@ block content
         span.method Framework7.request.setup(parameters)
         span - Set default values for future Ajax requests. <b>Its use is not recommended</b>
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // After the following setup all XHR requests will have additional 'Autorization' header
           Framework7.request.setup({
             headers: {

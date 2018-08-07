@@ -15,14 +15,10 @@ block content
     p Framework7 has a nice preloader indicator. Preloader is made with SVG and animated with CSS so it can be easily resized.
     h2 Preloader Layout
     p Layout is pretty simple:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <div class="preloader"></div>
     p MD theme uses more complex preloader layout as it has more complex animation. Usually if it is inside of page or created withing some API methods F7 will add this additional inner layout automatically. But if you will add it manually using, lets say, direct DOM manipulation then you may need to add full layout which is required for MD theme:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- Full preloader layout for MD theme -->
           <div class="preloader">
             <span class="preloader-inner">
@@ -65,9 +61,7 @@ block content
         span.method app.preloader.hide()
         | - hide Preloader overlay
     p For example:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7();
 
           // Show preloader before Ajax request
@@ -82,9 +76,7 @@ block content
       p Opening Preloader overlay will also add <code>with-modal-preloader</code> class to &lt;html&gt; element.
     .with-device(data-device-preview="../docs-demos/core/preloader.html")
       h2 Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Default</div>
             <div class="block block-strong align-items-stretch text-align-center">
               <div class="row text-align-center">
@@ -103,9 +95,7 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Color Preloaders</div>
             <div class="block block-strong">
               <div class="row">
@@ -123,16 +113,12 @@ block content
                 </div>
               </div>
             </div>
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Multi-color (MD-theme only)</div>
             <div class="block block-strong text-align-center">
               <div class="preloader color-multi"></div>
             </div>
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <div class="block-title">Preloader Modals</div>
             <div class="block block-strong">
               <p>With <b>app.preloader.show()</b> you can show small overlay with preloader indicator.</p>
@@ -140,9 +126,7 @@ block content
                 <a class="button button-raised open-preloader-indicator">Open Small Indicator</a>
               </p>
             </div>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

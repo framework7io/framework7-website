@@ -11,9 +11,7 @@ block content
     +improveDocsLink
     h1 App Layout
     p First thing we should do for our App is to create index.html file with app's skeleton.
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           <!DOCTYPE html>
           <html>
             <head>
@@ -40,9 +38,7 @@ block content
     p The <code>&lt;div id="app"&gt;&lt;/div&gt;</code> is where your main app skeleton should be. You can mount its content as a component or (just for example) we can start to write app skeleton right inside of this div:
     h2 Basic Layout
     p Let's look at the very basic app component layout:
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           // App.jsx
           import { App, Statusbar, View, Page, Navbar, Toolbar, Link } from 'framework7-react';
 
@@ -74,9 +70,7 @@ block content
 
     h2 Advanced Layout
     p Now, let's look on more advanced layout where we will also add side panels with views and popup
-    pre
-      code.jsx
-        :code(lang="jsx")
+    :code(lang="jsx")
           // App.jsx
 
           import { App, Statusbar, Panel, View, Page, Navbar, Block, Row, Col, Button, Popup, Link } from 'framework7-react';

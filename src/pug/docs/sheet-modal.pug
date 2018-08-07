@@ -15,9 +15,7 @@ block content
     p Sheet Modal is a special overlay type which is similar to Picker/Calendar's overlay. Such modal allows to create custom overlays with custom content
     h2 Sheet Layout
     p Sheet layout is pretty simple:
-    pre
-      code
-        :code(lang="html")
+    :code(lang="html")
           &lt;body&gt;
             ...
             &lt;!-- Sheet Modal Container --&gt;
@@ -145,9 +143,7 @@ block content
           td object
           td
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var sheet = app.sheet.create({
                     content: '<div class="sheet-modal">...</div>',
                     on: {
@@ -158,9 +154,7 @@ block content
                   })
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>sheet</code> property to set defaults for all sheets. For example:
-      pre
-        code
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7({
               sheet: {
                 closeByBackdropClick: false,
@@ -168,9 +162,7 @@ block content
             });
     h2 Sheet Methods & Properties
     p So to create Sheet we have to call:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var sheet = app.sheet.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>sheet</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -243,9 +235,7 @@ block content
         li
           p If you have more than one sheet in DOM, you need to specify appropriate sheet via additional <b>data-sheet=".my-sheet"</b> attribute on this HTML element
     p According to above note:
-    pre
-      code.xml
-        :code(lang="html")
+    :code(lang="html")
           <!-- In data-sheet attribute we specify CSS selector of sheet we need to open -->
           <p><a href="#" data-sheet=".my-sheet" class="sheet-open">Open Sheet</a></p>
 
@@ -341,9 +331,7 @@ block content
           td app
     .with-device
       h2(data-device-preview="../docs-demos/core/sheet-modal.html") Examples
-      pre
-        code.html
-          :code(lang="html")
+      :code(lang="html")
             <body>
               ...
                 <div class="page">
@@ -381,9 +369,7 @@ block content
                 </div>
               </div>
             </body>
-      pre
-        code.js
-          :code(lang="js")
+      :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

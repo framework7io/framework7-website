@@ -15,17 +15,13 @@ block content
     p Note, that Tap Hold is a part of built-in <b>Fast Clicks</b> library, so Fast Clicks should be also enabled.
 
     p Also note, that you probably will need to disable mobile browser default "long-tap" actions by adding these CSS rules to elements:
-    pre
-      code.css
-        :code(lang="css")
+    :code(lang="css")
           -moz-user-select: none;
           -webkit-user-select: none;
           user-select: none;
 
     p For example:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             touch: {
               tapHold: true //enable tap hold events

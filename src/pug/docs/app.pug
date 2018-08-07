@@ -12,9 +12,7 @@ block content
     h1 App / Core
     ul.docs-index
     p When we init the app we can use the <code>new Framework7</code> constructor and pass an object with main app parameters:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             // App id
             id: 'com.myapp.test',
@@ -76,9 +74,7 @@ block content
           td function
           td
           td App root data. Must be a function that returns an object with root data. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var app = new Framework7({
                     data: function () {
                       return {
@@ -94,9 +90,7 @@ block content
           td object
           td {}
           td App root methods. Object with methods, e.g.
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var app = new Framework7({
                     methods: {
                       alert: function() {
@@ -110,9 +104,7 @@ block content
           td object
           td {}
           td Object with events handlers. For example:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var app = new Framework({
                     on: {
                       init: function () {
@@ -140,9 +132,7 @@ block content
           td object
           td
           td Object with clicks-module related parameters:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var app = new Framework7({
                     clicks: {
                       externalLinks: '.external',
@@ -164,9 +154,7 @@ block content
           td object
           td
           td Object with touch-module related parameters:
-            pre
-              code
-                :code(lang="js")
+            :code(lang="js")
                   var app = new Framework7({
                     touch: {
                       tapHold: true,
@@ -239,9 +227,7 @@ block content
     p These are default app parameters for app core module.
     p Most of components that has JavaScript API may extend this list of parameters with the property named as component. For example <a href="#">Panel</a> component extends app parameters with <code>panel</code> property that accepts Panel specific parameters.
     p Example:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           var app = new Framework7({
             id: 'com.myapp.test',
             // Extended by Panel component:
@@ -354,9 +340,7 @@ block content
           td Initialize app. In case you disabled auto initialization with <code>init: false</code> parameter
     p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with <code>panel</code> property that accepts Panel specific properties and methods.
     p Example:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           // Open panel
           app.panel.open('left');
 
@@ -413,9 +397,7 @@ block content
           td Event will be fired on touch end (mouseup) event added as passive listener (impossible to prevent default)
     p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance.
     p Example:
-    pre
-      code
-        :code(lang="js")
+    :code(lang="js")
           app.on('panelOpen', function (panel) {
             console.log('Panel ' + panel.side + ' opened');
           });

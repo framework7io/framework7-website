@@ -27,25 +27,18 @@ block content
         p
           b Install From NPM
         p We can also install Framework7-Vue from NPM:
-        pre
-          code
-            :code
-              $ npm install framework7-vue
+        :code              $ npm install framework7-vue
 
     h2 ES Module
     .important-note
       p This feature currently can be used in bundlers like Webpack and Rollup
     p Framework7-Vue can also be imported as an ES-next module:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           import Framework7Vue from 'framework7-vue'
     .important-note
       p <b>By default it exports only core Framework7-Vue plugin without any components</b>.
     p And if you need additional components they must be imported additionally:
-    pre
-      code.html
-        :code(lang="html")
+    :code(lang="html")
           <!-- some-page.vue -->
           <template>
             ...
@@ -65,9 +58,7 @@ block content
           </script>
     h2 ES Module Bundle
     p If you need to include all Framework7-Vue components, we can include its another script bundle with all Vue components registered:
-    pre
-      code.js
-        :code(lang="js")
+    :code(lang="js")
           // Import framework with all components
           import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js';
 
