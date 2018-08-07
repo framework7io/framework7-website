@@ -365,9 +365,9 @@ block content
 
     p To enable your component template being treated as template literal we need to add <code>es</code> attribute to <code>&lt;template&gt;</code> tag. The template from previous example will look like:
     pre
-      code.js
-        :code(lang="js")
-          <template>
+      code.html
+        :code(lang="html")
+          <template es>
             <div class="page">
               <div class="navbar">
                 <div class="navbar-inner">
@@ -509,6 +509,90 @@ block content
         </script>
     .important-note
       p Note, that direct assignment to component state won't trigger layout update. And if we in previous example used <code>this.user = user</code> it wouldn't be updated. Use <code>$setState</code> whenever you need to update component layout!
+    h3 Keys in Lists & Auto-Init Components
+    p When VDOM is updating a list of elements, by default it uses an "in-place patch" strategy. If the order of the data items has changed, instead of moving the DOM elements to match the order of the items, it will patch each element in-place and make sure it reflects what should be rendered at that particular index.
+
+    p This default mode is efficient, but only suitable <b>when your render output does not rely on child component state or temporary DOM state (e.g. form input values)</b>.
+
+    p To give VDOM a hint so that it can track each node's identity, and thus reuse and reorder existing elements, you need to provide a unique <code>key</code> attribute for each item.
+
+    p When rendering lists, an ideal value for <code>key</code> would be the unique id of each item:
+
+    pre
+      code.html
+        :code(lang="html")
+          <template>
+            ...
+            <ul>
+              {{#each items}}
+              <li key="{{this.id}}">...</li>
+              {{/each}}
+            </ul>
+            ...
+          </template>
+          <script>
+            return {
+              data() {
+                return {
+                  items: [
+                    {
+                      id: 1,
+                      title: 'Item A'
+                    },
+                    {
+                      id: 2,
+                      title: 'Item B'
+                    },
+                  ]
+                }
+              }
+            }
+          </script>
+
+    p Same with auto-initialized components like <a href="./range-slider.html">Range Slider</a>, <a href="./gauge.html">Gauge</a> and others that should be automatically initialized (if they have <code>range-slider-init</code>, <code>gauge-init</code>) when they added to DOM, and automatically destroyed when they removed from DOM. So such elements must be also indentified with unique keys.
+
+    pre
+      code.html
+        :code(lang="html")
+          <template>
+            <div class="page">
+              ...
+              <div class="page-content">
+                {{#if gaugeVisible}}
+                <!-- must have unique key -->
+                <div key="gauge" class="gauge gauge-init" data-type="circle"
+                  data-value="0.60"
+                  data-value-text="60%"
+                  data-value-text-color="#ff9800"
+                  data-border-color="#ff9800"
+                ></div>
+                {{/if}}
+                ...
+                <a href="#" class="button" @click="showGauge">Show Gauge</a>
+              </div>
+            </div>
+          </template>
+          <script>
+            return {
+              data() {
+                return {
+                  gaugeVisible: false,
+                }
+              },
+              methods: {
+                showGauge() {
+                  this.$setState({
+                    gaugeVisible: true
+                  })
+                },
+              }
+            }
+          </script>
+    .important-note
+      ul
+        li Note that <code>key</code> attribute must be unique accross single component.
+        li If <code>key</code> attribute was not specified and element has an <code>id</code> attribute, then <code>id</code> attribute will be used as virtual node unique key.
+
 
 
 

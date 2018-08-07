@@ -4,7 +4,7 @@ const loadLanguages = require('prismjs/components/index');
 loadLanguages(['jsx', 'bash']);
 
 function extendLanguage(lang) {
-  Prism.languages[lang].function = /[a-z0-9_]+(?=\()/i;
+  Prism.languages[lang].function = /[a-z0-9_$]+(?=\()/i;
   Prism.languages[lang].keyword = /\b(?:as|class|const|debugger|delete|enum|extends|finally|function|get|implements|in|instanceof|interface|let|new|of|package|private|protected|public|set|static|typeof|var|void|yield)\b/;
   Prism.languages[lang]['keyword-block'] = /\b(?:export|default|for|if|while|do|return|import|from|await|async|switch|case|break|continue|else|try|catch|with|throw)\b/;
   Prism.languages[lang].context = /\b(?:this|self|super)\b/;
