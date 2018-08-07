@@ -234,14 +234,14 @@ block content
       li <code><b>default</b></code> - element will be inserted as a child of  "page-content", if <code>page-content</code> prop is enabled (by default)
       li <code><b>fixed</b></code> - element will be inserted as a direct child of "page" right before "page-content"
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Page>
             <div slot="fixed">Fixed element</div>
             <p>Page content goes here</p>
           </Page>
 
-          <!-- Renders to: -->
+          {/* Renders to: */}
 
           <div class="page">
             <div>Fixed element</div>
@@ -253,8 +253,8 @@ block content
       h2 Examples
       h3(data-device-preview="../docs-demos/react/infinite-scroll.html") Infinite Scroll
       pre
-        code.js
-          :code(lang="js")
+        code.jsx
+          :code(lang="jsx")
             export default class extends React.Component {
               constructor(props) {
                 super(props);
@@ -310,8 +310,8 @@ block content
             };
       h3(data-device-preview="../docs-demos/react/pull-to-refresh.html") Pull To Refresh
       pre
-        code.js
-          :code(lang="js")
+        code.jsx
+          :code(lang="jsx")
             export default class extends React.Component {
               constructor(props) {
                 super(props);

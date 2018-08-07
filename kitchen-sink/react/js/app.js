@@ -9632,13 +9632,14 @@
 	/* eslint no-use-before-define: "off" */
 
 	var selfClosing = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
-	var propsAttrs = 'hidden value checked disabled readonly selected'.split(' ');
+	var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value'.split(' ');
+	var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly'.split(' ');
 	var tempDom = doc.createElement('div');
 
 	function getHooks(data, app, initial, isRoot) {
-	  if (!data || !data.attrs || !data.attrs.class) { return null; }
-	  var classNames = data.attrs.class;
 	  var hooks = {};
+	  if (!data || !data.attrs || !data.attrs.class) { return hooks; }
+	  var classNames = data.attrs.class;
 	  var insert = [];
 	  var destroy = [];
 	  var update = [];
@@ -9661,9 +9662,8 @@
 	      }
 	    });
 	  }
-
 	  if (insert.length === 0 && destroy.length === 0 && update.length === 0 && postpatch.length === 0) {
-	    return null;
+	    return hooks;
 	  }
 	  if (insert.length) {
 	    hooks.insert = function (vnode) {
@@ -9682,9 +9682,10 @@
 	  }
 	  if (postpatch.length) {
 	    hooks.postpatch = function (oldVnode, vnode) {
-	      postpatch.forEach(function (f) { return f(vnode); });
+	      postpatch.forEach(function (f) { return f(oldVnode, vnode); });
 	    };
 	  }
+
 	  return hooks;
 	}
 	function getEventHandler(handlerString, context, ref) {
@@ -9783,7 +9784,15 @@
 	    var attrValue = attr.value;
 	    if (propsAttrs.indexOf(attrName) >= 0) {
 	      if (!data.props) { data.props = {}; }
-	      data.props[attrName] = attrValue;
+	      if (attrName === 'readonly') {
+	        attrName = 'readOnly';
+	      }
+	      if (booleanProps.indexOf(attrName) >= 0) {
+	        // eslint-disable-next-line
+	        data.props[attrName] = attrValue === false ? false : true;
+	      } else {
+	        data.props[attrName] = attrValue;
+	      }
 	    } else if (attrName === 'key') {
 	      data.key = attrName;
 	    } else if (attrName.indexOf('@') === 0) {
@@ -9813,6 +9822,19 @@
 	    }
 	  });
 	  var hooks = getHooks(data, app, initial, isRoot);
+	  hooks.prepatch = function (oldVnode, vnode) {
+	    if (!oldVnode || !vnode) { return; }
+	    if (oldVnode && oldVnode.data && oldVnode.data.props) {
+	      Object.keys(oldVnode.data.props).forEach(function (key) {
+	        if (booleanProps.indexOf(key) < 0) { return; }
+	        if (!vnode.data) { vnode.data = {}; }
+	        if (!vnode.data.props) { vnode.data.props = {}; }
+	        if (oldVnode.data.props[key] === true && !(key in vnode.data.props)) {
+	          vnode.data.props[key] = false;
+	        }
+	      });
+	    }
+	  };
 	  if (hooks) {
 	    data.hook = hooks;
 	  }
@@ -9856,7 +9878,12 @@
 	  tempDom.innerHTML = html.trim();
 
 	  // Parse DOM
-	  var rootEl = tempDom.childNodes[0];
+	  var rootEl;
+	  for (var i = 0; i < tempDom.childNodes.length; i += 1) {
+	    if (!rootEl && tempDom.childNodes[i].nodeType === 1) {
+	      rootEl = tempDom.childNodes[i];
+	    }
+	  }
 	  var result = elementToVNode(rootEl, context, app, initial, true);
 
 	  // Clean
@@ -15767,8 +15794,10 @@
 	    index.$el.trigger('listindex:beforedestroy', index);
 	    index.emit('local::beforeDestroy listIndexBeforeDestroy', index);
 	    index.detachEvents();
-	    index.$el[0].f7ListIndex = null;
-	    delete index.$el[0].f7ListIndex;
+	    if (index.$el[0]) {
+	      index.$el[0].f7ListIndex = null;
+	      delete index.$el[0].f7ListIndex;
+	    }
 	    Utils.deleteProps(index);
 	    index = null;
 	  };
@@ -16517,7 +16546,10 @@
 	    panel.$el.trigger('panel:destroy', panel);
 	    panel.emit('local::destroy panelDestroy');
 	    delete app.panel[panel.side];
-	    delete panel.el.f7Panel;
+	    if (panel.el) {
+	      panel.el.f7Panel = null;
+	      delete panel.el.f7Panel;
+	    }
 	    Utils.deleteProps(panel);
 	    panel = null;
 	  };
@@ -23002,8 +23034,11 @@
 	    table.emit('local::beforeDestroy datatableBeforeDestroy', table);
 
 	    table.attachEvents();
-	    table.$el[0].f7DataTable = null;
-	    delete table.$el[0].f7DataTable;
+
+	    if (table.$el[0]) {
+	      table.$el[0].f7DataTable = null;
+	      delete table.$el[0].f7DataTable;
+	    }
 	    Utils.deleteProps(table);
 	    table = null;
 	  };
@@ -23814,7 +23849,10 @@
 	    sb.emit('local::beforeDestroy searchbarBeforeDestroy', sb);
 	    sb.$el.trigger('searchbar:beforedestroy', sb);
 	    sb.detachEvents();
-	    delete sb.$el.f7Searchbar;
+	    if (sb.$el[0]) {
+	      sb.$el[0].f7Searchbar = null;
+	      delete sb.$el[0].f7Searchbar;
+	    }
 	    Utils.deleteProps(sb);
 	  };
 
@@ -24414,8 +24452,10 @@
 	    var m = this;
 	    m.emit('local::beforeDestroy messagesBeforeDestroy', m);
 	    m.$el.trigger('messages:beforedestroy', m);
-	    m.$el[0].f7Messages = null;
-	    delete m.$el[0].f7Messages;
+	    if (m.$el[0]) {
+	      m.$el[0].f7Messages = null;
+	      delete m.$el[0].f7Messages;
+	    }
 	    Utils.deleteProps(m);
 	  };
 
@@ -24840,8 +24880,10 @@
 	    messagebar.emit('local::beforeDestroy messagebarBeforeDestroy', messagebar);
 	    messagebar.$el.trigger('messagebar:beforedestroy', messagebar);
 	    messagebar.detachEvents();
-	    messagebar.$el[0].f7Messagebar = null;
-	    delete messagebar.$el[0].f7Messagebar;
+	    if (messagebar.$el[0]) {
+	      messagebar.$el[0].f7Messagebar = null;
+	      delete messagebar.$el[0].f7Messagebar;
+	    }
 	    Utils.deleteProps(messagebar);
 	  };
 
@@ -31495,6 +31537,7 @@
 	    pb.emit('local::beforeDestroy photoBrowserBeforeDestroy', pb);
 	    if (pb.$el) {
 	      pb.$el.trigger('photobrowser:beforedestroy');
+	      pb.$el[0].f7PhotoBrowser = null;
 	      delete pb.$el[0].f7PhotoBrowser;
 	    }
 	    Utils.deleteProps(pb);
@@ -33584,7 +33627,7 @@
 	};
 
 	/**
-	 * Framework7 3.0.7
+	 * Framework7 3.1.1
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -33592,7 +33635,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: July 31, 2018
+	 * Released on: August 3, 2018
 	 */
 
 	// Install Core Modules & Components
@@ -36428,71 +36471,69 @@
 	    var radius = size / 2 - borderWidth / 2;
 	    var length = 2 * Math.PI * radius;
 	    var progress = Math.max(Math.min(value, 1), 0);
-	    {
-	      return react.createElement('div', {
-	        id: id,
-	        style: style,
-	        className: classes
-	      }, react.createElement('svg', {
-	        className: 'gauge-svg',
-	        width: (size + "px"),
-	        height: ((semiCircle ? size / 2 : size) + "px"),
-	        viewBox: ("0 0 " + size + " " + (semiCircle ? size / 2 : size))
-	      }, semiCircle && react.createElement('path', {
-	        className: 'gauge-back-semi',
-	        d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
-	        stroke: borderBgColor,
-	        strokeWidth: borderWidth,
-	        fill: bgColor || 'none'
-	      }), semiCircle && react.createElement('path', {
-	        className: 'gauge-front-semi',
-	        d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
-	        stroke: borderColor,
-	        strokeWidth: borderWidth,
-	        strokeDasharray: length / 2,
-	        strokeDashoffset: length / 2 * (progress - 1),
-	        fill: borderBgColor ? 'none' : bgColor || 'none'
-	      }), !semiCircle && borderBgColor && react.createElement('circle', {
-	        className: 'gauge-back-circle',
-	        stroke: borderBgColor,
-	        strokeWidth: borderWidth,
-	        fill: bgColor || 'none',
-	        cx: size / 2,
-	        cy: size / 2,
-	        r: radius
-	      }), !semiCircle && react.createElement('circle', {
-	        className: 'gauge-front-circle',
-	        transform: ("rotate(-90 " + (size / 2) + " " + (size / 2) + ")"),
-	        stroke: borderColor,
-	        strokeWidth: borderWidth,
-	        strokeDasharray: length,
-	        strokeDashoffset: length * (1 - progress),
-	        fill: borderBgColor ? 'none' : bgColor || 'none',
-	        cx: size / 2,
-	        cy: size / 2,
-	        r: radius
-	      }), valueText && react.createElement('text', {
-	        className: 'gauge-value-text',
-	        x: '50%',
-	        y: semiCircle ? '100%' : '50%',
-	        fontWeight: valueFontWeight,
-	        fontSize: valueFontSize,
-	        fill: valueTextColor,
-	        dy: semiCircle ? labelText ? -labelFontSize - 15 : -5 : 0,
-	        textAnchor: 'middle',
-	        dominantBaseline: !semiCircle && 'middle'
-	      }, valueText), labelText && react.createElement('text', {
-	        className: 'gauge-label-text',
-	        x: '50%',
-	        y: semiCircle ? '100%' : '50%',
-	        fontWeight: labelFontWeight,
-	        fontSize: labelFontSize,
-	        fill: labelTextColor,
-	        dy: semiCircle ? -5 : valueText ? valueFontSize / 2 + 10 : 0,
-	        textAnchor: 'middle',
-	        dominantBaseline: !semiCircle && 'middle'
-	      }, labelText)));
-	    }
+	    return react.createElement('div', {
+	      id: id,
+	      style: style,
+	      className: classes
+	    }, react.createElement('svg', {
+	      className: 'gauge-svg',
+	      width: (size + "px"),
+	      height: ((semiCircle ? size / 2 : size) + "px"),
+	      viewBox: ("0 0 " + size + " " + (semiCircle ? size / 2 : size))
+	    }, semiCircle && react.createElement('path', {
+	      className: 'gauge-back-semi',
+	      d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
+	      stroke: borderBgColor,
+	      strokeWidth: borderWidth,
+	      fill: bgColor || 'none'
+	    }), semiCircle && react.createElement('path', {
+	      className: 'gauge-front-semi',
+	      d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
+	      stroke: borderColor,
+	      strokeWidth: borderWidth,
+	      strokeDasharray: length / 2,
+	      strokeDashoffset: length / 2 * (progress - 1),
+	      fill: borderBgColor ? 'none' : bgColor || 'none'
+	    }), !semiCircle && borderBgColor && react.createElement('circle', {
+	      className: 'gauge-back-circle',
+	      stroke: borderBgColor,
+	      strokeWidth: borderWidth,
+	      fill: bgColor || 'none',
+	      cx: size / 2,
+	      cy: size / 2,
+	      r: radius
+	    }), !semiCircle && react.createElement('circle', {
+	      className: 'gauge-front-circle',
+	      transform: ("rotate(-90 " + (size / 2) + " " + (size / 2) + ")"),
+	      stroke: borderColor,
+	      strokeWidth: borderWidth,
+	      strokeDasharray: length,
+	      strokeDashoffset: length * (1 - progress),
+	      fill: borderBgColor ? 'none' : bgColor || 'none',
+	      cx: size / 2,
+	      cy: size / 2,
+	      r: radius
+	    }), valueText && react.createElement('text', {
+	      className: 'gauge-value-text',
+	      x: '50%',
+	      y: semiCircle ? '100%' : '50%',
+	      fontWeight: valueFontWeight,
+	      fontSize: valueFontSize,
+	      fill: valueTextColor,
+	      dy: semiCircle ? labelText ? -labelFontSize - 15 : -5 : 0,
+	      textAnchor: 'middle',
+	      dominantBaseline: !semiCircle && 'middle'
+	    }, valueText), labelText && react.createElement('text', {
+	      className: 'gauge-label-text',
+	      x: '50%',
+	      y: semiCircle ? '100%' : '50%',
+	      fontWeight: labelFontWeight,
+	      fontSize: labelFontSize,
+	      fill: labelTextColor,
+	      dy: semiCircle ? -5 : valueText ? valueFontSize / 2 + 10 : 0,
+	      textAnchor: 'middle',
+	      dominantBaseline: !semiCircle && 'middle'
+	    }, labelText)));
 	  };
 
 	  return F7Gauge;
@@ -37031,7 +37072,7 @@
 	    } else if (type === 'toggle') {
 	      inputEl = react.createElement(F7Toggle, {
 	        checked: checked,
-	        readOnly: readonly,
+	        readonly: readonly,
 	        name: name,
 	        value: value,
 	        disabled: disabled,
@@ -39832,7 +39873,11 @@
 
 	  F7Messagebar.prototype.onClick = function onClick (event) {
 	    var self = this;
-	    var value = self.refs.area.refs.inputEl.value;
+	    var value;
+	    {
+	      value = self.refs.area.refs.inputEl.value;
+	    }
+	    console.log(value);
 	    var clear = self.f7Messagebar ? function () {
 	      self.f7Messagebar.clear();
 	    } : function () {};
@@ -42643,6 +42688,8 @@
 	      if (useDefaultBackdrop) {
 	        var app = self.$f7;
 	        useBackdrop = app.params.sheet && app.params.sheet.backdrop !== undefined ? app.params.sheet.backdrop : self.$theme.md;
+	      } else {
+	        useBackdrop = backdrop;
 	      }
 
 	      self.f7Sheet = self.$f7.sheet.create({
@@ -42915,6 +42962,9 @@
 	      var autorepeat = ref.autorepeat;
 	      var autorepeatDynamic = ref.autorepeatDynamic;
 	      var wraps = ref.wraps;
+	      var manualInputMode = ref.manualInputMode;
+	      var decimalPoint = ref.decimalPoint;
+	      var buttonsEndInputMode = ref.buttonsEndInputMode;
 	      var el = self.refs.el;
 	      if (!el) { return; }
 	      self.f7Stepper = f7.stepper.create(Utils$1.noUndefinedProps({
@@ -42927,6 +42977,9 @@
 	        autorepeat: autorepeat,
 	        autorepeatDynamic: autorepeatDynamic,
 	        wraps: wraps,
+	        manualInputMode: manualInputMode,
+	        decimalPoint: decimalPoint,
+	        buttonsEndInputMode: buttonsEndInputMode,
 	        on: {
 	          change: function change(stepper, newValue) {
 	            self.dispatchEvent('stepper:change stepperChange', newValue);
@@ -42988,7 +43041,7 @@
 	  },
 	  inputReadonly: {
 	    type: Boolean,
-	    default: true
+	    default: false
 	  },
 	  autorepeat: {
 	    type: Boolean,
@@ -43001,6 +43054,18 @@
 	  wraps: {
 	    type: Boolean,
 	    default: false
+	  },
+	  manualInputMode: {
+	    type: Boolean,
+	    default: false
+	  },
+	  decimalPoint: {
+	    type: Number,
+	    default: 4
+	  },
+	  buttonsEndInputMode: {
+	    type: Boolean,
+	    default: true
 	  },
 	  disabled: Boolean,
 	  buttonsOnly: Boolean,
@@ -44275,7 +44340,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.0.7
+	 * Framework7 React 3.1.1
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -44283,7 +44348,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: July 20, 2018
+	 * Released on: August 3, 2018
 	 */
 
 	var AccordionContent = F7AccordionContent;

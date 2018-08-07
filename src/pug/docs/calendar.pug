@@ -55,9 +55,10 @@ block content
     p For example:
     pre
       code.js
-        | var calendar = app.calendar.create({
-        |     input: '#calendar-input'
-        | });
+        :code(lang="js")
+          var calendar = app.calendar.create({
+              input: '#calendar-input'
+          });
     h2 Calendar Parameters
     p Let's look on list of all available Calendar parameters:
     table.params-table
@@ -167,7 +168,7 @@ block content
           td
             pre
               code
-                :code
+                :code(lang="js")
                   {
                     monthNames: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
                     monthNamesShort: ['فَر', 'اُر', 'خُر', 'تیر', 'مُر', 'شَه', 'مهر', 'آب', 'آذر', 'دی', 'بَه', 'اِس'],
@@ -382,7 +383,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var calendar = app.calendar.create({
                     ...
                     on: {
@@ -395,7 +396,7 @@ block content
       p Note that all following parameters can be used in global app parameters under <code>calendar</code> property to set defaults for all calendars. For example:
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7({
               calendar: {
                 url: 'calendar/',
@@ -407,51 +408,55 @@ block content
     p It can be array with dates, for example:
     pre
       code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     // Disabled 10th November 2015 and 11th November 2015:
-        |     disabled: [new Date(2015, 10, 10), new Date(2015, 10, 11)],
-        |     ...
-        | });
+        :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              // Disabled 10th November 2015 and 11th November 2015:
+              disabled: [new Date(2015, 10, 10), new Date(2015, 10, 11)],
+              ...
+          });
     p It can be custom function where you need to return <b>true</b> or <b>false</b>
     pre
       code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     //Disabled all dates in November 2015
-        |     disabled: function (date) {
-        |         if (date.getFullYear() === 2015 && date.getMonth() === 10) {
-        |             return true;
-        |         }
-        |         else {
-        |             return false;
-        |         }
-        |     },
-        |     ...
-        | });
+        :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              //Disabled all dates in November 2015
+              disabled: function (date) {
+                  if (date.getFullYear() === 2015 && date.getMonth() === 10) {
+                      return true;
+                  }
+                  else {
+                      return false;
+                  }
+              },
+              ...
+          });
     p Or object with <b>from</b> and <b>to</b> properties
     pre
       code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     //Disable all dates between 1st October 2015 and 31 December 2015
-        |     disabled: {
-        |         from: new Date(2015, 9, 1),
-        |         to: new Date(2015, 11, 31)
-        |     },
-        |     ...
-        | });
+        :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              //Disable all dates between 1st October 2015 and 31 December 2015
+              disabled: {
+                  from: new Date(2015, 9, 1),
+                  to: new Date(2015, 11, 31)
+              },
+              ...
+          });
     p Or object with just <b>from</b> or <b>to</b> properties
     pre
       code.js
-        | var calendar = app.calendar.create({
-        |     ...
-        |     //Disable everyting since December 2015
-        |     disabled: {
-        |         from: new Date(2015, 11, 1)
-        |     },
-        |     ...
-        | });
+        :code(lang="js")
+          var calendar = app.calendar.create({
+              ...
+              //Disable everyting since December 2015
+              disabled: {
+                  from: new Date(2015, 11, 1)
+              },
+              ...
+          });
     p Or object with #[code date] property:
     pre
       code.js

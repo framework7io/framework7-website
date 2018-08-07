@@ -17,17 +17,18 @@ block content
     p Let's look at layout structure of sortable lists in your list views:
     pre
       code
-        | &lt;!-- Additional "sortable" class on list block --&gt;
-        | &lt;div class="list sortable"&gt;
-        |     &lt;li&gt;
-        |         &lt;div class="item-content"&gt;
-        |             &lt;div class="item-media"&gt;...&lt;/div&gt;
-        |             &lt;div class="item-inner"&gt;...&lt;/div&gt;
-        |         &lt;/div&gt;
-        |         &lt;!-- Sortable handler element --&gt;
-        |         &lt;div class="sortable-handler"&gt;&lt;/div&gt;
-        |     &lt;/li&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;!-- Additional "sortable" class on list block --&gt;
+          &lt;div class="list sortable"&gt;
+              &lt;li&gt;
+                  &lt;div class="item-content"&gt;
+                      &lt;div class="item-media"&gt;...&lt;/div&gt;
+                      &lt;div class="item-inner"&gt;...&lt;/div&gt;
+                  &lt;/div&gt;
+                  &lt;!-- Sortable handler element --&gt;
+                  &lt;div class="sortable-handler"&gt;&lt;/div&gt;
+              &lt;/li&gt;
+          &lt;/div&gt;
     p Where:
     ul
       li <code>sortable-handler</code> - "draggable" element (hidden by default) that allows you to sort current list view element

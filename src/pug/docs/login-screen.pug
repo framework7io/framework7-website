@@ -150,7 +150,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var login screen = app.loginScreen.create({
                     content: '<div class="login-screen">...</div>',
                     on: {
@@ -163,7 +163,7 @@ block content
     p So to create Login Screen we have to call:
     pre
       code
-        :code
+        :code(lang="js")
           var loginScreen = app.loginScreen.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>loginScreen</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -232,7 +232,7 @@ block content
     p According to above note:
     pre
       code.xml
-        :code(lang="xml")
+        :code(lang="html")
           <!-- In data-login-screen attribute we specify CSS selector of login screen we need to open -->
           <p><a href="#" data-login-screen=".my-login-screen" class="login-screen-open">Open Login Screen</a></p>
 

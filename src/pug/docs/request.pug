@@ -163,14 +163,15 @@ block content
           td An object of numeric HTTP codes and functions to be called when the response has the corresponding code. For example, the following will alert when the response status is a 404:
             pre
               code.js
-                | app.request({
-                |   url: 'somepage.html',
-                |   statusCode: {
-                |     404: function (xhr) {
-                |       alert('page not found');
-                |     }
-                |   }
-                | })
+                :code(lang="js")
+                  app.request({
+                    url: 'somepage.html',
+                    statusCode: {
+                      404: function (xhr) {
+                        alert('page not found');
+                      }
+                    }
+                  })
 
     h2 Shorthand Methods
     p Request comes with some pre configured methods for ease of use.

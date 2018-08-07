@@ -14,7 +14,7 @@ block content
     p When we init the app we can use the <code>new Framework7</code> constructor and pass an object with main app parameters:
     pre
       code
-        :code
+        :code(lang="js")
           var app = new Framework7({
             // App id
             id: 'com.myapp.test',
@@ -78,7 +78,7 @@ block content
           td App root data. Must be a function that returns an object with root data. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var app = new Framework7({
                     data: function () {
                       return {
@@ -96,7 +96,7 @@ block content
           td App root methods. Object with methods, e.g.
             pre
               code
-                :code
+                :code(lang="js")
                   var app = new Framework7({
                     methods: {
                       alert: function() {
@@ -112,7 +112,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var app = new Framework({
                     on: {
                       init: function () {
@@ -142,7 +142,7 @@ block content
           td Object with clicks-module related parameters:
             pre
               code
-                :code
+                :code(lang="js")
                   var app = new Framework7({
                     clicks: {
                       externalLinks: '.external',
@@ -166,7 +166,7 @@ block content
           td Object with touch-module related parameters:
             pre
               code
-                :code
+                :code(lang="js")
                   var app = new Framework7({
                     touch: {
                       tapHold: true,
@@ -241,7 +241,7 @@ block content
     p Example:
     pre
       code
-        :code
+        :code(lang="js")
           var app = new Framework7({
             id: 'com.myapp.test',
             // Extended by Panel component:
@@ -356,7 +356,7 @@ block content
     p Example:
     pre
       code
-        :code
+        :code(lang="js")
           // Open panel
           app.panel.open('left');
 
@@ -415,7 +415,7 @@ block content
     p Example:
     pre
       code
-        :code
+        :code(lang="js")
           app.on('panelOpen', function (panel) {
             console.log('Panel ' + panel.side + ' opened');
           });

@@ -142,7 +142,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var toast = app.toast.create({
                     title: 'John Doe'
                     text: 'Hello, how are you?',
@@ -156,7 +156,7 @@ block content
       p Note that all following parameters can be used in global app parameters under <code>toast</code> property to set defaults for all toasts. For example:
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7({
               toast: {
                 closeTimeout: 3000,
@@ -167,7 +167,7 @@ block content
     p So to create Toast we have to call:
     pre
       code
-        :code
+        :code(lang="js")
           var toast = app.toast.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>toast</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -304,7 +304,7 @@ block content
       h2(data-device-preview="../docs-demos/core/toast.html") Examples
       pre
         code
-          :code
+          :code(lang="html")
             <div class="block">
               <p>
                 <a href="#" class="button button-raised open-toast-bottom">Toast on Bottom</a>
@@ -333,7 +333,7 @@ block content
             </div>
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

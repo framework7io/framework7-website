@@ -18,27 +18,30 @@ block content
     p So, for example, if you want to change navbar's bottom hairline color, you need to change <b>background-color</b> of <code>:after</code> element:
     pre
       code
-        | .navbar:after {
-        |   background-color: red;
-        | }
+        :code(lang="css")
+          .navbar:after {
+            background-color: red;
+          }
     p To remove bottom hairline on navbar and top hairline on toolbar:
     pre
       code
-        | .navbar:after {
-        |   display:none;
-        | }
-        |
-        | .toolbar:before {
-        |   display:none;
-        | }
+        :code(lang="css")
+          .navbar:after {
+            display:none;
+          }
+
+          .toolbar:before {
+            display:none;
+          }
     h2 no-hairline Class
     p This helper class can be used to remove hairline. Currently it is supported on Navbar, Toolbar, Subnavbar, Searchbar, Card and its elements (card header, footer).
     P To remove hairline from navbar:
     pre
       code.html
-        | &lt;div class="navbar no-hairline"&gt;
-        |     ...
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="navbar no-hairline"&gt;
+              ...
+          &lt;/div&gt;
     h2 no-hairlines Classes
     ul
       li <code>no-hairlines</code> class on List View and Content Block to remove outer hairlines.
@@ -50,7 +53,7 @@ block content
 
     pre
       code
-        :code
+        :code(lang="html")
           <!-- remove outer hairlines -->
           <div class="list no-hairlines">
             ...

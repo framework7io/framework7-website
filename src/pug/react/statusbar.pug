@@ -19,17 +19,19 @@ block content
       li <code><b>Statusbar</b></code> / <code><b>F7Statusbar</b></code>
     h2 Examples
     pre
-      code.html
-        | &lt;App&gt;
-        |   &lt;!-- Should be placed as the first child in the app root --&gt;
-        |   &lt;Statusbar&gt;&lt;/Statusbar&gt;
-        |   ...
-        | &lt;/App&gt;
+      code.jsx
+        :code(lang="jsx")
+          &lt;App&gt;
+            {/* Should be placed as the first child in the app root */}
+            &lt;Statusbar&gt;&lt;/Statusbar&gt;
+            ...
+          &lt;/App&gt;
     p Renders to:
     pre
-      code.html
-        | &lt;div class="framework7-root"&gt;
-        |   &lt;div class="statusbar"&gt;&lt;/div&gt;
-        |   ...
-        | &lt;/div&gt;
+      code.jsx
+        :code(lang="jsx")
+          &lt;div class="framework7-root"&gt;
+            &lt;div class="statusbar"&gt;&lt;/div&gt;
+            ...
+          &lt;/div&gt;
 

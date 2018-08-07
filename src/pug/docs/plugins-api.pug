@@ -144,12 +144,13 @@ block content
     p We need to include it to app:
     pre
       code
-        | &lt;body&gt;
-        |     ...
-        |     &lt;script src="path/to/framework7.js"&gt;&lt;/script&gt;
-        |     &lt;script src="path/to/framework7.debug.js"&gt;&lt;/script&gt;
-        |     &lt;script src="path/to/myapp.js"&gt;&lt;/script&gt;
-        | &lt;/body&gt;
+        :code(lang="html")
+          &lt;body&gt;
+              ...
+              &lt;script src="path/to/framework7.js"&gt;&lt;/script&gt;
+              &lt;script src="path/to/framework7.debug.js"&gt;&lt;/script&gt;
+              &lt;script src="path/to/myapp.js"&gt;&lt;/script&gt;
+          &lt;/body&gt;
     pre
       code.js
         :code(lang="js")

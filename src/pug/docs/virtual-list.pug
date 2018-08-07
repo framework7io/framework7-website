@@ -16,10 +16,11 @@ block content
     p Virtual List HTML layout is pretty simple, it is almost the same as for usual <a href="list-view.html">List View</a> with only difference: you need to leave it empty:
     pre
       code
-        | &lt;!-- Virtual List --&gt;
-        | &lt;div class="list virtual-list"&gt;
-        |   &lt;!-- keep it empty --&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;!-- Virtual List --&gt;
+          &lt;div class="list virtual-list"&gt;
+            &lt;!-- keep it empty --&gt;
+          &lt;/div&gt;
     p Where:
     ul
       li
@@ -167,7 +168,7 @@ block content
     p So to create Virtual List we have to call:
     pre
       code
-        :code
+        :code(lang="js")
           var virtualList = app.virtualList.create({ /* parameters */ })
     p After we initialize Virtual List we have its initialized instance in variable (like <code>virtualList</code> variable in example above) with helpful methods and properties:
     table.methods-table

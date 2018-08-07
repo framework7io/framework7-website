@@ -78,8 +78,8 @@ block content
     p For example
     pre
       code
-        :code
-          export detault () => (
+        :code(lang="jsx")
+          export default () => (
             <Page>
               <p slot="fixed">I'm fixed page element</p>
               <p>I'm in scrollable page area</p>
@@ -95,7 +95,7 @@ block content
     p Renders to:
     pre
       code
-        :code
+        :code(lang="html")
           <div class="page">
             <p slot="fixed">I'm fixed page element</p>
             <div class="page-content">
@@ -123,8 +123,8 @@ block content
     p All Framework7-React components support events, which are actually props, and their listeners must be assigned as <code>on$Event</code> prop.
     p For example <code>&lt;Page&gt;</code> component supports <code>pageInit</code>, <code>pageBeforeIn</code> and other <a href="page.html#page-events">events</a>, so to handle such events:
     pre
-      code.js
-        :code(lang="js")
+      code.jsx
+        :code(lang="jsx")
           export default class extends React.Component {
             render() {
               return (

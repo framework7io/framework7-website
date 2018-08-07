@@ -17,24 +17,26 @@ block content
     p Toolbar layout is very simple:
     pre
       code.html
-        | &lt;div class="toolbar"&gt;
-        |     &lt;div class="toolbar-inner"&gt;
-        |         &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
-        |         &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
-        |         &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
-        |     &lt;/div&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="toolbar"&gt;
+              &lt;div class="toolbar-inner"&gt;
+                  &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+                  &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+                  &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
+              &lt;/div&gt;
+          &lt;/div&gt;
     p By default, all Toolbar elements (links) equally spaced along toolbar - they have equal space between each other.
     p In MD Theme Toolbar/Tabbar is usually on top of the app right below the Navbar. But if you really need to have Toolbar on bottom you can do it by just using addional <code><b>toolbar-bottom-md</b></code> class:
     pre
       code.html
-        | &lt;div class="toolbar toolbar-bottom-md"&gt;
-        |     &lt;div class="toolbar-inner"&gt;
-        |         &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
-        |         &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
-        |         &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
-        |     &lt;/div&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="toolbar toolbar-bottom-md"&gt;
+              &lt;div class="toolbar-inner"&gt;
+                  &lt;a href="#" class="link"&gt;Link 1&lt;/a&gt;
+                  &lt;a href="#" class="link"&gt;Link 2&lt;/a&gt;
+                  &lt;a href="#" class="link"&gt;Link 3&lt;/a&gt;
+              &lt;/div&gt;
+          &lt;/div&gt;
     h3 Theme-specific Styling
     p In iOS theme Toolbar/Tabbar has thin border on the top. To disable this border you need to add <code><b>no-hairline</b></code> class to toolbar element:
     pre
@@ -279,12 +281,13 @@ block content
     p To make it work all you need is to add <code><b>no-toolbar</b></code> class to loaded page (<code>&lt;div class="page no-toolbar"&gt;</code>):
     pre
       code
-        | &lt;!-- Page has additional "no-toolbar" class --&gt;
-        | &lt;div class="page no-toolbar"&gt;
-        |   &lt;div class="page-content"&gt;
-        |       ...
-        |   &lt;/div&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;!-- Page has additional "no-toolbar" class --&gt;
+          &lt;div class="page no-toolbar"&gt;
+            &lt;div class="page-content"&gt;
+                ...
+            &lt;/div&gt;
+          &lt;/div&gt;
     .with-device
       h2(data-device-preview="../docs-demos/core/toolbar-tabbar.html") Examples
       h3 Static Toolbar

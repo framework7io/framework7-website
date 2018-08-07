@@ -29,6 +29,10 @@
 
   // Pug Filter
   pug.filters['code'] = function (code, { lang } = {}) {
+    code = code
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
+
     code = highlight(code, lang);
     return code;
   }
@@ -99,9 +103,6 @@
   // Build All
   gulp.task('build', ['pug', 'less'], function (cb) {
     cb();
-  });
-  gulp.task('build-local', function (cb) {
-    local = true;
   });
 
   /* =================================

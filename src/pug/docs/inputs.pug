@@ -180,35 +180,38 @@ block content
           td
             pre
               code
-                | ...
-                |   &lt;div class="item-input-wrap"&gt;
-                |     &lt;select&gt;...&lt;/select"&gt;
-                |   &lt;/div&gt;
-                | ...
+                :code(lang="html")
+                  ...
+                    &lt;div class="item-input-wrap"&gt;
+                      &lt;select&gt;...&lt;/select"&gt;
+                    &lt;/div&gt;
+                  ...
         tr
           td(valign="top")
             b Textarea
           td
             pre
               code.html
-                | ...
-                |   &lt;div class="item-input-wrap"&gt;
-                |     &lt;textarea&gt;&lt;/textarea&gt;
-                |   &lt;/div&gt;
-                | ...
+                :code(lang="html")
+                  ...
+                    &lt;div class="item-input-wrap"&gt;
+                      &lt;textarea&gt;&lt;/textarea&gt;
+                    &lt;/div&gt;
+                  ...
         tr
           td(valign="top")
             b Range Slider
           td
             pre
               code.html
-                | ...
-                |   &lt;div class="item-input-wrap"&gt;
-                |     &lt;div class="range-slider"&gt;
-                |       &lt;input type="range" min="0" max="100" step="0.1"&gt;
-                |     &lt;/div&gt;
-                |   &lt;/div&gt;
-                | ...
+                :code(lang="html")
+                  ...
+                    &lt;div class="item-input-wrap"&gt;
+                      &lt;div class="range-slider"&gt;
+                        &lt;input type="range" min="0" max="100" step="0.1"&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  ...
     h2 Resizable Textarea
     p To make textarea automatically resize based on its content we may just add <code>resizable</code> class:
     pre

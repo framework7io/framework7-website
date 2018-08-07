@@ -17,29 +17,30 @@ block content
     p Sheet layout is pretty simple:
     pre
       code
-        | &lt;body&gt;
-        |   ...
-        |   &lt;!-- Sheet Modal Container --&gt;
-        |   &lt;div class="sheet-modal"&gt;
-        |     &lt;!-- Sheet Modal Toolbar, optional --&gt;
-        |     &lt;div class="toolbar"&gt;
-        |       &lt;div class="toolbar-inner"&gt;
-        |         &lt;div class="left"&gt;&lt;/div&gt;
-        |         &lt;div class="right"&gt;
-        |           &lt;a href="#" class="link sheet-close"&gt;Done&lt;/a&gt;
-        |         &lt;/div&gt;
-        |       &lt;/div&gt;
-        |     &lt;/div&gt;
-        |     &lt;!-- Sheet Modal Inner --&gt;
-        |     &lt;div class="sheet-modal-inner"&gt;
-        |       &lt;!-- Sheet Modal content --&gt;
-        |       &lt;div class="block"&gt;
-        |         &lt;p&gt;Integer mollis nulla id nibh elementum finibus...&lt;/p&gt;
-        |       &lt;/div&gt;
-        |     &lt;/div&gt;
-        |   &lt;/div&gt;
-        |
-        | &lt;/body&gt;
+        :code(lang="html")
+          &lt;body&gt;
+            ...
+            &lt;!-- Sheet Modal Container --&gt;
+            &lt;div class="sheet-modal"&gt;
+              &lt;!-- Sheet Modal Toolbar, optional --&gt;
+              &lt;div class="toolbar"&gt;
+                &lt;div class="toolbar-inner"&gt;
+                  &lt;div class="left"&gt;&lt;/div&gt;
+                  &lt;div class="right"&gt;
+                    &lt;a href="#" class="link sheet-close"&gt;Done&lt;/a&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+              &lt;!-- Sheet Modal Inner --&gt;
+              &lt;div class="sheet-modal-inner"&gt;
+                &lt;!-- Sheet Modal content --&gt;
+                &lt;div class="block"&gt;
+                  &lt;p&gt;Integer mollis nulla id nibh elementum finibus...&lt;/p&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+          &lt;/body&gt;
     h2 Sheet App Methods
     p Let's look at related App methods to work with Sheet:
     .method-wrap
@@ -146,7 +147,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var sheet = app.sheet.create({
                     content: '<div class="sheet-modal">...</div>',
                     on: {
@@ -159,7 +160,7 @@ block content
       p Note that all following parameters can be used in global app parameters under <code>sheet</code> property to set defaults for all sheets. For example:
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7({
               sheet: {
                 closeByBackdropClick: false,
@@ -169,7 +170,7 @@ block content
     p So to create Sheet we have to call:
     pre
       code
-        :code
+        :code(lang="js")
           var sheet = app.sheet.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>sheet</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -244,7 +245,7 @@ block content
     p According to above note:
     pre
       code.xml
-        :code(lang="xml")
+        :code(lang="html")
           <!-- In data-sheet attribute we specify CSS selector of sheet we need to open -->
           <p><a href="#" data-sheet=".my-sheet" class="sheet-open">Open Sheet</a></p>
 

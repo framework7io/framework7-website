@@ -63,8 +63,8 @@ block content
           )
     p Your root App.jsx component will typically have a top-level Framework7App component. This component is used to configure your app:
     pre
-      code.js
-        :code(lang="js")
+      code.jsx
+        :code(lang="jsx")
           // App.jsx
 
           import { App, View, Page, Navbar, Toolbar, Link } from 'framework7-react';
@@ -81,11 +81,11 @@ block content
           };
 
           export default () => (
-            <!-- Main Framework7 App component where we pass Framework7 params -->
+            // Main Framework7 App component where we pass Framework7 params
             <App params={f7params}>
               <Statusbar />
 
-              <!-- initial page is specified in routes.js -->
+              {/* initial page is specified in routes.js */}
               <View main url="/" />
             </App>
           )

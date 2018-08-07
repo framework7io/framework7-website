@@ -13,7 +13,7 @@ block content
     p First thing we should do for our App is to create index.html file with app's skeleton.
     pre
       code
-        :code
+        :code(lang="html")
           <!DOCTYPE html>
           <html>
             <head>
@@ -41,30 +41,30 @@ block content
     h2 Basic Layout
     p Let's look at the very basic app component layout:
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           // App.jsx
           import { App, Statusbar, View, Page, Navbar, Toolbar, Link } from 'framework7-react';
 
           export default () => (
             // Main Framework7 App component where we pass Framework7 params
-            <App :params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
+            <App params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
 
-              // Status bar overlay for full screen mode (Cordova or PhoneGap)
+              {/* Status bar overlay for full screen mode (Cordova or PhoneGap) */}
               <Statusbar></Statusbar>
 
-              // Your main view, should have "main" prop
+              {/* Your main view, should have "main" prop */}
               <View main>
-                // Initial Page
+                {/*  Initial Page */}
                 <Page>
-                  // Top Navbar
+                  {/* Top Navbar */}
                   <Navbar title="Awesome App"></Navbar>
-                  // Toolbar
+                  {/* Toolbar */}
                   <Toolbar>
                     <Link>Link 1</Link>
                     <Link>Link 2</Link>
                   </Toolbar>
-                  // Page Content
+                  {/* Page Content */}
                   <p>Page content goes here</p>
                   <Link href="/about/">About App</Link>
                 </Page>
@@ -75,20 +75,20 @@ block content
     h2 Advanced Layout
     p Now, let's look on more advanced layout where we will also add side panels with views and popup
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           // App.jsx
 
           import { App, Statusbar, Panel, View, Page, Navbar, Block, Row, Col, Button, Popup, Link } from 'framework7-react';
 
           export default () => (
-            // Main Framework7 App component where we pass Framework7 params
-            <App :params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
+            /* Main Framework7 App component where we pass Framework7 params */
+            <App params={{ theme: 'auto', name: 'My App', id: 'com.demoapp.test' }}>
 
-              // Status bar overlay for full screen mode (Cordova or PhoneGap)
+              {/* Status bar overlay for full screen mode (Cordova or PhoneGap) */}
               <Statusbar></Statusbar>
 
-              // Left Panel with "cover" effect
+              {/* Left Panel with "cover" effect */}
               <Panel left cover>
                 <View>
                   <Page>
@@ -100,7 +100,7 @@ block content
                 </View>
               </Panel>
 
-              // Right Panel with "reveal" effect
+              {/* Right Panel with "reveal" effect */}
               <Panel right reveal>
                 <View>
                   <Page>
@@ -112,15 +112,15 @@ block content
                 </View>
               </Panel>
 
-              // Main view
+              {/*  Main view */}
               <View main>
                 <Page>
                   <Navbar title="Awesome App"></Navbar>
-                  // Page content
+                  {/* Page content */}
                   <Block>
                     <p>Here comes main view page text</p>
                   </Block>
-                  // Buttons to open panels
+                  {/* Buttons to open panels */}
                   <Row>
                     <Col>
                       <Button panelOpen="left">Left Panel</Button>
@@ -129,17 +129,17 @@ block content
                       <Button panelOpen="right">Right Panel</Button>
                     </Col>
                   </Row>
-                  // Button to open popup
+                  {/* Button to open popup */}
                   <Button popupOpen="#my-popup">Open Popup</Button>
                 </Page>
               </View>
 
-              // Popup. All modals should be outside of Views
+              {/* Popup. All modals should be outside of Views */}
               <Popup id="my-popup">
                 <View>
                   <Page>
                     <Navbar title="Popup">
-                      // Link to close popup
+                      {/* Link to close popup */}
                       <NavRight>
                         <Link popupClose>Close</Link>
                       </NavRight>

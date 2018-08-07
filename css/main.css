@@ -3161,7 +3161,7 @@ pre code {
   overflow-x: auto;
   border-radius: 6px;
   font-size: 14px;
-  line-height: 21px;
+  line-height: 20px;
   font-weight: normal;
 }
 .nowrap {
@@ -3178,7 +3178,7 @@ pre code {
   line-height: 19px;
 }
 .important-note pre code,
-table pre code.hljs {
+table pre code {
   padding: 5px;
   font-size: 13px;
   line-height: 19px;
@@ -3198,6 +3198,9 @@ code .operator {
 }
 code .keyword {
   color: #C88FEC;
+}
+code .keyword-block {
+  color: #86DDFF;
 }
 code .function {
   color: #80A8FF;
@@ -3225,7 +3228,7 @@ code .class-name {
   color: #FFCC63;
 }
 code .comment {
-  color: #536E7B;
+  color: #6c8e9e;
   font-style: italic;
 }
 code .number,
@@ -3250,6 +3253,15 @@ code .selector {
 }
 code .property {
   color: #B1CCD7;
+}
+code .doctype {
+  color: #aaa;
+}
+code.less .variable {
+  color: #86DDFF;
+}
+code.less .url {
+  color: #C2E988;
 }
 footer {
   background: #f4f4f4;

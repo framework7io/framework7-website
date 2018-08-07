@@ -15,8 +15,8 @@ block content
     p Framework7-React as Framework7 itself comes with powerful and flexible router. And to make it work we must specify <a href="../docs/routes.html">Routes</a>.
     p The only difference in Framework7-React is that in React.js we are already composing our application with React components, so we need to map our Pages (React components) to the routes. It can be done by passing React component in <code>component</code> property of the route. Here's a basic example:
     pre
-      code.js
-        :code(lang="js")
+      code.jsx
+        :code(lang="jsx")
           // App.jsx
 
           // Import pages components
@@ -51,14 +51,14 @@ block content
 
           export default () => (
             <App params={f7params}>
-              // Current View/Router, initial page will be loaded from home.jsx component
+              {/* Current View/Router, initial page will be loaded from home.jsx component */}
               <View main url="/" />
             </App>
           )
 
     pre
-      code.js
-        :code(lang="js")
+      code.jsx
+        :code(lang="jsx")
           // home.jsx
           export default () => (
             <Page name="home">
@@ -69,24 +69,24 @@ block content
             </Page>
           )
     pre
-      code.js
-        :code(lang="js")
+      code.jsx
+        :code(lang="jsx")
           // about.jsx
           export default () => (
             <Page name="about">
               <Navbar title="About" />
-              // Page content
+              {/* Page content */}
               ...
             </Page>
           )
     pre
-      code.js
-        :code(lang="js")
+      code.jsx
+        :code(lang="jsx")
           // login.jsx
           export default () => (
             <Page name="login">
               <Navbar title="Login" />
-              // Page content
+              {/* Page content */}
               ...
             </Page>
           )
@@ -115,8 +115,8 @@ block content
     h2 Router API
     p To access router instance and use <a href="../docs/view.html#router-api-methods-properties">Router API</a> you can use special <b>$f7router</b> property of component:
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Link onClick={() => this.$f7router.navigate('/about/')}>About</Link>
           <Link onClick={() => this.$f7router.back()}>Go Back</Link>
     .important-note

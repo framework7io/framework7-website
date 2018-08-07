@@ -16116,13 +16116,14 @@
   /* eslint no-use-before-define: "off" */
 
   var selfClosing = 'area base br col command embed hr img input keygen link menuitem meta param source track wbr'.split(' ');
-  var propsAttrs = 'hidden value checked disabled readonly selected'.split(' ');
+  var propsAttrs = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple value'.split(' ');
+  var booleanProps = 'hidden checked disabled readonly selected autocomplete autofocus autoplay required multiple readOnly'.split(' ');
   var tempDom = doc.createElement('div');
 
   function getHooks(data, app, initial, isRoot) {
-    if (!data || !data.attrs || !data.attrs.class) { return null; }
-    var classNames = data.attrs.class;
     var hooks = {};
+    if (!data || !data.attrs || !data.attrs.class) { return hooks; }
+    var classNames = data.attrs.class;
     var insert = [];
     var destroy = [];
     var update = [];
@@ -16145,9 +16146,8 @@
         }
       });
     }
-
     if (insert.length === 0 && destroy.length === 0 && update.length === 0 && postpatch.length === 0) {
-      return null;
+      return hooks;
     }
     if (insert.length) {
       hooks.insert = function (vnode) {
@@ -16166,9 +16166,10 @@
     }
     if (postpatch.length) {
       hooks.postpatch = function (oldVnode, vnode) {
-        postpatch.forEach(function (f) { return f(vnode); });
+        postpatch.forEach(function (f) { return f(oldVnode, vnode); });
       };
     }
+
     return hooks;
   }
   function getEventHandler(handlerString, context, ref) {
@@ -16267,7 +16268,15 @@
       var attrValue = attr.value;
       if (propsAttrs.indexOf(attrName) >= 0) {
         if (!data.props) { data.props = {}; }
-        data.props[attrName] = attrValue;
+        if (attrName === 'readonly') {
+          attrName = 'readOnly';
+        }
+        if (booleanProps.indexOf(attrName) >= 0) {
+          // eslint-disable-next-line
+          data.props[attrName] = attrValue === false ? false : true;
+        } else {
+          data.props[attrName] = attrValue;
+        }
       } else if (attrName === 'key') {
         data.key = attrName;
       } else if (attrName.indexOf('@') === 0) {
@@ -16297,6 +16306,19 @@
       }
     });
     var hooks = getHooks(data, app, initial, isRoot);
+    hooks.prepatch = function (oldVnode, vnode) {
+      if (!oldVnode || !vnode) { return; }
+      if (oldVnode && oldVnode.data && oldVnode.data.props) {
+        Object.keys(oldVnode.data.props).forEach(function (key) {
+          if (booleanProps.indexOf(key) < 0) { return; }
+          if (!vnode.data) { vnode.data = {}; }
+          if (!vnode.data.props) { vnode.data.props = {}; }
+          if (oldVnode.data.props[key] === true && !(key in vnode.data.props)) {
+            vnode.data.props[key] = false;
+          }
+        });
+      }
+    };
     if (hooks) {
       data.hook = hooks;
     }
@@ -16340,7 +16362,12 @@
     tempDom.innerHTML = html.trim();
 
     // Parse DOM
-    var rootEl = tempDom.childNodes[0];
+    var rootEl;
+    for (var i = 0; i < tempDom.childNodes.length; i += 1) {
+      if (!rootEl && tempDom.childNodes[i].nodeType === 1) {
+        rootEl = tempDom.childNodes[i];
+      }
+    }
     var result = elementToVNode(rootEl, context, app, initial, true);
 
     // Clean
@@ -22251,8 +22278,10 @@
       index.$el.trigger('listindex:beforedestroy', index);
       index.emit('local::beforeDestroy listIndexBeforeDestroy', index);
       index.detachEvents();
-      index.$el[0].f7ListIndex = null;
-      delete index.$el[0].f7ListIndex;
+      if (index.$el[0]) {
+        index.$el[0].f7ListIndex = null;
+        delete index.$el[0].f7ListIndex;
+      }
       Utils.deleteProps(index);
       index = null;
     };
@@ -23001,7 +23030,10 @@
       panel.$el.trigger('panel:destroy', panel);
       panel.emit('local::destroy panelDestroy');
       delete app.panel[panel.side];
-      delete panel.el.f7Panel;
+      if (panel.el) {
+        panel.el.f7Panel = null;
+        delete panel.el.f7Panel;
+      }
       Utils.deleteProps(panel);
       panel = null;
     };
@@ -29486,8 +29518,11 @@
       table.emit('local::beforeDestroy datatableBeforeDestroy', table);
 
       table.attachEvents();
-      table.$el[0].f7DataTable = null;
-      delete table.$el[0].f7DataTable;
+
+      if (table.$el[0]) {
+        table.$el[0].f7DataTable = null;
+        delete table.$el[0].f7DataTable;
+      }
       Utils.deleteProps(table);
       table = null;
     };
@@ -30298,7 +30333,10 @@
       sb.emit('local::beforeDestroy searchbarBeforeDestroy', sb);
       sb.$el.trigger('searchbar:beforedestroy', sb);
       sb.detachEvents();
-      delete sb.$el.f7Searchbar;
+      if (sb.$el[0]) {
+        sb.$el[0].f7Searchbar = null;
+        delete sb.$el[0].f7Searchbar;
+      }
       Utils.deleteProps(sb);
     };
 
@@ -30898,8 +30936,10 @@
       var m = this;
       m.emit('local::beforeDestroy messagesBeforeDestroy', m);
       m.$el.trigger('messages:beforedestroy', m);
-      m.$el[0].f7Messages = null;
-      delete m.$el[0].f7Messages;
+      if (m.$el[0]) {
+        m.$el[0].f7Messages = null;
+        delete m.$el[0].f7Messages;
+      }
       Utils.deleteProps(m);
     };
 
@@ -31324,8 +31364,10 @@
       messagebar.emit('local::beforeDestroy messagebarBeforeDestroy', messagebar);
       messagebar.$el.trigger('messagebar:beforedestroy', messagebar);
       messagebar.detachEvents();
-      messagebar.$el[0].f7Messagebar = null;
-      delete messagebar.$el[0].f7Messagebar;
+      if (messagebar.$el[0]) {
+        messagebar.$el[0].f7Messagebar = null;
+        delete messagebar.$el[0].f7Messagebar;
+      }
       Utils.deleteProps(messagebar);
     };
 
@@ -37979,6 +38021,7 @@
       pb.emit('local::beforeDestroy photoBrowserBeforeDestroy', pb);
       if (pb.$el) {
         pb.$el.trigger('photobrowser:beforedestroy');
+        pb.$el[0].f7PhotoBrowser = null;
         delete pb.$el[0].f7PhotoBrowser;
       }
       Utils.deleteProps(pb);
@@ -40068,7 +40111,7 @@
   };
 
   /**
-   * Framework7 3.0.7
+   * Framework7 3.1.1
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -40076,7 +40119,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: July 31, 2018
+   * Released on: August 3, 2018
    */
 
   // Install Core Modules & Components
@@ -42553,87 +42596,85 @@
       var radius = size / 2 - borderWidth / 2;
       var length = 2 * Math.PI * radius;
       var progress = Math.max(Math.min(value, 1), 0);
-      {
-        return _h('div', {
-          style: style,
-          class: classes,
-          attrs: {
-            id: id
-          }
-        }, [_h('svg', {
-          class: 'gauge-svg',
-          attrs: {
-            width: (size + "px"),
-            height: ((semiCircle ? size / 2 : size) + "px"),
-            viewBox: ("0 0 " + size + " " + (semiCircle ? size / 2 : size))
-          }
-        }, [semiCircle && _h('path', {
-          class: 'gauge-back-semi',
-          attrs: {
-            d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
-            stroke: borderBgColor,
-            'stroke-width': borderWidth,
-            fill: bgColor || 'none'
-          }
-        }), semiCircle && _h('path', {
-          class: 'gauge-front-semi',
-          attrs: {
-            d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
-            stroke: borderColor,
-            'stroke-width': borderWidth,
-            'stroke-dasharray': length / 2,
-            'stroke-dashoffset': length / 2 * (progress - 1),
-            fill: borderBgColor ? 'none' : bgColor || 'none'
-          }
-        }), !semiCircle && borderBgColor && _h('circle', {
-          class: 'gauge-back-circle',
-          attrs: {
-            stroke: borderBgColor,
-            'stroke-width': borderWidth,
-            fill: bgColor || 'none',
-            cx: size / 2,
-            cy: size / 2,
-            r: radius
-          }
-        }), !semiCircle && _h('circle', {
-          class: 'gauge-front-circle',
-          attrs: {
-            transform: ("rotate(-90 " + (size / 2) + " " + (size / 2) + ")"),
-            stroke: borderColor,
-            'stroke-width': borderWidth,
-            'stroke-dasharray': length,
-            'stroke-dashoffset': length * (1 - progress),
-            fill: borderBgColor ? 'none' : bgColor || 'none',
-            cx: size / 2,
-            cy: size / 2,
-            r: radius
-          }
-        }), valueText && _h('text', {
-          class: 'gauge-value-text',
-          attrs: {
-            x: '50%',
-            y: semiCircle ? '100%' : '50%',
-            'font-weight': valueFontWeight,
-            'font-size': valueFontSize,
-            fill: valueTextColor,
-            dy: semiCircle ? labelText ? -labelFontSize - 15 : -5 : 0,
-            'text-anchor': 'middle',
-            'dominant-baseline': !semiCircle && 'middle'
-          }
-        }, [valueText]), labelText && _h('text', {
-          class: 'gauge-label-text',
-          attrs: {
-            x: '50%',
-            y: semiCircle ? '100%' : '50%',
-            'font-weight': labelFontWeight,
-            'font-size': labelFontSize,
-            fill: labelTextColor,
-            dy: semiCircle ? -5 : valueText ? valueFontSize / 2 + 10 : 0,
-            'text-anchor': 'middle',
-            'dominant-baseline': !semiCircle && 'middle'
-          }
-        }, [labelText])])]);
-      }
+      return _h('div', {
+        style: style,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [_h('svg', {
+        class: 'gauge-svg',
+        attrs: {
+          width: (size + "px"),
+          height: ((semiCircle ? size / 2 : size) + "px"),
+          viewBox: ("0 0 " + size + " " + (semiCircle ? size / 2 : size))
+        }
+      }, [semiCircle && _h('path', {
+        class: 'gauge-back-semi',
+        attrs: {
+          d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
+          stroke: borderBgColor,
+          'stroke-width': borderWidth,
+          fill: bgColor || 'none'
+        }
+      }), semiCircle && _h('path', {
+        class: 'gauge-front-semi',
+        attrs: {
+          d: ("M" + (size - borderWidth / 2) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0"),
+          stroke: borderColor,
+          'stroke-width': borderWidth,
+          'stroke-dasharray': length / 2,
+          'stroke-dashoffset': length / 2 * (progress - 1),
+          fill: borderBgColor ? 'none' : bgColor || 'none'
+        }
+      }), !semiCircle && borderBgColor && _h('circle', {
+        class: 'gauge-back-circle',
+        attrs: {
+          stroke: borderBgColor,
+          'stroke-width': borderWidth,
+          fill: bgColor || 'none',
+          cx: size / 2,
+          cy: size / 2,
+          r: radius
+        }
+      }), !semiCircle && _h('circle', {
+        class: 'gauge-front-circle',
+        attrs: {
+          transform: ("rotate(-90 " + (size / 2) + " " + (size / 2) + ")"),
+          stroke: borderColor,
+          'stroke-width': borderWidth,
+          'stroke-dasharray': length,
+          'stroke-dashoffset': length * (1 - progress),
+          fill: borderBgColor ? 'none' : bgColor || 'none',
+          cx: size / 2,
+          cy: size / 2,
+          r: radius
+        }
+      }), valueText && _h('text', {
+        class: 'gauge-value-text',
+        attrs: {
+          x: '50%',
+          y: semiCircle ? '100%' : '50%',
+          'font-weight': valueFontWeight,
+          'font-size': valueFontSize,
+          fill: valueTextColor,
+          dy: semiCircle ? labelText ? -labelFontSize - 15 : -5 : 0,
+          'text-anchor': 'middle',
+          'dominant-baseline': !semiCircle && 'middle'
+        }
+      }, [valueText]), labelText && _h('text', {
+        class: 'gauge-label-text',
+        attrs: {
+          x: '50%',
+          y: semiCircle ? '100%' : '50%',
+          'font-weight': labelFontWeight,
+          'font-size': labelFontSize,
+          fill: labelTextColor,
+          dy: semiCircle ? -5 : valueText ? valueFontSize / 2 + 10 : 0,
+          'text-anchor': 'middle',
+          'dominant-baseline': !semiCircle && 'middle'
+        }
+      }, [labelText])])]);
     },
 
     computed: {
@@ -42681,7 +42722,7 @@
         inputEl = _h('input', {
           domProps: {
             disabled: disabled,
-            readonly: readonly,
+            readOnly: readonly,
             value: value,
             checked: checked
           },
@@ -45933,7 +45974,11 @@
 
       onClick: function onClick(event) {
         var self = this;
-        var value = self.$refs.area.refs.inputEl.value;
+        var value;
+        {
+          value = self.$refs.area.$refs.inputEl.value;
+        }
+        console.log(value);
         var clear = self.f7Messagebar ? function () {
           self.f7Messagebar.clear();
         } : function () {};
@@ -48319,6 +48364,8 @@
         if (useDefaultBackdrop) {
           var app = self.$f7;
           useBackdrop = app.params.sheet && app.params.sheet.backdrop !== undefined ? app.params.sheet.backdrop : self.$theme.md;
+        } else {
+          useBackdrop = backdrop;
         }
 
         self.f7Sheet = self.$f7.sheet.create({
@@ -48453,7 +48500,7 @@
       },
       inputReadonly: {
         type: Boolean,
-        default: true
+        default: false
       },
       autorepeat: {
         type: Boolean,
@@ -48466,6 +48513,18 @@
       wraps: {
         type: Boolean,
         default: false
+      },
+      manualInputMode: {
+        type: Boolean,
+        default: false
+      },
+      decimalPoint: {
+        type: Number,
+        default: 4
+      },
+      buttonsEndInputMode: {
+        type: Boolean,
+        default: true
       },
       disabled: Boolean,
       buttonsOnly: Boolean,
@@ -48506,7 +48565,7 @@
         {
           inputEl = _h('input', {
             domProps: {
-              readonly: inputReadonly,
+              readOnly: inputReadonly,
               value: value
             },
             on: {
@@ -48612,6 +48671,9 @@
         var autorepeat = ref.autorepeat;
         var autorepeatDynamic = ref.autorepeatDynamic;
         var wraps = ref.wraps;
+        var manualInputMode = ref.manualInputMode;
+        var decimalPoint = ref.decimalPoint;
+        var buttonsEndInputMode = ref.buttonsEndInputMode;
         var el = self.$refs.el;
         if (!el) { return; }
         self.f7Stepper = f7.stepper.create(Utils$1.noUndefinedProps({
@@ -48624,6 +48686,9 @@
           autorepeat: autorepeat,
           autorepeatDynamic: autorepeatDynamic,
           wraps: wraps,
+          manualInputMode: manualInputMode,
+          decimalPoint: decimalPoint,
+          buttonsEndInputMode: buttonsEndInputMode,
           on: {
             change: function change(stepper, newValue) {
               self.dispatchEvent('stepper:change stepperChange', newValue);
@@ -49824,7 +49889,7 @@
   };
 
   /**
-   * Framework7 Vue 3.0.7
+   * Framework7 Vue 3.1.1
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -49832,7 +49897,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: July 20, 2018
+   * Released on: August 3, 2018
    */
 
   var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],

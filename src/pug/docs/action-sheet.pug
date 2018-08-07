@@ -178,7 +178,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var actions = app.actions.create({
                     buttons: [ /* ... */ ],
                     on: {
@@ -191,7 +191,7 @@ block content
       p Note that all of the following parameters can be used in the global app parameters under the <code>actions</code> property to set defaults for all action sheets. For example:
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7({
               actions: {
                 convertToPopover: false,
@@ -257,7 +257,7 @@ block content
     p So to create an Action Sheet we have to call:
     pre
       code
-        :code
+        :code(lang="js")
           var actions = app.actions.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>actions</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -332,7 +332,7 @@ block content
     p According to above note:
     pre
       code.xml
-        :code(lang="xml")
+        :code(lang="html")
           <!-- In data-actions attribute we specify CSS selector of action sheet we need to open -->
           <p><a href="#" data-actions=".my-actions" class="actions-open">Open Actions</a></p>
 
@@ -427,7 +427,7 @@ block content
     .with-device
       pre
         code
-          :code
+          :code(lang="html")
             <body>
             ...
              <div class="page-content">
@@ -445,7 +445,7 @@ block content
 
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7();
 
             var $$ = Dom7;

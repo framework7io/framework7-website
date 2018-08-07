@@ -307,9 +307,10 @@ block content
     p To enable Ajax form and send data automatically on submit, we just need to add <code><b>form-ajax-submit</b></code> class to form:
     pre
       code
-        | &lt;form action="send-here.html" method="GET" class="form-ajax-submit"&gt;
-        |     ...
-        | &lt;/form&gt;
+        :code(lang="html")
+          &lt;form action="send-here.html" method="GET" class="form-ajax-submit"&gt;
+              ...
+          &lt;/form&gt;
     p And when user will submit this form, it automatically will be sended using Ajax with the following rules:
     .important-note
       ul
@@ -324,9 +325,10 @@ block content
     p Mostly we don't use "submit" buttons in apps, so in this cases we need to submit form data when user changes any form fields. For this case we need to use <code><b>form-ajax-submit-onchange</b></code> class:
     pre
       code
-        | &lt;form action="send-here.html" method="GET" class="form-ajax-submit-onchange"&gt;
-        |     ...
-        | &lt;/form&gt;
+        :code(lang="html")
+         &lt;form action="send-here.html" method="GET" class="form-ajax-submit-onchange"&gt;
+             ...
+         &lt;/form&gt;
     p And when user will change any form filed, form data automatically will be sended using Ajax with the same rules as in previous case.
 
     h3 Ajax Form Submit Events
@@ -357,16 +359,17 @@ block content
           td Event will be triggered on Ajax request error
     pre
       code.js
-        | var app = new Framework7();
-        |
-        | var $$ = Dom7;
-        |
-        | $$('form.form-ajax-submit').on('formajax:success', function (e) {
-        |   var xhr = e.detail.xhr; // actual XHR object
-        |
-        |   var data = e.detail.data; // Ajax response from action file
-        |   // do something with response data
-        | });
+        :code(lang="js")
+         var app = new Framework7();
+
+         var $$ = Dom7;
+
+         $$('form.form-ajax-submit').on('formajax:success', function (e) {
+           var xhr = e.detail.xhr; // actual XHR object
+
+           var data = e.detail.data; // Ajax response from action file
+           // do something with response data
+         });
     h4 App Events
     table.events-table
       thead

@@ -135,20 +135,20 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/react/floating-action-button.html") Examples
       pre
-        code.html
-          :code(lang="html")
+        code.jsx
+          :code(lang="jsx")
             export default () => (
               <Page>
                 <Navbar title="Floating Action Button" />
 
-                <!-- Toolbar FAB Morph Target -->
+                {/* Toolbar FAB Morph Target */}
                 <Toolbar bottomMd className="fab-morph-target">
                   <Link>Link 1</Link>
                   <Link>Link 2</Link>
                   <Link>Link 3</Link>
                 </Toolbar>
 
-                <!-- FAB Left Top (Yellow) -->
+                {/* FAB Left Top (Yellow) */}
                 <Fab position="left-top" slot="fixed" color="yellow">
                   <Icon ios="f7:add" md="material:add"></Icon>
                   <Icon ios="f7:close" md="material:close"></Icon>
@@ -159,7 +159,7 @@ block content
                   </FabButtons>
                 </Fab>
 
-                <!-- FAB Right Top (Pink) -->
+                {/* FAB Right Top (Pink) */}
                 <Fab position="right-top" slot="fixed" color="pink">
                   <Icon ios="f7:add" md="material:add"></Icon>
                   <Icon ios="f7:close" md="material:close"></Icon>
@@ -170,7 +170,7 @@ block content
                   </FabButtons>
                 </Fab>
 
-                <!-- FAB Center (Green) -->
+                {/* FAB Center (Green) */}
                 <Fab position="center-center" slot="fixed" color="green">
                   <Icon ios="f7:add" md="material:add"></Icon>
                   <Icon ios="f7:close" md="material:close"></Icon>
@@ -182,14 +182,14 @@ block content
                   </FabButtons>
                 </Fab>
 
-                <!-- FAB Left Bottom (Blue) -->
-                <!-- Will morph to Toolbar -->
+                {/* FAB Left Bottom (Blue) */}
+                {/* Will morph to Toolbar */}
                 <Fab position="left-bottom" slot="fixed" morphTo=".toolbar.fab-morph-target">
                   <Icon ios="f7:add" md="material:add"></Icon>
                   <Icon ios="f7:close" md="material:close"></Icon>
                 </Fab>
 
-                <!-- FAB Right Bottom (Orange) -->
+                {/* FAB Right Bottom (Orange) */}
                 <Fab position="right-bottom" slot="fixed" color="orange">
                   <Icon ios="f7:add" md="material:add"></Icon>
                   <Icon ios="f7:close" md="material:close"></Icon>
@@ -199,7 +199,7 @@ block content
                   </FabButtons>
                 </Fab>
 
-                <!-- Extended FAB Center Bottom (Red) -->
+                {/* Extended FAB Center Bottom (Red) */}
                 <Fab position="center-bottom" slot="fixed" text="Create" color="red">
                   <Icon ios="f7:add" md="material:add"></Icon>
                 </Fab>

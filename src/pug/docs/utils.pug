@@ -38,8 +38,9 @@ block content
       p.method-returns Method returns object with query parameters
     pre
       code.js
-        | var query = app.utils.parseUrlQuery('http://google.com/?id=5&foo=bar');
-        | console.log(query); // { id: 5, foo: 'bar' }
+        :code(lang="js")
+          var query = app.utils.parseUrlQuery('http://google.com/?id=5&foo=bar');
+          console.log(query); // { id: 5, foo: 'bar' }
 
     h3 serializeObject
     .method-wrap
@@ -53,8 +54,9 @@ block content
       p.method-returns returns a new unique array
     pre
       code.js
-        | var params = { foo: 'bar', id: 5 };
-        | console.log(app.utils.serializeObject(params)); // 'foo=bar&id=5'
+        :code(lang="js")
+          var params = { foo: 'bar', id: 5 };
+          console.log(app.utils.serializeObject(params)); // 'foo=bar&id=5'
 
     h3 requestAnimationFrame
     .method-wrap
@@ -68,13 +70,14 @@ block content
       p.method-returns returns animation request id, that uniquely identifies the entry in the callback list
     pre
       code.js
-        | var animId;
-        | function anim() {
-        |   var left = parseInt($$('#anim').css('left'), 10) + 1;
-        |   $$('#anim').css({left: left + 'px'})
-        |   animId = app.utils.requestAnimationFrame(anim);
-        | }
-        | animId = app.utils.requestAnimationFrame(anim);
+        :code(lang="js")
+          var animId;
+          function anim() {
+            var left = parseInt($$('#anim').css('left'), 10) + 1;
+            $$('#anim').css({left: left + 'px'})
+            animId = app.utils.requestAnimationFrame(anim);
+          }
+          animId = app.utils.requestAnimationFrame(anim);
 
     h3 cancelAnimationFrame
     .method-wrap
@@ -87,7 +90,8 @@ block content
           |  - <span class="parameter-type">number</span> - The ID value returned by the call to app.utils.requestAnimationFrame() that requested the callback
     pre
       code.js
-        | app.utils.cancelAnimationFrame(animId);
+        :code(lang="js")
+          app.utils.cancelAnimationFrame(animId);
 
     h3 removeDiacritics
     .method-wrap
@@ -101,8 +105,9 @@ block content
 
     pre
       code.js
-        | var text = app.utils.removeDiacritics('ÁÓL');
-        | console.log(text); //-&gt; 'AOL'
+        :code(lang="js")
+          var text = app.utils.removeDiacritics('ÁÓL');
+          console.log(text); //-&gt; 'AOL'
 
     h3 nextFrame
     .method-wrap
@@ -149,7 +154,7 @@ block content
     pre
       code.js
         :code(lang="js")
-          var time = app.utils.now();
+          var now = app.utils.now();
           setTimeout(function () {
             var timeDiff = app.utils.now() - now;
             console.log(timeDiff + 'ms past');
@@ -170,7 +175,7 @@ block content
     p This method becomes very handy if you need to extend one object with properties of others or when you need a deep copy of an object.
     pre
       code
-        :code
+        :code(lang="js")
           var a = {
             apple: 0,
             cherry: 97
@@ -182,7 +187,7 @@ block content
           console.log(a === b); // false
     pre
       code
-        :code
+        :code(lang="js")
           var a = {
             apple: 0,
             cherry: 97
@@ -198,7 +203,7 @@ block content
           console.log(a); // { apple: 0, cherry: 97, bannana: 10, peneapple: 20 }
     pre
       code
-        :code
+        :code(lang="js")
           var a = {
             apple: 0,
             cherry: 97
@@ -214,7 +219,7 @@ block content
           console.log(c); // { apple: 0, cherry: 97, bannana: 10, peneapple: 20 }
     pre
       code
-        :code
+        :code(lang="js")
           var a = {
             apple: 0,
             cherry: 97

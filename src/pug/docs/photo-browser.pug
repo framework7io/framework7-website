@@ -222,7 +222,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var photoBrowser = app.photoBrowser.create({
                     ...
                     on: {
@@ -236,7 +236,7 @@ block content
       p Note that all following parameters can be used in global app parameters under <code>photoBrowser</code> property to set defaults for all photo browsers. For example:
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7({
               photoBrowser: {
                 type: 'popup',
@@ -246,50 +246,51 @@ block content
     p When we initialize Photo Browser we need to pass array with photos/videos in <code>photos</code> parameter. Let's look at different variations of this array:
     pre
       code.js
-        | // If we need photo browser with just photos we may pass array with string urls:
-        | var photos = [
-        |     'image1.jpg',
-        |     'image2.jpg',
-        |     'image3.jpg',
-        |     'image4.jpg',
-        | ];
-        |
-        | //If we need to use caption for some of photos then each photo should be presented as object:
-        | var photos = [
-        |     {
-        |         url: 'image1.jpg',
-        |         caption: 'Caption 1'
-        |     },
-        |     {
-        |         url: 'image2.jpg',
-        |         caption: 'Caption 1'
-        |     },
-        |     // This one will be without caption
-        |     {
-        |         url: 'image3.jpg',
-        |     },
-        |     // This one will be also without caption
-        |     'image4.jpg'
-        | ];
-        |
-        | //If we need to use videos in some slides we need to pass HTML element of video element or iframe within "html" property:
-        | var photos = [
-        |     {
-        |         url: 'image1.jpg',
-        |         caption: 'Caption 1'
-        |     },
-        |     // Video element with caption
-        |     {
-        |         html: '&lt;video src="video1.mp4"&gt;&lt;/video&gt;',
-        |         caption: 'Video Caption'
-        |     },
-        |     // This one is embedded video without caption
-        |     {
-        |         html: '&lt;iframe src="..."&gt;&lt;/iframe&gt;',
-        |     },
-        |     // This one will be also video without caption
-        |     '&lt;video src="video2.mp4"&gt;&lt;/video&gt;'
-        | ];
+        :code(lang="js")
+          // If we need photo browser with just photos we may pass array with string urls:
+          var photos = [
+              'image1.jpg',
+              'image2.jpg',
+              'image3.jpg',
+              'image4.jpg',
+          ];
+
+          //If we need to use caption for some of photos then each photo should be presented as object:
+          var photos = [
+              {
+                  url: 'image1.jpg',
+                  caption: 'Caption 1'
+              },
+              {
+                  url: 'image2.jpg',
+                  caption: 'Caption 1'
+              },
+              // This one will be without caption
+              {
+                  url: 'image3.jpg',
+              },
+              // This one will be also without caption
+              'image4.jpg'
+          ];
+
+          //If we need to use videos in some slides we need to pass HTML element of video element or iframe within "html" property:
+          var photos = [
+              {
+                  url: 'image1.jpg',
+                  caption: 'Caption 1'
+              },
+              // Video element with caption
+              {
+                  html: '&lt;video src="video1.mp4"&gt;&lt;/video&gt;',
+                  caption: 'Video Caption'
+              },
+              // This one is embedded video without caption
+              {
+                  html: '&lt;iframe src="..."&gt;&lt;/iframe&gt;',
+              },
+              // This one will be also video without caption
+              '&lt;video src="video2.mp4"&gt;&lt;/video&gt;'
+          ];
     h2 Photo Browser Methods & Properties
     p After we initialize Photo Browser we have its initialized instance in variable (like <code>photoBrowser</code> variable in examples above) with helpful methods and properties:
     table.methods-table
@@ -496,134 +497,136 @@ block content
 
       pre
         code.html
-          | &lt;div class="page-content"&gt;
-          |   &lt;div class="block-title"&gt;Light Theme&lt;/div&gt;
-          |   &lt;div class="block row"&gt;
-          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-standalone"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
-          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-popup"&gt;Popup&lt;/a&gt;&lt;/div&gt;
-          |     &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-page"&gt;Page&lt;/a&gt;&lt;/div&gt;
-          |   &lt;/div&gt;
-          |   &lt;div class="block-title"&gt;Dark Theme&lt;/div&gt;
-          |   &lt;div class="block row"&gt;
-          |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-standalone-dark"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
-          |     &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-popup-dark"&gt;Popup&lt;/a&gt;&lt;/div&gt;
-          |   &lt;/div&gt;
-          | &lt;/div&gt;
+          :code(lang="html")
+            &lt;div class="page-content"&gt;
+              &lt;div class="block-title"&gt;Light Theme&lt;/div&gt;
+              &lt;div class="block row"&gt;
+                &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-standalone"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
+                &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-popup"&gt;Popup&lt;/a&gt;&lt;/div&gt;
+                &lt;div class="col-33"&gt;&lt;a href="#" class="button pb-page"&gt;Page&lt;/a&gt;&lt;/div&gt;
+              &lt;/div&gt;
+              &lt;div class="block-title"&gt;Dark Theme&lt;/div&gt;
+              &lt;div class="block row"&gt;
+                &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-standalone-dark"&gt;Standalone&lt;/a&gt;&lt;/div&gt;
+                &lt;div class="col-50"&gt;&lt;a href="#" class="button pb-popup-dark"&gt;Popup&lt;/a&gt;&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
       pre
         code.js
-          | var app = new Framework7();
-          |
-          | var $$ = Dom7;
-          |
-          |
-          | /*=== Default standalone ===*/
-          | var myPhotoBrowserStandalone = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ]
-          | });
-          | //Open photo browser on click
-          | $$('.pb-standalone').on('click', function () {
-          |     myPhotoBrowserStandalone.open();
-          | });
-          |
-          | /*=== Popup ===*/
-          | var myPhotoBrowserPopup = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ],
-          |     type: 'popup'
-          | });
-          | $$('.pb-popup').on('click', function () {
-          |     myPhotoBrowserPopup.open();
-          | });
-          |
-          | /*=== As Page ===*/
-          | var myPhotoBrowserPage = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ],
-          |     type: 'page',
-          |     backLinkText: 'Back'
-          | });
-          | $$('.pb-page').on('click', function () {
-          |     myPhotoBrowserPage.open();
-          | });
-          |
-          | /*=== Standalone Dark ===*/
-          | var myPhotoBrowserDark = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ],
-          |     theme: 'dark'
-          | });
-          | $$('.pb-standalone-dark').on('click', function () {
-          |     myPhotoBrowserDark.open();
-          | });
-          |
-          | /*=== Popup Dark ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
-          |     photos : [
-          |         'http://lorempixel.com/1024/1024/sports/1/',
-          |         'http://lorempixel.com/1024/1024/sports/2/',
-          |         'http://lorempixel.com/1024/1024/sports/3/',
-          |     ],
-          |     theme: 'dark',
-          |     type: 'popup'
-          | });
-          | $$('.pb-popup-dark').on('click', function () {
-          |     myPhotoBrowserPopupDark.open();
-          | });
-          |
-          | /*=== With Captions ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
-          |     photos : [
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/1/',
-          |             caption: 'Caption 1 Text'
-          |         },
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/2/',
-          |             caption: 'Second Caption Text'
-          |         },
-          |         // This one without caption
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/3/',
-          |         },
-          |     ],
-          |     theme: 'dark',
-          |     type: 'standalone'
-          | });
-          | $$('.pb-standalone-captions').on('click', function () {
-          |     myPhotoBrowserPopupDark.open();
-          | });
-          |
-          | /*=== With Video ===*/
-          | var myPhotoBrowserPopupDark = app.photoBrowser.create({
-          |     photos : [
-          |         {
-          |             html: '&lt;iframe src="//www.youtube.com/embed/lmc21V-zBq0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;',
-          |             caption: 'Woodkid - Run Boy Run (Official HD Video)'
-          |         },
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/2/',
-          |             caption: 'Second Caption Text'
-          |         },
-          |         {
-          |             url: 'http://lorempixel.com/1024/1024/sports/3/',
-          |         },
-          |     ],
-          |     theme: 'dark',
-          |     type: 'standalone'
-          | });
-          | $$('.pb-standalone-video').on('click', function () {
-          |     myPhotoBrowserPopupDark.open();
-          | });
+          :code(lang="js")
+            var app = new Framework7();
+
+            var $$ = Dom7;
+
+
+            /*=== Default standalone ===*/
+            var myPhotoBrowserStandalone = app.photoBrowser.create({
+                photos : [
+                    'http://lorempixel.com/1024/1024/sports/1/',
+                    'http://lorempixel.com/1024/1024/sports/2/',
+                    'http://lorempixel.com/1024/1024/sports/3/',
+                ]
+            });
+            //Open photo browser on click
+            $$('.pb-standalone').on('click', function () {
+                myPhotoBrowserStandalone.open();
+            });
+
+            /*=== Popup ===*/
+            var myPhotoBrowserPopup = app.photoBrowser.create({
+                photos : [
+                    'http://lorempixel.com/1024/1024/sports/1/',
+                    'http://lorempixel.com/1024/1024/sports/2/',
+                    'http://lorempixel.com/1024/1024/sports/3/',
+                ],
+                type: 'popup'
+            });
+            $$('.pb-popup').on('click', function () {
+                myPhotoBrowserPopup.open();
+            });
+
+            /*=== As Page ===*/
+            var myPhotoBrowserPage = app.photoBrowser.create({
+                photos : [
+                    'http://lorempixel.com/1024/1024/sports/1/',
+                    'http://lorempixel.com/1024/1024/sports/2/',
+                    'http://lorempixel.com/1024/1024/sports/3/',
+                ],
+                type: 'page',
+                backLinkText: 'Back'
+            });
+            $$('.pb-page').on('click', function () {
+                myPhotoBrowserPage.open();
+            });
+
+            /*=== Standalone Dark ===*/
+            var myPhotoBrowserDark = app.photoBrowser.create({
+                photos : [
+                    'http://lorempixel.com/1024/1024/sports/1/',
+                    'http://lorempixel.com/1024/1024/sports/2/',
+                    'http://lorempixel.com/1024/1024/sports/3/',
+                ],
+                theme: 'dark'
+            });
+            $$('.pb-standalone-dark').on('click', function () {
+                myPhotoBrowserDark.open();
+            });
+
+            /*=== Popup Dark ===*/
+            var myPhotoBrowserPopupDark = app.photoBrowser.create({
+                photos : [
+                    'http://lorempixel.com/1024/1024/sports/1/',
+                    'http://lorempixel.com/1024/1024/sports/2/',
+                    'http://lorempixel.com/1024/1024/sports/3/',
+                ],
+                theme: 'dark',
+                type: 'popup'
+            });
+            $$('.pb-popup-dark').on('click', function () {
+                myPhotoBrowserPopupDark.open();
+            });
+
+            /*=== With Captions ===*/
+            var myPhotoBrowserPopupDark = app.photoBrowser.create({
+                photos : [
+                    {
+                        url: 'http://lorempixel.com/1024/1024/sports/1/',
+                        caption: 'Caption 1 Text'
+                    },
+                    {
+                        url: 'http://lorempixel.com/1024/1024/sports/2/',
+                        caption: 'Second Caption Text'
+                    },
+                    // This one without caption
+                    {
+                        url: 'http://lorempixel.com/1024/1024/sports/3/',
+                    },
+                ],
+                theme: 'dark',
+                type: 'standalone'
+            });
+            $$('.pb-standalone-captions').on('click', function () {
+                myPhotoBrowserPopupDark.open();
+            });
+
+            /*=== With Video ===*/
+            var myPhotoBrowserPopupDark = app.photoBrowser.create({
+                photos : [
+                    {
+                        html: '&lt;iframe src="//www.youtube.com/embed/lmc21V-zBq0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;',
+                        caption: 'Woodkid - Run Boy Run (Official HD Video)'
+                    },
+                    {
+                        url: 'http://lorempixel.com/1024/1024/sports/2/',
+                        caption: 'Second Caption Text'
+                    },
+                    {
+                        url: 'http://lorempixel.com/1024/1024/sports/3/',
+                    },
+                ],
+                theme: 'dark',
+                type: 'standalone'
+            });
+            $$('.pb-standalone-video').on('click', function () {
+                myPhotoBrowserPopupDark.open();
+            });

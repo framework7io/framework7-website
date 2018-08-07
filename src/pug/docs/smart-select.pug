@@ -138,7 +138,7 @@ block content
     p Using <code><b>data-display-as</b></code> attribute on options we can show selected value in different way:
     pre
       code
-        :code
+        :code(lang="html")
           <li>
             <a href="#" class="item-link smart-select">
               <select name="days">
@@ -351,7 +351,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var smartSelect = app.smartSelect.create({
                     ...
                     on: {
@@ -365,7 +365,7 @@ block content
       p Note that all following parameters can be used in global app parameters under <code>smartSelect</code> property to set defaults for all smart selects. For example:
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7({
               smartSelect: {
                 pageTitle: 'Select Option',
@@ -376,7 +376,7 @@ block content
     p So to create Smart Select we have to call:
     pre
       code
-        :code
+        :code(lang="js")
           var smartSelect = app.smartSelect.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>smartSelect</code> variable in example above) with useful methods and properties:
     table.methods-table

@@ -24,11 +24,12 @@ block content
       li add <code><b>lazy</b></code> class to the image
     pre
       code.html
-        | &lt;div class="page-content"&gt;
-        |     ...
-        |     &lt;img data-src="path/to/image.jpg" class="lazy"&gt;
-        |     ...
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="page-content"&gt;
+              ...
+              &lt;img data-src="path/to/image.jpg" class="lazy"&gt;
+              ...
+          &lt;/div&gt;
     .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the <code>lazy</code> class will be replaced with <code>lazy-loaded</code> class.
     h3 With Background Images
     p It is also possible to use lazy load for background images, in this case:
@@ -37,27 +38,29 @@ block content
       li add <code><b>lazy</b></code> class to element
     pre
       code.html
-        | &lt;div class="page-content"&gt;
-        |     ...
-        |     &lt;div data-background="path/to/image.jpg" class="lazy"&gt;
-        |         ...
-        |     &lt;/div&gt;
-        |     ...
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="page-content"&gt;
+              ...
+              &lt;div data-background="path/to/image.jpg" class="lazy"&gt;
+                  ...
+              &lt;/div&gt;
+              ...
+          &lt;/div&gt;
     .important-note After lazy image successfully loaded, <em>or in case of error loading the image file</em>, the <code>lazy</code> class will be replaced with <code>lazy-loaded</code> class.
 
     h3 With Fade-in Effect
     p If you want to add fade-in effect when image is loaded, you need to add additional <code><b>lazy-fade-in</b></code> class to image/element:
     pre
       code.html
-        | &lt;div class="page-content"&gt;
-        |     ...
-        |     &lt;img data-src="path/to/image.jpg" class="lazy lazy-fade-in"&gt;
-        |     &lt;div data-background="path/to/image.jpg" class="lazy lazy-fade-in"&gt;
-        |         ...
-        |     &lt;/div&gt;
-        |     ...
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="page-content"&gt;
+              ...
+              &lt;img data-src="path/to/image.jpg" class="lazy lazy-fade-in"&gt;
+              &lt;div data-background="path/to/image.jpg" class="lazy lazy-fade-in"&gt;
+                  ...
+              &lt;/div&gt;
+              ...
+          &lt;/div&gt;
     h2 Lazy Load App Parameters
     p It is possible to control some default lazy loading behavior using global <a href="app.html#app-parameters">app parameters</a> by passing lazy loading related parameters under <code>lazy</code> parameter:
     table.params-table

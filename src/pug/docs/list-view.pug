@@ -24,70 +24,77 @@ block content
     p So first of all, all your list view elements should be wrapped with <code>&lt;div class="list"&gt;</code> element:
     pre
       code.html
-        | &lt;div class="list"&gt;
-        |     &lt;ul&gt;
-        |         ... list elements here ...
-        |     &lt;/ul&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+         &lt;div class="list"&gt;
+             &lt;ul&gt;
+                 ... list elements here ...
+             &lt;/ul&gt;
+         &lt;/div&gt;
     p To remove hairlines (thin borders) around list block we need additional <code><b>no-harilines</b></code> class:
     pre
       code.html
-        | &lt;div class="list no-hairlines"&gt;
-        |     &lt;ul&gt;
-        |         ... list elements here ...
-        |     &lt;/ul&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="list no-hairlines"&gt;
+              &lt;ul&gt;
+                  ... list elements here ...
+              &lt;/ul&gt;
+          &lt;/div&gt;
     p To remove hairlines (thin borders) between list items we need additional <code><b>no-harilines-between</b></code> class:
     pre
       code.html
-        | &lt;div class="list no-hairlines-between"&gt;
-        |     &lt;ul&gt;
-        |         ... list elements here ...
-        |     &lt;/ul&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="list no-hairlines-between"&gt;
+              &lt;ul&gt;
+                  ... list elements here ...
+              &lt;/ul&gt;
+          &lt;/div&gt;
     p To make list block inset we need additional <code><b>inset</b></code> class:
     pre
       code.html
-        | &lt;div class="list inset"&gt;
-        |     &lt;ul&gt;
-        |         ... list elements here ...
-        |     &lt;/ul&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="list inset"&gt;
+              &lt;ul&gt;
+                  ... list elements here ...
+              &lt;/ul&gt;
+          &lt;/div&gt;
     p To make block inset only on large screens we need to use <code><b>tablet-inset</b></code> class instead:
     pre
       code.html
-        | &lt;div class="list tablet-inset"&gt;
-        |     &lt;ul&gt;
-        |         ... list elements here ...
-        |     &lt;/ul&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="list tablet-inset"&gt;
+              &lt;ul&gt;
+                  ... list elements here ...
+              &lt;/ul&gt;
+          &lt;/div&gt;
     h2 List Item
     pre
       code.html
-        | &lt;div class="list no-hairlines"&gt;
-        |     &lt;ul&gt;
-        |         ... list elements here ...
-        |     &lt;/ul&gt;
-        | &lt;/div&gt;
+        :code(lang="html")
+          &lt;div class="list no-hairlines"&gt;
+              &lt;ul&gt;
+                  ... list elements here ...
+              &lt;/ul&gt;
+          &lt;/div&gt;
 
     p Single list element has pretty complex but flexible layout:
     pre
       code
-        | &lt;li&gt;
-        |     &lt;div class="item-content"&gt;
-        |         &lt;div class="item-media"&gt;
-        |             &lt;i class="icon my-icon"&gt;&lt;/i&gt;
-        |         &lt;/div&gt;
-        |         &lt;div class="item-inner"&gt;
-        |             &lt;div class="item-title"&gt;
-        |                 List element title
-        |             &lt;/div&gt;
-        |             &lt;div class="item-after"&gt;
-        |                 List element label
-        |             &lt;/div&gt;
-        |         &lt;/div&gt;
-        |     &lt;/div&gt;
-        | &lt;/li&gt;
+        :code(lang="html")
+          &lt;li&gt;
+              &lt;div class="item-content"&gt;
+                  &lt;div class="item-media"&gt;
+                      &lt;i class="icon my-icon"&gt;&lt;/i&gt;
+                  &lt;/div&gt;
+                  &lt;div class="item-inner"&gt;
+                      &lt;div class="item-title"&gt;
+                          List element title
+                      &lt;/div&gt;
+                      &lt;div class="item-after"&gt;
+                          List element label
+                      &lt;/div&gt;
+                  &lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/li&gt;
     p Where:
     ul
       li
@@ -111,19 +118,20 @@ block content
     p Also note that if your list item has nothing additional, you can user <code>item-content</code> class on <code>&lt;li&gt;</code> element:
     pre
       code.html
-        | &lt;li class="item-content"&gt;
-        |     &lt;div class="item-media"&gt;
-        |         &lt;i class="icon my-icon"&gt;&lt;/i&gt;
-        |     &lt;/div&gt;
-        |     &lt;div class="item-inner"&gt;
-        |         &lt;div class="item-title"&gt;
-        |             List element title
-        |         &lt;/div&gt;
-        |         &lt;div class="item-after"&gt;
-        |             List element label
-        |         &lt;/div&gt;
-        |     &lt;/div&gt;
-        | &lt;/li&gt;
+        :code(lang="html")
+          &lt;li class="item-content"&gt;
+              &lt;div class="item-media"&gt;
+                  &lt;i class="icon my-icon"&gt;&lt;/i&gt;
+              &lt;/div&gt;
+              &lt;div class="item-inner"&gt;
+                  &lt;div class="item-title"&gt;
+                      List element title
+                  &lt;/div&gt;
+                  &lt;div class="item-after"&gt;
+                      List element label
+                  &lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/li&gt;
     h2 List Item Header/Footer
     p If we need to add list item header/footer text in addition to item's title we can use <code>item-header</code> and <code>item-footer</code> elements:
     pre

@@ -98,27 +98,31 @@ block content
     p So if you open app with iOS 7.1 device you may have the following classes:
     pre
       code
-        | &lt;html class="ios device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-pixel-ratio-1"&gt;
-        | ...
+        :code(lang="html")
+          &lt;html class="ios device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-pixel-ratio-1"&gt;
+          ...
     p If you open app with iOS 7.1 device with retina screen and your app running in full screen mode:
     pre
       code
-        | &lt;html class="device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-retina device-pixel-ratio-2 with-statusbar"&gt;
-        | ...
+        :code(lang="html")
+          &lt;html class="device-ios device-ios-7 device-ios-7-1 device-ios-gt-6 device-retina device-pixel-ratio-2 with-statusbar"&gt;
+          ...
     p If you open app on iPhone X and your app running in full screen mode:
     pre
       code
-        | &lt;html class="device-ios device-iphone-x device-ios-11 device-ios-11-0 device-ios-gt-6 device-ios-gt-7 device-ios-gt-8 device-ios-gt-9 device-ios-gt-10 device-retina device-pixel-ratio-3 with-statusbar"&gt;
-        | ...
+        :code(lang="html")
+          &lt;html class="device-ios device-iphone-x device-ios-11 device-ios-11-0 device-ios-gt-6 device-ios-gt-7 device-ios-gt-8 device-ios-gt-9 device-ios-gt-10 device-retina device-pixel-ratio-3 with-statusbar"&gt;
+          ...
     p If you open app with Android 4.4 device you will have the following classes:
     pre
       code
-        | &lt;html class="device-android device-android-4 device-android-4-4"&gt;
-        | ...
+        :code(lang="html")
+          &lt;html class="device-android device-android-4 device-android-4-4"&gt;
+          ...
     p In other words classes calculated by the following rule:
     pre
       code.nohighlight
-        :code(lang="nohighlight")
+        :code
           device-[os]
           device-[os major version]
           device-[os full version]

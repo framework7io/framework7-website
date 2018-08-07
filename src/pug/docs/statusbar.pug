@@ -41,24 +41,26 @@ block content
     p If we need to change statusbar background color we may use simple CSS rule:
     pre
       code.css
-        | .statusbar {
-        |   background: pink;
-        | }
+        :code(lang="css")
+          .statusbar {
+            background: pink;
+          }
     p Such logic allows pretty flexible control over Statusbar background and we can change its background dynamically.
     p For example, we have dark left-side panel with cover effect. We may change Statusbar background to more dark color when panel opened:
     pre
       code.css
-        | /* Default Statusbar background */
-        | .statusbar {
-        |   background: pink;
-        |   /* We can add transition for smooth color animation */
-        |   transition: 400ms;
-        | }
-        |
-        | /* Change Statusbar background when panel opened */
-        | html.with-panel-left-cover .statusbar {
-        |   background: #222;
-        | }
+        :code(lang="css")
+           /* Default Statusbar background */
+           .statusbar {
+             background: pink;
+             /* We can add transition for smooth color animation */
+             transition: 400ms;
+           }
+
+           /* Change Statusbar background when panel opened */
+           html.with-panel-left-cover .statusbar {
+             background: #222;
+           }
     .important-note
       ul
         li

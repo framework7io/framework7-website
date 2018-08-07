@@ -79,8 +79,8 @@ block content
     h2 Checkbox v-model
     p <code>v-model</code> <b>is not supported</b> on Checkbox vue component. Instead, just use the combination of <code>checked</code> property and <code>@change</code> event:
     pre
-      code.js
-        :code(lang="js")
+      code.html
+        :code(lang="html")
           <template>
             <!-- With boolean value -->
             <f7-checkbox :checked="jobIsDone" @change="jobIsDone = $event.target.checked"></f7-checkbox>

@@ -63,27 +63,28 @@ block content
           td Icon <a href="../docs/tooltip.html">tooltip</a> text to show on icon hover/press
     h2 Examples
     pre
-      code
-        | &lt;!-- Default back icon --&gt;
-        | &lt;Icon icon="icon-back"&gt;&lt;/Icon&gt;
-        |
-        | &lt;!-- Some custom icon --&gt;
-        | &lt;Icon icon="icon-home"&gt;&lt;/Icon&gt;
-        |
-        | &lt;!-- F7 Icons font icon --&gt;
-        | &lt;Icon f7="home"&gt;&lt;/Icon&gt;
-        |
-        | &lt;!-- Material Icons font icon --&gt;
-        | &lt;Icon material="home"&gt;&lt;/Icon&gt;
-        |
-        | &lt;!-- Font Awesome icons font icon --&gt;
-        | &lt;Icon fa="home"&gt;&lt;/Icon&gt;
-        |
-        | &lt;!-- Ionicons icons font icon --&gt;
-        | &lt;Icon ion="home"&gt;&lt;/Icon&gt;
-        |
-        | &lt;!-- F7 icons font icon with custom size and color --&gt;
-        | &lt;Icon f7="home" size="44px" color="blue"&gt;&lt;/Icon&gt;
-        |
-        | &lt;!-- Conditional icon --&gt;
-        | &lt;Icon ios="f7:home" md="material:home"&gt;&lt;/Icon&gt;
+      code.jsx
+        :code(lang="jsx")
+          {/*  Default back icon */}
+          &lt;Icon icon="icon-back"&gt;&lt;/Icon&gt;
+
+          {/*  Some custom icon */}
+          &lt;Icon icon="icon-home"&gt;&lt;/Icon&gt;
+
+          {/*  F7 Icons font icon */}
+          &lt;Icon f7="home"&gt;&lt;/Icon&gt;
+
+          {/*  Material Icons font icon */}
+          &lt;Icon material="home"&gt;&lt;/Icon&gt;
+
+          {/*  Font Awesome icons font icon */}
+          &lt;Icon fa="home"&gt;&lt;/Icon&gt;
+
+          {/*  Ionicons icons font icon */}
+          &lt;Icon ion="home"&gt;&lt;/Icon&gt;
+
+          {/*  F7 icons font icon with custom size and color */}
+          &lt;Icon f7="home" size="44px" color="blue"&gt;&lt;/Icon&gt;
+
+          {/*  Conditional icon */}
+          &lt;Icon ios="f7:home" md="material:home"&gt;&lt;/Icon&gt;

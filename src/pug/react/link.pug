@@ -118,70 +118,70 @@ block content
     h2 Examples
     h4 Navigation Link
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Link href="/about/">About</Link>
 
     h4 Back Navigation Link
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Link back>Back</Link>
 
     h4 With Router Parameters
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Link href="/about/" animate={false} ignoreCache={true}>About</Link>
 
     h4 External Link
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Link href="http://google.com" external>Google</Link>
 
     h4 Tab Link
     pre
-      code.html
-        :code(lang="html")
-          <!-- Tabs -->
+      code.jsx
+        :code(lang="jsx")
+          {/* Tabs  */}
           <Tabs>
             <Tab id="tab-1" tabActive>Tab 1</Tab>
             <Tab id="tab-1">Tab 2</Tab>
           </Tabs>
-          <!-- Switch Between Tabs -->
+          {/* Switch Between Tabs  */}
           <Link tabLink="#tab-1" tabLinkActive>Show Tab 1</Link>
           <Link tabLink="#tab-2">Show Tab 2</Link>
 
     h4 Routable Tabs
     pre
-      code.html
-        :code(lang="html")
-          <!-- Tabs -->
+      code.jsx
+        :code(lang="jsx")
+          {/* Tabs  */}
           <Tabs>
             <Tab id="tab-1"></Tab>
             <Tab id="tab-2"></Tab>
           </Tabs>
-          <!-- Switch Between Tabs -->
+          {/* Switch Between Tabs  */}
           <Link tabLink routeTabId="tab-1" href="/tabs/">Show Tab 1</Link>
           <Link tabLink routeTabId="tab-2" href="/tabs/tab-2/">Show Tab 2</Link>
 
     h4 Open And Close Panel
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Link panelOpen="left">Open Left Panel</Link>
           <Link panelClose>Close Panel</Link>
 
     h4 Open and Close Popup
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Link popupOpen="#my-popup">Open Popup</Link>
           <Link popupClose="#my-popup">Close Popup</Link>
 
     h4 With Icon & Color
     pre
-      code.html
-        :code(lang="html")
+      code.jsx
+        :code(lang="jsx")
           <Link iconF7="home" text="Home" color="red"></Link>

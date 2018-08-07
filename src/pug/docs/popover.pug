@@ -19,18 +19,19 @@ block content
     p First of all let's look on Popover layout, it is pretty simple:
     pre
       code.html
-        | &lt;body&gt;
-        |     ...
-        |     &lt;div class="popover"&gt;
-        |         &lt;!-- Popover's angle arrow --&gt;
-        |         &lt;div class="popover-angle"&gt;&lt;/div&gt;
-        |
-        |         &lt;!-- Popover content --&gt;
-        |         &lt;div class="popover-inner"&gt;
-        |             &lt;!-- Any HTML content here --&gt;
-        |         &lt;/div&gt;
-        |     &lt;/div&gt;
-        | &lt;/body&gt;
+        :code(lang="html")
+          &lt;body&gt;
+              ...
+              &lt;div class="popover"&gt;
+                  &lt;!-- Popover's angle arrow --&gt;
+                  &lt;div class="popover-angle"&gt;&lt;/div&gt;
+
+                  &lt;!-- Popover content --&gt;
+                  &lt;div class="popover-inner"&gt;
+                      &lt;!-- Any HTML content here --&gt;
+                  &lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/body&gt;
     p Popover is highly customizable element and you can put anything inside, event another view with navigation.
 
 
@@ -163,7 +164,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var popover = app.popover.create({
                     content: '<div class="popover">...</div>',
                     on: {
@@ -176,7 +177,7 @@ block content
       p Note that all following parameters can be used in global app parameters under <code>popover</code> property to set defaults for all popovers. For example:
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7({
               popover: {
                 closeByBackdropClick: false,
@@ -186,7 +187,7 @@ block content
     p So to create Popover we have to call:
     pre
       code
-        :code
+        :code(lang="js")
           var popover = app.popover.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>popover</code> variable in example above) with useful methods and properties:
     table.methods-table
@@ -277,7 +278,7 @@ block content
     p According to above note:
     pre
       code.xml
-        :code(lang="xml")
+        :code(lang="html")
           <!-- In data-popover attribute we specify CSS selector of popover we need to open -->
           <p><a href="#" data-popover=".my-popover" class="popover-open">Open Popover</a></p>
 

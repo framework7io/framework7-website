@@ -17,23 +17,25 @@ block content
     p Popup layout is pretty simple:
     pre
       code.xml
-        | &lt;body&gt;
-        |   ...
-        |   &lt;div class="popup"&gt;
-        |     Any HTML content goes here
-        |   &lt;/div&gt;
-        | &lt;/body&gt;
+        :code(lang="html")
+          &lt;body&gt;
+            ...
+            &lt;div class="popup"&gt;
+              Any HTML content goes here
+            &lt;/div&gt;
+          &lt;/body&gt;
     h2 Popup Size
     p By default Popup has a bit different size on phones and tablets (iPad). On phones it is fullscreen while on tablets it is 630px width and height. If you want to make it fullscreen size on tablets, you should add additional "<b>popup-tablet-fullscreen</b>" class to the required popup:
     pre
       code.xml
-        | &lt;body&gt;
-        |   ...
-        |   &lt;!-- This popup has fullscreen size on tablets --&gt;
-        |   &lt;div class="popup popup-tablet-fullscreen"&gt;
-        |     Any HTML content goes here
-        |   &lt;/div&gt;
-        | &lt;/body&gt;
+        :code(lang="html")
+          &lt;body&gt;
+            ...
+            &lt;!-- This popup has fullscreen size on tablets --&gt;
+            &lt;div class="popup popup-tablet-fullscreen"&gt;
+              Any HTML content goes here
+            &lt;/div&gt;
+          &lt;/body&gt;
     h2 Popup App Methods
     p Let's look at related App methods to work with Popup:
     .method-wrap
@@ -130,7 +132,7 @@ block content
           td Object with events handlers. For example:
             pre
               code
-                :code
+                :code(lang="js")
                   var popup = app.popup.create({
                     content: '<div class="popup">...</div>',
                     on: {
@@ -143,7 +145,7 @@ block content
       p Note that all following parameters can be used in global app parameters under <code>popup</code> property to set defaults for all popups. For example:
       pre
         code
-          :code
+          :code(lang="js")
             var app = new Framework7({
               popup: {
                 closeByBackdropClick: false,
@@ -153,7 +155,7 @@ block content
     p So to create Popup we have to call:
     pre
       code
-        :code
+        :code(lang="js")
           var popup = app.popup.create({ /* parameters */ })
     p After that we have its initialized instance (like <code>popup</code> variable in example above) with useful methods and properties:
     table.methods-table

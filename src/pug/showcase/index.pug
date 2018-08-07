@@ -31,7 +31,7 @@ block content
                   a(href=link, class="button", target="_blank") App Website
           .app-about
             if app.description
-              p !{app.description.trim().replace(/\n/g, '<br><br>')}
+              p !{app.description.trim().replace(/\n/g, '<br>')}
             if (app.features)
               p Features:
               ul

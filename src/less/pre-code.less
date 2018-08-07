@@ -1,6 +1,7 @@
 @codeMain: #fff;
 @codeBg: #253238;
-@codeComment: #536E7B;
+// @codeComment: #536E7B;
+@codeComment: #6c8e9e;
 @codeMeta: #aaa;
 @codeOrange: #F98C68;
 @codeRed: #F27076;
@@ -39,7 +40,7 @@ pre {
     overflow-x: auto;
     border-radius: 6px;
     font-size: 14px;
-    line-height: 21px;
+    line-height: 20px;
     font-weight: normal;
   }
 }
@@ -60,7 +61,7 @@ pre {
   line-height: 19px;
 }
 .important-note pre code,
-table pre code.hljs {
+table pre code {
   padding: 5px;
   font-size: 13px;
   line-height: 19px;
@@ -83,6 +84,9 @@ code {
   }
   .keyword {
     color: @codePurple;
+  }
+  .keyword-block {
+    color: @codeLightBlue;
   }
   .function {
     color: @codeBlue;
@@ -134,5 +138,16 @@ code {
   }
   .property {
     color: @codeGray;
+  }
+  .doctype {
+    color: @codeMeta;
+  }
+  &.less {
+    .variable {
+      color: @codeLightBlue;
+    }
+    .url {
+      color: @codeGreen;
+    }
   }
 }

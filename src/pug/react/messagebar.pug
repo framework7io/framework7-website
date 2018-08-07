@@ -204,8 +204,8 @@ block content
       li <code><b>inner-end</b></code> - element will be inserted in the end of <code>&lt;div class="toolbar-inner"&gt;</code>. element. Same as <code>default</code> slot
     pre
       code
-        :code
-          <Messagebar placeholder="Message" @submit="onSubmit">
+        :code(lang="jsx")
+          <Messagebar placeholder="Message" onSubmit="this.onSubmit">
             <div slot="before-inner">Before inner</div>
             <div slot="after-inner">After inner</div>
             <div slot="before-area">Before textarea</div>
@@ -238,8 +238,8 @@ block content
       h2(data-device-preview="../docs-demos/react/messages.html") Examples
       p Here is how the full example of Messages page where it can be used together with <a href="messages.html">Messages</a>:
       pre
-        code.html
-          :code(lang="html")
+        code.jsx
+          :code(lang="jsx")
             export default class extends React.Component {
               constructor(props) {
                 super(props);
