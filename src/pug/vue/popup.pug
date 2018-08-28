@@ -37,6 +37,21 @@ block content
           td opened
           td boolean
           td Allows to open/close Popup and set its initial state
+        tr
+          td backdrop
+          td boolean
+          td
+          td Enables Popup backdrop (dark semi transparent layer behind). By default inherits same app parameter value (<code>true</code>)
+        tr
+          td closeByBackdropClick
+          td boolean
+          td
+          td When enabled, popup will be closed on backdrop click. By default inherits same app parameter value (<code>true</code>)
+        tr
+          td animate
+          td boolean
+          td
+          td Whether the Popup should be opened/closed with animation or not. Can be overwritten in <code>.open()</code> and <code>.close()</code> methods. By default inherits same app parameter value (<code>true</code>)
     h2 Popup Methods
     table.methods-table
       tr

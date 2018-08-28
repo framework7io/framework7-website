@@ -526,6 +526,35 @@ block content
                   li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
                   li <span class="parameter">context</span> (<span class="parameter-type">object</span>) - additional Router component or Template7 page context
         tr
+          td router.navigate(<span>parameters, options</span>)
+          td Navigate to (load) new page by parameters. This method allows to navigate to route by its <code>name</code>.
+            ul.method-parameters
+              li <span class="parameter">parameters</span> <span class="parameter-type">object</span> - object with route <code>name</code>, <code>query</code>, <code>params</code> to navigate to.
+              li <span class="parameter">options</span> - <span class="parameter-type">object</span> with additional navigation properties (optional). Same as in previous example.
+            p For example, if we have the following route:
+            :code(lang="js")
+              {
+                name: 'about',
+                path: '/about/',
+                ...
+              }
+            p We can navigate to it by calling:
+            :code(lang="js")
+              router.navigate({ name: 'about' });
+            p If have more complex route with params:
+            :code(lang="js")
+              {
+                name: 'post',
+                path: '/block/:userId/:postId',
+                ...
+              }
+            p Then it is mandatory to pass params as well:
+            :code(lang="js")
+              router.navigate({
+                name: 'about',
+                params: { userId: 1, postId: 2 },
+              });
+        tr
           td router.back(<span>url, options</span>)
           td Go back to previous page, going back in View history
             ul.method-parameters

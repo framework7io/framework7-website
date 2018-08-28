@@ -329,6 +329,77 @@ block content
             </div>
             ...
           </body>
+    h2 Routable Panels
+    .important-note
+      p
+        b Routable Panels available from Framework7 version 3.2.0.
+    p Panels can also be routable with same features as for routable modals and pages:
+    ul
+      li it provides opportunity to open Panel by usual links instead of so called special links or API,
+      li with enabled Push State, the same Panel will be opened when you refresh browser, navigate back and forward in history,
+      li with routable Panels you can load Panel itself and its content in the same ways as for pages and modals, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
+    :code(lang="js")
+          routes = [
+            ...
+            // Creates Panel from passed HTML string
+            {
+              path: '/left-panel/',
+              panel: {
+                content: `
+                  <div class="panel panel-left panel-cover">
+                    <div class="view">
+                      <div class="page">
+                        ...
+                      </div>
+                    </div>
+                  </div>
+                `
+              }
+            },
+            // Load Panel from file via Ajax
+            {
+              path: '/right-panel-ajax/',
+              panel: {
+                url: './right-panel.html',
+                /* right-panel.html contains:
+                <div class="panel panel-right panel-reveal">
+                  <div class="view">
+                    <div class="page">
+                      ...
+                    </div>
+                  </div>
+                </div>
+                */
+              },
+            },
+            // Load Panel from component file
+            {
+              path: '/panel-component/',
+              panel: {
+                componentUrl: './panel-component.html',
+                /* panel-component.html contains:
+                <template>
+                  <div class="panel panel-left panel-cover">
+                    <div class="view">
+                      <div class="page">
+                        ...
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <style>...</style>
+                <script>...</script>
+                */
+              },
+            },
+          ]
+    p According to example above:
+    ul
+      li when you click on link with <code>/left-panel/</code> href attribute it will open Panel from specified string content,
+      li when you click on link with <code>/right-panel-ajax/</code> href attribute it will perform Ajax request to <code>right-panel.html</code> file and open it as a Right Panel,
+      li when you click on link with <code>/panel-component/</code> href attribute it will perform Ajax request to <code>panel-component.html</code> file, parse it as a Router Component and open it as a Panel,
+    .important-note
+      p Note that <b>routable Panels can't be mixed with static Panels</b>. So if you have static left panel in the app, then only right panel can be loaded as routable panel.
     h2 Panel Events
     p Panel will fire the following DOM events on panel element and events on app and panel instance:
     h3 DOM Events

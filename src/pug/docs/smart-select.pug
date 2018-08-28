@@ -247,9 +247,9 @@ block content
           td Smart select Sheet close link text
         tr
           td searchbar
-          td boolean
+          td boolean<br>object
           td false
-          td Enables Searchbar on smart select page
+          td Enables Searchbar on smart select page. If passed as object then it should be valid <a href="./searchbar.html#searchbar-parameters">Searchbar parameters</a>
         tr
           td searchbarPlaceholder
           td string
@@ -260,6 +260,18 @@ block content
           td string
           td Cancel
           td Searchbar "cancel" link text. Has effect only in iOS theme
+        tr
+          td appendSearchbarNotFound
+          td boolean<br>string<br>HTMLElement
+          td false
+          td Appends block with content that displayed when there are no Searchbar results.
+            p If specified as string then it will append:
+            :code(lang="html")
+              <div class="block searchbar-not-found">{{appendSearchbarNotFound}}</div>
+            p If specified as <code>true</code> then:
+            :code(lang="html")
+              <div class="block searchbar-not-found">Nothing found</div>
+            p If <code>HTMLElement</code> passed then it will add that element.
         tr
           td closeOnSelect
           td boolean
@@ -295,6 +307,11 @@ block content
           td string
           td select/
           td Smart select page/modal URL that will be set as a current route
+        tr
+          td cssClass
+          td string
+          td
+          td Additional CSS class name to be set on Smart Select container (Page, Popup, Popover or Sheet)
         tr
           th(colspan="4") Render functions
         tr

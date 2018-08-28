@@ -207,3 +207,35 @@ block content
           app.utils.extend(a, b);
 
           console.log(a); // { apple: 10, cherry: 97, peneapple: 20 }
+
+    h3 uniqueNumber
+    .method-wrap
+      p
+        span.method app.utils.uniqueNumber()
+        span - returns unique number, increased by 1 with every call
+    :code(lang="js")
+      app.utils.uniqueNumber(); // -> 2
+
+      app.utils.uniqueNumber(); // -> 3
+
+      app.utils.uniqueNumber(); // -> 4
+
+    h3 id
+    .method-wrap
+      p
+        span.method app.utils.id(<span>mask</span>, <span>map</span>)
+        span - generates random ID-like string
+      ul.method-parameters
+        li
+          span.parameter mask
+          |  - <span class="parameter-type">string</span> - ID string mask, by default is <code>xxxxxxxxxx</code>
+        li
+          span.parameter map
+          |  - <span class="parameter-type">string</span> - characters that will be used for generation, by default is <code>0123456789abcdef</code>
+      p.method-returns returns randomly generated string
+    :code(lang="js")
+      app.utils.id() // -> ffe28ab56e
+
+      app.utils.id('xxxx-xxxx-xxxx-xxxx') // -> 1ea3-f127-dc67-627d
+
+      app.utils.id('xxxx-xxxx', 'abcd') // -> aabc-ccda
