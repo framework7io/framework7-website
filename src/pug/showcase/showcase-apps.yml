@@ -1,4 +1,27 @@
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/maple_pos.png"
+  iconRounded: true
+  title: "Maple Point of Sale"
+  author:
+    url: https://www.maple.ltd/
+    name: David Kagiri
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.maple.pos
+    website: https://www.maple.ltd/
+  description: |
+    Maple Point of Sale is the go-to mobile application for quick selling from your mobile.
+    Integrated to a simple yet versatile platform Maple Commerce (www.maple.ltd), your business can leap into the mobile driven retail and increase sales from your business.
+    Manage and control your inventory and predict customer demand and maintain optimum stock levels for your business.
+    Create loyalty programs that will assure you of return customers,repeat sales and targeted marketing.
 
+  screenshots:
+  - "#{cdn}/i/showcase/maple_pos-1.png"
+  - "#{cdn}/i/showcase/maple_pos-2.png"
+  - "#{cdn}/i/showcase/maple_pos-3.png"
+  - "#{cdn}/i/showcase/maple_pos-4.png"
+  - "#{cdn}/i/showcase/maple_pos-5.png"
+  - "#{cdn}/i/showcase/maple_pos-6.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/greety.png"
