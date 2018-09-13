@@ -3,6 +3,10 @@ platinum:
 gold:
 silver:
 -
+  title: AppValley
+  link: https://appvalley.vip/
+  imageUrl: "#{cdn}/i/sponsors/appvalley.jpg"
+-
   title: Tommy
   link: http://mytommy.com
   imageUrl: "#{cdn}/i/sponsors/tommy.png"
