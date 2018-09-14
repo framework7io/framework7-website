@@ -1345,7 +1345,7 @@
 	} : window; // eslint-disable-line
 
 	/**
-	 * Dom7 2.1.0
+	 * Dom7 2.1.2
 	 * Minimalistic JavaScript library for DOM manipulation, with a jQuery-compatible API
 	 * http://framework7.io/docs/dom.html
 	 *
@@ -1355,7 +1355,7 @@
 	 *
 	 * Licensed under MIT
 	 *
-	 * Released on: August 31, 2018
+	 * Released on: September 13, 2018
 	 */
 
 	var Dom7 = function Dom7(arr) {
@@ -3285,7 +3285,9 @@
 	    return setTimeout(callback, delay);
 	  },
 	  nextFrame: function nextFrame(callback) {
-	    return Utils.requestAnimationFrame(callback);
+	    return Utils.requestAnimationFrame(function () {
+	      Utils.requestAnimationFrame(callback);
+	    });
 	  },
 	  now: function now() {
 	    return Date.now();
@@ -3563,7 +3565,7 @@
 	  }
 
 	  // Webview
-	  device.webView = (iphone || ipad || ipod) && (ua.match(/.*AppleWebKit(?!.*Safari)/i) || win.navigator.standalone);
+	  device.webView = !!((iphone || ipad || ipod) && (ua.match(/.*AppleWebKit(?!.*Safari)/i) || win.navigator.standalone));
 	  device.webview = device.webView;
 
 
@@ -3653,7 +3655,7 @@
 	  events.split(' ').forEach(function (event) {
 	    if (typeof handler === 'undefined') {
 	      self.eventsListeners[event] = [];
-	    } else {
+	    } else if (self.eventsListeners[event]) {
 	      self.eventsListeners[event].forEach(function (eventHandler, index) {
 	        if (eventHandler === handler) {
 	          self.eventsListeners[event].splice(index, 1);
@@ -5805,10 +5807,8 @@
 	          }
 	          if (previousNavbar.hasClass('sliding')) {
 	            previousNavBackIcon = previousNavbar.children('.left').find('.back .icon');
-	            // previousNavBackIconText = previousNavbar.children('left').find('.back span').eq(0);
 	          } else {
 	            previousNavBackIcon = previousNavbar.children('.left.sliding').find('.back .icon');
-	            // previousNavBackIconText = previousNavbar.children('.left.sliding').find('.back span').eq(0);
 	          }
 	        }
 	      }
@@ -5849,6 +5849,9 @@
 	      currentPageTranslate = Math.round(currentPageTranslate);
 	      previousPageTranslate = Math.round(previousPageTranslate);
 	    }
+
+	    router.swipeBackActive = true;
+	    $([currentPage[0], previousPage[0]]).addClass('page-swipeback-active');
 
 	    currentPage.transform(("translate3d(" + currentPageTranslate + "px,0,0)"));
 	    if (paramsSwipeBackAnimateShadow) { pageShadow[0].style.opacity = 1 - (1 * percentage); }
@@ -5912,6 +5915,8 @@
 	    }
 	    isTouched = false;
 	    isMoved = false;
+	    router.swipeBackActive = false;
+	    $([currentPage[0], previousPage[0]]).removeClass('page-swipeback-active');
 	    if (touchesDiff === 0) {
 	      $([currentPage[0], previousPage[0]]).transform('');
 	      if (pageShadow && pageShadow.length > 0) { pageShadow.remove(); }
@@ -6728,6 +6733,7 @@
 	  if ( navigateOptions === void 0 ) navigateOptions = {};
 
 	  var router = this;
+	  if (router.swipeBackActive) { return router; }
 	  var url;
 	  var createRoute;
 	  var name;
@@ -6954,7 +6960,7 @@
 	    tabEventTarget.trigger('tab:init tab:mounted', tabRoute);
 	    router.emit('tabInit tabMounted', $newTabEl[0], tabRoute);
 
-	    if ($oldTabEl.length) {
+	    if ($oldTabEl && $oldTabEl.length) {
 	      if (animated) {
 	        onTabsChanged(function () {
 	          router.emit('routeChanged', router.currentRoute, router.previousRoute, router);
@@ -7153,6 +7159,7 @@
 	          router.removeModal(modal.el);
 	        }
 	        modal.destroy();
+	        delete modal.route;
 	        delete modalRoute.modalInstance;
 	      });
 	    });
@@ -7172,7 +7179,8 @@
 
 	      // Set Route
 	      if (options.route !== router.currentRoute) {
-	        router.currentRoute = Utils.extend(options.route, { modal: modal });
+	        modal.route = Utils.extend(options.route, { modal: modal });
+	        router.currentRoute = modal.route;
 	      }
 
 	      // Update Router History
@@ -7689,6 +7697,7 @@
 	  var args = [], len = arguments.length;
 	  while ( len-- ) args[ len ] = arguments[ len ];
 	  var router = this;
+	  if (router.swipeBackActive) { return router; }
 	  var navigateUrl;
 	  var navigateOptions;
 	  var route;
@@ -7740,7 +7749,18 @@
 	                         || router.currentRoute.route.modalInstance
 	                         || app[modalType].get();
 	    var previousUrl = router.history[router.history.length - 2];
-	    var previousRoute = router.findMatchingRoute(previousUrl);
+	    var previousRoute;
+	    // check if previous route is modal too
+	    if (modalToClose && modalToClose.$el) {
+	      var prevOpenedModals = modalToClose.$el.prevAll('.modal-in');
+	      if (prevOpenedModals.length && prevOpenedModals[0].f7Modal) {
+	        previousRoute = prevOpenedModals[0].f7Modal.route;
+	      }
+	    }
+	    if (!previousRoute) {
+	      previousRoute = router.findMatchingRoute(previousUrl);
+	    }
+
 	    if (!previousRoute && previousUrl) {
 	      previousRoute = {
 	        url: previousUrl,
@@ -8159,7 +8179,7 @@
 	    if (dynamicNavbar) {
 	      // Prepare Navbars
 	      animateNavbars(0);
-	      Utils.nextTick(function () {
+	      Utils.nextFrame(function () {
 	        // Add class, start animation
 	        animateNavbars(1);
 	        router.$el.addClass(routerTransitionClass);
@@ -8306,12 +8326,12 @@
 	        onDone();
 	        return;
 	      }
-	      Utils.nextFrame(render);
+	      Utils.requestAnimationFrame(render);
 	    }
 
 	    router.$el.addClass(routerTransitionClass);
 
-	    Utils.nextFrame(render);
+	    Utils.requestAnimationFrame(render);
 	  };
 
 	  Router.prototype.animate = function animate () {
@@ -9027,6 +9047,9 @@
 
 	    if (callback === 'beforeRemove') {
 	      detachEvents();
+	      if ($pageEl[0].f7Page && $pageEl[0].f7Page.navbarEl) {
+	        delete $pageEl[0].f7Page.navbarEl.f7Page;
+	      }
 	      $pageEl[0].f7Page = null;
 	    }
 	  };
@@ -9895,6 +9918,7 @@
 	    var attrName = attr.name;
 	    var attrValue = attr.value;
 	    if (propsAttrs.indexOf(attrName) >= 0) {
+	      // Props
 	      if (!data.props) { data.props = {}; }
 	      if (attrName === 'readonly') {
 	        attrName = 'readOnly';
@@ -9906,8 +9930,10 @@
 	        data.props[attrName] = attrValue;
 	      }
 	    } else if (attrName === 'key') {
+	      // Key
 	      data.key = attrValue;
 	    } else if (attrName.indexOf('@') === 0) {
+	      // Events
 	      if (!data.on) { data.on = {}; }
 	      var eventName = attrName.substr(1);
 	      var stop = false;
@@ -9924,11 +9950,26 @@
 	        });
 	      }
 	      data.on[eventName] = getEventHandler(attrValue, context, { stop: stop, prevent: prevent, once: once });
+	    } else if (attrName === 'style') {
+	      // Style
+	      if (attrValue.indexOf('{') >= 0 && attrValue.indexOf('}') >= 0) {
+	        try {
+	          data.style = JSON.parse(attrValue);
+	        } catch (e) {
+	          if (!data.attrs) { data.attrs = {}; }
+	          data.attrs.style = attrValue;
+	        }
+	      } else {
+	        if (!data.attrs) { data.attrs = {}; }
+	        data.attrs.style = attrValue;
+	      }
 	    } else {
+	      // Rest of attribures
 	      if (!data.attrs) { data.attrs = {}; }
 	      data.attrs[attrName] = attrValue;
 
-	      if (attrName === 'id' && !data.key) {
+	      // ID -> Key
+	      if (attrName === 'id' && !data.key && !isRoot) {
 	        data.key = attrValue;
 	      }
 	    }
@@ -10442,6 +10483,89 @@
 	}
 	var propsModule = { create: updateProps, update: updateProps };
 
+	var raf = (typeof window !== 'undefined' && window.requestAnimationFrame) || setTimeout;
+	var nextFrame = function (fn) { raf(function () { raf(fn); }); };
+	function setNextFrame(obj, prop, val) {
+	    nextFrame(function () { obj[prop] = val; });
+	}
+	function updateStyle(oldVnode, vnode) {
+	    var cur, name, elm = vnode.elm, oldStyle = oldVnode.data.style, style = vnode.data.style;
+	    if (!oldStyle && !style)
+	        { return; }
+	    if (oldStyle === style)
+	        { return; }
+	    oldStyle = oldStyle || {};
+	    style = style || {};
+	    var oldHasDel = 'delayed' in oldStyle;
+	    for (name in oldStyle) {
+	        if (!style[name]) {
+	            if (name[0] === '-' && name[1] === '-') {
+	                elm.style.removeProperty(name);
+	            }
+	            else {
+	                elm.style[name] = '';
+	            }
+	        }
+	    }
+	    for (name in style) {
+	        cur = style[name];
+	        if (name === 'delayed' && style.delayed) {
+	            for (var name2 in style.delayed) {
+	                cur = style.delayed[name2];
+	                if (!oldHasDel || cur !== oldStyle.delayed[name2]) {
+	                    setNextFrame(elm.style, name2, cur);
+	                }
+	            }
+	        }
+	        else if (name !== 'remove' && cur !== oldStyle[name]) {
+	            if (name[0] === '-' && name[1] === '-') {
+	                elm.style.setProperty(name, cur);
+	            }
+	            else {
+	                elm.style[name] = cur;
+	            }
+	        }
+	    }
+	}
+	function applyDestroyStyle(vnode) {
+	    var style, name, elm = vnode.elm, s = vnode.data.style;
+	    if (!s || !(style = s.destroy))
+	        { return; }
+	    for (name in style) {
+	        elm.style[name] = style[name];
+	    }
+	}
+	function applyRemoveStyle(vnode, rm) {
+	    var s = vnode.data.style;
+	    if (!s || !s.remove) {
+	        rm();
+	        return;
+	    }
+	    var name, elm = vnode.elm, i = 0, compStyle, style = s.remove, amount = 0, applied = [];
+	    for (name in style) {
+	        applied.push(name);
+	        elm.style[name] = style[name];
+	    }
+	    compStyle = getComputedStyle(elm);
+	    var props = compStyle['transition-property'].split(', ');
+	    for (; i < props.length; ++i) {
+	        if (applied.indexOf(props[i]) !== -1)
+	            { amount++; }
+	    }
+	    elm.addEventListener('transitionend', function (ev) {
+	        if (ev.target === elm)
+	            { --amount; }
+	        if (amount === 0)
+	            { rm(); }
+	    });
+	}
+	var styleModule = {
+	    create: updateStyle,
+	    update: updateStyle,
+	    destroy: applyDestroyStyle,
+	    remove: applyRemoveStyle
+	};
+
 	function invokeHandler(handler, event, args) {
 	  if (typeof handler === 'function') {
 	    // call function handler
@@ -10522,6 +10646,7 @@
 	var patch = init$1([
 	  attributesModule,
 	  propsModule,
+	  styleModule,
 	  eventListenersModule ]);
 
 	var Framework7Component = function Framework7Component(app, options, extendContext) {
@@ -11076,8 +11201,6 @@
 	      xhrCacheIgnoreGetParameters: false,
 	      xhrCacheDuration: 1000 * 60 * 10, // Ten minutes
 	      preloadPreviousPage: true,
-	      uniqueHistory: false,
-	      uniqueHistoryIgnoreGetParameters: false,
 	      allowDuplicateUrls: false,
 	      reloadPages: false,
 	      removeElements: true,
@@ -11730,10 +11853,10 @@
 	      var app = this;
 	      var $toolbarEl = page.$el.parents('.view').children('.toolbar');
 	      if ($toolbarEl.length === 0) {
-	        $toolbarEl = page.$el.find('.toolbar');
+	        $toolbarEl = page.$el.parents('.views').children('.tabbar, .tabbar-labels');
 	      }
 	      if ($toolbarEl.length === 0) {
-	        $toolbarEl = page.$el.parents('.views').children('.tabbar, .tabbar-labels');
+	        $toolbarEl = page.$el.find('.toolbar');
 	      }
 	      if ($toolbarEl.length === 0) {
 	        return;
@@ -11807,11 +11930,12 @@
 	  $el.prepend(ripple.$rippleWaveEl);
 
 	  /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
-	  ripple._clientLeft = ripple.$rippleWaveEl[0].clientLeft;
-
+	  // ripple._clientLeft = ripple.$rippleWaveEl[0].clientLeft;
 	  ripple.rippleTransform = "translate3d(" + (-center.x + (width / 2)) + "px, " + (-center.y + (height / 2)) + "px, 0) scale(1)";
 
-	  ripple.$rippleWaveEl.transform(ripple.rippleTransform);
+	  Utils.nextFrame(function () {
+	    ripple.$rippleWaveEl.transform(ripple.rippleTransform);
+	  });
 
 	  return ripple;
 	};
@@ -11995,15 +12119,10 @@
 	      });
 	    }
 
-	    // Emit open
-	    /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
-	    modal._clientLeft = $el[0].clientLeft;
 
-	    // Backdrop
-	    if ($backdropEl) {
-	      $backdropEl[animate ? 'removeClass' : 'addClass']('not-animated');
-	      $backdropEl.addClass('backdrop-in');
-	    }
+	    /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
+	    // modal._clientLeft = $el[0].clientLeft;
+
 	    // Modal
 	    function transitionEnd() {
 	      if ($el.hasClass('modal-out')) {
@@ -12013,19 +12132,28 @@
 	      }
 	    }
 	    if (animate) {
-	      $el
-	        .animationEnd(function () {
-	          transitionEnd();
-	        });
-	      $el
-	        .transitionEnd(function () {
-	          transitionEnd();
-	        });
-	      $el
-	        .removeClass('modal-out not-animated')
-	        .addClass('modal-in');
-	      modal.onOpen();
+	      Utils.nextFrame(function () {
+	        if ($backdropEl) {
+	          $backdropEl.removeClass('not-animated');
+	          $backdropEl.addClass('backdrop-in');
+	        }
+	        $el
+	          .animationEnd(function () {
+	            transitionEnd();
+	          });
+	        $el
+	          .transitionEnd(function () {
+	            transitionEnd();
+	          });
+	        $el
+	          .removeClass('modal-out not-animated')
+	          .addClass('modal-in');
+	        modal.onOpen();
+	      });
 	    } else {
+	      if ($backdropEl) {
+	        $backdropEl.addClass('backdrop-in not-animated');
+	      }
 	      $el.removeClass('modal-out').addClass('modal-in not-animated');
 	      modal.onOpen();
 	      modal.onOpened();
@@ -14819,12 +14947,14 @@
 	      }
 	    });
 	    // eslint-disable-next-line
-	    $el[0]._clientLeft = $el[0].clientLeft;
-	    $el
-	      .addClass('swipeout-deleting swipeout-transitioning')
-	      .css({ height: '0px' })
-	      .find('.swipeout-content')
-	      .transform('translate3d(-100%,0,0)');
+	    // $el[0]._clientLeft = $el[0].clientLeft;
+	    Utils.nextFrame(function () {
+	      $el
+	        .addClass('swipeout-deleting swipeout-transitioning')
+	        .css({ height: '0px' })
+	        .find('.swipeout-content')
+	        .transform('translate3d(-100%,0,0)');
+	    });
 	  },
 	};
 	var Swipeout$1 = {
@@ -14936,7 +15066,9 @@
 	      if ($el.hasClass('accordion-item-opened')) {
 	        $contentEl.transition(0);
 	        $contentEl.css('height', 'auto');
-	        $contentEl._clientLeft = $contentEl[0].clientLeft;
+	        Utils.nextFrame(function () {
+	          $contentEl.transition('');
+	        });
 	        $contentEl.transition('');
 	        $el.trigger('accordion:opened');
 	        app.emit('accordionOpened', $el[0]);
@@ -14960,15 +15092,14 @@
 	    $contentEl.attr('aria-hidden', true);
 	    $contentEl.transition(0);
 	    $contentEl.css('height', (($contentEl[0].scrollHeight) + "px"));
-	    $contentEl._clientLeft = $contentEl[0].clientLeft;
-	    $contentEl.transition('');
 	    // Close
 	    $contentEl.transitionEnd(function () {
 	      if ($el.hasClass('accordion-item-opened')) {
 	        $contentEl.transition(0);
 	        $contentEl.css('height', 'auto');
-	        $contentEl._clientLeft = $contentEl[0].clientLeft;
-	        $contentEl.transition('');
+	        Utils.nextFrame(function () {
+	          $contentEl.transition('');
+	        });
 	        $el.trigger('accordion:opened');
 	        app.emit('accordionOpened', $el[0]);
 	      } else {
@@ -16766,33 +16897,35 @@
 	    $backdropEl.show();
 
 	    /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
-	    panel._clientLeft = $el[0].clientLeft;
+	    // panel._clientLeft = $el[0].clientLeft;
 
-	    $('html').addClass(("with-panel with-panel-" + side + "-" + effect));
-	    panel.onOpen();
+	    Utils.nextFrame(function () {
+	      $('html').addClass(("with-panel with-panel-" + side + "-" + effect));
+	      panel.onOpen();
 
-	    // Transition End;
-	    var transitionEndTarget = effect === 'reveal' ? $el.nextAll('.view, .views').eq(0) : $el;
+	      // Transition End;
+	      var transitionEndTarget = effect === 'reveal' ? $el.nextAll('.view, .views').eq(0) : $el;
 
-	    function panelTransitionEnd() {
-	      transitionEndTarget.transitionEnd(function (e) {
-	        if ($(e.target).is(transitionEndTarget)) {
-	          if ($el.hasClass('panel-active')) {
-	            panel.onOpened();
-	            $backdropEl.css({ display: '' });
-	          } else {
-	            panel.onClosed();
-	            $backdropEl.css({ display: '' });
-	          }
-	        } else { panelTransitionEnd(); }
-	      });
-	    }
-	    if (animate) {
-	      panelTransitionEnd();
-	    } else {
-	      panel.onOpened();
-	      $backdropEl.css({ display: '' });
-	    }
+	      function panelTransitionEnd() {
+	        transitionEndTarget.transitionEnd(function (e) {
+	          if ($(e.target).is(transitionEndTarget)) {
+	            if ($el.hasClass('panel-active')) {
+	              panel.onOpened();
+	              $backdropEl.css({ display: '' });
+	            } else {
+	              panel.onClosed();
+	              $backdropEl.css({ display: '' });
+	            }
+	          } else { panelTransitionEnd(); }
+	        });
+	      }
+	      if (animate) {
+	        panelTransitionEnd();
+	      } else {
+	        panel.onOpened();
+	        $backdropEl.css({ display: '' });
+	      }
+	    });
 
 	    return true;
 	  };
@@ -17309,24 +17442,24 @@
 	      data = Utils.serializeObject(app.form.convertToData($formEl[0]));
 	    }
 
-	    var xhr = app.request({
+	    app.request({
 	      method: method,
 	      url: url,
 	      contentType: contentType,
 	      data: data,
-	      beforeSend: function beforeSend() {
+	      beforeSend: function beforeSend(xhr) {
 	        $formEl.trigger('formajax:beforesend', data, xhr);
 	        app.emit('formAjaxBeforeSend', $formEl[0], data, xhr);
 	      },
-	      error: function error() {
+	      error: function error(xhr) {
 	        $formEl.trigger('formajax:error', data, xhr);
 	        app.emit('formAjaxError', $formEl[0], data, xhr);
 	      },
-	      complete: function complete() {
+	      complete: function complete(xhr) {
 	        $formEl.trigger('formajax:complete', data, xhr);
 	        app.emit('formAjaxComplete', $formEl[0], data, xhr);
 	      },
-	      success: function success() {
+	      success: function success(response, status, xhr) {
 	        $formEl.trigger('formajax:success', data, xhr);
 	        app.emit('formAjaxSuccess', $formEl[0], data, xhr);
 	      },
@@ -19226,7 +19359,8 @@
 	    if (ss.params.renderPage) { return ss.params.renderPage.call(ss, ss.items); }
 	    var pageTitle = ss.params.pageTitle;
 	    if (typeof pageTitle === 'undefined') {
-	      pageTitle = ss.$el.find('.item-title').text().trim();
+	      var $itemTitleEl = ss.$el.find('.item-title');
+	      pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
 	    }
 	    var cssClass = ss.params.cssClass;
 	    var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
@@ -19238,10 +19372,11 @@
 	    if (ss.params.renderPopup) { return ss.params.renderPopup.call(ss, ss.items); }
 	    var pageTitle = ss.params.pageTitle;
 	    if (typeof pageTitle === 'undefined') {
-	      pageTitle = ss.$el.find('.item-title').text().trim();
+	      var $itemTitleEl = ss.$el.find('.item-title');
+	      pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
 	    }
 	    var cssClass = ss.params.cssClass;
-	    var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar" + (ss.params.navbarColorTheme ? ("theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + (ss.params.formColorTheme ? ("theme-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+	    var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
 	    return popupHtml;
 	  };
 
@@ -19249,7 +19384,7 @@
 	    var ss = this;
 	    if (ss.params.renderSheet) { return ss.params.renderSheet.call(ss, ss.items); }
 	    var cssClass = ss.params.cssClass;
-	    var sheetHtml = "\n      <div class=\"sheet-modal smart-select-sheet " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"toolbar " + (ss.params.toolbarColorTheme ? ("theme-" + (ss.params.toolbarColorTheme)) : '') + "\">\n          <div class=\"toolbar-inner\">\n            <div class=\"left\"></div>\n            <div class=\"right\">\n              <a class=\"link sheet-close\">" + (ss.params.sheetCloseLinkText) + "</a>\n            </div>\n          </div>\n        </div>\n        <div class=\"sheet-modal-inner\">\n          <div class=\"page-content\">\n            <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + (ss.params.formColorTheme ? ("theme-" + (ss.params.formColorTheme)) : '') + "\">\n              <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+	    var sheetHtml = "\n      <div class=\"sheet-modal smart-select-sheet " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"toolbar " + (ss.params.toolbarColorTheme ? ("theme-" + (ss.params.toolbarColorTheme)) : '') + "\">\n          <div class=\"toolbar-inner\">\n            <div class=\"left\"></div>\n            <div class=\"right\">\n              <a class=\"link sheet-close\">" + (ss.params.sheetCloseLinkText) + "</a>\n            </div>\n          </div>\n        </div>\n        <div class=\"sheet-modal-inner\">\n          <div class=\"page-content\">\n            <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n              <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
 	    return sheetHtml;
 	  };
 
@@ -19257,7 +19392,7 @@
 	    var ss = this;
 	    if (ss.params.renderPopover) { return ss.params.renderPopover.call(ss, ss.items); }
 	    var cssClass = ss.params.cssClass;
-	    var popoverHtml = "\n      <div class=\"popover smart-select-popover " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + (ss.params.formColorTheme ? ("theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+	    var popoverHtml = "\n      <div class=\"popover smart-select-popover " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
 	    return popoverHtml;
 	  };
 
@@ -23255,7 +23390,7 @@
 	    var table = this;
 
 	    table.$el.trigger('datatable:beforedestroy', table);
-	    table.emit('local::beforeDestroy datatableBeforeDestroy', table);
+	    table.emit('local::beforeDestroy dataTableBeforeDestroy', table);
 
 	    table.attachEvents();
 
@@ -23396,12 +23531,13 @@
 	      .transform(("translate3d(" + (-diffX) + "px, " + (-diffY) + "px, 0)"));
 	    $fabEl.transitionEnd(function () {
 	      $targetEl.transition('');
-	      Utils.nextTick(function () {
+	      Utils.nextFrame(function () {
 	        $targetEl.css('opacity', 1).transform('scale(1,1)');
+	        $fabEl
+	          .transform(("translate3d(" + (-diffX) + "px, " + (-diffY) + "px, 0) scale(" + scaleX + ", " + scaleY + ")"))
+	          .css('border-radius', (borderRadius + "px"))
+	          .css('box-shadow', 'none');
 	      });
-	      $fabEl.transform(("translate3d(" + (-diffX) + "px, " + (-diffY) + "px, 0) scale(" + scaleX + ", " + scaleY + ")"))
-	        .css('border-radius', (borderRadius + "px"))
-	        .css('box-shadow', 'none');
 	      app.on('resize', $fabEl[0].f7FabMorphResizeHandler);
 	      if ($targetEl.parents('.page-content').length > 0) {
 	        $targetEl.parents('.page-content').on('scroll', $fabEl[0].f7FabMorphResizeHandler);
@@ -23445,7 +23581,7 @@
 	        .css('z-index', '')
 	        .removeClass('fab-opened')
 	        .transform('');
-	      Utils.nextTick(function () {
+	      Utils.nextFrame(function () {
 	        $fabEl.transitionEnd(function () {
 	          $targetEl
 	            .removeClass('fab-morph-target-visible')
@@ -23813,9 +23949,11 @@
 	    sb.$disableButtonEl.transition(0).show();
 	    sb.$disableButtonEl.css(("margin-" + (app.rtl ? 'left' : 'right')), ((-sb.disableButtonEl.offsetWidth) + "px"));
 	    /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
-	    sb._clientLeft = sb.$disableButtonEl[0].clientLeft;
-	    sb.$disableButtonEl.transition('');
-	    sb.disableButtonHasMargin = true;
+	    // sb._clientLeft = sb.$disableButtonEl[0].clientLeft;
+	    Utils.nextFrame(function () {
+	      sb.$disableButtonEl.transition('');
+	      sb.disableButtonHasMargin = true;
+	    });
 	  };
 
 	  Searchbar.prototype.enable = function enable (setFocus) {
@@ -25315,14 +25453,21 @@
 	      if (currentWebKitTransform) {
 	        slide[0].style.webkitTransform = 'none';
 	      }
-	      if (swiper.isHorizontal()) {
-	        slideSize = slide[0].getBoundingClientRect().width
-	          + parseFloat(slideStyles.getPropertyValue('margin-left'))
-	          + parseFloat(slideStyles.getPropertyValue('margin-right'));
+	      if (params.roundLengths) {
+	        slideSize = swiper.isHorizontal()
+	          ? slide.outerWidth(true)
+	          : slide.outerHeight(true);
 	      } else {
-	        slideSize = slide[0].getBoundingClientRect().height
-	          + parseFloat(slideStyles.getPropertyValue('margin-top'))
-	          + parseFloat(slideStyles.getPropertyValue('margin-bottom'));
+	        // eslint-disable-next-line
+	        if (swiper.isHorizontal()) {
+	          slideSize = slide[0].getBoundingClientRect().width
+	            + parseFloat(slideStyles.getPropertyValue('margin-left'))
+	            + parseFloat(slideStyles.getPropertyValue('margin-right'));
+	        } else {
+	          slideSize = slide[0].getBoundingClientRect().height
+	            + parseFloat(slideStyles.getPropertyValue('margin-top'))
+	            + parseFloat(slideStyles.getPropertyValue('margin-bottom'));
+	        }
 	      }
 	      if (currentTransform) {
 	        slide[0].style.transform = currentTransform;
@@ -25422,6 +25567,23 @@
 	    } else { slides.css({ marginBottom: (spaceBetween + "px") }); }
 	  }
 
+	  if (params.centerInsufficientSlides) {
+	    var allSlidesSize = 0;
+	    slidesSizesGrid.forEach(function (slideSizeValue) {
+	      allSlidesSize += slideSizeValue + (params.spaceBetween ? params.spaceBetween : 0);
+	    });
+	    allSlidesSize -= params.spaceBetween;
+	    if (allSlidesSize < swiperSize) {
+	      var allSlidesOffset = (swiperSize - allSlidesSize) / 2;
+	      snapGrid.forEach(function (snap, snapIndex) {
+	        snapGrid[snapIndex] = snap - allSlidesOffset;
+	      });
+	      slidesGrid.forEach(function (snap, snapIndex) {
+	        slidesGrid[snapIndex] = snap + allSlidesOffset;
+	      });
+	    }
+	  }
+
 	  Utils.extend(swiper, {
 	    slides: slides,
 	    snapGrid: snapGrid,
@@ -25504,6 +25666,9 @@
 	  // Visible Slides
 	  slides.removeClass(params.slideVisibleClass);
 
+	  swiper.visibleSlidesIndexes = [];
+	  swiper.visibleSlides = [];
+
 	  for (var i = 0; i < slides.length; i += 1) {
 	    var slide = slides[i];
 	    var slideProgress = (
@@ -25516,11 +25681,14 @@
 	                || (slideAfter > 0 && slideAfter <= swiper.size)
 	                || (slideBefore <= 0 && slideAfter >= swiper.size);
 	      if (isVisible) {
+	        swiper.visibleSlides.push(slide);
+	        swiper.visibleSlidesIndexes.push(i);
 	        slides.eq(i).addClass(params.slideVisibleClass);
 	      }
 	    }
 	    slide.progress = rtl ? -slideProgress : slideProgress;
 	  }
+	  swiper.visibleSlides = $(swiper.visibleSlides);
 	}
 
 	function updateProgress (translate) {
@@ -26453,6 +26621,7 @@
 	  if (e.originalEvent) { e = e.originalEvent; }
 	  data.isTouchEvent = e.type === 'touchstart';
 	  if (!data.isTouchEvent && 'which' in e && e.which === 3) { return; }
+	  if (!data.isTouchEvent && 'button' in e && e.button > 0) { return; }
 	  if (data.isTouched && data.isMoved) { return; }
 	  if (params.noSwiping && $(e.target).closest(params.noSwipingSelector ? params.noSwipingSelector : ("." + (params.noSwipingClass)))[0]) {
 	    swiper.allowClick = true;
@@ -26504,7 +26673,7 @@
 	    ) {
 	      doc.activeElement.blur();
 	    }
-	    if (preventDefault && swiper.allowTouchMove) {
+	    if (preventDefault && swiper.allowTouchMove && params.touchStartPreventDefault) {
 	      e.preventDefault();
 	    }
 	  }
@@ -27174,6 +27343,7 @@
 	}
 
 	function getBreakpoint (breakpoints) {
+	  var swiper = this;
 	  // Get breakpoint for window width
 	  if (!breakpoints) { return undefined; }
 	  var breakpoint = false;
@@ -27184,7 +27354,11 @@
 	  points.sort(function (a, b) { return parseInt(a, 10) - parseInt(b, 10); });
 	  for (var i = 0; i < points.length; i += 1) {
 	    var point = points[i];
-	    if (point >= win.innerWidth && !breakpoint) {
+	    if (swiper.params.breakpointsInverse) {
+	      if (point <= win.innerWidth) {
+	        breakpoint = point;
+	      }
+	    } else if (point >= win.innerWidth && !breakpoint) {
 	      breakpoint = point;
 	    }
 	  }
@@ -27237,7 +27411,7 @@
 	    suffixes.push('ios');
 	  }
 	  // WP8 Touch Events Fix
-	  if (Browser.isIE && (Support.pointerEvents || Support.prefixedPointerEvents)) {
+	  if ((Browser.isIE || Browser.isEdge) && (Support.pointerEvents || Support.prefixedPointerEvents)) {
 	    suffixes.push(("wp8-" + (params.direction)));
 	  }
 
@@ -27371,6 +27545,7 @@
 
 	  // Breakpoints
 	  breakpoints: undefined,
+	  breakpointsInverse: false,
 
 	  // Slides grid
 	  spaceBetween: 0,
@@ -27382,6 +27557,7 @@
 	  slidesOffsetBefore: 0, // in px
 	  slidesOffsetAfter: 0, // in px
 	  normalizeSlideIndex: true,
+	  centerInsufficientSlides: false,
 
 	  // Disable swiper and hide navigation when container not overflow
 	  watchOverflow: false,
@@ -27401,6 +27577,7 @@
 	  allowTouchMove: true,
 	  threshold: 0,
 	  touchMoveStopPropagation: true,
+	  touchStartPreventDefault: true,
 	  touchReleaseOnEdges: false,
 
 	  // Unique Navigation Elements
@@ -27516,7 +27693,7 @@
 	      if (module.params) {
 	        var moduleParamName = Object.keys(module.params)[0];
 	        var moduleParams = module.params[moduleParamName];
-	        if (typeof moduleParams !== 'object') { return; }
+	        if (typeof moduleParams !== 'object' || moduleParams === null) { return; }
 	        if (!(moduleParamName in params && 'enabled' in moduleParams)) { return; }
 	        if (params[moduleParamName] === true) {
 	          params[moduleParamName] = { enabled: true };
@@ -28074,13 +28251,16 @@
 	    var slidesPerView = ref.slidesPerView;
 	    var slidesPerGroup = ref.slidesPerGroup;
 	    var centeredSlides = ref.centeredSlides;
-	    var ref$1 = swiper.virtual;
-	    var previousFrom = ref$1.from;
-	    var previousTo = ref$1.to;
-	    var slides = ref$1.slides;
-	    var previousSlidesGrid = ref$1.slidesGrid;
-	    var renderSlide = ref$1.renderSlide;
-	    var previousOffset = ref$1.offset;
+	    var ref$1 = swiper.params.virtual;
+	    var addSlidesBefore = ref$1.addSlidesBefore;
+	    var addSlidesAfter = ref$1.addSlidesAfter;
+	    var ref$2 = swiper.virtual;
+	    var previousFrom = ref$2.from;
+	    var previousTo = ref$2.to;
+	    var slides = ref$2.slides;
+	    var previousSlidesGrid = ref$2.slidesGrid;
+	    var renderSlide = ref$2.renderSlide;
+	    var previousOffset = ref$2.offset;
 	    swiper.updateActiveIndex();
 	    var activeIndex = swiper.activeIndex || 0;
 
@@ -28091,11 +28271,11 @@
 	    var slidesAfter;
 	    var slidesBefore;
 	    if (centeredSlides) {
-	      slidesAfter = Math.floor(slidesPerView / 2) + slidesPerGroup;
-	      slidesBefore = Math.floor(slidesPerView / 2) + slidesPerGroup;
+	      slidesAfter = Math.floor(slidesPerView / 2) + slidesPerGroup + addSlidesBefore;
+	      slidesBefore = Math.floor(slidesPerView / 2) + slidesPerGroup + addSlidesAfter;
 	    } else {
-	      slidesAfter = slidesPerView + (slidesPerGroup - 1);
-	      slidesBefore = slidesPerGroup;
+	      slidesAfter = slidesPerView + (slidesPerGroup - 1) + addSlidesBefore;
+	      slidesBefore = slidesPerGroup + addSlidesAfter;
 	    }
 	    var from = Math.max((activeIndex || 0) - slidesBefore, 0);
 	    var to = Math.min((activeIndex || 0) + slidesAfter, slides.length - 1);
@@ -28213,6 +28393,8 @@
 	      cache: true,
 	      renderSlide: null,
 	      renderExternal: null,
+	      addSlidesBefore: 0,
+	      addSlidesAfter: 0,
 	    },
 	  },
 	  create: function create() {
@@ -29188,6 +29370,7 @@
 	      var swiper = this;
 	      if (!swiper.params.parallax.enabled) { return; }
 	      swiper.params.watchSlidesProgress = true;
+	      swiper.originalParams.watchSlidesProgress = true;
 	    },
 	    init: function init() {
 	      var swiper = this;
@@ -30975,6 +31158,192 @@
 	  },
 	};
 
+	var Thumbs = {
+	  init: function init() {
+	    var swiper = this;
+	    var ref = swiper.params;
+	    var thumbsParams = ref.thumbs;
+	    var SwiperClass = swiper.constructor;
+	    if (thumbsParams.swiper instanceof SwiperClass) {
+	      swiper.thumbs.swiper = thumbsParams.swiper;
+	      Utils.extend(swiper.thumbs.swiper.originalParams, {
+	        watchSlidesProgress: true,
+	        slideToClickedSlide: false,
+	      });
+	      Utils.extend(swiper.thumbs.swiper.params, {
+	        watchSlidesProgress: true,
+	        slideToClickedSlide: false,
+	      });
+	    } else if (Utils.isObject(thumbsParams.swiper)) {
+	      swiper.thumbs.swiper = new SwiperClass(Utils.extend({}, thumbsParams.swiper, {
+	        watchSlidesVisibility: true,
+	        watchSlidesProgress: true,
+	        slideToClickedSlide: false,
+	      }));
+	      swiper.thumbs.swiperCreated = true;
+	    }
+	    swiper.thumbs.swiper.$el.addClass(swiper.params.thumbs.thumbsContainerClass);
+	    swiper.thumbs.swiper.on('tap', swiper.thumbs.onThumbClick);
+	  },
+	  onThumbClick: function onThumbClick() {
+	    var swiper = this;
+	    var thumbsSwiper = swiper.thumbs.swiper;
+	    if (!thumbsSwiper) { return; }
+	    var clickedIndex = thumbsSwiper.clickedIndex;
+	    if (typeof clickedIndex === 'undefined' || clickedIndex === null) { return; }
+	    var slideToIndex;
+	    if (thumbsSwiper.params.loop) {
+	      slideToIndex = parseInt($(thumbsSwiper.clickedSlide).attr('data-swiper-slide-index'), 10);
+	    } else {
+	      slideToIndex = clickedIndex;
+	    }
+	    if (swiper.params.loop) {
+	      var currentIndex = swiper.activeIndex;
+	      if (swiper.slides.eq(currentIndex).hasClass(swiper.params.slideDuplicateClass)) {
+	        swiper.loopFix();
+	        // eslint-disable-next-line
+	        swiper._clientLeft = swiper.$wrapperEl[0].clientLeft;
+	        currentIndex = swiper.activeIndex;
+	      }
+	      var prevIndex = swiper.slides.eq(currentIndex).prevAll(("[data-swiper-slide-index=\"" + slideToIndex + "\"]")).eq(0).index();
+	      var nextIndex = swiper.slides.eq(currentIndex).nextAll(("[data-swiper-slide-index=\"" + slideToIndex + "\"]")).eq(0).index();
+	      if (typeof prevIndex === 'undefined') { slideToIndex = nextIndex; }
+	      else if (typeof nextIndex === 'undefined') { slideToIndex = prevIndex; }
+	      else if (nextIndex - currentIndex < currentIndex - prevIndex) { slideToIndex = nextIndex; }
+	      else { slideToIndex = prevIndex; }
+	    }
+	    swiper.slideTo(slideToIndex);
+	  },
+	  update: function update(initial) {
+	    var swiper = this;
+	    var thumbsSwiper = swiper.thumbs.swiper;
+	    if (!thumbsSwiper) { return; }
+
+	    var slidesPerView = thumbsSwiper.params.slidesPerView === 'auto'
+	      ? thumbsSwiper.slidesPerViewDynamic()
+	      : thumbsSwiper.params.slidesPerView;
+
+	    if (swiper.realIndex !== thumbsSwiper.realIndex) {
+	      var currentThumbsIndex = thumbsSwiper.activeIndex;
+	      var newThumbsIndex;
+	      if (thumbsSwiper.params.loop) {
+	        if (thumbsSwiper.slides.eq(currentThumbsIndex).hasClass(thumbsSwiper.params.slideDuplicateClass)) {
+	          thumbsSwiper.loopFix();
+	          // eslint-disable-next-line
+	          thumbsSwiper._clientLeft = thumbsSwiper.$wrapperEl[0].clientLeft;
+	          currentThumbsIndex = thumbsSwiper.activeIndex;
+	        }
+	        // Find actual thumbs index to slide to
+	        var prevThumbsIndex = thumbsSwiper.slides.eq(currentThumbsIndex).prevAll(("[data-swiper-slide-index=\"" + (swiper.realIndex) + "\"]")).eq(0).index();
+	        var nextThumbsIndex = thumbsSwiper.slides.eq(currentThumbsIndex).nextAll(("[data-swiper-slide-index=\"" + (swiper.realIndex) + "\"]")).eq(0).index();
+	        if (typeof prevThumbsIndex === 'undefined') { newThumbsIndex = nextThumbsIndex; }
+	        else if (typeof nextThumbsIndex === 'undefined') { newThumbsIndex = prevThumbsIndex; }
+	        else if (nextThumbsIndex - currentThumbsIndex < currentThumbsIndex - prevThumbsIndex) { newThumbsIndex = nextThumbsIndex; }
+	        else { newThumbsIndex = prevThumbsIndex; }
+	      } else {
+	        newThumbsIndex = swiper.realIndex;
+	      }
+
+	      if (thumbsSwiper.visibleSlidesIndexes.indexOf(newThumbsIndex) < 0) {
+	        if (thumbsSwiper.params.centeredSlides) {
+	          if (newThumbsIndex > currentThumbsIndex) {
+	            newThumbsIndex = newThumbsIndex - Math.floor(slidesPerView / 2) + 1;
+	          } else {
+	            newThumbsIndex = newThumbsIndex + Math.floor(slidesPerView / 2) - 1;
+	          }
+	        } else if (newThumbsIndex > currentThumbsIndex) {
+	          newThumbsIndex = newThumbsIndex - slidesPerView + 1;
+	        }
+	        thumbsSwiper.slideTo(newThumbsIndex, initial ? 0 : undefined);
+	      }
+	    }
+
+	    // Activate thumbs
+	    var thumbsToActivate = 1;
+	    var thumbActiveClass = swiper.params.thumbs.slideThumbActiveClass;
+
+	    if (swiper.params.slidesPerView > 1 && !swiper.params.centeredSlides) {
+	      thumbsToActivate = swiper.params.slidesPerView;
+	    }
+
+	    thumbsSwiper.slides.removeClass(thumbActiveClass);
+	    if (thumbsSwiper.params.loop) {
+	      for (var i = 0; i < thumbsToActivate; i += 1) {
+	        thumbsSwiper.$wrapperEl.children(("[data-swiper-slide-index=\"" + (swiper.realIndex + i) + "\"]")).addClass(thumbActiveClass);
+	      }
+	    } else {
+	      for (var i$1 = 0; i$1 < thumbsToActivate; i$1 += 1) {
+	        thumbsSwiper.slides.eq(swiper.realIndex + i$1).addClass(thumbActiveClass);
+	      }
+	    }
+	  },
+	};
+	var Thumbs$1 = {
+	  name: 'thumbs',
+	  params: {
+	    thumbs: {
+	      swiper: null,
+	      slideThumbActiveClass: 'swiper-slide-thumb-active',
+	      thumbsContainerClass: 'swiper-container-thumbs',
+	    },
+	  },
+	  create: function create() {
+	    var swiper = this;
+	    Utils.extend(swiper, {
+	      thumbs: {
+	        swiper: null,
+	        init: Thumbs.init.bind(swiper),
+	        update: Thumbs.update.bind(swiper),
+	        onThumbClick: Thumbs.onThumbClick.bind(swiper),
+	      },
+	    });
+	  },
+	  on: {
+	    beforeInit: function beforeInit() {
+	      var swiper = this;
+	      var ref = swiper.params;
+	      var thumbs = ref.thumbs;
+	      if (!thumbs || !thumbs.swiper) { return; }
+	      swiper.thumbs.init();
+	      swiper.thumbs.update(true);
+	    },
+	    slideChange: function slideChange() {
+	      var swiper = this;
+	      if (!swiper.thumbs.swiper) { return; }
+	      swiper.thumbs.update();
+	    },
+	    update: function update() {
+	      var swiper = this;
+	      if (!swiper.thumbs.swiper) { return; }
+	      swiper.thumbs.update();
+	    },
+	    resize: function resize() {
+	      var swiper = this;
+	      if (!swiper.thumbs.swiper) { return; }
+	      swiper.thumbs.update();
+	    },
+	    observerUpdate: function observerUpdate() {
+	      var swiper = this;
+	      if (!swiper.thumbs.swiper) { return; }
+	      swiper.thumbs.update();
+	    },
+	    setTransition: function setTransition(duration) {
+	      var swiper = this;
+	      var thumbsSwiper = swiper.thumbs.swiper;
+	      if (!thumbsSwiper) { return; }
+	      thumbsSwiper.setTransition(duration);
+	    },
+	    beforeDestroy: function beforeDestroy() {
+	      var swiper = this;
+	      var thumbsSwiper = swiper.thumbs.swiper;
+	      if (!thumbsSwiper) { return; }
+	      if (swiper.thumbs.swiperCreated && thumbsSwiper) {
+	        thumbsSwiper.destroy();
+	      }
+	    },
+	  },
+	};
+
 	// Swiper Class
 
 	Swiper.use([
@@ -30996,7 +31365,8 @@
 	  EffectFade,
 	  EffectCube,
 	  EffectFlip,
-	  EffectCoverflow ]);
+	  EffectCoverflow,
+	  Thumbs$1 ]);
 
 	function initSwiper(swiperEl) {
 	  var app = this;
@@ -33347,7 +33717,7 @@
 	    var length = gauge.calcBorderLength();
 	    var progress = Math.max(Math.min(value, 1), 0);
 
-	    return ("\n      <svg class=\"gauge-svg\" width=\"" + size + "px\" height=\"" + (semiCircle ? size / 2 : size) + "px\" viewBox=\"0 0 " + size + " " + (semiCircle ? size / 2 : size) + "\">\n        " + (semiCircle ? ("\n          <path\n            class=\"gauge-back-semi\"\n            d=\"M" + (size - (borderWidth / 2)) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0\"\n            stroke=\"" + borderBgColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            fill=\"" + (bgColor || 'none') + "\"\n          />\n          <path\n            class=\"gauge-front-semi\"\n            d=\"M" + (size - (borderWidth / 2)) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0\"\n            stroke=\"" + borderColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            stroke-dasharray=\"" + (length / 2) + "\"\n            stroke-dashoffset=\"" + ((length / 2) * (progress - 1)) + "\"\n            fill=\"" + (borderBgColor ? 'none' : (bgColor || 'none')) + "\"\n          />\n        ") : ("\n          " + (borderBgColor ? ("\n            <circle\n              class=\"gauge-back-circle\"\n              stroke=\"" + borderBgColor + "\"\n              stroke-width=\"" + borderWidth + "\"\n              fill=\"" + (bgColor || 'none') + "\"\n              cx=\"" + (size / 2) + "\"\n              cy=\"" + (size / 2) + "\"\n              r=\"" + radius + "\"\n            ></circle>\n          ") : '') + "\n          <circle\n            class=\"gauge-front-circle\"\n            transform=\"" + ("rotate(-90 " + (size / 2) + " " + (size / 2) + ")") + "\"\n            stroke=\"" + borderColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            stroke-dasharray=\"" + length + "\"\n            stroke-dashoffset=\"" + (length * (1 - progress)) + "\"\n            fill=\"" + (borderBgColor ? 'none' : bgColor || 'none') + "\"\n            cx=\"" + (size / 2) + "\"\n            cy=\"" + (size / 2) + "\"\n            r=\"" + radius + "\"\n          ></circle>\n        ")) + "\n        " + (valueText ? ("\n          <text\n            class=\"gauge-value-text\"\n            x=\"50%\"\n            y=\"" + (semiCircle ? '100%' : '50%') + "\"\n            font-weight=\"" + valueFontWeight + "\"\n            font-size=\"" + valueFontSize + "\"\n            fill=\"" + valueTextColor + "\"\n            dy=\"" + (semiCircle ? (labelText ? -labelFontSize - 15 : -5) : 0) + "\"\n            text-anchor=\"middle\"\n            dominant-baseline=\"" + (!semiCircle && 'middle') + "\"\n          >" + valueText + "</text>\n        ") : '') + "\n        " + (labelText ? ("\n          <text\n            class=\"gauge-label-text\"\n            x=\"50%\"\n            y=\"" + (semiCircle ? '100%' : '50%') + "\"\n            font-weight=\"" + labelFontWeight + "\"\n            font-size=\"" + labelFontSize + "\"\n            fill=\"" + labelTextColor + "\"\n            dy=\"" + (semiCircle ? -5 : (valueText ? ((valueFontSize / 2) + 10) : 0)) + "\"\n            text-anchor=\"middle\"\n            dominant-baseline=\"" + (!semiCircle && 'middle') + "\"\n          >" + labelText + "</text>\n        ") : '') + "\n      </svg>\n    ").trim();
+	    return ("\n      <svg class=\"gauge-svg\" width=\"" + size + "px\" height=\"" + (semiCircle ? size / 2 : size) + "px\" viewBox=\"0 0 " + size + " " + (semiCircle ? size / 2 : size) + "\">\n        " + (semiCircle ? ("\n          <path\n            class=\"gauge-back-semi\"\n            d=\"M" + (size - (borderWidth / 2)) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0\"\n            stroke=\"" + borderBgColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            fill=\"" + (bgColor || 'none') + "\"\n          />\n          <path\n            class=\"gauge-front-semi\"\n            d=\"M" + (size - (borderWidth / 2)) + "," + (size / 2) + " a1,1 0 0,0 -" + (size - borderWidth) + ",0\"\n            stroke=\"" + borderColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            stroke-dasharray=\"" + (length / 2) + "\"\n            stroke-dashoffset=\"" + ((length / 2) * (1 + progress)) + "\"\n            fill=\"" + (borderBgColor ? 'none' : (bgColor || 'none')) + "\"\n          />\n        ") : ("\n          " + (borderBgColor ? ("\n            <circle\n              class=\"gauge-back-circle\"\n              stroke=\"" + borderBgColor + "\"\n              stroke-width=\"" + borderWidth + "\"\n              fill=\"" + (bgColor || 'none') + "\"\n              cx=\"" + (size / 2) + "\"\n              cy=\"" + (size / 2) + "\"\n              r=\"" + radius + "\"\n            ></circle>\n          ") : '') + "\n          <circle\n            class=\"gauge-front-circle\"\n            transform=\"" + ("rotate(-90 " + (size / 2) + " " + (size / 2) + ")") + "\"\n            stroke=\"" + borderColor + "\"\n            stroke-width=\"" + borderWidth + "\"\n            stroke-dasharray=\"" + length + "\"\n            stroke-dashoffset=\"" + (length * (1 - progress)) + "\"\n            fill=\"" + (borderBgColor ? 'none' : bgColor || 'none') + "\"\n            cx=\"" + (size / 2) + "\"\n            cy=\"" + (size / 2) + "\"\n            r=\"" + radius + "\"\n          ></circle>\n        ")) + "\n        " + (valueText ? ("\n          <text\n            class=\"gauge-value-text\"\n            x=\"50%\"\n            y=\"" + (semiCircle ? '100%' : '50%') + "\"\n            font-weight=\"" + valueFontWeight + "\"\n            font-size=\"" + valueFontSize + "\"\n            fill=\"" + valueTextColor + "\"\n            dy=\"" + (semiCircle ? (labelText ? -labelFontSize - 15 : -5) : 0) + "\"\n            text-anchor=\"middle\"\n            dominant-baseline=\"" + (!semiCircle && 'middle') + "\"\n          >" + valueText + "</text>\n        ") : '') + "\n        " + (labelText ? ("\n          <text\n            class=\"gauge-label-text\"\n            x=\"50%\"\n            y=\"" + (semiCircle ? '100%' : '50%') + "\"\n            font-weight=\"" + labelFontWeight + "\"\n            font-size=\"" + labelFontSize + "\"\n            fill=\"" + labelTextColor + "\"\n            dy=\"" + (semiCircle ? -5 : (valueText ? ((valueFontSize / 2) + 10) : 0)) + "\"\n            text-anchor=\"middle\"\n            dominant-baseline=\"" + (!semiCircle && 'middle') + "\"\n          >" + labelText + "</text>\n        ") : '') + "\n      </svg>\n    ").trim();
 	  };
 
 	  Gauge.prototype.update = function update (newParams) {
@@ -33851,7 +34221,7 @@
 	};
 
 	/**
-	 * Framework7 3.2.0
+	 * Framework7 3.3.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -33859,7 +34229,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: August 28, 2018
+	 * Released on: September 14, 2018
 	 */
 
 	// Install Core Modules & Components
@@ -35018,7 +35388,7 @@
 	  on: function on(events, handler) {
 	    events.split(' ').forEach(function (event) {
 	      if (!eventsEmitter.listeners[event]) { eventsEmitter.listeners[event] = []; }
-	      eventsEmitter.listeners[event].push(handler);
+	      eventsEmitter.listeners[event].unshift(handler);
 	    });
 	  },
 	  off: function off(events, handler) {
@@ -35076,7 +35446,13 @@
 	    if (routes && routes.length && !f7Params.routes) { f7Params.routes = routes; }
 
 	    f7.instance = new f7.Framework7(f7Params);
-	    eventsEmitter.emit('ready', f7.instance);
+	    if (f7.instance.initialized) {
+	      eventsEmitter.emit('ready', f7.instance);
+	    } else {
+	      f7.instance.on('init', function () {
+	        eventsEmitter.emit('ready', f7.instance);
+	      });
+	    }
 	  },
 	  ready: function ready(callback) {
 	    if (!callback) { return; }
@@ -35415,7 +35791,7 @@
 	  };
 
 	  F7Block.prototype.onTabHide = function onTabHide (e) {
-	    this.dispatchEvent('tabShow tab:hide', e);
+	    this.dispatchEvent('tabHide tab:hide', e);
 	  };
 
 	  F7Block.prototype.render = function render () {
@@ -36725,7 +37101,7 @@
 	      stroke: borderColor,
 	      strokeWidth: borderWidth,
 	      strokeDasharray: length / 2,
-	      strokeDashoffset: length / 2 * (progress - 1),
+	      strokeDashoffset: length / 2 * (1 + progress),
 	      fill: borderBgColor ? 'none' : bgColor || 'none'
 	    }), !semiCircle && borderBgColor && react.createElement('circle', {
 	      className: 'gauge-back-circle',
@@ -38784,6 +39160,8 @@
 	    var itemInputWithInfo = props.itemInputWithInfo;
 	    var inlineLabel = props.inlineLabel;
 	    var sortable = props.sortable;
+	    var noChevron = props.noChevron;
+	    var chevronCenter = props.chevronCenter;
 	    var isMedia = mediaItem || mediaList || self.state.isMedia;
 	    var isSortable = sortable || self.state.isSortable;
 	    var isSimple = self.state.isSimple;
@@ -38841,7 +39219,10 @@
 	      'media-item': isMedia,
 	      swipeout: swipeout,
 	      'accordion-item': accordionItem,
-	      'accordion-item-opened': accordionItemOpened
+	      'accordion-item-opened': accordionItemOpened,
+	      disabled: disabled && !(radio || checkbox),
+	      'no-chevron': noChevron,
+	      'chevron-center': chevronCenter
 	    }, Mixins.colorClasses(props));
 
 	    if (divider || groupTitle) {
@@ -39054,6 +39435,8 @@
 	  accordionItemOpened: Boolean,
 	  smartSelect: Boolean,
 	  smartSelectParams: Object,
+	  noChevron: Boolean,
+	  chevronCenter: Boolean,
 	  checkbox: Boolean,
 	  radio: Boolean,
 	  checked: Boolean,
@@ -39126,6 +39509,8 @@
 	    var formStoreData = props.formStoreData;
 	    var inlineLabels = props.inlineLabels;
 	    var className = props.className;
+	    var noChevron = props.noChevron;
+	    var chevronCenter = props.chevronCenter;
 	    return Utils$1.classNames(className, 'list', {
 	      inset: inset,
 	      'tablet-inset': tabletInset,
@@ -39146,7 +39531,9 @@
 	      'no-hairlines-ios': noHairlinesIos,
 	      'no-hairlines-between-ios': noHairlinesBetweenIos,
 	      'form-store-data': formStoreData,
-	      'inline-labels': inlineLabels
+	      'inline-labels': inlineLabels,
+	      'no-chevron': noChevron,
+	      'chevron-center': chevronCenter
 	    }, Mixins.colorClasses(props));
 	  };
 
@@ -39326,6 +39713,8 @@
 	  noHairlinesBetweenMd: Boolean,
 	  noHairlinesIos: Boolean,
 	  noHairlinesBetweenIos: Boolean,
+	  noChevron: Boolean,
+	  chevronCenter: Boolean,
 	  tab: Boolean,
 	  tabActive: Boolean,
 	  form: Boolean,
@@ -40137,7 +40526,6 @@
 	    {
 	      value = self.refs.area.refs.inputEl.value;
 	    }
-	    console.log(value);
 	    var clear = self.f7Messagebar ? function () {
 	      self.f7Messagebar.clear();
 	    } : function () {};
@@ -40869,6 +41257,8 @@
 	    var title = props.title;
 	    var subtitle = props.subtitle;
 	    var inner = props.inner;
+	    var innerClass = props.innerClass;
+	    var innerClassName = props.innerClassName;
 	    var className = props.className;
 	    var id = props.id;
 	    var style = props.style;
@@ -40900,7 +41290,7 @@
 	        ref: function (__reactNode) {
 	          this$1.__reactRefs['inner'] = __reactNode;
 	        },
-	        className: Utils$1.classNames('navbar-inner', {
+	        className: Utils$1.classNames('navbar-inner', innerClass, innerClassName, {
 	          sliding: sliding
 	        })
 	      }, leftEl, titleEl, this.slots['default']);
@@ -40972,7 +41362,9 @@
 	  inner: {
 	    type: Boolean,
 	    default: true
-	  }
+	  },
+	  innerClass: String,
+	  innerClassName: String
 	}, Mixins.colorProps));
 
 	F7Navbar.displayName = 'f7-navbar';
@@ -42130,9 +42522,7 @@
 	    var backdrop = props.backdrop;
 	    var animate = props.animate;
 	    var popupParams = {
-	      el: el,
-	      backdrop: backdrop,
-	      animate: animate
+	      el: el
 	    };
 	    {
 	      if ('closeByBackdropClick' in props) { popupParams.closeByBackdropClick = closeByBackdropClick; }
@@ -42974,15 +43364,13 @@
 	      if ('closeByBackdropClick' in props) { sheetParams.closeByBackdropClick = closeByBackdropClick; }
 	      if ('closeByOutsideClick' in props) { sheetParams.closeByOutsideClick = closeByOutsideClick; }
 	    }
+	    self.$f7ready(function (f7) {
+	      if (useDefaultBackdrop) {
+	        sheetParams.backdrop = f7.params.sheet && f7.params.sheet.backdrop !== undefined ? f7.params.sheet.backdrop : self.$theme.md;
+	      } else {
+	        sheetParams.backdrop = backdrop;
+	      }
 
-	    if (useDefaultBackdrop) {
-	      var app = self.$f7;
-	      sheetParams.backdrop = app.params.sheet && app.params.sheet.backdrop !== undefined ? app.params.sheet.backdrop : self.$theme.md;
-	    } else {
-	      sheetParams.backdrop = backdrop;
-	    }
-
-	    self.$f7ready(function () {
 	      self.f7Sheet = self.$f7.sheet.create(sheetParams);
 
 	      if (opened) {
@@ -44263,8 +44651,6 @@
 	  xhrCacheIgnoreGetParameters: Boolean,
 	  xhrCacheDuration: Number,
 	  preloadPreviousPage: Boolean,
-	  uniqueHistory: Boolean,
-	  uniqueHistoryIgnoreGetParameters: Boolean,
 	  allowDuplicateUrls: Boolean,
 	  reloadPages: Boolean,
 	  removeElements: Boolean,
@@ -44632,7 +45018,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.2.0
+	 * Framework7 React 3.3.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -44640,7 +45026,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: August 28, 2018
+	 * Released on: September 14, 2018
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -50941,7 +51327,7 @@
 	      react.createElement( ListItem, { link: "swiper-3d-flip/", title: "3D Flip Effect" }),
 	      react.createElement( ListItem, { link: "swiper-fade/", title: "Fade Effect" }),
 	      react.createElement( ListItem, { link: "swiper-scrollbar/", title: "With Scrollbar" }),
-	      react.createElement( ListItem, { link: "swiper-gallery/", title: "Two Way Control Gallery" }),
+	      react.createElement( ListItem, { link: "swiper-gallery/", title: "Thumbs Gallery" }),
 	      react.createElement( ListItem, { link: "swiper-custom-controls/", title: "Custom Controls" }),
 	      react.createElement( ListItem, { link: "swiper-parallax/", title: "Parallax" }),
 	      react.createElement( ListItem, { link: "swiper-lazy/", title: "Lazy Loading" }),
@@ -51277,15 +51663,11 @@
 	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
 	  defaultExport.prototype.constructor = defaultExport;
 	  defaultExport.prototype.render = function render () {
-	    var this$1 = this;
-
 	    return (
-	      react.createElement( Page, { style: {background: '#000'}, onPageInit: this.onPageInit.bind(this) },
+	      react.createElement( Page, { style: {background: '#000'}, onPageInit: this.onPageInit.bind(this), onPageBeforeRemove: this.onPageBeforeRemove.bind(this) },
 	        react.createElement( Navbar$2, { title: "Two Way Control Gallery", backLink: "Back" }),
 	        react.createElement( Swiper$2, {
-	          className: "demo-swiper-gallery-top", navigation: true, colorTheme: "white", ref: function (el) {this$1.swiperTopComponent = el;}, params: {
-	            spaceBetween: 10,
-	          } },
+	          className: "demo-swiper-gallery-top", navigation: true, colorTheme: "white", init: false },
 	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/1/)'} }),
 	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/2/)'} }),
 	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/3/)'} }),
@@ -51294,13 +51676,7 @@
 	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/6/)'} })
 	        ),
 	        react.createElement( Swiper$2, {
-	          className: "demo-swiper-gallery-thumbs", ref: function (el) {this$1.swiperThumbsComponent = el;}, params: {
-	            slidesPerView: 'auto',
-	            spaceBetween: 10,
-	            centeredSlides: true,
-	            touchRatio: 0.2,
-	            slideToClickedSlide: true,
-	          } },
+	          className: "demo-swiper-gallery-thumbs", init: false },
 	          react.createElement( SwiperSlide, null,
 	            react.createElement( 'div', { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/1/)'}, className: "swiper-slide-pic" })
 	          ),
@@ -51323,15 +51699,34 @@
 	      )
 	    );
 	  };
+	  defaultExport.prototype.onPageBeforeRemove = function onPageBeforeRemove () {
+	    var self = this;
+	    self.swiperTop.destroy();
+	    self.swiperThumbs.destroy();
+	  };
 	  defaultExport.prototype.onPageInit = function onPageInit () {
 	    var self = this;
-	    var swiperTopComponent = self.swiperTopComponent;
-	    var swiperThumbsComponent = self.swiperThumbsComponent;
-	    var swiperTop = swiperTopComponent.swiper;
-	    var swiperThumbs = swiperThumbsComponent.swiper;
 
-	    swiperTop.controller.control = swiperThumbs;
-	    swiperThumbs.controller.control = swiperTop;
+	    var swiperThumbs = self.$f7.swiper.create('.demo-swiper-gallery-thumbs', {
+	      slidesPerView: 4,
+	      spaceBetween: 10,
+	      freeMode: true,
+	      watchSlidesProgress: true,
+	      watchSlidesVisibility: true,
+	    });
+	    var swiperTop = self.$f7.swiper.create('.demo-swiper-gallery-top', {
+	      spaceBetween: 10,
+	      navigation: {
+	        nextEl: '.swiper-button-next',
+	        prevEl: '.swiper-button-prev',
+	      },
+	      thumbs: {
+	        swiper: swiperThumbs,
+	      },
+	    });
+
+	    self.swiperTop = swiperTop;
+	    self.swiperThumbs = swiperThumbs;
 	  };
 
 	  return defaultExport;
