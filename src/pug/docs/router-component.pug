@@ -452,14 +452,14 @@ block content
         </template>
         <script>
           return {
-            data() {
+            data: function () {
               return {
                 // empty initial user data
                 user: null,
               }
             },
             on: {
-              pageInit() {
+              pageInit: function () {
                 var self = this;
                 var app = self.$app;
                 // request user data on page init
@@ -496,7 +496,7 @@ block content
           </template>
           <script>
             return {
-              data() {
+              data: function () {
                 return {
                   items: [
                     {
@@ -536,13 +536,13 @@ block content
           </template>
           <script>
             return {
-              data() {
+              data: function () {
                 return {
                   gaugeVisible: false,
                 }
               },
               methods: {
-                showGauge() {
+                showGauge: function () {
                   this.$setState({
                     gaugeVisible: true
                   })
