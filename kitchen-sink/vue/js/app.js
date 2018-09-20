@@ -9994,12 +9994,18 @@
       phonegap: !!(win.cordova || win.phonegap),
     };
 
+    var screnWidth = win.screen.width;
+    var screnHeight = win.screen.height;
+
     var windowsPhone = ua.match(/(Windows Phone);?[\s\/]+([\d.]+)?/); // eslint-disable-line
     var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/); // eslint-disable-line
     var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
     var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
     var iphone = !ipad && ua.match(/(iPhone\sOS|iOS)\s([\d_]+)/);
-    var iphoneX = iphone && win.screen.width === 375 && win.screen.height === 812;
+    var iphoneX = iphone && (
+      (screnWidth === 375 && screnHeight === 812) // X/XS
+      || (screnWidth === 414 && screnHeight === 896) // XR / XS Max
+    );
     var ie = ua.indexOf('MSIE ') >= 0 || ua.indexOf('Trident/') >= 0;
     var edge = ua.indexOf('Edge/') >= 0;
     var firefox = ua.indexOf('Gecko/') >= 0 && ua.indexOf('Firefox/') >= 0;
@@ -14937,25 +14943,34 @@
 
       var flattenedRoutes = [];
       routes.forEach(function (route) {
-        if ('routes' in route) {
-          var mergedPathsRoutes = route.routes.map(function (childRoute) {
-            var cRoute = Utils.extend({}, childRoute);
-            cRoute.path = (((route.path) + "/" + (cRoute.path))).replace('///', '/').replace('//', '/');
-            return cRoute;
-          });
-          flattenedRoutes = flattenedRoutes.concat(route, this$1.flattenRoutes(mergedPathsRoutes));
-        } else if ('tabs' in route && route.tabs) {
-          var mergedPathsRoutes$1 = route.tabs.map(function (tabRoute) {
+        var hasTabRoutes = false;
+        if ('tabs' in route && route.tabs) {
+          var mergedPathsRoutes = route.tabs.map(function (tabRoute) {
             var tRoute = Utils.extend({}, route, {
               path: (((route.path) + "/" + (tabRoute.path))).replace('///', '/').replace('//', '/'),
               parentPath: route.path,
               tab: tabRoute,
             });
             delete tRoute.tabs;
+            delete tRoute.routes;
             return tRoute;
           });
-          flattenedRoutes = flattenedRoutes.concat(this$1.flattenRoutes(mergedPathsRoutes$1));
-        } else {
+          hasTabRoutes = true;
+          flattenedRoutes = flattenedRoutes.concat(this$1.flattenRoutes(mergedPathsRoutes));
+        }
+        if ('routes' in route) {
+          var mergedPathsRoutes$1 = route.routes.map(function (childRoute) {
+            var cRoute = Utils.extend({}, childRoute);
+            cRoute.path = (((route.path) + "/" + (cRoute.path))).replace('///', '/').replace('//', '/');
+            return cRoute;
+          });
+          if (hasTabRoutes) {
+            flattenedRoutes = flattenedRoutes.concat(this$1.flattenRoutes(mergedPathsRoutes$1));
+          } else {
+            flattenedRoutes = flattenedRoutes.concat(route, this$1.flattenRoutes(mergedPathsRoutes$1));
+          }
+        }
+        if (!('routes' in route) && !('tabs' in route && route.tabs)) {
           flattenedRoutes.push(route);
         }
       });
@@ -15988,6 +16003,8 @@
       var view = this;
       if (view.params.router) {
         view.router.init();
+        view.$el.trigger('view:init', view);
+        view.emit('local::init viewInit', view);
       }
     };
 
@@ -22633,6 +22650,7 @@
       var args = [], len = arguments.length;
       while ( len-- ) args[ len ] = arguments[ len ];
       var app = this;
+
       var tabEl;
       var tabLinkEl;
       var animate;
@@ -22707,8 +22725,9 @@
       }
 
       // Swipeable tabs
+      var swiper;
       if ($tabsEl.parent().hasClass('tabs-swipeable-wrap') && app.swiper) {
-        var swiper = $tabsEl.parent()[0].swiper;
+        swiper = $tabsEl.parent()[0].swiper;
         if (swiper && swiper.activeIndex !== $newTabEl.index()) {
           animated = true;
           swiper
@@ -22727,16 +22746,18 @@
 
       // Remove active class from old tabs
       var $oldTabEl = $tabsEl.children('.tab-active');
-      $oldTabEl
-        .removeClass('tab-active')
-        .trigger('tab:hide');
-      app.emit('tabHide', $oldTabEl[0]);
+      $oldTabEl.removeClass('tab-active');
+      if (!swiper || (swiper && !swiper.animating)) {
+        $oldTabEl.trigger('tab:hide');
+        app.emit('tabHide', $oldTabEl[0]);
+      }
 
       // Trigger 'show' event on new tab
-      $newTabEl
-        .addClass('tab-active')
-        .trigger('tab:show');
-      app.emit('tabShow', $newTabEl[0]);
+      $newTabEl.addClass('tab-active');
+      if (!swiper || (swiper && !swiper.animating)) {
+        $newTabEl.trigger('tab:show');
+        app.emit('tabShow', $newTabEl[0]);
+      }
 
       // Find related link for new tab
       if (!$tabLinkEl) {
@@ -25602,10 +25623,10 @@
       var view;
 
       // Url
-      var url = ss.params.url;
+      var url = params.url;
       if (!url) {
         if ($el.attr('href') && $el.attr('href') !== '#') { url = $el.attr('href'); }
-        else { url = ($selectEl.attr('name').toLowerCase()) + "-select/"; }
+        else if ($selectEl.attr('name')) { url = ($selectEl.attr('name').toLowerCase()) + "-select/"; }
       }
       if (!url) { url = ss.params.url; }
 
@@ -25859,8 +25880,8 @@
         var $itemTitleEl = ss.$el.find('.item-title');
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
-      var cssClass = ss.params.cssClass;
-      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+      var cssClass = ss.params.cssClass || '';
+      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
       return popupHtml;
     };
 
@@ -26204,6 +26225,7 @@
         pageTitle: undefined,
         pageBackLinkText: 'Back',
         popupCloseLinkText: 'Close',
+        popupTabletFullscreen: false,
         sheetCloseLinkText: 'Done',
         searchbar: false,
         searchbarPlaceholder: 'Search',
@@ -30450,6 +30472,9 @@
           sb.backdropShow();
         }
         sb.$el.addClass('searchbar-enabled');
+        if (!sb.$disableButtonEl || (sb.$disableButtonEl && sb.$disableButtonEl.length === 0)) {
+          sb.$el.addClass('searchbar-enabled-no-disable-button');
+        }
         if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme === 'ios') {
           if (!sb.disableButtonHasMargin) {
             sb.setDisableButtonMargin();
@@ -30496,8 +30521,7 @@
       if (!sb.enabled) { return sb; }
       var app = sb.app;
       sb.$inputEl.val('').trigger('change');
-      sb.$el.removeClass('searchbar-enabled');
-      sb.$el.removeClass('searchbar-focused');
+      sb.$el.removeClass('searchbar-enabled searchbar-focused searchbar-enabled-no-disable-button');
       if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme === 'ios') {
         sb.$disableButtonEl.css(("margin-" + (app.rtl ? 'left' : 'right')), ((-sb.disableButtonEl.offsetWidth) + "px"));
       }
@@ -30550,6 +30574,7 @@
           sb.enable();
         }
         sb.$inputEl.val(query);
+        sb.$inputEl.trigger('input');
       }
       sb.query = query;
       sb.value = query;
@@ -39878,7 +39903,7 @@
       var $el = tooltip.$el;
       var app = tooltip.app;
       $el.css({ left: '', top: '' });
-      var $targetEl = $(targetEl || tooltip.el);
+      var $targetEl = $(targetEl || tooltip.targetEl);
       var ref = [$el.width(), $el.height()];
       var width = ref[0];
       var height = ref[1];
@@ -40705,7 +40730,7 @@
   };
 
   /**
-   * Framework7 3.3.0
+   * Framework7 3.3.2
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -40713,7 +40738,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: September 14, 2018
+   * Released on: September 20, 2018
    */
 
   // Install Core Modules & Components
@@ -42005,12 +42030,12 @@
     },
 
     methods: {
-      onTabShow: function onTabShow(e) {
-        this.dispatchEvent('tabShow tab:show', e);
+      onTabShow: function onTabShow(event) {
+        this.dispatchEvent('tabShow tab:show', event);
       },
 
-      onTabHide: function onTabHide(e) {
-        this.dispatchEvent('tabHide tab:hide', e);
+      onTabHide: function onTabHide(event) {
+        this.dispatchEvent('tabHide tab:hide', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -42829,8 +42854,8 @@
     },
 
     methods: {
-      onClick: function onClick(e) {
-        this.dispatchEvent('click', e);
+      onClick: function onClick(event) {
+        this.dispatchEvent('click', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -43372,7 +43397,8 @@
           el: self.$refs.el,
           on: {
             change: function change(toggle) {
-              self.dispatchEvent('toggle:change toggleChange', toggle.checked);
+              var checked = toggle.checked;
+              self.dispatchEvent('toggle:change toggleChange', checked);
             }
 
           }
@@ -43391,9 +43417,9 @@
         if (self.f7Toggle && self.f7Toggle.toggle) { self.f7Toggle.toggle(); }
       },
 
-      onChange: function onChange(e) {
+      onChange: function onChange(event) {
         var self = this;
-        self.dispatchEvent('change', e);
+        self.dispatchEvent('change', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -45353,10 +45379,6 @@
       onClick: function onClick(event) {
         var self = this;
 
-        if (self.props.smartSelect && self.f7SmartSelect) {
-          self.f7SmartSelect.open();
-        }
-
         if (event.target.tagName.toLowerCase() !== 'input') {
           self.dispatchEvent('click', event);
         }
@@ -45665,15 +45687,16 @@
       },
 
       onSortableSort: function onSortableSort(event) {
-        this.dispatchEvent('sortable:sort sortableSort', event, event.detail);
+        var sortData = event.detail;
+        this.dispatchEvent('sortable:sort sortableSort', event, sortData);
       },
 
-      onTabShow: function onTabShow(e) {
-        this.dispatchEvent('tab:show tabShow', e);
+      onTabShow: function onTabShow(event) {
+        this.dispatchEvent('tab:show tabShow', event);
       },
 
-      onTabHide: function onTabHide(e) {
-        this.dispatchEvent('tab:hide tabHide', e);
+      onTabHide: function onTabHide(event) {
+        this.dispatchEvent('tab:hide tabHide', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -46081,12 +46104,12 @@
     },
 
     methods: {
-      onClick: function onClick(e) {
-        this.dispatchEvent('attachment:click attachmentClick', e);
+      onClick: function onClick(event) {
+        this.dispatchEvent('attachment:click attachmentClick', event);
       },
 
-      onDeleteClick: function onDeleteClick(e) {
-        this.dispatchEvent('attachment:delete attachmentDelete', e);
+      onDeleteClick: function onDeleteClick(event) {
+        this.dispatchEvent('attachment:delete attachmentDelete', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -46186,9 +46209,9 @@
     },
 
     methods: {
-      onChange: function onChange(e) {
-        if (this.props.checked) { this.dispatchEvent('checked', e); }else { this.dispatchEvent('unchecked', e); }
-        this.dispatchEvent('change', e);
+      onChange: function onChange(event) {
+        if (this.props.checked) { this.dispatchEvent('checked', event); }else { this.dispatchEvent('unchecked', event); }
+        this.dispatchEvent('change', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -46629,16 +46652,16 @@
         this.dispatchEvent('click', event);
       },
 
-      onDeleteAttachment: function onDeleteAttachment(e) {
-        this.dispatchEvent('messagebar:attachmentdelete messagebarAttachmentDelete', e);
+      onDeleteAttachment: function onDeleteAttachment(event) {
+        this.dispatchEvent('messagebar:attachmentdelete messagebarAttachmentDelete', event);
       },
 
-      onClickAttachment: function onClickAttachment(e) {
-        this.dispatchEvent('messagebar:attachmentclick messagebarAttachmentClick', e);
+      onClickAttachment: function onClickAttachment(event) {
+        this.dispatchEvent('messagebar:attachmentclick messagebarAttachmentClick', event);
       },
 
-      onResizePage: function onResizePage(e) {
-        this.dispatchEvent('messagebar:resizepage messagebarResizePage', e);
+      onResizePage: function onResizePage(event) {
+        this.dispatchEvent('messagebar:resizepage messagebarResizePage', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -46950,8 +46973,8 @@
     },
 
     methods: {
-      onBackClick: function onBackClick(e) {
-        this.dispatchEvent('back-click backClick click:back clickBack', e);
+      onBackClick: function onBackClick(event) {
+        this.dispatchEvent('back-click backClick click:back clickBack', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -47175,8 +47198,8 @@
         self.$f7.navbar.size(self.$refs.el);
       },
 
-      onBackClick: function onBackClick(e) {
-        this.dispatchEvent('back-click backClick click:back clickBack', e);
+      onBackClick: function onBackClick(event) {
+        this.dispatchEvent('back-click backClick click:back clickBack', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -47361,7 +47384,8 @@
       },
 
       onPtrRefresh: function onPtrRefresh(event) {
-        this.dispatchEvent('ptr:refresh ptrRefresh', event, event.detail);
+        var done = event.detail;
+        this.dispatchEvent('ptr:refresh ptrRefresh', event, done);
       },
 
       onPtrDone: function onPtrDone(event) {
@@ -47372,12 +47396,12 @@
         this.dispatchEvent('infinite', event);
       },
 
-      onTabShow: function onTabShow(e) {
-        this.dispatchEvent('tab:show tabShow', e);
+      onTabShow: function onTabShow(event) {
+        this.dispatchEvent('tab:show tabShow', event);
       },
 
-      onTabHide: function onTabHide(e) {
-        this.dispatchEvent('tab:hide tabHide', e);
+      onTabHide: function onTabHide(event) {
+        this.dispatchEvent('tab:hide tabHide', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -47634,7 +47658,8 @@
       },
 
       onPtrRefresh: function onPtrRefresh(event) {
-        this.dispatchEvent('ptr:refresh ptrRefresh', event, event.detail);
+        var done = event.detail;
+        this.dispatchEvent('ptr:refresh ptrRefresh', event, done);
       },
 
       onPtrDone: function onPtrDone(event) {
@@ -47646,35 +47671,43 @@
       },
 
       onPageMounted: function onPageMounted(event) {
-        this.dispatchEvent('page:mounted pageMounted', event, event.detail);
+        var page = event.detail;
+        this.dispatchEvent('page:mounted pageMounted', event, page);
       },
 
       onPageInit: function onPageInit(event) {
-        this.dispatchEvent('page:init pageInit', event, event.detail);
+        var page = event.detail;
+        this.dispatchEvent('page:init pageInit', event, page);
       },
 
       onPageReinit: function onPageReinit(event) {
-        this.dispatchEvent('page:reinit pageReinit', event, event.detail);
+        var page = event.detail;
+        this.dispatchEvent('page:reinit pageReinit', event, page);
       },
 
       onPageBeforeIn: function onPageBeforeIn(event) {
-        this.dispatchEvent('page:beforein pageBeforeIn', event, event.detail);
+        var page = event.detail;
+        this.dispatchEvent('page:beforein pageBeforeIn', event, page);
       },
 
       onPageBeforeOut: function onPageBeforeOut(event) {
-        this.dispatchEvent('page:beforeout pageBeforeOut', event, event.detail);
+        var page = event.detail;
+        this.dispatchEvent('page:beforeout pageBeforeOut', event, page);
       },
 
       onPageAfterOut: function onPageAfterOut(event) {
-        this.dispatchEvent('page:afterout pageAfterOut', event, event.detail);
+        var page = event.detail;
+        this.dispatchEvent('page:afterout pageAfterOut', event, page);
       },
 
       onPageAfterIn: function onPageAfterIn(event) {
-        this.dispatchEvent('page:afterin pageAfterIn', event, event.detail);
+        var page = event.detail;
+        this.dispatchEvent('page:afterin pageAfterIn', event, page);
       },
 
       onPageBeforeRemove: function onPageBeforeRemove(event) {
-        this.dispatchEvent('page:beforeremove pageBeforeRemove', event, event.detail);
+        var page = event.detail;
+        this.dispatchEvent('page:beforeremove pageBeforeRemove', event, page);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -48567,8 +48600,8 @@
     },
 
     methods: {
-      onClick: function onClick(e) {
-        this.dispatchEvent('click', e);
+      onClick: function onClick(event) {
+        this.dispatchEvent('click', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -49405,16 +49438,19 @@
         return undefined;
       },
 
-      onInput: function onInput(e) {
-        this.dispatchEvent('input', e, this.f7Stepper);
+      onInput: function onInput(event) {
+        var stepper = this.f7Stepper;
+        this.dispatchEvent('input', event, stepper);
       },
 
-      onMinusClick: function onMinusClick(e) {
-        this.dispatchEvent('stepper:minusclick stepperMinusClick', e, this.f7Stepper);
+      onMinusClick: function onMinusClick(event) {
+        var stepper = this.f7Stepper;
+        this.dispatchEvent('stepper:minusclick stepperMinusClick', event, stepper);
       },
 
-      onPlusClick: function onPlusClick(e) {
-        this.dispatchEvent('stepper:plusclick stepperPlusClick', e, this.f7Stepper);
+      onPlusClick: function onPlusClick(event) {
+        var stepper = this.f7Stepper;
+        this.dispatchEvent('stepper:plusclick stepperPlusClick', event, stepper);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -49839,12 +49875,12 @@
         this.$f7.tab.show(this.$refs.el, animate);
       },
 
-      onTabShow: function onTabShow(e) {
-        this.dispatchEvent('tab:show tabShow', e);
+      onTabShow: function onTabShow(event) {
+        this.dispatchEvent('tab:show tabShow', event);
       },
 
-      onTabHide: function onTabHide(e) {
-        this.dispatchEvent('tab:hide tabHide', e);
+      onTabHide: function onTabHide(event) {
+        this.dispatchEvent('tab:hide tabHide', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -50118,6 +50154,7 @@
       self.onSwipeBackAfterResetBound = self.onSwipeBackAfterReset.bind(self);
       self.onTabShowBound = self.onTabShow.bind(self);
       self.onTabHideBound = self.onTabHide.bind(self);
+      self.onViewInitBound = self.onViewInit.bind(self);
     },
 
     mounted: function mounted() {
@@ -50130,17 +50167,18 @@
       el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterResetBound);
       el.addEventListener('tab:show', self.onTabShowBound);
       el.addEventListener('tab:hide', self.onTabHideBound);
+      el.addEventListener('view:init', self.onViewInitBound);
       self.setState({
         pages: []
       });
       self.$f7ready(function (f7Instance) {
-        if (!self.props.init) { return; }
         self.routerData = {
           el: el,
           component: self,
           instance: null
         };
         f7.routers.views.push(self.routerData);
+        if (!self.props.init) { return; }
         self.routerData.instance = f7Instance.views.create(el, Utils$1.noUndefinedProps(self.$options.propsData || {}));
         self.f7View = self.routerData.instance;
       });
@@ -50156,6 +50194,7 @@
       el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterResetBound);
       el.removeEventListener('tab:show', self.onTabShowBound);
       el.removeEventListener('tab:hide', self.onTabHideBound);
+      el.removeEventListener('view:init', self.onViewInitBound);
       if (!self.props.init) { return; }
       if (self.f7View && self.f7View.destroy) { self.f7View.destroy(); }
       f7.routers.views.splice(f7.routers.views.indexOf(self.routerData), 1);
@@ -50170,32 +50209,48 @@
     },
 
     methods: {
+      onViewInit: function onViewInit(event) {
+        var self = this;
+        var view = event.detail;
+        self.dispatchEvent('view:init viewInit', event, view);
+
+        if (!self.props.init) {
+          self.routerData.instance = view;
+          self.f7View = self.routerData.instance;
+        }
+      },
+
       onSwipeBackMove: function onSwipeBackMove(event) {
-        this.dispatchEvent('swipeback:move swipeBackMove', event, event.detail);
+        var swipeBackData = event.detail;
+        this.dispatchEvent('swipeback:move swipeBackMove', event, swipeBackData);
       },
 
       onSwipeBackBeforeChange: function onSwipeBackBeforeChange(event) {
-        this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', event, event.detail);
+        var swipeBackData = event.detail;
+        this.dispatchEvent('swipeback:beforechange swipeBackBeforeChange', event, swipeBackData);
       },
 
       onSwipeBackAfterChange: function onSwipeBackAfterChange(event) {
-        this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', event, event.detail);
+        var swipeBackData = event.detail;
+        this.dispatchEvent('swipeback:afterchange swipeBackAfterChange', event, swipeBackData);
       },
 
       onSwipeBackBeforeReset: function onSwipeBackBeforeReset(event) {
-        this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', event, event.detail);
+        var swipeBackData = event.detail;
+        this.dispatchEvent('swipeback:beforereset swipeBackBeforeReset', event, swipeBackData);
       },
 
       onSwipeBackAfterReset: function onSwipeBackAfterReset(event) {
-        this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', event, event.detail);
+        var swipeBackData = event.detail;
+        this.dispatchEvent('swipeback:afterreset swipeBackAfterReset', event, swipeBackData);
       },
 
-      onTabShow: function onTabShow(e) {
-        this.dispatchEvent('tab:show tabShow', e);
+      onTabShow: function onTabShow(event) {
+        this.dispatchEvent('tab:show tabShow', event);
       },
 
-      onTabHide: function onTabHide(e) {
-        this.dispatchEvent('tab:hide tabHide', e);
+      onTabHide: function onTabHide(event) {
+        this.dispatchEvent('tab:hide tabHide', event);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -50283,7 +50338,8 @@
               f7route: options.route,
               f7router: router,
             },
-            options.route.params
+            options.route.params,
+            options.props || {}
           ),
         };
         routerComponent.$f7router = router;
@@ -50362,7 +50418,8 @@
               f7route: options.route,
               f7router: router,
             },
-            options.route.params
+            options.route.params,
+            options.props || {}
           ),
         };
 
@@ -50419,7 +50476,8 @@
               f7route: options.route,
               f7router: router,
             },
-            options.route.params
+            options.route.params,
+            options.props || {}
           ),
         };
         modalsComponent.$f7router = router;
@@ -50561,7 +50619,7 @@
   };
 
   /**
-   * Framework7 Vue 3.3.0
+   * Framework7 Vue 3.3.2
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -50569,7 +50627,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: September 14, 2018
+   * Released on: September 20, 2018
    */
 
   var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
@@ -53375,116 +53433,26 @@
   	return to;
   };
 
-  /**
-   * Copyright (c) 2013-present, Facebook, Inc.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE file in the root directory of this source tree.
-   *
-   */
-
-  /**
-   * Use invariant() to assert state which your program assumes to be true.
-   *
-   * Provide sprintf-style format (only %s is supported) and arguments
-   * to provide information about what broke and what you were
-   * expecting.
-   *
-   * The invariant message will be stripped in production, but the invariant
-   * will remain to ensure logic does not differ in production.
-   */
-
-  var validateFormat = function validateFormat(format) {};
-
-  function invariant(condition, format, a, b, c, d, e, f) {
-    validateFormat(format);
-
-    if (!condition) {
-      var error;
-      if (format === undefined) {
-        error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
-      } else {
-        var args = [a, b, c, d, e, f];
-        var argIndex = 0;
-        error = new Error(format.replace(/%s/g, function () {
-          return args[argIndex++];
-        }));
-        error.name = 'Invariant Violation';
-      }
-
-      error.framesToPop = 1; // we don't care about invariant's own frame
-      throw error;
-    }
-  }
-
-  var invariant_1 = invariant;
-
-  /**
-   * Copyright (c) 2013-present, Facebook, Inc.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE file in the root directory of this source tree.
-   *
-   */
-
-  var emptyObject$1 = {};
-
-  var emptyObject_1 = emptyObject$1;
-
-  /**
-   * Copyright (c) 2013-present, Facebook, Inc.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE file in the root directory of this source tree.
-   *
-   * 
-   */
-
-  function makeEmptyFunction(arg) {
-    return function () {
-      return arg;
-    };
-  }
-
-  /**
-   * This function accepts and discards inputs; it has no side effects. This is
-   * primarily useful idiomatically for overridable function endpoints which
-   * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
-   */
-  var emptyFunction = function emptyFunction() {};
-
-  emptyFunction.thatReturns = makeEmptyFunction;
-  emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-  emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-  emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-  emptyFunction.thatReturnsThis = function () {
-    return this;
-  };
-  emptyFunction.thatReturnsArgument = function (arg) {
-    return arg;
-  };
-
-  var emptyFunction_1 = emptyFunction;
-
-  var r="function"===typeof Symbol&&Symbol.for,t=r?Symbol.for("react.element"):60103,u=r?Symbol.for("react.portal"):60106,v=r?Symbol.for("react.fragment"):60107,w=r?Symbol.for("react.strict_mode"):60108,x=r?Symbol.for("react.profiler"):60114,y=r?Symbol.for("react.provider"):60109,z=r?Symbol.for("react.context"):60110,A$1=r?Symbol.for("react.async_mode"):60111,B$1=
-  r?Symbol.for("react.forward_ref"):60112;var C$1="function"===typeof Symbol&&Symbol.iterator;function D(a){
+  var n="function"===typeof Symbol&&Symbol.for,p$1=n?Symbol.for("react.element"):60103,q=n?Symbol.for("react.portal"):60106,r=n?Symbol.for("react.fragment"):60107,t=n?Symbol.for("react.strict_mode"):60108,u=n?Symbol.for("react.profiler"):60114,v=n?Symbol.for("react.provider"):60109,w=n?Symbol.for("react.context"):60110,x=n?Symbol.for("react.async_mode"):60111,y=n?Symbol.for("react.forward_ref"):60112;var z="function"===typeof Symbol&&Symbol.iterator;function A$1(a,b,d,c,e,g,h,f){if(!a){a=void 0;if(void 0===b){ a=Error("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings."); }else{var k=[d,c,e,g,h,f],l=0;a=Error(b.replace(/%s/g,function(){return k[l++]}));a.name="Invariant Violation";}a.framesToPop=1;throw a;}}
+  function B$1(a){
   var arguments$1 = arguments;
-  for(var b=arguments.length-1,e="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=0;c<b;c++){ e+="&args[]="+encodeURIComponent(arguments$1[c+1]); }invariant_1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",e);}
-  var E={isMounted:function(){return !1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}};function F(a,b,e){this.props=a;this.context=b;this.refs=emptyObject_1;this.updater=e||E;}F.prototype.isReactComponent={};F.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?D("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};F.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function G(){}
-  G.prototype=F.prototype;function H(a,b,e){this.props=a;this.context=b;this.refs=emptyObject_1;this.updater=e||E;}var I=H.prototype=new G;I.constructor=H;objectAssign(I,F.prototype);I.isPureReactComponent=!0;var J={current:null},K=Object.prototype.hasOwnProperty,L={key:!0,ref:!0,__self:!0,__source:!0};
-  function M(a,b,e){
+  for(var b=arguments.length-1,d="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=0;c<b;c++){ d+="&args[]="+encodeURIComponent(arguments$1[c+1]); }A$1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",d);}var C$1={isMounted:function(){return !1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},D={};
+  function E(a,b,d){this.props=a;this.context=b;this.refs=D;this.updater=d||C$1;}E.prototype.isReactComponent={};E.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?B$1("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};E.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function F(){}F.prototype=E.prototype;function G(a,b,d){this.props=a;this.context=b;this.refs=D;this.updater=d||C$1;}var H=G.prototype=new F;
+  H.constructor=G;objectAssign(H,E.prototype);H.isPureReactComponent=!0;var I={current:null,currentDispatcher:null},J=Object.prototype.hasOwnProperty,K={key:!0,ref:!0,__self:!0,__source:!0};
+  function L(a,b,d){
   var arguments$1 = arguments;
-  var c=void 0,d={},g=null,h=null;if(null!=b){ for(c in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(g=""+b.key),b){ K.call(b,c)&&!L.hasOwnProperty(c)&&(d[c]=b[c]); } }var f=arguments.length-2;if(1===f){ d.children=e; }else if(1<f){for(var l=Array(f),m=0;m<f;m++){ l[m]=arguments$1[m+2]; }d.children=l;}if(a&&a.defaultProps){ for(c in f=a.defaultProps,f){ void 0===d[c]&&(d[c]=f[c]); } }return {$$typeof:t,type:a,key:g,ref:h,props:d,_owner:J.current}}
-  function N(a){return "object"===typeof a&&null!==a&&a.$$typeof===t}function escape(a){var b={"=":"=0",":":"=2"};return "$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var O=/\/+/g,P=[];function Q(a,b,e,c){if(P.length){var d=P.pop();d.result=a;d.keyPrefix=b;d.func=e;d.context=c;d.count=0;return d}return {result:a,keyPrefix:b,func:e,context:c,count:0}}function R(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>P.length&&P.push(a);}
-  function S(a,b,e,c){var d=typeof a;if("undefined"===d||"boolean"===d){ a=null; }var g=!1;if(null===a){ g=!0; }else { switch(d){case "string":case "number":g=!0;break;case "object":switch(a.$$typeof){case t:case u:g=!0;}} }if(g){ return e(c,a,""===b?"."+T(a,0):b),1; }g=0;b=""===b?".":b+":";if(Array.isArray(a)){ for(var h=0;h<a.length;h++){d=a[h];var f=b+T(d,h);g+=S(d,f,e,c);} }else if(null===a||"undefined"===typeof a?f=null:(f=C$1&&a[C$1]||a["@@iterator"],f="function"===typeof f?f:null),"function"===typeof f){ for(a=f.call(a),
-  h=0;!(d=a.next()).done;){ d=d.value,f=b+T(d,h++),g+=S(d,f,e,c); } }else{ "object"===d&&(e=""+a,D("31","[object Object]"===e?"object with keys {"+Object.keys(a).join(", ")+"}":e,"")); }return g}function T(a,b){return "object"===typeof a&&null!==a&&null!=a.key?escape(a.key):b.toString(36)}function U(a,b){a.func.call(a.context,b,a.count++);}
-  function V(a,b,e){var c=a.result,d=a.keyPrefix;a=a.func.call(a.context,b,a.count++);Array.isArray(a)?W(a,c,e,emptyFunction_1.thatReturnsArgument):null!=a&&(N(a)&&(b=d+(!a.key||b&&b.key===a.key?"":(""+a.key).replace(O,"$&/")+"/")+e,a={$$typeof:t,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}),c.push(a));}function W(a,b,e,c,d){var g="";null!=e&&(g=(""+e).replace(O,"$&/")+"/");b=Q(b,g,c,d);null==a||S(a,"",V,b);R(b);}
-  var X={Children:{map:function(a,b,e){if(null==a){ return a; }var c=[];W(a,c,null,b,e);return c},forEach:function(a,b,e){if(null==a){ return a; }b=Q(null,null,b,e);null==a||S(a,"",U,b);R(b);},count:function(a){return null==a?0:S(a,"",emptyFunction_1.thatReturnsNull,null)},toArray:function(a){var b=[];W(a,b,null,emptyFunction_1.thatReturnsArgument);return b},only:function(a){N(a)?void 0:D("143");return a}},createRef:function(){return {current:null}},Component:F,PureComponent:H,createContext:function(a,b){void 0===b&&(b=null);a={$$typeof:z,
-  _calculateChangedBits:b,_defaultValue:a,_currentValue:a,_currentValue2:a,_changedBits:0,_changedBits2:0,Provider:null,Consumer:null};a.Provider={$$typeof:y,_context:a};return a.Consumer=a},forwardRef:function(a){return {$$typeof:B$1,render:a}},Fragment:v,StrictMode:w,unstable_AsyncMode:A$1,unstable_Profiler:x,createElement:M,cloneElement:function(a,b,e){
+  var c=void 0,e={},g=null,h=null;if(null!=b){ for(c in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(g=""+b.key),b){ J.call(b,c)&&!K.hasOwnProperty(c)&&(e[c]=b[c]); } }var f=arguments.length-2;if(1===f){ e.children=d; }else if(1<f){for(var k=Array(f),l=0;l<f;l++){ k[l]=arguments$1[l+2]; }e.children=k;}if(a&&a.defaultProps){ for(c in f=a.defaultProps,f){ void 0===e[c]&&(e[c]=f[c]); } }return {$$typeof:p$1,type:a,key:g,ref:h,props:e,_owner:I.current}}
+  function M(a,b){return {$$typeof:p$1,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}}function N(a){return "object"===typeof a&&null!==a&&a.$$typeof===p$1}function escape(a){var b={"=":"=0",":":"=2"};return "$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var O=/\/+/g,P=[];function Q(a,b,d,c){if(P.length){var e=P.pop();e.result=a;e.keyPrefix=b;e.func=d;e.context=c;e.count=0;return e}return {result:a,keyPrefix:b,func:d,context:c,count:0}}
+  function R(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>P.length&&P.push(a);}
+  function S(a,b,d,c){var e=typeof a;if("undefined"===e||"boolean"===e){ a=null; }var g=!1;if(null===a){ g=!0; }else { switch(e){case "string":case "number":g=!0;break;case "object":switch(a.$$typeof){case p$1:case q:g=!0;}} }if(g){ return d(c,a,""===b?"."+T(a,0):b),1; }g=0;b=""===b?".":b+":";if(Array.isArray(a)){ for(var h=0;h<a.length;h++){e=a[h];var f=b+T(e,h);g+=S(e,f,d,c);} }else if(null===a||"object"!==typeof a?f=null:(f=z&&a[z]||a["@@iterator"],f="function"===typeof f?f:null),"function"===typeof f){ for(a=f.call(a),h=
+  0;!(e=a.next()).done;){ e=e.value,f=b+T(e,h++),g+=S(e,f,d,c); } }else{ "object"===e&&(d=""+a,B$1("31","[object Object]"===d?"object with keys {"+Object.keys(a).join(", ")+"}":d,"")); }return g}function U(a,b,d){return null==a?0:S(a,"",b,d)}function T(a,b){return "object"===typeof a&&null!==a&&null!=a.key?escape(a.key):b.toString(36)}function V(a,b){a.func.call(a.context,b,a.count++);}
+  function aa(a,b,d){var c=a.result,e=a.keyPrefix;a=a.func.call(a.context,b,a.count++);Array.isArray(a)?W(a,c,d,function(a){return a}):null!=a&&(N(a)&&(a=M(a,e+(!a.key||b&&b.key===a.key?"":(""+a.key).replace(O,"$&/")+"/")+d)),c.push(a));}function W(a,b,d,c,e){var g="";null!=d&&(g=(""+d).replace(O,"$&/")+"/");b=Q(b,g,c,e);U(a,aa,b);R(b);}function ba(a,b){var d=I.currentDispatcher;null===d?B$1("277"):void 0;return d.readContext(a,b)}
+  var X={Children:{map:function(a,b,d){if(null==a){ return a; }var c=[];W(a,c,null,b,d);return c},forEach:function(a,b,d){if(null==a){ return a; }b=Q(null,null,b,d);U(a,V,b);R(b);},count:function(a){return U(a,function(){return null},null)},toArray:function(a){var b=[];W(a,b,null,function(a){return a});return b},only:function(a){N(a)?void 0:B$1("143");return a}},createRef:function(){return {current:null}},Component:E,PureComponent:G,createContext:function(a,b){void 0===b&&(b=null);a={$$typeof:w,_calculateChangedBits:b,
+  _currentValue:a,_currentValue2:a,Provider:null,Consumer:null,unstable_read:null};a.Provider={$$typeof:v,_context:a};a.Consumer=a;a.unstable_read=ba.bind(null,a);return a},forwardRef:function(a){return {$$typeof:y,render:a}},Fragment:r,StrictMode:t,unstable_AsyncMode:x,unstable_Profiler:u,createElement:L,cloneElement:function(a,b,d){
   var arguments$1 = arguments;
-  null===a||void 0===a?D("267",a):void 0;var c=void 0,d=objectAssign({},a.props),g=a.key,h=a.ref,f=a._owner;if(null!=b){void 0!==b.ref&&(h=b.ref,f=J.current);void 0!==
-  b.key&&(g=""+b.key);var l=void 0;a.type&&a.type.defaultProps&&(l=a.type.defaultProps);for(c in b){ K.call(b,c)&&!L.hasOwnProperty(c)&&(d[c]=void 0===b[c]&&void 0!==l?l[c]:b[c]); }}c=arguments.length-2;if(1===c){ d.children=e; }else if(1<c){l=Array(c);for(var m=0;m<c;m++){ l[m]=arguments$1[m+2]; }d.children=l;}return {$$typeof:t,type:a.type,key:g,ref:h,props:d,_owner:f}},createFactory:function(a){var b=M.bind(null,a);b.type=a;return b},isValidElement:N,version:"16.4.2",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:J,
-  assign:objectAssign}},Y={default:X},Z=Y&&X||Y;var react_production_min=Z.default?Z.default:Z;
+  null===a||void 0===a?B$1("267",a):void 0;var c=void 0,e=objectAssign({},a.props),g=a.key,h=a.ref,f=a._owner;if(null!=b){void 0!==b.ref&&(h=b.ref,f=I.current);void 0!==b.key&&(g=""+b.key);
+  var k=void 0;a.type&&a.type.defaultProps&&(k=a.type.defaultProps);for(c in b){ J.call(b,c)&&!K.hasOwnProperty(c)&&(e[c]=void 0===b[c]&&void 0!==k?k[c]:b[c]); }}c=arguments.length-2;if(1===c){ e.children=d; }else if(1<c){k=Array(c);for(var l=0;l<c;l++){ k[l]=arguments$1[l+2]; }e.children=k;}return {$$typeof:p$1,type:a.type,key:g,ref:h,props:e,_owner:f}},createFactory:function(a){var b=L.bind(null,a);b.type=a;return b},isValidElement:N,version:"16.5.2",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:I,
+  assign:objectAssign}},Y={default:X},Z=Y&&X||Y;var react_production_min=Z.default||Z;
 
   var react = createCommonjsModule(function (module) {
 

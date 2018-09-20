@@ -449,6 +449,39 @@ block content
         tr
           td view.emit(<span>event</span>, <span>...args</span>)
           td Fire event on instance
+    h2 View Events
+    p View will fire the following DOM events on view element and events on app and view instance:
+    h3 View Dom Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Description
+      tbody
+        tr
+          td view:init
+          td View Element<span>&lt;div class="view"&gt;</span>
+          td Event will be triggered on view initialization
+    h3 View Instance Events
+    p View instance emits events on both self instance and app instance. App instance events has same names prefixed with <code>view</code>.
+    table.events-table
+      thead
+        tr
+          th Event
+          th Target
+          th Arguments
+          th Description
+      tbody
+        tr
+          td init
+          td view
+          td(rowspan="2")
+            span (view)
+          td(rowspan="2") Event will be triggered on view initialization
+        tr
+          td viewInit
+          td app
     h2 Router API / Methods & Properties
     p View's main purpose is a navigating/routing between pages. We can access its router instance by <code>view.router</code>. It has a lot of useful methods and properties to take control over routing and navigation:
     table.methods-table
@@ -515,6 +548,7 @@ block content
                   li <span class="parameter">pushState</span> (<span class="parameter-type">boolean</span>) - whether the page should be saved in browser state. In case you are using <code>pushState</code>, then you can pass here <code>false</code> to prevent route getting in browser history
                   li <span class="parameter">ignoreCache</span> (<span class="parameter-type">boolean</span>) - If set to <code>true</code> then it will ignore if such URL in cache and reload it using XHR again
                   li <span class="parameter">context</span> (<span class="parameter-type">object</span>) - additional Router component or Template7 page context
+                  li <span class="parameter">props</span> (<span class="parameter-type">object</span>) - props that will be passed as Vue/React page component props
         tr
           td router.navigate(<span>parameters, options</span>)
           td Navigate to (load) new page by parameters. This method allows to navigate to route by its <code>name</code>.
@@ -624,8 +658,8 @@ block content
           </div>
     h2 Router Events
     p Router has a lot of useful events.
-    h3 Dom Events
-    p Router will fire the following DOM events for swipe back pages (iOS-theme only):
+    h3 Router Dom Events
+    p Router will fire the following DOM events for swipe back pages:
     table.events-table
       thead
         tr
@@ -655,7 +689,7 @@ block content
           td Event will be triggered after swipe back animation to current page when you release it
     h3 Router Instance Events
     .important-note
-      p Router events bubble to View instance and to the App instance, so the event emitted on router instance will also be avaiable on view and on app intsances:
+      p Router events bubble to View instance and to the App instance, so the event emitted on router instance will also be avaiable on view and on app instances:
     table.events-table
       thead
         tr
