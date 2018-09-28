@@ -92,12 +92,12 @@ block content
           td iosBackgroundColor
           td string
           td
-          td Hex string (<code>#RRGGBB</code>) with background color when iOS theme is active. If passed then it will override CSS value
+          td Hex string (<code>#RRGGBB</code>) with background color when app running on iOS device. If passed then it will override CSS value
         tr
-          td materialBackgroundColor
+          td androidBackgroundColor
           td string
           td
-          td Hex string (<code>#RRGGBB</code>) with background color when MD theme is active. If passed then it will override CSS value
+          td Hex string (<code>#RRGGBB</code>) with background color when app running on Android device. If passed then it will override CSS value
         tr
           td scrollTopOnClick
           td boolean
@@ -109,16 +109,28 @@ block content
           td boolean
           td true
           td
-            p Makes the statusbar overlay or not overlay the WebView.
-            p.ios-only iOS-only feature
+            p Makes the statusbar overlay or not overlay the WebView when app is running on iOS device.
+            p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
+        tr
+          td androidOverlaysWebView
+          td boolean
+          td true
+          td
+            p Makes the statusbar overlay or not overlay the WebView when app is running on Android device.
             p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
         tr
           td iosTextColor
           td string
           td black
           td
-            p Statusbar text color. Can be <code>white</code> or <code>black</code>
-            p.ios-only iOS-only feature
+            p Statusbar text color when app is running on iOS device. Can be <code>white</code> or <code>black</code>
+            p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
+        tr
+          td androidTextColor
+          td string
+          td black
+          td
+            p Statusbar text color when app is running on Android device. Can be <code>white</code> or <code>black</code>
             p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
     h2 Statusbar App Methods
     p After app initialization we can control statusbar by using statusbar related app methods:
@@ -131,7 +143,7 @@ block content
         td app.statusbar.show()
         td Show statusbar
       tr
-        td app.statusbar.iosOverlaysWebView(<span>overlays</span>)
+        td app.statusbar.overlaysWebView(<span>overlays</span>)
         td Makes the statusbar overlay or not overlay the WebView
           ul.method-parameters
             li
@@ -140,13 +152,12 @@ block content
 
           p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
       tr
-        td app.statusbar.setIosTextColor(<span>color</span>)
+        td app.statusbar.setTextColor(<span>color</span>)
         td Set/change statusbar text color.
           ul.method-parameters
             li
               span.parameter color
               |  - <span class="parameter-type">string</span> - text color, can be <code>white</code> or <code>black</code>
-          p.ios-only iOS-only feature
           p.important-note This functionality is only available when app is running under cordova/phonegap environment with installed <a href="https://github.com/apache/cordova-plugin-statusbar" target="_blank">cordova-plugin-statusbar</a>
       tr
         td app.statusbar.setBackgroundColor(<span>hex</span>)
