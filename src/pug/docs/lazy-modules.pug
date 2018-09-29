@@ -1,0 +1,585 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'Lazy Modules | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 Lazy Modules
+    ul.docs-index
+    .important-note
+      p
+        b Lazy Modules available from Framework7 version 3.4.0.
+    p Lazy modules provide a way to make your web app startup time much faster, by loading initially only functionality required for home page/view, and load additional modules/components when navigating to pages that use them. This will make your initial app scripts and styles a way more smaller size, which is significant when you build a web app or PWA.
+
+    p There are two type of modules available with Framework7. ES-modules and "browser modules". To use ES-modules you need to use bundler with <code>import/export</code> support like Webpack or Rollup. Browser modules are designed only to be used when you don't use any bundler.
+
+    h2 Modules API
+    p To load Framework7 modules <b>after</b> it was initialized we need to use following app methods:
+    .method-wrap
+      p
+        span.method app.loadModule(<span>module</span>)</span> - load module
+      ul.method-parameters
+        li
+          span.parameter module
+          |  - one of the following:
+          br
+          |  - <span class="parameter-type">object</span> with <a href="plugins-api.html">Framework7 Plugin</a>
+          br
+          |  - <span class="parameter-type">function</span> that returns <a href="plugins-api.html">Framework7 Plugin</a>
+          br
+          |  - <span class="parameter-type">string</span> with module name to load (e.g. <code>'searchbar'</code>)
+          br
+          |  - <span class="parameter-type">string</span> with module path to load (e.g. <code>'path/to/lazy-components/searchbar.js'</code>)
+      p.method-returns Method returns Promise
+    .method-wrap
+      p
+        span.method app.loadModules(<span>modules</span>)</span> - load modules
+      ul.method-parameters
+        li
+          span.parameter modules
+          |  - array with modules, where each array item one of the described above
+      p.method-returns Method returns Promise
+
+    h2 ES Modules
+    p This method will only work if you use bundler like Webpack or Rollup.
+    p Firs of all, we need to realize what modules our app requires to display initial page and import them:
+    :code(lang="js")
+      // import core framework with core components only:
+      import Framework7 from 'framework7';
+
+      // import framework7 modules/components we need on initial page
+      import Searchbar from 'framework7/components/searchbar/searchbar.js';
+      import Accordion from 'framework7/components/accordion/accordion.js';
+
+      // install core modules
+      Framework7.use([Searchbar, Accordion]);
+
+      // init app
+      var app = new Framework7({
+        // f7 params
+      });
+    p Later when we need to install additional F7 module we can use dynamic imports:
+    :code(lang="js")
+      import('framework7/components/gauge/gauge.js')
+        .then(module => app.loadModule(module.default))
+        .then(() => {
+          // module loaded and we can use gauge api
+          app.gauge.create(/* ... */)
+        })
+    p If we need to load few modules at a time:
+    :code(lang="js")
+      Promise
+        .all([
+          import('framework7/components/gauge/gauge.js'),
+          import('framework7/components/calendar/calendar.js')
+        ])
+        .then((modules) => {
+          // loaded module will be at ".default" prop of import result
+          var modulesToLoad = modules.map(module => module.default);
+          return app.loadModules(modulesToLoad);
+        })
+        .then(() => {
+          // modules loaded and we can use their api
+          app.gauge.create(/* ... */)
+          app.calendar.create(/* ... */)
+        })
+    p It may be not very convenient to write it every time so we can make a function for that:
+    :code(lang="js")
+      function loadF7Modules(moduleNames) {
+        var modulesToLoad = moduleNames.map((moduleName) => {
+          return import(`framework7/components/${moduleName}/${moduleName}.js`);
+        });
+        return Promise.all(modulesToLoad)
+          .then((modules) => {
+            return app.loadModules(modules.map(module => module.default));
+          })
+      }
+    p And we can use it like:
+    :code(lang="js")
+      loadF7Modules(['gauge', 'calendar']).then(() => {
+        // modules loaded and we can use their api
+        app.gauge.create(/* ... */)
+        app.calendar.create(/* ... */)
+      });
+    p If we need to preload modules for specific route then route's <code>async</code> is the best fit for it:
+    :code(lang="js")
+      var routes = [
+        {
+          path: '/',
+          url: './index.html',
+        },
+        /* Page where we need Gauge and Calendar modules to be loaded */
+        {
+          path: '/gauge-calendar/',
+          async: function (routeTo, routeFrom, resolve, reject) {
+            // load modules
+            loadF7Modules(['gauge', 'calendar']).then(() => {
+              // resolve route
+              resolve({
+                componentUrl: './gauge-calendar.html',
+              });
+            });
+          }
+        }
+      ]
+    p The following ES-module components are available for importing (all other components are part of the core):
+    table
+      thead
+        tr
+          th Component
+          th Path
+      tbody
+        tr
+          td Dialog
+          td <code>framework7/components/dialog/dialog.js</code>
+        tr
+          td Popup
+          td <code>framework7/components/popup/popup.js</code>
+        tr
+          td LoginScreen
+          td <code>framework7/components/login-screen/login-screen.js</code>
+        tr
+          td Popover
+          td <code>framework7/components/popover/popover.js</code>
+        tr
+          td Actions
+          td <code>framework7/components/actions/actions.js</code>
+        tr
+          td Sheet
+          td <code>framework7/components/sheet/sheet.js</code>
+        tr
+          td Toast
+          td <code>framework7/components/toast/toast.js</code>
+        tr
+          td Preloader
+          td <code>framework7/components/preloader/preloader.js</code>
+        tr
+          td Progressbar
+          td <code>framework7/components/progressbar/progressbar.js</code>
+        tr
+          td Sortable
+          td <code>framework7/components/sortable/sortable.js</code>
+        tr
+          td Swipeout
+          td <code>framework7/components/swipeout/swipeout.js</code>
+        tr
+          td Accordion
+          td <code>framework7/components/accordion/accordion.js</code>
+        tr
+          td ContactsList
+          td <code>framework7/components/contacts-list/contacts-list.js</code>
+        tr
+          td VirtualList
+          td <code>framework7/components/virtual-list/virtual-list.js</code>
+        tr
+          td ListIndex
+          td <code>framework7/components/list-index/list-index.js</code>
+        tr
+          td Timeline
+          td <code>framework7/components/timeline/timeline.js</code>
+        tr
+          td Tabs
+          td <code>framework7/components/tabs/tabs.js</code>
+        tr
+          td Panel
+          td <code>framework7/components/panel/panel.js</code>
+        tr
+          td Card
+          td <code>framework7/components/card/card.js</code>
+        tr
+          td Chip
+          td <code>framework7/components/chip/chip.js</code>
+        tr
+          td Form
+          td <code>framework7/components/form/form.js</code>
+        tr
+          td Input
+          td <code>framework7/components/input/input.js</code>
+        tr
+          td Checkbox
+          td <code>framework7/components/checkbox/checkbox.js</code>
+        tr
+          td Radio
+          td <code>framework7/components/radio/radio.js</code>
+        tr
+          td Toggle
+          td <code>framework7/components/toggle/toggle.js</code>
+        tr
+          td Range
+          td <code>framework7/components/range/range.js</code>
+        tr
+          td Stepper
+          td <code>framework7/components/stepper/stepper.js</code>
+        tr
+          td SmartSelect
+          td <code>framework7/components/smart-select/smart-select.js</code>
+        tr
+          td Grid
+          td <code>framework7/components/grid/grid.js</code>
+        tr
+          td Calendar
+          td <code>framework7/components/calendar/calendar.js</code>
+        tr
+          td Picker
+          td <code>framework7/components/picker/picker.js</code>
+        tr
+          td InfiniteScroll
+          td <code>framework7/components/infinite-scroll/infinite-scroll.js</code>
+        tr
+          td PullToRefresh
+          td <code>framework7/components/pull-to-refresh/pull-to-refresh.js</code>
+        tr
+          td Lazy
+          td <code>framework7/components/lazy/lazy.js</code>
+        tr
+          td DataTable
+          td <code>framework7/components/data-table/data-table.js</code>
+        tr
+          td Fab
+          td <code>framework7/components/fab/fab.js</code>
+        tr
+          td Searchbar
+          td <code>framework7/components/searchbar/searchbar.js</code>
+        tr
+          td Messages
+          td <code>framework7/components/messages/messages.js</code>
+        tr
+          td Messagebar
+          td <code>framework7/components/messagebar/messagebar.js</code>
+        tr
+          td Swiper
+          td <code>framework7/components/swiper/swiper.js</code>
+        tr
+          td PhotoBrowser
+          td <code>framework7/components/photo-browser/photo-browser.js</code>
+        tr
+          td Notification
+          td <code>framework7/components/notification/notification.js</code>
+        tr
+          td Autocomplete
+          td <code>framework7/components/autocomplete/autocomplete.js</code>
+        tr
+          td Tooltip
+          td <code>framework7/components/tooltip/tooltip.js</code>
+        tr
+          td Gauge
+          td <code>framework7/components/gauge/gauge.js</code>
+        tr
+          td Vi
+          td <code>framework7/components/vi/vi.js</code>
+        tr
+          td Typography
+          td <code>framework7/components/typography/typography.js</code>
+    h2 Browser Modules
+    p Browser modules are intended to be used in development setup without bundlers (like Webpack or Rollup).
+    p First of all, in our main <a href="app-layout.html">app layout</a> we need to use so called "framework7-lazy" library instead of <code>framework7.js</code> and <code>framework7.css</code> scripts and styles that contains whole framework.
+    :code(lang="html")
+      <!DOCTYPE html>
+      <html>
+        <head>
+          ...
+          <!-- Path to Framework7 Lazy Library CSS -->
+          <link rel="stylesheet" href="path/to/framework7/css/framework7-lazy.min.css">
+          <!-- Path to your custom app styles-->
+          <link rel="stylesheet" href="path/to/my-app.css">
+        </head>
+        <body>
+          <div id="app">
+            ...
+          </div>
+          <!-- Path to Framework7 Lazy Library JS-->
+          <script type="text/javascript" src="path/to/framework7/js/framework7-lazy.min.js"></script>
+          <!-- Path to your app js-->
+          <script type="text/javascript" src="path/to/my-app.js"></script>
+        </body>
+      </html>
+    p We also need to inclued modules/components that we need on initial page after <code>framework7-lazy</code> styles and script. If we need Searchbar and Accordion then we need to include them in app layout:
+    :code(lang="html")
+      <!DOCTYPE html>
+      <html>
+        <head>
+          ...
+          <!-- Path to Framework7 Lazy Library CSS -->
+          <link rel="stylesheet" href="path/to/framework7/css/framework7-lazy.min.css">
+          <!-- Include modules required for initial page -->
+          <link rel="stylesheet" href="path/to/framework7/lazy-components/accordion.css">
+          <link rel="stylesheet" href="path/to/framework7/lazy-components/searchbar.css">
+          <!-- Path to your custom app styles-->
+          <link rel="stylesheet" href="path/to/my-app.css">
+        </head>
+        <body>
+          <div id="app">
+            ...
+          </div>
+          <!-- Path to Framework7 Lazy Library JS-->
+          <script type="text/javascript" src="path/to/framework7/js/framework7-lazy.min.js"></script>
+          <!-- Include modules required for initial page -->
+          <script type="text/javascript" src="path/to/framework7/lazy-components/accordion.js"></script>
+          <script type="text/javascript" src="path/to/framework7/lazy-components/searchbar.js"></script>
+          <!-- Path to your app js-->
+          <script type="text/javascript" src="path/to/my-app.js"></script>
+        </body>
+      </html>
+    p Now when we init Framework7 app we need to specify where is the rest of modules in <code>lazyModulesPath</code> parameter (path to <code>/lazy-components/</code> folder):
+    :code(lang="js")
+      var app = new Framework7({
+        // ...
+        lazyModulesPath: 'path/to/framework7/lazy-components',
+      });
+    p Now we can just load module by its name (it will automatically fetch file with such file name in specified <code>lazyModulesPath</code> location):
+    :code(lang="js")
+      app.loadModules(['calendar', 'gauge']).then(() => {
+        // modules loaded and we can use their api
+        app.gauge.create(/* ... */)
+        app.calendar.create(/* ... */)
+      });
+    .important-note
+      p Note, that browser modules also load modules styles automatically. So loading <code>gauge.js</code> will also automatically load <code>gauge.css</code> stylesheet.
+    p So the above expression <code>app.loadModules(['calendar', 'gauge'])</code> will load the following files:
+    ul
+      li path/to/framework7/lazy-components/calendar.js
+      li path/to/framework7/lazy-components/calendar.css
+      li path/to/framework7/lazy-components/gauge.js
+      li path/to/framework7/lazy-components/gauge.css
+    p When we need to preload modules for specific route and we use browser modules, then we can just use route's <code>modules</code> property:
+    :code(lang="js")
+      var routes = [
+        {
+          path: '/',
+          url: './index.html',
+        },
+        /* Page where we need Gauge and Calendar modules to be loaded */
+        {
+          path: '/gauge-calendar/',
+          modules: ['gauge', 'calendar'], // will load these components before loading route
+          componentUrl: './gauge-calendar.html',
+        }
+      ]
+    p Or the same but using <code>async</code> route like in example with ES modules:
+    :code(lang="js")
+      var routes = [
+        {
+          path: '/',
+          url: './index.html',
+        },
+        /* Page where we need Gauge and Calendar modules to be loaded */
+        {
+          path: '/gauge-calendar/',
+          modules: ['gauge', 'calendar'], // will load these components before loading route
+          async: function(routeTo, routeFrom, resolve, reject) {
+            app.loadModules(['gauge', 'calendar']).then(() => {
+              resolve({
+                componentUrl: './gauge-calendar.html',
+              });
+            });
+          },
+        }
+      ]
+    p The following browser modules-components are available for loading (all other components are part of the core):
+    table
+      thead
+        tr
+          th Component
+          th Name
+          th Path
+      tbody
+        tr
+          td Dialog
+          td <code>dialog</code>
+          td <code>framework7/lazy-components/dialog.js</code>
+        tr
+          td Popup
+          td <code>popup</code>
+          td <code>framework7/lazy-components/popup.js</code>
+        tr
+          td LoginScreen
+          td <code>login-screen</code>
+          td <code>framework7/lazy-components/login-screen.js</code>
+        tr
+          td Popover
+          td <code>popover</code>
+          td <code>framework7/lazy-components/popover.js</code>
+        tr
+          td Actions
+          td <code>actions</code>
+          td <code>framework7/lazy-components/actions.js</code>
+        tr
+          td Sheet
+          td <code>sheet</code>
+          td <code>framework7/lazy-components/sheet.js</code>
+        tr
+          td Toast
+          td <code>toast</code>
+          td <code>framework7/lazy-components/toast.js</code>
+        tr
+          td Preloader
+          td <code>preloader</code>
+          td <code>framework7/lazy-components/preloader.js</code>
+        tr
+          td Progressbar
+          td <code>progressbar</code>
+          td <code>framework7/lazy-components/progressbar.js</code>
+        tr
+          td Sortable
+          td <code>sortable</code>
+          td <code>framework7/lazy-components/sortable.js</code>
+        tr
+          td Swipeout
+          td <code>swipeout</code>
+          td <code>framework7/lazy-components/swipeout.js</code>
+        tr
+          td Accordion
+          td <code>accordion</code>
+          td <code>framework7/lazy-components/accordion.js</code>
+        tr
+          td ContactsList
+          td <code>contacts-list</code>
+          td <code>framework7/lazy-components/contacts-list.js</code>
+        tr
+          td VirtualList
+          td <code>virtual-list</code>
+          td <code>framework7/lazy-components/virtual-list.js</code>
+        tr
+          td ListIndex
+          td <code>list-index</code>
+          td <code>framework7/lazy-components/list-index.js</code>
+        tr
+          td Timeline
+          td <code>timeline</code>
+          td <code>framework7/lazy-components/timeline.js</code>
+        tr
+          td Tabs
+          td <code>tabs</code>
+          td <code>framework7/lazy-components/tabs.js</code>
+        tr
+          td Panel
+          td <code>panel</code>
+          td <code>framework7/lazy-components/panel.js</code>
+        tr
+          td Card
+          td <code>card</code>
+          td <code>framework7/lazy-components/card.js</code>
+        tr
+          td Chip
+          td <code>chip</code>
+          td <code>framework7/lazy-components/chip.js</code>
+        tr
+          td Form
+          td <code>form</code>
+          td <code>framework7/lazy-components/form.js</code>
+        tr
+          td Input
+          td <code>input</code>
+          td <code>framework7/lazy-components/input.js</code>
+        tr
+          td Checkbox
+          td <code>checkbox</code>
+          td <code>framework7/lazy-components/checkbox.js</code>
+        tr
+          td Radio
+          td <code>radio</code>
+          td <code>framework7/lazy-components/radio.js</code>
+        tr
+          td Toggle
+          td <code>toggle</code>
+          td <code>framework7/lazy-components/toggle.js</code>
+        tr
+          td Range
+          td <code>range</code>
+          td <code>framework7/lazy-components/range.js</code>
+        tr
+          td Stepper
+          td <code>stepper</code>
+          td <code>framework7/lazy-components/stepper.js</code>
+        tr
+          td SmartSelect
+          td <code>smart-select</code>
+          td <code>framework7/lazy-components/smart-select.js</code>
+        tr
+          td Grid
+          td <code>grid</code>
+          td <code>framework7/lazy-components/grid.js</code>
+        tr
+          td Calendar
+          td <code>calendar</code>
+          td <code>framework7/lazy-components/calendar.js</code>
+        tr
+          td Picker
+          td <code>picker</code>
+          td <code>framework7/lazy-components/picker.js</code>
+        tr
+          td InfiniteScroll
+          td <code>infinite-scroll</code>
+          td <code>framework7/lazy-components/infinite-scroll.js</code>
+        tr
+          td PullToRefresh
+          td <code>pull-to-refresh</code>
+          td <code>framework7/lazy-components/pull-to-refresh.js</code>
+        tr
+          td Lazy
+          td <code>lazy</code>
+          td <code>framework7/lazy-components/lazy.js</code>
+        tr
+          td DataTable
+          td <code>data-table</code>
+          td <code>framework7/lazy-components/data-table.js</code>
+        tr
+          td Fab
+          td <code>fab</code>
+          td <code>framework7/lazy-components/fab.js</code>
+        tr
+          td Searchbar
+          td <code>searchbar</code>
+          td <code>framework7/lazy-components/searchbar.js</code>
+        tr
+          td Messages
+          td <code>messages</code>
+          td <code>framework7/lazy-components/messages.js</code>
+        tr
+          td Messagebar
+          td <code>messagebar</code>
+          td <code>framework7/lazy-components/messagebar.js</code>
+        tr
+          td Swiper
+          td <code>swiper</code>
+          td <code>framework7/lazy-components/swiper.js</code>
+        tr
+          td PhotoBrowser
+          td <code>photo</code>
+          td <code>framework7/lazy-components/browser/photo-browser.js</code>
+        tr
+          td Notification
+          td <code>notification</code>
+          td <code>framework7/lazy-components/notification.js</code>
+        tr
+          td Autocomplete
+          td <code>autocomplete</code>
+          td <code>framework7/lazy-components/autocomplete.js</code>
+        tr
+          td Tooltip
+          td <code>tooltip</code>
+          td <code>framework7/lazy-components/tooltip.js</code>
+        tr
+          td Gauge
+          td <code>gauge</code>
+          td <code>framework7/lazy-components/gauge.js</code>
+        tr
+          td Vi
+          td <code>vi</code>
+          td <code>framework7/lazy-components/vi.js</code>
+        tr
+          td Typography
+          td <code>typography</code>
+          td <code>framework7/lazy-components/typography.js</code>
+
+
+
+
+
+

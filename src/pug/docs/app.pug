@@ -100,21 +100,10 @@ block content
                   });
             p Note, that <code>this</code> inside of each method points to app Framework7 instance.
         tr
-          td on
-          td object
-          td {}
-          td Object with events handlers. For example:
-            :code(lang="js")
-                  var app = new Framework({
-                    on: {
-                      init: function () {
-                        console.log('App initialized'),
-                      },
-                      pageInit: function () {
-                        console.log('Page initialized'),
-                      },
-                    }
-                  })
+          td lazyModulesPath
+          td string
+          td
+          td Path to Framework7's lazy components. Required to use <a href="lazy-modules.html">Lazy Modules</a> with browser modules.
         tr
           td init
           td boolean
@@ -125,6 +114,22 @@ block content
           td boolean
           td true
           td If automatic initialization is enabled with <code>init: true</code> parameter and app is running under cordova environment then it will be initialized on <code>deviceready</code> event.
+        tr
+          td on
+          td object
+          td {}
+          td Object with events handlers. For example:
+            :code(lang="js")
+              var app = new Framework({
+                on: {
+                  init: function () {
+                    console.log('App initialized'),
+                  },
+                  pageInit: function () {
+                    console.log('Page initialized'),
+                  },
+                }
+              })
         tr
           th(colspan="4") Clicks Module Parameters
         tr
