@@ -15132,7 +15132,7 @@
 	};
 
 	var ContactsList = {
-	  name: 'contactList',
+	  name: 'contactsList',
 	};
 
 	var VirtualList = (function (Framework7Class$$1) {
@@ -34220,7 +34220,7 @@
 	};
 
 	/**
-	 * Framework7 3.3.2
+	 * Framework7 3.4.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -45128,8 +45128,6 @@
 	  },
 	};
 
-	// IMPORT_LIBRARY
-
 	var Plugin = {
 	  name: 'phenomePlugin',
 	  install: function install(params) {
@@ -45138,10 +45136,9 @@
 	    var Framework7 = this;
 	    f7.Framework7 = Framework7;
 
-	    var Extend = EXTEND; // eslint-disable-line
+	    var Extend = params.React ? params.React.Component : react.Component; // eslint-disable-line
 
-	    // REGISTER_COMPONENTS
-
+	    
 	    // Define protos
 	    Object.defineProperty(Extend.prototype, '$f7', {
 	      get: function get() {
@@ -45185,14 +45182,6 @@
 	        if (self._f7route) { return self._f7route; }
 
 	        var route;
-	        // eslint-disable-next-line
-	        if (COMPILER === 'vue') {
-	          var parent = self;
-	          while (parent && !route) {
-	            if (parent._f7route) { route = parent._f7route; }
-	            parent = parent.$parent;
-	          }
-	        }
 	        return route;
 	      },
 	      set: function set(value) {
@@ -45208,19 +45197,6 @@
 	        if (self._f7router) { return self._f7router; }
 
 	        var router;
-	        // eslint-disable-next-line
-	        if (COMPILER === 'vue') {
-	          var parent = self;
-	          while (parent && !router) {
-	            if (parent._f7router) { router = parent._f7router; }
-	            else if (parent.f7View) {
-	              router = parent.f7View.router;
-	            } else if (parent.$refs && parent.$refs.el && parent.$refs.el.f7View) {
-	              router = parent.$refs.el.f7View.router;
-	            }
-	            parent = parent.$parent;
-	          }
-	        }
 	        return router;
 	      },
 	      set: function set(value) {
@@ -45235,7 +45211,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.3.2
+	 * Framework7 React 3.4.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *

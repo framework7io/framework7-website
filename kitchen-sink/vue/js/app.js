@@ -21891,7 +21891,7 @@
   };
 
   var ContactsList = {
-    name: 'contactList',
+    name: 'contactsList',
   };
 
   var VirtualList = (function (Framework7Class$$1) {
@@ -40979,7 +40979,7 @@
   };
 
   /**
-   * Framework7 3.3.2
+   * Framework7 3.4.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -50869,7 +50869,7 @@
   };
 
   /**
-   * Framework7 Vue 3.3.2
+   * Framework7 Vue 3.4.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
