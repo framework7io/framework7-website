@@ -55,6 +55,20 @@
   - v3
 
 -
+  title: Framework7 Redux
+  author:
+    url: http://github.com/bencompton/
+    name: Ben Compton
+  url: https://github.com/bencompton/framework7-redux/
+  previewUrl: https://github.com/bencompton/framework7-redux/
+  icon:
+    text: Framework7 Redux
+    bgColor: '#fff'
+    textColor: '#000'
+  description: Redux bindings to keep your Redux store in sync with Framework7
+  badges:
+  - v3
+-
   title: Tour Guide
   icon:
     text: Tour Guide
