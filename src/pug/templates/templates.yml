@@ -151,6 +151,21 @@ community:
   - Vue
   - v3
 -
+  title: F7 + React + Redux
+  icon:
+    text: F7 + React + Redux
+    bgColor: '#fff'
+    textColor: '#000'
+  author:
+    url: http://github.com/bencompton/
+    name: Ben Compton
+  url: https://github.com/bencompton/framework7-redux-app-template
+  description: 
+  badges:
+  - v3
+  - React
+  - Redux
+-
   title: PGChat
   icon:
     text: PGChat
