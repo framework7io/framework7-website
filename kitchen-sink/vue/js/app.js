@@ -10055,8 +10055,10 @@
     }
 
     // Webview
-    device.webView = !!((iphone || ipad || ipod) && (ua.match(/.*AppleWebKit(?!.*Safari)/i) || win.navigator.standalone));
+    device.webView = !!((iphone || ipad || ipod) && (ua.match(/.*AppleWebKit(?!.*Safari)/i) || win.navigator.standalone))
+                       || (win.matchMedia && win.matchMedia('(display-mode: standalone)').matches);
     device.webview = device.webView;
+    device.standalone = device.webView;
 
 
     // Desktop
@@ -10921,6 +10923,8 @@
               newData.push(("Content-Disposition: form-data; name=\"" + (data$1[i].split('=')[0]) + "\"\r\n\r\n" + (data$1[i].split('=')[1]) + "\r\n"));
             }
             postData = "--" + boundary + "\r\n" + (newData.join(("--" + boundary + "\r\n"))) + "--" + boundary + "--\r\n";
+          } else if (options.contentType === 'application/json') {
+            postData = JSON.stringify(options.data);
           } else {
             postData = data$1;
           }
@@ -12974,7 +12978,7 @@
     var app = router.app;
     var view = router.view;
 
-    var options = Utils.extend({
+    var options = Utils.extend(false, {
       animate: router.params.animate,
       pushState: true,
       replaceState: false,
@@ -15405,6 +15409,27 @@
       return matchingRoute;
     };
 
+    // eslint-disable-next-line
+    Router.prototype.replaceRequestUrlParams = function replaceRequestUrlParams (url, options) {
+      if ( url === void 0 ) url = '';
+      if ( options === void 0 ) options = {};
+
+      var compiledUrl = url;
+      if (typeof compiledUrl === 'string'
+        && compiledUrl.indexOf('{{') >= 0
+        && options
+        && options.route
+        && options.route.params
+        && Object.keys(options.route.params).length
+      ) {
+        Object.keys(options.route.params).forEach(function (paramName) {
+          var regExp = new RegExp(("{{" + paramName + "}}"), 'g');
+          compiledUrl = compiledUrl.replace(regExp, options.route.params[paramName] || '');
+        });
+      }
+      return compiledUrl;
+    };
+
     Router.prototype.removeFromXhrCache = function removeFromXhrCache (url) {
       var router = this;
       var xhrCache = router.cache.xhr;
@@ -15442,16 +15467,8 @@
         hasQuery = true;
       }
 
-      if (url.indexOf('{{') >= 0
-        && options
-        && options.route
-        && options.route.params
-        && Object.keys(options.route.params).length
-      ) {
-        Object.keys(options.route.params).forEach(function (paramName) {
-          var regExp = new RegExp(("{{" + paramName + "}}"), 'g');
-          url = url.replace(regExp, options.route.params[paramName] || '');
-        });
+      if (url.indexOf('{{') >= 0) {
+        url = router.replaceRequestUrlParams(url, options);
       }
       // should we ignore get params or not
       if (params.xhrCacheIgnoreGetParameters && url.indexOf('?') >= 0) {
@@ -15594,6 +15611,7 @@
       var router = this;
       var app = router.app;
       var url = typeof component === 'string' ? component : componentUrl;
+      var compiledUrl = router.replaceRequestUrlParams(url, options);
       function compile(componentOptions) {
         var context = options.context || {};
         if (typeof context === 'function') { context = context.call(router); }
@@ -15621,14 +15639,14 @@
         resolve(createdComponent.el);
       }
       var cachedComponent;
-      if (url) {
+      if (compiledUrl) {
         router.cache.components.forEach(function (cached) {
-          if (cached.url === url) { cachedComponent = cached.component; }
+          if (cached.url === compiledUrl) { cachedComponent = cached.component; }
         });
       }
-      if (url && cachedComponent) {
+      if (compiledUrl && cachedComponent) {
         compile(cachedComponent);
-      } else if (url && !cachedComponent) {
+      } else if (compiledUrl && !cachedComponent) {
         // Load via XHR
         if (router.xhr) {
           router.xhr.abort();
@@ -15639,7 +15657,7 @@
           .then(function (loadedComponent) {
             var parsedComponent = app.component.parse(loadedComponent);
             router.cache.components.push({
-              url: url,
+              url: compiledUrl,
               component: parsedComponent,
             });
             compile(parsedComponent);
@@ -18539,6 +18557,8 @@
       if ($highlightEl.length === 0) {
         $tabbarEl.children('.toolbar-inner').append('<span class="tab-link-highlight"></span>');
         $highlightEl = $tabbarEl.find('.tab-link-highlight');
+      } else if ($highlightEl.next().length) {
+        $tabbarEl.children('.toolbar-inner').append($highlightEl);
       }
 
       var $activeLink = $tabbarEl.find('.tab-link-active');
@@ -18554,9 +18574,11 @@
         highlightTranslate = ((app.rtl ? -activeIndex : activeIndex) * 100) + "%";
       }
 
-      $highlightEl
-        .css('width', highlightWidth)
-        .transform(("translate3d(" + highlightTranslate + ",0,0)"));
+      Utils.nextFrame(function () {
+        $highlightEl
+          .css('width', highlightWidth)
+          .transform(("translate3d(" + highlightTranslate + ",0,0)"));
+      });
     },
     init: function init(tabbarEl) {
       var app = this;
@@ -21814,10 +21836,9 @@
           $contentEl.css('height', 'auto');
           Utils.nextFrame(function () {
             $contentEl.transition('');
+            $el.trigger('accordion:opened');
+            app.emit('accordionOpened', $el[0]);
           });
-          $contentEl.transition('');
-          $el.trigger('accordion:opened');
-          app.emit('accordionOpened', $el[0]);
         } else {
           $contentEl.css('height', '');
           $el.trigger('accordion:closed');
@@ -21845,9 +21866,9 @@
           $contentEl.css('height', 'auto');
           Utils.nextFrame(function () {
             $contentEl.transition('');
+            $el.trigger('accordion:opened');
+            app.emit('accordionOpened', $el[0]);
           });
-          $el.trigger('accordion:opened');
-          app.emit('accordionOpened', $el[0]);
         } else {
           $contentEl.css('height', '');
           $el.trigger('accordion:closed');
@@ -23252,20 +23273,40 @@
         }
       }
 
+      var threshold = panel.opened ? 0 : -params.swipeThreshold;
+      if (side === 'right') { threshold = -threshold; }
+
       if (params.swipeNoFollow) {
+        var touchesDiffNoFollow = (pageX - touchesStart.x);
         var timeDiff = (new Date()).getTime() - touchStartTime;
-        if (timeDiff < 300) {
-          if (direction === 'to-left') {
-            if (side === 'right') { app.panel.open(side); }
-            if (side === 'left' && $el.hasClass('panel-active')) { app.panel.close(); }
-          }
-          if (direction === 'to-right') {
-            if (side === 'left') { app.panel.open(side); }
-            if (side === 'right' && $el.hasClass('panel-active')) { app.panel.close(); }
-          }
+        var needToSwitch;
+        if (!panel.opened && (
+          (side === 'left' && touchesDiffNoFollow > -threshold)
+          || (side === 'right' && -touchesDiffNoFollow > threshold)
+        )) {
+          needToSwitch = true;
         }
-        isTouched = false;
-        isMoved = false;
+        if (panel.opened && (
+          (side === 'left' && touchesDiffNoFollow < 0)
+          || (side === 'right' && touchesDiffNoFollow > 0)
+        )) {
+          needToSwitch = true;
+        }
+
+        if (needToSwitch) {
+          if (timeDiff < 300) {
+            if (direction === 'to-left') {
+              if (side === 'right') { app.panel.open(side); }
+              if (side === 'left' && $el.hasClass('panel-active')) { app.panel.close(); }
+            }
+            if (direction === 'to-right') {
+              if (side === 'left') { app.panel.open(side); }
+              if (side === 'right' && $el.hasClass('panel-active')) { app.panel.close(); }
+            }
+          }
+          isTouched = false;
+          isMoved = false;
+        }
         return;
       }
 
@@ -23283,8 +23324,6 @@
       isMoved = true;
 
       e.preventDefault();
-      var threshold = panel.opened ? 0 : -params.swipeThreshold;
-      if (side === 'right') { threshold = -threshold; }
 
       touchesDiff = (pageX - touchesStart.x) + threshold;
 
@@ -24377,6 +24416,11 @@
     },
     checkEmptyState: function checkEmptyState(inputEl) {
       var $inputEl = $(inputEl);
+      if (!$inputEl.is('input, select, textarea')) {
+        $inputEl = $inputEl.find('input, select, textarea').eq(0);
+      }
+      if (!$inputEl.length) { return; }
+
       var value = $inputEl.val();
       var $itemInputEl = $inputEl.parents('.item-input');
       var $inputWrapEl = $inputEl.parents('.input');
@@ -24488,7 +24532,7 @@
         var previousValue = $inputEl.val();
         $inputEl
           .val('')
-          .trigger('change input')
+          .trigger('input change')
           .focus()
           .trigger('input:clear', previousValue);
       }
@@ -28855,7 +28899,7 @@
       function onHtmlClick(e) {
         var $targetEl = $(e.target);
         if (picker.isPopover()) { return; }
-        if (!picker.opened) { return; }
+        if (!picker.opened || picker.closing) { return; }
         if ($targetEl.closest('[class*="backdrop"]').length) { return; }
         if ($inputEl && $inputEl.length > 0) {
           if ($targetEl[0] !== $inputEl[0] && $targetEl.closest('.sheet-modal').length === 0) {
@@ -29094,6 +29138,8 @@
       var value = picker.value;
       var params = picker.params;
       picker.opened = true;
+      picker.closing = false;
+      picker.opening = true;
 
       // Init main events
       picker.attachResizeEvent();
@@ -29139,6 +29185,7 @@
 
     Picker.prototype.onOpened = function onOpened () {
       var picker = this;
+      picker.opening = false;
 
       if (picker.$el) {
         picker.$el.trigger('picker:opened', picker);
@@ -29152,6 +29199,8 @@
     Picker.prototype.onClose = function onClose () {
       var picker = this;
       var app = picker.app;
+      picker.opening = false;
+      picker.closing = true;
 
       // Detach events
       picker.detachResizeEvent();
@@ -29175,6 +29224,7 @@
     Picker.prototype.onClosed = function onClosed () {
       var picker = this;
       picker.opened = false;
+      picker.closing = false;
 
       if (!picker.inline) {
         Utils.nextTick(function () {
@@ -29583,7 +29633,19 @@
 
         if (!isMoved) {
           $el.removeClass('ptr-transitioning');
-          if (scrollTop > $el[0].offsetHeight) {
+          var targetIsEl;
+          var targetIsScrollable;
+          $(e.target).parents().each(function (index, targetEl) {
+            if (targetEl === el) {
+              targetIsEl = true;
+            }
+            if (targetIsEl) { return; }
+            if (targetEl.scrollHeight > targetEl.offsetHeight) {
+              targetIsScrollable = true;
+            }
+          });
+
+          if (targetIsScrollable || scrollTop > $el[0].offsetHeight) {
             isTouched = false;
             return;
           }
@@ -30444,6 +30506,8 @@
         searchContainer: undefined, // container to search, HTMLElement or CSS selector
         searchItem: 'li', // single item selector, CSS selector
         searchIn: undefined, // where to search in item, CSS selector
+        searchGroup: '.list-group',
+        searchGroupTitle: '.item-divider, .list-group-title',
         ignore: '.searchbar-ignore',
         foundEl: '.searchbar-found',
         notFoundEl: '.searchbar-not-found',
@@ -30912,13 +30976,13 @@
         });
 
         if (sb.params.hideDividers) {
-          $searchContainer.find('.item-divider, .list-group-title').each(function (titleIndex, titleEl) {
+          $searchContainer.find(sb.params.searchGroupTitle).each(function (titleIndex, titleEl) {
             var $titleEl = $(titleEl);
-            var $nextElements = $titleEl.nextAll('li');
+            var $nextElements = $titleEl.nextAll(sb.params.searchItem);
             var hide = true;
             for (var i = 0; i < $nextElements.length; i += 1) {
               var $nextEl = $nextElements.eq(i);
-              if ($nextEl.hasClass('list-group-title') || $nextEl.hasClass('item-divider')) { break; }
+              if ($nextEl.is(sb.params.searchGroupTitle)) { break; }
               if (!$nextEl.hasClass('hidden-by-searchbar')) {
                 hide = false;
               }
@@ -30929,10 +30993,13 @@
           });
         }
         if (sb.params.hideGroups) {
-          $searchContainer.find('.list-group').each(function (groupIndex, groupEl) {
+          $searchContainer.find(sb.params.searchGroup).each(function (groupIndex, groupEl) {
             var $groupEl = $(groupEl);
             var ignore = sb.params.ignore && $groupEl.is(sb.params.ignore);
-            var notHidden = $groupEl.find('li:not(.hidden-by-searchbar)');
+            // eslint-disable-next-line
+            var notHidden = $groupEl.find(sb.params.searchItem).filter(function (index, el) {
+              return !$(el).hasClass('hidden-by-searchbar');
+            });
             if (notHidden.length === 0 && !ignore) {
               $groupEl.addClass('hidden-by-searchbar');
             } else {
@@ -39660,7 +39727,7 @@
         itemHtml = "\n        <li>\n          <label class=\"item-radio item-content\" data-value=\"" + itemValue + "\">\n            <div class=\"item-inner\">\n              <div class=\"item-title\">" + (item.text) + "</div>\n            </div>\n          </label>\n        </li>\n      ";
       } else {
         // Dropwdown placeholder
-        itemHtml = "\n        <li class=\"autocomplete-dropdown-placeholder\">\n          <div class=\"item-content\">\n            <div class=\"item-inner\">\n              <div class=\"item-title\">" + (item.text) + "</div>\n            </div>\n          </label>\n        </li>\n      ";
+        itemHtml = "\n        <li class=\"autocomplete-dropdown-placeholder\">\n          <label class=\"item-content\">\n            <div class=\"item-inner\">\n              <div class=\"item-title\">" + (item.text) + "</div>\n            </div>\n          </label>\n        </li>\n      ";
       }
       return itemHtml.trim();
     };
@@ -40979,7 +41046,7 @@
   };
 
   /**
-   * Framework7 3.4.0
+   * Framework7 3.4.2
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -40987,7 +41054,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: September 28, 2018
+   * Released on: October 12, 2018
    */
 
   // Install Core Modules & Components
@@ -43887,6 +43954,20 @@
       }
     }, Mixins.colorProps),
 
+    data: function data() {
+      var props = __vueComponentProps(this);
+
+      var state = (function () {
+        return {
+          inputFocused: false
+        };
+      })();
+
+      return {
+        state: state
+      };
+    },
+
     render: function render() {
       var _h = this.$createElement;
       var self = this;
@@ -43937,7 +44018,13 @@
         var InputTag = tag;
         var needsValue = type !== 'file';
         var needsType = tag === 'input';
-        var inputClassName = Utils$1.classNames(type === 'textarea' && resizable && 'resizable', !wrap && className, (noFormStoreData || noStoreData || ignoreStoreData) && 'no-store-data', errorMessage && errorMessageForce && 'input-invalid');
+        var inputClassName = Utils$1.classNames(!wrap && className, {
+          resizable: type === 'textarea' && resizable,
+          'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
+          'input-invalid': errorMessage && errorMessageForce,
+          'input-with-value': typeof value === 'undefined' ? defaultValue || defaultValue === 0 : value || value === 0,
+          'input-focused': self.state.inputFocused
+        });
         var input;
         {
           input = _h(InputTag, {
@@ -44185,10 +44272,16 @@
 
       onFocus: function onFocus(event) {
         this.dispatchEvent('focus', event);
+        this.setState({
+          inputFocused: true
+        });
       },
 
       onBlur: function onBlur(event) {
         this.dispatchEvent('blur', event);
+        this.setState({
+          inputFocused: false
+        });
       },
 
       onChange: function onChange(event) {
@@ -44200,6 +44293,10 @@
         while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
         __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      },
+
+      setState: function setState(updater, callback) {
+        __vueComponentSetState(this, updater, callback);
       }
 
     },
@@ -44476,12 +44573,6 @@
     },
     methods: {
       onClick: function onClick(event) {
-        var self = this;
-
-        if (self.props.smartSelect && self.f7SmartSelect) {
-          self.f7SmartSelect.open();
-        }
-
         this.dispatchEvent('click', event);
       },
 
@@ -44814,7 +44905,9 @@
           hasInput: false,
           hasInlineLabel: false,
           hasInputInfo: false,
-          hasInputErrorMessage: false
+          hasInputErrorMessage: false,
+          hasInputValue: false,
+          hasInputFocused: false
         };
       })();
 
@@ -44853,6 +44946,8 @@
       var itemInput = props.itemInput;
       var inlineLabel = props.inlineLabel;
       var itemInputWithInfo = props.itemInputWithInfo;
+      var hasInputFocused = self.state.hasInputFocused;
+      var hasInputValue = self.state.hasInputValue;
       var hasInput = itemInput || self.state.hasInput;
       var hasInlineLabel = inlineLabel || self.state.hasInlineLabel;
       var hasInputInfo = itemInputWithInfo || self.state.hasInputInfo;
@@ -44905,6 +45000,14 @@
             hasInput = true;
             if (child.data && child.data.info) { hasInputInfo = true; }
             if (child.data && child.data.errorMessage && child.data.errorMessageForce) { hasInputErrorMessage = true; }
+
+            if (child.data && (typeof child.data.value === 'undefined' ? child.data.defaultValue || child.data.defaultValue === 0 : child.data.value || child.data.value === 0)) {
+              hasInputValue = true;
+            } else if (child.componentOptions && child.componentOptions.propsData && (typeof child.componentOptions.propsData.value === 'undefined' ? child.componentOptions.propsData.defaultValue || child.componentOptions.propsData.defaultValue === 0 : child.componentOptions.propsData.value || child.componentOptions.propsData.value === 0)) {
+              hasInputValue = true;
+            } else {
+              hasInputValue = false;
+            }
           }
 
           if (tag && tag.indexOf('f7-label') >= 0) {
@@ -45043,7 +45146,9 @@
         'inline-label': hasInlineLabel,
         'item-input-with-info': hasInputInfo,
         'item-input-with-error-message': hasInputErrorMessage,
-        'item-input-invalid': hasInputErrorMessage
+        'item-input-invalid': hasInputErrorMessage,
+        'item-input-with-value': hasInputValue,
+        'item-input-focused': hasInputFocused
       }, Mixins.colorClasses(props));
       return _h(ItemContentTag, {
         ref: 'el',
@@ -45062,6 +45167,8 @@
       var self = this;
       self.onClickBound = self.onClick.bind(self);
       self.onChangeBound = self.onChange.bind(self);
+      self.onFocusBound = self.onFocus.bind(self);
+      self.onBlurBound = self.onBlur.bind(self);
     },
 
     beforeMount: function beforeMount() {
@@ -45077,6 +45184,7 @@
       var ref = self.$refs;
       var innerEl = ref.innerEl;
       var inputEl = ref.inputEl;
+      var el = ref.el;
 
       if (inputEl) {
         inputEl.addEventListener('change', self.onChangeBound);
@@ -45090,6 +45198,11 @@
       var hasInput = $inputWrapEl.length > 0;
       var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
       var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
+
+      if (hasInput) {
+        el.addEventListener('focus', self.onFocusBound, true);
+        el.addEventListener('blur', self.onBlurBound, true);
+      }
 
       if (!self.hasInlineLabelSet && hasInlineLabel !== self.state.hasInlineLabel) {
         self.setState({
@@ -45157,9 +45270,15 @@
       var self = this;
       var ref = self.$refs;
       var inputEl = ref.inputEl;
+      var el = ref.el;
 
       if (inputEl) {
         inputEl.removeEventListener('change', self.onChangeBound);
+      }
+
+      if (self.state.hasInput) {
+        el.removeEventListener('focus', self.onFocusBound, true);
+        el.removeEventListener('blur', self.onBlurBound, true);
       }
     },
 
@@ -45218,6 +45337,18 @@
 
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
+      },
+
+      onFocus: function onFocus() {
+        this.setState({
+          hasInputFocused: true
+        });
+      },
+
+      onBlur: function onBlur() {
+        this.setState({
+          hasInputFocused: false
+        });
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -47670,8 +47801,14 @@
       id: [String, Number],
       name: String,
       stacked: Boolean,
-      withSubnavbar: Boolean,
-      subnavbar: Boolean,
+      withSubnavbar: {
+        type: Boolean,
+        default: undefined
+      },
+      subnavbar: {
+        type: Boolean,
+        default: undefined
+      },
       noNavbar: Boolean,
       noToolbar: Boolean,
       tabs: Boolean,
@@ -47705,7 +47842,8 @@
 
       var state = (function () {
         return {
-          hasSubnavbar: false
+          hasSubnavbar: false,
+          routerClasses: ''
         };
       })();
 
@@ -47783,10 +47921,11 @@
         });
       }
 
-      var classes = Utils$1.classNames(className, 'page', {
+      var forceSubnavbar = typeof subnavbar === 'undefined' && typeof withSubnavbar === 'undefined' ? hasSubnavbar || this.state.hasSubnavbar : false;
+      var classes = Utils$1.classNames(className, 'page', this.state.routerClasses, {
         stacked: stacked,
         tabs: tabs,
-        'page-with-subnavbar': subnavbar || withSubnavbar || hasSubnavbar,
+        'page-with-subnavbar': subnavbar || withSubnavbar || forceSubnavbar,
         'no-navbar': noNavbar,
         'no-toolbar': noToolbar,
         'no-swipeback': noSwipeback
@@ -47927,6 +48066,18 @@
 
       onPageInit: function onPageInit(event) {
         var page = event.detail;
+        var ref = this.props;
+        var withSubnavbar = ref.withSubnavbar;
+        var subnavbar = ref.subnavbar;
+
+        if (typeof withSubnavbar === 'undefined' && typeof subnavbar === 'undefined') {
+          if (page.$navbarEl && page.$navbarEl.length && page.$navbarEl.find('.subnavbar').length || page.$el.children('.navbar').find('.subnavbar').length) {
+            this.setState({
+              hasSubnavbar: true
+            });
+          }
+        }
+
         this.dispatchEvent('page:init pageInit', event, page);
       },
 
@@ -47937,6 +48088,19 @@
 
       onPageBeforeIn: function onPageBeforeIn(event) {
         var page = event.detail;
+
+        if (page.from === 'next') {
+          this.setState({
+            routerClasses: 'page-next'
+          });
+        }
+
+        if (page.from === 'previous') {
+          this.setState({
+            routerClasses: 'page-previous'
+          });
+        }
+
         this.dispatchEvent('page:beforein pageBeforeIn', event, page);
       },
 
@@ -47947,11 +48111,27 @@
 
       onPageAfterOut: function onPageAfterOut(event) {
         var page = event.detail;
+
+        if (page.to === 'next') {
+          this.setState({
+            routerClasses: 'page-next'
+          });
+        }
+
+        if (page.to === 'previous') {
+          this.setState({
+            routerClasses: 'page-previous'
+          });
+        }
+
         this.dispatchEvent('page:afterout pageAfterOut', event, page);
       },
 
       onPageAfterIn: function onPageAfterIn(event) {
         var page = event.detail;
+        this.setState({
+          routerClasses: 'page-current'
+        });
         this.dispatchEvent('page:afterin pageAfterIn', event, page);
       },
 
@@ -47965,6 +48145,10 @@
         while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
         __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      },
+
+      setState: function setState(updater, callback) {
+        __vueComponentSetState(this, updater, callback);
       }
 
     },
@@ -48906,6 +49090,14 @@
         type: String,
         default: 'li'
       },
+      searchGroup: {
+        type: String,
+        default: '.list-group'
+      },
+      searchGroupTitle: {
+        type: String,
+        default: '.item-divider, .list-group-title'
+      },
       foundEl: {
         type: [String, Object],
         default: '.searchbar-found'
@@ -49039,6 +49231,8 @@
       var searchContainer = ref.searchContainer;
       var searchIn = ref.searchIn;
       var searchItem = ref.searchItem;
+      var searchGroup = ref.searchGroup;
+      var searchGroupTitle = ref.searchGroupTitle;
       var hideOnEnableEl = ref.hideOnEnableEl;
       var hideOnSearchEl = ref.hideOnSearchEl;
       var foundEl = ref.foundEl;
@@ -49066,6 +49260,8 @@
           searchContainer: searchContainer,
           searchIn: searchIn,
           searchItem: searchItem,
+          searchGroup: searchGroup,
+          searchGroupTitle: searchGroupTitle,
           hideOnEnableEl: hideOnEnableEl,
           hideOnSearchEl: hideOnSearchEl,
           foundEl: foundEl,
@@ -50869,7 +51065,7 @@
   };
 
   /**
-   * Framework7 Vue 3.4.0
+   * Framework7 Vue 3.4.2
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -50877,7 +51073,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: September 28, 2018
+   * Released on: October 12, 2018
    */
 
   var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
