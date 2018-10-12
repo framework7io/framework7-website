@@ -274,6 +274,16 @@ block content
           td li
           td CSS selector of single search item. If we do a search in List View, then it must be a single list element <code>li</code>
         tr
+          td searchGroup
+          td string
+          td .list-group
+          td CSS selector of group element. Used when <code>hideGroups</code> enabled to hide groups. If we do a search in List View, then it usually a list group.
+        tr
+          td searchGroupTitle
+          td string
+          td .list-group-title, .item-divider
+          td CSS selector of group titles and dividers. Used when <code>hideDividers</code> enabled to hide group titles and dividers. If we do a search in List View, then it usually a list group title or list item divider.
+        tr
           td foundEl
           td string<br>HTMLElement
           td .searchbar-found
