@@ -41046,7 +41046,7 @@
   };
 
   /**
-   * Framework7 3.4.2
+   * Framework7 3.4.3
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -41054,7 +41054,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: October 12, 2018
+   * Released on: October 19, 2018
    */
 
   // Install Core Modules & Components
@@ -43958,14 +43958,34 @@
       var props = __vueComponentProps(this);
 
       var state = (function () {
+        var value = props.value;
+        var defaultValue = props.defaultValue;
         return {
-          inputFocused: false
+          inputFocused: false,
+          currentInputValue: typeof value === 'undefined' ? defaultValue : value
         };
       })();
 
       return {
         state: state
       };
+    },
+
+    computed: {
+      inputWithValue: function inputWithValue() {
+        var self = this;
+        var ref = self.props;
+        var value = ref.value;
+        var defaultValue = ref.defaultValue;
+        var ref$1 = self.state;
+        var currentInputValue = ref$1.currentInputValue;
+        return typeof value === 'undefined' ? defaultValue || defaultValue === 0 || currentInputValue : value || value === 0;
+      },
+
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
     },
 
     render: function render() {
@@ -44022,7 +44042,7 @@
           resizable: type === 'textarea' && resizable,
           'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
           'input-invalid': errorMessage && errorMessageForce,
-          'input-with-value': typeof value === 'undefined' ? defaultValue || defaultValue === 0 : value || value === 0,
+          'input-with-value': self.inputWithValue,
           'input-focused': self.state.inputFocused
         });
         var input;
@@ -44032,7 +44052,7 @@
             style: inputStyle,
             class: inputClassName,
             domProps: {
-              value: needsValue ? value : undefined,
+              value: needsValue ? value || self.state.currentInputValue : undefined,
               checked: checked,
               disabled: disabled,
               readOnly: readonly,
@@ -44148,8 +44168,12 @@
         var self = this;
         var ref = self.props;
         var type = ref.type;
+        var value = ref.value;
         if (type === 'range' || type === 'toggle') { return; }
         if (!self.$f7) { return; }
+        self.setState({
+          currentInputValue: value
+        });
         self.updateInputOnDidUpdate = true;
       }
     },
@@ -44268,6 +44292,9 @@
 
       onInput: function onInput(event) {
         this.dispatchEvent('input', event);
+        this.setState({
+          currentInputValue: event.target.value
+        });
       },
 
       onFocus: function onFocus(event) {
@@ -44297,12 +44324,6 @@
 
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
-      }
-
-    },
-    computed: {
-      props: function props() {
-        return __vueComponentProps(this);
       }
 
     }
@@ -45001,12 +45022,12 @@
             if (child.data && child.data.info) { hasInputInfo = true; }
             if (child.data && child.data.errorMessage && child.data.errorMessageForce) { hasInputErrorMessage = true; }
 
-            if (child.data && (typeof child.data.value === 'undefined' ? child.data.defaultValue || child.data.defaultValue === 0 : child.data.value || child.data.value === 0)) {
-              hasInputValue = true;
-            } else if (child.componentOptions && child.componentOptions.propsData && (typeof child.componentOptions.propsData.value === 'undefined' ? child.componentOptions.propsData.defaultValue || child.componentOptions.propsData.defaultValue === 0 : child.componentOptions.propsData.value || child.componentOptions.propsData.value === 0)) {
-              hasInputValue = true;
-            } else {
-              hasInputValue = false;
+            if (!hasInputValue) {
+              if (child.data && (typeof child.data.value === 'undefined' ? child.data.defaultValue || child.data.defaultValue === 0 : child.data.value || child.data.value === 0)) {
+                hasInputValue = true;
+              } else if (child.componentOptions && child.componentOptions.propsData && (typeof child.componentOptions.propsData.value === 'undefined' ? child.componentOptions.propsData.defaultValue || child.componentOptions.propsData.defaultValue === 0 : child.componentOptions.propsData.value || child.componentOptions.propsData.value === 0)) {
+                hasInputValue = true;
+              }
             }
           }
 
@@ -45169,6 +45190,8 @@
       self.onChangeBound = self.onChange.bind(self);
       self.onFocusBound = self.onFocus.bind(self);
       self.onBlurBound = self.onBlur.bind(self);
+      self.onEmptyBound = self.onEmpty.bind(self);
+      self.onNotEmptyBound = self.onNotEmpty.bind(self);
     },
 
     beforeMount: function beforeMount() {
@@ -45202,6 +45225,8 @@
       if (hasInput) {
         el.addEventListener('focus', self.onFocusBound, true);
         el.addEventListener('blur', self.onBlurBound, true);
+        el.addEventListener('input:empty', self.onEmptyBound);
+        el.addEventListener('input:notempty', self.onNotEmptyBound);
       }
 
       if (!self.hasInlineLabelSet && hasInlineLabel !== self.state.hasInlineLabel) {
@@ -45271,14 +45296,13 @@
       var ref = self.$refs;
       var inputEl = ref.inputEl;
       var el = ref.el;
+      el.removeEventListener('input:empty', self.onEmptyBound);
+      el.removeEventListener('input:notempty', self.onNotEmptyBound);
+      el.removeEventListener('focus', self.onFocusBound, true);
+      el.removeEventListener('blur', self.onBlurBound, true);
 
       if (inputEl) {
         inputEl.removeEventListener('change', self.onChangeBound);
-      }
-
-      if (self.state.hasInput) {
-        el.removeEventListener('focus', self.onFocusBound, true);
-        el.removeEventListener('blur', self.onBlurBound, true);
       }
     },
 
@@ -45348,6 +45372,18 @@
       onBlur: function onBlur() {
         this.setState({
           hasInputFocused: false
+        });
+      },
+
+      onEmpty: function onEmpty() {
+        this.setState({
+          hasInputValue: false
+        });
+      },
+
+      onNotEmpty: function onNotEmpty() {
+        this.setState({
+          hasInputValue: true
         });
       },
 
@@ -46691,7 +46727,10 @@
         default: 0
       },
       maxHeight: Number,
-      resizePage: Boolean,
+      resizePage: {
+        type: Boolean,
+        default: true
+      },
       sendLink: String,
       value: [String, Number, Array],
       disabled: Boolean,
@@ -51017,6 +51056,9 @@
           var route;
           // eslint-disable-next-line
           {
+            if (self.$vnode && self.$vnode.data && self.$vnode.data.props && self.$vnode.data.props.f7route) {
+              route = self.$vnode.data.props.f7route;
+            }
             var parent = self;
             while (parent && !route) {
               if (parent._f7route) { route = parent._f7route; }
@@ -51040,6 +51082,9 @@
           var router;
           // eslint-disable-next-line
           {
+            if (self.$vnode && self.$vnode.data && self.$vnode.data.props && self.$vnode.data.props.f7route) {
+              router = self.$vnode.data.props.f7router;
+            }
             var parent = self;
             while (parent && !router) {
               if (parent._f7router) { router = parent._f7router; }
@@ -51065,7 +51110,7 @@
   };
 
   /**
-   * Framework7 Vue 3.4.2
+   * Framework7 Vue 3.4.3
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -51073,7 +51118,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: October 12, 2018
+   * Released on: October 19, 2018
    */
 
   var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
@@ -52175,7 +52220,7 @@
     },
   };
 
-  var LoginScreen$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Login Screen","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with ready to use Login Screen layout. It could be used inside of page or inside of popup (Embedded) or as a standalone overlay:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/login-screen-page/","title":"As Separate Page"}})],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":"","login-screen-open":".demo-login-screen"}},[_vm._v("As Overlay")])],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":""},on:{"click":function($event){_vm.loginScreenOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('f7-login-screen',{staticClass:"demo-login-screen",attrs:{"opened":_vm.loginScreenOpened},on:{"loginscreen:closed":function($event){_vm.loginScreenOpened = false;}}},[_c('f7-page',{attrs:{"login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-item',[_c('f7-label',[_vm._v("Username")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your username"},on:{"input":function($event){_vm.username = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password"},on:{"input":function($event){_vm.password = $event.target.value;}}})],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)],1)],1)},staticRenderFns: [],
+  var LoginScreen$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Login Screen","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with ready to use Login Screen layout. It could be used inside of page or inside of popup (Embedded) or as a standalone overlay:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/login-screen-page/","title":"As Separate Page"}})],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":"","login-screen-open":".demo-login-screen"}},[_vm._v("As Overlay")])],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":""},on:{"click":function($event){_vm.loginScreenOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('f7-login-screen',{staticClass:"demo-login-screen",attrs:{"opened":_vm.loginScreenOpened},on:{"loginscreen:closed":function($event){_vm.loginScreenOpened = false;}}},[_c('f7-page',{attrs:{"login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-item',[_c('f7-label',[_vm._v("Username")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -52210,7 +52255,7 @@
     },
   };
 
-  var LoginScreenPage = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"no-toolbar":"","no-navbar":"","no-swipeback":"","login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-item',[_c('f7-label',[_vm._v("Username")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your username"},on:{"input":function($event){_vm.username = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password"},on:{"input":function($event){_vm.password = $event.target.value;}}})],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)},staticRenderFns: [],
+  var LoginScreenPage = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"no-toolbar":"","no-navbar":"","no-swipeback":"","login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-item',[_c('f7-label',[_vm._v("Username")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7LoginScreenTitle: f7LoginScreenTitle,
