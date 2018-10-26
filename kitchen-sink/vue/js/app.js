@@ -13087,7 +13087,8 @@
     }
     $newPage
       .addClass(("page-" + newPagePosition))
-      .removeClass('stacked');
+      .removeClass('stacked')
+      .trigger('page:unstack');
 
     if (dynamicNavbar && $newNavbarInner.length) {
       $newNavbarInner
@@ -13120,6 +13121,7 @@
           var oldNavbarInnerEl = app.navbar.getElByPage($pagesInView.eq(i));
           if (router.params.stackPages) {
             $pagesInView.eq(i).addClass('stacked');
+            $pagesInView.eq(i).trigger('page:stack');
             if (separateNavbar) {
               // $navbarsInView.eq(i).addClass('stacked');
               $(oldNavbarInnerEl).addClass('stacked');
@@ -13234,6 +13236,7 @@
     if (options.reloadCurrent && $oldPage.length > 0) {
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
+        $oldPage.trigger('page:stack');
         if (separateNavbar) {
           $oldNavbarInner.addClass('stacked');
         }
@@ -13251,6 +13254,7 @@
         var $oldNavbarInnerEl = $(app.navbar.getElByPage($oldPageEl));
         if (router.params.stackPages && router.initialPages.indexOf($oldPageEl[0]) >= 0) {
           $oldPageEl.addClass('stacked');
+          $oldPageEl.trigger('page:stack');
           if (separateNavbar) {
             $oldNavbarInnerEl.addClass('stacked');
           }
@@ -13266,6 +13270,7 @@
     } else if (options.reloadPrevious) {
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
+        $oldPage.trigger('page:stack');
         if (separateNavbar) {
           $oldNavbarInner.addClass('stacked');
         }
@@ -13330,6 +13335,7 @@
       if (!keepOldPage) {
         if (router.params.stackPages) {
           $oldPage.addClass('stacked');
+          $oldPage.trigger('page:stack');
           if (separateNavbar) {
             $oldNavbarInner.addClass('stacked');
           }
@@ -14135,7 +14141,8 @@
     $newPage
       .addClass('page-previous')
       .removeClass('stacked')
-      .removeAttr('aria-hidden');
+      .removeAttr('aria-hidden')
+      .trigger('page:unstack');
 
     if (dynamicNavbar && $newNavbarInner.length > 0) {
       $newNavbarInner
@@ -14170,6 +14177,7 @@
             if ($pageToRemove[0] !== $newPage[0] && $pageToRemove.index() > $newPage.index()) {
               if (router.initialPages.indexOf($pageToRemove[0]) >= 0) {
                 $pageToRemove.addClass('stacked');
+                $pageToRemove.trigger('page:stack');
                 if (separateNavbar) {
                   $navbarToRemove.addClass('stacked');
                 }
@@ -14191,6 +14199,7 @@
           }
           if (router.params.stackPages && router.initialPages.indexOf($pageToRemove[0]) >= 0) {
             $pageToRemove.addClass('stacked');
+            $pageToRemove.trigger('page:stack');
             $navbarToRemove.addClass('stacked');
           } else if ($pageToRemove.length > 0) {
             router.pageCallback('beforeRemove', $pageToRemove, $navbarToRemove, 'previous', undefined, options);
@@ -14256,6 +14265,7 @@
           }
           if (router.params.stackPages && router.initialPages.indexOf(pageToRemove) >= 0) {
             $pageToRemove.addClass('stacked');
+            $pageToRemove.trigger('page:stack');
             if (separateNavbar) {
               $navbarToRemove.addClass('stacked');
             }
@@ -14343,6 +14353,7 @@
       // Remove Old Page
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
+        $oldPage.trigger('page:stack');
         if (separateNavbar) {
           $oldNavbarInner.addClass('stacked');
         }
@@ -41046,7 +41057,7 @@
   };
 
   /**
-   * Framework7 3.4.3
+   * Framework7 3.5.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -41054,7 +41065,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: October 19, 2018
+   * Released on: October 26, 2018
    */
 
   // Install Core Modules & Components
@@ -41262,7 +41273,6 @@
         default: undefined,
       },
       ignoreCache: Boolean,
-      pageName: String,
       reloadCurrent: Boolean,
       reloadAll: Boolean,
       reloadPrevious: Boolean,
@@ -43908,7 +43918,7 @@
     }
   };
 
-  var f7Input = {
+  var F7Input = {
     name: 'f7-input',
     props: Object.assign({
       type: String,
@@ -43962,6 +43972,7 @@
         var defaultValue = props.defaultValue;
         return {
           inputFocused: false,
+          inputInvalid: false,
           currentInputValue: typeof value === 'undefined' ? defaultValue : value
         };
       })();
@@ -43976,10 +43987,9 @@
         var self = this;
         var ref = self.props;
         var value = ref.value;
-        var defaultValue = ref.defaultValue;
         var ref$1 = self.state;
         var currentInputValue = ref$1.currentInputValue;
-        return typeof value === 'undefined' ? defaultValue || defaultValue === 0 || currentInputValue : value || value === 0;
+        return typeof value === 'undefined' ? currentInputValue : value || value === 0;
       },
 
       props: function props() {
@@ -44041,7 +44051,7 @@
         var inputClassName = Utils$1.classNames(!wrap && className, {
           resizable: type === 'textarea' && resizable,
           'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
-          'input-invalid': errorMessage && errorMessageForce,
+          'input-invalid': errorMessage && errorMessageForce || self.state.inputInvalid,
           'input-with-value': self.inputWithValue,
           'input-focused': self.state.inputFocused
         });
@@ -44218,7 +44228,7 @@
 
         if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
           setTimeout(function () {
-            f7.input.validate(inputEl);
+            self.validateInput(inputEl);
           }, 0);
         }
 
@@ -44243,7 +44253,7 @@
         f7.input.checkEmptyState(inputEl);
 
         if (validate) {
-          f7.input.validate(inputEl);
+          self.validateInput(inputEl);
         }
 
         if (resizable) {
@@ -44274,6 +44284,26 @@
     },
 
     methods: {
+      validateInput: function validateInput(inputEl) {
+        var self = this;
+        var f7 = self.$f7;
+        if (!f7 || !inputEl) { return; }
+        var validity = inputEl.validity;
+        if (!validity) { return; }
+
+        if (!validity.valid) {
+          if (self.state.inputInvalid !== true) {
+            self.setState({
+              inputInvalid: true
+            });
+          }
+        } else if (self.state.inputInvalid !== false) {
+          self.setState({
+            inputInvalid: false
+          });
+        }
+      },
+
       onTextareaResize: function onTextareaResize(event) {
         this.dispatchEvent('textarea:resize textareaResize', event);
       },
@@ -44291,8 +44321,16 @@
       },
 
       onInput: function onInput(event) {
-        this.dispatchEvent('input', event);
-        this.setState({
+        var self = this;
+        var ref = self.props;
+        var validate = ref.validate;
+        self.dispatchEvent('input', event);
+
+        if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
+          self.validateInput(self.$refs.inputEl);
+        }
+
+        self.setState({
           currentInputValue: event.target.value
         });
       },
@@ -44305,8 +44343,16 @@
       },
 
       onBlur: function onBlur(event) {
-        this.dispatchEvent('blur', event);
-        this.setState({
+        var self = this;
+        var ref = self.props;
+        var validate = ref.validate;
+        self.dispatchEvent('blur', event);
+
+        if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
+          self.validateInput(self.$refs.inputEl);
+        }
+
+        self.setState({
           inputFocused: false
         });
       },
@@ -44329,7 +44375,7 @@
     }
   };
 
-  var f7Label = {
+  ({
     name: 'f7-label',
     props: Object.assign({
       id: [String, Number],
@@ -44366,7 +44412,7 @@
       }
 
     }
-  };
+  });
 
   var f7Link = {
     name: 'f7-link',
@@ -44859,6 +44905,465 @@
     }
   };
 
+  var f7ListInput = {
+    name: 'f7-list-input',
+    props: Object.assign({
+      id: [String, Number],
+      sortable: Boolean,
+      media: String,
+      input: {
+        type: Boolean,
+        default: true
+      },
+      type: {
+        type: String,
+        default: 'text'
+      },
+      name: String,
+      value: [String, Number, Array],
+      defaultValue: [String, Number, Array],
+      readonly: Boolean,
+      required: Boolean,
+      disabled: Boolean,
+      placeholder: String,
+      inputId: [String, Number],
+      size: [String, Number],
+      accept: [String, Number],
+      autocomplete: [String],
+      autocorrect: [String],
+      autocapitalize: [String],
+      spellcheck: [String],
+      autofocus: Boolean,
+      autosave: String,
+      max: [String, Number],
+      min: [String, Number],
+      step: [String, Number],
+      maxlength: [String, Number],
+      minlength: [String, Number],
+      multiple: Boolean,
+      inputStyle: [String, Object],
+      pattern: String,
+      validate: [Boolean, String],
+      tabindex: [String, Number],
+      resizable: Boolean,
+      clearButton: Boolean,
+      noFormStoreData: Boolean,
+      noStoreData: Boolean,
+      ignoreStoreData: Boolean,
+      errorMessage: String,
+      errorMessageForce: Boolean,
+      info: String,
+      label: [String, Number],
+      inlineLabel: Boolean,
+      floatingLabel: Boolean
+    }, Mixins.colorProps),
+
+    data: function data() {
+      var props = __vueComponentProps(this);
+
+      var state = (function () {
+        var value = props.value;
+        var defaultValue = props.defaultValue;
+        return {
+          isSortable: props.sortable,
+          inputFocused: false,
+          inputInvalid: false,
+          currentInputValue: typeof value === 'undefined' ? defaultValue : value
+        };
+      })();
+
+      return {
+        state: state
+      };
+    },
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var ref = self.state;
+      var inputFocused = ref.inputFocused;
+      var inputInvalid = ref.inputInvalid;
+      var props = self.props;
+      var id = props.id;
+      var style = props.style;
+      var className = props.className;
+      var sortable = props.sortable;
+      var media = props.media;
+      var renderInput = props.input;
+      var type = props.type;
+      var name = props.name;
+      var value = props.value;
+      var defaultValue = props.defaultValue;
+      var readonly = props.readonly;
+      var required = props.required;
+      var disabled = props.disabled;
+      var placeholder = props.placeholder;
+      var inputId = props.inputId;
+      var size = props.size;
+      var accept = props.accept;
+      var autocomplete = props.autocomplete;
+      var autocorrect = props.autocorrect;
+      var autocapitalize = props.autocapitalize;
+      var spellcheck = props.spellcheck;
+      var autofocus = props.autofocus;
+      var autosave = props.autosave;
+      var max = props.max;
+      var min = props.min;
+      var step = props.step;
+      var maxlength = props.maxlength;
+      var minlength = props.minlength;
+      var multiple = props.multiple;
+      var inputStyle = props.inputStyle;
+      var pattern = props.pattern;
+      var validate = props.validate;
+      var tabindex = props.tabindex;
+      var resizable = props.resizable;
+      var clearButton = props.clearButton;
+      var noFormStoreData = props.noFormStoreData;
+      var noStoreData = props.noStoreData;
+      var ignoreStoreData = props.ignoreStoreData;
+      var errorMessage = props.errorMessage;
+      var errorMessageForce = props.errorMessageForce;
+      var info = props.info;
+      var label = props.label;
+      var inlineLabel = props.inlineLabel;
+      var floatingLabel = props.floatingLabel;
+      var isSortable = sortable || self.state.isSortable;
+
+      var createInput = function (tag, children) {
+        var InputTag = tag;
+        var needsValue = type !== 'file';
+        var needsType = tag === 'input';
+        var inputClassName = Utils$1.classNames({
+          resizable: type === 'textarea' && resizable,
+          'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
+          'input-invalid': errorMessage && errorMessageForce || inputInvalid,
+          'input-with-value': self.inputHasValue,
+          'input-focused': inputFocused
+        });
+        var input;
+        {
+          input = _h(InputTag, {
+            ref: 'inputEl',
+            style: inputStyle,
+            class: inputClassName,
+            domProps: {
+              value: needsValue ? value || self.state.currentInputValue : undefined,
+              disabled: disabled,
+              readOnly: readonly,
+              multiple: multiple,
+              required: required
+            },
+            on: {
+              focus: self.onFocusBound,
+              blur: self.onBlurBound,
+              input: self.onInputBound,
+              change: self.onChangeBound
+            },
+            attrs: {
+              name: name,
+              type: needsType ? type : undefined,
+              placeholder: placeholder,
+              id: inputId,
+              size: size,
+              accept: accept,
+              autocomplete: autocomplete,
+              autocorrect: autocorrect,
+              autocapitalize: autocapitalize,
+              spellcheck: spellcheck,
+              autofocus: autofocus,
+              autoSave: autosave,
+              max: max,
+              maxlength: maxlength,
+              min: min,
+              minlength: minlength,
+              step: step,
+              pattern: pattern,
+              validate: typeof validate === 'string' && validate.length ? validate : undefined,
+              'data-validate': validate === true || validate === '' ? true : undefined,
+              tabindex: tabindex,
+              'data-error-message': errorMessageForce ? undefined : errorMessage
+            }
+          }, [children]);
+        }
+        return input;
+      };
+
+      var inputEl;
+
+      if (renderInput) {
+        if (type === 'select' || type === 'textarea' || type === 'file') {
+          if (type === 'select') {
+            inputEl = createInput('select', self.$slots.default);
+          } else if (type === 'file') {
+            inputEl = createInput('input');
+          } else {
+            inputEl = createInput('textarea');
+          }
+        } else {
+          inputEl = createInput('input');
+        }
+      }
+
+      var hasErrorMessage = !!errorMessage || self.$slots['error-message'] && self.$slots['error-message'].length;
+      return _h('li', {
+        ref: 'el',
+        style: style,
+        class: Utils$1.classNames(className, {
+          disabled: disabled
+        }, Mixins.colorClasses(props)),
+        attrs: {
+          id: id
+        }
+      }, [this.$slots['root-start'], _h('div', {
+        class: Utils$1.classNames('item-content item-input', {
+          'inline-label': inlineLabel,
+          'item-input-focused': inputFocused,
+          'item-input-with-info': !!info || self.$slots.info && self.$slots.info.length,
+          'item-input-with-value': self.inputHasValue,
+          'item-input-with-error-message': hasErrorMessage && errorMessageForce || inputInvalid,
+          'item-input-invalid': hasErrorMessage && errorMessageForce || inputInvalid
+        })
+      }, [this.$slots['content-start'], (media || self.$slots.media) && _h('div', {
+        class: 'item-media'
+      }, [media && _h('img', {
+        attrs: {
+          src: media
+        }
+      }), this.$slots['media']]), _h('div', {
+        class: 'item-inner'
+      }, [this.$slots['inner-start'], (label || self.$slots.label) && _h('div', {
+        class: Utils$1.classNames('item-title item-label', {
+          'item-floating-label': floatingLabel
+        })
+      }, [label, this.$slots['label']]), _h('div', {
+        class: Utils$1.classNames('item-input-wrap', {
+          'input-dropdown': type === 'select'
+        })
+      }, [inputEl, this.$slots['input'], hasErrorMessage && errorMessageForce && _h('div', {
+        class: 'item-input-error-message'
+      }, [errorMessage, this.$slots['error-message']]), clearButton && _h('span', {
+        class: 'input-clear-button'
+      }), (info || self.$slots.info) && _h('div', {
+        class: 'item-input-info'
+      }, [info, this.$slots['info']])]), this.$slots['inner'], this.$slots['inner-end']]), this.$slots['content'], this.$slots['content-end']]), isSortable && _h('div', {
+        class: 'sortable-handler'
+      }), this.$slots['root'], this.$slots['root-end']]);
+    },
+
+    computed: {
+      inputHasValue: function inputHasValue() {
+        var self = this;
+        var ref = self.props;
+        var value = ref.value;
+        var ref$1 = self.state;
+        var currentInputValue = ref$1.currentInputValue;
+        return typeof value === 'undefined' ? currentInputValue : value || value === 0;
+      },
+
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    },
+    watch: {
+      'props.value': function watchValue() {
+        var self = this;
+        var ref = self.props;
+        var value = ref.value;
+        if (!self.$f7) { return; }
+        self.setState({
+          currentInputValue: value
+        });
+        self.updateInputOnDidUpdate = true;
+      }
+    },
+
+    created: function created() {
+      var self = this;
+      self.onChangeBound = self.onChange.bind(self);
+      self.onInputBound = self.onInput.bind(self);
+      self.onFocusBound = self.onFocus.bind(self);
+      self.onBlurBound = self.onBlur.bind(self);
+      self.onTextareaResizeBound = self.onTextareaResize.bind(self);
+      self.onInputNotEmptyBound = self.onInputNotEmpty.bind(self);
+      self.onInputEmptyBound = self.onInputEmpty.bind(self);
+      self.onInputClearBound = self.onInputClear.bind(self);
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      self.$f7ready(function (f7) {
+        var ref = self.props;
+        var validate = ref.validate;
+        var resizable = ref.resizable;
+        var value = ref.value;
+        var defaultValue = ref.defaultValue;
+        var type = ref.type;
+        var inputEl = self.$refs.inputEl;
+        if (!inputEl) { return; }
+        inputEl.addEventListener('input:notempty', self.onInputNotEmptyBound, false);
+        inputEl.addEventListener('textarea:resze', self.onTextareaResizeBound, false);
+        inputEl.addEventListener('input:empty', self.onInputEmptyBound, false);
+        inputEl.addEventListener('input:clear', self.onInputClearBound, false);
+
+        if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
+          setTimeout(function () {
+            self.validateInput(inputEl);
+          }, 0);
+        }
+
+        if (type === 'textarea' && resizable) {
+          f7.input.resizeTextarea(inputEl);
+        }
+      });
+      self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
+
+      if (self.$listEl.length) {
+        self.setState({
+          isSortable: self.$listEl.hasClass('sortable')
+        });
+      }
+    },
+
+    updated: function updated() {
+      var self = this;
+      var $listEl = self.$listEl;
+      if (!$listEl || $listEl && $listEl.length === 0) { return; }
+      var isSortable = $listEl.hasClass('sortable');
+
+      if (isSortable !== self.state.isSortable) {
+        self.setState({
+          isSortable: isSortable
+        });
+      }
+
+      var ref = self.props;
+      var validate = ref.validate;
+      var resizable = ref.resizable;
+      var type = ref.type;
+      var f7 = self.$f7;
+      if (!f7) { return; }
+
+      if (self.updateInputOnDidUpdate) {
+        var inputEl = self.$refs.inputEl;
+        if (!inputEl) { return; }
+        self.updateInputOnDidUpdate = false;
+
+        if (validate) {
+          self.validateInput(inputEl);
+        }
+
+        if (type === 'textarea' && resizable) {
+          f7.input.resizeTextarea(inputEl);
+        }
+      }
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      var inputEl = self.$refs.inputEl;
+      if (!inputEl) { return; }
+      inputEl.removeEventListener('input:notempty', self.onInputNotEmptyBound, false);
+      inputEl.removeEventListener('textarea:resze', self.onTextareaResizeBound, false);
+      inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
+      inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
+    },
+
+    methods: {
+      validateInput: function validateInput(inputEl) {
+        var self = this;
+        var f7 = self.$f7;
+        if (!f7 || !inputEl) { return; }
+        var validity = inputEl.validity;
+        if (!validity) { return; }
+
+        if (!validity.valid) {
+          if (self.state.inputInvalid !== true) {
+            self.setState({
+              inputInvalid: true
+            });
+          }
+        } else if (self.state.inputInvalid !== false) {
+          self.setState({
+            inputInvalid: false
+          });
+        }
+      },
+
+      onTextareaResize: function onTextareaResize(event) {
+        this.dispatchEvent('textarea:resize textareaResize', event);
+      },
+
+      onInputNotEmpty: function onInputNotEmpty(event) {
+        this.dispatchEvent('input:notempty inputNotEmpty', event);
+      },
+
+      onInputEmpty: function onInputEmpty(event) {
+        this.dispatchEvent('input:empty inputEmpty', event);
+      },
+
+      onInputClear: function onInputClear(event) {
+        this.dispatchEvent('input:clear inputClear', event);
+      },
+
+      onInput: function onInput(event) {
+        var self = this;
+        var ref = self.props;
+        var validate = ref.validate;
+        self.dispatchEvent('input', event);
+
+        if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
+          self.validateInput(self.$refs.inputEl);
+        }
+
+        self.setState({
+          currentInputValue: event.target.value
+        });
+      },
+
+      onFocus: function onFocus(event) {
+        this.dispatchEvent('focus', event);
+        this.setState({
+          inputFocused: true
+        });
+      },
+
+      onBlur: function onBlur(event) {
+        var self = this;
+        var ref = self.props;
+        var validate = ref.validate;
+        self.dispatchEvent('blur', event);
+
+        if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
+          self.validateInput(self.$refs.inputEl);
+        }
+
+        self.setState({
+          inputFocused: false
+        });
+      },
+
+      onChange: function onChange(event) {
+        this.dispatchEvent('change', event);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      },
+
+      setState: function setState(updater, callback) {
+        __vueComponentSetState(this, updater, callback);
+      }
+
+    }
+  };
+
   var f7ListItemCell = {
     name: 'f7-list-item-cell',
     props: Object.assign({
@@ -44928,7 +45433,8 @@
           hasInputInfo: false,
           hasInputErrorMessage: false,
           hasInputValue: false,
-          hasInputFocused: false
+          hasInputFocused: false,
+          hasInputInvalid: false
         };
       })();
 
@@ -44968,6 +45474,7 @@
       var inlineLabel = props.inlineLabel;
       var itemInputWithInfo = props.itemInputWithInfo;
       var hasInputFocused = self.state.hasInputFocused;
+      var hasInputInvalid = self.state.hasInputInvalid;
       var hasInputValue = self.state.hasInputValue;
       var hasInput = itemInput || self.state.hasInput;
       var hasInlineLabel = inlineLabel || self.state.hasInlineLabel;
@@ -45167,7 +45674,7 @@
         'inline-label': hasInlineLabel,
         'item-input-with-info': hasInputInfo,
         'item-input-with-error-message': hasInputErrorMessage,
-        'item-input-invalid': hasInputErrorMessage,
+        'item-input-invalid': hasInputInvalid,
         'item-input-with-value': hasInputValue,
         'item-input-focused': hasInputFocused
       }, Mixins.colorClasses(props));
@@ -45221,6 +45728,7 @@
       var hasInput = $inputWrapEl.length > 0;
       var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
       var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
+      var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
 
       if (hasInput) {
         el.addEventListener('focus', self.onFocusBound, true);
@@ -45252,6 +45760,12 @@
           hasInputErrorMessage: hasInputErrorMessage
         });
       }
+
+      if (!self.hasInputInvalidSet && hasInputInvalid !== self.state.hasInputInvalid) {
+        self.setState({
+          hasInputInvalid: hasInputInvalid
+        });
+      }
     },
 
     updated: function updated() {
@@ -45265,6 +45779,7 @@
       var hasInput = $inputWrapEl.length > 0;
       var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
       var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
+      var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
 
       if (hasInlineLabel !== self.state.hasInlineLabel) {
         self.setState({
@@ -45287,6 +45802,12 @@
       if (!self.hasInputErrorMessageSet && hasInputErrorMessage !== self.state.hasInputErrorMessage) {
         self.setState({
           hasInputErrorMessage: hasInputErrorMessage
+        });
+      }
+
+      if (hasInputInvalid !== self.state.hasInputInvalid) {
+        self.setState({
+          hasInputInvalid: hasInputInvalid
         });
       }
     },
@@ -45925,7 +46446,7 @@
           tag = child.tag;
         }
 
-        if (!tag && 'vue' === 'react' || tag && !(tag === 'li' || tag === 'F7ListItem' || tag === 'F7ListButton' || tag.indexOf('list-item') >= 0 || tag.indexOf('list-button') >= 0 || tag.indexOf('f7-list-item') >= 0 || tag.indexOf('f7-list-button') >= 0)) {
+        if (!tag && 'vue' === 'react' || tag && !(tag === 'li' || tag === 'F7ListItem' || tag === 'F7ListButton' || tag === 'F7ListInput' || tag.indexOf('list-item') >= 0 || tag.indexOf('list-button') >= 0 || tag.indexOf('list-input') >= 0 || tag.indexOf('f7-list-item') >= 0 || tag.indexOf('f7-list-button') >= 0 || tag.indexOf('f7-list-input') >= 0)) {
           if (wasUlChild) { rootChildrenAfterList.push(child); }else { rootChildrenBeforeList.push(child); }
         } else if (tag) {
           wasUlChild = true;
@@ -46810,7 +47331,7 @@
         class: 'toolbar-inner'
       }, [slotsInnerStart, _h('div', {
         class: 'messagebar-area'
-      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(f7Input, {
+      }, [slotsBeforeArea, messagebarAttachmentsEl, _h(F7Input, {
         ref: 'area',
         on: {
           input: self.onInputBound,
@@ -47882,7 +48403,8 @@
       var state = (function () {
         return {
           hasSubnavbar: false,
-          routerClasses: ''
+          routerClass: '',
+          routerForceUnstack: false
         };
       })();
 
@@ -47961,8 +48483,8 @@
       }
 
       var forceSubnavbar = typeof subnavbar === 'undefined' && typeof withSubnavbar === 'undefined' ? hasSubnavbar || this.state.hasSubnavbar : false;
-      var classes = Utils$1.classNames(className, 'page', this.state.routerClasses, {
-        stacked: stacked,
+      var classes = Utils$1.classNames(className, 'page', this.state.routerClass, {
+        stacked: stacked && !this.state.routerForceUnstack,
         tabs: tabs,
         'page-with-subnavbar': subnavbar || withSubnavbar || forceSubnavbar,
         'no-navbar': noNavbar,
@@ -48030,6 +48552,8 @@
       self.onPageAfterOut = self.onPageAfterOut.bind(self);
       self.onPageAfterIn = self.onPageAfterIn.bind(self);
       self.onPageBeforeRemove = self.onPageBeforeRemove.bind(self);
+      self.onPageStack = self.onPageStack.bind(self);
+      self.onPageUnstack = self.onPageUnstack.bind(self);
 
       if (ptr) {
         el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -48051,6 +48575,8 @@
       el.addEventListener('page:afterout', self.onPageAfterOut);
       el.addEventListener('page:afterin', self.onPageAfterIn);
       el.addEventListener('page:beforeremove', self.onPageBeforeRemove);
+      el.addEventListener('page:stack', self.onPageStack);
+      el.addEventListener('page:unstack', self.onPageUnstack);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -48070,6 +48596,8 @@
       el.removeEventListener('page:afterout', self.onPageAfterOut);
       el.removeEventListener('page:afterin', self.onPageAfterIn);
       el.removeEventListener('page:beforeremove', self.onPageBeforeRemove);
+      el.removeEventListener('page:stack', self.onPageStack);
+      el.removeEventListener('page:unstack', self.onPageUnstack);
     },
 
     methods: {
@@ -48103,6 +48631,18 @@
         this.dispatchEvent('page:mounted pageMounted', event, page);
       },
 
+      onPageStack: function onPageStack() {
+        this.setState({
+          routerForceUnstack: false
+        });
+      },
+
+      onPageUnstack: function onPageUnstack() {
+        this.setState({
+          routerForceUnstack: true
+        });
+      },
+
       onPageInit: function onPageInit(event) {
         var page = event.detail;
         var ref = this.props;
@@ -48130,13 +48670,13 @@
 
         if (page.from === 'next') {
           this.setState({
-            routerClasses: 'page-next'
+            routerClass: 'page-next'
           });
         }
 
         if (page.from === 'previous') {
           this.setState({
-            routerClasses: 'page-previous'
+            routerClass: 'page-previous'
           });
         }
 
@@ -48153,13 +48693,13 @@
 
         if (page.to === 'next') {
           this.setState({
-            routerClasses: 'page-next'
+            routerClass: 'page-next'
           });
         }
 
         if (page.to === 'previous') {
           this.setState({
-            routerClasses: 'page-previous'
+            routerClass: 'page-previous'
           });
         }
 
@@ -48169,7 +48709,7 @@
       onPageAfterIn: function onPageAfterIn(event) {
         var page = event.detail;
         this.setState({
-          routerClasses: 'page-current'
+          routerClass: 'page-current'
         });
         this.dispatchEvent('page:afterin pageAfterIn', event, page);
       },
@@ -51110,7 +51650,7 @@
   };
 
   /**
-   * Framework7 Vue 3.4.3
+   * Framework7 Vue 3.5.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -51118,7 +51658,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: October 19, 2018
+   * Released on: October 26, 2018
    */
 
   var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
@@ -52171,7 +52711,7 @@
     },
   };
 
-  var Inputs = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Form Inputs","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Inline Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"inline-labels":"","no-hairlines-md":""}},[_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Name")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("E-mail")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("URL")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Phone")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"tel","placeholder":"Your phone number","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Gender")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"select","placeholder":"Please choose..."}},[_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])])],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Birthday")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"date","value":"2014-04-30","placeholder":"Please choose..."}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Date time")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"datetime-local","placeholder":"Please choose..."}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Range")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"range","value":"50","min":"0","max":"100","step":"1"}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Textarea")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"textarea","placeholder":"Bio"}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Resizable")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"textarea","resizable":"","placeholder":"Bio"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Stacked Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Name")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("E-mail")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("URL")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Phone")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"tel","placeholder":"Your phone number","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Gender")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"select","placeholder":"Please choose..."}},[_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])])],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Birthday")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"date","value":"2014-04-30","placeholder":"Please choose..."}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Date time")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"datetime-local","placeholder":"Please choose..."}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Range")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"range","value":"50","min":"0","max":"100","step":"1"}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Textarea")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"textarea","placeholder":"Bio"}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Resizable")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"textarea","resizable":"","placeholder":"Bio"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Floating Labels (MD-theme only)")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',{attrs:{"floating":""}},[_vm._v("Name")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',{attrs:{"floating":""}},[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',{attrs:{"floating":""}},[_vm._v("E-mail")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',{attrs:{"floating":""}},[_vm._v("URL")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',{attrs:{"floating":""}},[_vm._v("Phone")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"tel","placeholder":"Your phone number","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',{attrs:{"floating":""}},[_vm._v("Bio")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"textarea","placeholder":"Bio","resizable":""}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Validation + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Name")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","info":"Default \"required\" validation","required":"","validate":"","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Fruit")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Type 'apple' or 'banana'","required":"","validate":"","pattern":"apple|banana","clear-button":""}},[_c('span',{attrs:{"slot":"info"},slot:"info"},[_vm._v("Pattern validation ("),_c('b',[_vm._v("apple|banana")]),_vm._v(")")])])],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("E-mail")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","info":"Default e-mail validation","required":"","validate":"","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("URL")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"url","placeholder":"Your URL","info":"Default URL validation","required":"","validate":"","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-label',[_vm._v("Number")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Enter number","info":"With custom error message","error-message":"Only numbers please!","required":"","validate":"","pattern":"[0-9]*","clear-button":""}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Label + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-item',[_c('f7-label',[_vm._v("Name")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("E-mail")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("URL")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-item',[_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inputs + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-item',[_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","info":"Full name please","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","info":"8 characters minimum","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","info":"Your work e-mail address","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"url","placeholder":"URL","info":"Your website URL","clear-button":""}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-item',[_c('f7-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1)],1)},staticRenderFns: [],
+  var Inputs = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Form Inputs","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Inline Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"inline-labels":"","no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Stacked Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Floating Labels (MD-theme only)")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","floating-label":"","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","floating-label":"","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","floating-label":"","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","floating-label":"","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","floating-label":"","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","floating-label":"","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Validation + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","info":"Default validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Fruit","type":"text","placeholder":"Type 'apple' or 'banana'","required":"","validate":"","pattern":"apple|banana","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('span',{attrs:{"slot":"info"},slot:"info"},[_vm._v("Pattern validation ("),_c('b',[_vm._v("apple|banana")]),_vm._v(")")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","info":"Default e-mail validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"Your URL","info":"Default URL validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Number","type":"text","placeholder":"Enter number","info":"With custom error message","error-message":"Only numbers please!","required":"","validate":"","pattern":"[0-9]*","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Label + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inputs + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","info":"Full name please","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","info":"8 characters minimum","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","info":"Your work e-mail address","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","info":"Your website URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -52179,8 +52719,8 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7Icon: f7Icon,
-      f7Label: f7Label,
-      f7Input: f7Input,
+      f7ListInput: f7ListInput,
+      f7Range: f7Range,
     },
   };
 
@@ -52220,21 +52760,20 @@
     },
   };
 
-  var LoginScreen$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Login Screen","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with ready to use Login Screen layout. It could be used inside of page or inside of popup (Embedded) or as a standalone overlay:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/login-screen-page/","title":"As Separate Page"}})],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":"","login-screen-open":".demo-login-screen"}},[_vm._v("As Overlay")])],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":""},on:{"click":function($event){_vm.loginScreenOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('f7-login-screen',{staticClass:"demo-login-screen",attrs:{"opened":_vm.loginScreenOpened},on:{"loginscreen:closed":function($event){_vm.loginScreenOpened = false;}}},[_c('f7-page',{attrs:{"login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-item',[_c('f7-label',[_vm._v("Username")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)],1)],1)},staticRenderFns: [],
+  var LoginScreen$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Login Screen","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with ready to use Login Screen layout. It could be used inside of page or inside of popup (Embedded) or as a standalone overlay:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/login-screen-page/","title":"As Separate Page"}})],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":"","login-screen-open":".demo-login-screen"}},[_vm._v("As Overlay")])],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":""},on:{"click":function($event){_vm.loginScreenOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('f7-login-screen',{staticClass:"demo-login-screen",attrs:{"opened":_vm.loginScreenOpened},on:{"loginscreen:closed":function($event){_vm.loginScreenOpened = false;}}},[_c('f7-page',{attrs:{"login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-input',{attrs:{"label":"Username","type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
       f7Link: f7Link,
       f7LoginScreen: f7LoginScreen,
-      f7Input: f7Input,
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7Block: f7Block,
       f7Button: f7Button,
       f7LoginScreenTitle: f7LoginScreenTitle,
       f7BlockFooter: f7BlockFooter,
-      f7Label: f7Label,
       f7ListButton: f7ListButton,
+      f7ListInput: f7ListInput,
     },
     data: function data() {
       return {
@@ -52255,16 +52794,15 @@
     },
   };
 
-  var LoginScreenPage = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"no-toolbar":"","no-navbar":"","no-swipeback":"","login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-item',[_c('f7-label',[_vm._v("Username")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list-item',[_c('f7-label',[_vm._v("Password")]),_vm._v(" "),_c('f7-input',{attrs:{"type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)},staticRenderFns: [],
+  var LoginScreenPage = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"no-toolbar":"","no-navbar":"","no-swipeback":"","login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-input',{attrs:{"label":"Username","type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7LoginScreenTitle: f7LoginScreenTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Label: f7Label,
-      f7Input: f7Input,
       f7ListButton: f7ListButton,
       f7BlockFooter: f7BlockFooter,
+      f7ListInput: f7ListInput,
     },
     data: function data() {
       return {
@@ -52284,7 +52822,7 @@
     },
   };
 
-  var Messages$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){_vm.deleteAttachment(image);}}})})),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}))],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)},staticRenderFns: [],
+  var Messages$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible,"value":_vm.messageText},on:{"input":function($event){_vm.messageText = $event.target.value;}}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){_vm.deleteAttachment(image);}}})})),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}))],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -52303,6 +52841,7 @@
         attachments: [],
         sheetVisible: false,
         typingMessage: null,
+        messageText: '',
         messagesData: [
           {
             type: 'sent',
@@ -52451,14 +52990,14 @@
         var ref;
 
         var self = this;
-        var text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
+        var text = self.messageText.replace(/\n/g, '<br>').trim();
         var messagesToSend = [];
         self.attachments.forEach(function (attachment) {
           messagesToSend.push({
             image: attachment,
           });
         });
-        if (text.trim().length) {
+        if (text.length) {
           messagesToSend.push({
             text: text,
           });
@@ -52472,7 +53011,7 @@
         // Hide sheet
         self.sheetVisible = false;
         // Clear area
-        self.messagebar.clear();
+        self.messageText = '';
         // Focus area
         if (text.length) { self.messagebar.focus(); }
         // Send message

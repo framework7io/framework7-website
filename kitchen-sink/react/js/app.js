@@ -6328,7 +6328,8 @@
 	  }
 	  $newPage
 	    .addClass(("page-" + newPagePosition))
-	    .removeClass('stacked');
+	    .removeClass('stacked')
+	    .trigger('page:unstack');
 
 	  if (dynamicNavbar && $newNavbarInner.length) {
 	    $newNavbarInner
@@ -6361,6 +6362,7 @@
 	        var oldNavbarInnerEl = app.navbar.getElByPage($pagesInView.eq(i));
 	        if (router.params.stackPages) {
 	          $pagesInView.eq(i).addClass('stacked');
+	          $pagesInView.eq(i).trigger('page:stack');
 	          if (separateNavbar) {
 	            // $navbarsInView.eq(i).addClass('stacked');
 	            $(oldNavbarInnerEl).addClass('stacked');
@@ -6475,6 +6477,7 @@
 	  if (options.reloadCurrent && $oldPage.length > 0) {
 	    if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
 	      $oldPage.addClass('stacked');
+	      $oldPage.trigger('page:stack');
 	      if (separateNavbar) {
 	        $oldNavbarInner.addClass('stacked');
 	      }
@@ -6492,6 +6495,7 @@
 	      var $oldNavbarInnerEl = $(app.navbar.getElByPage($oldPageEl));
 	      if (router.params.stackPages && router.initialPages.indexOf($oldPageEl[0]) >= 0) {
 	        $oldPageEl.addClass('stacked');
+	        $oldPageEl.trigger('page:stack');
 	        if (separateNavbar) {
 	          $oldNavbarInnerEl.addClass('stacked');
 	        }
@@ -6507,6 +6511,7 @@
 	  } else if (options.reloadPrevious) {
 	    if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
 	      $oldPage.addClass('stacked');
+	      $oldPage.trigger('page:stack');
 	      if (separateNavbar) {
 	        $oldNavbarInner.addClass('stacked');
 	      }
@@ -6571,6 +6576,7 @@
 	    if (!keepOldPage) {
 	      if (router.params.stackPages) {
 	        $oldPage.addClass('stacked');
+	        $oldPage.trigger('page:stack');
 	        if (separateNavbar) {
 	          $oldNavbarInner.addClass('stacked');
 	        }
@@ -7376,7 +7382,8 @@
 	  $newPage
 	    .addClass('page-previous')
 	    .removeClass('stacked')
-	    .removeAttr('aria-hidden');
+	    .removeAttr('aria-hidden')
+	    .trigger('page:unstack');
 
 	  if (dynamicNavbar && $newNavbarInner.length > 0) {
 	    $newNavbarInner
@@ -7411,6 +7418,7 @@
 	          if ($pageToRemove[0] !== $newPage[0] && $pageToRemove.index() > $newPage.index()) {
 	            if (router.initialPages.indexOf($pageToRemove[0]) >= 0) {
 	              $pageToRemove.addClass('stacked');
+	              $pageToRemove.trigger('page:stack');
 	              if (separateNavbar) {
 	                $navbarToRemove.addClass('stacked');
 	              }
@@ -7432,6 +7440,7 @@
 	        }
 	        if (router.params.stackPages && router.initialPages.indexOf($pageToRemove[0]) >= 0) {
 	          $pageToRemove.addClass('stacked');
+	          $pageToRemove.trigger('page:stack');
 	          $navbarToRemove.addClass('stacked');
 	        } else if ($pageToRemove.length > 0) {
 	          router.pageCallback('beforeRemove', $pageToRemove, $navbarToRemove, 'previous', undefined, options);
@@ -7497,6 +7506,7 @@
 	        }
 	        if (router.params.stackPages && router.initialPages.indexOf(pageToRemove) >= 0) {
 	          $pageToRemove.addClass('stacked');
+	          $pageToRemove.trigger('page:stack');
 	          if (separateNavbar) {
 	            $navbarToRemove.addClass('stacked');
 	          }
@@ -7584,6 +7594,7 @@
 	    // Remove Old Page
 	    if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
 	      $oldPage.addClass('stacked');
+	      $oldPage.trigger('page:stack');
 	      if (separateNavbar) {
 	        $oldNavbarInner.addClass('stacked');
 	      }
@@ -34287,7 +34298,7 @@
 	};
 
 	/**
-	 * Framework7 3.4.3
+	 * Framework7 3.5.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -34295,7 +34306,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: October 19, 2018
+	 * Released on: October 26, 2018
 	 */
 
 	// Install Core Modules & Components
@@ -34503,7 +34514,6 @@
 	      default: undefined,
 	    },
 	    ignoreCache: Boolean,
-	    pageName: String,
 	    reloadCurrent: Boolean,
 	    reloadAll: Boolean,
 	    reloadPrevious: Boolean,
@@ -37646,6 +37656,7 @@
 	      var defaultValue = props.defaultValue;
 	      return {
 	        inputFocused: false,
+	        inputInvalid: false,
 	        currentInputValue: typeof value === 'undefined' ? defaultValue : value
 	      };
 	    })();
@@ -37669,6 +37680,26 @@
 
 	  var prototypeAccessors = { inputWithValue: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
+	  F7Input.prototype.validateInput = function validateInput (inputEl) {
+	    var self = this;
+	    var f7 = self.$f7;
+	    if (!f7 || !inputEl) { return; }
+	    var validity = inputEl.validity;
+	    if (!validity) { return; }
+
+	    if (!validity.valid) {
+	      if (self.state.inputInvalid !== true) {
+	        self.setState({
+	          inputInvalid: true
+	        });
+	      }
+	    } else if (self.state.inputInvalid !== false) {
+	      self.setState({
+	        inputInvalid: false
+	      });
+	    }
+	  };
+
 	  F7Input.prototype.onTextareaResize = function onTextareaResize (event) {
 	    this.dispatchEvent('textarea:resize textareaResize', event);
 	  };
@@ -37686,8 +37717,16 @@
 	  };
 
 	  F7Input.prototype.onInput = function onInput (event) {
-	    this.dispatchEvent('input', event);
-	    this.setState({
+	    var self = this;
+	    var ref = self.props;
+	    var validate = ref.validate;
+	    self.dispatchEvent('input', event);
+
+	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
+	      self.validateInput(self.refs.inputEl);
+	    }
+
+	    self.setState({
 	      currentInputValue: event.target.value
 	    });
 	  };
@@ -37700,8 +37739,16 @@
 	  };
 
 	  F7Input.prototype.onBlur = function onBlur (event) {
-	    this.dispatchEvent('blur', event);
-	    this.setState({
+	    var self = this;
+	    var ref = self.props;
+	    var validate = ref.validate;
+	    self.dispatchEvent('blur', event);
+
+	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
+	      self.validateInput(self.refs.inputEl);
+	    }
+
+	    self.setState({
 	      inputFocused: false
 	    });
 	  };
@@ -37764,7 +37811,7 @@
 	      var inputClassName = Utils$1.classNames(!wrap && className, {
 	        resizable: type === 'textarea' && resizable,
 	        'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
-	        'input-invalid': errorMessage && errorMessageForce,
+	        'input-invalid': errorMessage && errorMessageForce || self.state.inputInvalid,
 	        'input-with-value': self.inputWithValue,
 	        'input-focused': self.state.inputFocused
 	      });
@@ -37879,10 +37926,9 @@
 	    var self = this;
 	    var ref = self.props;
 	    var value = ref.value;
-	    var defaultValue = ref.defaultValue;
 	    var ref$1 = self.state;
 	    var currentInputValue = ref$1.currentInputValue;
-	    return typeof value === 'undefined' ? defaultValue || defaultValue === 0 || currentInputValue : value || value === 0;
+	    return typeof value === 'undefined' ? currentInputValue : value || value === 0;
 	  };
 
 	  F7Input.prototype.componentWillUnmount = function componentWillUnmount () {
@@ -37936,7 +37982,7 @@
 	      f7.input.checkEmptyState(inputEl);
 
 	      if (validate) {
-	        f7.input.validate(inputEl);
+	        self.validateInput(inputEl);
 	      }
 
 	      if (resizable) {
@@ -37973,7 +38019,7 @@
 
 	      if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
 	        setTimeout(function () {
-	          f7.input.validate(inputEl);
+	          self.validateInput(inputEl);
 	        }, 0);
 	      }
 
@@ -38636,6 +38682,470 @@
 
 	F7ListIndex.displayName = 'f7-list-index';
 
+	var F7ListInput = (function (superclass) {
+	  function F7ListInput(props, context) {
+	    var this$1 = this;
+
+	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    this.state = (function () {
+	      var value = props.value;
+	      var defaultValue = props.defaultValue;
+	      return {
+	        isSortable: props.sortable,
+	        inputFocused: false,
+	        inputInvalid: false,
+	        currentInputValue: typeof value === 'undefined' ? defaultValue : value
+	      };
+	    })();
+
+	    (function () {
+	      var self = this$1;
+	      self.onChangeBound = self.onChange.bind(self);
+	      self.onInputBound = self.onInput.bind(self);
+	      self.onFocusBound = self.onFocus.bind(self);
+	      self.onBlurBound = self.onBlur.bind(self);
+	      self.onTextareaResizeBound = self.onTextareaResize.bind(self);
+	      self.onInputNotEmptyBound = self.onInputNotEmpty.bind(self);
+	      self.onInputEmptyBound = self.onInputEmpty.bind(self);
+	      self.onInputClearBound = self.onInputClear.bind(self);
+	    })();
+	  }
+
+	  if ( superclass ) F7ListInput.__proto__ = superclass;
+	  F7ListInput.prototype = Object.create( superclass && superclass.prototype );
+	  F7ListInput.prototype.constructor = F7ListInput;
+
+	  var prototypeAccessors = { inputHasValue: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
+
+	  F7ListInput.prototype.validateInput = function validateInput (inputEl) {
+	    var self = this;
+	    var f7 = self.$f7;
+	    if (!f7 || !inputEl) { return; }
+	    var validity = inputEl.validity;
+	    if (!validity) { return; }
+
+	    if (!validity.valid) {
+	      if (self.state.inputInvalid !== true) {
+	        self.setState({
+	          inputInvalid: true
+	        });
+	      }
+	    } else if (self.state.inputInvalid !== false) {
+	      self.setState({
+	        inputInvalid: false
+	      });
+	    }
+	  };
+
+	  F7ListInput.prototype.onTextareaResize = function onTextareaResize (event) {
+	    this.dispatchEvent('textarea:resize textareaResize', event);
+	  };
+
+	  F7ListInput.prototype.onInputNotEmpty = function onInputNotEmpty (event) {
+	    this.dispatchEvent('input:notempty inputNotEmpty', event);
+	  };
+
+	  F7ListInput.prototype.onInputEmpty = function onInputEmpty (event) {
+	    this.dispatchEvent('input:empty inputEmpty', event);
+	  };
+
+	  F7ListInput.prototype.onInputClear = function onInputClear (event) {
+	    this.dispatchEvent('input:clear inputClear', event);
+	  };
+
+	  F7ListInput.prototype.onInput = function onInput (event) {
+	    var self = this;
+	    var ref = self.props;
+	    var validate = ref.validate;
+	    self.dispatchEvent('input', event);
+
+	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
+	      self.validateInput(self.refs.inputEl);
+	    }
+
+	    self.setState({
+	      currentInputValue: event.target.value
+	    });
+	  };
+
+	  F7ListInput.prototype.onFocus = function onFocus (event) {
+	    this.dispatchEvent('focus', event);
+	    this.setState({
+	      inputFocused: true
+	    });
+	  };
+
+	  F7ListInput.prototype.onBlur = function onBlur (event) {
+	    var self = this;
+	    var ref = self.props;
+	    var validate = ref.validate;
+	    self.dispatchEvent('blur', event);
+
+	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
+	      self.validateInput(self.refs.inputEl);
+	    }
+
+	    self.setState({
+	      inputFocused: false
+	    });
+	  };
+
+	  F7ListInput.prototype.onChange = function onChange (event) {
+	    this.dispatchEvent('change', event);
+	  };
+
+	  prototypeAccessors.inputHasValue.get = function () {
+	    var self = this;
+	    var ref = self.props;
+	    var value = ref.value;
+	    var ref$1 = self.state;
+	    var currentInputValue = ref$1.currentInputValue;
+	    return typeof value === 'undefined' ? currentInputValue : value || value === 0;
+	  };
+
+	  F7ListInput.prototype.render = function render () {
+	    var this$1 = this;
+
+	    var self = this;
+	    var ref = self.state;
+	    var inputFocused = ref.inputFocused;
+	    var inputInvalid = ref.inputInvalid;
+	    var props = self.props;
+	    var id = props.id;
+	    var style = props.style;
+	    var className = props.className;
+	    var sortable = props.sortable;
+	    var media = props.media;
+	    var renderInput = props.input;
+	    var type = props.type;
+	    var name = props.name;
+	    var value = props.value;
+	    var defaultValue = props.defaultValue;
+	    var readonly = props.readonly;
+	    var required = props.required;
+	    var disabled = props.disabled;
+	    var placeholder = props.placeholder;
+	    var inputId = props.inputId;
+	    var size = props.size;
+	    var accept = props.accept;
+	    var autocomplete = props.autocomplete;
+	    var autocorrect = props.autocorrect;
+	    var autocapitalize = props.autocapitalize;
+	    var spellcheck = props.spellcheck;
+	    var autofocus = props.autofocus;
+	    var autosave = props.autosave;
+	    var max = props.max;
+	    var min = props.min;
+	    var step = props.step;
+	    var maxlength = props.maxlength;
+	    var minlength = props.minlength;
+	    var multiple = props.multiple;
+	    var inputStyle = props.inputStyle;
+	    var pattern = props.pattern;
+	    var validate = props.validate;
+	    var tabindex = props.tabindex;
+	    var resizable = props.resizable;
+	    var clearButton = props.clearButton;
+	    var noFormStoreData = props.noFormStoreData;
+	    var noStoreData = props.noStoreData;
+	    var ignoreStoreData = props.ignoreStoreData;
+	    var errorMessage = props.errorMessage;
+	    var errorMessageForce = props.errorMessageForce;
+	    var info = props.info;
+	    var label = props.label;
+	    var inlineLabel = props.inlineLabel;
+	    var floatingLabel = props.floatingLabel;
+	    var isSortable = sortable || self.state.isSortable;
+
+	    var createInput = function (tag, children) {
+	      var InputTag = tag;
+	      var needsValue = type !== 'file';
+	      var needsType = tag === 'input';
+	      var inputClassName = Utils$1.classNames({
+	        resizable: type === 'textarea' && resizable,
+	        'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
+	        'input-invalid': errorMessage && errorMessageForce || inputInvalid,
+	        'input-with-value': self.inputHasValue,
+	        'input-focused': inputFocused
+	      });
+	      var input;
+	      {
+	        input = react.createElement(InputTag, {
+	          ref: function (__reactNode) {
+	            this$1.__reactRefs['inputEl'] = __reactNode;
+	          },
+	          style: inputStyle,
+	          name: name,
+	          type: needsType ? type : undefined,
+	          placeholder: placeholder,
+	          id: inputId,
+	          value: needsValue ? value : undefined,
+	          defaultValue: defaultValue,
+	          size: size,
+	          accept: accept,
+	          autoComplete: autocomplete,
+	          autoCorrect: autocorrect,
+	          autoCapitalize: autocapitalize,
+	          spellCheck: spellcheck,
+	          autoFocus: autofocus,
+	          autoSave: autosave,
+	          disabled: disabled,
+	          max: max,
+	          maxLength: maxlength,
+	          min: min,
+	          minLength: minlength,
+	          step: step,
+	          multiple: multiple,
+	          readOnly: readonly,
+	          required: required,
+	          pattern: pattern,
+	          validate: typeof validate === 'string' && validate.length ? validate : undefined,
+	          'data-validate': validate === true || validate === '' ? true : undefined,
+	          tabIndex: tabindex,
+	          'data-error-message': errorMessageForce ? undefined : errorMessage,
+	          className: inputClassName,
+	          onFocus: self.onFocusBound,
+	          onBlur: self.onBlurBound,
+	          onInput: self.onInputBound,
+	          onChange: self.onChangeBound
+	        }, children);
+	      }
+	      return input;
+	    };
+
+	    var inputEl;
+
+	    if (renderInput) {
+	      if (type === 'select' || type === 'textarea' || type === 'file') {
+	        if (type === 'select') {
+	          inputEl = createInput('select', self.slots.default);
+	        } else if (type === 'file') {
+	          inputEl = createInput('input');
+	        } else {
+	          inputEl = createInput('textarea');
+	        }
+	      } else {
+	        inputEl = createInput('input');
+	      }
+	    }
+
+	    var hasErrorMessage = !!errorMessage || self.slots['error-message'] && self.slots['error-message'].length;
+	    return react.createElement('li', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
+	      id: id,
+	      style: style,
+	      className: Utils$1.classNames(className, {
+	        disabled: disabled
+	      }, Mixins.colorClasses(props))
+	    }, this.slots['root-start'], react.createElement('div', {
+	      className: Utils$1.classNames('item-content item-input', {
+	        'inline-label': inlineLabel,
+	        'item-input-focused': inputFocused,
+	        'item-input-with-info': !!info || self.slots.info && self.slots.info.length,
+	        'item-input-with-value': self.inputHasValue,
+	        'item-input-with-error-message': hasErrorMessage && errorMessageForce || inputInvalid,
+	        'item-input-invalid': hasErrorMessage && errorMessageForce || inputInvalid
+	      })
+	    }, this.slots['content-start'], (media || self.slots.media) && react.createElement('div', {
+	      className: 'item-media'
+	    }, media && react.createElement('img', {
+	      src: media
+	    }), this.slots['media']), react.createElement('div', {
+	      className: 'item-inner'
+	    }, this.slots['inner-start'], (label || self.slots.label) && react.createElement('div', {
+	      className: Utils$1.classNames('item-title item-label', {
+	        'item-floating-label': floatingLabel
+	      })
+	    }, label, this.slots['label']), react.createElement('div', {
+	      className: Utils$1.classNames('item-input-wrap', {
+	        'input-dropdown': type === 'select'
+	      })
+	    }, inputEl, this.slots['input'], hasErrorMessage && errorMessageForce && react.createElement('div', {
+	      className: 'item-input-error-message'
+	    }, errorMessage, this.slots['error-message']), clearButton && react.createElement('span', {
+	      className: 'input-clear-button'
+	    }), (info || self.slots.info) && react.createElement('div', {
+	      className: 'item-input-info'
+	    }, info, this.slots['info'])), this.slots['inner'], this.slots['inner-end']), this.slots['content'], this.slots['content-end']), isSortable && react.createElement('div', {
+	      className: 'sortable-handler'
+	    }), this.slots['root'], this.slots['root-end']);
+	  };
+
+	  F7ListInput.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+	    var inputEl = self.refs.inputEl;
+	    if (!inputEl) { return; }
+	    inputEl.removeEventListener('input:notempty', self.onInputNotEmptyBound, false);
+	    inputEl.removeEventListener('textarea:resze', self.onTextareaResizeBound, false);
+	    inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
+	    inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
+	  };
+
+	  F7ListInput.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
+	    var this$1 = this;
+
+	    __reactComponentWatch(this, 'props.value', prevProps, prevState, function () {
+	      var self = this$1;
+	      var ref = self.props;
+	      var value = ref.value;
+	      if (!self.$f7) { return; }
+	      self.setState({
+	        currentInputValue: value
+	      });
+	      self.updateInputOnDidUpdate = true;
+	    });
+
+	    var self = this;
+	    var $listEl = self.$listEl;
+	    if (!$listEl || $listEl && $listEl.length === 0) { return; }
+	    var isSortable = $listEl.hasClass('sortable');
+
+	    if (isSortable !== self.state.isSortable) {
+	      self.setState({
+	        isSortable: isSortable
+	      });
+	    }
+
+	    var ref = self.props;
+	    var validate = ref.validate;
+	    var resizable = ref.resizable;
+	    var type = ref.type;
+	    var f7 = self.$f7;
+	    if (!f7) { return; }
+
+	    if (self.updateInputOnDidUpdate) {
+	      var inputEl = self.refs.inputEl;
+	      if (!inputEl) { return; }
+	      self.updateInputOnDidUpdate = false;
+
+	      if (validate) {
+	        self.validateInput(inputEl);
+	      }
+
+	      if (type === 'textarea' && resizable) {
+	        f7.input.resizeTextarea(inputEl);
+	      }
+	    }
+	  };
+
+	  F7ListInput.prototype.componentDidMount = function componentDidMount () {
+	    var self = this;
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    self.$f7ready(function (f7) {
+	      var ref = self.props;
+	      var validate = ref.validate;
+	      var resizable = ref.resizable;
+	      var value = ref.value;
+	      var defaultValue = ref.defaultValue;
+	      var type = ref.type;
+	      var inputEl = self.refs.inputEl;
+	      if (!inputEl) { return; }
+	      inputEl.addEventListener('input:notempty', self.onInputNotEmptyBound, false);
+	      inputEl.addEventListener('textarea:resze', self.onTextareaResizeBound, false);
+	      inputEl.addEventListener('input:empty', self.onInputEmptyBound, false);
+	      inputEl.addEventListener('input:clear', self.onInputClearBound, false);
+
+	      if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
+	        setTimeout(function () {
+	          self.validateInput(inputEl);
+	        }, 0);
+	      }
+
+	      if (type === 'textarea' && resizable) {
+	        f7.input.resizeTextarea(inputEl);
+	      }
+	    });
+	    self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
+
+	    if (self.$listEl.length) {
+	      self.setState({
+	        isSortable: self.$listEl.hasClass('sortable')
+	      });
+	    }
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  F7ListInput.prototype.dispatchEvent = function dispatchEvent (events) {
+	    var args = [], len = arguments.length - 1;
+	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
+	  Object.defineProperties( F7ListInput.prototype, prototypeAccessors );
+
+	  return F7ListInput;
+	}(react.Component));
+
+	__reactComponentSetProps(F7ListInput, Object.assign({
+	  id: [String, Number],
+	  style: Object,
+	  className: String,
+	  sortable: Boolean,
+	  media: String,
+	  input: {
+	    type: Boolean,
+	    default: true
+	  },
+	  type: {
+	    type: String,
+	    default: 'text'
+	  },
+	  name: String,
+	  value: [String, Number, Array],
+	  defaultValue: [String, Number, Array],
+	  readonly: Boolean,
+	  required: Boolean,
+	  disabled: Boolean,
+	  placeholder: String,
+	  inputId: [String, Number],
+	  size: [String, Number],
+	  accept: [String, Number],
+	  autocomplete: [String],
+	  autocorrect: [String],
+	  autocapitalize: [String],
+	  spellcheck: [String],
+	  autofocus: Boolean,
+	  autosave: String,
+	  max: [String, Number],
+	  min: [String, Number],
+	  step: [String, Number],
+	  maxlength: [String, Number],
+	  minlength: [String, Number],
+	  multiple: Boolean,
+	  inputStyle: Object,
+	  pattern: String,
+	  validate: [Boolean, String],
+	  tabindex: [String, Number],
+	  resizable: Boolean,
+	  clearButton: Boolean,
+	  noFormStoreData: Boolean,
+	  noStoreData: Boolean,
+	  ignoreStoreData: Boolean,
+	  errorMessage: String,
+	  errorMessageForce: Boolean,
+	  info: String,
+	  label: [String, Number],
+	  inlineLabel: Boolean,
+	  floatingLabel: Boolean
+	}, Mixins.colorProps));
+
+	F7ListInput.displayName = 'f7-list-input';
+
 	var F7ListItemCell = (function (superclass) {
 	  function F7ListItemCell(props, context) {
 	    superclass.call(this, props, context);
@@ -38691,7 +39201,8 @@
 	        hasInputInfo: false,
 	        hasInputErrorMessage: false,
 	        hasInputValue: false,
-	        hasInputFocused: false
+	        hasInputFocused: false,
+	        hasInputInvalid: false
 	      };
 	    })();
 
@@ -38824,6 +39335,7 @@
 	    var inlineLabel = props.inlineLabel;
 	    var itemInputWithInfo = props.itemInputWithInfo;
 	    var hasInputFocused = self.state.hasInputFocused;
+	    var hasInputInvalid = self.state.hasInputInvalid;
 	    var hasInputValue = self.state.hasInputValue;
 	    var hasInput = itemInput || self.state.hasInput;
 	    var hasInlineLabel = inlineLabel || self.state.hasInlineLabel;
@@ -39018,7 +39530,7 @@
 	      'inline-label': hasInlineLabel,
 	      'item-input-with-info': hasInputInfo,
 	      'item-input-with-error-message': hasInputErrorMessage,
-	      'item-input-invalid': hasInputErrorMessage,
+	      'item-input-invalid': hasInputInvalid,
 	      'item-input-with-value': hasInputValue,
 	      'item-input-focused': hasInputFocused
 	    }, Mixins.colorClasses(props));
@@ -39059,6 +39571,7 @@
 	    var hasInput = $inputWrapEl.length > 0;
 	    var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
 	    var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
+	    var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
 
 	    if (hasInlineLabel !== self.state.hasInlineLabel) {
 	      self.setState({
@@ -39083,6 +39596,12 @@
 	        hasInputErrorMessage: hasInputErrorMessage
 	      });
 	    }
+
+	    if (hasInputInvalid !== self.state.hasInputInvalid) {
+	      self.setState({
+	        hasInputInvalid: hasInputInvalid
+	      });
+	    }
 	  };
 
 	  F7ListItemContent.prototype.componentDidMount = function componentDidMount () {
@@ -39104,6 +39623,7 @@
 	    var hasInput = $inputWrapEl.length > 0;
 	    var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
 	    var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
+	    var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
 
 	    if (hasInput) {
 	      el.addEventListener('focus', self.onFocusBound, true);
@@ -39133,6 +39653,12 @@
 	    if (!self.hasInputErrorMessageSet && hasInputErrorMessage !== self.state.hasInputErrorMessage) {
 	      self.setState({
 	        hasInputErrorMessage: hasInputErrorMessage
+	      });
+	    }
+
+	    if (!self.hasInputInvalidSet && hasInputInvalid !== self.state.hasInputInvalid) {
+	      self.setState({
+	        hasInputInvalid: hasInputInvalid
 	      });
 	    }
 	  };
@@ -39790,7 +40316,7 @@
 	        }
 	      }
 
-	      if (!tag && 'react' === 'react' || tag && !(tag === 'li' || tag === 'F7ListItem' || tag === 'F7ListButton' || tag.indexOf('list-item') >= 0 || tag.indexOf('list-button') >= 0 || tag.indexOf('f7-list-item') >= 0 || tag.indexOf('f7-list-button') >= 0)) {
+	      if (!tag && 'react' === 'react' || tag && !(tag === 'li' || tag === 'F7ListItem' || tag === 'F7ListButton' || tag === 'F7ListInput' || tag.indexOf('list-item') >= 0 || tag.indexOf('list-button') >= 0 || tag.indexOf('list-input') >= 0 || tag.indexOf('f7-list-item') >= 0 || tag.indexOf('f7-list-button') >= 0 || tag.indexOf('f7-list-input') >= 0)) {
 	        if (wasUlChild) { rootChildrenAfterList.push(child); }else { rootChildrenBeforeList.push(child); }
 	      } else if (tag) {
 	        wasUlChild = true;
@@ -41853,7 +42379,8 @@
 	    this.state = (function () {
 	      return {
 	        hasSubnavbar: false,
-	        routerClasses: ''
+	        routerClass: '',
+	        routerForceUnstack: false
 	      };
 	    })();
 	  }
@@ -41894,6 +42421,18 @@
 	    this.dispatchEvent('page:mounted pageMounted', event, page);
 	  };
 
+	  F7Page.prototype.onPageStack = function onPageStack () {
+	    this.setState({
+	      routerForceUnstack: false
+	    });
+	  };
+
+	  F7Page.prototype.onPageUnstack = function onPageUnstack () {
+	    this.setState({
+	      routerForceUnstack: true
+	    });
+	  };
+
 	  F7Page.prototype.onPageInit = function onPageInit (event) {
 	    var page = event.detail;
 	    var ref = this.props;
@@ -41921,13 +42460,13 @@
 
 	    if (page.from === 'next') {
 	      this.setState({
-	        routerClasses: 'page-next'
+	        routerClass: 'page-next'
 	      });
 	    }
 
 	    if (page.from === 'previous') {
 	      this.setState({
-	        routerClasses: 'page-previous'
+	        routerClass: 'page-previous'
 	      });
 	    }
 
@@ -41944,13 +42483,13 @@
 
 	    if (page.to === 'next') {
 	      this.setState({
-	        routerClasses: 'page-next'
+	        routerClass: 'page-next'
 	      });
 	    }
 
 	    if (page.to === 'previous') {
 	      this.setState({
-	        routerClasses: 'page-previous'
+	        routerClass: 'page-previous'
 	      });
 	    }
 
@@ -41960,7 +42499,7 @@
 	  F7Page.prototype.onPageAfterIn = function onPageAfterIn (event) {
 	    var page = event.detail;
 	    this.setState({
-	      routerClasses: 'page-current'
+	      routerClass: 'page-current'
 	    });
 	    this.dispatchEvent('page:afterin pageAfterIn', event, page);
 	  };
@@ -42039,8 +42578,8 @@
 	    }
 
 	    var forceSubnavbar = typeof subnavbar === 'undefined' && typeof withSubnavbar === 'undefined' ? hasSubnavbar || this.state.hasSubnavbar : false;
-	    var classes = Utils$1.classNames(className, 'page', this.state.routerClasses, {
-	      stacked: stacked,
+	    var classes = Utils$1.classNames(className, 'page', this.state.routerClass, {
+	      stacked: stacked && !this.state.routerForceUnstack,
 	      tabs: tabs,
 	      'page-with-subnavbar': subnavbar || withSubnavbar || forceSubnavbar,
 	      'no-navbar': noNavbar,
@@ -42102,6 +42641,8 @@
 	    el.removeEventListener('page:afterout', self.onPageAfterOut);
 	    el.removeEventListener('page:afterin', self.onPageAfterIn);
 	    el.removeEventListener('page:beforeremove', self.onPageBeforeRemove);
+	    el.removeEventListener('page:stack', self.onPageStack);
+	    el.removeEventListener('page:unstack', self.onPageUnstack);
 	  };
 
 	  F7Page.prototype.componentDidMount = function componentDidMount () {
@@ -42124,6 +42665,8 @@
 	    self.onPageAfterOut = self.onPageAfterOut.bind(self);
 	    self.onPageAfterIn = self.onPageAfterIn.bind(self);
 	    self.onPageBeforeRemove = self.onPageBeforeRemove.bind(self);
+	    self.onPageStack = self.onPageStack.bind(self);
+	    self.onPageUnstack = self.onPageUnstack.bind(self);
 
 	    if (ptr) {
 	      el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -42145,6 +42688,8 @@
 	    el.addEventListener('page:afterout', self.onPageAfterOut);
 	    el.addEventListener('page:afterin', self.onPageAfterIn);
 	    el.addEventListener('page:beforeremove', self.onPageBeforeRemove);
+	    el.addEventListener('page:stack', self.onPageStack);
+	    el.addEventListener('page:unstack', self.onPageUnstack);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -45425,7 +45970,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.4.3
+	 * Framework7 React 3.5.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -45433,7 +45978,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: October 19, 2018
+	 * Released on: October 26, 2018
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -45468,6 +46013,7 @@
 	var ListButton = F7ListButton;
 	var ListGroup = F7ListGroup;
 	var ListIndex$2 = F7ListIndex;
+	var ListInput = F7ListInput;
 	var ListItemCell = F7ListItemCell;
 	var ListItemRow = F7ListItemRow;
 	var ListItem = F7ListItem;
@@ -48804,326 +49350,272 @@
 	    react.createElement( Navbar$2, { title: "Form Inputs", backLink: "Back" }),
 	    react.createElement( BlockTitle, null, "Full Layout / Inline Labels" ),
 	    react.createElement( List, { inlineLabels: true, noHairlinesMd: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Name" ),
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Name", type: "text", placeholder: "Your name", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Password" ),
-	        react.createElement( Input$2, { type: "password", placeholder: "Your password", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Password", type: "password", placeholder: "Your password", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "E-mail" ),
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "E-mail", type: "email", placeholder: "Your e-mail", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "URL" ),
-	        react.createElement( Input$2, { type: "url", placeholder: "URL", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "URL", type: "url", placeholder: "URL", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Phone" ),
-	        react.createElement( Input$2, { type: "tel", placeholder: "Your phone number", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Phone", type: "tel", placeholder: "Your phone number", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
+	      react.createElement( ListInput, {
+	        label: "Gender", type: "select", defaultValue: "Male", placeholder: "Please choose..." },
 	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Gender" ),
-	        react.createElement( Input$2, { type: "select", placeholder: "Please choose..." },
-	          react.createElement( 'option', { value: "Male" }, "Male"),
-	          react.createElement( 'option', { value: "Female" }, "Female")
-	        )
+	        react.createElement( 'option', { value: "Male" }, "Male"),
+	        react.createElement( 'option', { value: "Female" }, "Female")
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Birthday" ),
-	        react.createElement( Input$2, { type: "date", value: "2014-04-30", placeholder: "Please choose..." })
+	      react.createElement( ListInput, {
+	        label: "Birthday", type: "date", defaultValue: "2014-04-30", placeholder: "Please choose..." },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Date time" ),
-	        react.createElement( Input$2, { type: "datetime-local", placeholder: "Please choose..." })
+	      react.createElement( ListInput, {
+	        label: "Date time", type: "datetime-local", placeholder: "Please choose..." },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
+	      react.createElement( ListInput, {
+	        label: "Range", input: false },
 	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Range" ),
-	        react.createElement( Input$2, { id: "range-id", type: "range", value: "50", min: "0", max: "100", step: "1" })
+	        react.createElement( Range$2, { slot: "input", value: 50, min: 0, max: 100, step: 1 })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Textarea" ),
-	        react.createElement( Input$2, { type: "textarea", placeholder: "Bio" })
+	      react.createElement( ListInput, {
+	        label: "Textarea", type: "textarea", placeholder: "Bio" },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Resizable" ),
-	        react.createElement( Input$2, { type: "textarea", resizable: true, placeholder: "Bio" })
+	      react.createElement( ListInput, {
+	        label: "Resizable", type: "textarea", resizable: true, placeholder: "Bio" },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      )
 
 	    ),
 
 	    react.createElement( BlockTitle, null, "Full Layout / Stacked Labels" ),
 	    react.createElement( List, { noHairlinesMd: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Name" ),
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Name", type: "text", placeholder: "Your name", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Password" ),
-	        react.createElement( Input$2, { type: "password", placeholder: "Your password", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Password", type: "password", placeholder: "Your password", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "E-mail" ),
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "E-mail", type: "email", placeholder: "Your e-mail", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "URL" ),
-	        react.createElement( Input$2, { type: "url", placeholder: "URL", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "URL", type: "url", placeholder: "URL", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Phone" ),
-	        react.createElement( Input$2, { type: "tel", placeholder: "Your phone number", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Phone", type: "tel", placeholder: "Your phone number", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
+	      react.createElement( ListInput, {
+	        label: "Gender", type: "select", defaultValue: "Male", placeholder: "Please choose..." },
 	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Gender" ),
-	        react.createElement( Input$2, { type: "select", placeholder: "Please choose..." },
-	          react.createElement( 'option', { value: "Male" }, "Male"),
-	          react.createElement( 'option', { value: "Female" }, "Female")
-	        )
+	        react.createElement( 'option', { value: "Male" }, "Male"),
+	        react.createElement( 'option', { value: "Female" }, "Female")
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Birthday" ),
-	        react.createElement( Input$2, { type: "date", value: "2014-04-30", placeholder: "Please choose..." })
+	      react.createElement( ListInput, {
+	        label: "Birthday", type: "date", defaultValue: "2014-04-30", placeholder: "Please choose..." },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Date time" ),
-	        react.createElement( Input$2, { type: "datetime-local", placeholder: "Please choose..." })
+	      react.createElement( ListInput, {
+	        label: "Date time", type: "datetime-local", placeholder: "Please choose..." },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
+	      react.createElement( ListInput, {
+	        label: "Range", input: false },
 	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Range" ),
-	        react.createElement( Input$2, { type: "range", value: "50", min: "0", max: "100", step: "1" })
+	        react.createElement( Range$2, { slot: "input", value: 50, min: 0, max: 100, step: 1 })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Textarea" ),
-	        react.createElement( Input$2, { type: "textarea", placeholder: "Bio" })
+	      react.createElement( ListInput, {
+	        label: "Textarea", type: "textarea", placeholder: "Bio" },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Resizable" ),
-	        react.createElement( Input$2, { type: "textarea", resizable: true, placeholder: "Bio" })
+	      react.createElement( ListInput, {
+	        label: "Resizable", type: "textarea", resizable: true, placeholder: "Bio" },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      )
 	    ),
 
 	    react.createElement( BlockTitle, null, "Floating Labels (MD-theme only)" ),
 	    react.createElement( List, { noHairlinesMd: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, { floating: true }, "Name"),
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Name", floatingLabel: true, type: "text", placeholder: "Your name", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, { floating: true }, "Password"),
-	        react.createElement( Input$2, { type: "password", placeholder: "Your password", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Password", floatingLabel: true, type: "password", placeholder: "Your password", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, { floating: true }, "E-mail"),
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "E-mail", floatingLabel: true, type: "email", placeholder: "Your e-mail", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, { floating: true }, "URL"),
-	        react.createElement( Input$2, { type: "url", placeholder: "URL", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "URL", floatingLabel: true, type: "url", placeholder: "URL", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, { floating: true }, "Phone"),
-	        react.createElement( Input$2, { type: "tel", placeholder: "Your phone number", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Phone", floatingLabel: true, type: "tel", placeholder: "Your phone number", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, { floating: true }, "Bio"),
-	        react.createElement( Input$2, { type: "textarea", placeholder: "Bio", resizable: true })
+	      react.createElement( ListInput, {
+	        label: "Resizable", floatingLabel: true, type: "textarea", resizable: true, placeholder: "Bio" },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      )
 	    ),
 
 	    react.createElement( BlockTitle, null, "Validation + Additional Info" ),
 	    react.createElement( List, { noHairlinesMd: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Name" ),
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", info: 'Default "required" validation', required: true, validate: true, clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Name", type: "text", placeholder: "Your name", info: "Default validation", required: true, validate: true, clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
+	      react.createElement( ListInput, {
+	        label: "Fruit", type: "text", placeholder: "Type 'apple' or 'banana'", required: true, validate: true, pattern: "apple|banana", clearButton: true },
 	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Fruit" ),
-	        react.createElement( Input$2, { type: "text", placeholder: "Type 'apple' or 'banana'", required: true, validate: true, pattern: "apple|banana", clearButton: true },
-	          react.createElement( 'span', { slot: "info" }, "Pattern validation (", react.createElement( 'b', null, "apple|banana" ), ")")
-	        )
+	        react.createElement( 'span', { slot: "info" }, "Pattern validation (", react.createElement( 'b', null, "apple|banana" ), ")")
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "E-mail" ),
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", info: 'Default e-mail validation', required: true, validate: true, clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "E-mail", type: "email", placeholder: "Your e-mail", info: "Default e-mail validation", required: true, validate: true, clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "URL" ),
-	        react.createElement( Input$2, { type: "url", placeholder: "Your URL", info: 'Default URL validation', required: true, validate: true, clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "URL", type: "url", placeholder: "Your URL", info: "Default URL validation", required: true, validate: true, clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Label, null, "Number" ),
-	        react.createElement( Input$2, { type: "text", placeholder: "Enter number", info: 'With custom error message', errorMessage: "Only numbers please!", required: true, validate: true, pattern: "[0-9]*", clearButton: true })
+	      react.createElement( ListInput, {
+	        label: "Number", type: "text", placeholder: "Enter number", info: "With custom error message", errorMessage: "Only numbers please!", required: true, validate: true, pattern: "[0-9]*", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      )
 
 	    ),
 
 	    react.createElement( BlockTitle, null, "Icon + Input" ),
 	    react.createElement( List, { noHairlinesMd: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", clearButton: true })
+	      react.createElement( ListInput, {
+	        type: "text", placeholder: "Your name", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Input$2, { type: "password", placeholder: "Your password", clearButton: true })
+	      react.createElement( ListInput, {
+	        type: "password", placeholder: "Your password", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", clearButton: true })
+	      react.createElement( ListInput, {
+	        type: "email", placeholder: "Your e-mail", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      ),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" }),
-	        react.createElement( Input$2, { type: "url", placeholder: "URL", clearButton: true })
+	      react.createElement( ListInput, {
+	        type: "url", placeholder: "URL", clearButton: true },
+	        react.createElement( Icon, { icon: "demo-list-icon", slot: "media" })
 	      )
 
 	    ),
 
 	    react.createElement( BlockTitle, null, "Label + Input" ),
 	    react.createElement( List, { noHairlinesMd: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Name" ),
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        label: "Name", type: "text", placeholder: "Your name", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Password" ),
-	        react.createElement( Input$2, { type: "password", placeholder: "Your password", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        label: "Password", type: "password", placeholder: "Your password", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "E-mail" ),
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        label: "E-mail", type: "email", placeholder: "Your e-mail", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "URL" ),
-	        react.createElement( Input$2, { type: "url", placeholder: "URL", clearButton: true })
-	      )
+	      react.createElement( ListInput, {
+	        label: "URL", type: "url", placeholder: "URL", clearButton: true })
 	    ),
 
 	    react.createElement( BlockTitle, null, "Only Inputs" ),
 	    react.createElement( List, { noHairlinesMd: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "text", placeholder: "Your name", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "password", placeholder: "Your password", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "password", placeholder: "Your password", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "email", placeholder: "Your e-mail", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "url", placeholder: "URL", clearButton: true })
-	      )
+	      react.createElement( ListInput, {
+	        type: "url", placeholder: "URL", clearButton: true })
 	    ),
 
 	    react.createElement( BlockTitle, null, "Inputs + Additional Info" ),
 	    react.createElement( List, { noHairlinesMd: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", info: "Full name please", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "text", placeholder: "Your name", info: "Full name please", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "password", placeholder: "Your password", info: "8 characters minimum", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "password", placeholder: "Your password", info: "8 characters minimum", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", info: "Your work e-mail address", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "email", placeholder: "Your e-mail", info: "Your work e-mail address", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "url", placeholder: "URL", info: "Your website URL", clearButton: true })
-	      )
+	      react.createElement( ListInput, {
+	        type: "url", placeholder: "URL", info: "Your website URL", clearButton: true })
 	    ),
 
 	    react.createElement( BlockTitle, null, "Only Inputs Inset" ),
 	    react.createElement( List, { inset: true },
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "text", placeholder: "Your name", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "text", placeholder: "Your name", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "password", placeholder: "Your password", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "password", placeholder: "Your password", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "email", placeholder: "Your e-mail", clearButton: true })
-	      ),
+	      react.createElement( ListInput, {
+	        type: "email", placeholder: "Your e-mail", clearButton: true }),
 
-	      react.createElement( ListItem, null,
-	        react.createElement( Input$2, { type: "url", placeholder: "URL", clearButton: true })
-	      )
+	      react.createElement( ListInput, {
+	        type: "url", placeholder: "URL", clearButton: true })
 	    )
 	  )
 	); }
@@ -49659,18 +50151,14 @@
 	          react.createElement( Page, { loginScreen: true },
 	            react.createElement( LoginScreenTitle, null, "Framework7" ),
 	            react.createElement( List, { form: true },
-	              react.createElement( ListItem, null,
-	                react.createElement( Label, null, "Username" ),
-	                react.createElement( Input$2, { type: "text", placeholder: "Your username", value: this.state.username, onInput: function (e) {
+	              react.createElement( ListInput, {
+	                label: "Username", type: "text", placeholder: "Your username", value: this.state.username, onInput: function (e) {
 	                  this$1.setState({ username: e.target.value});
-	                } })
-	              ),
-	              react.createElement( ListItem, null,
-	                react.createElement( Label, null, "Password" ),
-	                react.createElement( Input$2, { type: "password", placeholder: "Your password", value: this.state.password, onInput: function (e) {
+	                } }),
+	              react.createElement( ListInput, {
+	                label: "Password", type: "password", placeholder: "Your password", value: this.state.password, onInput: function (e) {
 	                  this$1.setState({ password: e.target.value});
 	                } })
-	              )
 	            ),
 	            react.createElement( List, null,
 	              react.createElement( ListButton, { onClick: this.signIn.bind(this) }, "Sign In"),
@@ -49714,18 +50202,14 @@
 	      react.createElement( Page, { noToolbar: true, noNavbar: true, noSwipeback: true, loginScreen: true },
 	        react.createElement( LoginScreenTitle, null, "Framework7" ),
 	        react.createElement( List, { form: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, null, "Username" ),
-	            react.createElement( Input$2, { type: "text", placeholder: "Your username", value: this.state.username, onInput: function (e) {
+	          react.createElement( ListInput, {
+	            label: "Username", type: "text", placeholder: "Your username", value: this.state.username, onInput: function (e) {
 	              this$1.setState({ username: e.target.value});
-	            } })
-	          ),
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, null, "Password" ),
-	            react.createElement( Input$2, { type: "password", placeholder: "Your password", value: this.state.password, onInput: function (e) {
+	            } }),
+	          react.createElement( ListInput, {
+	            label: "Password", type: "password", placeholder: "Your password", value: this.state.password, onInput: function (e) {
 	              this$1.setState({ password: e.target.value});
 	            } })
-	          )
 	        ),
 	        react.createElement( List, null,
 	          react.createElement( ListButton, { onClick: this.signIn.bind(this) }, "Sign In"),
@@ -49754,6 +50238,7 @@
 	      attachments: [],
 	      sheetVisible: false,
 	      typingMessage: null,
+	      messageText: '',
 	      messagesData: [
 	        {
 	          type: 'sent',
@@ -49856,7 +50341,7 @@
 	        react.createElement( Navbar$2, { title: "Messsages", backLink: "Back" }),
 
 	        react.createElement( Messagebar$2, {
-	          placeholder: this.placeholder, ref: function (el) {this$1.messagebarComponent = el;}, attachmentsVisible: this.attachmentsVisible, sheetVisible: this.state.sheetVisible },
+	          placeholder: this.placeholder, ref: function (el) {this$1.messagebarComponent = el;}, attachmentsVisible: this.attachmentsVisible, sheetVisible: this.state.sheetVisible, value: this.state.messageText, onInput: function (e) { return this$1.setState({messageText: e.target.value}); } },
 	          react.createElement( Link, {
 	            iconIos: "f7:camera_fill", iconMd: "material:camera_alt", slot: "inner-start", onClick: function () {this$1.setState({sheetVisible: !this$1.state.sheetVisible});} }),
 	          react.createElement( Link, {
@@ -49954,14 +50439,14 @@
 	  };
 	  defaultExport.prototype.sendMessage = function sendMessage () {
 	    var self = this;
-	    var text = self.messagebar.getValue().replace(/\n/g, '<br>').trim();
+	    var text = self.state.messageText.replace(/\n/g, '<br>').trim();
 	    var messagesToSend = [];
 	    self.state.attachments.forEach(function (attachment) {
 	      messagesToSend.push({
 	        image: attachment,
 	      });
 	    });
-	    if (text.trim().length) {
+	    if (text.length) {
 	      messagesToSend.push({
 	        text: text,
 	      });
@@ -49977,8 +50462,9 @@
 	      sheetVisible: false,
 	      // Send message
 	      messagesData: self.state.messagesData.concat( messagesToSend),
+	      // Clear
+	      messageText: '',
 	    });
-	    self.messagebar.clear();
 
 	    // Focus area
 	    if (text.length) { self.messagebar.focus(); }
