@@ -1,4 +1,14 @@
 -
+  date: November 2, 2018
+  video: true
+  title: "Auto-Complete Search Fields with React, Node and Framework7 tutorial"
+  url: https://youtu.be/6VEGkAdPTkU
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net
+  badges:
+  - v3
+-
   date: July 9, 2018
   video: false
   title: "Migration To Framework7 v3"
