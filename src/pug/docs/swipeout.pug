@@ -260,6 +260,14 @@ block content
           td swipeout:deleted
           td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
           td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+        tr
+          td swipeout:overswipeenter
+          td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+          td Event will be triggered when overswipe enabled
+        tr
+          td swipeout:overswipeexit
+          td Swipeout Element<span>&lt;li class="swipeout"&gt;</span>
+          td Event will be triggered when overswipe disabled
     h3 App Instance Events
     p Sortable instance emit events on app instance.
     table.events-table
@@ -305,6 +313,16 @@ block content
           td app
           td <span>swipeoutEl</span>
           td Event will be triggered after swipeout element completes its delete animation right before it will be removed from DOM
+        tr
+          td swipeoutOverswipeEnter
+          td app
+          td <span>swipeoutEl</span>
+          td Event will be triggered when overswipe enabled
+        tr
+          td swipeoutOverswipeExit
+          td app
+          td <span>swipeoutEl</span>
+          td Event will be triggered when overswipe disabled
     .with-device
       h2(data-device-preview="../docs-demos/core/swipeout.html") Examples
       :code(lang="js")
