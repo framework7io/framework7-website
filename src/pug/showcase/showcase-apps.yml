@@ -1,5 +1,39 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/super-adaptive-icon.jpg"
+  iconRounded: true
+  title: "Super Adaptive"
+  author:
+    url: https://jooraa.com/
+    name: Jonathan Pugh
+  links:
+    appstore: https://itunes.apple.com/us/app/super-adaptive/id1391480889
+    googleplay: https://play.google.com/store/apps/details?id=com.trieu.superadaptive
+    website: https://www.trieu-etc.com/super-adaptive-app
+  description: |
+    Start learning how to do your project 4-6 times faster, with better results and more fun. This app contains more than short 20 videos including introductions, tutorials and questions that teams have when they work in a Super adaptive way. The app is a quick introduction to the approach and although not replacing a coach, it will give you more than enough to make a decent start. Achieve more in less time and spend more time having holidays. :-) 
+
+    Super adaptive is a way of working invented by myself, based on agile principles, extremely simplified and it has proven to speed up projects 4-6 times in any business on any topic. It also works on life achievements in general.
+
+    As a creative coach, guiding businesses all over the world, I have put all my experiences in this app. The app is the most affordable way to speed up any project and any life achievement. Not everybody can afford a creative coach and the app won’t replace one, but these few bucks are well spent to make a quick start. I might as well have written a book, but hey, an app is more fun and more real. 
+
+    Super adaptive works on any project or team, at least 1 member ;-), that needs to create something new or achieve something new. The secret is in end-to-end skilled teams that start deliver real stuff immediately, together and improve in extremely short cycles of 1 hour. This is it. It is a workshop style of working, but with delivering working stuff immediately. It has 4 simple steps. You can do it, anybody can do it, once you know a few secrets. ;-) 
+
+    The app contains more than 20 short videos with me coaching you. It contains a proper introduction, a clear step-by-step tutorial, an "ask a coach" section with answers, a blog with more advice and some background. All videos are baked into the app, so they always run smoothly, even offline. It takes a bit of downloading, but for sure a lot more practical. Remember to unlock your mute button for audio. :-)
+
+    Every year, I bring 2 users of the app over to the training facilities in Bali, Indonesia, for a crash course. In order to participate, contact me through the app. Future updates will be free of charge.
+  screenshots:
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-home.jpg"
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-introduction.jpg"
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-fullscreen-video.jpg"
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-tutorial.jpg"
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-ask-a-coach.jpg"
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-blog.jpg"
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-blog-article.jpg"
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-blog-article-2.jpg"
+  - "#{cdn}/i/showcase/super-adaptive-screenshot-about.jpg"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/maple_pos.png"
   iconRounded: true
   title: "Maple Point of Sale"
