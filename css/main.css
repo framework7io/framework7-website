@@ -219,13 +219,17 @@ main img {
   display: none;
 }
 .f7-demo-icons {
-  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
 }
 .f7-demo-icons .f7-demo-icon-cell {
   float: left;
   width: 20%;
   text-align: center;
   margin-bottom: 40px;
+}
+.f7-demo-icons .f7-demo-icon {
+  height: 28px;
 }
 .f7-demo-icons .f7-demo-icon-label {
   font-size: 11px;
