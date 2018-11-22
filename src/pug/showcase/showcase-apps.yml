@@ -1,5 +1,194 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/rune.png"
+  iconRounded: true
+  title: "Rune - Zodiac Quotes"
+  author:
+    url: https://azoora.com/
+    name: Azoora, Inc.
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.azoora.rune
+  description: |
+    Get an inspiring quote for your zodiac sign according to your date of birth. Why not begin your day with an interesting point to ponder? Just shake your phone and Rune will flash a thought provoking and often amusing quote to enlighten your day.
+  screenshots:
+  - "#{cdn}/i/showcase/rune-1.png"
+  - "#{cdn}/i/showcase/rune-2.png"
+  - "#{cdn}/i/showcase/rune-3.png"
+  - "#{cdn}/i/showcase/rune-4.png"
+  - "#{cdn}/i/showcase/rune-5.png"
+  - "#{cdn}/i/showcase/rune-6.png"
+  - "#{cdn}/i/showcase/rune-7.png"
+  - "#{cdn}/i/showcase/rune-8.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/eagle.png"
+  iconRounded: true
+  title: "Eagle - The Social Network Full of Apps"
+  author:
+    url: https://albdevteam.com/
+    name: AlbDevTeam
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.albdevteam.eagle
+  description: |
+    • Discover new friends and keep in touch with the old ones.
+    • Share your thoughts using words and/or pictures, but think carefully because a post can contain no more than 300 characters and/or a single photo.
+    • You can "like" your friends' photo, but you can also "dislike" it. Don't worry about that, nobody can see your "dislike"! Post reactions are private, only numbers are visible.
+    • Directly reply to your friends' posts showing you sincere feelings.
+    • Share posts by sending them as a message to your friends.
+    • You may keep chatting for hours with people you love using instant messages. And if you're not using the app when they text you, don't worry, you'll receive a notification in your mobile device.
+    • We know that time is gold, and weather condition is as important. That's why we brought to you the "Now" app, so you can check the weather condition of any place in the world at any time.
+    • Keeping good notes is important as well. The "Memo" app gives you the possibility to keep customized memos and share them with friends.
+    • For the creative ones we made the "Quotes" app. Here you can create beautiful quotes with customized text font, size and color. You can choose among 200+ colors for the background and the text. You can also use our amazing background pictures for a better looking quote. Last but not least, you can share your piece of art with your friends as a post - then see what they think about it.
+  screenshots:
+  - "#{cdn}/i/showcase/eagle-1.png"
+  - "#{cdn}/i/showcase/eagle-2.png"
+  - "#{cdn}/i/showcase/eagle-3.png"
+  - "#{cdn}/i/showcase/eagle-4.png"
+  - "#{cdn}/i/showcase/eagle-5.png"
+  - "#{cdn}/i/showcase/eagle-6.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/sg.jpg"
+  iconRounded: true
+  title: "SG Mobile"
+  author:
+    url: https://itunes.apple.com/us/developer/hksg-media-limited/id625105695?mt=8
+    name: HKSG Media Limited
+  links:
+    appstore: https://itunes.apple.com/app/sg-mobile/id1278920325
+    googleplay: https://play.google.com/store/apps/details?id=com.shippingazette.sgmobile.app
+    website: http://m2.shippingazette.com/getapp.html
+  description: |
+    Shipping Gazette, Asia’s leading provider of Shipping News and Information is now making it even easier for you to keep up with the latest shipping industry information.
+
+    Designed specifically for the shipping insiders, shippingazette.com now offers you the chance to catch up on all the latest information coverage from the shipping and logistics industries, regardless of how busy you are, with our new app.
+
+    ** Key Features **
+
+    • Shipping News
+    Keep yourself up to date on the latest acquisitions in the market, financial results, new services, supply and demand figures, emerging trends in the global supply chain and much more.
+
+    • Port Schedule
+    Provides comprehensive port-to-port schedule with closing and document cutoff detail. You can easily compare different schedule with filtering and saving features. The new schedule timeline let you explorer the schedule in another way.
+
+    • Sailing Schedule
+    View the operator's sailing schedule by service trade.
+
+    • Flight Schedule
+    Easily check the flight schedule in a glance.
+
+    • Logistics Yellow Pages (YP)
+    Looking for the contact of a freight forwarder? or want to know the office network of a carrier? Logistics YP contains what you want while looking for a service provider.
+
+    • Rate Promotion
+    View the time limited offer from the shipping service providers.
+  screenshots:
+  - "#{cdn}/i/showcase/sg-1.jpg"
+  - "#{cdn}/i/showcase/sg-2.jpg"
+  - "#{cdn}/i/showcase/sg-3.jpg"
+  - "#{cdn}/i/showcase/sg-4.jpg"
+  - "#{cdn}/i/showcase/sg-5.jpg"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/mycar.png"
+  iconRounded: true
+  title: "Моя машина - Авто расходы"
+  author:
+    url: https://play.google.com/store/apps/dev?id=8290264110329889944
+    name: Станислав Ткачук
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=ru.Tkachuk.MyCar
+  description: |
+    В приложении реализована возможность быстро и удобно вести учет расхода топлива, а так же учет затрат на автомобиль. Процесс технического обслуживания автомобиля теперь стал проще.
+
+    Вы можете контролировать заправки, техническое обслуживание, формировать отчеты и важные события для вашего автомобиля.
+
+    Основные преимущества приложения:
+    - Удобный процесс ведения учета событий и затрат вашего автомобиля (заправки, замены масла, ремонты, мойки, тюнинг и т.д.).
+    - Контролируйте затраты на одно или более транспортные средства.
+    - Полные отчеты о заправках, расходах и обслуживании.
+    - Рассчитайте автономию Ваших транспортных средств непосредственно в приложении.
+
+    Теперь вы контролируете расходы вашего автомобиля быстро и легко.
+  screenshots:
+  - "#{cdn}/i/showcase/mycar-1.png"
+  - "#{cdn}/i/showcase/mycar-2.png"
+  - "#{cdn}/i/showcase/mycar-3.png"
+  - "#{cdn}/i/showcase/mycar-4.png"
+  - "#{cdn}/i/showcase/mycar-5.png"
+  - "#{cdn}/i/showcase/mycar-6.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/duadle.jpg"
+  iconRounded: true
+  title: "Duadle Relationship Management"
+  author:
+    url: https://itunes.apple.com/us/developer/designersx/id1398378654?mt=8
+    name: DesignersX
+  links:
+    appstore: https://itunes.apple.com/us/app/duadle-relationship-management/id1398378655
+    googleplay: https://play.google.com/store/apps/details?id=com.duadle.app&hl=en
+    website: http://www.duadle.com/
+  description: |
+    Duadle can be best described as a Relationship management app for couples. It will help you stay couple for longer. Consider it a Pocket Therapist for relationships which can understand your relation and then make suggestions based on the situation and status of your relationship.
+
+    The app uses your daily relationship data to identify if there are any problems in your relationship and make appropriate suggestions to help you in your relation. Our proprietary A.I.(Artificial Intelligence) "Suggestion Engine" will suggest relationship improvement methods. And also will remind you of certain dates and moments you should share as part of your continued relationship with your companion.
+
+    Duadle is a couples app which promotes Monogamy in the Digital age when people don't have enough time to spend with each other. Our app have below features like:
+
+    - One to One Chat
+    - Partner Location Sharing
+    - Duadle Points to show you the Relationship status
+    - Reminders for Important Dates
+    - Photo & Picture Sharing
+    - Relationship Improvement Suggestions(Coming Soon)
+    - Encrypted Direct Connectivity
+
+    Our app is most suitable for couples who want to work on their relationship and improve it to Stay Couple.
+
+    Our In-App Purchase includes "Duadle Suggestion Engine":
+
+    "Duadle Suggestions" is an auto-renewable software service and will automatically renew after one month of period when the subscription is subscribed. "Duadle Suggestions" is free for first two months after the subscription. One month subscription price for "Duadle Suggestions" is $1.99 (USD). Suggestion can only be turned off at least 24 hours before the end of current subscription period. Subscriptions can be managed by the users and can be turned of by going to the user's account settings after purchase.
+    Any unused portion of a free trial period will be forfeited when the user purchases a subscription for "Duadle Suggestions".
+
+    "Suggestion Engine" analyse the user data for relationship based on location, communication (Chat, call etc), gesture and shared activity. But our system will deliver suggestions only when subscription is active.
+  screenshots:
+  - "#{cdn}/i/showcase/duadle-1.jpg"
+  - "#{cdn}/i/showcase/duadle-2.jpg"
+  - "#{cdn}/i/showcase/duadle-3.jpg"
+  - "#{cdn}/i/showcase/duadle-4.jpg"
+  - "#{cdn}/i/showcase/duadle-5.jpg"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/sama.jpg"
+  iconRounded: false
+  title: "Sama Ultimate Woocommerce"
+  author:
+    url: https://play.google.com/store/apps/developer?id=Sleibi+Technologies
+    name: Sleibi Technologies
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.tqniyati.samaultimate
+    website: http://demo.sama-woocommerce-application.com/
+  description: |
+      Sama Ultimate Woocommerce Mobile Application is a ready plug to go mobile application:
+      1- Easy to install and connect to your woocommerce platform.
+      2- Easy to customize and change style and colors
+      3- Built on Cordova Easy to generate IOS and Android
+      4- Wishlist
+      5- Product Compare
+      6- 100% compatible with woocommerce
+      7- Supports shipping tax fees calculation
+      8- Supports variable products
+      9- Compatible with Wordpress WPML easy to translate!
+      10- and much much more features!
+  screenshots:
+  - "#{cdn}/i/showcase/sama-1.jpg"
+  - "#{cdn}/i/showcase/sama-2.jpg"
+  - "#{cdn}/i/showcase/sama-3.jpg"
+  - "#{cdn}/i/showcase/sama-4.jpg"
+  - "#{cdn}/i/showcase/sama-5.jpg"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/super-adaptive-icon.jpg"
   iconRounded: true
   title: "Super Adaptive"
@@ -11,13 +200,13 @@
     googleplay: https://play.google.com/store/apps/details?id=com.trieu.superadaptive
     website: https://www.trieu-etc.com/super-adaptive-app
   description: |
-    Start learning how to do your project 4-6 times faster, with better results and more fun. This app contains more than short 20 videos including introductions, tutorials and questions that teams have when they work in a Super adaptive way. The app is a quick introduction to the approach and although not replacing a coach, it will give you more than enough to make a decent start. Achieve more in less time and spend more time having holidays. :-) 
+    Start learning how to do your project 4-6 times faster, with better results and more fun. This app contains more than short 20 videos including introductions, tutorials and questions that teams have when they work in a Super adaptive way. The app is a quick introduction to the approach and although not replacing a coach, it will give you more than enough to make a decent start. Achieve more in less time and spend more time having holidays. :-)
 
     Super adaptive is a way of working invented by myself, based on agile principles, extremely simplified and it has proven to speed up projects 4-6 times in any business on any topic. It also works on life achievements in general.
 
-    As a creative coach, guiding businesses all over the world, I have put all my experiences in this app. The app is the most affordable way to speed up any project and any life achievement. Not everybody can afford a creative coach and the app won’t replace one, but these few bucks are well spent to make a quick start. I might as well have written a book, but hey, an app is more fun and more real. 
+    As a creative coach, guiding businesses all over the world, I have put all my experiences in this app. The app is the most affordable way to speed up any project and any life achievement. Not everybody can afford a creative coach and the app won’t replace one, but these few bucks are well spent to make a quick start. I might as well have written a book, but hey, an app is more fun and more real.
 
-    Super adaptive works on any project or team, at least 1 member ;-), that needs to create something new or achieve something new. The secret is in end-to-end skilled teams that start deliver real stuff immediately, together and improve in extremely short cycles of 1 hour. This is it. It is a workshop style of working, but with delivering working stuff immediately. It has 4 simple steps. You can do it, anybody can do it, once you know a few secrets. ;-) 
+    Super adaptive works on any project or team, at least 1 member ;-), that needs to create something new or achieve something new. The secret is in end-to-end skilled teams that start deliver real stuff immediately, together and improve in extremely short cycles of 1 hour. This is it. It is a workshop style of working, but with delivering working stuff immediately. It has 4 simple steps. You can do it, anybody can do it, once you know a few secrets. ;-)
 
     The app contains more than 20 short videos with me coaching you. It contains a proper introduction, a clear step-by-step tutorial, an "ask a coach" section with answers, a blog with more advice and some background. All videos are baked into the app, so they always run smoothly, even offline. It takes a bit of downloading, but for sure a lot more practical. Remember to unlock your mute button for audio. :-)
 
