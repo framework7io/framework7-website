@@ -9,8 +9,12 @@ body {
   line-height: 1.75;
   background: #fff;
   min-width: 800px;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+@media (min-width: 960px) {
+  body {
+    overflow-x: hidden;
+  }
 }
 .break-word {
   word-break: break-word;
