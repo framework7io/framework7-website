@@ -125,8 +125,8 @@ block content
     ul
       li <code><b>searchbar-hide-on-enable</b></code> - elements with such class on page will be hidden when searchbar is enabled
       li <code><b>searchbar-hide-on-search</b></code> - elements with such class on page will be hidden during search
-      li <code><b>searchbar-not-found</b></code> - elements with such class are hidden by default and become visible when there is no any search results
-      li <code><b>searchbar-found</b></code> - elements with such class are visible by default and become hidden when there is no any search results
+      li <code><b>searchbar-not-found</b></code> - elements with such class are hidden by default and become visible when there is not any search results
+      li <code><b>searchbar-found</b></code> - elements with such class are visible by default and become hidden when there is not any search results
       li <code><b>searchbar-ignore</b></code> - searchbar will not consider this elements in search results
     p For example:
     :code(lang="html")
@@ -151,7 +151,7 @@ block content
                 </ul>
               </div>
 
-              <!-- This list will be visible when there is no any search results -->
+              <!-- This list will be visible when there is not any search results -->
               <div class="list simple-list searchbar-not-found">
                 <ul>
                   <li>Nothing found</li>
