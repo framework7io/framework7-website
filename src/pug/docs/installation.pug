@@ -45,7 +45,7 @@ block content
           Framework7.use([Searchbar, Calendar, Popup]);
 
           // Init app
-          var app = new Framework({/*...*/});
+          var app = new Framework7({/*...*/});
     p Such modular structure provides best tree-shaking results and package size optimization.
     p In addition to <code>default</code> export it has named export for <code>Template7</code>, <code>Dom7</code>, <code>Request</code>, <code>Device</code>, <code>Utils</code> and <code>Support</code> libraries:
     :code(lang="js")
@@ -64,7 +64,7 @@ block content
           import Framework7 from 'framework7/framework7.esm.bundle.js';
 
           // Init app
-          var app = new Framework({/*...*/});
+          var app = new Framework7({/*...*/});
     h2 ES-Next
     p Note, that Framework7 ES modules are in ES-next syntax, so don't forget to enable/configure your Babel/Buble to transpile them as well, as well as <code>template7</code>, <code>dom7</code> and <code>ssr-window</code> modules that used as dependencies.
     h2 App HTML Layout
