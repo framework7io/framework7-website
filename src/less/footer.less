@@ -96,6 +96,14 @@ footer {
     padding: 20px 0;
     font-size: 14px;
     border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    overflow: hidden;
+    .clearfix {
+      display: none;
+    }
     a {
       border-bottom: 1px solid rgba(255,255,255,0.2);
     }
@@ -109,7 +117,8 @@ footer {
       }
     }
   }
-  a.keycdn-link {
+  a.keycdn-link,
+  a.vpsserver-link {
     text-decoration: none;
     border-bottom: none;
     opacity: 0.5;
@@ -122,8 +131,11 @@ footer {
   }
   .copy-right {
     float: right;
+    text-align: right;
+    flex-shrink: 0;
   }
-  img.keycdn-logo {
+  img.keycdn-logo,
+  img.vpsserver-logo {
     height: 20px;
     width: auto;
     vertical-align: middle;
