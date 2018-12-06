@@ -1,4 +1,14 @@
 -
+  date: December 5, 2018
+  video: true
+  title: "How to use the Calendar Component in Framework7"
+  url: https://youtu.be/qYteZaz_pUc
+  author:
+    name: Timo Ernst
+    url: http://www.timo-ernst.net
+  badges:
+  - v3
+-
   date: November 2, 2018
   video: true
   title: "Auto-Complete Search Fields with React, Node and Framework7 tutorial"
