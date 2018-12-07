@@ -1,5 +1,32 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/tdk.jpg"
+  iconRounded: true
+  title: "TKD 2018"
+  author:
+    url: https://itunes.apple.com/us/developer/naature/id761465758?mt=8
+    name: Naature
+  links:
+    appstore: https://itunes.apple.com/app/tkd-2018/id1438692316
+    googleplay: https://play.google.com/store/apps/details?id=com.kqapius.invictus.tkd1810
+  description: |
+    Using your mobile app developed exclusively for the 34th Turkish Cardiology Congress with International Participation by Turkish Society of Cardiology,
+
+    • Stay informed of updates and changes by push notifications;
+    • See the location of congress center and get directions;
+    • Access any information by searching speakers, halls, times and many more keywords even partials thanks to our innovative search module;
+    • Get exclusive access to abstracts;
+    • Add sessions to your in-app agenda;
+    • Get in touch with the Society or Organizer;
+    • And take advantage of many more handy features...
+  screenshots:
+  - "#{cdn}/i/showcase/tdk-1.jpg"
+  - "#{cdn}/i/showcase/tdk-2.jpg"
+  - "#{cdn}/i/showcase/tdk-3.jpg"
+  - "#{cdn}/i/showcase/tdk-4.jpg"
+  - "#{cdn}/i/showcase/tdk-5.jpg"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/rune.png"
   iconRounded: true
   title: "Rune - Zodiac Quotes"
@@ -1782,11 +1809,11 @@
   description: |
     NiceSlide is the unique mobile hub for all your PowerPoint presentations. All your slides are readily available, whether you are on the go, attending important meetings or organizing material from conferences. Be fully prepared to present and exchange on any topic.
   features:
-  - Search: Locate the right slide among thousands of documents in just seconds.
-  - Browse: View particular folders or your entire library displaying previews of every single slide.
-  - Highlight: Earmark interesting slides and take notes to organize your presentations the smart way.
-  - Hot Topics: Arrange individual slides into folders called \"hot topics\" for direct access
-  - Share: Send single slides or entire presentations via email in PDF/PowerPoint format or as a web link
+  - "Search: Locate the right slide among thousands of documents in just seconds."
+  - "Browse: View particular folders or your entire library displaying previews of every single slide."
+  - "Highlight: Earmark interesting slides and take notes to organize your presentations the smart way."
+  - "Hot Topics: Arrange individual slides into folders called \"hot topics\" for direct access"
+  - "Share: Send single slides or entire presentations via email in PDF/PowerPoint format or as a web link"
   screenshots:
   - "#{cdn}/i/showcase/niceslide1.jpeg"
   - "#{cdn}/i/showcase/niceslide2.jpeg"

@@ -21,6 +21,12 @@ official:
   badges:
   - v3
 -
+  title: Framework7 Webpack
+  iconUrl: '#{cdn}/i/templates/webpack.svg'
+  url: https://github.com/framework7io/framework7-template-webpack
+  badges:
+  - v3
+-
   title: React
   iconUrl: '#{cdn}/i/templates/f7-react.svg'
   url: https://github.com/framework7io/framework7-template-react
@@ -173,7 +179,7 @@ community:
     url: http://github.com/bencompton/
     name: Ben Compton
   url: https://github.com/bencompton/framework7-redux-app-template
-  description: 
+  description:
   badges:
   - v3
   - React
