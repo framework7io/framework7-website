@@ -70,7 +70,7 @@ phonegap:
   url: https://github.com/phonegap/phonegap-template-vue-f7-blank
   description: A Blank PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
   badges:
-  - v2
+  - v3
   - PhoneGap
   - Vue
 -
@@ -82,7 +82,7 @@ phonegap:
   url: https://github.com/phonegap/phonegap-template-vue-f7-split-panel
   description: A Split View / Panel PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
   badges:
-  - v2
+  - v3
   - PhoneGap
   - Vue
 -
@@ -94,7 +94,7 @@ phonegap:
   url: https://github.com/phonegap/phonegap-template-vue-f7-tabs
   description: A TabBar PhoneGap template using Vue.js and Framework7 with Babel, Webpack and Hot Reloading.
   badges:
-  - v2
+  - v3
   - PhoneGap
   - Vue
 
