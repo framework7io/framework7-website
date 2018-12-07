@@ -62,6 +62,17 @@ official:
 
 phonegap:
 -
+  title: Starter PhoneGap template
+  iconUrl: https://phonegap.com/uploads/artwork/PhoneGap-Symbol-Black.svg
+  author:
+    url: https://github.com/phonegap
+    name: Adobe PhoneGap Team
+  url: https://github.com/phonegap/phonegap-template-framework7
+  description: A starter template for creating a hybrid app with Framework7.
+  badges:
+  - v3
+  - PhoneGap
+-
   title: Blank PhoneGap template
   iconUrl: https://phonegap.com/uploads/artwork/PhoneGap-Symbol-Black.svg
   author:
