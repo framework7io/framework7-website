@@ -4,8 +4,10 @@
 	(factory());
 }(this, (function () { 'use strict';
 
+	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
 	function unwrapExports (x) {
-		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x.default : x;
 	}
 
 	function createCommonjsModule(fn, module) {
@@ -103,26 +105,27 @@
 		return to;
 	};
 
-	var n="function"===typeof Symbol&&Symbol.for,p=n?Symbol.for("react.element"):60103,q=n?Symbol.for("react.portal"):60106,r=n?Symbol.for("react.fragment"):60107,t=n?Symbol.for("react.strict_mode"):60108,u=n?Symbol.for("react.profiler"):60114,v=n?Symbol.for("react.provider"):60109,w=n?Symbol.for("react.context"):60110,x=n?Symbol.for("react.async_mode"):60111,y=n?Symbol.for("react.forward_ref"):60112;var z="function"===typeof Symbol&&Symbol.iterator;function A(a,b,d,c,e,g,h,f){if(!a){a=void 0;if(void 0===b){ a=Error("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings."); }else{var k=[d,c,e,g,h,f],l=0;a=Error(b.replace(/%s/g,function(){return k[l++]}));a.name="Invariant Violation";}a.framesToPop=1;throw a;}}
-	function B(a){
+	var n="function"===typeof Symbol&&Symbol.for,p=n?Symbol.for("react.element"):60103,q=n?Symbol.for("react.portal"):60106,r=n?Symbol.for("react.fragment"):60107,t=n?Symbol.for("react.strict_mode"):60108,u=n?Symbol.for("react.profiler"):60114,v=n?Symbol.for("react.provider"):60109,w=n?Symbol.for("react.context"):60110,x=n?Symbol.for("react.concurrent_mode"):60111,y=n?Symbol.for("react.forward_ref"):60112,z=n?Symbol.for("react.suspense"):60113,A=n?Symbol.for("react.memo"):
+	60115,B=n?Symbol.for("react.lazy"):60116,C="function"===typeof Symbol&&Symbol.iterator;function aa(a,b,e,c,d,g,h,f){if(!a){a=void 0;if(void 0===b){ a=Error("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings."); }else{var l=[e,c,d,g,h,f],m=0;a=Error(b.replace(/%s/g,function(){return l[m++]}));a.name="Invariant Violation";}a.framesToPop=1;throw a;}}
+	function D(a){
 	var arguments$1 = arguments;
-	for(var b=arguments.length-1,d="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=0;c<b;c++){ d+="&args[]="+encodeURIComponent(arguments$1[c+1]); }A(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",d);}var C={isMounted:function(){return !1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},D={};
-	function E(a,b,d){this.props=a;this.context=b;this.refs=D;this.updater=d||C;}E.prototype.isReactComponent={};E.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?B("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};E.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function F(){}F.prototype=E.prototype;function G(a,b,d){this.props=a;this.context=b;this.refs=D;this.updater=d||C;}var H=G.prototype=new F;
-	H.constructor=G;objectAssign(H,E.prototype);H.isPureReactComponent=!0;var I={current:null,currentDispatcher:null},J=Object.prototype.hasOwnProperty,K={key:!0,ref:!0,__self:!0,__source:!0};
-	function L(a,b,d){
+	for(var b=arguments.length-1,e="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=0;c<b;c++){ e+="&args[]="+encodeURIComponent(arguments$1[c+1]); }aa(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",e);}var E={isMounted:function(){return !1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},F={};
+	function G(a,b,e){this.props=a;this.context=b;this.refs=F;this.updater=e||E;}G.prototype.isReactComponent={};G.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?D("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};G.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function H(){}H.prototype=G.prototype;function I(a,b,e){this.props=a;this.context=b;this.refs=F;this.updater=e||E;}var J=I.prototype=new H;
+	J.constructor=I;objectAssign(J,G.prototype);J.isPureReactComponent=!0;var K={current:null,currentDispatcher:null},L=Object.prototype.hasOwnProperty,M={key:!0,ref:!0,__self:!0,__source:!0};
+	function N(a,b,e){
 	var arguments$1 = arguments;
-	var c=void 0,e={},g=null,h=null;if(null!=b){ for(c in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(g=""+b.key),b){ J.call(b,c)&&!K.hasOwnProperty(c)&&(e[c]=b[c]); } }var f=arguments.length-2;if(1===f){ e.children=d; }else if(1<f){for(var k=Array(f),l=0;l<f;l++){ k[l]=arguments$1[l+2]; }e.children=k;}if(a&&a.defaultProps){ for(c in f=a.defaultProps,f){ void 0===e[c]&&(e[c]=f[c]); } }return {$$typeof:p,type:a,key:g,ref:h,props:e,_owner:I.current}}
-	function M(a,b){return {$$typeof:p,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}}function N(a){return "object"===typeof a&&null!==a&&a.$$typeof===p}function escape(a){var b={"=":"=0",":":"=2"};return "$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var O=/\/+/g,P=[];function Q(a,b,d,c){if(P.length){var e=P.pop();e.result=a;e.keyPrefix=b;e.func=d;e.context=c;e.count=0;return e}return {result:a,keyPrefix:b,func:d,context:c,count:0}}
-	function R(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>P.length&&P.push(a);}
-	function S(a,b,d,c){var e=typeof a;if("undefined"===e||"boolean"===e){ a=null; }var g=!1;if(null===a){ g=!0; }else { switch(e){case "string":case "number":g=!0;break;case "object":switch(a.$$typeof){case p:case q:g=!0;}} }if(g){ return d(c,a,""===b?"."+T(a,0):b),1; }g=0;b=""===b?".":b+":";if(Array.isArray(a)){ for(var h=0;h<a.length;h++){e=a[h];var f=b+T(e,h);g+=S(e,f,d,c);} }else if(null===a||"object"!==typeof a?f=null:(f=z&&a[z]||a["@@iterator"],f="function"===typeof f?f:null),"function"===typeof f){ for(a=f.call(a),h=
-	0;!(e=a.next()).done;){ e=e.value,f=b+T(e,h++),g+=S(e,f,d,c); } }else{ "object"===e&&(d=""+a,B("31","[object Object]"===d?"object with keys {"+Object.keys(a).join(", ")+"}":d,"")); }return g}function U(a,b,d){return null==a?0:S(a,"",b,d)}function T(a,b){return "object"===typeof a&&null!==a&&null!=a.key?escape(a.key):b.toString(36)}function V(a,b){a.func.call(a.context,b,a.count++);}
-	function aa(a,b,d){var c=a.result,e=a.keyPrefix;a=a.func.call(a.context,b,a.count++);Array.isArray(a)?W(a,c,d,function(a){return a}):null!=a&&(N(a)&&(a=M(a,e+(!a.key||b&&b.key===a.key?"":(""+a.key).replace(O,"$&/")+"/")+d)),c.push(a));}function W(a,b,d,c,e){var g="";null!=d&&(g=(""+d).replace(O,"$&/")+"/");b=Q(b,g,c,e);U(a,aa,b);R(b);}function ba(a,b){var d=I.currentDispatcher;null===d?B("277"):void 0;return d.readContext(a,b)}
-	var X={Children:{map:function(a,b,d){if(null==a){ return a; }var c=[];W(a,c,null,b,d);return c},forEach:function(a,b,d){if(null==a){ return a; }b=Q(null,null,b,d);U(a,V,b);R(b);},count:function(a){return U(a,function(){return null},null)},toArray:function(a){var b=[];W(a,b,null,function(a){return a});return b},only:function(a){N(a)?void 0:B("143");return a}},createRef:function(){return {current:null}},Component:E,PureComponent:G,createContext:function(a,b){void 0===b&&(b=null);a={$$typeof:w,_calculateChangedBits:b,
-	_currentValue:a,_currentValue2:a,Provider:null,Consumer:null,unstable_read:null};a.Provider={$$typeof:v,_context:a};a.Consumer=a;a.unstable_read=ba.bind(null,a);return a},forwardRef:function(a){return {$$typeof:y,render:a}},Fragment:r,StrictMode:t,unstable_AsyncMode:x,unstable_Profiler:u,createElement:L,cloneElement:function(a,b,d){
+	var c=void 0,d={},g=null,h=null;if(null!=b){ for(c in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(g=""+b.key),b){ L.call(b,c)&&!M.hasOwnProperty(c)&&(d[c]=b[c]); } }var f=arguments.length-2;if(1===f){ d.children=e; }else if(1<f){for(var l=Array(f),m=0;m<f;m++){ l[m]=arguments$1[m+2]; }d.children=l;}if(a&&a.defaultProps){ for(c in f=a.defaultProps,f){ void 0===d[c]&&(d[c]=f[c]); } }return {$$typeof:p,type:a,key:g,ref:h,props:d,_owner:K.current}}
+	function ba(a,b){return {$$typeof:p,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}}function O(a){return "object"===typeof a&&null!==a&&a.$$typeof===p}function escape(a){var b={"=":"=0",":":"=2"};return "$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var P=/\/+/g,Q=[];function R(a,b,e,c){if(Q.length){var d=Q.pop();d.result=a;d.keyPrefix=b;d.func=e;d.context=c;d.count=0;return d}return {result:a,keyPrefix:b,func:e,context:c,count:0}}
+	function S(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>Q.length&&Q.push(a);}
+	function T(a,b,e,c){var d=typeof a;if("undefined"===d||"boolean"===d){ a=null; }var g=!1;if(null===a){ g=!0; }else { switch(d){case "string":case "number":g=!0;break;case "object":switch(a.$$typeof){case p:case q:g=!0;}} }if(g){ return e(c,a,""===b?"."+U(a,0):b),1; }g=0;b=""===b?".":b+":";if(Array.isArray(a)){ for(var h=0;h<a.length;h++){d=a[h];var f=b+U(d,h);g+=T(d,f,e,c);} }else if(null===a||"object"!==typeof a?f=null:(f=C&&a[C]||a["@@iterator"],f="function"===typeof f?f:null),"function"===typeof f){ for(a=f.call(a),h=
+	0;!(d=a.next()).done;){ d=d.value,f=b+U(d,h++),g+=T(d,f,e,c); } }else{ "object"===d&&(e=""+a,D("31","[object Object]"===e?"object with keys {"+Object.keys(a).join(", ")+"}":e,"")); }return g}function V(a,b,e){return null==a?0:T(a,"",b,e)}function U(a,b){return "object"===typeof a&&null!==a&&null!=a.key?escape(a.key):b.toString(36)}function ca(a,b){a.func.call(a.context,b,a.count++);}
+	function da(a,b,e){var c=a.result,d=a.keyPrefix;a=a.func.call(a.context,b,a.count++);Array.isArray(a)?W(a,c,e,function(a){return a}):null!=a&&(O(a)&&(a=ba(a,d+(!a.key||b&&b.key===a.key?"":(""+a.key).replace(P,"$&/")+"/")+e)),c.push(a));}function W(a,b,e,c,d){var g="";null!=e&&(g=(""+e).replace(P,"$&/")+"/");b=R(b,g,c,d);V(a,da,b);S(b);}
+	var X={Children:{map:function(a,b,e){if(null==a){ return a; }var c=[];W(a,c,null,b,e);return c},forEach:function(a,b,e){if(null==a){ return a; }b=R(null,null,b,e);V(a,ca,b);S(b);},count:function(a){return V(a,function(){return null},null)},toArray:function(a){var b=[];W(a,b,null,function(a){return a});return b},only:function(a){O(a)?void 0:D("143");return a}},createRef:function(){return {current:null}},Component:G,PureComponent:I,createContext:function(a,b){void 0===b&&(b=null);a={$$typeof:w,_calculateChangedBits:b,
+	_currentValue:a,_currentValue2:a,_threadCount:0,Provider:null,Consumer:null};a.Provider={$$typeof:v,_context:a};return a.Consumer=a},forwardRef:function(a){return {$$typeof:y,render:a}},lazy:function(a){return {$$typeof:B,_ctor:a,_status:-1,_result:null}},memo:function(a,b){return {$$typeof:A,type:a,compare:void 0===b?null:b}},Fragment:r,StrictMode:t,Suspense:z,createElement:N,cloneElement:function(a,b,e){
 	var arguments$1 = arguments;
-	null===a||void 0===a?B("267",a):void 0;var c=void 0,e=objectAssign({},a.props),g=a.key,h=a.ref,f=a._owner;if(null!=b){void 0!==b.ref&&(h=b.ref,f=I.current);void 0!==b.key&&(g=""+b.key);
-	var k=void 0;a.type&&a.type.defaultProps&&(k=a.type.defaultProps);for(c in b){ J.call(b,c)&&!K.hasOwnProperty(c)&&(e[c]=void 0===b[c]&&void 0!==k?k[c]:b[c]); }}c=arguments.length-2;if(1===c){ e.children=d; }else if(1<c){k=Array(c);for(var l=0;l<c;l++){ k[l]=arguments$1[l+2]; }e.children=k;}return {$$typeof:p,type:a.type,key:g,ref:h,props:e,_owner:f}},createFactory:function(a){var b=L.bind(null,a);b.type=a;return b},isValidElement:N,version:"16.5.2",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:I,
-	assign:objectAssign}},Y={default:X},Z=Y&&X||Y;var react_production_min=Z.default||Z;
+	null===a||void 0===a?D("267",a):void 0;var c=void 0,d=objectAssign({},a.props),g=a.key,h=a.ref,f=a._owner;
+	if(null!=b){void 0!==b.ref&&(h=b.ref,f=K.current);void 0!==b.key&&(g=""+b.key);var l=void 0;a.type&&a.type.defaultProps&&(l=a.type.defaultProps);for(c in b){ L.call(b,c)&&!M.hasOwnProperty(c)&&(d[c]=void 0===b[c]&&void 0!==l?l[c]:b[c]); }}c=arguments.length-2;if(1===c){ d.children=e; }else if(1<c){l=Array(c);for(var m=0;m<c;m++){ l[m]=arguments$1[m+2]; }d.children=l;}return {$$typeof:p,type:a.type,key:g,ref:h,props:d,_owner:f}},createFactory:function(a){var b=N.bind(null,a);b.type=a;return b},isValidElement:O,version:"16.6.3",
+	__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:K,assign:objectAssign}};X.unstable_ConcurrentMode=x;X.unstable_Profiler=u;var Y={default:X},Z=Y&&X||Y;var react_production_min=Z.default||Z;
 
 	var react = createCommonjsModule(function (module) {
 
@@ -131,257 +134,280 @@
 	}
 	});
 
-	var schedule_production_min = createCommonjsModule(function (module, exports) {
-	Object.defineProperty(exports,"__esModule",{value:!0});var c=null,e=!1,f=!1,g="object"===typeof performance&&"function"===typeof performance.now,l={timeRemaining:g?function(){var a=h()-performance.now();return 0<a?a:0}:function(){var a=h()-Date.now();return 0<a?a:0},didTimeout:!1};function m(){if(!e){var a=c.timesOutAt;f?n():f=!0;p(q,a);}}function r(){var a=c,b=c.next;if(c===b){ c=null; }else{var d=c.previous;c=d.next=b;b.previous=d;}a.next=a.previous=null;a=a.callback;a(l);}
-	function q(a){e=!0;l.didTimeout=a;try{if(a){ for(;null!==c;){var b=exports.unstable_now();if(c.timesOutAt<=b){do { r(); }while(null!==c&&c.timesOutAt<=b)}else { break }} }else if(null!==c){do { r(); }while(null!==c&&0<h()-exports.unstable_now())}}finally{e=!1,null!==c?m(c):f=!1;}}
-	var t=Date,u="function"===typeof setTimeout?setTimeout:void 0,v="function"===typeof clearTimeout?clearTimeout:void 0,w="function"===typeof requestAnimationFrame?requestAnimationFrame:void 0,x="function"===typeof cancelAnimationFrame?cancelAnimationFrame:void 0,y,z;function A(a){y=w(function(b){v(z);a(b);});z=u(function(){x(y);a(exports.unstable_now());},100);}if(g){var B=performance;exports.unstable_now=function(){return B.now()};}else { exports.unstable_now=function(){return t.now()}; }var p,n,h;
-	if("undefined"===typeof window){var C=-1;p=function(a){C=setTimeout(a,0,!0);};n=function(){clearTimeout(C);};h=function(){return 0};}else if(window._schedMock){var D=window._schedMock;p=D[0];n=D[1];h=D[2];}else{"undefined"!==typeof console&&("function"!==typeof w&&console.error("This browser doesn't support requestAnimationFrame. Make sure that you load a polyfill in older browsers. https://fb.me/react-polyfills"),"function"!==typeof x&&console.error("This browser doesn't support cancelAnimationFrame. Make sure that you load a polyfill in older browsers. https://fb.me/react-polyfills"));
-	var E=null,F=!1,G=-1,H=!1,I=!1,J=0,K=33,L=33;h=function(){return J};var M="__reactIdleCallback$"+Math.random().toString(36).slice(2);window.addEventListener("message",function(a){if(a.source===window&&a.data===M){F=!1;var b=exports.unstable_now();a=!1;if(0>=J-b){ if(-1!==G&&G<=b){ a=!0; }else{H||(H=!0,A(N));return} }G=-1;b=E;E=null;if(null!==b){I=!0;try{b(a);}finally{I=!1;}}}},!1);var N=function(a){H=!1;var b=a-J+L;b<L&&K<L?(8>b&&(b=8),L=b<K?K:b):K=b;J=a+L;F||(F=!0,window.postMessage(M,"*"));};p=function(a,
-	b){E=a;G=b;I?window.postMessage(M,"*"):H||(H=!0,A(N));};n=function(){E=null;F=!1;G=-1;};}exports.unstable_scheduleWork=function(a,b){var d=exports.unstable_now();b=void 0!==b&&null!==b&&null!==b.timeout&&void 0!==b.timeout?d+b.timeout:d+5E3;a={callback:a,timesOutAt:b,next:null,previous:null};if(null===c){ c=a.next=a.previous=a,m(c); }else{d=null;var k=c;do{if(k.timesOutAt>b){d=k;break}k=k.next;}while(k!==c);null===d?d=c:d===c&&(c=a,m(c));b=d.previous;b.next=d.previous=a;a.next=d;a.previous=b;}return a};
-	exports.unstable_cancelScheduledWork=function(a){var b=a.next;if(null!==b){if(b===a){ c=null; }else{a===c&&(c=b);var d=a.previous;d.next=b;b.previous=d;}a.next=a.previous=null;}};
+	var scheduler_production_min = createCommonjsModule(function (module, exports) {
+	Object.defineProperty(exports,"__esModule",{value:!0});var d=null,f=!1,h=3,k=-1,l=-1,m=!1,n=!1;function p(){if(!m){var a=d.expirationTime;n?q():n=!0;r(t,a);}}
+	function u(){var a=d,b=d.next;if(d===b){ d=null; }else{var c=d.previous;d=c.next=b;b.previous=c;}a.next=a.previous=null;c=a.callback;b=a.expirationTime;a=a.priorityLevel;var e=h,Q=l;h=a;l=b;try{var g=c();}finally{h=e,l=Q;}if("function"===typeof g){ if(g={callback:g,priorityLevel:a,expirationTime:b,next:null,previous:null},null===d){ d=g.next=g.previous=g; }else{c=null;a=d;do{if(a.expirationTime>=b){c=a;break}a=a.next;}while(a!==d);null===c?c=d:c===d&&(d=g,p());b=c.previous;b.next=c.previous=g;g.next=c;g.previous=
+	b;} }}function v(){if(-1===k&&null!==d&&1===d.priorityLevel){m=!0;try{do { u(); }while(null!==d&&1===d.priorityLevel)}finally{m=!1,null!==d?p():n=!1;}}}function t(a){m=!0;var b=f;f=a;try{if(a){ for(;null!==d;){var c=exports.unstable_now();if(d.expirationTime<=c){do { u(); }while(null!==d&&d.expirationTime<=c)}else { break }} }else if(null!==d){do { u(); }while(null!==d&&!w())}}finally{m=!1,f=b,null!==d?p():n=!1,v();}}
+	var x=Date,y="function"===typeof setTimeout?setTimeout:void 0,z="function"===typeof clearTimeout?clearTimeout:void 0,A="function"===typeof requestAnimationFrame?requestAnimationFrame:void 0,B="function"===typeof cancelAnimationFrame?cancelAnimationFrame:void 0,C,D;function E(a){C=A(function(b){z(D);a(b);});D=y(function(){B(C);a(exports.unstable_now());},100);}
+	if("object"===typeof performance&&"function"===typeof performance.now){var F=performance;exports.unstable_now=function(){return F.now()};}else { exports.unstable_now=function(){return x.now()}; }var r,q,w,G=null;"undefined"!==typeof window?G=window:"undefined"!==typeof commonjsGlobal&&(G=commonjsGlobal);
+	if(G&&G._schedMock){var H=G._schedMock;r=H[0];q=H[1];w=H[2];exports.unstable_now=H[3];}else if("undefined"===typeof window||"function"!==typeof MessageChannel){var I=null,J=function(a){if(null!==I){ try{I(a);}finally{I=null;} }};r=function(a){null!==I?setTimeout(r,0,a):(I=a,setTimeout(J,0,!1));};q=function(){I=null;};w=function(){return !1};}else{"undefined"!==typeof console&&("function"!==typeof A&&console.error("This browser doesn't support requestAnimationFrame. Make sure that you load a polyfill in older browsers. https://fb.me/react-polyfills"),
+	"function"!==typeof B&&console.error("This browser doesn't support cancelAnimationFrame. Make sure that you load a polyfill in older browsers. https://fb.me/react-polyfills"));var K=null,L=!1,M=-1,N=!1,O=!1,P=0,R=33,S=33;w=function(){return P<=exports.unstable_now()};var T=new MessageChannel,U=T.port2;T.port1.onmessage=function(){L=!1;var a=K,b=M;K=null;M=-1;var c=exports.unstable_now(),e=!1;if(0>=P-c){ if(-1!==b&&b<=c){ e=!0; }else{N||(N=!0,E(V));K=a;M=b;return} }if(null!==a){O=!0;try{a(e);}finally{O=!1;}}};
+	var V=function(a){if(null!==K){E(V);var b=a-P+S;b<S&&R<S?(8>b&&(b=8),S=b<R?R:b):R=b;P=a+S;L||(L=!0,U.postMessage(void 0));}else { N=!1; }};r=function(a,b){K=a;M=b;O||0>b?U.postMessage(void 0):N||(N=!0,E(V));};q=function(){K=null;L=!1;M=-1;};}exports.unstable_ImmediatePriority=1;exports.unstable_UserBlockingPriority=2;exports.unstable_NormalPriority=3;exports.unstable_IdlePriority=5;exports.unstable_LowPriority=4;
+	exports.unstable_runWithPriority=function(a,b){switch(a){case 1:case 2:case 3:case 4:case 5:break;default:a=3;}var c=h,e=k;h=a;k=exports.unstable_now();try{return b()}finally{h=c,k=e,v();}};
+	exports.unstable_scheduleCallback=function(a,b){var c=-1!==k?k:exports.unstable_now();if("object"===typeof b&&null!==b&&"number"===typeof b.timeout){ b=c+b.timeout; }else { switch(h){case 1:b=c+-1;break;case 2:b=c+250;break;case 5:b=c+1073741823;break;case 4:b=c+1E4;break;default:b=c+5E3;} }a={callback:a,priorityLevel:h,expirationTime:b,next:null,previous:null};if(null===d){ d=a.next=a.previous=a,p(); }else{c=null;var e=d;do{if(e.expirationTime>b){c=e;break}e=e.next;}while(e!==d);null===c?c=d:c===d&&(d=a,p());
+	b=c.previous;b.next=c.previous=a;a.next=c;a.previous=b;}return a};exports.unstable_cancelCallback=function(a){var b=a.next;if(null!==b){if(b===a){ d=null; }else{a===d&&(d=b);var c=a.previous;c.next=b;b.previous=c;}a.next=a.previous=null;}};exports.unstable_wrapCallback=function(a){var b=h;return function(){var c=h,e=k;h=b;k=exports.unstable_now();try{return a.apply(this,arguments)}finally{h=c,k=e,v();}}};exports.unstable_getCurrentPriorityLevel=function(){return h};
+	exports.unstable_shouldYield=function(){return !f&&(null!==d&&d.expirationTime<l||w())};
 	});
 
-	unwrapExports(schedule_production_min);
-	var schedule_production_min_1 = schedule_production_min.unstable_now;
-	var schedule_production_min_2 = schedule_production_min.unstable_scheduleWork;
-	var schedule_production_min_3 = schedule_production_min.unstable_cancelScheduledWork;
+	unwrapExports(scheduler_production_min);
+	var scheduler_production_min_1 = scheduler_production_min.unstable_now;
+	var scheduler_production_min_2 = scheduler_production_min.unstable_ImmediatePriority;
+	var scheduler_production_min_3 = scheduler_production_min.unstable_UserBlockingPriority;
+	var scheduler_production_min_4 = scheduler_production_min.unstable_NormalPriority;
+	var scheduler_production_min_5 = scheduler_production_min.unstable_IdlePriority;
+	var scheduler_production_min_6 = scheduler_production_min.unstable_LowPriority;
+	var scheduler_production_min_7 = scheduler_production_min.unstable_runWithPriority;
+	var scheduler_production_min_8 = scheduler_production_min.unstable_scheduleCallback;
+	var scheduler_production_min_9 = scheduler_production_min.unstable_cancelCallback;
+	var scheduler_production_min_10 = scheduler_production_min.unstable_wrapCallback;
+	var scheduler_production_min_11 = scheduler_production_min.unstable_getCurrentPriorityLevel;
+	var scheduler_production_min_12 = scheduler_production_min.unstable_shouldYield;
 
-	var schedule = createCommonjsModule(function (module) {
+	var scheduler = createCommonjsModule(function (module) {
 
 	{
-	  module.exports = schedule_production_min;
+	  module.exports = scheduler_production_min;
 	}
 	});
 
-	function ca(a,b,c,d,e,f,g,h){if(!a){a=void 0;if(void 0===b){ a=Error("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings."); }else{var k=[c,d,e,f,g,h],l=0;a=Error(b.replace(/%s/g,function(){return k[l++]}));a.name="Invariant Violation";}a.framesToPop=1;throw a;}}
+	function ca$1(a,b,c,d,e,f,g,h){if(!a){a=void 0;if(void 0===b){ a=Error("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings."); }else{var k=[c,d,e,f,g,h],l=0;a=Error(b.replace(/%s/g,function(){return k[l++]}));a.name="Invariant Violation";}a.framesToPop=1;throw a;}}
 	function t$1(a){
 	var arguments$1 = arguments;
-	for(var b=arguments.length-1,c="https://reactjs.org/docs/error-decoder.html?invariant="+a,d=0;d<b;d++){ c+="&args[]="+encodeURIComponent(arguments$1[d+1]); }ca(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",c);}react?void 0:t$1("227");function da(a,b,c,d,e,f,g,h,k){var l=Array.prototype.slice.call(arguments,3);try{b.apply(c,l);}catch(m){this.onError(m);}}
-	var ea=!1,fa=null,ha=!1,ia=null,ja={onError:function(a){ea=!0;fa=a;}};function ka(a,b,c,d,e,f,g,h,k){ea=!1;fa=null;da.apply(ja,arguments);}function la(a,b,c,d,e,f,g,h,k){ka.apply(this,arguments);if(ea){if(ea){var l=fa;ea=!1;fa=null;}else { t$1("198"),l=void 0; }ha||(ha=!0,ia=l);}}var ma=null,na={};
+	for(var b=arguments.length-1,c="https://reactjs.org/docs/error-decoder.html?invariant="+a,d=0;d<b;d++){ c+="&args[]="+encodeURIComponent(arguments$1[d+1]); }ca$1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",c);}react?void 0:t$1("227");function da$1(a,b,c,d,e,f,g,h,k){var l=Array.prototype.slice.call(arguments,3);try{b.apply(c,l);}catch(m){this.onError(m);}}
+	var ea=!1,fa=null,ha=!1,ia=null,ja={onError:function(a){ea=!0;fa=a;}};function ka(a,b,c,d,e,f,g,h,k){ea=!1;fa=null;da$1.apply(ja,arguments);}function la(a,b,c,d,e,f,g,h,k){ka.apply(this,arguments);if(ea){if(ea){var l=fa;ea=!1;fa=null;}else { t$1("198"),l=void 0; }ha||(ha=!0,ia=l);}}var ma=null,na={};
 	function oa(){if(ma){ for(var a in na){var b=na[a],c=ma.indexOf(a);-1<c?void 0:t$1("96",a);if(!pa[c]){b.extractEvents?void 0:t$1("97",a);pa[c]=b;c=b.eventTypes;for(var d in c){var e=void 0;var f=c[d],g=b,h=d;qa.hasOwnProperty(h)?t$1("99",h):void 0;qa[h]=f;var k=f.phasedRegistrationNames;if(k){for(e in k){ k.hasOwnProperty(e)&&ra(k[e],g,h); }e=!0;}else { f.registrationName?(ra(f.registrationName,g,h),e=!0):e=!1; }e?void 0:t$1("98",d,a);}}} }}
-	function ra(a,b,c){sa[a]?t$1("100",a):void 0;sa[a]=b;ta[a]=b.eventTypes[c].dependencies;}var pa=[],qa={},sa={},ta={},ua=null,va=null,wa=null;function xa(a,b,c,d){b=a.type||"unknown-event";a.currentTarget=wa(d);la(b,c,void 0,a);a.currentTarget=null;}function ya(a,b){null==b?t$1("30"):void 0;if(null==a){ return b; }if(Array.isArray(a)){if(Array.isArray(b)){ return a.push.apply(a,b),a; }a.push(b);return a}return Array.isArray(b)?[a].concat(b):[a,b]}
-	function za(a,b,c){Array.isArray(a)?a.forEach(b,c):a&&b.call(c,a);}var Aa=null;function Ba(a,b){if(a){var c=a._dispatchListeners,d=a._dispatchInstances;if(Array.isArray(c)){ for(var e=0;e<c.length&&!a.isPropagationStopped();e++){ xa(a,b,c[e],d[e]); } }else { c&&xa(a,b,c,d); }a._dispatchListeners=null;a._dispatchInstances=null;a.isPersistent()||a.constructor.release(a);}}function Ca(a){return Ba(a,!0)}function Da(a){return Ba(a,!1)}
-	var Ea={injectEventPluginOrder:function(a){ma?t$1("101"):void 0;ma=Array.prototype.slice.call(a);oa();},injectEventPluginsByName:function(a){var b=!1,c;for(c in a){ if(a.hasOwnProperty(c)){var d=a[c];na.hasOwnProperty(c)&&na[c]===d||(na[c]?t$1("102",c):void 0,na[c]=d,b=!0);} }b&&oa();}};
-	function Fa(a,b){var c=a.stateNode;if(!c){ return null; }var d=ua(c);if(!d){ return null; }c=d[b];a:switch(b){case "onClick":case "onClickCapture":case "onDoubleClick":case "onDoubleClickCapture":case "onMouseDown":case "onMouseDownCapture":case "onMouseMove":case "onMouseMoveCapture":case "onMouseUp":case "onMouseUpCapture":(d=!d.disabled)||(a=a.type,d=!("button"===a||"input"===a||"select"===a||"textarea"===a));a=!d;break a;default:a=!1;}if(a){ return null; }c&&"function"!==typeof c?t$1("231",b,typeof c):void 0;
-	return c}function Ga(a,b){null!==a&&(Aa=ya(Aa,a));a=Aa;Aa=null;if(a&&(b?za(a,Ca):za(a,Da),Aa?t$1("95"):void 0,ha)){ throw b=ia,ha=!1,ia=null,b; }}var Ha=Math.random().toString(36).slice(2),Ia="__reactInternalInstance$"+Ha,Ja="__reactEventHandlers$"+Ha;function Ka(a){if(a[Ia]){ return a[Ia]; }for(;!a[Ia];){ if(a.parentNode){ a=a.parentNode; }else { return null; } }a=a[Ia];return 7===a.tag||8===a.tag?a:null}function La(a){a=a[Ia];return !a||7!==a.tag&&8!==a.tag?null:a}
-	function Ma(a){if(7===a.tag||8===a.tag){ return a.stateNode; }t$1("33");}function Na(a){return a[Ja]||null}function Oa(a){do { a=a.return; }while(a&&7!==a.tag);return a?a:null}function Pa(a,b,c){if(b=Fa(a,c.dispatchConfig.phasedRegistrationNames[b])){ c._dispatchListeners=ya(c._dispatchListeners,b),c._dispatchInstances=ya(c._dispatchInstances,a); }}
-	function Qa(a){if(a&&a.dispatchConfig.phasedRegistrationNames){for(var b=a._targetInst,c=[];b;){ c.push(b),b=Oa(b); }for(b=c.length;0<b--;){ Pa(c[b],"captured",a); }for(b=0;b<c.length;b++){ Pa(c[b],"bubbled",a); }}}function Ra(a,b,c){a&&c&&c.dispatchConfig.registrationName&&(b=Fa(a,c.dispatchConfig.registrationName))&&(c._dispatchListeners=ya(c._dispatchListeners,b),c._dispatchInstances=ya(c._dispatchInstances,a));}function Ta(a){a&&a.dispatchConfig.registrationName&&Ra(a._targetInst,null,a);}
-	function Ua(a){za(a,Qa);}var Va=!("undefined"===typeof window||!window.document||!window.document.createElement);function Wa(a,b){var c={};c[a.toLowerCase()]=b.toLowerCase();c["Webkit"+a]="webkit"+b;c["Moz"+a]="moz"+b;return c}var Ya={animationend:Wa("Animation","AnimationEnd"),animationiteration:Wa("Animation","AnimationIteration"),animationstart:Wa("Animation","AnimationStart"),transitionend:Wa("Transition","TransitionEnd")},Za={},$a={};
-	Va&&($a=document.createElement("div").style,"AnimationEvent"in window||(delete Ya.animationend.animation,delete Ya.animationiteration.animation,delete Ya.animationstart.animation),"TransitionEvent"in window||delete Ya.transitionend.transition);function ab(a){if(Za[a]){ return Za[a]; }if(!Ya[a]){ return a; }var b=Ya[a],c;for(c in b){ if(b.hasOwnProperty(c)&&c in $a){ return Za[a]=b[c]; } }return a}
-	var bb=ab("animationend"),cb=ab("animationiteration"),db=ab("animationstart"),eb=ab("transitionend"),fb="abort canplay canplaythrough durationchange emptied encrypted ended error loadeddata loadedmetadata loadstart pause play playing progress ratechange seeked seeking stalled suspend timeupdate volumechange waiting".split(" "),gb=null,hb=null,ib=null;
-	function jb(){if(ib){ return ib; }var a,b=hb,c=b.length,d,e="value"in gb?gb.value:gb.textContent,f=e.length;for(a=0;a<c&&b[a]===e[a];a++){ }var g=c-a;for(d=1;d<=g&&b[c-d]===e[f-d];d++){ }return ib=e.slice(a,1<d?1-d:void 0)}function kb(){return !0}function lb(){return !1}
-	function z$1(a,b,c,d){
-	var this$1 = this;
-	this.dispatchConfig=a;this._targetInst=b;this.nativeEvent=c;a=this.constructor.Interface;for(var e in a){ a.hasOwnProperty(e)&&((b=a[e])?this$1[e]=b(c):"target"===e?this$1.target=d:this$1[e]=c[e]); }this.isDefaultPrevented=(null!=c.defaultPrevented?c.defaultPrevented:!1===c.returnValue)?kb:lb;this.isPropagationStopped=lb;return this}
-	objectAssign(z$1.prototype,{preventDefault:function(){this.defaultPrevented=!0;var a=this.nativeEvent;a&&(a.preventDefault?a.preventDefault():"unknown"!==typeof a.returnValue&&(a.returnValue=!1),this.isDefaultPrevented=kb);},stopPropagation:function(){var a=this.nativeEvent;a&&(a.stopPropagation?a.stopPropagation():"unknown"!==typeof a.cancelBubble&&(a.cancelBubble=!0),this.isPropagationStopped=kb);},persist:function(){this.isPersistent=kb;},isPersistent:lb,destructor:function(){
-	var this$1 = this;
-	var a=this.constructor.Interface,
-	b;for(b in a){ this$1[b]=null; }this.nativeEvent=this._targetInst=this.dispatchConfig=null;this.isPropagationStopped=this.isDefaultPrevented=lb;this._dispatchInstances=this._dispatchListeners=null;}});z$1.Interface={type:null,target:null,currentTarget:function(){return null},eventPhase:null,bubbles:null,cancelable:null,timeStamp:function(a){return a.timeStamp||Date.now()},defaultPrevented:null,isTrusted:null};
-	z$1.extend=function(a){function b(){}function c(){return d.apply(this,arguments)}var d=this;b.prototype=d.prototype;var e=new b;objectAssign(e,c.prototype);c.prototype=e;c.prototype.constructor=c;c.Interface=objectAssign({},d.Interface,a);c.extend=d.extend;mb(c);return c};mb(z$1);function nb(a,b,c,d){if(this.eventPool.length){var e=this.eventPool.pop();this.call(e,a,b,c,d);return e}return new this(a,b,c,d)}function ob(a){a instanceof this?void 0:t$1("279");a.destructor();10>this.eventPool.length&&this.eventPool.push(a);}
-	function mb(a){a.eventPool=[];a.getPooled=nb;a.release=ob;}var pb=z$1.extend({data:null}),qb=z$1.extend({data:null}),rb=[9,13,27,32],sb=Va&&"CompositionEvent"in window,tb=null;Va&&"documentMode"in document&&(tb=document.documentMode);
-	var ub=Va&&"TextEvent"in window&&!tb,vb=Va&&(!sb||tb&&8<tb&&11>=tb),wb=String.fromCharCode(32),xb={beforeInput:{phasedRegistrationNames:{bubbled:"onBeforeInput",captured:"onBeforeInputCapture"},dependencies:["compositionend","keypress","textInput","paste"]},compositionEnd:{phasedRegistrationNames:{bubbled:"onCompositionEnd",captured:"onCompositionEndCapture"},dependencies:"blur compositionend keydown keypress keyup mousedown".split(" ")},compositionStart:{phasedRegistrationNames:{bubbled:"onCompositionStart",
-	captured:"onCompositionStartCapture"},dependencies:"blur compositionstart keydown keypress keyup mousedown".split(" ")},compositionUpdate:{phasedRegistrationNames:{bubbled:"onCompositionUpdate",captured:"onCompositionUpdateCapture"},dependencies:"blur compositionupdate keydown keypress keyup mousedown".split(" ")}},yb=!1;
-	function zb(a,b){switch(a){case "keyup":return -1!==rb.indexOf(b.keyCode);case "keydown":return 229!==b.keyCode;case "keypress":case "mousedown":case "blur":return !0;default:return !1}}function Ab(a){a=a.detail;return "object"===typeof a&&"data"in a?a.data:null}var Bb=!1;function Cb(a,b){switch(a){case "compositionend":return Ab(b);case "keypress":if(32!==b.which){ return null; }yb=!0;return wb;case "textInput":return a=b.data,a===wb&&yb?null:a;default:return null}}
-	function Db(a,b){if(Bb){ return "compositionend"===a||!sb&&zb(a,b)?(a=jb(),ib=hb=gb=null,Bb=!1,a):null; }switch(a){case "paste":return null;case "keypress":if(!(b.ctrlKey||b.altKey||b.metaKey)||b.ctrlKey&&b.altKey){if(b.char&&1<b.char.length){ return b.char; }if(b.which){ return String.fromCharCode(b.which) }}return null;case "compositionend":return vb&&"ko"!==b.locale?null:b.data;default:return null}}
-	var Eb={eventTypes:xb,extractEvents:function(a,b,c,d){var e=void 0;var f=void 0;if(sb){ b:{switch(a){case "compositionstart":e=xb.compositionStart;break b;case "compositionend":e=xb.compositionEnd;break b;case "compositionupdate":e=xb.compositionUpdate;break b}e=void 0;} }else { Bb?zb(a,c)&&(e=xb.compositionEnd):"keydown"===a&&229===c.keyCode&&(e=xb.compositionStart); }e?(vb&&"ko"!==c.locale&&(Bb||e!==xb.compositionStart?e===xb.compositionEnd&&Bb&&(f=jb()):(gb=d,hb="value"in gb?gb.value:gb.textContent,Bb=
-	!0)),e=pb.getPooled(e,b,c,d),f?e.data=f:(f=Ab(c),null!==f&&(e.data=f)),Ua(e),f=e):f=null;(a=ub?Cb(a,c):Db(a,c))?(b=qb.getPooled(xb.beforeInput,b,c,d),b.data=a,Ua(b)):b=null;return null===f?b:null===b?f:[f,b]}},Fb=null,Gb=null,Hb=null;function Ib(a){if(a=va(a)){"function"!==typeof Fb?t$1("280"):void 0;var b=ua(a.stateNode);Fb(a.stateNode,a.type,b);}}function Jb(a){Gb?Hb?Hb.push(a):Hb=[a]:Gb=a;}function Kb(){if(Gb){var a=Gb,b=Hb;Hb=Gb=null;Ib(a);if(b){ for(a=0;a<b.length;a++){ Ib(b[a]); } }}}
-	function Lb(a,b){return a(b)}function Mb(a,b,c){return a(b,c)}function Nb(){}var Ob=!1;function Pb(a,b){if(Ob){ return a(b); }Ob=!0;try{return Lb(a,b)}finally{if(Ob=!1,null!==Gb||null!==Hb){ Nb(),Kb(); }}}var Qb={color:!0,date:!0,datetime:!0,"datetime-local":!0,email:!0,month:!0,number:!0,password:!0,range:!0,search:!0,tel:!0,text:!0,time:!0,url:!0,week:!0};function Rb(a){var b=a&&a.nodeName&&a.nodeName.toLowerCase();return "input"===b?!!Qb[a.type]:"textarea"===b?!0:!1}
-	function Sb(a){a=a.target||a.srcElement||window;a.correspondingUseElement&&(a=a.correspondingUseElement);return 3===a.nodeType?a.parentNode:a}function Tb(a){if(!Va){ return !1; }a="on"+a;var b=a in document;b||(b=document.createElement("div"),b.setAttribute(a,"return;"),b="function"===typeof b[a]);return b}function Ub(a){var b=a.type;return (a=a.nodeName)&&"input"===a.toLowerCase()&&("checkbox"===b||"radio"===b)}
-	function Vb(a){var b=Ub(a)?"checked":"value",c=Object.getOwnPropertyDescriptor(a.constructor.prototype,b),d=""+a[b];if(!a.hasOwnProperty(b)&&"undefined"!==typeof c&&"function"===typeof c.get&&"function"===typeof c.set){var e=c.get,f=c.set;Object.defineProperty(a,b,{configurable:!0,get:function(){return e.call(this)},set:function(a){d=""+a;f.call(this,a);}});Object.defineProperty(a,b,{enumerable:c.enumerable});return {getValue:function(){return d},setValue:function(a){d=""+a;},stopTracking:function(){a._valueTracker=
-	null;delete a[b];}}}}function Wb(a){a._valueTracker||(a._valueTracker=Vb(a));}function Xb(a){if(!a){ return !1; }var b=a._valueTracker;if(!b){ return !0; }var c=b.getValue();var d="";a&&(d=Ub(a)?a.checked?"true":"false":a.value);a=d;return a!==c?(b.setValue(a),!0):!1}
-	var Yb=react.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,Zb=/^(.*)[\\\/]/,C$1="function"===typeof Symbol&&Symbol.for,$b=C$1?Symbol.for("react.element"):60103,ac=C$1?Symbol.for("react.portal"):60106,bc=C$1?Symbol.for("react.fragment"):60107,cc=C$1?Symbol.for("react.strict_mode"):60108,dc=C$1?Symbol.for("react.profiler"):60114,ec=C$1?Symbol.for("react.provider"):60109,fc=C$1?Symbol.for("react.context"):60110,gc=C$1?Symbol.for("react.async_mode"):60111,hc=C$1?Symbol.for("react.forward_ref"):60112,ic=C$1?Symbol.for("react.placeholder"):
-	60113,jc="function"===typeof Symbol&&Symbol.iterator;function kc(a){if(null===a||"object"!==typeof a){ return null; }a=jc&&a[jc]||a["@@iterator"];return "function"===typeof a?a:null}
-	function lc(a){if(null==a){ return null; }if("function"===typeof a){ return a.displayName||a.name||null; }if("string"===typeof a){ return a; }switch(a){case gc:return "AsyncMode";case bc:return "Fragment";case ac:return "Portal";case dc:return "Profiler";case cc:return "StrictMode";case ic:return "Placeholder"}if("object"===typeof a){switch(a.$$typeof){case fc:return "Context.Consumer";case ec:return "Context.Provider";case hc:var b=a.render;b=b.displayName||b.name||"";return a.displayName||(""!==b?"ForwardRef("+b+")":
-	"ForwardRef")}if("function"===typeof a.then&&(a=1===a._reactStatus?a._reactResult:null)){ return lc(a) }}return null}function mc(a){var b="";do{a:switch(a.tag){case 4:case 0:case 1:case 2:case 3:case 7:case 10:var c=a._debugOwner,d=a._debugSource,e=lc(a.type);var f=null;c&&(f=lc(c.type));c=e;e="";d?e=" (at "+d.fileName.replace(Zb,"")+":"+d.lineNumber+")":f&&(e=" (created by "+f+")");f="\n    in "+(c||"Unknown")+e;break a;default:f="";}b+=f;a=a.return;}while(a);return b}
-	var nc=/^[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$/,pc=Object.prototype.hasOwnProperty,qc={},rc={};
-	function sc(a){if(pc.call(rc,a)){ return !0; }if(pc.call(qc,a)){ return !1; }if(nc.test(a)){ return rc[a]=!0; }qc[a]=!0;return !1}function tc(a,b,c,d){if(null!==c&&0===c.type){ return !1; }switch(typeof b){case "function":case "symbol":return !0;case "boolean":if(d){ return !1; }if(null!==c){ return !c.acceptsBooleans; }a=a.toLowerCase().slice(0,5);return "data-"!==a&&"aria-"!==a;default:return !1}}
-	function uc(a,b,c,d){if(null===b||"undefined"===typeof b||tc(a,b,c,d)){ return !0; }if(d){ return !1; }if(null!==c){ switch(c.type){case 3:return !b;case 4:return !1===b;case 5:return isNaN(b);case 6:return isNaN(b)||1>b} }return !1}function D$1(a,b,c,d,e){this.acceptsBooleans=2===b||3===b||4===b;this.attributeName=d;this.attributeNamespace=e;this.mustUseProperty=c;this.propertyName=a;this.type=b;}var E$1={};
-	"children dangerouslySetInnerHTML defaultValue defaultChecked innerHTML suppressContentEditableWarning suppressHydrationWarning style".split(" ").forEach(function(a){E$1[a]=new D$1(a,0,!1,a,null);});[["acceptCharset","accept-charset"],["className","class"],["htmlFor","for"],["httpEquiv","http-equiv"]].forEach(function(a){var b=a[0];E$1[b]=new D$1(b,1,!1,a[1],null);});["contentEditable","draggable","spellCheck","value"].forEach(function(a){E$1[a]=new D$1(a,2,!1,a.toLowerCase(),null);});
-	["autoReverse","externalResourcesRequired","focusable","preserveAlpha"].forEach(function(a){E$1[a]=new D$1(a,2,!1,a,null);});"allowFullScreen async autoFocus autoPlay controls default defer disabled formNoValidate hidden loop noModule noValidate open playsInline readOnly required reversed scoped seamless itemScope".split(" ").forEach(function(a){E$1[a]=new D$1(a,3,!1,a.toLowerCase(),null);});["checked","multiple","muted","selected"].forEach(function(a){E$1[a]=new D$1(a,3,!0,a,null);});
-	["capture","download"].forEach(function(a){E$1[a]=new D$1(a,4,!1,a,null);});["cols","rows","size","span"].forEach(function(a){E$1[a]=new D$1(a,6,!1,a,null);});["rowSpan","start"].forEach(function(a){E$1[a]=new D$1(a,5,!1,a.toLowerCase(),null);});var vc=/[\-:]([a-z])/g;function wc(a){return a[1].toUpperCase()}
+	function ra(a,b,c){sa[a]?t$1("100",a):void 0;sa[a]=b;ta[a]=b.eventTypes[c].dependencies;}var pa=[],qa={},sa={},ta={},ua=null,va=null,wa=null;function xa(a,b,c){var d=a.type||"unknown-event";a.currentTarget=wa(c);la(d,b,void 0,a);a.currentTarget=null;}function ya(a,b){null==b?t$1("30"):void 0;if(null==a){ return b; }if(Array.isArray(a)){if(Array.isArray(b)){ return a.push.apply(a,b),a; }a.push(b);return a}return Array.isArray(b)?[a].concat(b):[a,b]}
+	function za(a,b,c){Array.isArray(a)?a.forEach(b,c):a&&b.call(c,a);}var Aa=null;function Ba(a){if(a){var b=a._dispatchListeners,c=a._dispatchInstances;if(Array.isArray(b)){ for(var d=0;d<b.length&&!a.isPropagationStopped();d++){ xa(a,b[d],c[d]); } }else { b&&xa(a,b,c); }a._dispatchListeners=null;a._dispatchInstances=null;a.isPersistent()||a.constructor.release(a);}}
+	var Ca={injectEventPluginOrder:function(a){ma?t$1("101"):void 0;ma=Array.prototype.slice.call(a);oa();},injectEventPluginsByName:function(a){var b=!1,c;for(c in a){ if(a.hasOwnProperty(c)){var d=a[c];na.hasOwnProperty(c)&&na[c]===d||(na[c]?t$1("102",c):void 0,na[c]=d,b=!0);} }b&&oa();}};
+	function Da(a,b){var c=a.stateNode;if(!c){ return null; }var d=ua(c);if(!d){ return null; }c=d[b];a:switch(b){case "onClick":case "onClickCapture":case "onDoubleClick":case "onDoubleClickCapture":case "onMouseDown":case "onMouseDownCapture":case "onMouseMove":case "onMouseMoveCapture":case "onMouseUp":case "onMouseUpCapture":(d=!d.disabled)||(a=a.type,d=!("button"===a||"input"===a||"select"===a||"textarea"===a));a=!d;break a;default:a=!1;}if(a){ return null; }c&&"function"!==typeof c?t$1("231",b,typeof c):void 0;
+	return c}function Ea(a){null!==a&&(Aa=ya(Aa,a));a=Aa;Aa=null;if(a&&(za(a,Ba),Aa?t$1("95"):void 0,ha)){ throw a=ia,ha=!1,ia=null,a; }}var Fa=Math.random().toString(36).slice(2),Ga="__reactInternalInstance$"+Fa,Ha="__reactEventHandlers$"+Fa;function Ia(a){if(a[Ga]){ return a[Ga]; }for(;!a[Ga];){ if(a.parentNode){ a=a.parentNode; }else { return null; } }a=a[Ga];return 5===a.tag||6===a.tag?a:null}function Ja(a){a=a[Ga];return !a||5!==a.tag&&6!==a.tag?null:a}
+	function Ka(a){if(5===a.tag||6===a.tag){ return a.stateNode; }t$1("33");}function La(a){return a[Ha]||null}function Ma(a){do { a=a.return; }while(a&&5!==a.tag);return a?a:null}function Na(a,b,c){if(b=Da(a,c.dispatchConfig.phasedRegistrationNames[b])){ c._dispatchListeners=ya(c._dispatchListeners,b),c._dispatchInstances=ya(c._dispatchInstances,a); }}
+	function Oa(a){if(a&&a.dispatchConfig.phasedRegistrationNames){for(var b=a._targetInst,c=[];b;){ c.push(b),b=Ma(b); }for(b=c.length;0<b--;){ Na(c[b],"captured",a); }for(b=0;b<c.length;b++){ Na(c[b],"bubbled",a); }}}function Pa(a,b,c){a&&c&&c.dispatchConfig.registrationName&&(b=Da(a,c.dispatchConfig.registrationName))&&(c._dispatchListeners=ya(c._dispatchListeners,b),c._dispatchInstances=ya(c._dispatchInstances,a));}function Qa(a){a&&a.dispatchConfig.registrationName&&Pa(a._targetInst,null,a);}
+	function Ra(a){za(a,Oa);}var Sa=!("undefined"===typeof window||!window.document||!window.document.createElement);function Ta(a,b){var c={};c[a.toLowerCase()]=b.toLowerCase();c["Webkit"+a]="webkit"+b;c["Moz"+a]="moz"+b;return c}var Ua={animationend:Ta("Animation","AnimationEnd"),animationiteration:Ta("Animation","AnimationIteration"),animationstart:Ta("Animation","AnimationStart"),transitionend:Ta("Transition","TransitionEnd")},Va={},Wa={};
+	Sa&&(Wa=document.createElement("div").style,"AnimationEvent"in window||(delete Ua.animationend.animation,delete Ua.animationiteration.animation,delete Ua.animationstart.animation),"TransitionEvent"in window||delete Ua.transitionend.transition);function Xa(a){if(Va[a]){ return Va[a]; }if(!Ua[a]){ return a; }var b=Ua[a],c;for(c in b){ if(b.hasOwnProperty(c)&&c in Wa){ return Va[a]=b[c]; } }return a}
+	var Ya=Xa("animationend"),Za=Xa("animationiteration"),$a=Xa("animationstart"),ab=Xa("transitionend"),bb="abort canplay canplaythrough durationchange emptied encrypted ended error loadeddata loadedmetadata loadstart pause play playing progress ratechange seeked seeking stalled suspend timeupdate volumechange waiting".split(" "),cb=null,eb=null,fb=null;
+	function gb(){if(fb){ return fb; }var a,b=eb,c=b.length,d,e="value"in cb?cb.value:cb.textContent,f=e.length;for(a=0;a<c&&b[a]===e[a];a++){ }var g=c-a;for(d=1;d<=g&&b[c-d]===e[f-d];d++){ }return fb=e.slice(a,1<d?1-d:void 0)}function hb(){return !0}function ib(){return !1}
+	function A$1(a,b,c,d){this.dispatchConfig=a;this._targetInst=b;this.nativeEvent=c;a=this.constructor.Interface;for(var e in a){ a.hasOwnProperty(e)&&((b=a[e])?this[e]=b(c):"target"===e?this.target=d:this[e]=c[e]); }this.isDefaultPrevented=(null!=c.defaultPrevented?c.defaultPrevented:!1===c.returnValue)?hb:ib;this.isPropagationStopped=ib;return this}
+	objectAssign(A$1.prototype,{preventDefault:function(){this.defaultPrevented=!0;var a=this.nativeEvent;a&&(a.preventDefault?a.preventDefault():"unknown"!==typeof a.returnValue&&(a.returnValue=!1),this.isDefaultPrevented=hb);},stopPropagation:function(){var a=this.nativeEvent;a&&(a.stopPropagation?a.stopPropagation():"unknown"!==typeof a.cancelBubble&&(a.cancelBubble=!0),this.isPropagationStopped=hb);},persist:function(){this.isPersistent=hb;},isPersistent:ib,destructor:function(){var a=this.constructor.Interface,
+	b;for(b in a){ this[b]=null; }this.nativeEvent=this._targetInst=this.dispatchConfig=null;this.isPropagationStopped=this.isDefaultPrevented=ib;this._dispatchInstances=this._dispatchListeners=null;}});A$1.Interface={type:null,target:null,currentTarget:function(){return null},eventPhase:null,bubbles:null,cancelable:null,timeStamp:function(a){return a.timeStamp||Date.now()},defaultPrevented:null,isTrusted:null};
+	A$1.extend=function(a){function b(){}function c(){return d.apply(this,arguments)}var d=this;b.prototype=d.prototype;var e=new b;objectAssign(e,c.prototype);c.prototype=e;c.prototype.constructor=c;c.Interface=objectAssign({},d.Interface,a);c.extend=d.extend;jb(c);return c};jb(A$1);function kb(a,b,c,d){if(this.eventPool.length){var e=this.eventPool.pop();this.call(e,a,b,c,d);return e}return new this(a,b,c,d)}function lb(a){a instanceof this?void 0:t$1("279");a.destructor();10>this.eventPool.length&&this.eventPool.push(a);}
+	function jb(a){a.eventPool=[];a.getPooled=kb;a.release=lb;}var mb=A$1.extend({data:null}),nb=A$1.extend({data:null}),ob=[9,13,27,32],pb=Sa&&"CompositionEvent"in window,qb=null;Sa&&"documentMode"in document&&(qb=document.documentMode);
+	var rb=Sa&&"TextEvent"in window&&!qb,sb=Sa&&(!pb||qb&&8<qb&&11>=qb),tb=String.fromCharCode(32),ub={beforeInput:{phasedRegistrationNames:{bubbled:"onBeforeInput",captured:"onBeforeInputCapture"},dependencies:["compositionend","keypress","textInput","paste"]},compositionEnd:{phasedRegistrationNames:{bubbled:"onCompositionEnd",captured:"onCompositionEndCapture"},dependencies:"blur compositionend keydown keypress keyup mousedown".split(" ")},compositionStart:{phasedRegistrationNames:{bubbled:"onCompositionStart",
+	captured:"onCompositionStartCapture"},dependencies:"blur compositionstart keydown keypress keyup mousedown".split(" ")},compositionUpdate:{phasedRegistrationNames:{bubbled:"onCompositionUpdate",captured:"onCompositionUpdateCapture"},dependencies:"blur compositionupdate keydown keypress keyup mousedown".split(" ")}},vb=!1;
+	function wb(a,b){switch(a){case "keyup":return -1!==ob.indexOf(b.keyCode);case "keydown":return 229!==b.keyCode;case "keypress":case "mousedown":case "blur":return !0;default:return !1}}function xb(a){a=a.detail;return "object"===typeof a&&"data"in a?a.data:null}var yb=!1;function zb(a,b){switch(a){case "compositionend":return xb(b);case "keypress":if(32!==b.which){ return null; }vb=!0;return tb;case "textInput":return a=b.data,a===tb&&vb?null:a;default:return null}}
+	function Ab(a,b){if(yb){ return "compositionend"===a||!pb&&wb(a,b)?(a=gb(),fb=eb=cb=null,yb=!1,a):null; }switch(a){case "paste":return null;case "keypress":if(!(b.ctrlKey||b.altKey||b.metaKey)||b.ctrlKey&&b.altKey){if(b.char&&1<b.char.length){ return b.char; }if(b.which){ return String.fromCharCode(b.which) }}return null;case "compositionend":return sb&&"ko"!==b.locale?null:b.data;default:return null}}
+	var Bb={eventTypes:ub,extractEvents:function(a,b,c,d){var e=void 0;var f=void 0;if(pb){ b:{switch(a){case "compositionstart":e=ub.compositionStart;break b;case "compositionend":e=ub.compositionEnd;break b;case "compositionupdate":e=ub.compositionUpdate;break b}e=void 0;} }else { yb?wb(a,c)&&(e=ub.compositionEnd):"keydown"===a&&229===c.keyCode&&(e=ub.compositionStart); }e?(sb&&"ko"!==c.locale&&(yb||e!==ub.compositionStart?e===ub.compositionEnd&&yb&&(f=gb()):(cb=d,eb="value"in cb?cb.value:cb.textContent,yb=
+	!0)),e=mb.getPooled(e,b,c,d),f?e.data=f:(f=xb(c),null!==f&&(e.data=f)),Ra(e),f=e):f=null;(a=rb?zb(a,c):Ab(a,c))?(b=nb.getPooled(ub.beforeInput,b,c,d),b.data=a,Ra(b)):b=null;return null===f?b:null===b?f:[f,b]}},Cb=null,Db=null,Eb=null;function Hb(a){if(a=va(a)){"function"!==typeof Cb?t$1("280"):void 0;var b=ua(a.stateNode);Cb(a.stateNode,a.type,b);}}function Ib(a){Db?Eb?Eb.push(a):Eb=[a]:Db=a;}function Jb(){if(Db){var a=Db,b=Eb;Eb=Db=null;Hb(a);if(b){ for(a=0;a<b.length;a++){ Hb(b[a]); } }}}
+	function Kb(a,b){return a(b)}function Lb(a,b,c){return a(b,c)}function Mb(){}var Nb=!1;function Ob(a,b){if(Nb){ return a(b); }Nb=!0;try{return Kb(a,b)}finally{if(Nb=!1,null!==Db||null!==Eb){ Mb(),Jb(); }}}var Pb={color:!0,date:!0,datetime:!0,"datetime-local":!0,email:!0,month:!0,number:!0,password:!0,range:!0,search:!0,tel:!0,text:!0,time:!0,url:!0,week:!0};function Qb(a){var b=a&&a.nodeName&&a.nodeName.toLowerCase();return "input"===b?!!Pb[a.type]:"textarea"===b?!0:!1}
+	function Rb(a){a=a.target||a.srcElement||window;a.correspondingUseElement&&(a=a.correspondingUseElement);return 3===a.nodeType?a.parentNode:a}function Sb(a){if(!Sa){ return !1; }a="on"+a;var b=a in document;b||(b=document.createElement("div"),b.setAttribute(a,"return;"),b="function"===typeof b[a]);return b}function Tb(a){var b=a.type;return (a=a.nodeName)&&"input"===a.toLowerCase()&&("checkbox"===b||"radio"===b)}
+	function Ub(a){var b=Tb(a)?"checked":"value",c=Object.getOwnPropertyDescriptor(a.constructor.prototype,b),d=""+a[b];if(!a.hasOwnProperty(b)&&"undefined"!==typeof c&&"function"===typeof c.get&&"function"===typeof c.set){var e=c.get,f=c.set;Object.defineProperty(a,b,{configurable:!0,get:function(){return e.call(this)},set:function(a){d=""+a;f.call(this,a);}});Object.defineProperty(a,b,{enumerable:c.enumerable});return {getValue:function(){return d},setValue:function(a){d=""+a;},stopTracking:function(){a._valueTracker=
+	null;delete a[b];}}}}function Vb(a){a._valueTracker||(a._valueTracker=Ub(a));}function Wb(a){if(!a){ return !1; }var b=a._valueTracker;if(!b){ return !0; }var c=b.getValue();var d="";a&&(d=Tb(a)?a.checked?"true":"false":a.value);a=d;return a!==c?(b.setValue(a),!0):!1}
+	var Xb=react.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,Yb=/^(.*)[\\\/]/,D$1="function"===typeof Symbol&&Symbol.for,Zb=D$1?Symbol.for("react.element"):60103,$b=D$1?Symbol.for("react.portal"):60106,ac=D$1?Symbol.for("react.fragment"):60107,bc=D$1?Symbol.for("react.strict_mode"):60108,cc=D$1?Symbol.for("react.profiler"):60114,dc=D$1?Symbol.for("react.provider"):60109,ec=D$1?Symbol.for("react.context"):60110,fc=D$1?Symbol.for("react.concurrent_mode"):60111,gc=D$1?Symbol.for("react.forward_ref"):60112,hc=D$1?Symbol.for("react.suspense"):
+	60113,ic=D$1?Symbol.for("react.memo"):60115,jc=D$1?Symbol.for("react.lazy"):60116,kc="function"===typeof Symbol&&Symbol.iterator;function lc(a){if(null===a||"object"!==typeof a){ return null; }a=kc&&a[kc]||a["@@iterator"];return "function"===typeof a?a:null}
+	function mc(a){if(null==a){ return null; }if("function"===typeof a){ return a.displayName||a.name||null; }if("string"===typeof a){ return a; }switch(a){case fc:return "ConcurrentMode";case ac:return "Fragment";case $b:return "Portal";case cc:return "Profiler";case bc:return "StrictMode";case hc:return "Suspense"}if("object"===typeof a){ switch(a.$$typeof){case ec:return "Context.Consumer";case dc:return "Context.Provider";case gc:var b=a.render;b=b.displayName||b.name||"";return a.displayName||(""!==b?"ForwardRef("+b+
+	")":"ForwardRef");case ic:return mc(a.type);case jc:if(a=1===a._status?a._result:null){ return mc(a) }} }return null}function nc(a){var b="";do{a:switch(a.tag){case 2:case 16:case 0:case 1:case 5:case 8:case 13:var c=a._debugOwner,d=a._debugSource,e=mc(a.type);var f=null;c&&(f=mc(c.type));c=e;e="";d?e=" (at "+d.fileName.replace(Yb,"")+":"+d.lineNumber+")":f&&(e=" (created by "+f+")");f="\n    in "+(c||"Unknown")+e;break a;default:f="";}b+=f;a=a.return;}while(a);return b}
+	var oc=/^[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$/,pc=Object.prototype.hasOwnProperty,qc={},rc={};
+	function sc(a){if(pc.call(rc,a)){ return !0; }if(pc.call(qc,a)){ return !1; }if(oc.test(a)){ return rc[a]=!0; }qc[a]=!0;return !1}function tc(a,b,c,d){if(null!==c&&0===c.type){ return !1; }switch(typeof b){case "function":case "symbol":return !0;case "boolean":if(d){ return !1; }if(null!==c){ return !c.acceptsBooleans; }a=a.toLowerCase().slice(0,5);return "data-"!==a&&"aria-"!==a;default:return !1}}
+	function uc(a,b,c,d){if(null===b||"undefined"===typeof b||tc(a,b,c,d)){ return !0; }if(d){ return !1; }if(null!==c){ switch(c.type){case 3:return !b;case 4:return !1===b;case 5:return isNaN(b);case 6:return isNaN(b)||1>b} }return !1}function E$1(a,b,c,d,e){this.acceptsBooleans=2===b||3===b||4===b;this.attributeName=d;this.attributeNamespace=e;this.mustUseProperty=c;this.propertyName=a;this.type=b;}var F$1={};
+	"children dangerouslySetInnerHTML defaultValue defaultChecked innerHTML suppressContentEditableWarning suppressHydrationWarning style".split(" ").forEach(function(a){F$1[a]=new E$1(a,0,!1,a,null);});[["acceptCharset","accept-charset"],["className","class"],["htmlFor","for"],["httpEquiv","http-equiv"]].forEach(function(a){var b=a[0];F$1[b]=new E$1(b,1,!1,a[1],null);});["contentEditable","draggable","spellCheck","value"].forEach(function(a){F$1[a]=new E$1(a,2,!1,a.toLowerCase(),null);});
+	["autoReverse","externalResourcesRequired","focusable","preserveAlpha"].forEach(function(a){F$1[a]=new E$1(a,2,!1,a,null);});"allowFullScreen async autoFocus autoPlay controls default defer disabled formNoValidate hidden loop noModule noValidate open playsInline readOnly required reversed scoped seamless itemScope".split(" ").forEach(function(a){F$1[a]=new E$1(a,3,!1,a.toLowerCase(),null);});["checked","multiple","muted","selected"].forEach(function(a){F$1[a]=new E$1(a,3,!0,a,null);});
+	["capture","download"].forEach(function(a){F$1[a]=new E$1(a,4,!1,a,null);});["cols","rows","size","span"].forEach(function(a){F$1[a]=new E$1(a,6,!1,a,null);});["rowSpan","start"].forEach(function(a){F$1[a]=new E$1(a,5,!1,a.toLowerCase(),null);});var vc=/[\-:]([a-z])/g;function xc(a){return a[1].toUpperCase()}
 	"accent-height alignment-baseline arabic-form baseline-shift cap-height clip-path clip-rule color-interpolation color-interpolation-filters color-profile color-rendering dominant-baseline enable-background fill-opacity fill-rule flood-color flood-opacity font-family font-size font-size-adjust font-stretch font-style font-variant font-weight glyph-name glyph-orientation-horizontal glyph-orientation-vertical horiz-adv-x horiz-origin-x image-rendering letter-spacing lighting-color marker-end marker-mid marker-start overline-position overline-thickness paint-order panose-1 pointer-events rendering-intent shape-rendering stop-color stop-opacity strikethrough-position strikethrough-thickness stroke-dasharray stroke-dashoffset stroke-linecap stroke-linejoin stroke-miterlimit stroke-opacity stroke-width text-anchor text-decoration text-rendering underline-position underline-thickness unicode-bidi unicode-range units-per-em v-alphabetic v-hanging v-ideographic v-mathematical vector-effect vert-adv-y vert-origin-x vert-origin-y word-spacing writing-mode xmlns:xlink x-height".split(" ").forEach(function(a){var b=a.replace(vc,
-	wc);E$1[b]=new D$1(b,1,!1,a,null);});"xlink:actuate xlink:arcrole xlink:href xlink:role xlink:show xlink:title xlink:type".split(" ").forEach(function(a){var b=a.replace(vc,wc);E$1[b]=new D$1(b,1,!1,a,"http://www.w3.org/1999/xlink");});["xml:base","xml:lang","xml:space"].forEach(function(a){var b=a.replace(vc,wc);E$1[b]=new D$1(b,1,!1,a,"http://www.w3.org/XML/1998/namespace");});E$1.tabIndex=new D$1("tabIndex",1,!1,"tabindex",null);
-	function xc(a,b,c,d){var e=E$1.hasOwnProperty(b)?E$1[b]:null;var f=null!==e?0===e.type:d?!1:!(2<b.length)||"o"!==b[0]&&"O"!==b[0]||"n"!==b[1]&&"N"!==b[1]?!1:!0;f||(uc(b,c,e,d)&&(c=null),d||null===e?sc(b)&&(null===c?a.removeAttribute(b):a.setAttribute(b,""+c)):e.mustUseProperty?a[e.propertyName]=null===c?3===e.type?!1:"":c:(b=e.attributeName,d=e.attributeNamespace,null===c?a.removeAttribute(b):(e=e.type,c=3===e||4===e&&!0===c?"":""+c,d?a.setAttributeNS(d,b,c):a.setAttribute(b,c))));}
-	function yc(a){switch(typeof a){case "boolean":case "number":case "object":case "string":case "undefined":return a;default:return ""}}function zc(a,b){var c=b.checked;return objectAssign({},b,{defaultChecked:void 0,defaultValue:void 0,value:void 0,checked:null!=c?c:a._wrapperState.initialChecked})}
-	function Bc(a,b){var c=null==b.defaultValue?"":b.defaultValue,d=null!=b.checked?b.checked:b.defaultChecked;c=yc(null!=b.value?b.value:c);a._wrapperState={initialChecked:d,initialValue:c,controlled:"checkbox"===b.type||"radio"===b.type?null!=b.checked:null!=b.value};}function Cc(a,b){b=b.checked;null!=b&&xc(a,"checked",b,!1);}
-	function Dc(a,b){Cc(a,b);var c=yc(b.value),d=b.type;if(null!=c){ if("number"===d){if(0===c&&""===a.value||a.value!=c){ a.value=""+c; }}else { a.value!==""+c&&(a.value=""+c); } }else if("submit"===d||"reset"===d){a.removeAttribute("value");return}b.hasOwnProperty("value")?Ec(a,b.type,c):b.hasOwnProperty("defaultValue")&&Ec(a,b.type,yc(b.defaultValue));null==b.checked&&null!=b.defaultChecked&&(a.defaultChecked=!!b.defaultChecked);}
+	xc);F$1[b]=new E$1(b,1,!1,a,null);});"xlink:actuate xlink:arcrole xlink:href xlink:role xlink:show xlink:title xlink:type".split(" ").forEach(function(a){var b=a.replace(vc,xc);F$1[b]=new E$1(b,1,!1,a,"http://www.w3.org/1999/xlink");});["xml:base","xml:lang","xml:space"].forEach(function(a){var b=a.replace(vc,xc);F$1[b]=new E$1(b,1,!1,a,"http://www.w3.org/XML/1998/namespace");});F$1.tabIndex=new E$1("tabIndex",1,!1,"tabindex",null);
+	function yc(a,b,c,d){var e=F$1.hasOwnProperty(b)?F$1[b]:null;var f=null!==e?0===e.type:d?!1:!(2<b.length)||"o"!==b[0]&&"O"!==b[0]||"n"!==b[1]&&"N"!==b[1]?!1:!0;f||(uc(b,c,e,d)&&(c=null),d||null===e?sc(b)&&(null===c?a.removeAttribute(b):a.setAttribute(b,""+c)):e.mustUseProperty?a[e.propertyName]=null===c?3===e.type?!1:"":c:(b=e.attributeName,d=e.attributeNamespace,null===c?a.removeAttribute(b):(e=e.type,c=3===e||4===e&&!0===c?"":""+c,d?a.setAttributeNS(d,b,c):a.setAttribute(b,c))));}
+	function zc(a){switch(typeof a){case "boolean":case "number":case "object":case "string":case "undefined":return a;default:return ""}}function Ac(a,b){var c=b.checked;return objectAssign({},b,{defaultChecked:void 0,defaultValue:void 0,value:void 0,checked:null!=c?c:a._wrapperState.initialChecked})}
+	function Bc(a,b){var c=null==b.defaultValue?"":b.defaultValue,d=null!=b.checked?b.checked:b.defaultChecked;c=zc(null!=b.value?b.value:c);a._wrapperState={initialChecked:d,initialValue:c,controlled:"checkbox"===b.type||"radio"===b.type?null!=b.checked:null!=b.value};}function Cc(a,b){b=b.checked;null!=b&&yc(a,"checked",b,!1);}
+	function Dc(a,b){Cc(a,b);var c=zc(b.value),d=b.type;if(null!=c){ if("number"===d){if(0===c&&""===a.value||a.value!=c){ a.value=""+c; }}else { a.value!==""+c&&(a.value=""+c); } }else if("submit"===d||"reset"===d){a.removeAttribute("value");return}b.hasOwnProperty("value")?Ec(a,b.type,c):b.hasOwnProperty("defaultValue")&&Ec(a,b.type,zc(b.defaultValue));null==b.checked&&null!=b.defaultChecked&&(a.defaultChecked=!!b.defaultChecked);}
 	function Fc(a,b,c){if(b.hasOwnProperty("value")||b.hasOwnProperty("defaultValue")){var d=b.type;if(!("submit"!==d&&"reset"!==d||void 0!==b.value&&null!==b.value)){ return; }b=""+a._wrapperState.initialValue;c||b===a.value||(a.value=b);a.defaultValue=b;}c=a.name;""!==c&&(a.name="");a.defaultChecked=!a.defaultChecked;a.defaultChecked=!!a._wrapperState.initialChecked;""!==c&&(a.name=c);}
-	function Ec(a,b,c){if("number"!==b||a.ownerDocument.activeElement!==a){ null==c?a.defaultValue=""+a._wrapperState.initialValue:a.defaultValue!==""+c&&(a.defaultValue=""+c); }}var Gc={change:{phasedRegistrationNames:{bubbled:"onChange",captured:"onChangeCapture"},dependencies:"blur change click focus input keydown keyup selectionchange".split(" ")}};function Hc(a,b,c){a=z$1.getPooled(Gc.change,a,b,c);a.type="change";Jb(c);Ua(a);return a}var Ic=null,Jc=null;function Kc(a){Ga(a,!1);}
-	function Lc(a){var b=Ma(a);if(Xb(b)){ return a }}function Mc(a,b){if("change"===a){ return b }}var Nc=!1;Va&&(Nc=Tb("input")&&(!document.documentMode||9<document.documentMode));function Oc(){Ic&&(Ic.detachEvent("onpropertychange",Pc),Jc=Ic=null);}function Pc(a){"value"===a.propertyName&&Lc(Jc)&&(a=Hc(Jc,a,Sb(a)),Pb(Kc,a));}function Qc(a,b,c){"focus"===a?(Oc(),Ic=b,Jc=c,Ic.attachEvent("onpropertychange",Pc)):"blur"===a&&Oc();}function Rc(a){if("selectionchange"===a||"keyup"===a||"keydown"===a){ return Lc(Jc) }}
-	function Sc(a,b){if("click"===a){ return Lc(b) }}function Tc(a,b){if("input"===a||"change"===a){ return Lc(b) }}
-	var Uc={eventTypes:Gc,_isInputEventSupported:Nc,extractEvents:function(a,b,c,d){var e=b?Ma(b):window,f=void 0,g=void 0,h=e.nodeName&&e.nodeName.toLowerCase();"select"===h||"input"===h&&"file"===e.type?f=Mc:Rb(e)?Nc?f=Tc:(f=Rc,g=Qc):(h=e.nodeName)&&"input"===h.toLowerCase()&&("checkbox"===e.type||"radio"===e.type)&&(f=Sc);if(f&&(f=f(a,b))){ return Hc(f,c,d); }g&&g(a,e,b);"blur"===a&&(a=e._wrapperState)&&a.controlled&&"number"===e.type&&Ec(e,"number",e.value);}},Vc=z$1.extend({view:null,detail:null}),Wc={Alt:"altKey",
-	Control:"ctrlKey",Meta:"metaKey",Shift:"shiftKey"};function Xc(a){var b=this.nativeEvent;return b.getModifierState?b.getModifierState(a):(a=Wc[a])?!!b[a]:!1}function Yc(){return Xc}
-	var Zc=0,$c=0,ad=!1,bd=!1,cd=Vc.extend({screenX:null,screenY:null,clientX:null,clientY:null,pageX:null,pageY:null,ctrlKey:null,shiftKey:null,altKey:null,metaKey:null,getModifierState:Yc,button:null,buttons:null,relatedTarget:function(a){return a.relatedTarget||(a.fromElement===a.srcElement?a.toElement:a.fromElement)},movementX:function(a){if("movementX"in a){ return a.movementX; }var b=Zc;Zc=a.screenX;return ad?"mousemove"===a.type?a.screenX-b:0:(ad=!0,0)},movementY:function(a){if("movementY"in a){ return a.movementY; }
-	var b=$c;$c=a.screenY;return bd?"mousemove"===a.type?a.screenY-b:0:(bd=!0,0)}}),dd=cd.extend({pointerId:null,width:null,height:null,pressure:null,tangentialPressure:null,tiltX:null,tiltY:null,twist:null,pointerType:null,isPrimary:null}),ed={mouseEnter:{registrationName:"onMouseEnter",dependencies:["mouseout","mouseover"]},mouseLeave:{registrationName:"onMouseLeave",dependencies:["mouseout","mouseover"]},pointerEnter:{registrationName:"onPointerEnter",dependencies:["pointerout","pointerover"]},pointerLeave:{registrationName:"onPointerLeave",
-	dependencies:["pointerout","pointerover"]}},fd={eventTypes:ed,extractEvents:function(a,b,c,d){var e="mouseover"===a||"pointerover"===a,f="mouseout"===a||"pointerout"===a;if(e&&(c.relatedTarget||c.fromElement)||!f&&!e){ return null; }e=d.window===d?d:(e=d.ownerDocument)?e.defaultView||e.parentWindow:window;f?(f=b,b=(b=c.relatedTarget||c.toElement)?Ka(b):null):f=null;if(f===b){ return null; }var g=void 0,h=void 0,k=void 0,l=void 0;if("mouseout"===a||"mouseover"===a){ g=cd,h=ed.mouseLeave,k=ed.mouseEnter,l="mouse"; }
-	else if("pointerout"===a||"pointerover"===a){ g=dd,h=ed.pointerLeave,k=ed.pointerEnter,l="pointer"; }var m=null==f?e:Ma(f);e=null==b?e:Ma(b);a=g.getPooled(h,f,c,d);a.type=l+"leave";a.target=m;a.relatedTarget=e;c=g.getPooled(k,b,c,d);c.type=l+"enter";c.target=e;c.relatedTarget=m;d=b;if(f&&d){ a:{b=f;e=d;l=0;for(g=b;g;g=Oa(g)){ l++; }g=0;for(k=e;k;k=Oa(k)){ g++; }for(;0<l-g;){ b=Oa(b),l--; }for(;0<g-l;){ e=Oa(e),g--; }for(;l--;){if(b===e||b===e.alternate){ break a; }b=Oa(b);e=Oa(e);}b=null;} }else { b=null; }e=b;for(b=[];f&&f!==e;){l=
-	f.alternate;if(null!==l&&l===e){ break; }b.push(f);f=Oa(f);}for(f=[];d&&d!==e;){l=d.alternate;if(null!==l&&l===e){ break; }f.push(d);d=Oa(d);}for(d=0;d<b.length;d++){ Ra(b[d],"bubbled",a); }for(d=f.length;0<d--;){ Ra(f[d],"captured",c); }return [a,c]}},gd=Object.prototype.hasOwnProperty;function hd(a,b){return a===b?0!==a||0!==b||1/a===1/b:a!==a&&b!==b}
-	function id(a,b){if(hd(a,b)){ return !0; }if("object"!==typeof a||null===a||"object"!==typeof b||null===b){ return !1; }var c=Object.keys(a),d=Object.keys(b);if(c.length!==d.length){ return !1; }for(d=0;d<c.length;d++){ if(!gd.call(b,c[d])||!hd(a[c[d]],b[c[d]])){ return !1; } }return !0}function jd(a){var b=a;if(a.alternate){ for(;b.return;){ b=b.return; } }else{if(0!==(b.effectTag&2)){ return 1; }for(;b.return;){ if(b=b.return,0!==(b.effectTag&2)){ return 1 } }}return 5===b.tag?2:3}function kd(a){2!==jd(a)?t$1("188"):void 0;}
-	function ld(a){var b=a.alternate;if(!b){ return b=jd(a),3===b?t$1("188"):void 0,1===b?null:a; }for(var c=a,d=b;;){var e=c.return,f=e?e.alternate:null;if(!e||!f){ break; }if(e.child===f.child){for(var g=e.child;g;){if(g===c){ return kd(e),a; }if(g===d){ return kd(e),b; }g=g.sibling;}t$1("188");}if(c.return!==d.return){ c=e,d=f; }else{g=!1;for(var h=e.child;h;){if(h===c){g=!0;c=e;d=f;break}if(h===d){g=!0;d=e;c=f;break}h=h.sibling;}if(!g){for(h=f.child;h;){if(h===c){g=!0;c=f;d=e;break}if(h===d){g=!0;d=f;c=e;break}h=h.sibling;}g?
-	void 0:t$1("189");}}c.alternate!==d?t$1("190"):void 0;}5!==c.tag?t$1("188"):void 0;return c.stateNode.current===c?a:b}function md(a){a=ld(a);if(!a){ return null; }for(var b=a;;){if(7===b.tag||8===b.tag){ return b; }if(b.child){ b.child.return=b,b=b.child; }else{if(b===a){ break; }for(;!b.sibling;){if(!b.return||b.return===a){ return null; }b=b.return;}b.sibling.return=b.return;b=b.sibling;}}return null}
-	var nd=z$1.extend({animationName:null,elapsedTime:null,pseudoElement:null}),od=z$1.extend({clipboardData:function(a){return "clipboardData"in a?a.clipboardData:window.clipboardData}}),pd=Vc.extend({relatedTarget:null});function qd(a){var b=a.keyCode;"charCode"in a?(a=a.charCode,0===a&&13===b&&(a=13)):a=b;10===a&&(a=13);return 32<=a||13===a?a:0}
-	var rd={Esc:"Escape",Spacebar:" ",Left:"ArrowLeft",Up:"ArrowUp",Right:"ArrowRight",Down:"ArrowDown",Del:"Delete",Win:"OS",Menu:"ContextMenu",Apps:"ContextMenu",Scroll:"ScrollLock",MozPrintableKey:"Unidentified"},sd={8:"Backspace",9:"Tab",12:"Clear",13:"Enter",16:"Shift",17:"Control",18:"Alt",19:"Pause",20:"CapsLock",27:"Escape",32:" ",33:"PageUp",34:"PageDown",35:"End",36:"Home",37:"ArrowLeft",38:"ArrowUp",39:"ArrowRight",40:"ArrowDown",45:"Insert",46:"Delete",112:"F1",113:"F2",114:"F3",115:"F4",
-	116:"F5",117:"F6",118:"F7",119:"F8",120:"F9",121:"F10",122:"F11",123:"F12",144:"NumLock",145:"ScrollLock",224:"Meta"},td=Vc.extend({key:function(a){if(a.key){var b=rd[a.key]||a.key;if("Unidentified"!==b){ return b }}return "keypress"===a.type?(a=qd(a),13===a?"Enter":String.fromCharCode(a)):"keydown"===a.type||"keyup"===a.type?sd[a.keyCode]||"Unidentified":""},location:null,ctrlKey:null,shiftKey:null,altKey:null,metaKey:null,repeat:null,locale:null,getModifierState:Yc,charCode:function(a){return "keypress"===
-	a.type?qd(a):0},keyCode:function(a){return "keydown"===a.type||"keyup"===a.type?a.keyCode:0},which:function(a){return "keypress"===a.type?qd(a):"keydown"===a.type||"keyup"===a.type?a.keyCode:0}}),ud=cd.extend({dataTransfer:null}),vd=Vc.extend({touches:null,targetTouches:null,changedTouches:null,altKey:null,metaKey:null,ctrlKey:null,shiftKey:null,getModifierState:Yc}),wd=z$1.extend({propertyName:null,elapsedTime:null,pseudoElement:null}),xd=cd.extend({deltaX:function(a){return "deltaX"in a?a.deltaX:"wheelDeltaX"in
-	a?-a.wheelDeltaX:0},deltaY:function(a){return "deltaY"in a?a.deltaY:"wheelDeltaY"in a?-a.wheelDeltaY:"wheelDelta"in a?-a.wheelDelta:0},deltaZ:null,deltaMode:null}),yd=[["abort","abort"],[bb,"animationEnd"],[cb,"animationIteration"],[db,"animationStart"],["canplay","canPlay"],["canplaythrough","canPlayThrough"],["drag","drag"],["dragenter","dragEnter"],["dragexit","dragExit"],["dragleave","dragLeave"],["dragover","dragOver"],["durationchange","durationChange"],["emptied","emptied"],["encrypted","encrypted"],
+	function Ec(a,b,c){if("number"!==b||a.ownerDocument.activeElement!==a){ null==c?a.defaultValue=""+a._wrapperState.initialValue:a.defaultValue!==""+c&&(a.defaultValue=""+c); }}var Gc={change:{phasedRegistrationNames:{bubbled:"onChange",captured:"onChangeCapture"},dependencies:"blur change click focus input keydown keyup selectionchange".split(" ")}};function Hc(a,b,c){a=A$1.getPooled(Gc.change,a,b,c);a.type="change";Ib(c);Ra(a);return a}var Jc=null,Kc=null;function Lc(a){Ea(a);}
+	function Mc(a){var b=Ka(a);if(Wb(b)){ return a }}function Nc(a,b){if("change"===a){ return b }}var Oc=!1;Sa&&(Oc=Sb("input")&&(!document.documentMode||9<document.documentMode));function Pc(){Jc&&(Jc.detachEvent("onpropertychange",Qc),Kc=Jc=null);}function Qc(a){"value"===a.propertyName&&Mc(Kc)&&(a=Hc(Kc,a,Rb(a)),Ob(Lc,a));}function Rc(a,b,c){"focus"===a?(Pc(),Jc=b,Kc=c,Jc.attachEvent("onpropertychange",Qc)):"blur"===a&&Pc();}function Sc(a){if("selectionchange"===a||"keyup"===a||"keydown"===a){ return Mc(Kc) }}
+	function Tc(a,b){if("click"===a){ return Mc(b) }}function Uc(a,b){if("input"===a||"change"===a){ return Mc(b) }}
+	var Vc={eventTypes:Gc,_isInputEventSupported:Oc,extractEvents:function(a,b,c,d){var e=b?Ka(b):window,f=void 0,g=void 0,h=e.nodeName&&e.nodeName.toLowerCase();"select"===h||"input"===h&&"file"===e.type?f=Nc:Qb(e)?Oc?f=Uc:(f=Sc,g=Rc):(h=e.nodeName)&&"input"===h.toLowerCase()&&("checkbox"===e.type||"radio"===e.type)&&(f=Tc);if(f&&(f=f(a,b))){ return Hc(f,c,d); }g&&g(a,e,b);"blur"===a&&(a=e._wrapperState)&&a.controlled&&"number"===e.type&&Ec(e,"number",e.value);}},Wc=A$1.extend({view:null,detail:null}),Xc={Alt:"altKey",
+	Control:"ctrlKey",Meta:"metaKey",Shift:"shiftKey"};function Yc(a){var b=this.nativeEvent;return b.getModifierState?b.getModifierState(a):(a=Xc[a])?!!b[a]:!1}function Zc(){return Yc}
+	var $c=0,ad=0,bd=!1,cd=!1,dd=Wc.extend({screenX:null,screenY:null,clientX:null,clientY:null,pageX:null,pageY:null,ctrlKey:null,shiftKey:null,altKey:null,metaKey:null,getModifierState:Zc,button:null,buttons:null,relatedTarget:function(a){return a.relatedTarget||(a.fromElement===a.srcElement?a.toElement:a.fromElement)},movementX:function(a){if("movementX"in a){ return a.movementX; }var b=$c;$c=a.screenX;return bd?"mousemove"===a.type?a.screenX-b:0:(bd=!0,0)},movementY:function(a){if("movementY"in a){ return a.movementY; }
+	var b=ad;ad=a.screenY;return cd?"mousemove"===a.type?a.screenY-b:0:(cd=!0,0)}}),ed=dd.extend({pointerId:null,width:null,height:null,pressure:null,tangentialPressure:null,tiltX:null,tiltY:null,twist:null,pointerType:null,isPrimary:null}),fd={mouseEnter:{registrationName:"onMouseEnter",dependencies:["mouseout","mouseover"]},mouseLeave:{registrationName:"onMouseLeave",dependencies:["mouseout","mouseover"]},pointerEnter:{registrationName:"onPointerEnter",dependencies:["pointerout","pointerover"]},pointerLeave:{registrationName:"onPointerLeave",
+	dependencies:["pointerout","pointerover"]}},gd={eventTypes:fd,extractEvents:function(a,b,c,d){var e="mouseover"===a||"pointerover"===a,f="mouseout"===a||"pointerout"===a;if(e&&(c.relatedTarget||c.fromElement)||!f&&!e){ return null; }e=d.window===d?d:(e=d.ownerDocument)?e.defaultView||e.parentWindow:window;f?(f=b,b=(b=c.relatedTarget||c.toElement)?Ia(b):null):f=null;if(f===b){ return null; }var g=void 0,h=void 0,k=void 0,l=void 0;if("mouseout"===a||"mouseover"===a){ g=dd,h=fd.mouseLeave,k=fd.mouseEnter,l="mouse"; }
+	else if("pointerout"===a||"pointerover"===a){ g=ed,h=fd.pointerLeave,k=fd.pointerEnter,l="pointer"; }var m=null==f?e:Ka(f);e=null==b?e:Ka(b);a=g.getPooled(h,f,c,d);a.type=l+"leave";a.target=m;a.relatedTarget=e;c=g.getPooled(k,b,c,d);c.type=l+"enter";c.target=e;c.relatedTarget=m;d=b;if(f&&d){ a:{b=f;e=d;l=0;for(g=b;g;g=Ma(g)){ l++; }g=0;for(k=e;k;k=Ma(k)){ g++; }for(;0<l-g;){ b=Ma(b),l--; }for(;0<g-l;){ e=Ma(e),g--; }for(;l--;){if(b===e||b===e.alternate){ break a; }b=Ma(b);e=Ma(e);}b=null;} }else { b=null; }e=b;for(b=[];f&&f!==e;){l=
+	f.alternate;if(null!==l&&l===e){ break; }b.push(f);f=Ma(f);}for(f=[];d&&d!==e;){l=d.alternate;if(null!==l&&l===e){ break; }f.push(d);d=Ma(d);}for(d=0;d<b.length;d++){ Pa(b[d],"bubbled",a); }for(d=f.length;0<d--;){ Pa(f[d],"captured",c); }return [a,c]}},hd=Object.prototype.hasOwnProperty;function id(a,b){return a===b?0!==a||0!==b||1/a===1/b:a!==a&&b!==b}
+	function jd(a,b){if(id(a,b)){ return !0; }if("object"!==typeof a||null===a||"object"!==typeof b||null===b){ return !1; }var c=Object.keys(a),d=Object.keys(b);if(c.length!==d.length){ return !1; }for(d=0;d<c.length;d++){ if(!hd.call(b,c[d])||!id(a[c[d]],b[c[d]])){ return !1; } }return !0}function kd(a){var b=a;if(a.alternate){ for(;b.return;){ b=b.return; } }else{if(0!==(b.effectTag&2)){ return 1; }for(;b.return;){ if(b=b.return,0!==(b.effectTag&2)){ return 1 } }}return 3===b.tag?2:3}function ld(a){2!==kd(a)?t$1("188"):void 0;}
+	function md(a){var b=a.alternate;if(!b){ return b=kd(a),3===b?t$1("188"):void 0,1===b?null:a; }for(var c=a,d=b;;){var e=c.return,f=e?e.alternate:null;if(!e||!f){ break; }if(e.child===f.child){for(var g=e.child;g;){if(g===c){ return ld(e),a; }if(g===d){ return ld(e),b; }g=g.sibling;}t$1("188");}if(c.return!==d.return){ c=e,d=f; }else{g=!1;for(var h=e.child;h;){if(h===c){g=!0;c=e;d=f;break}if(h===d){g=!0;d=e;c=f;break}h=h.sibling;}if(!g){for(h=f.child;h;){if(h===c){g=!0;c=f;d=e;break}if(h===d){g=!0;d=f;c=e;break}h=h.sibling;}g?
+	void 0:t$1("189");}}c.alternate!==d?t$1("190"):void 0;}3!==c.tag?t$1("188"):void 0;return c.stateNode.current===c?a:b}function nd(a){a=md(a);if(!a){ return null; }for(var b=a;;){if(5===b.tag||6===b.tag){ return b; }if(b.child){ b.child.return=b,b=b.child; }else{if(b===a){ break; }for(;!b.sibling;){if(!b.return||b.return===a){ return null; }b=b.return;}b.sibling.return=b.return;b=b.sibling;}}return null}
+	var od=A$1.extend({animationName:null,elapsedTime:null,pseudoElement:null}),pd=A$1.extend({clipboardData:function(a){return "clipboardData"in a?a.clipboardData:window.clipboardData}}),qd=Wc.extend({relatedTarget:null});function rd(a){var b=a.keyCode;"charCode"in a?(a=a.charCode,0===a&&13===b&&(a=13)):a=b;10===a&&(a=13);return 32<=a||13===a?a:0}
+	var sd={Esc:"Escape",Spacebar:" ",Left:"ArrowLeft",Up:"ArrowUp",Right:"ArrowRight",Down:"ArrowDown",Del:"Delete",Win:"OS",Menu:"ContextMenu",Apps:"ContextMenu",Scroll:"ScrollLock",MozPrintableKey:"Unidentified"},td={8:"Backspace",9:"Tab",12:"Clear",13:"Enter",16:"Shift",17:"Control",18:"Alt",19:"Pause",20:"CapsLock",27:"Escape",32:" ",33:"PageUp",34:"PageDown",35:"End",36:"Home",37:"ArrowLeft",38:"ArrowUp",39:"ArrowRight",40:"ArrowDown",45:"Insert",46:"Delete",112:"F1",113:"F2",114:"F3",115:"F4",
+	116:"F5",117:"F6",118:"F7",119:"F8",120:"F9",121:"F10",122:"F11",123:"F12",144:"NumLock",145:"ScrollLock",224:"Meta"},ud=Wc.extend({key:function(a){if(a.key){var b=sd[a.key]||a.key;if("Unidentified"!==b){ return b }}return "keypress"===a.type?(a=rd(a),13===a?"Enter":String.fromCharCode(a)):"keydown"===a.type||"keyup"===a.type?td[a.keyCode]||"Unidentified":""},location:null,ctrlKey:null,shiftKey:null,altKey:null,metaKey:null,repeat:null,locale:null,getModifierState:Zc,charCode:function(a){return "keypress"===
+	a.type?rd(a):0},keyCode:function(a){return "keydown"===a.type||"keyup"===a.type?a.keyCode:0},which:function(a){return "keypress"===a.type?rd(a):"keydown"===a.type||"keyup"===a.type?a.keyCode:0}}),vd=dd.extend({dataTransfer:null}),wd=Wc.extend({touches:null,targetTouches:null,changedTouches:null,altKey:null,metaKey:null,ctrlKey:null,shiftKey:null,getModifierState:Zc}),xd=A$1.extend({propertyName:null,elapsedTime:null,pseudoElement:null}),yd=dd.extend({deltaX:function(a){return "deltaX"in a?a.deltaX:"wheelDeltaX"in
+	a?-a.wheelDeltaX:0},deltaY:function(a){return "deltaY"in a?a.deltaY:"wheelDeltaY"in a?-a.wheelDeltaY:"wheelDelta"in a?-a.wheelDelta:0},deltaZ:null,deltaMode:null}),zd=[["abort","abort"],[Ya,"animationEnd"],[Za,"animationIteration"],[$a,"animationStart"],["canplay","canPlay"],["canplaythrough","canPlayThrough"],["drag","drag"],["dragenter","dragEnter"],["dragexit","dragExit"],["dragleave","dragLeave"],["dragover","dragOver"],["durationchange","durationChange"],["emptied","emptied"],["encrypted","encrypted"],
 	["ended","ended"],["error","error"],["gotpointercapture","gotPointerCapture"],["load","load"],["loadeddata","loadedData"],["loadedmetadata","loadedMetadata"],["loadstart","loadStart"],["lostpointercapture","lostPointerCapture"],["mousemove","mouseMove"],["mouseout","mouseOut"],["mouseover","mouseOver"],["playing","playing"],["pointermove","pointerMove"],["pointerout","pointerOut"],["pointerover","pointerOver"],["progress","progress"],["scroll","scroll"],["seeking","seeking"],["stalled","stalled"],
-	["suspend","suspend"],["timeupdate","timeUpdate"],["toggle","toggle"],["touchmove","touchMove"],[eb,"transitionEnd"],["waiting","waiting"],["wheel","wheel"]],zd={},Ad={};function Bd(a,b){var c=a[0];a=a[1];var d="on"+(a[0].toUpperCase()+a.slice(1));b={phasedRegistrationNames:{bubbled:d,captured:d+"Capture"},dependencies:[c],isInteractive:b};zd[a]=b;Ad[c]=b;}
+	["suspend","suspend"],["timeupdate","timeUpdate"],["toggle","toggle"],["touchmove","touchMove"],[ab,"transitionEnd"],["waiting","waiting"],["wheel","wheel"]],Ad={},Bd={};function Cd(a,b){var c=a[0];a=a[1];var d="on"+(a[0].toUpperCase()+a.slice(1));b={phasedRegistrationNames:{bubbled:d,captured:d+"Capture"},dependencies:[c],isInteractive:b};Ad[a]=b;Bd[c]=b;}
 	[["blur","blur"],["cancel","cancel"],["click","click"],["close","close"],["contextmenu","contextMenu"],["copy","copy"],["cut","cut"],["auxclick","auxClick"],["dblclick","doubleClick"],["dragend","dragEnd"],["dragstart","dragStart"],["drop","drop"],["focus","focus"],["input","input"],["invalid","invalid"],["keydown","keyDown"],["keypress","keyPress"],["keyup","keyUp"],["mousedown","mouseDown"],["mouseup","mouseUp"],["paste","paste"],["pause","pause"],["play","play"],["pointercancel","pointerCancel"],
-	["pointerdown","pointerDown"],["pointerup","pointerUp"],["ratechange","rateChange"],["reset","reset"],["seeked","seeked"],["submit","submit"],["touchcancel","touchCancel"],["touchend","touchEnd"],["touchstart","touchStart"],["volumechange","volumeChange"]].forEach(function(a){Bd(a,!0);});yd.forEach(function(a){Bd(a,!1);});
-	var Cd={eventTypes:zd,isInteractiveTopLevelEventType:function(a){a=Ad[a];return void 0!==a&&!0===a.isInteractive},extractEvents:function(a,b,c,d){var e=Ad[a];if(!e){ return null; }switch(a){case "keypress":if(0===qd(c)){ return null; }case "keydown":case "keyup":a=td;break;case "blur":case "focus":a=pd;break;case "click":if(2===c.button){ return null; }case "auxclick":case "dblclick":case "mousedown":case "mousemove":case "mouseup":case "mouseout":case "mouseover":case "contextmenu":a=cd;break;case "drag":case "dragend":case "dragenter":case "dragexit":case "dragleave":case "dragover":case "dragstart":case "drop":a=
-	ud;break;case "touchcancel":case "touchend":case "touchmove":case "touchstart":a=vd;break;case bb:case cb:case db:a=nd;break;case eb:a=wd;break;case "scroll":a=Vc;break;case "wheel":a=xd;break;case "copy":case "cut":case "paste":a=od;break;case "gotpointercapture":case "lostpointercapture":case "pointercancel":case "pointerdown":case "pointermove":case "pointerout":case "pointerover":case "pointerup":a=dd;break;default:a=z$1;}b=a.getPooled(e,b,c,d);Ua(b);return b}},Dd=Cd.isInteractiveTopLevelEventType,
-	Ed=[];function Fd(a){var b=a.targetInst,c=b;do{if(!c){a.ancestors.push(c);break}var d;for(d=c;d.return;){ d=d.return; }d=5!==d.tag?null:d.stateNode.containerInfo;if(!d){ break; }a.ancestors.push(c);c=Ka(d);}while(c);for(c=0;c<a.ancestors.length;c++){b=a.ancestors[c];var e=Sb(a.nativeEvent);d=a.topLevelType;for(var f=a.nativeEvent,g=null,h=0;h<pa.length;h++){var k=pa[h];k&&(k=k.extractEvents(d,b,f,e))&&(g=ya(g,k));}Ga(g,!1);}}var Gd=!0;
-	function F$1(a,b){if(!b){ return null; }var c=(Dd(a)?Hd:Id).bind(null,a);b.addEventListener(a,c,!1);}function Jd(a,b){if(!b){ return null; }var c=(Dd(a)?Hd:Id).bind(null,a);b.addEventListener(a,c,!0);}function Hd(a,b){Mb(Id,a,b);}
-	function Id(a,b){if(Gd){var c=Sb(b);c=Ka(c);null===c||"number"!==typeof c.tag||2===jd(c)||(c=null);if(Ed.length){var d=Ed.pop();d.topLevelType=a;d.nativeEvent=b;d.targetInst=c;a=d;}else { a={topLevelType:a,nativeEvent:b,targetInst:c,ancestors:[]}; }try{Pb(Fd,a);}finally{a.topLevelType=null,a.nativeEvent=null,a.targetInst=null,a.ancestors.length=0,10>Ed.length&&Ed.push(a);}}}var Kd={},Ld=0,Md="_reactListenersID"+(""+Math.random()).slice(2);
-	function Nd(a){Object.prototype.hasOwnProperty.call(a,Md)||(a[Md]=Ld++,Kd[a[Md]]={});return Kd[a[Md]]}function Od(a){a=a||("undefined"!==typeof document?document:void 0);if("undefined"===typeof a){ return null; }try{return a.activeElement||a.body}catch(b){return a.body}}function Qd(a){for(;a&&a.firstChild;){ a=a.firstChild; }return a}
+	["pointerdown","pointerDown"],["pointerup","pointerUp"],["ratechange","rateChange"],["reset","reset"],["seeked","seeked"],["submit","submit"],["touchcancel","touchCancel"],["touchend","touchEnd"],["touchstart","touchStart"],["volumechange","volumeChange"]].forEach(function(a){Cd(a,!0);});zd.forEach(function(a){Cd(a,!1);});
+	var Dd={eventTypes:Ad,isInteractiveTopLevelEventType:function(a){a=Bd[a];return void 0!==a&&!0===a.isInteractive},extractEvents:function(a,b,c,d){var e=Bd[a];if(!e){ return null; }switch(a){case "keypress":if(0===rd(c)){ return null; }case "keydown":case "keyup":a=ud;break;case "blur":case "focus":a=qd;break;case "click":if(2===c.button){ return null; }case "auxclick":case "dblclick":case "mousedown":case "mousemove":case "mouseup":case "mouseout":case "mouseover":case "contextmenu":a=dd;break;case "drag":case "dragend":case "dragenter":case "dragexit":case "dragleave":case "dragover":case "dragstart":case "drop":a=
+	vd;break;case "touchcancel":case "touchend":case "touchmove":case "touchstart":a=wd;break;case Ya:case Za:case $a:a=od;break;case ab:a=xd;break;case "scroll":a=Wc;break;case "wheel":a=yd;break;case "copy":case "cut":case "paste":a=pd;break;case "gotpointercapture":case "lostpointercapture":case "pointercancel":case "pointerdown":case "pointermove":case "pointerout":case "pointerover":case "pointerup":a=ed;break;default:a=A$1;}b=a.getPooled(e,b,c,d);Ra(b);return b}},Ed=Dd.isInteractiveTopLevelEventType,
+	Fd=[];function Gd(a){var b=a.targetInst,c=b;do{if(!c){a.ancestors.push(c);break}var d;for(d=c;d.return;){ d=d.return; }d=3!==d.tag?null:d.stateNode.containerInfo;if(!d){ break; }a.ancestors.push(c);c=Ia(d);}while(c);for(c=0;c<a.ancestors.length;c++){b=a.ancestors[c];var e=Rb(a.nativeEvent);d=a.topLevelType;for(var f=a.nativeEvent,g=null,h=0;h<pa.length;h++){var k=pa[h];k&&(k=k.extractEvents(d,b,f,e))&&(g=ya(g,k));}Ea(g);}}var Hd=!0;
+	function G$1(a,b){if(!b){ return null; }var c=(Ed(a)?Id:Jd).bind(null,a);b.addEventListener(a,c,!1);}function Kd(a,b){if(!b){ return null; }var c=(Ed(a)?Id:Jd).bind(null,a);b.addEventListener(a,c,!0);}function Id(a,b){Lb(Jd,a,b);}
+	function Jd(a,b){if(Hd){var c=Rb(b);c=Ia(c);null===c||"number"!==typeof c.tag||2===kd(c)||(c=null);if(Fd.length){var d=Fd.pop();d.topLevelType=a;d.nativeEvent=b;d.targetInst=c;a=d;}else { a={topLevelType:a,nativeEvent:b,targetInst:c,ancestors:[]}; }try{Ob(Gd,a);}finally{a.topLevelType=null,a.nativeEvent=null,a.targetInst=null,a.ancestors.length=0,10>Fd.length&&Fd.push(a);}}}var Ld={},Md=0,Nd="_reactListenersID"+(""+Math.random()).slice(2);
+	function Od(a){Object.prototype.hasOwnProperty.call(a,Nd)||(a[Nd]=Md++,Ld[a[Nd]]={});return Ld[a[Nd]]}function Pd(a){a=a||("undefined"!==typeof document?document:void 0);if("undefined"===typeof a){ return null; }try{return a.activeElement||a.body}catch(b){return a.body}}function Qd(a){for(;a&&a.firstChild;){ a=a.firstChild; }return a}
 	function Rd(a,b){var c=Qd(a);a=0;for(var d;c;){if(3===c.nodeType){d=a+c.textContent.length;if(a<=b&&d>=b){ return {node:c,offset:b-a}; }a=d;}a:{for(;c;){if(c.nextSibling){c=c.nextSibling;break a}c=c.parentNode;}c=void 0;}c=Qd(c);}}function Sd(a,b){return a&&b?a===b?!0:a&&3===a.nodeType?!1:b&&3===b.nodeType?Sd(a,b.parentNode):"contains"in a?a.contains(b):a.compareDocumentPosition?!!(a.compareDocumentPosition(b)&16):!1:!1}
-	function Td(){for(var a=window,b=Od();b instanceof a.HTMLIFrameElement;){try{a=b.contentDocument.defaultView;}catch(c){break}b=Od(a.document);}return b}function Ud(a){var b=a&&a.nodeName&&a.nodeName.toLowerCase();return b&&("input"===b&&("text"===a.type||"search"===a.type||"tel"===a.type||"url"===a.type||"password"===a.type)||"textarea"===b||"true"===a.contentEditable)}
-	var Vd=Va&&"documentMode"in document&&11>=document.documentMode,Wd={select:{phasedRegistrationNames:{bubbled:"onSelect",captured:"onSelectCapture"},dependencies:"blur contextmenu dragend focus keydown keyup mousedown mouseup selectionchange".split(" ")}},Xd=null,Yd=null,Zd=null,$d=!1;
-	function ae(a,b){var c=b.window===b?b.document:9===b.nodeType?b:b.ownerDocument;if($d||null==Xd||Xd!==Od(c)){ return null; }c=Xd;"selectionStart"in c&&Ud(c)?c={start:c.selectionStart,end:c.selectionEnd}:(c=(c.ownerDocument&&c.ownerDocument.defaultView||window).getSelection(),c={anchorNode:c.anchorNode,anchorOffset:c.anchorOffset,focusNode:c.focusNode,focusOffset:c.focusOffset});return Zd&&id(Zd,c)?null:(Zd=c,a=z$1.getPooled(Wd.select,Yd,a,b),a.type="select",a.target=Xd,Ua(a),a)}
-	var be={eventTypes:Wd,extractEvents:function(a,b,c,d){var e=d.window===d?d.document:9===d.nodeType?d:d.ownerDocument,f;if(!(f=!e)){a:{e=Nd(e);f=ta.onSelect;for(var g=0;g<f.length;g++){var h=f[g];if(!e.hasOwnProperty(h)||!e[h]){e=!1;break a}}e=!0;}f=!e;}if(f){ return null; }e=b?Ma(b):window;switch(a){case "focus":if(Rb(e)||"true"===e.contentEditable){ Xd=e,Yd=b,Zd=null; }break;case "blur":Zd=Yd=Xd=null;break;case "mousedown":$d=!0;break;case "contextmenu":case "mouseup":case "dragend":return $d=!1,ae(c,d);case "selectionchange":if(Vd){ break; }
-	case "keydown":case "keyup":return ae(c,d)}return null}};Ea.injectEventPluginOrder("ResponderEventPlugin SimpleEventPlugin EnterLeaveEventPlugin ChangeEventPlugin SelectEventPlugin BeforeInputEventPlugin".split(" "));ua=Na;va=La;wa=Ma;Ea.injectEventPluginsByName({SimpleEventPlugin:Cd,EnterLeaveEventPlugin:fd,ChangeEventPlugin:Uc,SelectEventPlugin:be,BeforeInputEventPlugin:Eb});function ce(a){var b="";react.Children.forEach(a,function(a){null!=a&&(b+=a);});return b}
-	function de(a,b){a=objectAssign({children:void 0},b);if(b=ce(b.children)){ a.children=b; }return a}function ee(a,b,c,d){a=a.options;if(b){b={};for(var e=0;e<c.length;e++){ b["$"+c[e]]=!0; }for(c=0;c<a.length;c++){ e=b.hasOwnProperty("$"+a[c].value),a[c].selected!==e&&(a[c].selected=e),e&&d&&(a[c].defaultSelected=!0); }}else{c=""+yc(c);b=null;for(e=0;e<a.length;e++){if(a[e].value===c){a[e].selected=!0;d&&(a[e].defaultSelected=!0);return}null!==b||a[e].disabled||(b=a[e]);}null!==b&&(b.selected=!0);}}
-	function fe(a,b){null!=b.dangerouslySetInnerHTML?t$1("91"):void 0;return objectAssign({},b,{value:void 0,defaultValue:void 0,children:""+a._wrapperState.initialValue})}function ge(a,b){var c=b.value;null==c&&(c=b.defaultValue,b=b.children,null!=b&&(null!=c?t$1("92"):void 0,Array.isArray(b)&&(1>=b.length?void 0:t$1("93"),b=b[0]),c=b),null==c&&(c=""));a._wrapperState={initialValue:yc(c)};}
-	function he(a,b){var c=yc(b.value),d=yc(b.defaultValue);null!=c&&(c=""+c,c!==a.value&&(a.value=c),null==b.defaultValue&&a.defaultValue!==c&&(a.defaultValue=c));null!=d&&(a.defaultValue=""+d);}function ie(a){var b=a.textContent;b===a._wrapperState.initialValue&&(a.value=b);}var je={html:"http://www.w3.org/1999/xhtml",mathml:"http://www.w3.org/1998/Math/MathML",svg:"http://www.w3.org/2000/svg"};
-	function ke(a){switch(a){case "svg":return "http://www.w3.org/2000/svg";case "math":return "http://www.w3.org/1998/Math/MathML";default:return "http://www.w3.org/1999/xhtml"}}function le(a,b){return null==a||"http://www.w3.org/1999/xhtml"===a?ke(b):"http://www.w3.org/2000/svg"===a&&"foreignObject"===b?"http://www.w3.org/1999/xhtml":a}
-	var me=void 0,ne=function(a){return "undefined"!==typeof MSApp&&MSApp.execUnsafeLocalFunction?function(b,c,d,e){MSApp.execUnsafeLocalFunction(function(){return a(b,c,d,e)});}:a}(function(a,b){if(a.namespaceURI!==je.svg||"innerHTML"in a){ a.innerHTML=b; }else{me=me||document.createElement("div");me.innerHTML="<svg>"+b+"</svg>";for(b=me.firstChild;a.firstChild;){ a.removeChild(a.firstChild); }for(;b.firstChild;){ a.appendChild(b.firstChild); }}});
-	function oe(a,b){if(b){var c=a.firstChild;if(c&&c===a.lastChild&&3===c.nodeType){c.nodeValue=b;return}}a.textContent=b;}
-	var pe={animationIterationCount:!0,borderImageOutset:!0,borderImageSlice:!0,borderImageWidth:!0,boxFlex:!0,boxFlexGroup:!0,boxOrdinalGroup:!0,columnCount:!0,columns:!0,flex:!0,flexGrow:!0,flexPositive:!0,flexShrink:!0,flexNegative:!0,flexOrder:!0,gridArea:!0,gridRow:!0,gridRowEnd:!0,gridRowSpan:!0,gridRowStart:!0,gridColumn:!0,gridColumnEnd:!0,gridColumnSpan:!0,gridColumnStart:!0,fontWeight:!0,lineClamp:!0,lineHeight:!0,opacity:!0,order:!0,orphans:!0,tabSize:!0,widows:!0,zIndex:!0,zoom:!0,fillOpacity:!0,
-	floodOpacity:!0,stopOpacity:!0,strokeDasharray:!0,strokeDashoffset:!0,strokeMiterlimit:!0,strokeOpacity:!0,strokeWidth:!0},qe=["Webkit","ms","Moz","O"];Object.keys(pe).forEach(function(a){qe.forEach(function(b){b=b+a.charAt(0).toUpperCase()+a.substring(1);pe[b]=pe[a];});});
-	function re(a,b){a=a.style;for(var c in b){ if(b.hasOwnProperty(c)){var d=0===c.indexOf("--");var e=c;var f=b[c];e=null==f||"boolean"===typeof f||""===f?"":d||"number"!==typeof f||0===f||pe.hasOwnProperty(e)&&pe[e]?(""+f).trim():f+"px";"float"===c&&(c="cssFloat");d?a.setProperty(c,e):a[c]=e;} }}var se=objectAssign({menuitem:!0},{area:!0,base:!0,br:!0,col:!0,embed:!0,hr:!0,img:!0,input:!0,keygen:!0,link:!0,meta:!0,param:!0,source:!0,track:!0,wbr:!0});
-	function te(a,b){b&&(se[a]&&(null!=b.children||null!=b.dangerouslySetInnerHTML?t$1("137",a,""):void 0),null!=b.dangerouslySetInnerHTML&&(null!=b.children?t$1("60"):void 0,"object"===typeof b.dangerouslySetInnerHTML&&"__html"in b.dangerouslySetInnerHTML?void 0:t$1("61")),null!=b.style&&"object"!==typeof b.style?t$1("62",""):void 0);}
-	function ue(a,b){if(-1===a.indexOf("-")){ return "string"===typeof b.is; }switch(a){case "annotation-xml":case "color-profile":case "font-face":case "font-face-src":case "font-face-uri":case "font-face-format":case "font-face-name":case "missing-glyph":return !1;default:return !0}}
-	function ve(a,b){a=9===a.nodeType||11===a.nodeType?a:a.ownerDocument;var c=Nd(a);b=ta[b];for(var d=0;d<b.length;d++){var e=b[d];if(!c.hasOwnProperty(e)||!c[e]){switch(e){case "scroll":Jd("scroll",a);break;case "focus":case "blur":Jd("focus",a);Jd("blur",a);c.blur=!0;c.focus=!0;break;case "cancel":case "close":Tb(e)&&Jd(e,a);break;case "invalid":case "submit":case "reset":break;default:-1===fb.indexOf(e)&&F$1(e,a);}c[e]=!0;}}}function we(){}var xe=null,ye=null;
-	function ze(a,b){switch(a){case "button":case "input":case "select":case "textarea":return !!b.autoFocus}return !1}function Ae(a,b){return "textarea"===a||"option"===a||"noscript"===a||"string"===typeof b.children||"number"===typeof b.children||"object"===typeof b.dangerouslySetInnerHTML&&null!==b.dangerouslySetInnerHTML&&null!=b.dangerouslySetInnerHTML.__html}function Be(a){for(a=a.nextSibling;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}
-	function Ce(a){for(a=a.firstChild;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}var De=[],Ee=-1;function G$1(a){0>Ee||(a.current=De[Ee],De[Ee]=null,Ee--);}function H$1(a,b){Ee++;De[Ee]=a.current;a.current=b;}var Fe={},I$1={current:Fe},J$1={current:!1},Ge=Fe;
-	function He(a,b){var c=a.type.contextTypes;if(!c){ return Fe; }var d=a.stateNode;if(d&&d.__reactInternalMemoizedUnmaskedChildContext===b){ return d.__reactInternalMemoizedMaskedChildContext; }var e={},f;for(f in c){ e[f]=b[f]; }d&&(a=a.stateNode,a.__reactInternalMemoizedUnmaskedChildContext=b,a.__reactInternalMemoizedMaskedChildContext=e);return e}function K$1(a){a=a.childContextTypes;return null!==a&&void 0!==a}function Ie(a){G$1(J$1,a);G$1(I$1,a);}function Je(a){G$1(J$1,a);G$1(I$1,a);}
-	function Ke(a,b,c){I$1.current!==Fe?t$1("168"):void 0;H$1(I$1,b,a);H$1(J$1,c,a);}function Le(a,b,c){var d=a.stateNode;a=b.childContextTypes;if("function"!==typeof d.getChildContext){ return c; }d=d.getChildContext();for(var e in d){ e in a?void 0:t$1("108",lc(b)||"Unknown",e); }return objectAssign({},c,d)}function Me(a){var b=a.stateNode;b=b&&b.__reactInternalMemoizedMergedChildContext||Fe;Ge=I$1.current;H$1(I$1,b,a);H$1(J$1,J$1.current,a);return !0}
-	function Ne(a,b,c){var d=a.stateNode;d?void 0:t$1("169");c?(b=Le(a,b,Ge),d.__reactInternalMemoizedMergedChildContext=b,G$1(J$1,a),G$1(I$1,a),H$1(I$1,b,a)):G$1(J$1,a);H$1(J$1,c,a);}var Oe=null,Pe=null;function Qe(a){return function(b){try{return a(b)}catch(c){}}}
-	function Re(a){if("undefined"===typeof __REACT_DEVTOOLS_GLOBAL_HOOK__){ return !1; }var b=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(b.isDisabled||!b.supportsFiber){ return !0; }try{var c=b.inject(a);Oe=Qe(function(a){return b.onCommitFiberRoot(c,a)});Pe=Qe(function(a){return b.onCommitFiberUnmount(c,a)});}catch(d){}return !0}
-	function Se(a,b,c,d){this.tag=a;this.key=c;this.sibling=this.child=this.return=this.stateNode=this.type=null;this.index=0;this.ref=null;this.pendingProps=b;this.firstContextDependency=this.memoizedState=this.updateQueue=this.memoizedProps=null;this.mode=d;this.effectTag=0;this.lastEffect=this.firstEffect=this.nextEffect=null;this.childExpirationTime=this.expirationTime=0;this.alternate=null;}function Te(a){a=a.prototype;return !(!a||!a.isReactComponent)}
-	function Ue(a,b,c){var d=a.alternate;null===d?(d=new Se(a.tag,b,a.key,a.mode),d.type=a.type,d.stateNode=a.stateNode,d.alternate=a,a.alternate=d):(d.pendingProps=b,d.effectTag=0,d.nextEffect=null,d.firstEffect=null,d.lastEffect=null);d.childExpirationTime=a.childExpirationTime;d.expirationTime=b!==a.pendingProps?c:a.expirationTime;d.child=a.child;d.memoizedProps=a.memoizedProps;d.memoizedState=a.memoizedState;d.updateQueue=a.updateQueue;d.firstContextDependency=a.firstContextDependency;d.sibling=a.sibling;
-	d.index=a.index;d.ref=a.ref;return d}
-	function Ve(a,b,c){var d=a.type,e=a.key;a=a.props;var f=void 0;if("function"===typeof d){ f=Te(d)?2:4; }else if("string"===typeof d){ f=7; }else { a:switch(d){case bc:return We(a.children,b,c,e);case gc:f=10;b|=3;break;case cc:f=10;b|=2;break;case dc:return d=new Se(15,a,e,b|4),d.type=dc,d.expirationTime=c,d;case ic:f=16;break;default:if("object"===typeof d&&null!==d){ switch(d.$$typeof){case ec:f=12;break a;case fc:f=11;break a;case hc:f=13;break a;default:if("function"===typeof d.then){f=4;break a}} }t$1("130",
-	null==d?d:typeof d,"");} }b=new Se(f,a,e,b);b.type=d;b.expirationTime=c;return b}function We(a,b,c,d){a=new Se(9,a,d,b);a.expirationTime=c;return a}function Xe(a,b,c){a=new Se(8,a,null,b);a.expirationTime=c;return a}function Ye(a,b,c){b=new Se(6,null!==a.children?a.children:[],a.key,b);b.expirationTime=c;b.stateNode={containerInfo:a.containerInfo,pendingChildren:null,implementation:a.implementation};return b}
-	function Ze(a,b){a.didError=!1;var c=a.earliestPendingTime;0===c?a.earliestPendingTime=a.latestPendingTime=b:c>b?a.earliestPendingTime=b:a.latestPendingTime<b&&(a.latestPendingTime=b);$e(b,a);}function $e(a,b){var c=b.earliestSuspendedTime,d=b.latestSuspendedTime,e=b.earliestPendingTime,f=b.latestPingedTime;e=0!==e?e:f;0===e&&(0===a||d>a)&&(e=d);a=e;0!==a&&0!==c&&c<a&&(a=c);b.nextExpirationTimeToWorkOn=e;b.expirationTime=a;}var af=!1;
-	function bf(a){return {baseState:a,firstUpdate:null,lastUpdate:null,firstCapturedUpdate:null,lastCapturedUpdate:null,firstEffect:null,lastEffect:null,firstCapturedEffect:null,lastCapturedEffect:null}}function cf(a){return {baseState:a.baseState,firstUpdate:a.firstUpdate,lastUpdate:a.lastUpdate,firstCapturedUpdate:null,lastCapturedUpdate:null,firstEffect:null,lastEffect:null,firstCapturedEffect:null,lastCapturedEffect:null}}
-	function df(a){return {expirationTime:a,tag:0,payload:null,callback:null,next:null,nextEffect:null}}function ef(a,b){null===a.lastUpdate?a.firstUpdate=a.lastUpdate=b:(a.lastUpdate.next=b,a.lastUpdate=b);}
-	function ff(a,b){var c=a.alternate;if(null===c){var d=a.updateQueue;var e=null;null===d&&(d=a.updateQueue=bf(a.memoizedState));}else { d=a.updateQueue,e=c.updateQueue,null===d?null===e?(d=a.updateQueue=bf(a.memoizedState),e=c.updateQueue=bf(c.memoizedState)):d=a.updateQueue=cf(e):null===e&&(e=c.updateQueue=cf(d)); }null===e||d===e?ef(d,b):null===d.lastUpdate||null===e.lastUpdate?(ef(d,b),ef(e,b)):(ef(d,b),e.lastUpdate=b);}
-	function gf(a,b){var c=a.updateQueue;c=null===c?a.updateQueue=bf(a.memoizedState):hf(a,c);null===c.lastCapturedUpdate?c.firstCapturedUpdate=c.lastCapturedUpdate=b:(c.lastCapturedUpdate.next=b,c.lastCapturedUpdate=b);}function hf(a,b){var c=a.alternate;null!==c&&b===c.updateQueue&&(b=a.updateQueue=cf(b));return b}
-	function jf(a,b,c,d,e,f){switch(c.tag){case 1:return a=c.payload,"function"===typeof a?a.call(f,d,e):a;case 3:a.effectTag=a.effectTag&-1025|64;case 0:a=c.payload;e="function"===typeof a?a.call(f,d,e):a;if(null===e||void 0===e){ break; }return objectAssign({},d,e);case 2:af=!0;}return d}
-	function kf(a,b,c,d,e){af=!1;b=hf(a,b);for(var f=b.baseState,g=null,h=0,k=b.firstUpdate,l=f;null!==k;){var m=k.expirationTime;if(m>e){if(null===g&&(g=k,f=l),0===h||h>m){ h=m; }}else { l=jf(a,b,k,l,c,d),null!==k.callback&&(a.effectTag|=32,k.nextEffect=null,null===b.lastEffect?b.firstEffect=b.lastEffect=k:(b.lastEffect.nextEffect=k,b.lastEffect=k)); }k=k.next;}m=null;for(k=b.firstCapturedUpdate;null!==k;){var r=k.expirationTime;if(r>e){if(null===m&&(m=k,null===g&&(f=l)),0===h||h>r){ h=r; }}else { l=jf(a,b,k,l,c,d),
-	null!==k.callback&&(a.effectTag|=32,k.nextEffect=null,null===b.lastCapturedEffect?b.firstCapturedEffect=b.lastCapturedEffect=k:(b.lastCapturedEffect.nextEffect=k,b.lastCapturedEffect=k)); }k=k.next;}null===g&&(b.lastUpdate=null);null===m?b.lastCapturedUpdate=null:a.effectTag|=32;null===g&&null===m&&(f=l);b.baseState=f;b.firstUpdate=g;b.firstCapturedUpdate=m;a.expirationTime=h;a.memoizedState=l;}
-	function lf(a,b,c){null!==b.firstCapturedUpdate&&(null!==b.lastUpdate&&(b.lastUpdate.next=b.firstCapturedUpdate,b.lastUpdate=b.lastCapturedUpdate),b.firstCapturedUpdate=b.lastCapturedUpdate=null);mf(b.firstEffect,c);b.firstEffect=b.lastEffect=null;mf(b.firstCapturedEffect,c);b.firstCapturedEffect=b.lastCapturedEffect=null;}function mf(a,b){for(;null!==a;){var c=a.callback;if(null!==c){a.callback=null;var d=b;"function"!==typeof c?t$1("191",c):void 0;c.call(d);}a=a.nextEffect;}}
-	function nf(a,b){return {value:a,source:b,stack:mc(b)}}var of={current:null},pf=null,qf=null,rf=null;function sf(a,b){var c=a.type._context;H$1(of,c._currentValue,a);c._currentValue=b;}function tf(a){var b=of.current;G$1(of,a);a.type._context._currentValue=b;}function uf(a){pf=a;rf=qf=null;a.firstContextDependency=null;}
-	function vf(a,b){if(rf!==a&&!1!==b&&0!==b){if("number"!==typeof b||1073741823===b){ rf=a,b=1073741823; }b={context:a,observedBits:b,next:null};null===qf?(null===pf?t$1("277"):void 0,pf.firstContextDependency=qf=b):qf=qf.next=b;}return a._currentValue}var wf={},L$1={current:wf},xf={current:wf},yf={current:wf};function zf(a){a===wf?t$1("174"):void 0;return a}
-	function Af(a,b){H$1(yf,b,a);H$1(xf,a,a);H$1(L$1,wf,a);var c=b.nodeType;switch(c){case 9:case 11:b=(b=b.documentElement)?b.namespaceURI:le(null,"");break;default:c=8===c?b.parentNode:b,b=c.namespaceURI||null,c=c.tagName,b=le(b,c);}G$1(L$1,a);H$1(L$1,b,a);}function Bf(a){G$1(L$1,a);G$1(xf,a);G$1(yf,a);}function Cf(a){zf(yf.current);var b=zf(L$1.current);var c=le(b,a.type);b!==c&&(H$1(xf,a,a),H$1(L$1,c,a));}function Df(a){xf.current===a&&(G$1(L$1,a),G$1(xf,a));}var Ef=(new react.Component).refs;
-	function Ff(a,b,c,d){b=a.memoizedState;c=c(d,b);c=null===c||void 0===c?b:objectAssign({},b,c);a.memoizedState=c;d=a.updateQueue;null!==d&&0===a.expirationTime&&(d.baseState=c);}
-	var Jf={isMounted:function(a){return (a=a._reactInternalFiber)?2===jd(a):!1},enqueueSetState:function(a,b,c){a=a._reactInternalFiber;var d=Gf();d=Hf(d,a);var e=df(d);e.payload=b;void 0!==c&&null!==c&&(e.callback=c);ff(a,e);If(a,d);},enqueueReplaceState:function(a,b,c){a=a._reactInternalFiber;var d=Gf();d=Hf(d,a);var e=df(d);e.tag=1;e.payload=b;void 0!==c&&null!==c&&(e.callback=c);ff(a,e);If(a,d);},enqueueForceUpdate:function(a,b){a=a._reactInternalFiber;var c=Gf();c=Hf(c,a);var d=df(c);d.tag=2;void 0!==
-	b&&null!==b&&(d.callback=b);ff(a,d);If(a,c);}};function Kf(a,b,c,d,e,f,g){a=a.stateNode;return "function"===typeof a.shouldComponentUpdate?a.shouldComponentUpdate(d,f,g):b.prototype&&b.prototype.isPureReactComponent?!id(c,d)||!id(e,f):!0}function Lf(a,b,c,d){a=b.state;"function"===typeof b.componentWillReceiveProps&&b.componentWillReceiveProps(c,d);"function"===typeof b.UNSAFE_componentWillReceiveProps&&b.UNSAFE_componentWillReceiveProps(c,d);b.state!==a&&Jf.enqueueReplaceState(b,b.state,null);}
-	function Mf(a,b,c,d){var e=a.stateNode,f=K$1(b)?Ge:I$1.current;e.props=c;e.state=a.memoizedState;e.refs=Ef;e.context=He(a,f);f=a.updateQueue;null!==f&&(kf(a,f,c,e,d),e.state=a.memoizedState);f=b.getDerivedStateFromProps;"function"===typeof f&&(Ff(a,b,f,c),e.state=a.memoizedState);"function"===typeof b.getDerivedStateFromProps||"function"===typeof e.getSnapshotBeforeUpdate||"function"!==typeof e.UNSAFE_componentWillMount&&"function"!==typeof e.componentWillMount||(b=e.state,"function"===typeof e.componentWillMount&&
-	e.componentWillMount(),"function"===typeof e.UNSAFE_componentWillMount&&e.UNSAFE_componentWillMount(),b!==e.state&&Jf.enqueueReplaceState(e,e.state,null),f=a.updateQueue,null!==f&&(kf(a,f,c,e,d),e.state=a.memoizedState));"function"===typeof e.componentDidMount&&(a.effectTag|=4);}var Nf=Array.isArray;
-	function Of(a,b,c){a=c.ref;if(null!==a&&"function"!==typeof a&&"object"!==typeof a){if(c._owner){c=c._owner;var d=void 0;c&&(2!==c.tag&&3!==c.tag?t$1("110"):void 0,d=c.stateNode);d?void 0:t$1("147",a);var e=""+a;if(null!==b&&null!==b.ref&&"function"===typeof b.ref&&b.ref._stringRef===e){ return b.ref; }b=function(a){var b=d.refs;b===Ef&&(b=d.refs={});null===a?delete b[e]:b[e]=a;};b._stringRef=e;return b}"string"!==typeof a?t$1("284"):void 0;c._owner?void 0:t$1("254",a);}return a}
-	function Pf(a,b){"textarea"!==a.type&&t$1("31","[object Object]"===Object.prototype.toString.call(b)?"object with keys {"+Object.keys(b).join(", ")+"}":b,"");}
-	function Qf(a){function b(b,c){if(a){var d=b.lastEffect;null!==d?(d.nextEffect=c,b.lastEffect=c):b.firstEffect=b.lastEffect=c;c.nextEffect=null;c.effectTag=8;}}function c(c,d){if(!a){ return null; }for(;null!==d;){ b(c,d),d=d.sibling; }return null}function d(a,b){for(a=new Map;null!==b;){ null!==b.key?a.set(b.key,b):a.set(b.index,b),b=b.sibling; }return a}function e(a,b,c){a=Ue(a,b,c);a.index=0;a.sibling=null;return a}function f(b,c,d){b.index=d;if(!a){ return c; }d=b.alternate;if(null!==d){ return d=d.index,d<c?(b.effectTag=
-	2,c):d; }b.effectTag=2;return c}function g(b){a&&null===b.alternate&&(b.effectTag=2);return b}function h(a,b,c,d){if(null===b||8!==b.tag){ return b=Xe(c,a.mode,d),b.return=a,b; }b=e(b,c,d);b.return=a;return b}function k(a,b,c,d){if(null!==b&&b.type===c.type){ return d=e(b,c.props,d),d.ref=Of(a,b,c),d.return=a,d; }d=Ve(c,a.mode,d);d.ref=Of(a,b,c);d.return=a;return d}function l(a,b,c,d){if(null===b||6!==b.tag||b.stateNode.containerInfo!==c.containerInfo||b.stateNode.implementation!==c.implementation){ return b=
-	Ye(c,a.mode,d),b.return=a,b; }b=e(b,c.children||[],d);b.return=a;return b}function m(a,b,c,d,f){if(null===b||9!==b.tag){ return b=We(c,a.mode,d,f),b.return=a,b; }b=e(b,c,d);b.return=a;return b}function r(a,b,c){if("string"===typeof b||"number"===typeof b){ return b=Xe(""+b,a.mode,c),b.return=a,b; }if("object"===typeof b&&null!==b){switch(b.$$typeof){case $b:return c=Ve(b,a.mode,c),c.ref=Of(a,null,b),c.return=a,c;case ac:return b=Ye(b,a.mode,c),b.return=a,b}if(Nf(b)||kc(b)){ return b=We(b,a.mode,c,null),b.return=
-	a,b; }Pf(a,b);}return null}function A(a,b,c,d){var e=null!==b?b.key:null;if("string"===typeof c||"number"===typeof c){ return null!==e?null:h(a,b,""+c,d); }if("object"===typeof c&&null!==c){switch(c.$$typeof){case $b:return c.key===e?c.type===bc?m(a,b,c.props.children,d,e):k(a,b,c,d):null;case ac:return c.key===e?l(a,b,c,d):null}if(Nf(c)||kc(c)){ return null!==e?null:m(a,b,c,d,null); }Pf(a,c);}return null}function S(a,b,c,d,e){if("string"===typeof d||"number"===typeof d){ return a=a.get(c)||null,h(b,a,""+d,e); }
-	if("object"===typeof d&&null!==d){switch(d.$$typeof){case $b:return a=a.get(null===d.key?c:d.key)||null,d.type===bc?m(b,a,d.props.children,e,d.key):k(b,a,d,e);case ac:return a=a.get(null===d.key?c:d.key)||null,l(b,a,d,e)}if(Nf(d)||kc(d)){ return a=a.get(c)||null,m(b,a,d,e,null); }Pf(b,d);}return null}function B(e,g,h,k){for(var l=null,m=null,p=g,u=g=0,q=null;null!==p&&u<h.length;u++){p.index>u?(q=p,p=null):q=p.sibling;var v=A(e,p,h[u],k);if(null===v){null===p&&(p=q);break}a&&p&&null===v.alternate&&b(e,
-	p);g=f(v,g,u);null===m?l=v:m.sibling=v;m=v;p=q;}if(u===h.length){ return c(e,p),l; }if(null===p){for(;u<h.length;u++){ if(p=r(e,h[u],k)){ g=f(p,g,u),null===m?l=p:m.sibling=p,m=p; } }return l}for(p=d(e,p);u<h.length;u++){ if(q=S(p,e,u,h[u],k)){ a&&null!==q.alternate&&p.delete(null===q.key?u:q.key),g=f(q,g,u),null===m?l=q:m.sibling=q,m=q; } }a&&p.forEach(function(a){return b(e,a)});return l}function P(e,g,h,k){var l=kc(h);"function"!==typeof l?t$1("150"):void 0;h=l.call(h);null==h?t$1("151"):void 0;for(var m=l=null,p=g,u=g=
-	0,q=null,v=h.next();null!==p&&!v.done;u++,v=h.next()){p.index>u?(q=p,p=null):q=p.sibling;var x=A(e,p,v.value,k);if(null===x){p||(p=q);break}a&&p&&null===x.alternate&&b(e,p);g=f(x,g,u);null===m?l=x:m.sibling=x;m=x;p=q;}if(v.done){ return c(e,p),l; }if(null===p){for(;!v.done;u++,v=h.next()){ v=r(e,v.value,k),null!==v&&(g=f(v,g,u),null===m?l=v:m.sibling=v,m=v); }return l}for(p=d(e,p);!v.done;u++,v=h.next()){ v=S(p,e,u,v.value,k),null!==v&&(a&&null!==v.alternate&&p.delete(null===v.key?u:v.key),g=f(v,g,u),null===
-	m?l=v:m.sibling=v,m=v); }a&&p.forEach(function(a){return b(e,a)});return l}return function(a,d,f,h){var k="object"===typeof f&&null!==f&&f.type===bc&&null===f.key;k&&(f=f.props.children);var l="object"===typeof f&&null!==f;if(l){ switch(f.$$typeof){case $b:a:{l=f.key;for(k=d;null!==k;){if(k.key===l){ if(9===k.tag?f.type===bc:k.type===f.type){c(a,k.sibling);d=e(k,f.type===bc?f.props.children:f.props,h);d.ref=Of(a,k,f);d.return=a;a=d;break a}else{c(a,k);break} }else { b(a,k); }k=k.sibling;}f.type===bc?(d=We(f.props.children,
-	a.mode,h,f.key),d.return=a,a=d):(h=Ve(f,a.mode,h),h.ref=Of(a,d,f),h.return=a,a=h);}return g(a);case ac:a:{for(k=f.key;null!==d;){if(d.key===k){ if(6===d.tag&&d.stateNode.containerInfo===f.containerInfo&&d.stateNode.implementation===f.implementation){c(a,d.sibling);d=e(d,f.children||[],h);d.return=a;a=d;break a}else{c(a,d);break} }else { b(a,d); }d=d.sibling;}d=Ye(f,a.mode,h);d.return=a;a=d;}return g(a)} }if("string"===typeof f||"number"===typeof f){ return f=""+f,null!==d&&8===d.tag?(c(a,d.sibling),d=e(d,f,h),d.return=
-	a,a=d):(c(a,d),d=Xe(f,a.mode,h),d.return=a,a=d),g(a); }if(Nf(f)){ return B(a,d,f,h); }if(kc(f)){ return P(a,d,f,h); }l&&Pf(a,f);if("undefined"===typeof f&&!k){ switch(a.tag){case 2:case 3:case 0:h=a.type,t$1("152",h.displayName||h.name||"Component");} }return c(a,d)}}var Rf=Qf(!0),Sf=Qf(!1),Tf=null,Uf=null,Vf=!1;function Wf(a,b){var c=new Se(7,null,null,0);c.type="DELETED";c.stateNode=b;c.return=a;c.effectTag=8;null!==a.lastEffect?(a.lastEffect.nextEffect=c,a.lastEffect=c):a.firstEffect=a.lastEffect=c;}
-	function Xf(a,b){switch(a.tag){case 7:var c=a.type;b=1!==b.nodeType||c.toLowerCase()!==b.nodeName.toLowerCase()?null:b;return null!==b?(a.stateNode=b,!0):!1;case 8:return b=""===a.pendingProps||3!==b.nodeType?null:b,null!==b?(a.stateNode=b,!0):!1;default:return !1}}function Yf(a){if(Vf){var b=Uf;if(b){var c=b;if(!Xf(a,b)){b=Be(c);if(!b||!Xf(a,b)){a.effectTag|=2;Vf=!1;Tf=a;return}Wf(Tf,c);}Tf=a;Uf=Ce(b);}else { a.effectTag|=2,Vf=!1,Tf=a; }}}
-	function Zf(a){for(a=a.return;null!==a&&7!==a.tag&&5!==a.tag;){ a=a.return; }Tf=a;}function $f(a){if(a!==Tf){ return !1; }if(!Vf){ return Zf(a),Vf=!0,!1; }var b=a.type;if(7!==a.tag||"head"!==b&&"body"!==b&&!Ae(b,a.memoizedProps)){ for(b=Uf;b;){ Wf(a,b),b=Be(b); } }Zf(a);Uf=Tf?Be(a.stateNode):null;return !0}function ag(){Uf=Tf=null;Vf=!1;}
-	function bg(a){switch(a._reactStatus){case 1:return a._reactResult;case 2:throw a._reactResult;case 0:throw a;default:throw a._reactStatus=0,a.then(function(b){if(0===a._reactStatus){a._reactStatus=1;if("object"===typeof b&&null!==b){var c=b.default;b=void 0!==c&&null!==c?c:b;}a._reactResult=b;}},function(b){0===a._reactStatus&&(a._reactStatus=2,a._reactResult=b);}),a;}}var cg=Yb.ReactCurrentOwner;function M$1(a,b,c,d){b.child=null===a?Sf(b,null,c,d):Rf(b,a.child,c,d);}
-	function dg(a,b,c,d,e){c=c.render;var f=b.ref;if(!J$1.current&&b.memoizedProps===d&&f===(null!==a?a.ref:null)){ return eg(a,b,e); }c=c(d,f);M$1(a,b,c,e);b.memoizedProps=d;return b.child}function fg(a,b){var c=b.ref;if(null===a&&null!==c||null!==a&&a.ref!==c){ b.effectTag|=128; }}function gg(a,b,c,d,e){var f=K$1(c)?Ge:I$1.current;f=He(b,f);uf(b,e);c=c(d,f);b.effectTag|=1;M$1(a,b,c,e);b.memoizedProps=d;return b.child}
-	function hg(a,b,c,d,e){if(K$1(c)){var f=!0;Me(b);}else { f=!1; }uf(b,e);if(null===a){ if(null===b.stateNode){var g=K$1(c)?Ge:I$1.current,h=c.contextTypes,k=null!==h&&void 0!==h;h=k?He(b,g):Fe;var l=new c(d,h);b.memoizedState=null!==l.state&&void 0!==l.state?l.state:null;l.updater=Jf;b.stateNode=l;l._reactInternalFiber=b;k&&(k=b.stateNode,k.__reactInternalMemoizedUnmaskedChildContext=g,k.__reactInternalMemoizedMaskedChildContext=h);Mf(b,c,d,e);d=!0;}else{g=b.stateNode;h=b.memoizedProps;g.props=h;var m=g.context;
-	k=K$1(c)?Ge:I$1.current;k=He(b,k);var r=c.getDerivedStateFromProps;(l="function"===typeof r||"function"===typeof g.getSnapshotBeforeUpdate)||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&"function"!==typeof g.componentWillReceiveProps||(h!==d||m!==k)&&Lf(b,g,d,k);af=!1;var A=b.memoizedState;m=g.state=A;var S=b.updateQueue;null!==S&&(kf(b,S,d,g,e),m=b.memoizedState);h!==d||A!==m||J$1.current||af?("function"===typeof r&&(Ff(b,c,r,d),m=b.memoizedState),(h=af||Kf(b,c,h,d,A,m,k))?(l||"function"!==
-	typeof g.UNSAFE_componentWillMount&&"function"!==typeof g.componentWillMount||("function"===typeof g.componentWillMount&&g.componentWillMount(),"function"===typeof g.UNSAFE_componentWillMount&&g.UNSAFE_componentWillMount()),"function"===typeof g.componentDidMount&&(b.effectTag|=4)):("function"===typeof g.componentDidMount&&(b.effectTag|=4),b.memoizedProps=d,b.memoizedState=m),g.props=d,g.state=m,g.context=k,d=h):("function"===typeof g.componentDidMount&&(b.effectTag|=4),d=!1);} }else { g=b.stateNode,h=
-	b.memoizedProps,g.props=h,m=g.context,k=K$1(c)?Ge:I$1.current,k=He(b,k),r=c.getDerivedStateFromProps,(l="function"===typeof r||"function"===typeof g.getSnapshotBeforeUpdate)||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&"function"!==typeof g.componentWillReceiveProps||(h!==d||m!==k)&&Lf(b,g,d,k),af=!1,m=b.memoizedState,A=g.state=m,S=b.updateQueue,null!==S&&(kf(b,S,d,g,e),A=b.memoizedState),h!==d||m!==A||J$1.current||af?("function"===typeof r&&(Ff(b,c,r,d),A=b.memoizedState),(r=af||Kf(b,c,h,d,
-	m,A,k))?(l||"function"!==typeof g.UNSAFE_componentWillUpdate&&"function"!==typeof g.componentWillUpdate||("function"===typeof g.componentWillUpdate&&g.componentWillUpdate(d,A,k),"function"===typeof g.UNSAFE_componentWillUpdate&&g.UNSAFE_componentWillUpdate(d,A,k)),"function"===typeof g.componentDidUpdate&&(b.effectTag|=4),"function"===typeof g.getSnapshotBeforeUpdate&&(b.effectTag|=256)):("function"!==typeof g.componentDidUpdate||h===a.memoizedProps&&m===a.memoizedState||(b.effectTag|=4),"function"!==
-	typeof g.getSnapshotBeforeUpdate||h===a.memoizedProps&&m===a.memoizedState||(b.effectTag|=256),b.memoizedProps=d,b.memoizedState=A),g.props=d,g.state=A,g.context=k,d=r):("function"!==typeof g.componentDidUpdate||h===a.memoizedProps&&m===a.memoizedState||(b.effectTag|=4),"function"!==typeof g.getSnapshotBeforeUpdate||h===a.memoizedProps&&m===a.memoizedState||(b.effectTag|=256),d=!1); }return ig(a,b,c,d,f,e)}
-	function ig(a,b,c,d,e,f){fg(a,b);var g=0!==(b.effectTag&64);if(!d&&!g){ return e&&Ne(b,c,!1),eg(a,b,f); }d=b.stateNode;cg.current=b;var h=g?null:d.render();b.effectTag|=1;null!==a&&g&&(M$1(a,b,null,f),b.child=null);M$1(a,b,h,f);b.memoizedState=d.state;b.memoizedProps=d.props;e&&Ne(b,c,!0);return b.child}function jg(a){var b=a.stateNode;b.pendingContext?Ke(a,b.pendingContext,b.pendingContext!==b.context):b.context&&Ke(a,b.context,!1);Af(a,b.containerInfo);}
-	function ng(a,b){if(a&&a.defaultProps){b=objectAssign({},b);a=a.defaultProps;for(var c in a){ void 0===b[c]&&(b[c]=a[c]); }}return b}
-	function og(a,b,c,d){null!==a?t$1("155"):void 0;var e=b.pendingProps;if("object"===typeof c&&null!==c&&"function"===typeof c.then){c=bg(c);var f=c;f="function"===typeof f?Te(f)?3:1:void 0!==f&&null!==f&&f.$$typeof?14:4;f=b.tag=f;var g=ng(c,e);switch(f){case 1:return gg(a,b,c,g,d);case 3:return hg(a,b,c,g,d);case 14:return dg(a,b,c,g,d);default:t$1("283",c);}}f=He(b,I$1.current);uf(b,d);f=c(e,f);b.effectTag|=1;if("object"===typeof f&&null!==f&&"function"===typeof f.render&&void 0===f.$$typeof){b.tag=2;K$1(c)?
-	(g=!0,Me(b)):g=!1;b.memoizedState=null!==f.state&&void 0!==f.state?f.state:null;var h=c.getDerivedStateFromProps;"function"===typeof h&&Ff(b,c,h,e);f.updater=Jf;b.stateNode=f;f._reactInternalFiber=b;Mf(b,c,e,d);return ig(a,b,c,!0,g,d)}b.tag=0;M$1(a,b,f,d);b.memoizedProps=e;return b.child}
-	function eg(a,b,c){null!==a&&(b.firstContextDependency=a.firstContextDependency);var d=b.childExpirationTime;if(0===d||d>c){ return null; }null!==a&&b.child!==a.child?t$1("153"):void 0;if(null!==b.child){a=b.child;c=Ue(a,a.pendingProps,a.expirationTime);b.child=c;for(c.return=b;null!==a.sibling;){ a=a.sibling,c=c.sibling=Ue(a,a.pendingProps,a.expirationTime),c.return=b; }c.sibling=null;}return b.child}
-	function pg(a,b,c){var d=b.expirationTime;if(!J$1.current&&(0===d||d>c)){switch(b.tag){case 5:jg(b);ag();break;case 7:Cf(b);break;case 2:K$1(b.type)&&Me(b);break;case 3:K$1(b.type._reactResult)&&Me(b);break;case 6:Af(b,b.stateNode.containerInfo);break;case 12:sf(b,b.memoizedProps.value);}return eg(a,b,c)}b.expirationTime=0;switch(b.tag){case 4:return og(a,b,b.type,c);case 0:return gg(a,b,b.type,b.pendingProps,c);case 1:var e=b.type._reactResult;d=b.pendingProps;a=gg(a,b,e,ng(e,d),c);b.memoizedProps=d;return a;
-	case 2:return hg(a,b,b.type,b.pendingProps,c);case 3:return e=b.type._reactResult,d=b.pendingProps,a=hg(a,b,e,ng(e,d),c),b.memoizedProps=d,a;case 5:jg(b);d=b.updateQueue;null===d?t$1("282"):void 0;e=b.memoizedState;e=null!==e?e.element:null;kf(b,d,b.pendingProps,null,c);d=b.memoizedState.element;if(d===e){ ag(),b=eg(a,b,c); }else{e=b.stateNode;if(e=(null===a||null===a.child)&&e.hydrate){ Uf=Ce(b.stateNode.containerInfo),Tf=b,e=Vf=!0; }e?(b.effectTag|=2,b.child=Sf(b,null,d,c)):(M$1(a,b,d,c),ag());b=b.child;}return b;
-	case 7:Cf(b);null===a&&Yf(b);d=b.type;e=b.pendingProps;var f=null!==a?a.memoizedProps:null,g=e.children;Ae(d,e)?g=null:null!==f&&Ae(d,f)&&(b.effectTag|=16);fg(a,b);1073741823!==c&&b.mode&1&&e.hidden?(b.expirationTime=1073741823,b.memoizedProps=e,b=null):(M$1(a,b,g,c),b.memoizedProps=e,b=b.child);return b;case 8:return null===a&&Yf(b),b.memoizedProps=b.pendingProps,null;case 16:return null;case 6:return Af(b,b.stateNode.containerInfo),d=b.pendingProps,null===a?b.child=Rf(b,null,d,c):M$1(a,b,d,c),b.memoizedProps=
-	d,b.child;case 13:return dg(a,b,b.type,b.pendingProps,c);case 14:return e=b.type._reactResult,d=b.pendingProps,a=dg(a,b,e,ng(e,d),c),b.memoizedProps=d,a;case 9:return d=b.pendingProps,M$1(a,b,d,c),b.memoizedProps=d,b.child;case 10:return d=b.pendingProps.children,M$1(a,b,d,c),b.memoizedProps=d,b.child;case 15:return d=b.pendingProps,M$1(a,b,d.children,c),b.memoizedProps=d,b.child;case 12:a:{d=b.type._context;e=b.pendingProps;g=b.memoizedProps;f=e.value;b.memoizedProps=e;sf(b,f);if(null!==g){var h=g.value;
-	f=h===f&&(0!==h||1/h===1/f)||h!==h&&f!==f?0:("function"===typeof d._calculateChangedBits?d._calculateChangedBits(h,f):1073741823)|0;if(0===f){if(g.children===e.children&&!J$1.current){b=eg(a,b,c);break a}}else { for(g=b.child,null!==g&&(g.return=b);null!==g;){h=g.firstContextDependency;if(null!==h){do{if(h.context===d&&0!==(h.observedBits&f)){if(2===g.tag||3===g.tag){var k=df(c);k.tag=2;ff(g,k);}if(0===g.expirationTime||g.expirationTime>c){ g.expirationTime=c; }k=g.alternate;null!==k&&(0===k.expirationTime||
-	k.expirationTime>c)&&(k.expirationTime=c);for(var l=g.return;null!==l;){k=l.alternate;if(0===l.childExpirationTime||l.childExpirationTime>c){ l.childExpirationTime=c,null!==k&&(0===k.childExpirationTime||k.childExpirationTime>c)&&(k.childExpirationTime=c); }else if(null!==k&&(0===k.childExpirationTime||k.childExpirationTime>c)){ k.childExpirationTime=c; }else { break; }l=l.return;}}k=g.child;h=h.next;}while(null!==h)}else { k=12===g.tag?g.type===b.type?null:g.child:g.child; }if(null!==k){ k.return=g; }else { for(k=g;null!==
-	k;){if(k===b){k=null;break}g=k.sibling;if(null!==g){g.return=k.return;k=g;break}k=k.return;} }g=k;} }}M$1(a,b,e.children,c);b=b.child;}return b;case 11:return f=b.type,d=b.pendingProps,e=d.children,uf(b,c),f=vf(f,d.unstable_observedBits),e=e(f),b.effectTag|=1,M$1(a,b,e,c),b.memoizedProps=d,b.child;default:t$1("156");}}function qg(a){a.effectTag|=4;}var rg=void 0,sg=void 0,tg=void 0;rg=function(){};
-	sg=function(a,b,c,d,e){var f=a.memoizedProps;if(f!==d){var g=b.stateNode;zf(L$1.current);a=null;switch(c){case "input":f=zc(g,f);d=zc(g,d);a=[];break;case "option":f=de(g,f);d=de(g,d);a=[];break;case "select":f=objectAssign({},f,{value:void 0});d=objectAssign({},d,{value:void 0});a=[];break;case "textarea":f=fe(g,f);d=fe(g,d);a=[];break;default:"function"!==typeof f.onClick&&"function"===typeof d.onClick&&(g.onclick=we);}te(c,d);g=c=void 0;var h=null;for(c in f){ if(!d.hasOwnProperty(c)&&f.hasOwnProperty(c)&&null!=f[c]){ if("style"===
+	function Td(){for(var a=window,b=Pd();b instanceof a.HTMLIFrameElement;){try{a=b.contentDocument.defaultView;}catch(c){break}b=Pd(a.document);}return b}function Ud(a){var b=a&&a.nodeName&&a.nodeName.toLowerCase();return b&&("input"===b&&("text"===a.type||"search"===a.type||"tel"===a.type||"url"===a.type||"password"===a.type)||"textarea"===b||"true"===a.contentEditable)}
+	var Vd=Sa&&"documentMode"in document&&11>=document.documentMode,Wd={select:{phasedRegistrationNames:{bubbled:"onSelect",captured:"onSelectCapture"},dependencies:"blur contextmenu dragend focus keydown keyup mousedown mouseup selectionchange".split(" ")}},Xd=null,Yd=null,Zd=null,$d=!1;
+	function ae(a,b){var c=b.window===b?b.document:9===b.nodeType?b:b.ownerDocument;if($d||null==Xd||Xd!==Pd(c)){ return null; }c=Xd;"selectionStart"in c&&Ud(c)?c={start:c.selectionStart,end:c.selectionEnd}:(c=(c.ownerDocument&&c.ownerDocument.defaultView||window).getSelection(),c={anchorNode:c.anchorNode,anchorOffset:c.anchorOffset,focusNode:c.focusNode,focusOffset:c.focusOffset});return Zd&&jd(Zd,c)?null:(Zd=c,a=A$1.getPooled(Wd.select,Yd,a,b),a.type="select",a.target=Xd,Ra(a),a)}
+	var be={eventTypes:Wd,extractEvents:function(a,b,c,d){var e=d.window===d?d.document:9===d.nodeType?d:d.ownerDocument,f;if(!(f=!e)){a:{e=Od(e);f=ta.onSelect;for(var g=0;g<f.length;g++){var h=f[g];if(!e.hasOwnProperty(h)||!e[h]){e=!1;break a}}e=!0;}f=!e;}if(f){ return null; }e=b?Ka(b):window;switch(a){case "focus":if(Qb(e)||"true"===e.contentEditable){ Xd=e,Yd=b,Zd=null; }break;case "blur":Zd=Yd=Xd=null;break;case "mousedown":$d=!0;break;case "contextmenu":case "mouseup":case "dragend":return $d=!1,ae(c,d);case "selectionchange":if(Vd){ break; }
+	case "keydown":case "keyup":return ae(c,d)}return null}};Ca.injectEventPluginOrder("ResponderEventPlugin SimpleEventPlugin EnterLeaveEventPlugin ChangeEventPlugin SelectEventPlugin BeforeInputEventPlugin".split(" "));ua=La;va=Ja;wa=Ka;Ca.injectEventPluginsByName({SimpleEventPlugin:Dd,EnterLeaveEventPlugin:gd,ChangeEventPlugin:Vc,SelectEventPlugin:be,BeforeInputEventPlugin:Bb});function de(a){var b="";react.Children.forEach(a,function(a){null!=a&&(b+=a);});return b}
+	function ee(a,b){a=objectAssign({children:void 0},b);if(b=de(b.children)){ a.children=b; }return a}function fe(a,b,c,d){a=a.options;if(b){b={};for(var e=0;e<c.length;e++){ b["$"+c[e]]=!0; }for(c=0;c<a.length;c++){ e=b.hasOwnProperty("$"+a[c].value),a[c].selected!==e&&(a[c].selected=e),e&&d&&(a[c].defaultSelected=!0); }}else{c=""+zc(c);b=null;for(e=0;e<a.length;e++){if(a[e].value===c){a[e].selected=!0;d&&(a[e].defaultSelected=!0);return}null!==b||a[e].disabled||(b=a[e]);}null!==b&&(b.selected=!0);}}
+	function ge(a,b){null!=b.dangerouslySetInnerHTML?t$1("91"):void 0;return objectAssign({},b,{value:void 0,defaultValue:void 0,children:""+a._wrapperState.initialValue})}function he(a,b){var c=b.value;null==c&&(c=b.defaultValue,b=b.children,null!=b&&(null!=c?t$1("92"):void 0,Array.isArray(b)&&(1>=b.length?void 0:t$1("93"),b=b[0]),c=b),null==c&&(c=""));a._wrapperState={initialValue:zc(c)};}
+	function ie(a,b){var c=zc(b.value),d=zc(b.defaultValue);null!=c&&(c=""+c,c!==a.value&&(a.value=c),null==b.defaultValue&&a.defaultValue!==c&&(a.defaultValue=c));null!=d&&(a.defaultValue=""+d);}function je(a){var b=a.textContent;b===a._wrapperState.initialValue&&(a.value=b);}var ke={html:"http://www.w3.org/1999/xhtml",mathml:"http://www.w3.org/1998/Math/MathML",svg:"http://www.w3.org/2000/svg"};
+	function le(a){switch(a){case "svg":return "http://www.w3.org/2000/svg";case "math":return "http://www.w3.org/1998/Math/MathML";default:return "http://www.w3.org/1999/xhtml"}}function me(a,b){return null==a||"http://www.w3.org/1999/xhtml"===a?le(b):"http://www.w3.org/2000/svg"===a&&"foreignObject"===b?"http://www.w3.org/1999/xhtml":a}
+	var ne=void 0,oe=function(a){return "undefined"!==typeof MSApp&&MSApp.execUnsafeLocalFunction?function(b,c,d,e){MSApp.execUnsafeLocalFunction(function(){return a(b,c,d,e)});}:a}(function(a,b){if(a.namespaceURI!==ke.svg||"innerHTML"in a){ a.innerHTML=b; }else{ne=ne||document.createElement("div");ne.innerHTML="<svg>"+b+"</svg>";for(b=ne.firstChild;a.firstChild;){ a.removeChild(a.firstChild); }for(;b.firstChild;){ a.appendChild(b.firstChild); }}});
+	function pe(a,b){if(b){var c=a.firstChild;if(c&&c===a.lastChild&&3===c.nodeType){c.nodeValue=b;return}}a.textContent=b;}
+	var qe={animationIterationCount:!0,borderImageOutset:!0,borderImageSlice:!0,borderImageWidth:!0,boxFlex:!0,boxFlexGroup:!0,boxOrdinalGroup:!0,columnCount:!0,columns:!0,flex:!0,flexGrow:!0,flexPositive:!0,flexShrink:!0,flexNegative:!0,flexOrder:!0,gridArea:!0,gridRow:!0,gridRowEnd:!0,gridRowSpan:!0,gridRowStart:!0,gridColumn:!0,gridColumnEnd:!0,gridColumnSpan:!0,gridColumnStart:!0,fontWeight:!0,lineClamp:!0,lineHeight:!0,opacity:!0,order:!0,orphans:!0,tabSize:!0,widows:!0,zIndex:!0,zoom:!0,fillOpacity:!0,
+	floodOpacity:!0,stopOpacity:!0,strokeDasharray:!0,strokeDashoffset:!0,strokeMiterlimit:!0,strokeOpacity:!0,strokeWidth:!0},re=["Webkit","ms","Moz","O"];Object.keys(qe).forEach(function(a){re.forEach(function(b){b=b+a.charAt(0).toUpperCase()+a.substring(1);qe[b]=qe[a];});});function se(a,b,c){return null==b||"boolean"===typeof b||""===b?"":c||"number"!==typeof b||0===b||qe.hasOwnProperty(a)&&qe[a]?(""+b).trim():b+"px"}
+	function te(a,b){a=a.style;for(var c in b){ if(b.hasOwnProperty(c)){var d=0===c.indexOf("--"),e=se(c,b[c],d);"float"===c&&(c="cssFloat");d?a.setProperty(c,e):a[c]=e;} }}var ue=objectAssign({menuitem:!0},{area:!0,base:!0,br:!0,col:!0,embed:!0,hr:!0,img:!0,input:!0,keygen:!0,link:!0,meta:!0,param:!0,source:!0,track:!0,wbr:!0});
+	function ve(a,b){b&&(ue[a]&&(null!=b.children||null!=b.dangerouslySetInnerHTML?t$1("137",a,""):void 0),null!=b.dangerouslySetInnerHTML&&(null!=b.children?t$1("60"):void 0,"object"===typeof b.dangerouslySetInnerHTML&&"__html"in b.dangerouslySetInnerHTML?void 0:t$1("61")),null!=b.style&&"object"!==typeof b.style?t$1("62",""):void 0);}
+	function we(a,b){if(-1===a.indexOf("-")){ return "string"===typeof b.is; }switch(a){case "annotation-xml":case "color-profile":case "font-face":case "font-face-src":case "font-face-uri":case "font-face-format":case "font-face-name":case "missing-glyph":return !1;default:return !0}}
+	function xe(a,b){a=9===a.nodeType||11===a.nodeType?a:a.ownerDocument;var c=Od(a);b=ta[b];for(var d=0;d<b.length;d++){var e=b[d];if(!c.hasOwnProperty(e)||!c[e]){switch(e){case "scroll":Kd("scroll",a);break;case "focus":case "blur":Kd("focus",a);Kd("blur",a);c.blur=!0;c.focus=!0;break;case "cancel":case "close":Sb(e)&&Kd(e,a);break;case "invalid":case "submit":case "reset":break;default:-1===bb.indexOf(e)&&G$1(e,a);}c[e]=!0;}}}function ye(){}var ze=null,Ae=null;
+	function Be(a,b){switch(a){case "button":case "input":case "select":case "textarea":return !!b.autoFocus}return !1}function Ce(a,b){return "textarea"===a||"option"===a||"noscript"===a||"string"===typeof b.children||"number"===typeof b.children||"object"===typeof b.dangerouslySetInnerHTML&&null!==b.dangerouslySetInnerHTML&&null!=b.dangerouslySetInnerHTML.__html}var De="function"===typeof setTimeout?setTimeout:void 0,Ee="function"===typeof clearTimeout?clearTimeout:void 0;
+	function Fe(a){for(a=a.nextSibling;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}function Ge(a){for(a=a.firstChild;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}var He=[],Ie=-1;function H$1(a){0>Ie||(a.current=He[Ie],He[Ie]=null,Ie--);}function I$1(a,b){Ie++;He[Ie]=a.current;a.current=b;}var Je={},J$1={current:Je},K$1={current:!1},Ke=Je;
+	function Le(a,b){var c=a.type.contextTypes;if(!c){ return Je; }var d=a.stateNode;if(d&&d.__reactInternalMemoizedUnmaskedChildContext===b){ return d.__reactInternalMemoizedMaskedChildContext; }var e={},f;for(f in c){ e[f]=b[f]; }d&&(a=a.stateNode,a.__reactInternalMemoizedUnmaskedChildContext=b,a.__reactInternalMemoizedMaskedChildContext=e);return e}function L$1(a){a=a.childContextTypes;return null!==a&&void 0!==a}function Me(a){H$1(K$1,a);H$1(J$1,a);}function Ne(a){H$1(K$1,a);H$1(J$1,a);}
+	function Oe(a,b,c){J$1.current!==Je?t$1("168"):void 0;I$1(J$1,b,a);I$1(K$1,c,a);}function Pe(a,b,c){var d=a.stateNode;a=b.childContextTypes;if("function"!==typeof d.getChildContext){ return c; }d=d.getChildContext();for(var e in d){ e in a?void 0:t$1("108",mc(b)||"Unknown",e); }return objectAssign({},c,d)}function Qe(a){var b=a.stateNode;b=b&&b.__reactInternalMemoizedMergedChildContext||Je;Ke=J$1.current;I$1(J$1,b,a);I$1(K$1,K$1.current,a);return !0}
+	function Re(a,b,c){var d=a.stateNode;d?void 0:t$1("169");c?(b=Pe(a,b,Ke),d.__reactInternalMemoizedMergedChildContext=b,H$1(K$1,a),H$1(J$1,a),I$1(J$1,b,a)):H$1(K$1,a);I$1(K$1,c,a);}var Se=null,Te=null;function Ue(a){return function(b){try{return a(b)}catch(c){}}}
+	function Ve(a){if("undefined"===typeof __REACT_DEVTOOLS_GLOBAL_HOOK__){ return !1; }var b=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(b.isDisabled||!b.supportsFiber){ return !0; }try{var c=b.inject(a);Se=Ue(function(a){return b.onCommitFiberRoot(c,a)});Te=Ue(function(a){return b.onCommitFiberUnmount(c,a)});}catch(d){}return !0}
+	function We(a,b,c,d){this.tag=a;this.key=c;this.sibling=this.child=this.return=this.stateNode=this.type=this.elementType=null;this.index=0;this.ref=null;this.pendingProps=b;this.firstContextDependency=this.memoizedState=this.updateQueue=this.memoizedProps=null;this.mode=d;this.effectTag=0;this.lastEffect=this.firstEffect=this.nextEffect=null;this.childExpirationTime=this.expirationTime=0;this.alternate=null;}function M$1(a,b,c,d){return new We(a,b,c,d)}
+	function Xe(a){a=a.prototype;return !(!a||!a.isReactComponent)}function Ye(a){if("function"===typeof a){ return Xe(a)?1:0; }if(void 0!==a&&null!==a){a=a.$$typeof;if(a===gc){ return 11; }if(a===ic){ return 14 }}return 2}
+	function Ze(a,b){var c=a.alternate;null===c?(c=M$1(a.tag,b,a.key,a.mode),c.elementType=a.elementType,c.type=a.type,c.stateNode=a.stateNode,c.alternate=a,a.alternate=c):(c.pendingProps=b,c.effectTag=0,c.nextEffect=null,c.firstEffect=null,c.lastEffect=null);c.childExpirationTime=a.childExpirationTime;c.expirationTime=a.expirationTime;c.child=a.child;c.memoizedProps=a.memoizedProps;c.memoizedState=a.memoizedState;c.updateQueue=a.updateQueue;c.firstContextDependency=a.firstContextDependency;c.sibling=a.sibling;
+	c.index=a.index;c.ref=a.ref;return c}
+	function $e(a,b,c,d,e,f){var g=2;d=a;if("function"===typeof a){ Xe(a)&&(g=1); }else if("string"===typeof a){ g=5; }else { a:switch(a){case ac:return af(c.children,e,f,b);case fc:return bf(c,e|3,f,b);case bc:return bf(c,e|2,f,b);case cc:return a=M$1(12,c,b,e|4),a.elementType=cc,a.type=cc,a.expirationTime=f,a;case hc:return a=M$1(13,c,b,e),a.elementType=hc,a.type=hc,a.expirationTime=f,a;default:if("object"===typeof a&&null!==a){ switch(a.$$typeof){case dc:g=10;break a;case ec:g=9;break a;case gc:g=11;break a;case ic:g=
+	14;break a;case jc:g=16;d=null;break a} }t$1("130",null==a?a:typeof a,"");} }b=M$1(g,c,b,e);b.elementType=a;b.type=d;b.expirationTime=f;return b}function af(a,b,c,d){a=M$1(7,a,d,b);a.expirationTime=c;return a}function bf(a,b,c,d){a=M$1(8,a,d,b);b=0===(b&1)?bc:fc;a.elementType=b;a.type=b;a.expirationTime=c;return a}function cf(a,b,c){a=M$1(6,a,null,b);a.expirationTime=c;return a}
+	function df(a,b,c){b=M$1(4,null!==a.children?a.children:[],a.key,b);b.expirationTime=c;b.stateNode={containerInfo:a.containerInfo,pendingChildren:null,implementation:a.implementation};return b}function ef(a,b){a.didError=!1;var c=a.earliestPendingTime;0===c?a.earliestPendingTime=a.latestPendingTime=b:c<b?a.earliestPendingTime=b:a.latestPendingTime>b&&(a.latestPendingTime=b);ff(b,a);}
+	function gf(a,b){a.didError=!1;var c=a.latestPingedTime;0!==c&&c>=b&&(a.latestPingedTime=0);c=a.earliestPendingTime;var d=a.latestPendingTime;c===b?a.earliestPendingTime=d===b?a.latestPendingTime=0:d:d===b&&(a.latestPendingTime=c);c=a.earliestSuspendedTime;d=a.latestSuspendedTime;0===c?a.earliestSuspendedTime=a.latestSuspendedTime=b:c<b?a.earliestSuspendedTime=b:d>b&&(a.latestSuspendedTime=b);ff(b,a);}
+	function hf(a,b){var c=a.earliestPendingTime;a=a.earliestSuspendedTime;c>b&&(b=c);a>b&&(b=a);return b}function ff(a,b){var c=b.earliestSuspendedTime,d=b.latestSuspendedTime,e=b.earliestPendingTime,f=b.latestPingedTime;e=0!==e?e:f;0===e&&(0===a||d<a)&&(e=d);a=e;0!==a&&c>a&&(a=c);b.nextExpirationTimeToWorkOn=e;b.expirationTime=a;}var jf=!1;
+	function kf(a){return {baseState:a,firstUpdate:null,lastUpdate:null,firstCapturedUpdate:null,lastCapturedUpdate:null,firstEffect:null,lastEffect:null,firstCapturedEffect:null,lastCapturedEffect:null}}function lf(a){return {baseState:a.baseState,firstUpdate:a.firstUpdate,lastUpdate:a.lastUpdate,firstCapturedUpdate:null,lastCapturedUpdate:null,firstEffect:null,lastEffect:null,firstCapturedEffect:null,lastCapturedEffect:null}}
+	function mf(a){return {expirationTime:a,tag:0,payload:null,callback:null,next:null,nextEffect:null}}function nf(a,b){null===a.lastUpdate?a.firstUpdate=a.lastUpdate=b:(a.lastUpdate.next=b,a.lastUpdate=b);}
+	function of(a,b){var c=a.alternate;if(null===c){var d=a.updateQueue;var e=null;null===d&&(d=a.updateQueue=kf(a.memoizedState));}else { d=a.updateQueue,e=c.updateQueue,null===d?null===e?(d=a.updateQueue=kf(a.memoizedState),e=c.updateQueue=kf(c.memoizedState)):d=a.updateQueue=lf(e):null===e&&(e=c.updateQueue=lf(d)); }null===e||d===e?nf(d,b):null===d.lastUpdate||null===e.lastUpdate?(nf(d,b),nf(e,b)):(nf(d,b),e.lastUpdate=b);}
+	function pf(a,b){var c=a.updateQueue;c=null===c?a.updateQueue=kf(a.memoizedState):qf(a,c);null===c.lastCapturedUpdate?c.firstCapturedUpdate=c.lastCapturedUpdate=b:(c.lastCapturedUpdate.next=b,c.lastCapturedUpdate=b);}function qf(a,b){var c=a.alternate;null!==c&&b===c.updateQueue&&(b=a.updateQueue=lf(b));return b}
+	function rf(a,b,c,d,e,f){switch(c.tag){case 1:return a=c.payload,"function"===typeof a?a.call(f,d,e):a;case 3:a.effectTag=a.effectTag&-2049|64;case 0:a=c.payload;e="function"===typeof a?a.call(f,d,e):a;if(null===e||void 0===e){ break; }return objectAssign({},d,e);case 2:jf=!0;}return d}
+	function sf(a,b,c,d,e){jf=!1;b=qf(a,b);for(var f=b.baseState,g=null,h=0,k=b.firstUpdate,l=f;null!==k;){var m=k.expirationTime;m<e?(null===g&&(g=k,f=l),h<m&&(h=m)):(l=rf(a,b,k,l,c,d),null!==k.callback&&(a.effectTag|=32,k.nextEffect=null,null===b.lastEffect?b.firstEffect=b.lastEffect=k:(b.lastEffect.nextEffect=k,b.lastEffect=k)));k=k.next;}m=null;for(k=b.firstCapturedUpdate;null!==k;){var q=k.expirationTime;q<e?(null===m&&(m=k,null===g&&(f=l)),h<q&&(h=q)):(l=rf(a,b,k,l,c,d),null!==k.callback&&(a.effectTag|=
+	32,k.nextEffect=null,null===b.lastCapturedEffect?b.firstCapturedEffect=b.lastCapturedEffect=k:(b.lastCapturedEffect.nextEffect=k,b.lastCapturedEffect=k)));k=k.next;}null===g&&(b.lastUpdate=null);null===m?b.lastCapturedUpdate=null:a.effectTag|=32;null===g&&null===m&&(f=l);b.baseState=f;b.firstUpdate=g;b.firstCapturedUpdate=m;a.expirationTime=h;a.memoizedState=l;}
+	function tf(a,b,c){null!==b.firstCapturedUpdate&&(null!==b.lastUpdate&&(b.lastUpdate.next=b.firstCapturedUpdate,b.lastUpdate=b.lastCapturedUpdate),b.firstCapturedUpdate=b.lastCapturedUpdate=null);uf(b.firstEffect,c);b.firstEffect=b.lastEffect=null;uf(b.firstCapturedEffect,c);b.firstCapturedEffect=b.lastCapturedEffect=null;}function uf(a,b){for(;null!==a;){var c=a.callback;if(null!==c){a.callback=null;var d=b;"function"!==typeof c?t$1("191",c):void 0;c.call(d);}a=a.nextEffect;}}
+	function vf(a,b){return {value:a,source:b,stack:nc(b)}}var wf={current:null},xf=null,yf=null,zf=null;function Af(a,b){var c=a.type._context;I$1(wf,c._currentValue,a);c._currentValue=b;}function Bf(a){var b=wf.current;H$1(wf,a);a.type._context._currentValue=b;}function Cf(a){xf=a;zf=yf=null;a.firstContextDependency=null;}
+	function Df(a,b){if(zf!==a&&!1!==b&&0!==b){if("number"!==typeof b||1073741823===b){ zf=a,b=1073741823; }b={context:a,observedBits:b,next:null};null===yf?(null===xf?t$1("293"):void 0,xf.firstContextDependency=yf=b):yf=yf.next=b;}return a._currentValue}var Ef={},N$1={current:Ef},Ff={current:Ef},Gf={current:Ef};function Hf(a){a===Ef?t$1("174"):void 0;return a}
+	function If(a,b){I$1(Gf,b,a);I$1(Ff,a,a);I$1(N$1,Ef,a);var c=b.nodeType;switch(c){case 9:case 11:b=(b=b.documentElement)?b.namespaceURI:me(null,"");break;default:c=8===c?b.parentNode:b,b=c.namespaceURI||null,c=c.tagName,b=me(b,c);}H$1(N$1,a);I$1(N$1,b,a);}function Jf(a){H$1(N$1,a);H$1(Ff,a);H$1(Gf,a);}function Kf(a){Hf(Gf.current);var b=Hf(N$1.current);var c=me(b,a.type);b!==c&&(I$1(Ff,a,a),I$1(N$1,c,a));}function Lf(a){Ff.current===a&&(H$1(N$1,a),H$1(Ff,a));}
+	function O$1(a,b){if(a&&a.defaultProps){b=objectAssign({},b);a=a.defaultProps;for(var c in a){ void 0===b[c]&&(b[c]=a[c]); }}return b}function Mf(a){var b=a._result;switch(a._status){case 1:return b;case 2:throw b;case 0:throw b;default:throw a._status=0,b=a._ctor,b=b(),b.then(function(b){0===a._status&&(b=b.default,a._status=1,a._result=b);},function(b){0===a._status&&(a._status=2,a._result=b);}),a._result=b,b;}}var Nf=Xb.ReactCurrentOwner,Of=(new react.Component).refs;
+	function Pf(a,b,c,d){b=a.memoizedState;c=c(d,b);c=null===c||void 0===c?b:objectAssign({},b,c);a.memoizedState=c;d=a.updateQueue;null!==d&&0===a.expirationTime&&(d.baseState=c);}
+	var Uf={isMounted:function(a){return (a=a._reactInternalFiber)?2===kd(a):!1},enqueueSetState:function(a,b,c){a=a._reactInternalFiber;var d=Qf();d=Rf(d,a);var e=mf(d);e.payload=b;void 0!==c&&null!==c&&(e.callback=c);of(a,e);Tf(a,d);},enqueueReplaceState:function(a,b,c){a=a._reactInternalFiber;var d=Qf();d=Rf(d,a);var e=mf(d);e.tag=1;e.payload=b;void 0!==c&&null!==c&&(e.callback=c);of(a,e);Tf(a,d);},enqueueForceUpdate:function(a,b){a=a._reactInternalFiber;var c=Qf();c=Rf(c,a);var d=mf(c);d.tag=
+	2;void 0!==b&&null!==b&&(d.callback=b);of(a,d);Tf(a,c);}};function Vf(a,b,c,d,e,f,g){a=a.stateNode;return "function"===typeof a.shouldComponentUpdate?a.shouldComponentUpdate(d,f,g):b.prototype&&b.prototype.isPureReactComponent?!jd(c,d)||!jd(e,f):!0}
+	function Wf(a,b,c){var d=!1,e=Je;var f=b.contextType;"object"===typeof f&&null!==f?f=Nf.currentDispatcher.readContext(f):(e=L$1(b)?Ke:J$1.current,d=b.contextTypes,f=(d=null!==d&&void 0!==d)?Le(a,e):Je);b=new b(c,f);a.memoizedState=null!==b.state&&void 0!==b.state?b.state:null;b.updater=Uf;a.stateNode=b;b._reactInternalFiber=a;d&&(a=a.stateNode,a.__reactInternalMemoizedUnmaskedChildContext=e,a.__reactInternalMemoizedMaskedChildContext=f);return b}
+	function Xf(a,b,c,d){a=b.state;"function"===typeof b.componentWillReceiveProps&&b.componentWillReceiveProps(c,d);"function"===typeof b.UNSAFE_componentWillReceiveProps&&b.UNSAFE_componentWillReceiveProps(c,d);b.state!==a&&Uf.enqueueReplaceState(b,b.state,null);}
+	function Yf(a,b,c,d){var e=a.stateNode;e.props=c;e.state=a.memoizedState;e.refs=Of;var f=b.contextType;"object"===typeof f&&null!==f?e.context=Nf.currentDispatcher.readContext(f):(f=L$1(b)?Ke:J$1.current,e.context=Le(a,f));f=a.updateQueue;null!==f&&(sf(a,f,c,e,d),e.state=a.memoizedState);f=b.getDerivedStateFromProps;"function"===typeof f&&(Pf(a,b,f,c),e.state=a.memoizedState);"function"===typeof b.getDerivedStateFromProps||"function"===typeof e.getSnapshotBeforeUpdate||"function"!==typeof e.UNSAFE_componentWillMount&&
+	"function"!==typeof e.componentWillMount||(b=e.state,"function"===typeof e.componentWillMount&&e.componentWillMount(),"function"===typeof e.UNSAFE_componentWillMount&&e.UNSAFE_componentWillMount(),b!==e.state&&Uf.enqueueReplaceState(e,e.state,null),f=a.updateQueue,null!==f&&(sf(a,f,c,e,d),e.state=a.memoizedState));"function"===typeof e.componentDidMount&&(a.effectTag|=4);}var Zf=Array.isArray;
+	function $f(a,b,c){a=c.ref;if(null!==a&&"function"!==typeof a&&"object"!==typeof a){if(c._owner){c=c._owner;var d=void 0;c&&(1!==c.tag?t$1("289"):void 0,d=c.stateNode);d?void 0:t$1("147",a);var e=""+a;if(null!==b&&null!==b.ref&&"function"===typeof b.ref&&b.ref._stringRef===e){ return b.ref; }b=function(a){var b=d.refs;b===Of&&(b=d.refs={});null===a?delete b[e]:b[e]=a;};b._stringRef=e;return b}"string"!==typeof a?t$1("284"):void 0;c._owner?void 0:t$1("290",a);}return a}
+	function ag(a,b){"textarea"!==a.type&&t$1("31","[object Object]"===Object.prototype.toString.call(b)?"object with keys {"+Object.keys(b).join(", ")+"}":b,"");}
+	function bg(a){function b(b,c){if(a){var d=b.lastEffect;null!==d?(d.nextEffect=c,b.lastEffect=c):b.firstEffect=b.lastEffect=c;c.nextEffect=null;c.effectTag=8;}}function c(c,d){if(!a){ return null; }for(;null!==d;){ b(c,d),d=d.sibling; }return null}function d(a,b){for(a=new Map;null!==b;){ null!==b.key?a.set(b.key,b):a.set(b.index,b),b=b.sibling; }return a}function e(a,b,c){a=Ze(a,b,c);a.index=0;a.sibling=null;return a}function f(b,c,d){b.index=d;if(!a){ return c; }d=b.alternate;if(null!==d){ return d=d.index,d<c?(b.effectTag=
+	2,c):d; }b.effectTag=2;return c}function g(b){a&&null===b.alternate&&(b.effectTag=2);return b}function h(a,b,c,d){if(null===b||6!==b.tag){ return b=cf(c,a.mode,d),b.return=a,b; }b=e(b,c,d);b.return=a;return b}function k(a,b,c,d){if(null!==b&&b.elementType===c.type){ return d=e(b,c.props,d),d.ref=$f(a,b,c),d.return=a,d; }d=$e(c.type,c.key,c.props,null,a.mode,d);d.ref=$f(a,b,c);d.return=a;return d}function l(a,b,c,d){if(null===b||4!==b.tag||b.stateNode.containerInfo!==c.containerInfo||b.stateNode.implementation!==
+	c.implementation){ return b=df(c,a.mode,d),b.return=a,b; }b=e(b,c.children||[],d);b.return=a;return b}function m(a,b,c,d,g){if(null===b||7!==b.tag){ return b=af(c,a.mode,d,g),b.return=a,b; }b=e(b,c,d);b.return=a;return b}function q(a,b,c){if("string"===typeof b||"number"===typeof b){ return b=cf(""+b,a.mode,c),b.return=a,b; }if("object"===typeof b&&null!==b){switch(b.$$typeof){case Zb:return c=$e(b.type,b.key,b.props,null,a.mode,c),c.ref=$f(a,null,b),c.return=a,c;case $b:return b=df(b,a.mode,c),b.return=a,b}if(Zf(b)||
+	lc(b)){ return b=af(b,a.mode,c,null),b.return=a,b; }ag(a,b);}return null}function x(a,b,c,d){var e=null!==b?b.key:null;if("string"===typeof c||"number"===typeof c){ return null!==e?null:h(a,b,""+c,d); }if("object"===typeof c&&null!==c){switch(c.$$typeof){case Zb:return c.key===e?c.type===ac?m(a,b,c.props.children,d,e):k(a,b,c,d):null;case $b:return c.key===e?l(a,b,c,d):null}if(Zf(c)||lc(c)){ return null!==e?null:m(a,b,c,d,null); }ag(a,c);}return null}function z(a,b,c,d,e){if("string"===typeof d||"number"===typeof d){ return a=
+	a.get(c)||null,h(b,a,""+d,e); }if("object"===typeof d&&null!==d){switch(d.$$typeof){case Zb:return a=a.get(null===d.key?c:d.key)||null,d.type===ac?m(b,a,d.props.children,e,d.key):k(b,a,d,e);case $b:return a=a.get(null===d.key?c:d.key)||null,l(b,a,d,e)}if(Zf(d)||lc(d)){ return a=a.get(c)||null,m(b,a,d,e,null); }ag(b,d);}return null}function B(e,g,h,k){for(var l=null,r=null,m=g,u=g=0,p=null;null!==m&&u<h.length;u++){m.index>u?(p=m,m=null):p=m.sibling;var v=x(e,m,h[u],k);if(null===v){null===m&&(m=p);break}a&&
+	m&&null===v.alternate&&b(e,m);g=f(v,g,u);null===r?l=v:r.sibling=v;r=v;m=p;}if(u===h.length){ return c(e,m),l; }if(null===m){for(;u<h.length;u++){ if(m=q(e,h[u],k)){ g=f(m,g,u),null===r?l=m:r.sibling=m,r=m; } }return l}for(m=d(e,m);u<h.length;u++){ if(p=z(m,e,u,h[u],k)){ a&&null!==p.alternate&&m.delete(null===p.key?u:p.key),g=f(p,g,u),null===r?l=p:r.sibling=p,r=p; } }a&&m.forEach(function(a){return b(e,a)});return l}function Q(e,g,h,k){var l=lc(h);"function"!==typeof l?t$1("150"):void 0;h=l.call(h);null==h?t$1("151"):void 0;
+	for(var m=l=null,r=g,u=g=0,p=null,v=h.next();null!==r&&!v.done;u++,v=h.next()){r.index>u?(p=r,r=null):p=r.sibling;var y=x(e,r,v.value,k);if(null===y){r||(r=p);break}a&&r&&null===y.alternate&&b(e,r);g=f(y,g,u);null===m?l=y:m.sibling=y;m=y;r=p;}if(v.done){ return c(e,r),l; }if(null===r){for(;!v.done;u++,v=h.next()){ v=q(e,v.value,k),null!==v&&(g=f(v,g,u),null===m?l=v:m.sibling=v,m=v); }return l}for(r=d(e,r);!v.done;u++,v=h.next()){ v=z(r,e,u,v.value,k),null!==v&&(a&&null!==v.alternate&&r.delete(null===v.key?u:
+	v.key),g=f(v,g,u),null===m?l=v:m.sibling=v,m=v); }a&&r.forEach(function(a){return b(e,a)});return l}return function(a,d,f,h){var k="object"===typeof f&&null!==f&&f.type===ac&&null===f.key;k&&(f=f.props.children);var l="object"===typeof f&&null!==f;if(l){ switch(f.$$typeof){case Zb:a:{l=f.key;for(k=d;null!==k;){if(k.key===l){ if(7===k.tag?f.type===ac:k.elementType===f.type){c(a,k.sibling);d=e(k,f.type===ac?f.props.children:f.props,h);d.ref=$f(a,k,f);d.return=a;a=d;break a}else{c(a,k);break} }else { b(a,k); }k=
+	k.sibling;}f.type===ac?(d=af(f.props.children,a.mode,h,f.key),d.return=a,a=d):(h=$e(f.type,f.key,f.props,null,a.mode,h),h.ref=$f(a,d,f),h.return=a,a=h);}return g(a);case $b:a:{for(k=f.key;null!==d;){if(d.key===k){ if(4===d.tag&&d.stateNode.containerInfo===f.containerInfo&&d.stateNode.implementation===f.implementation){c(a,d.sibling);d=e(d,f.children||[],h);d.return=a;a=d;break a}else{c(a,d);break} }else { b(a,d); }d=d.sibling;}d=df(f,a.mode,h);d.return=a;a=d;}return g(a)} }if("string"===typeof f||"number"===typeof f){ return f=
+	""+f,null!==d&&6===d.tag?(c(a,d.sibling),d=e(d,f,h),d.return=a,a=d):(c(a,d),d=cf(f,a.mode,h),d.return=a,a=d),g(a); }if(Zf(f)){ return B(a,d,f,h); }if(lc(f)){ return Q(a,d,f,h); }l&&ag(a,f);if("undefined"===typeof f&&!k){ switch(a.tag){case 1:case 0:h=a.type,t$1("152",h.displayName||h.name||"Component");} }return c(a,d)}}var cg=bg(!0),dg=bg(!1),eg=null,fg=null,gg=!1;
+	function hg(a,b){var c=M$1(5,null,null,0);c.elementType="DELETED";c.type="DELETED";c.stateNode=b;c.return=a;c.effectTag=8;null!==a.lastEffect?(a.lastEffect.nextEffect=c,a.lastEffect=c):a.firstEffect=a.lastEffect=c;}function ig(a,b){switch(a.tag){case 5:var c=a.type;b=1!==b.nodeType||c.toLowerCase()!==b.nodeName.toLowerCase()?null:b;return null!==b?(a.stateNode=b,!0):!1;case 6:return b=""===a.pendingProps||3!==b.nodeType?null:b,null!==b?(a.stateNode=b,!0):!1;default:return !1}}
+	function jg(a){if(gg){var b=fg;if(b){var c=b;if(!ig(a,b)){b=Fe(c);if(!b||!ig(a,b)){a.effectTag|=2;gg=!1;eg=a;return}hg(eg,c);}eg=a;fg=Ge(b);}else { a.effectTag|=2,gg=!1,eg=a; }}}function kg(a){for(a=a.return;null!==a&&5!==a.tag&&3!==a.tag;){ a=a.return; }eg=a;}function lg(a){if(a!==eg){ return !1; }if(!gg){ return kg(a),gg=!0,!1; }var b=a.type;if(5!==a.tag||"head"!==b&&"body"!==b&&!Ce(b,a.memoizedProps)){ for(b=fg;b;){ hg(a,b),b=Fe(b); } }kg(a);fg=eg?Fe(a.stateNode):null;return !0}function mg(){fg=eg=null;gg=!1;}var ng=Xb.ReactCurrentOwner;
+	function P$1(a,b,c,d){b.child=null===a?dg(b,null,c,d):cg(b,a.child,c,d);}function og(a,b,c,d,e){c=c.render;var f=b.ref;Cf(b,e);d=c(d,f);b.effectTag|=1;P$1(a,b,d,e);return b.child}
+	function pg(a,b,c,d,e,f){if(null===a){var g=c.type;if("function"===typeof g&&!Xe(g)&&void 0===g.defaultProps&&null===c.compare){ return b.tag=15,b.type=g,qg(a,b,g,d,e,f); }a=$e(c.type,null,d,null,b.mode,f);a.ref=b.ref;a.return=b;return b.child=a}g=a.child;if(e<f&&(e=g.memoizedProps,c=c.compare,c=null!==c?c:jd,c(e,d)&&a.ref===b.ref)){ return rg(a,b,f); }b.effectTag|=1;a=Ze(g,d,f);a.ref=b.ref;a.return=b;return b.child=a}
+	function qg(a,b,c,d,e,f){return null!==a&&e<f&&jd(a.memoizedProps,d)&&a.ref===b.ref?rg(a,b,f):sg(a,b,c,d,f)}function tg(a,b){var c=b.ref;if(null===a&&null!==c||null!==a&&a.ref!==c){ b.effectTag|=128; }}function sg(a,b,c,d,e){var f=L$1(c)?Ke:J$1.current;f=Le(b,f);Cf(b,e);c=c(d,f);b.effectTag|=1;P$1(a,b,c,e);return b.child}
+	function ug(a,b,c,d,e){if(L$1(c)){var f=!0;Qe(b);}else { f=!1; }Cf(b,e);if(null===b.stateNode){ null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2),Wf(b,c,d,e),Yf(b,c,d,e),d=!0; }else if(null===a){var g=b.stateNode,h=b.memoizedProps;g.props=h;var k=g.context,l=c.contextType;"object"===typeof l&&null!==l?l=Nf.currentDispatcher.readContext(l):(l=L$1(c)?Ke:J$1.current,l=Le(b,l));var m=c.getDerivedStateFromProps,q="function"===typeof m||"function"===typeof g.getSnapshotBeforeUpdate;q||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&
+	"function"!==typeof g.componentWillReceiveProps||(h!==d||k!==l)&&Xf(b,g,d,l);jf=!1;var x=b.memoizedState;k=g.state=x;var z=b.updateQueue;null!==z&&(sf(b,z,d,g,e),k=b.memoizedState);h!==d||x!==k||K$1.current||jf?("function"===typeof m&&(Pf(b,c,m,d),k=b.memoizedState),(h=jf||Vf(b,c,h,d,x,k,l))?(q||"function"!==typeof g.UNSAFE_componentWillMount&&"function"!==typeof g.componentWillMount||("function"===typeof g.componentWillMount&&g.componentWillMount(),"function"===typeof g.UNSAFE_componentWillMount&&
+	g.UNSAFE_componentWillMount()),"function"===typeof g.componentDidMount&&(b.effectTag|=4)):("function"===typeof g.componentDidMount&&(b.effectTag|=4),b.memoizedProps=d,b.memoizedState=k),g.props=d,g.state=k,g.context=l,d=h):("function"===typeof g.componentDidMount&&(b.effectTag|=4),d=!1);}else { g=b.stateNode,h=b.memoizedProps,g.props=b.type===b.elementType?h:O$1(b.type,h),k=g.context,l=c.contextType,"object"===typeof l&&null!==l?l=Nf.currentDispatcher.readContext(l):(l=L$1(c)?Ke:J$1.current,l=Le(b,l)),m=c.getDerivedStateFromProps,
+	(q="function"===typeof m||"function"===typeof g.getSnapshotBeforeUpdate)||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&"function"!==typeof g.componentWillReceiveProps||(h!==d||k!==l)&&Xf(b,g,d,l),jf=!1,k=b.memoizedState,x=g.state=k,z=b.updateQueue,null!==z&&(sf(b,z,d,g,e),x=b.memoizedState),h!==d||k!==x||K$1.current||jf?("function"===typeof m&&(Pf(b,c,m,d),x=b.memoizedState),(m=jf||Vf(b,c,h,d,k,x,l))?(q||"function"!==typeof g.UNSAFE_componentWillUpdate&&"function"!==typeof g.componentWillUpdate||
+	("function"===typeof g.componentWillUpdate&&g.componentWillUpdate(d,x,l),"function"===typeof g.UNSAFE_componentWillUpdate&&g.UNSAFE_componentWillUpdate(d,x,l)),"function"===typeof g.componentDidUpdate&&(b.effectTag|=4),"function"===typeof g.getSnapshotBeforeUpdate&&(b.effectTag|=256)):("function"!==typeof g.componentDidUpdate||h===a.memoizedProps&&k===a.memoizedState||(b.effectTag|=4),"function"!==typeof g.getSnapshotBeforeUpdate||h===a.memoizedProps&&k===a.memoizedState||(b.effectTag|=256),b.memoizedProps=
+	d,b.memoizedState=x),g.props=d,g.state=x,g.context=l,d=m):("function"!==typeof g.componentDidUpdate||h===a.memoizedProps&&k===a.memoizedState||(b.effectTag|=4),"function"!==typeof g.getSnapshotBeforeUpdate||h===a.memoizedProps&&k===a.memoizedState||(b.effectTag|=256),d=!1); }return vg(a,b,c,d,f,e)}
+	function vg(a,b,c,d,e,f){tg(a,b);var g=0!==(b.effectTag&64);if(!d&&!g){ return e&&Re(b,c,!1),rg(a,b,f); }d=b.stateNode;ng.current=b;var h=g&&"function"!==typeof c.getDerivedStateFromError?null:d.render();b.effectTag|=1;null!==a&&g?(b.child=cg(b,a.child,null,f),b.child=cg(b,null,h,f)):P$1(a,b,h,f);b.memoizedState=d.state;e&&Re(b,c,!0);return b.child}function wg(a){var b=a.stateNode;b.pendingContext?Oe(a,b.pendingContext,b.pendingContext!==b.context):b.context&&Oe(a,b.context,!1);If(a,b.containerInfo);}
+	function xg(a,b,c){var d=b.mode,e=b.pendingProps,f=b.memoizedState;if(0===(b.effectTag&64)){f=null;var g=!1;}else { f={timedOutAt:null!==f?f.timedOutAt:0},g=!0,b.effectTag&=-65; }null===a?g?(g=e.fallback,e=af(null,d,0,null),0===(b.mode&1)&&(e.child=null!==b.memoizedState?b.child.child:b.child),d=af(g,d,c,null),e.sibling=d,c=e,c.return=d.return=b):c=d=dg(b,null,e.children,c):null!==a.memoizedState?(d=a.child,a=d.sibling,g?(c=e.fallback,e=Ze(d,d.pendingProps,0),0===(b.mode&1)&&(g=null!==b.memoizedState?
+	b.child.child:b.child,g!==d.child&&(e.child=g)),d=e.sibling=Ze(a,c,a.expirationTime),c=e,e.childExpirationTime=0,c.return=d.return=b):c=d=cg(b,d.child,e.children,c)):(a=a.child,g?(g=e.fallback,e=af(null,d,0,null),e.child=a,0===(b.mode&1)&&(e.child=null!==b.memoizedState?b.child.child:b.child),d=e.sibling=af(g,d,c,null),d.effectTag|=2,c=e,e.childExpirationTime=0,c.return=d.return=b):d=c=cg(b,a,e.children,c));b.memoizedState=f;b.child=c;return d}
+	function rg(a,b,c){null!==a&&(b.firstContextDependency=a.firstContextDependency);if(b.childExpirationTime<c){ return null; }null!==a&&b.child!==a.child?t$1("153"):void 0;if(null!==b.child){a=b.child;c=Ze(a,a.pendingProps,a.expirationTime);b.child=c;for(c.return=b;null!==a.sibling;){ a=a.sibling,c=c.sibling=Ze(a,a.pendingProps,a.expirationTime),c.return=b; }c.sibling=null;}return b.child}
+	function yg(a,b,c){var d=b.expirationTime;if(null!==a&&a.memoizedProps===b.pendingProps&&!K$1.current&&d<c){switch(b.tag){case 3:wg(b);mg();break;case 5:Kf(b);break;case 1:L$1(b.type)&&Qe(b);break;case 4:If(b,b.stateNode.containerInfo);break;case 10:Af(b,b.memoizedProps.value);break;case 13:if(null!==b.memoizedState){d=b.child.childExpirationTime;if(0!==d&&d>=c){ return xg(a,b,c); }b=rg(a,b,c);return null!==b?b.sibling:null}}return rg(a,b,c)}b.expirationTime=0;switch(b.tag){case 2:d=b.elementType;null!==
+	a&&(a.alternate=null,b.alternate=null,b.effectTag|=2);a=b.pendingProps;var e=Le(b,J$1.current);Cf(b,c);e=d(a,e);b.effectTag|=1;if("object"===typeof e&&null!==e&&"function"===typeof e.render&&void 0===e.$$typeof){b.tag=1;if(L$1(d)){var f=!0;Qe(b);}else { f=!1; }b.memoizedState=null!==e.state&&void 0!==e.state?e.state:null;var g=d.getDerivedStateFromProps;"function"===typeof g&&Pf(b,d,g,a);e.updater=Uf;b.stateNode=e;e._reactInternalFiber=b;Yf(b,d,a,c);b=vg(null,b,d,!0,f,c);}else { b.tag=0,P$1(null,b,e,c),b=b.child; }
+	return b;case 16:e=b.elementType;null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2);f=b.pendingProps;a=Mf(e);b.type=a;e=b.tag=Ye(a);f=O$1(a,f);g=void 0;switch(e){case 0:g=sg(null,b,a,f,c);break;case 1:g=ug(null,b,a,f,c);break;case 11:g=og(null,b,a,f,c);break;case 14:g=pg(null,b,a,O$1(a.type,f),d,c);break;default:t$1("283",a);}return g;case 0:return d=b.type,e=b.pendingProps,e=b.elementType===d?e:O$1(d,e),sg(a,b,d,e,c);case 1:return d=b.type,e=b.pendingProps,e=b.elementType===d?e:O$1(d,e),ug(a,b,d,
+	e,c);case 3:wg(b);d=b.updateQueue;null===d?t$1("282"):void 0;e=b.memoizedState;e=null!==e?e.element:null;sf(b,d,b.pendingProps,null,c);d=b.memoizedState.element;if(d===e){ mg(),b=rg(a,b,c); }else{e=b.stateNode;if(e=(null===a||null===a.child)&&e.hydrate){ fg=Ge(b.stateNode.containerInfo),eg=b,e=gg=!0; }e?(b.effectTag|=2,b.child=dg(b,null,d,c)):(P$1(a,b,d,c),mg());b=b.child;}return b;case 5:return Kf(b),null===a&&jg(b),d=b.type,e=b.pendingProps,f=null!==a?a.memoizedProps:null,g=e.children,Ce(d,e)?g=null:null!==
+	f&&Ce(d,f)&&(b.effectTag|=16),tg(a,b),1!==c&&b.mode&1&&e.hidden?(b.expirationTime=1,b=null):(P$1(a,b,g,c),b=b.child),b;case 6:return null===a&&jg(b),null;case 13:return xg(a,b,c);case 4:return If(b,b.stateNode.containerInfo),d=b.pendingProps,null===a?b.child=cg(b,null,d,c):P$1(a,b,d,c),b.child;case 11:return d=b.type,e=b.pendingProps,e=b.elementType===d?e:O$1(d,e),og(a,b,d,e,c);case 7:return P$1(a,b,b.pendingProps,c),b.child;case 8:return P$1(a,b,b.pendingProps.children,c),b.child;case 12:return P$1(a,b,b.pendingProps.children,
+	c),b.child;case 10:a:{d=b.type._context;e=b.pendingProps;g=b.memoizedProps;f=e.value;Af(b,f);if(null!==g){var h=g.value;f=h===f&&(0!==h||1/h===1/f)||h!==h&&f!==f?0:("function"===typeof d._calculateChangedBits?d._calculateChangedBits(h,f):1073741823)|0;if(0===f){if(g.children===e.children&&!K$1.current){b=rg(a,b,c);break a}}else { for(g=b.child,null!==g&&(g.return=b);null!==g;){h=g.firstContextDependency;if(null!==h){do{if(h.context===d&&0!==(h.observedBits&f)){if(1===g.tag){var k=mf(c);k.tag=2;of(g,k);}g.expirationTime<
+	c&&(g.expirationTime=c);k=g.alternate;null!==k&&k.expirationTime<c&&(k.expirationTime=c);for(var l=g.return;null!==l;){k=l.alternate;if(l.childExpirationTime<c){ l.childExpirationTime=c,null!==k&&k.childExpirationTime<c&&(k.childExpirationTime=c); }else if(null!==k&&k.childExpirationTime<c){ k.childExpirationTime=c; }else { break; }l=l.return;}}k=g.child;h=h.next;}while(null!==h)}else { k=10===g.tag?g.type===b.type?null:g.child:g.child; }if(null!==k){ k.return=g; }else { for(k=g;null!==k;){if(k===b){k=null;break}g=k.sibling;
+	if(null!==g){g.return=k.return;k=g;break}k=k.return;} }g=k;} }}P$1(a,b,e.children,c);b=b.child;}return b;case 9:return e=b.type,f=b.pendingProps,d=f.children,Cf(b,c),e=Df(e,f.unstable_observedBits),d=d(e),b.effectTag|=1,P$1(a,b,d,c),b.child;case 14:return e=b.type,f=O$1(e.type,b.pendingProps),pg(a,b,e,f,d,c);case 15:return qg(a,b,b.type,b.pendingProps,d,c);case 17:return d=b.type,e=b.pendingProps,e=b.elementType===d?e:O$1(d,e),null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2),b.tag=1,L$1(d)?(a=!0,Qe(b)):
+	a=!1,Cf(b,c),Wf(b,d,e,c),Yf(b,d,e,c),vg(null,b,d,!0,a,c);default:t$1("156");}}function zg(a){a.effectTag|=4;}var Ag=void 0,Bg=void 0,Fg=void 0,Gg=void 0;Ag=function(a,b){for(var c=b.child;null!==c;){if(5===c.tag||6===c.tag){ a.appendChild(c.stateNode); }else if(4!==c.tag&&null!==c.child){c.child.return=c;c=c.child;continue}if(c===b){ break; }for(;null===c.sibling;){if(null===c.return||c.return===b){ return; }c=c.return;}c.sibling.return=c.return;c=c.sibling;}};Bg=function(){};
+	Fg=function(a,b,c,d,e){var f=a.memoizedProps;if(f!==d){var g=b.stateNode;Hf(N$1.current);a=null;switch(c){case "input":f=Ac(g,f);d=Ac(g,d);a=[];break;case "option":f=ee(g,f);d=ee(g,d);a=[];break;case "select":f=objectAssign({},f,{value:void 0});d=objectAssign({},d,{value:void 0});a=[];break;case "textarea":f=ge(g,f);d=ge(g,d);a=[];break;default:"function"!==typeof f.onClick&&"function"===typeof d.onClick&&(g.onclick=ye);}ve(c,d);g=c=void 0;var h=null;for(c in f){ if(!d.hasOwnProperty(c)&&f.hasOwnProperty(c)&&null!=f[c]){ if("style"===
 	c){var k=f[c];for(g in k){ k.hasOwnProperty(g)&&(h||(h={}),h[g]=""); }}else{ "dangerouslySetInnerHTML"!==c&&"children"!==c&&"suppressContentEditableWarning"!==c&&"suppressHydrationWarning"!==c&&"autoFocus"!==c&&(sa.hasOwnProperty(c)?a||(a=[]):(a=a||[]).push(c,null)); } } }for(c in d){var l=d[c];k=null!=f?f[c]:void 0;if(d.hasOwnProperty(c)&&l!==k&&(null!=l||null!=k)){ if("style"===c){ if(k){for(g in k){ !k.hasOwnProperty(g)||l&&l.hasOwnProperty(g)||(h||(h={}),h[g]=""); }for(g in l){ l.hasOwnProperty(g)&&k[g]!==l[g]&&(h||
-	(h={}),h[g]=l[g]); }}else { h||(a||(a=[]),a.push(c,h)),h=l; } }else{ "dangerouslySetInnerHTML"===c?(l=l?l.__html:void 0,k=k?k.__html:void 0,null!=l&&k!==l&&(a=a||[]).push(c,""+l)):"children"===c?k===l||"string"!==typeof l&&"number"!==typeof l||(a=a||[]).push(c,""+l):"suppressContentEditableWarning"!==c&&"suppressHydrationWarning"!==c&&(sa.hasOwnProperty(c)?(null!=l&&ve(e,c),a||k===l||(a=[])):(a=a||[]).push(c,l)); } }}h&&(a=a||[]).push("style",h);e=a;(b.updateQueue=e)&&qg(b);}};tg=function(a,b,c,d){c!==d&&qg(b);};
-	function ug(a,b){var c=b.source,d=b.stack;null===d&&null!==c&&(d=mc(c));null!==c&&lc(c.type);b=b.value;null!==a&&2===a.tag&&lc(a.type);try{console.error(b);}catch(e){setTimeout(function(){throw e;});}}function vg(a){var b=a.ref;if(null!==b){ if("function"===typeof b){ try{b(null);}catch(c){wg(a,c);} }else { b.current=null; } }}
-	function xg(a){"function"===typeof Pe&&Pe(a);switch(a.tag){case 2:case 3:vg(a);var b=a.stateNode;if("function"===typeof b.componentWillUnmount){ try{b.props=a.memoizedProps,b.state=a.memoizedState,b.componentWillUnmount();}catch(c){wg(a,c);} }break;case 7:vg(a);break;case 6:yg(a);}}function zg(a){return 7===a.tag||5===a.tag||6===a.tag}
-	function Ag(a){a:{for(var b=a.return;null!==b;){if(zg(b)){var c=b;break a}b=b.return;}t$1("160");c=void 0;}var d=b=void 0;switch(c.tag){case 7:b=c.stateNode;d=!1;break;case 5:b=c.stateNode.containerInfo;d=!0;break;case 6:b=c.stateNode.containerInfo;d=!0;break;default:t$1("161");}c.effectTag&16&&(oe(b,""),c.effectTag&=-17);a:b:for(c=a;;){for(;null===c.sibling;){if(null===c.return||zg(c.return)){c=null;break a}c=c.return;}c.sibling.return=c.return;for(c=c.sibling;7!==c.tag&&8!==c.tag;){if(c.effectTag&2){ continue b; }
-	if(null===c.child||6===c.tag){ continue b; }else { c.child.return=c,c=c.child; }}if(!(c.effectTag&2)){c=c.stateNode;break a}}for(var e=a;;){if(7===e.tag||8===e.tag){ if(c){ if(d){var f=b,g=e.stateNode,h=c;8===f.nodeType?f.parentNode.insertBefore(g,h):f.insertBefore(g,h);}else { b.insertBefore(e.stateNode,c); } }else { d?(f=b,g=e.stateNode,8===f.nodeType?(h=f.parentNode,h.insertBefore(g,f)):(h=f,h.appendChild(g)),null===h.onclick&&(h.onclick=we)):b.appendChild(e.stateNode); } }else if(6!==e.tag&&null!==e.child){e.child.return=
-	e;e=e.child;continue}if(e===a){ break; }for(;null===e.sibling;){if(null===e.return||e.return===a){ return; }e=e.return;}e.sibling.return=e.return;e=e.sibling;}}
-	function yg(a){for(var b=a,c=!1,d=void 0,e=void 0;;){if(!c){c=b.return;a:for(;;){null===c?t$1("160"):void 0;switch(c.tag){case 7:d=c.stateNode;e=!1;break a;case 5:d=c.stateNode.containerInfo;e=!0;break a;case 6:d=c.stateNode.containerInfo;e=!0;break a}c=c.return;}c=!0;}if(7===b.tag||8===b.tag){a:for(var f=b,g=f;;){ if(xg(g),null!==g.child&&6!==g.tag){ g.child.return=g,g=g.child; }else{if(g===f){ break; }for(;null===g.sibling;){if(null===g.return||g.return===f){ break a; }g=g.return;}g.sibling.return=g.return;g=g.sibling;} }e?
-	(f=d,g=b.stateNode,8===f.nodeType?f.parentNode.removeChild(g):f.removeChild(g)):d.removeChild(b.stateNode);}else if(6===b.tag?(d=b.stateNode.containerInfo,e=!0):xg(b),null!==b.child){b.child.return=b;b=b.child;continue}if(b===a){ break; }for(;null===b.sibling;){if(null===b.return||b.return===a){ return; }b=b.return;6===b.tag&&(c=!1);}b.sibling.return=b.return;b=b.sibling;}}
-	function Bg(a,b){switch(b.tag){case 2:case 3:break;case 7:var c=b.stateNode;if(null!=c){var d=b.memoizedProps,e=null!==a?a.memoizedProps:d;a=b.type;var f=b.updateQueue;b.updateQueue=null;if(null!==f){c[Ja]=d;"input"===a&&"radio"===d.type&&null!=d.name&&Cc(c,d);ue(a,e);b=ue(a,d);for(e=0;e<f.length;e+=2){var g=f[e],h=f[e+1];"style"===g?re(c,h):"dangerouslySetInnerHTML"===g?ne(c,h):"children"===g?oe(c,h):xc(c,g,h,b);}switch(a){case "input":Dc(c,d);break;case "textarea":he(c,d);break;case "select":a=c._wrapperState.wasMultiple,
-	c._wrapperState.wasMultiple=!!d.multiple,f=d.value,null!=f?ee(c,!!d.multiple,f,!1):a!==!!d.multiple&&(null!=d.defaultValue?ee(c,!!d.multiple,d.defaultValue,!0):ee(c,!!d.multiple,d.multiple?[]:"",!1));}}}break;case 8:null===b.stateNode?t$1("162"):void 0;b.stateNode.nodeValue=b.memoizedProps;break;case 5:break;case 15:break;case 16:break;default:t$1("163");}}function Cg(a,b,c){c=df(c);c.tag=3;c.payload={element:null};var d=b.value;c.callback=function(){Dg(d);ug(a,b);};return c}
-	function Eg(a,b,c){c=df(c);c.tag=3;var d=a.stateNode;null!==d&&"function"===typeof d.componentDidCatch&&(c.callback=function(){null===Fg?Fg=new Set([this]):Fg.add(this);var c=b.value,d=b.stack;ug(a,b);this.componentDidCatch(c,{componentStack:null!==d?d:""});});return c}
-	function Gg(a){switch(a.tag){case 2:K$1(a.type)&&Ie(a);var b=a.effectTag;return b&1024?(a.effectTag=b&-1025|64,a):null;case 3:return K$1(a.type._reactResult)&&Ie(a),b=a.effectTag,b&1024?(a.effectTag=b&-1025|64,a):null;case 5:return Bf(a),Je(a),b=a.effectTag,0!==(b&64)?t$1("285"):void 0,a.effectTag=b&-1025|64,a;case 7:return Df(a),null;case 16:return b=a.effectTag,b&1024?(a.effectTag=b&-1025|64,a):null;case 6:return Bf(a),null;case 12:return tf(a),null;default:return null}}
-	var Hg={readContext:vf},Ig=Yb.ReactCurrentOwner,Jg=0,Kg=0,Lg=!1,N$1=null,Mg=null,O$1=0,Ng=!1,Q$1=null,Og=!1,Fg=null;function Pg(){if(null!==N$1){ for(var a=N$1.return;null!==a;){var b=a;switch(b.tag){case 2:var c=b.type.childContextTypes;null!==c&&void 0!==c&&Ie(b);break;case 3:c=b.type._reactResult.childContextTypes;null!==c&&void 0!==c&&Ie(b);break;case 5:Bf(b);Je(b);break;case 7:Df(b);break;case 6:Bf(b);break;case 12:tf(b);}a=a.return;} }Mg=null;O$1=0;Ng=!1;N$1=null;}
-	function Qg(a){for(;;){var b=a.alternate,c=a.return,d=a.sibling;if(0===(a.effectTag&512)){var e=b;b=a;var f=b.pendingProps;switch(b.tag){case 0:case 1:break;case 2:K$1(b.type)&&Ie(b);break;case 3:K$1(b.type._reactResult)&&Ie(b);break;case 5:Bf(b);Je(b);f=b.stateNode;f.pendingContext&&(f.context=f.pendingContext,f.pendingContext=null);if(null===e||null===e.child){ $f(b),b.effectTag&=-3; }rg(b);break;case 7:Df(b);var g=zf(yf.current),h=b.type;if(null!==e&&null!=b.stateNode){ sg(e,b,h,f,g),e.ref!==b.ref&&(b.effectTag|=
-	128); }else if(f){var k=zf(L$1.current);if($f(b)){f=b;e=f.stateNode;var l=f.type,m=f.memoizedProps,r=g;e[Ia]=f;e[Ja]=m;h=void 0;g=l;switch(g){case "iframe":case "object":F$1("load",e);break;case "video":case "audio":for(l=0;l<fb.length;l++){ F$1(fb[l],e); }break;case "source":F$1("error",e);break;case "img":case "image":case "link":F$1("error",e);F$1("load",e);break;case "form":F$1("reset",e);F$1("submit",e);break;case "details":F$1("toggle",e);break;case "input":Bc(e,m);F$1("invalid",e);ve(r,"onChange");break;case "select":e._wrapperState=
-	{wasMultiple:!!m.multiple};F$1("invalid",e);ve(r,"onChange");break;case "textarea":ge(e,m),F$1("invalid",e),ve(r,"onChange");}te(g,m);l=null;for(h in m){ m.hasOwnProperty(h)&&(k=m[h],"children"===h?"string"===typeof k?e.textContent!==k&&(l=["children",k]):"number"===typeof k&&e.textContent!==""+k&&(l=["children",""+k]):sa.hasOwnProperty(h)&&null!=k&&ve(r,h)); }switch(g){case "input":Wb(e);Fc(e,m,!0);break;case "textarea":Wb(e);ie(e,m);break;case "select":case "option":break;default:"function"===typeof m.onClick&&
-	(e.onclick=we);}h=l;f.updateQueue=h;f=null!==h?!0:!1;f&&qg(b);}else{m=b;e=h;r=f;l=9===g.nodeType?g:g.ownerDocument;k===je.html&&(k=ke(e));k===je.html?"script"===e?(e=l.createElement("div"),e.innerHTML="<script>\x3c/script>",l=e.removeChild(e.firstChild)):"string"===typeof r.is?l=l.createElement(e,{is:r.is}):(l=l.createElement(e),"select"===e&&r.multiple&&(l.multiple=!0)):l=l.createElementNS(k,e);e=l;e[Ia]=m;e[Ja]=f;a:for(m=e,r=b,l=r.child;null!==l;){if(7===l.tag||8===l.tag){ m.appendChild(l.stateNode); }
-	else if(6!==l.tag&&null!==l.child){l.child.return=l;l=l.child;continue}if(l===r){ break; }for(;null===l.sibling;){if(null===l.return||l.return===r){ break a; }l=l.return;}l.sibling.return=l.return;l=l.sibling;}r=e;l=h;m=f;var A=g,S=ue(l,m);switch(l){case "iframe":case "object":F$1("load",r);g=m;break;case "video":case "audio":for(g=0;g<fb.length;g++){ F$1(fb[g],r); }g=m;break;case "source":F$1("error",r);g=m;break;case "img":case "image":case "link":F$1("error",r);F$1("load",r);g=m;break;case "form":F$1("reset",r);F$1("submit",
-	r);g=m;break;case "details":F$1("toggle",r);g=m;break;case "input":Bc(r,m);g=zc(r,m);F$1("invalid",r);ve(A,"onChange");break;case "option":g=de(r,m);break;case "select":r._wrapperState={wasMultiple:!!m.multiple};g=objectAssign({},m,{value:void 0});F$1("invalid",r);ve(A,"onChange");break;case "textarea":ge(r,m);g=fe(r,m);F$1("invalid",r);ve(A,"onChange");break;default:g=m;}te(l,g);k=void 0;var B=l,P=r,v=g;for(k in v){ if(v.hasOwnProperty(k)){var p=v[k];"style"===k?re(P,p):"dangerouslySetInnerHTML"===k?(p=p?p.__html:void 0,
-	null!=p&&ne(P,p)):"children"===k?"string"===typeof p?("textarea"!==B||""!==p)&&oe(P,p):"number"===typeof p&&oe(P,""+p):"suppressContentEditableWarning"!==k&&"suppressHydrationWarning"!==k&&"autoFocus"!==k&&(sa.hasOwnProperty(k)?null!=p&&ve(A,k):null!=p&&xc(P,k,p,S));} }switch(l){case "input":Wb(r);Fc(r,m,!1);break;case "textarea":Wb(r);ie(r,m);break;case "option":null!=m.value&&r.setAttribute("value",""+yc(m.value));break;case "select":g=r;g.multiple=!!m.multiple;r=m.value;null!=r?ee(g,!!m.multiple,
-	r,!1):null!=m.defaultValue&&ee(g,!!m.multiple,m.defaultValue,!0);break;default:"function"===typeof g.onClick&&(r.onclick=we);}(f=ze(h,f))&&qg(b);b.stateNode=e;}null!==b.ref&&(b.effectTag|=128);}else { null===b.stateNode?t$1("166"):void 0; }break;case 8:e&&null!=b.stateNode?tg(e,b,e.memoizedProps,f):("string"!==typeof f&&(null===b.stateNode?t$1("166"):void 0),e=zf(yf.current),zf(L$1.current),$f(b)?(f=b,h=f.stateNode,e=f.memoizedProps,h[Ia]=f,(f=h.nodeValue!==e)&&qg(b)):(h=b,f=(9===e.nodeType?e:e.ownerDocument).createTextNode(f),
-	f[Ia]=h,b.stateNode=f));break;case 13:case 14:break;case 16:break;case 9:break;case 10:break;case 15:break;case 6:Bf(b);rg(b);break;case 12:tf(b);break;case 11:break;case 4:t$1("167");default:t$1("156");}b=N$1=null;f=a;if(1073741823===O$1||1073741823!==f.childExpirationTime){h=0;for(e=f.child;null!==e;){g=e.expirationTime;m=e.childExpirationTime;if(0===h||0!==g&&g<h){ h=g; }if(0===h||0!==m&&m<h){ h=m; }e=e.sibling;}f.childExpirationTime=h;}if(null!==b){ return b; }null!==c&&0===(c.effectTag&512)&&(null===c.firstEffect&&
-	(c.firstEffect=a.firstEffect),null!==a.lastEffect&&(null!==c.lastEffect&&(c.lastEffect.nextEffect=a.firstEffect),c.lastEffect=a.lastEffect),1<a.effectTag&&(null!==c.lastEffect?c.lastEffect.nextEffect=a:c.firstEffect=a,c.lastEffect=a));}else{a=Gg(a,O$1);if(null!==a){ return a.effectTag&=511,a; }null!==c&&(c.firstEffect=c.lastEffect=null,c.effectTag|=512);}if(null!==d){ return d; }if(null!==c){ a=c; }else { break }}return null}function Rg(a){var b=pg(a.alternate,a,O$1);null===b&&(b=Qg(a));Ig.current=null;return b}
-	function Sg(a,b,c){Lg?t$1("243"):void 0;Lg=!0;Ig.currentDispatcher=Hg;var d=a.nextExpirationTimeToWorkOn;if(d!==O$1||a!==Mg||null===N$1){ Pg(),Mg=a,O$1=d,N$1=Ue(Mg.current,null,O$1),a.pendingCommitExpirationTime=0; }var e=!1;do{try{if(b){ for(;null!==N$1&&!Tg();){ N$1=Rg(N$1); } }else { for(;null!==N$1;){ N$1=Rg(N$1); } }}catch(r){if(null===N$1){ e=!0,Dg(r); }else{null===N$1?t$1("271"):void 0;var f=N$1,g=f.return;if(null===g){ e=!0,Dg(r); }else{a:{var h=g,k=f,l=r;g=O$1;k.effectTag|=512;k.firstEffect=k.lastEffect=null;Ng=!0;l=nf(l,k);do{switch(h.tag){case 5:h.effectTag|=
-	1024;h.expirationTime=g;g=Cg(h,l,g);gf(h,g);break a;case 2:case 3:k=l;var m=h.stateNode;if(0===(h.effectTag&64)&&null!==m&&"function"===typeof m.componentDidCatch&&(null===Fg||!Fg.has(m))){h.effectTag|=1024;h.expirationTime=g;g=Eg(h,k,g);gf(h,g);break a}}h=h.return;}while(null!==h)}N$1=Qg(f);continue}}}break}while(1);Lg=!1;rf=qf=pf=Ig.currentDispatcher=null;if(e){ Mg=null,a.finishedWork=null; }else if(null!==N$1){ a.finishedWork=null; }else{b=a.current.alternate;null===b?t$1("281"):void 0;Mg=null;if(Ng){e=a.latestPendingTime;
-	f=a.latestSuspendedTime;g=a.latestPingedTime;if(0!==e&&e>d||0!==f&&f>d||0!==g&&g>d){a.didError=!1;c=a.latestPingedTime;0!==c&&c<=d&&(a.latestPingedTime=0);c=a.earliestPendingTime;b=a.latestPendingTime;c===d?a.earliestPendingTime=b===d?a.latestPendingTime=0:b:b===d&&(a.latestPendingTime=c);c=a.earliestSuspendedTime;b=a.latestSuspendedTime;0===c?a.earliestSuspendedTime=a.latestSuspendedTime=d:c>d?a.earliestSuspendedTime=d:b<d&&(a.latestSuspendedTime=d);$e(d,a);a.expirationTime=a.expirationTime;return}if(!a.didError&&
-	!c){a.didError=!0;a.nextExpirationTimeToWorkOn=d;d=a.expirationTime=1;a.expirationTime=d;return}}a.pendingCommitExpirationTime=d;a.finishedWork=b;}}
-	function wg(a,b){var c;a:{Lg&&!Og?t$1("263"):void 0;for(c=a.return;null!==c;){switch(c.tag){case 2:case 3:var d=c.stateNode;if("function"===typeof c.type.getDerivedStateFromCatch||"function"===typeof d.componentDidCatch&&(null===Fg||!Fg.has(d))){a=nf(b,a);a=Eg(c,a,1);ff(c,a);If(c,1);c=void 0;break a}break;case 5:a=nf(b,a);a=Cg(c,a,1);ff(c,a);If(c,1);c=void 0;break a}c=c.return;}5===a.tag&&(c=nf(b,a),c=Cg(a,c,1),ff(a,c),If(a,1));c=void 0;}return c}
-	function Hf(a,b){0!==Kg?a=Kg:Lg?a=Og?1:O$1:b.mode&1?(a=Ug?2+10*(((a-2+15)/10|0)+1):2+25*(((a-2+500)/25|0)+1),null!==Mg&&a===O$1&&(a+=1)):a=1;Ug&&(0===Vg||a>Vg)&&(Vg=a);return a}
-	function If(a,b){a:{if(0===a.expirationTime||a.expirationTime>b){ a.expirationTime=b; }var c=a.alternate;null!==c&&(0===c.expirationTime||c.expirationTime>b)&&(c.expirationTime=b);var d=a.return;if(null===d&&5===a.tag){ a=a.stateNode; }else{for(;null!==d;){c=d.alternate;if(0===d.childExpirationTime||d.childExpirationTime>b){ d.childExpirationTime=b; }null!==c&&(0===c.childExpirationTime||c.childExpirationTime>b)&&(c.childExpirationTime=b);if(null===d.return&&5===d.tag){a=d.stateNode;break a}d=d.return;}a=null;}}if(null!==
-	a){!Lg&&0!==O$1&&b<O$1&&Pg();Ze(a,b);if(!Lg||Og||Mg!==a){b=a;a=a.expirationTime;if(null===b.nextScheduledRoot){ b.expirationTime=a,null===T$1?(U$1=T$1=b,b.nextScheduledRoot=b):(T$1=T$1.nextScheduledRoot=b,T$1.nextScheduledRoot=U$1); }else if(c=b.expirationTime,0===c||a<c){ b.expirationTime=a; }V$1||(W$1?Wg&&(Y$1=b,Z$1=1,Xg(b,1,!0)):1===a?Yg(1,null):Zg(b,a));}$g>ah&&($g=0,t$1("185"));}}function bh(a,b,c,d,e){var f=Kg;Kg=1;try{return a(b,c,d,e)}finally{Kg=f;}}
-	var U$1=null,T$1=null,ch=0,dh=void 0,V$1=!1,Y$1=null,Z$1=0,Vg=0,eh=!1,fh=!1,gh=null,hh=null,W$1=!1,Wg=!1,Ug=!1,ih=null,jh=schedule.unstable_now(),kh=(jh/10|0)+2,lh=kh,ah=50,$g=0,mh=null,nh=1;function oh(){kh=((schedule.unstable_now()-jh)/10|0)+2;}function Zg(a,b){if(0!==ch){if(b>ch){ return; }null!==dh&&schedule.unstable_cancelScheduledWork(dh);}ch=b;a=schedule.unstable_now()-jh;dh=schedule.unstable_scheduleWork(ph,{timeout:10*(b-2)-a});}function Gf(){if(V$1){ return lh; }qh();if(0===Z$1||1073741823===Z$1){ oh(),lh=kh; }return lh}
-	function qh(){var a=0,b=null;if(null!==T$1){ for(var c=T$1,d=U$1;null!==d;){var e=d.expirationTime;if(0===e){null===c||null===T$1?t$1("244"):void 0;if(d===d.nextScheduledRoot){U$1=T$1=d.nextScheduledRoot=null;break}else if(d===U$1){ U$1=e=d.nextScheduledRoot,T$1.nextScheduledRoot=e,d.nextScheduledRoot=null; }else if(d===T$1){T$1=c;T$1.nextScheduledRoot=U$1;d.nextScheduledRoot=null;break}else { c.nextScheduledRoot=d.nextScheduledRoot,d.nextScheduledRoot=null; }d=c.nextScheduledRoot;}else{if(0===a||e<a){ a=e,b=d; }if(d===T$1){ break; }if(1===a){ break; }
-	c=d;d=d.nextScheduledRoot;}} }Y$1=b;Z$1=a;}function ph(a){if(a.didTimeout&&null!==U$1){oh();var b=U$1;do{var c=b.expirationTime;0!==c&&kh>=c&&(b.nextExpirationTimeToWorkOn=kh);b=b.nextScheduledRoot;}while(b!==U$1)}Yg(0,a);}
-	function Yg(a,b){hh=b;qh();if(null!==hh){ for(oh(),lh=kh;null!==Y$1&&0!==Z$1&&(0===a||a>=Z$1)&&(!eh||kh>=Z$1);){ Xg(Y$1,Z$1,kh>=Z$1),qh(),oh(),lh=kh; } }else { for(;null!==Y$1&&0!==Z$1&&(0===a||a>=Z$1);){ Xg(Y$1,Z$1,!0),qh(); } }null!==hh&&(ch=0,dh=null);0!==Z$1&&Zg(Y$1,Z$1);hh=null;eh=!1;$g=0;mh=null;if(null!==ih){ for(a=ih,ih=null,b=0;b<a.length;b++){var c=a[b];try{c._onComplete();}catch(d){fh||(fh=!0,gh=d);}} }if(fh){ throw a=gh,gh=null,fh=!1,a; }}
-	function Xg(a,b,c){V$1?t$1("245"):void 0;V$1=!0;if(null===hh||c){var d=a.finishedWork;null!==d?rh(a,d,b):(a.finishedWork=null,Sg(a,!1,c),d=a.finishedWork,null!==d&&rh(a,d,b));}else { d=a.finishedWork,null!==d?rh(a,d,b):(a.finishedWork=null,Sg(a,!0,c),d=a.finishedWork,null!==d&&(Tg()?a.finishedWork=d:rh(a,d,b))); }V$1=!1;}
-	function rh(a,b,c){var d=a.firstBatch;if(null!==d&&d._expirationTime<=c&&(null===ih?ih=[d]:ih.push(d),d._defer)){a.finishedWork=b;a.expirationTime=0;return}a.finishedWork=null;a===mh?$g++:(mh=a,$g=0);Og=Lg=!0;a.current===b?t$1("177"):void 0;c=a.pendingCommitExpirationTime;0===c?t$1("261"):void 0;a.pendingCommitExpirationTime=0;d=b.expirationTime;var e=b.childExpirationTime;d=0===d||0!==e&&e<d?e:d;a.didError=!1;0===d?(a.earliestPendingTime=0,a.latestPendingTime=0,a.earliestSuspendedTime=0,a.latestSuspendedTime=
-	0,a.latestPingedTime=0):(e=a.latestPendingTime,0!==e&&(e<d?a.earliestPendingTime=a.latestPendingTime=0:a.earliestPendingTime<d&&(a.earliestPendingTime=a.latestPendingTime)),e=a.earliestSuspendedTime,0===e?Ze(a,d):d>a.latestSuspendedTime?(a.earliestSuspendedTime=0,a.latestSuspendedTime=0,a.latestPingedTime=0,Ze(a,d)):d<e&&Ze(a,d));$e(0,a);Ig.current=null;1<b.effectTag?null!==b.lastEffect?(b.lastEffect.nextEffect=b,d=b.firstEffect):d=b:d=b.firstEffect;xe=Gd;e=Td();if(Ud(e)){if("selectionStart"in e){ var f=
-	{start:e.selectionStart,end:e.selectionEnd}; }else { a:{f=(f=e.ownerDocument)&&f.defaultView||window;var g=f.getSelection&&f.getSelection();if(g&&0!==g.rangeCount){f=g.anchorNode;var h=g.anchorOffset,k=g.focusNode;g=g.focusOffset;try{f.nodeType,k.nodeType;}catch(Xa){f=null;break a}var l=0,m=-1,r=-1,A=0,S=0,B=e,P=null;b:for(;;){for(var v;;){B!==f||0!==h&&3!==B.nodeType||(m=l+h);B!==k||0!==g&&3!==B.nodeType||(r=l+g);3===B.nodeType&&(l+=B.nodeValue.length);if(null===(v=B.firstChild)){ break; }P=B;B=v;}for(;;){if(B===
-	e){ break b; }P===f&&++A===h&&(m=l);P===k&&++S===g&&(r=l);if(null!==(v=B.nextSibling)){ break; }B=P;P=B.parentNode;}B=v;}f=-1===m||-1===r?null:{start:m,end:r};}else { f=null; }} }f=f||{start:0,end:0};}else { f=null; }ye={focusedElem:e,selectionRange:f};Gd=!1;for(Q$1=d;null!==Q$1;){e=!1;f=void 0;try{for(;null!==Q$1;){if(Q$1.effectTag&256){var p=Q$1.alternate;a:switch(h=Q$1,h.tag){case 2:case 3:if(h.effectTag&256&&null!==p){var u=p.memoizedProps,x=p.memoizedState,R=h.stateNode;R.props=h.memoizedProps;R.state=h.memoizedState;var yh=R.getSnapshotBeforeUpdate(u,
-	x);R.__reactInternalSnapshotBeforeUpdate=yh;}break a;case 5:case 7:case 8:case 6:break a;default:t$1("163");}}Q$1=Q$1.nextEffect;}}catch(Xa){e=!0,f=Xa;}e&&(null===Q$1?t$1("178"):void 0,wg(Q$1,f),null!==Q$1&&(Q$1=Q$1.nextEffect));}for(Q$1=d;null!==Q$1;){p=!1;u=void 0;try{for(;null!==Q$1;){var w=Q$1.effectTag;w&16&&oe(Q$1.stateNode,"");if(w&128){var y=Q$1.alternate;if(null!==y){var q=y.ref;null!==q&&("function"===typeof q?q(null):q.current=null);}}switch(w&14){case 2:Ag(Q$1);Q$1.effectTag&=-3;break;case 6:Ag(Q$1);Q$1.effectTag&=-3;Bg(Q$1.alternate,
-	Q$1);break;case 4:Bg(Q$1.alternate,Q$1);break;case 8:x=Q$1,yg(x),x.return=null,x.child=null,x.alternate&&(x.alternate.child=null,x.alternate.return=null);}Q$1=Q$1.nextEffect;}}catch(Xa){p=!0,u=Xa;}p&&(null===Q$1?t$1("178"):void 0,wg(Q$1,u),null!==Q$1&&(Q$1=Q$1.nextEffect));}q=ye;y=Td();w=q.focusedElem;u=q.selectionRange;if(y!==w&&w&&w.ownerDocument&&Sd(w.ownerDocument.documentElement,w)){null!==u&&Ud(w)&&(y=u.start,q=u.end,void 0===q&&(q=y),"selectionStart"in w?(w.selectionStart=y,w.selectionEnd=Math.min(q,w.value.length)):
-	(p=w.ownerDocument||document,y=(p&&p.defaultView||window).getSelection(),x=w.textContent.length,q=Math.min(u.start,x),u=void 0===u.end?q:Math.min(u.end,x),!y.extend&&q>u&&(x=u,u=q,q=x),x=Rd(w,q),R=Rd(w,u),x&&R&&(1!==y.rangeCount||y.anchorNode!==x.node||y.anchorOffset!==x.offset||y.focusNode!==R.node||y.focusOffset!==R.offset)&&(p=p.createRange(),p.setStart(x.node,x.offset),y.removeAllRanges(),q>u?(y.addRange(p),y.extend(R.node,R.offset)):(p.setEnd(R.node,R.offset),y.addRange(p)))));y=[];for(q=w;q=
-	q.parentNode;){ 1===q.nodeType&&y.push({element:q,left:q.scrollLeft,top:q.scrollTop}); }"function"===typeof w.focus&&w.focus();for(w=0;w<y.length;w++){ q=y[w],q.element.scrollLeft=q.left,q.element.scrollTop=q.top; }}ye=null;Gd=!!xe;xe=null;a.current=b;for(Q$1=d;null!==Q$1;){d=!1;w=void 0;try{for(y=c;null!==Q$1;){var Sa=Q$1.effectTag;if(Sa&36){var oc=Q$1.alternate;q=Q$1;p=y;switch(q.tag){case 2:case 3:var X=q.stateNode;if(q.effectTag&4){ if(null===oc){ X.props=q.memoizedProps,X.state=q.memoizedState,X.componentDidMount(); }
-	else{var Ih=oc.memoizedProps,Jh=oc.memoizedState;X.props=q.memoizedProps;X.state=q.memoizedState;X.componentDidUpdate(Ih,Jh,X.__reactInternalSnapshotBeforeUpdate);} }var kg=q.updateQueue;null!==kg&&(X.props=q.memoizedProps,X.state=q.memoizedState,lf(q,kg,X,p));break;case 5:var lg=q.updateQueue;if(null!==lg){u=null;if(null!==q.child){ switch(q.child.tag){case 7:u=q.child.stateNode;break;case 2:case 3:u=q.child.stateNode;} }lf(q,lg,u,p);}break;case 7:var Kh=q.stateNode;null===oc&&q.effectTag&4&&ze(q.type,q.memoizedProps)&&
-	Kh.focus();break;case 8:break;case 6:break;case 15:break;case 16:break;default:t$1("163");}}if(Sa&128){var Ac=Q$1.ref;if(null!==Ac){var mg=Q$1.stateNode;switch(Q$1.tag){case 7:var Pd=mg;break;default:Pd=mg;}"function"===typeof Ac?Ac(Pd):Ac.current=Pd;}}var Lh=Q$1.nextEffect;Q$1.nextEffect=null;Q$1=Lh;}}catch(Xa){d=!0,w=Xa;}d&&(null===Q$1?t$1("178"):void 0,wg(Q$1,w),null!==Q$1&&(Q$1=Q$1.nextEffect));}Lg=Og=!1;"function"===typeof Oe&&Oe(b.stateNode);Sa=b.expirationTime;b=b.childExpirationTime;b=0===Sa||0!==b&&b<Sa?b:Sa;0===b&&(Fg=
-	null);a.expirationTime=b;a.finishedWork=null;}function Tg(){return eh?!0:null===hh||hh.timeRemaining()>nh?!1:eh=!0}function Dg(a){null===Y$1?t$1("246"):void 0;Y$1.expirationTime=0;fh||(fh=!0,gh=a);}function sh(a,b){var c=W$1;W$1=!0;try{return a(b)}finally{(W$1=c)||V$1||Yg(1,null);}}function th(a,b){if(W$1&&!Wg){Wg=!0;try{return a(b)}finally{Wg=!1;}}return a(b)}function uh(a,b,c){if(Ug){ return a(b,c); }W$1||V$1||0===Vg||(Yg(Vg,null),Vg=0);var d=Ug,e=W$1;W$1=Ug=!0;try{return a(b,c)}finally{Ug=d,(W$1=e)||V$1||Yg(1,null);}}
-	function vh(a){if(!a){ return Fe; }a=a._reactInternalFiber;a:{2!==jd(a)||2!==a.tag&&3!==a.tag?t$1("170"):void 0;var b=a;do{switch(b.tag){case 5:b=b.stateNode.context;break a;case 2:if(K$1(b.type)){b=b.stateNode.__reactInternalMemoizedMergedChildContext;break a}break;case 3:if(K$1(b.type._reactResult)){b=b.stateNode.__reactInternalMemoizedMergedChildContext;break a}}b=b.return;}while(null!==b);t$1("171");b=void 0;}if(2===a.tag){var c=a.type;if(K$1(c)){ return Le(a,c,b) }}else if(3===a.tag&&(c=a.type._reactResult,K$1(c))){ return Le(a,
-	c,b); }return b}function wh(a,b,c,d,e){var f=b.current;c=vh(c);null===b.context?b.context=c:b.pendingContext=c;b=e;e=df(d);e.payload={element:a};b=void 0===b?null:b;null!==b&&(e.callback=b);ff(f,e);If(f,d);return d}function xh(a,b,c,d){var e=b.current,f=Gf();e=Hf(f,e);return wh(a,b,c,e,d)}function zh(a){a=a.current;if(!a.child){ return null; }switch(a.child.tag){case 7:return a.child.stateNode;default:return a.child.stateNode}}
-	function Ah(a,b,c){var d=3<arguments.length&&void 0!==arguments[3]?arguments[3]:null;return {$$typeof:ac,key:null==d?null:""+d,children:a,containerInfo:b,implementation:c}}
-	Fb=function(a,b,c){switch(b){case "input":Dc(a,c);b=c.name;if("radio"===c.type&&null!=b){for(c=a;c.parentNode;){ c=c.parentNode; }c=c.querySelectorAll("input[name="+JSON.stringify(""+b)+'][type="radio"]');for(b=0;b<c.length;b++){var d=c[b];if(d!==a&&d.form===a.form){var e=Na(d);e?void 0:t$1("90");Xb(d);Dc(d,e);}}}break;case "textarea":he(a,c);break;case "select":b=c.value,null!=b&&ee(a,!!c.multiple,b,!1);}};
-	function Bh(a){var b=2+25*(((Gf()-2+500)/25|0)+1);b<=Jg&&(b=Jg+1);this._expirationTime=Jg=b;this._root=a;this._callbacks=this._next=null;this._hasChildren=this._didComplete=!1;this._children=null;this._defer=!0;}Bh.prototype.render=function(a){this._defer?void 0:t$1("250");this._hasChildren=!0;this._children=a;var b=this._root._internalRoot,c=this._expirationTime,d=new Ch;wh(a,b,null,c,d._onCommit);return d};
-	Bh.prototype.then=function(a){if(this._didComplete){ a(); }else{var b=this._callbacks;null===b&&(b=this._callbacks=[]);b.push(a);}};
-	Bh.prototype.commit=function(){var a=this._root._internalRoot,b=a.firstBatch;this._defer&&null!==b?void 0:t$1("251");if(this._hasChildren){var c=this._expirationTime;if(b!==this){this._hasChildren&&(c=this._expirationTime=b._expirationTime,this.render(this._children));for(var d=null,e=b;e!==this;){ d=e,e=e._next; }null===d?t$1("251"):void 0;d._next=e._next;this._next=b;a.firstBatch=this;}this._defer=!1;b=c;V$1?t$1("253"):void 0;Y$1=a;Z$1=b;Xg(a,b,!0);Yg(1,null);b=this._next;this._next=null;b=a.firstBatch=b;null!==
-	b&&b._hasChildren&&b.render(b._children);}else { this._next=null,this._defer=!1; }};Bh.prototype._onComplete=function(){if(!this._didComplete){this._didComplete=!0;var a=this._callbacks;if(null!==a){ for(var b=0;b<a.length;b++){ (0, a[b])(); } }}};function Ch(){this._callbacks=null;this._didCommit=!1;this._onCommit=this._onCommit.bind(this);}Ch.prototype.then=function(a){if(this._didCommit){ a(); }else{var b=this._callbacks;null===b&&(b=this._callbacks=[]);b.push(a);}};
-	Ch.prototype._onCommit=function(){if(!this._didCommit){this._didCommit=!0;var a=this._callbacks;if(null!==a){ for(var b=0;b<a.length;b++){var c=a[b];"function"!==typeof c?t$1("191",c):void 0;c();} }}};
-	function Dh(a,b,c){b=new Se(5,null,null,b?3:0);a={current:b,containerInfo:a,pendingChildren:null,earliestPendingTime:0,latestPendingTime:0,earliestSuspendedTime:0,latestSuspendedTime:0,latestPingedTime:0,didError:!1,pendingCommitExpirationTime:0,finishedWork:null,timeoutHandle:-1,context:null,pendingContext:null,hydrate:c,nextExpirationTimeToWorkOn:0,expirationTime:0,firstBatch:null,nextScheduledRoot:null};this._internalRoot=b.stateNode=a;}
-	Dh.prototype.render=function(a,b){var c=this._internalRoot,d=new Ch;b=void 0===b?null:b;null!==b&&d.then(b);xh(a,c,null,d._onCommit);return d};Dh.prototype.unmount=function(a){var b=this._internalRoot,c=new Ch;a=void 0===a?null:a;null!==a&&c.then(a);xh(null,b,null,c._onCommit);return c};Dh.prototype.legacy_renderSubtreeIntoContainer=function(a,b,c){var d=this._internalRoot,e=new Ch;c=void 0===c?null:c;null!==c&&e.then(c);xh(b,d,a,e._onCommit);return e};
-	Dh.prototype.createBatch=function(){var a=new Bh(this),b=a._expirationTime,c=this._internalRoot,d=c.firstBatch;if(null===d){ c.firstBatch=a,a._next=null; }else{for(c=null;null!==d&&d._expirationTime<=b;){ c=d,d=d._next; }a._next=d;null!==c&&(c._next=a);}return a};function Eh(a){return !(!a||1!==a.nodeType&&9!==a.nodeType&&11!==a.nodeType&&(8!==a.nodeType||" react-mount-point-unstable "!==a.nodeValue))}Lb=sh;Mb=uh;Nb=function(){V$1||0===Vg||(Yg(Vg,null),Vg=0);};
-	function Fh(a,b){b||(b=a?9===a.nodeType?a.documentElement:a.firstChild:null,b=!(!b||1!==b.nodeType||!b.hasAttribute("data-reactroot")));if(!b){ for(var c;c=a.lastChild;){ a.removeChild(c); } }return new Dh(a,!1,b)}
-	function Gh(a,b,c,d,e){Eh(c)?void 0:t$1("200");var f=c._reactRootContainer;if(f){if("function"===typeof e){var g=e;e=function(){var a=zh(f._internalRoot);g.call(a);};}null!=a?f.legacy_renderSubtreeIntoContainer(a,b,e):f.render(b,e);}else{f=c._reactRootContainer=Fh(c,d);if("function"===typeof e){var h=e;e=function(){var a=zh(f._internalRoot);h.call(a);};}th(function(){null!=a?f.legacy_renderSubtreeIntoContainer(a,b,e):f.render(b,e);});}return zh(f._internalRoot)}
-	function Hh(a,b){var c=2<arguments.length&&void 0!==arguments[2]?arguments[2]:null;Eh(b)?void 0:t$1("200");return Ah(a,b,null,c)}
-	var Mh={createPortal:Hh,findDOMNode:function(a){if(null==a){ return null; }if(1===a.nodeType){ return a; }var b=a._reactInternalFiber;void 0===b&&("function"===typeof a.render?t$1("188"):t$1("268",Object.keys(a)));a=md(b);a=null===a?null:a.stateNode;return a},hydrate:function(a,b,c){return Gh(null,a,b,!0,c)},render:function(a,b,c){return Gh(null,a,b,!1,c)},unstable_renderSubtreeIntoContainer:function(a,b,c,d){null==a||void 0===a._reactInternalFiber?t$1("38"):void 0;return Gh(a,b,c,!1,d)},unmountComponentAtNode:function(a){Eh(a)?
-	void 0:t$1("40");return a._reactRootContainer?(th(function(){Gh(null,null,a,!1,function(){a._reactRootContainer=null;});}),!0):!1},unstable_createPortal:function(){return Hh.apply(void 0,arguments)},unstable_batchedUpdates:sh,unstable_interactiveUpdates:uh,flushSync:function(a,b){V$1?t$1("187"):void 0;var c=W$1;W$1=!0;try{return bh(a,b)}finally{W$1=c,Yg(1,null);}},unstable_flushControlled:function(a){var b=W$1;W$1=!0;try{bh(a);}finally{(W$1=b)||V$1||Yg(1,null);}},__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{Events:[La,
-	Ma,Na,Ea.injectEventPluginsByName,qa,Ua,function(a){za(a,Ta);},Jb,Kb,Id,Ga]},unstable_createRoot:function(a,b){Eh(a)?void 0:t$1("278");return new Dh(a,!0,null!=b&&!0===b.hydrate)}};(function(a){var b=a.findFiberByHostInstance;return Re(objectAssign({},a,{findHostInstanceByFiber:function(a){a=md(a);return null===a?null:a.stateNode},findFiberByHostInstance:function(a){return b?b(a):null}}))})({findFiberByHostInstance:Ka,bundleType:0,version:"16.5.2",rendererPackageName:"react-dom"});
-	var Nh={default:Mh},Oh=Nh&&Mh||Nh;var reactDom_production_min=Oh.default||Oh;
+	(h={}),h[g]=l[g]); }}else { h||(a||(a=[]),a.push(c,h)),h=l; } }else{ "dangerouslySetInnerHTML"===c?(l=l?l.__html:void 0,k=k?k.__html:void 0,null!=l&&k!==l&&(a=a||[]).push(c,""+l)):"children"===c?k===l||"string"!==typeof l&&"number"!==typeof l||(a=a||[]).push(c,""+l):"suppressContentEditableWarning"!==c&&"suppressHydrationWarning"!==c&&(sa.hasOwnProperty(c)?(null!=l&&xe(e,c),a||k===l||(a=[])):(a=a||[]).push(c,l)); } }}h&&(a=a||[]).push("style",h);e=a;(b.updateQueue=e)&&zg(b);}};Gg=function(a,b,c,d){c!==d&&zg(b);};
+	function Hg(a,b){var c=b.source,d=b.stack;null===d&&null!==c&&(d=nc(c));null!==c&&mc(c.type);b=b.value;null!==a&&1===a.tag&&mc(a.type);try{console.error(b);}catch(e){setTimeout(function(){throw e;});}}function Ig(a){var b=a.ref;if(null!==b){ if("function"===typeof b){ try{b(null);}catch(c){Jg(a,c);} }else { b.current=null; } }}
+	function Kg(a){"function"===typeof Te&&Te(a);switch(a.tag){case 0:case 11:case 14:case 15:var b=a.updateQueue;if(null!==b&&(b=b.lastEffect,null!==b)){var c=b=b.next;do{var d=c.destroy;if(null!==d){var e=a;try{d();}catch(f){Jg(e,f);}}c=c.next;}while(c!==b)}break;case 1:Ig(a);b=a.stateNode;if("function"===typeof b.componentWillUnmount){ try{b.props=a.memoizedProps,b.state=a.memoizedState,b.componentWillUnmount();}catch(f){Jg(a,f);} }break;case 5:Ig(a);break;case 4:Lg(a);}}
+	function Mg(a){return 5===a.tag||3===a.tag||4===a.tag}
+	function Ng(a){a:{for(var b=a.return;null!==b;){if(Mg(b)){var c=b;break a}b=b.return;}t$1("160");c=void 0;}var d=b=void 0;switch(c.tag){case 5:b=c.stateNode;d=!1;break;case 3:b=c.stateNode.containerInfo;d=!0;break;case 4:b=c.stateNode.containerInfo;d=!0;break;default:t$1("161");}c.effectTag&16&&(pe(b,""),c.effectTag&=-17);a:b:for(c=a;;){for(;null===c.sibling;){if(null===c.return||Mg(c.return)){c=null;break a}c=c.return;}c.sibling.return=c.return;for(c=c.sibling;5!==c.tag&&6!==c.tag;){if(c.effectTag&2){ continue b; }
+	if(null===c.child||4===c.tag){ continue b; }else { c.child.return=c,c=c.child; }}if(!(c.effectTag&2)){c=c.stateNode;break a}}for(var e=a;;){if(5===e.tag||6===e.tag){ if(c){ if(d){var f=b,g=e.stateNode,h=c;8===f.nodeType?f.parentNode.insertBefore(g,h):f.insertBefore(g,h);}else { b.insertBefore(e.stateNode,c); } }else { d?(g=b,h=e.stateNode,8===g.nodeType?(f=g.parentNode,f.insertBefore(h,g)):(f=g,f.appendChild(h)),g=g._reactRootContainer,null!==g&&void 0!==g||null!==f.onclick||(f.onclick=ye)):b.appendChild(e.stateNode); } }
+	else if(4!==e.tag&&null!==e.child){e.child.return=e;e=e.child;continue}if(e===a){ break; }for(;null===e.sibling;){if(null===e.return||e.return===a){ return; }e=e.return;}e.sibling.return=e.return;e=e.sibling;}}
+	function Lg(a){for(var b=a,c=!1,d=void 0,e=void 0;;){if(!c){c=b.return;a:for(;;){null===c?t$1("160"):void 0;switch(c.tag){case 5:d=c.stateNode;e=!1;break a;case 3:d=c.stateNode.containerInfo;e=!0;break a;case 4:d=c.stateNode.containerInfo;e=!0;break a}c=c.return;}c=!0;}if(5===b.tag||6===b.tag){a:for(var f=b,g=f;;){ if(Kg(g),null!==g.child&&4!==g.tag){ g.child.return=g,g=g.child; }else{if(g===f){ break; }for(;null===g.sibling;){if(null===g.return||g.return===f){ break a; }g=g.return;}g.sibling.return=g.return;g=g.sibling;} }e?
+	(f=d,g=b.stateNode,8===f.nodeType?f.parentNode.removeChild(g):f.removeChild(g)):d.removeChild(b.stateNode);}else if(4===b.tag?(d=b.stateNode.containerInfo,e=!0):Kg(b),null!==b.child){b.child.return=b;b=b.child;continue}if(b===a){ break; }for(;null===b.sibling;){if(null===b.return||b.return===a){ return; }b=b.return;4===b.tag&&(c=!1);}b.sibling.return=b.return;b=b.sibling;}}
+	function Og(a,b){switch(b.tag){case 0:case 11:case 14:case 15:break;case 1:break;case 5:var c=b.stateNode;if(null!=c){var d=b.memoizedProps,e=null!==a?a.memoizedProps:d;a=b.type;var f=b.updateQueue;b.updateQueue=null;if(null!==f){c[Ha]=d;"input"===a&&"radio"===d.type&&null!=d.name&&Cc(c,d);we(a,e);b=we(a,d);for(e=0;e<f.length;e+=2){var g=f[e],h=f[e+1];"style"===g?te(c,h):"dangerouslySetInnerHTML"===g?oe(c,h):"children"===g?pe(c,h):yc(c,g,h,b);}switch(a){case "input":Dc(c,d);break;case "textarea":ie(c,
+	d);break;case "select":b=c._wrapperState.wasMultiple,c._wrapperState.wasMultiple=!!d.multiple,a=d.value,null!=a?fe(c,!!d.multiple,a,!1):b!==!!d.multiple&&(null!=d.defaultValue?fe(c,!!d.multiple,d.defaultValue,!0):fe(c,!!d.multiple,d.multiple?[]:"",!1));}}}break;case 6:null===b.stateNode?t$1("162"):void 0;b.stateNode.nodeValue=b.memoizedProps;break;case 3:break;case 12:break;case 13:c=b.memoizedState;a=b;null===c?d=!1:(d=!0,a=b.child,0===c.timedOutAt&&(c.timedOutAt=Qf()));if(null!==a){ a:for(b=c=a;;){if(5===
+	b.tag){ a=b.stateNode,d?a.style.display="none":(a=b.stateNode,f=b.memoizedProps.style,f=void 0!==f&&null!==f&&f.hasOwnProperty("display")?f.display:null,a.style.display=se("display",f)); }else if(6===b.tag){ b.stateNode.nodeValue=d?"":b.memoizedProps; }else if(13===b.tag&&null!==b.memoizedState){a=b.child.sibling;a.return=b;b=a;continue}else if(null!==b.child){b.child.return=b;b=b.child;continue}if(b===c){ break a; }for(;null===b.sibling;){if(null===b.return||b.return===c){ break a; }b=b.return;}b.sibling.return=
+	b.return;b=b.sibling;} }break;case 17:break;default:t$1("163");}}function Pg(a,b,c){c=mf(c);c.tag=3;c.payload={element:null};var d=b.value;c.callback=function(){Qg(d);Hg(a,b);};return c}
+	function Rg(a,b,c){c=mf(c);c.tag=3;var d=a.type.getDerivedStateFromError;if("function"===typeof d){var e=b.value;c.payload=function(){return d(e)};}var f=a.stateNode;null!==f&&"function"===typeof f.componentDidCatch&&(c.callback=function(){"function"!==typeof d&&(null===Sg?Sg=new Set([this]):Sg.add(this));var c=b.value,e=b.stack;Hg(a,b);this.componentDidCatch(c,{componentStack:null!==e?e:""});});return c}
+	function Tg(a){switch(a.tag){case 1:L$1(a.type)&&Me(a);var b=a.effectTag;return b&2048?(a.effectTag=b&-2049|64,a):null;case 3:return Jf(a),Ne(a),b=a.effectTag,0!==(b&64)?t$1("285"):void 0,a.effectTag=b&-2049|64,a;case 5:return Lf(a),null;case 13:return b=a.effectTag,b&2048?(a.effectTag=b&-2049|64,a):null;case 4:return Jf(a),null;case 10:return Bf(a),null;default:return null}}
+	var Ug={readContext:Df},Vg=Xb.ReactCurrentOwner,Wg=1073741822,Xg=0,Yg=!1,R$1=null,S$1=null,T$1=0,Zg=-1,$g=!1,U$1=null,ah=!1,Sg=null;function dh(){if(null!==R$1){ for(var a=R$1.return;null!==a;){var b=a;switch(b.tag){case 1:var c=b.type.childContextTypes;null!==c&&void 0!==c&&Me(b);break;case 3:Jf(b);Ne(b);break;case 5:Lf(b);break;case 4:Jf(b);break;case 10:Bf(b);}a=a.return;} }S$1=null;T$1=0;Zg=-1;$g=!1;R$1=null;}function eh(a){for(;;){var b=a.alternate,c=a.return,d=a.sibling;if(0===(a.effectTag&1024)){R$1=a;a:{var e=b;b=a;var f=T$1;var g=b.pendingProps;switch(b.tag){case 2:break;case 16:break;case 15:case 0:break;case 1:L$1(b.type)&&Me(b);break;case 3:Jf(b);Ne(b);g=b.stateNode;g.pendingContext&&(g.context=g.pendingContext,g.pendingContext=null);if(null===e||null===e.child){ lg(b),b.effectTag&=-3; }Bg(b);break;case 5:Lf(b);var h=Hf(Gf.current);f=b.type;if(null!==e&&null!=b.stateNode){ Fg(e,b,f,g,h),e.ref!==b.ref&&(b.effectTag|=
+	128); }else if(g){var k=Hf(N$1.current);if(lg(b)){g=b;e=g.stateNode;var l=g.type,m=g.memoizedProps,q=h;e[Ga]=g;e[Ha]=m;f=void 0;h=l;switch(h){case "iframe":case "object":G$1("load",e);break;case "video":case "audio":for(l=0;l<bb.length;l++){ G$1(bb[l],e); }break;case "source":G$1("error",e);break;case "img":case "image":case "link":G$1("error",e);G$1("load",e);break;case "form":G$1("reset",e);G$1("submit",e);break;case "details":G$1("toggle",e);break;case "input":Bc(e,m);G$1("invalid",e);xe(q,"onChange");break;case "select":e._wrapperState=
+	{wasMultiple:!!m.multiple};G$1("invalid",e);xe(q,"onChange");break;case "textarea":he(e,m),G$1("invalid",e),xe(q,"onChange");}ve(h,m);l=null;for(f in m){ m.hasOwnProperty(f)&&(k=m[f],"children"===f?"string"===typeof k?e.textContent!==k&&(l=["children",k]):"number"===typeof k&&e.textContent!==""+k&&(l=["children",""+k]):sa.hasOwnProperty(f)&&null!=k&&xe(q,f)); }switch(h){case "input":Vb(e);Fc(e,m,!0);break;case "textarea":Vb(e);je(e,m);break;case "select":case "option":break;default:"function"===typeof m.onClick&&
+	(e.onclick=ye);}f=l;g.updateQueue=f;g=null!==f?!0:!1;g&&zg(b);}else{m=b;e=f;q=g;l=9===h.nodeType?h:h.ownerDocument;k===ke.html&&(k=le(e));k===ke.html?"script"===e?(e=l.createElement("div"),e.innerHTML="<script>\x3c/script>",l=e.removeChild(e.firstChild)):"string"===typeof q.is?l=l.createElement(e,{is:q.is}):(l=l.createElement(e),"select"===e&&q.multiple&&(l.multiple=!0)):l=l.createElementNS(k,e);e=l;e[Ga]=m;e[Ha]=g;Ag(e,b,!1,!1);q=e;l=f;m=g;var x=h,z=we(l,m);switch(l){case "iframe":case "object":G$1("load",
+	q);h=m;break;case "video":case "audio":for(h=0;h<bb.length;h++){ G$1(bb[h],q); }h=m;break;case "source":G$1("error",q);h=m;break;case "img":case "image":case "link":G$1("error",q);G$1("load",q);h=m;break;case "form":G$1("reset",q);G$1("submit",q);h=m;break;case "details":G$1("toggle",q);h=m;break;case "input":Bc(q,m);h=Ac(q,m);G$1("invalid",q);xe(x,"onChange");break;case "option":h=ee(q,m);break;case "select":q._wrapperState={wasMultiple:!!m.multiple};h=objectAssign({},m,{value:void 0});G$1("invalid",q);xe(x,"onChange");break;case "textarea":he(q,
+	m);h=ge(q,m);G$1("invalid",q);xe(x,"onChange");break;default:h=m;}ve(l,h);k=void 0;var B=l,Q=q,v=h;for(k in v){ if(v.hasOwnProperty(k)){var r=v[k];"style"===k?te(Q,r):"dangerouslySetInnerHTML"===k?(r=r?r.__html:void 0,null!=r&&oe(Q,r)):"children"===k?"string"===typeof r?("textarea"!==B||""!==r)&&pe(Q,r):"number"===typeof r&&pe(Q,""+r):"suppressContentEditableWarning"!==k&&"suppressHydrationWarning"!==k&&"autoFocus"!==k&&(sa.hasOwnProperty(k)?null!=r&&xe(x,k):null!=r&&yc(Q,k,r,z));} }switch(l){case "input":Vb(q);
+	Fc(q,m,!1);break;case "textarea":Vb(q);je(q,m);break;case "option":null!=m.value&&q.setAttribute("value",""+zc(m.value));break;case "select":h=q;h.multiple=!!m.multiple;q=m.value;null!=q?fe(h,!!m.multiple,q,!1):null!=m.defaultValue&&fe(h,!!m.multiple,m.defaultValue,!0);break;default:"function"===typeof h.onClick&&(q.onclick=ye);}(g=Be(f,g))&&zg(b);b.stateNode=e;}null!==b.ref&&(b.effectTag|=128);}else { null===b.stateNode?t$1("166"):void 0; }break;case 6:e&&null!=b.stateNode?Gg(e,b,e.memoizedProps,g):("string"!==
+	typeof g&&(null===b.stateNode?t$1("166"):void 0),e=Hf(Gf.current),Hf(N$1.current),lg(b)?(g=b,f=g.stateNode,e=g.memoizedProps,f[Ga]=g,(g=f.nodeValue!==e)&&zg(b)):(f=b,g=(9===e.nodeType?e:e.ownerDocument).createTextNode(g),g[Ga]=b,f.stateNode=g));break;case 11:break;case 13:g=b.memoizedState;if(0!==(b.effectTag&64)){b.expirationTime=f;R$1=b;break a}g=null!==g;f=null!==e&&null!==e.memoizedState;null!==e&&!g&&f&&(e=e.child.sibling,null!==e&&(h=b.firstEffect,null!==h?(b.firstEffect=e,e.nextEffect=h):(b.firstEffect=
+	b.lastEffect=e,e.nextEffect=null),e.effectTag=8));if(g!==f||0===(b.effectTag&1)&&g){ b.effectTag|=4; }break;case 7:break;case 8:break;case 12:break;case 4:Jf(b);Bg(b);break;case 10:Bf(b);break;case 9:break;case 14:break;case 17:L$1(b.type)&&Me(b);break;default:t$1("156");}R$1=null;}b=a;if(1===T$1||1!==b.childExpirationTime){g=0;for(f=b.child;null!==f;){ e=f.expirationTime,h=f.childExpirationTime,e>g&&(g=e),h>g&&(g=h),f=f.sibling; }b.childExpirationTime=g;}if(null!==R$1){ return R$1; }null!==c&&0===(c.effectTag&1024)&&(null===
+	c.firstEffect&&(c.firstEffect=a.firstEffect),null!==a.lastEffect&&(null!==c.lastEffect&&(c.lastEffect.nextEffect=a.firstEffect),c.lastEffect=a.lastEffect),1<a.effectTag&&(null!==c.lastEffect?c.lastEffect.nextEffect=a:c.firstEffect=a,c.lastEffect=a));}else{a=Tg(a,T$1);if(null!==a){ return a.effectTag&=1023,a; }null!==c&&(c.firstEffect=c.lastEffect=null,c.effectTag|=1024);}if(null!==d){ return d; }if(null!==c){ a=c; }else { break }}return null}
+	function fh(a){var b=yg(a.alternate,a,T$1);a.memoizedProps=a.pendingProps;null===b&&(b=eh(a));Vg.current=null;return b}
+	function gh(a,b){Yg?t$1("243"):void 0;Yg=!0;Vg.currentDispatcher=Ug;var c=a.nextExpirationTimeToWorkOn;if(c!==T$1||a!==S$1||null===R$1){ dh(),S$1=a,T$1=c,R$1=Ze(S$1.current,null,T$1),a.pendingCommitExpirationTime=0; }var d=!1;do{try{if(b){ for(;null!==R$1&&!hh();){ R$1=fh(R$1); } }else { for(;null!==R$1;){ R$1=fh(R$1); } }}catch(B){if(zf=yf=xf=null,null===R$1){ d=!0,Qg(B); }else{null===R$1?t$1("271"):void 0;var e=R$1,f=e.return;if(null===f){ d=!0,Qg(B); }else{a:{var g=a,h=f,k=e,l=B;f=T$1;k.effectTag|=1024;k.firstEffect=k.lastEffect=null;if(null!==l&&"object"===
+	typeof l&&"function"===typeof l.then){var m=l;l=h;var q=-1,x=-1;do{if(13===l.tag){var z=l.alternate;if(null!==z&&(z=z.memoizedState,null!==z)){x=10*(1073741822-z.timedOutAt);break}z=l.pendingProps.maxDuration;if("number"===typeof z){ if(0>=z){ q=0; }else if(-1===q||z<q){ q=z; } }}l=l.return;}while(null!==l);l=h;do{if(z=13===l.tag){ z=void 0===l.memoizedProps.fallback?!1:null===l.memoizedState; }if(z){h=ih.bind(null,g,l,k,0===(l.mode&1)?1073741823:f);m.then(h,h);if(0===(l.mode&1)){l.effectTag|=64;k.effectTag&=-1957;
+	1===k.tag&&null===k.alternate&&(k.tag=17);k.expirationTime=f;break a}-1===q?g=1073741823:(-1===x&&(x=10*(1073741822-hf(g,f))-5E3),g=x+q);0<=g&&Zg<g&&(Zg=g);l.effectTag|=2048;l.expirationTime=f;break a}l=l.return;}while(null!==l);l=Error((mc(k.type)||"A React component")+" suspended while rendering, but no fallback UI was specified.\n\nAdd a <Suspense fallback=...> component higher in the tree to provide a loading indicator or placeholder to display."+nc(k));}$g=!0;l=vf(l,k);g=h;do{switch(g.tag){case 3:k=
+	l;g.effectTag|=2048;g.expirationTime=f;f=Pg(g,k,f);pf(g,f);break a;case 1:if(k=l,h=g.type,m=g.stateNode,0===(g.effectTag&64)&&("function"===typeof h.getDerivedStateFromError||null!==m&&"function"===typeof m.componentDidCatch&&(null===Sg||!Sg.has(m)))){g.effectTag|=2048;g.expirationTime=f;f=Rg(g,k,f);pf(g,f);break a}}g=g.return;}while(null!==g)}R$1=eh(e);continue}}}break}while(1);Yg=!1;zf=yf=xf=Vg.currentDispatcher=null;if(d){ S$1=null,a.finishedWork=null; }else if(null!==R$1){ a.finishedWork=null; }else{d=a.current.alternate;
+	null===d?t$1("281"):void 0;S$1=null;if($g){e=a.latestPendingTime;f=a.latestSuspendedTime;g=a.latestPingedTime;if(0!==e&&e<c||0!==f&&f<c||0!==g&&g<c){gf(a,c);jh(a,d,c,a.expirationTime,-1);return}if(!a.didError&&b){a.didError=!0;c=a.nextExpirationTimeToWorkOn=c;b=a.expirationTime=1073741823;jh(a,d,c,b,-1);return}}b&&-1!==Zg?(gf(a,c),b=10*(1073741822-hf(a,c)),b<Zg&&(Zg=b),b=10*(1073741822-Qf()),b=Zg-b,jh(a,d,c,a.expirationTime,0>b?0:b)):(a.pendingCommitExpirationTime=c,a.finishedWork=d);}}
+	function Jg(a,b){for(var c=a.return;null!==c;){switch(c.tag){case 1:var d=c.stateNode;if("function"===typeof c.type.getDerivedStateFromError||"function"===typeof d.componentDidCatch&&(null===Sg||!Sg.has(d))){a=vf(b,a);a=Rg(c,a,1073741823);of(c,a);Tf(c,1073741823);return}break;case 3:a=vf(b,a);a=Pg(c,a,1073741823);of(c,a);Tf(c,1073741823);return}c=c.return;}3===a.tag&&(c=vf(b,a),c=Pg(a,c,1073741823),of(a,c),Tf(a,1073741823));}
+	function Rf(a,b){0!==Xg?a=Xg:Yg?a=ah?1073741823:T$1:b.mode&1?(a=kh?1073741822-10*(((1073741822-a+15)/10|0)+1):1073741822-25*(((1073741822-a+500)/25|0)+1),null!==S$1&&a===T$1&&--a):a=1073741823;kh&&(0===lh||a<lh)&&(lh=a);return a}
+	function ih(a,b,c,d){var e=a.earliestSuspendedTime;var f=a.latestSuspendedTime;if(0!==e&&d<=e&&d>=f){f=e=d;a.didError=!1;var g=a.latestPingedTime;if(0===g||g>f){ a.latestPingedTime=f; }ff(f,a);}else { e=Qf(),e=Rf(e,b),ef(a,e); }0!==(b.mode&1)&&a===S$1&&T$1===d&&(S$1=null);mh(b,e);0===(b.mode&1)&&(mh(c,e),1===c.tag&&null!==c.stateNode&&(b=mf(e),b.tag=2,of(c,b)));c=a.expirationTime;0!==c&&nh(a,c);}
+	function mh(a,b){a.expirationTime<b&&(a.expirationTime=b);var c=a.alternate;null!==c&&c.expirationTime<b&&(c.expirationTime=b);var d=a.return,e=null;if(null===d&&3===a.tag){ e=a.stateNode; }else { for(;null!==d;){c=d.alternate;d.childExpirationTime<b&&(d.childExpirationTime=b);null!==c&&c.childExpirationTime<b&&(c.childExpirationTime=b);if(null===d.return&&3===d.tag){e=d.stateNode;break}d=d.return;} }return e}
+	function Tf(a,b){a=mh(a,b);null!==a&&(!Yg&&0!==T$1&&b>T$1&&dh(),ef(a,b),Yg&&!ah&&S$1===a||nh(a,a.expirationTime),oh>ph&&(oh=0,t$1("185")));}function qh(a,b,c,d,e){var f=Xg;Xg=1073741823;try{return a(b,c,d,e)}finally{Xg=f;}}var rh=null,V$1=null,sh=0,th=void 0,W$1=!1,uh=null,X$1=0,lh=0,vh=!1,wh=null,Z$1=!1,xh=!1,kh=!1,yh=null,zh=scheduler.unstable_now(),Ah=1073741822-(zh/10|0),Bh=Ah,ph=50,oh=0,Ch=null;function Dh(){Ah=1073741822-((scheduler.unstable_now()-zh)/10|0);}
+	function Eh(a,b){if(0!==sh){if(b<sh){ return; }null!==th&&scheduler.unstable_cancelCallback(th);}sh=b;a=scheduler.unstable_now()-zh;th=scheduler.unstable_scheduleCallback(Fh,{timeout:10*(1073741822-b)-a});}function jh(a,b,c,d,e){a.expirationTime=d;0!==e||hh()?0<e&&(a.timeoutHandle=De(Gh.bind(null,a,b,c),e)):(a.pendingCommitExpirationTime=c,a.finishedWork=b);}function Gh(a,b,c){a.pendingCommitExpirationTime=c;a.finishedWork=b;Dh();Bh=Ah;Hh(a,c);}function Qf(){if(W$1){ return Bh; }Ih();if(0===X$1||1===X$1){ Dh(),Bh=Ah; }return Bh}
+	function nh(a,b){null===a.nextScheduledRoot?(a.expirationTime=b,null===V$1?(rh=V$1=a,a.nextScheduledRoot=a):(V$1=V$1.nextScheduledRoot=a,V$1.nextScheduledRoot=rh)):b>a.expirationTime&&(a.expirationTime=b);W$1||(Z$1?xh&&(uh=a,X$1=1073741823,Jh(a,1073741823,!1)):1073741823===b?Kh(1073741823,!1):Eh(a,b));}
+	function Ih(){var a=0,b=null;if(null!==V$1){ for(var c=V$1,d=rh;null!==d;){var e=d.expirationTime;if(0===e){null===c||null===V$1?t$1("244"):void 0;if(d===d.nextScheduledRoot){rh=V$1=d.nextScheduledRoot=null;break}else if(d===rh){ rh=e=d.nextScheduledRoot,V$1.nextScheduledRoot=e,d.nextScheduledRoot=null; }else if(d===V$1){V$1=c;V$1.nextScheduledRoot=rh;d.nextScheduledRoot=null;break}else { c.nextScheduledRoot=d.nextScheduledRoot,d.nextScheduledRoot=null; }d=c.nextScheduledRoot;}else{e>a&&(a=e,b=d);if(d===V$1){ break; }if(1073741823===
+	a){ break; }c=d;d=d.nextScheduledRoot;}} }uh=b;X$1=a;}var Lh=!1;function hh(){return Lh?!0:scheduler.unstable_shouldYield()?Lh=!0:!1}function Fh(){try{if(!hh()&&null!==rh){Dh();var a=rh;do{var b=a.expirationTime;0!==b&&Ah<=b&&(a.nextExpirationTimeToWorkOn=Ah);a=a.nextScheduledRoot;}while(a!==rh)}Kh(0,!0);}finally{Lh=!1;}}
+	function Kh(a,b){Ih();if(b){ for(Dh(),Bh=Ah;null!==uh&&0!==X$1&&a<=X$1&&!(Lh&&Ah>X$1);){ Jh(uh,X$1,Ah>X$1),Ih(),Dh(),Bh=Ah; } }else { for(;null!==uh&&0!==X$1&&a<=X$1;){ Jh(uh,X$1,!1),Ih(); } }b&&(sh=0,th=null);0!==X$1&&Eh(uh,X$1);oh=0;Ch=null;if(null!==yh){ for(a=yh,yh=null,b=0;b<a.length;b++){var c=a[b];try{c._onComplete();}catch(d){vh||(vh=!0,wh=d);}} }if(vh){ throw a=wh,wh=null,vh=!1,a; }}function Hh(a,b){W$1?t$1("253"):void 0;uh=a;X$1=b;Jh(a,b,!1);Kh(1073741823,!1);}
+	function Jh(a,b,c){W$1?t$1("245"):void 0;W$1=!0;if(c){var d=a.finishedWork;null!==d?Mh(a,d,b):(a.finishedWork=null,d=a.timeoutHandle,-1!==d&&(a.timeoutHandle=-1,Ee(d)),gh(a,c),d=a.finishedWork,null!==d&&(hh()?a.finishedWork=d:Mh(a,d,b)));}else { d=a.finishedWork,null!==d?Mh(a,d,b):(a.finishedWork=null,d=a.timeoutHandle,-1!==d&&(a.timeoutHandle=-1,Ee(d)),gh(a,c),d=a.finishedWork,null!==d&&Mh(a,d,b)); }W$1=!1;}
+	function Mh(a,b,c){var d=a.firstBatch;if(null!==d&&d._expirationTime>=c&&(null===yh?yh=[d]:yh.push(d),d._defer)){a.finishedWork=b;a.expirationTime=0;return}a.finishedWork=null;a===Ch?oh++:(Ch=a,oh=0);ah=Yg=!0;a.current===b?t$1("177"):void 0;c=a.pendingCommitExpirationTime;0===c?t$1("261"):void 0;a.pendingCommitExpirationTime=0;d=b.expirationTime;var e=b.childExpirationTime;d=e>d?e:d;a.didError=!1;0===d?(a.earliestPendingTime=0,a.latestPendingTime=0,a.earliestSuspendedTime=0,a.latestSuspendedTime=0,a.latestPingedTime=
+	0):(e=a.latestPendingTime,0!==e&&(e>d?a.earliestPendingTime=a.latestPendingTime=0:a.earliestPendingTime>d&&(a.earliestPendingTime=a.latestPendingTime)),e=a.earliestSuspendedTime,0===e?ef(a,d):d<a.latestSuspendedTime?(a.earliestSuspendedTime=0,a.latestSuspendedTime=0,a.latestPingedTime=0,ef(a,d)):d>e&&ef(a,d));ff(0,a);Vg.current=null;1<b.effectTag?null!==b.lastEffect?(b.lastEffect.nextEffect=b,d=b.firstEffect):d=b:d=b.firstEffect;ze=Hd;e=Td();if(Ud(e)){if("selectionStart"in e){ var f={start:e.selectionStart,
+	end:e.selectionEnd}; }else { a:{f=(f=e.ownerDocument)&&f.defaultView||window;var g=f.getSelection&&f.getSelection();if(g&&0!==g.rangeCount){f=g.anchorNode;var h=g.anchorOffset,k=g.focusNode;g=g.focusOffset;try{f.nodeType,k.nodeType;}catch(db){f=null;break a}var l=0,m=-1,q=-1,x=0,z=0,B=e,Q=null;b:for(;;){for(var v;;){B!==f||0!==h&&3!==B.nodeType||(m=l+h);B!==k||0!==g&&3!==B.nodeType||(q=l+g);3===B.nodeType&&(l+=B.nodeValue.length);if(null===(v=B.firstChild)){ break; }Q=B;B=v;}for(;;){if(B===e){ break b; }Q===f&&
+	++x===h&&(m=l);Q===k&&++z===g&&(q=l);if(null!==(v=B.nextSibling)){ break; }B=Q;Q=B.parentNode;}B=v;}f=-1===m||-1===q?null:{start:m,end:q};}else { f=null; }} }f=f||{start:0,end:0};}else { f=null; }Ae={focusedElem:e,selectionRange:f};Hd=!1;for(U$1=d;null!==U$1;){e=!1;f=void 0;try{for(;null!==U$1;){if(U$1.effectTag&256){ a:{var r=U$1.alternate;h=U$1;switch(h.tag){case 0:case 11:case 15:break a;case 1:if(h.effectTag&256&&null!==r){var u=r.memoizedProps,y=r.memoizedState,Y=h.stateNode,Th=Y.getSnapshotBeforeUpdate(h.elementType===h.type?
+	u:O$1(h.type,u),y);Y.__reactInternalSnapshotBeforeUpdate=Th;}break a;case 3:case 5:case 6:case 4:case 17:break a;default:t$1("163");}} }U$1=U$1.nextEffect;}}catch(db){e=!0,f=db;}e&&(null===U$1?t$1("178"):void 0,Jg(U$1,f),null!==U$1&&(U$1=U$1.nextEffect));}for(U$1=d;null!==U$1;){r=!1;u=void 0;try{for(;null!==U$1;){var w=U$1.effectTag;w&16&&pe(U$1.stateNode,"");if(w&128){var C=U$1.alternate;if(null!==C){var p=C.ref;null!==p&&("function"===typeof p?p(null):p.current=null);}}switch(w&14){case 2:Ng(U$1);U$1.effectTag&=-3;break;case 6:Ng(U$1);U$1.effectTag&=
+	-3;Og(U$1.alternate,U$1);break;case 4:Og(U$1.alternate,U$1);break;case 8:y=U$1,Lg(y),y.return=null,y.child=null,y.alternate&&(y.alternate.child=null,y.alternate.return=null);}U$1=U$1.nextEffect;}}catch(db){r=!0,u=db;}r&&(null===U$1?t$1("178"):void 0,Jg(U$1,u),null!==U$1&&(U$1=U$1.nextEffect));}p=Ae;C=Td();w=p.focusedElem;u=p.selectionRange;if(C!==w&&w&&w.ownerDocument&&Sd(w.ownerDocument.documentElement,w)){null!==u&&Ud(w)&&(C=u.start,p=u.end,void 0===p&&(p=C),"selectionStart"in w?(w.selectionStart=C,w.selectionEnd=Math.min(p,
+	w.value.length)):(p=(C=w.ownerDocument||document)&&C.defaultView||window,p.getSelection&&(p=p.getSelection(),y=w.textContent.length,r=Math.min(u.start,y),u=void 0===u.end?r:Math.min(u.end,y),!p.extend&&r>u&&(y=u,u=r,r=y),y=Rd(w,r),Y=Rd(w,u),y&&Y&&(1!==p.rangeCount||p.anchorNode!==y.node||p.anchorOffset!==y.offset||p.focusNode!==Y.node||p.focusOffset!==Y.offset)&&(C=C.createRange(),C.setStart(y.node,y.offset),p.removeAllRanges(),r>u?(p.addRange(C),p.extend(Y.node,Y.offset)):(C.setEnd(Y.node,Y.offset),
+	p.addRange(C))))));C=[];for(p=w;p=p.parentNode;){ 1===p.nodeType&&C.push({element:p,left:p.scrollLeft,top:p.scrollTop}); }"function"===typeof w.focus&&w.focus();for(w=0;w<C.length;w++){ p=C[w],p.element.scrollLeft=p.left,p.element.scrollTop=p.top; }}Ae=null;Hd=!!ze;ze=null;a.current=b;for(U$1=d;null!==U$1;){d=!1;w=void 0;try{for(C=c;null!==U$1;){var Fb=U$1.effectTag;if(Fb&36){var Gb=U$1.alternate;p=U$1;r=C;switch(p.tag){case 0:case 11:case 15:break;case 1:var wc=p.stateNode;if(p.effectTag&4){ if(null===Gb){ wc.componentDidMount(); }
+	else{var ci=p.elementType===p.type?Gb.memoizedProps:O$1(p.type,Gb.memoizedProps);wc.componentDidUpdate(ci,Gb.memoizedState,wc.__reactInternalSnapshotBeforeUpdate);} }var Cg=p.updateQueue;null!==Cg&&tf(p,Cg,wc,r);break;case 3:var Dg=p.updateQueue;if(null!==Dg){u=null;if(null!==p.child){ switch(p.child.tag){case 5:u=p.child.stateNode;break;case 1:u=p.child.stateNode;} }tf(p,Dg,u,r);}break;case 5:var di=p.stateNode;null===Gb&&p.effectTag&4&&Be(p.type,p.memoizedProps)&&di.focus();break;case 6:break;case 4:break;
+	case 12:break;case 13:break;case 17:break;default:t$1("163");}}if(Fb&128){var Ic=U$1.ref;if(null!==Ic){var Eg=U$1.stateNode;switch(U$1.tag){case 5:var ce=Eg;break;default:ce=Eg;}"function"===typeof Ic?Ic(ce):Ic.current=ce;}}U$1=U$1.nextEffect;}}catch(db){d=!0,w=db;}d&&(null===U$1?t$1("178"):void 0,Jg(U$1,w),null!==U$1&&(U$1=U$1.nextEffect));}Yg=ah=!1;"function"===typeof Se&&Se(b.stateNode);Fb=b.expirationTime;b=b.childExpirationTime;b=b>Fb?b:Fb;0===b&&(Sg=null);a.expirationTime=b;a.finishedWork=null;}
+	function Qg(a){null===uh?t$1("246"):void 0;uh.expirationTime=0;vh||(vh=!0,wh=a);}function Nh(a,b){var c=Z$1;Z$1=!0;try{return a(b)}finally{(Z$1=c)||W$1||Kh(1073741823,!1);}}function Oh(a,b){if(Z$1&&!xh){xh=!0;try{return a(b)}finally{xh=!1;}}return a(b)}function Ph(a,b,c){if(kh){ return a(b,c); }Z$1||W$1||0===lh||(Kh(lh,!1),lh=0);var d=kh,e=Z$1;Z$1=kh=!0;try{return a(b,c)}finally{kh=d,(Z$1=e)||W$1||Kh(1073741823,!1);}}
+	function Qh(a,b,c,d,e){var f=b.current;a:if(c){c=c._reactInternalFiber;b:{2===kd(c)&&1===c.tag?void 0:t$1("170");var g=c;do{switch(g.tag){case 3:g=g.stateNode.context;break b;case 1:if(L$1(g.type)){g=g.stateNode.__reactInternalMemoizedMergedChildContext;break b}}g=g.return;}while(null!==g);t$1("171");g=void 0;}if(1===c.tag){var h=c.type;if(L$1(h)){c=Pe(c,h,g);break a}}c=g;}else { c=Je; }null===b.context?b.context=c:b.pendingContext=c;b=e;e=mf(d);e.payload={element:a};b=void 0===b?null:b;null!==b&&(e.callback=b);
+	of(f,e);Tf(f,d);return d}function Rh(a,b,c,d){var e=b.current,f=Qf();e=Rf(f,e);return Qh(a,b,c,e,d)}function Sh(a){a=a.current;if(!a.child){ return null; }switch(a.child.tag){case 5:return a.child.stateNode;default:return a.child.stateNode}}function Uh(a,b,c){var d=3<arguments.length&&void 0!==arguments[3]?arguments[3]:null;return {$$typeof:$b,key:null==d?null:""+d,children:a,containerInfo:b,implementation:c}}
+	Cb=function(a,b,c){switch(b){case "input":Dc(a,c);b=c.name;if("radio"===c.type&&null!=b){for(c=a;c.parentNode;){ c=c.parentNode; }c=c.querySelectorAll("input[name="+JSON.stringify(""+b)+'][type="radio"]');for(b=0;b<c.length;b++){var d=c[b];if(d!==a&&d.form===a.form){var e=La(d);e?void 0:t$1("90");Wb(d);Dc(d,e);}}}break;case "textarea":ie(a,c);break;case "select":b=c.value,null!=b&&fe(a,!!c.multiple,b,!1);}};
+	function Vh(a){var b=1073741822-25*(((1073741822-Qf()+500)/25|0)+1);b>=Wg&&(b=Wg-1);this._expirationTime=Wg=b;this._root=a;this._callbacks=this._next=null;this._hasChildren=this._didComplete=!1;this._children=null;this._defer=!0;}Vh.prototype.render=function(a){this._defer?void 0:t$1("250");this._hasChildren=!0;this._children=a;var b=this._root._internalRoot,c=this._expirationTime,d=new Wh;Qh(a,b,null,c,d._onCommit);return d};
+	Vh.prototype.then=function(a){if(this._didComplete){ a(); }else{var b=this._callbacks;null===b&&(b=this._callbacks=[]);b.push(a);}};
+	Vh.prototype.commit=function(){var a=this._root._internalRoot,b=a.firstBatch;this._defer&&null!==b?void 0:t$1("251");if(this._hasChildren){var c=this._expirationTime;if(b!==this){this._hasChildren&&(c=this._expirationTime=b._expirationTime,this.render(this._children));for(var d=null,e=b;e!==this;){ d=e,e=e._next; }null===d?t$1("251"):void 0;d._next=e._next;this._next=b;a.firstBatch=this;}this._defer=!1;Hh(a,c);b=this._next;this._next=null;b=a.firstBatch=b;null!==b&&b._hasChildren&&b.render(b._children);}else { this._next=
+	null,this._defer=!1; }};Vh.prototype._onComplete=function(){if(!this._didComplete){this._didComplete=!0;var a=this._callbacks;if(null!==a){ for(var b=0;b<a.length;b++){ (0, a[b])(); } }}};function Wh(){this._callbacks=null;this._didCommit=!1;this._onCommit=this._onCommit.bind(this);}Wh.prototype.then=function(a){if(this._didCommit){ a(); }else{var b=this._callbacks;null===b&&(b=this._callbacks=[]);b.push(a);}};
+	Wh.prototype._onCommit=function(){if(!this._didCommit){this._didCommit=!0;var a=this._callbacks;if(null!==a){ for(var b=0;b<a.length;b++){var c=a[b];"function"!==typeof c?t$1("191",c):void 0;c();} }}};
+	function Xh(a,b,c){b=M$1(3,null,null,b?3:0);a={current:b,containerInfo:a,pendingChildren:null,earliestPendingTime:0,latestPendingTime:0,earliestSuspendedTime:0,latestSuspendedTime:0,latestPingedTime:0,didError:!1,pendingCommitExpirationTime:0,finishedWork:null,timeoutHandle:-1,context:null,pendingContext:null,hydrate:c,nextExpirationTimeToWorkOn:0,expirationTime:0,firstBatch:null,nextScheduledRoot:null};this._internalRoot=b.stateNode=a;}
+	Xh.prototype.render=function(a,b){var c=this._internalRoot,d=new Wh;b=void 0===b?null:b;null!==b&&d.then(b);Rh(a,c,null,d._onCommit);return d};Xh.prototype.unmount=function(a){var b=this._internalRoot,c=new Wh;a=void 0===a?null:a;null!==a&&c.then(a);Rh(null,b,null,c._onCommit);return c};Xh.prototype.legacy_renderSubtreeIntoContainer=function(a,b,c){var d=this._internalRoot,e=new Wh;c=void 0===c?null:c;null!==c&&e.then(c);Rh(b,d,a,e._onCommit);return e};
+	Xh.prototype.createBatch=function(){var a=new Vh(this),b=a._expirationTime,c=this._internalRoot,d=c.firstBatch;if(null===d){ c.firstBatch=a,a._next=null; }else{for(c=null;null!==d&&d._expirationTime>=b;){ c=d,d=d._next; }a._next=d;null!==c&&(c._next=a);}return a};function Yh(a){return !(!a||1!==a.nodeType&&9!==a.nodeType&&11!==a.nodeType&&(8!==a.nodeType||" react-mount-point-unstable "!==a.nodeValue))}Kb=Nh;Lb=Ph;Mb=function(){W$1||0===lh||(Kh(lh,!1),lh=0);};
+	function Zh(a,b){b||(b=a?9===a.nodeType?a.documentElement:a.firstChild:null,b=!(!b||1!==b.nodeType||!b.hasAttribute("data-reactroot")));if(!b){ for(var c;c=a.lastChild;){ a.removeChild(c); } }return new Xh(a,!1,b)}
+	function $h(a,b,c,d,e){Yh(c)?void 0:t$1("200");var f=c._reactRootContainer;if(f){if("function"===typeof e){var g=e;e=function(){var a=Sh(f._internalRoot);g.call(a);};}null!=a?f.legacy_renderSubtreeIntoContainer(a,b,e):f.render(b,e);}else{f=c._reactRootContainer=Zh(c,d);if("function"===typeof e){var h=e;e=function(){var a=Sh(f._internalRoot);h.call(a);};}Oh(function(){null!=a?f.legacy_renderSubtreeIntoContainer(a,b,e):f.render(b,e);});}return Sh(f._internalRoot)}
+	function ai(a,b){var c=2<arguments.length&&void 0!==arguments[2]?arguments[2]:null;Yh(b)?void 0:t$1("200");return Uh(a,b,null,c)}
+	var bi={createPortal:ai,findDOMNode:function(a){if(null==a){ return null; }if(1===a.nodeType){ return a; }var b=a._reactInternalFiber;void 0===b&&("function"===typeof a.render?t$1("188"):t$1("268",Object.keys(a)));a=nd(b);a=null===a?null:a.stateNode;return a},hydrate:function(a,b,c){return $h(null,a,b,!0,c)},render:function(a,b,c){return $h(null,a,b,!1,c)},unstable_renderSubtreeIntoContainer:function(a,b,c,d){null==a||void 0===a._reactInternalFiber?t$1("38"):void 0;return $h(a,b,c,!1,d)},unmountComponentAtNode:function(a){Yh(a)?
+	void 0:t$1("40");return a._reactRootContainer?(Oh(function(){$h(null,null,a,!1,function(){a._reactRootContainer=null;});}),!0):!1},unstable_createPortal:function(){return ai.apply(void 0,arguments)},unstable_batchedUpdates:Nh,unstable_interactiveUpdates:Ph,flushSync:function(a,b){W$1?t$1("187"):void 0;var c=Z$1;Z$1=!0;try{return qh(a,b)}finally{Z$1=c,Kh(1073741823,!1);}},unstable_flushControlled:function(a){var b=Z$1;Z$1=!0;try{qh(a);}finally{(Z$1=b)||W$1||Kh(1073741823,!1);}},__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{Events:[Ja,
+	Ka,La,Ca.injectEventPluginsByName,qa,Ra,function(a){za(a,Qa);},Ib,Jb,Jd,Ea]},unstable_createRoot:function(a,b){Yh(a)?void 0:t$1("299","unstable_createRoot");return new Xh(a,!0,null!=b&&!0===b.hydrate)}};(function(a){var b=a.findFiberByHostInstance;return Ve(objectAssign({},a,{findHostInstanceByFiber:function(a){a=nd(a);return null===a?null:a.stateNode},findFiberByHostInstance:function(a){return b?b(a):null}}))})({findFiberByHostInstance:Ia,bundleType:0,version:"16.6.3",rendererPackageName:"react-dom"});
+	var ei={default:bi},fi=ei&&bi||ei;var reactDom_production_min=fi.default||fi;
 
 	/**
 	 * Template7 1.4.0
@@ -1173,26 +1199,22 @@
 
 	// Classes and attributes
 	function addClass(className) {
-	  var this$1 = this;
-
 	  if (typeof className === 'undefined') {
 	    return this;
 	  }
 	  var classes = className.split(' ');
 	  for (var i = 0; i < classes.length; i += 1) {
 	    for (var j = 0; j < this.length; j += 1) {
-	      if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.add(classes[i]); }
+	      if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.add(classes[i]); }
 	    }
 	  }
 	  return this;
 	}
 	function removeClass(className) {
-	  var this$1 = this;
-
 	  var classes = className.split(' ');
 	  for (var i = 0; i < classes.length; i += 1) {
 	    for (var j = 0; j < this.length; j += 1) {
-	      if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.remove(classes[i]); }
+	      if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.remove(classes[i]); }
 	    }
 	  }
 	  return this;
@@ -1202,19 +1224,16 @@
 	  return this[0].classList.contains(className);
 	}
 	function toggleClass(className) {
-	  var this$1 = this;
-
 	  var classes = className.split(' ');
 	  for (var i = 0; i < classes.length; i += 1) {
 	    for (var j = 0; j < this.length; j += 1) {
-	      if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.toggle(classes[i]); }
+	      if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.toggle(classes[i]); }
 	    }
 	  }
 	  return this;
 	}
 	function attr(attrs, value) {
 	  var arguments$1 = arguments;
-	  var this$1 = this;
 
 	  if (arguments.length === 1 && typeof attrs === 'string') {
 	    // Get attr
@@ -1226,13 +1245,13 @@
 	  for (var i = 0; i < this.length; i += 1) {
 	    if (arguments$1.length === 2) {
 	      // String
-	      this$1[i].setAttribute(attrs, value);
+	      this[i].setAttribute(attrs, value);
 	    } else {
 	      // Object
 	      // eslint-disable-next-line
 	      for (var attrName in attrs) {
-	        this$1[i][attrName] = attrs[attrName];
-	        this$1[i].setAttribute(attrName, attrs[attrName]);
+	        this[i][attrName] = attrs[attrName];
+	        this[i].setAttribute(attrName, attrs[attrName]);
 	      }
 	    }
 	  }
@@ -1240,17 +1259,14 @@
 	}
 	// eslint-disable-next-line
 	function removeAttr(attr) {
-	  var this$1 = this;
-
 	  for (var i = 0; i < this.length; i += 1) {
-	    this$1[i].removeAttribute(attr);
+	    this[i].removeAttribute(attr);
 	  }
 	  return this;
 	}
 	// eslint-disable-next-line
 	function prop(props, value) {
 	  var arguments$1 = arguments;
-	  var this$1 = this;
 
 	  if (arguments.length === 1 && typeof props === 'string') {
 	    // Get prop
@@ -1260,12 +1276,12 @@
 	    for (var i = 0; i < this.length; i += 1) {
 	      if (arguments$1.length === 2) {
 	        // String
-	        this$1[i][props] = value;
+	        this[i][props] = value;
 	      } else {
 	        // Object
 	        // eslint-disable-next-line
 	        for (var propName in props) {
-	          this$1[i][propName] = props[propName];
+	          this[i][propName] = props[propName];
 	        }
 	      }
 	    }
@@ -1273,8 +1289,6 @@
 	  }
 	}
 	function data(key, value) {
-	  var this$1 = this;
-
 	  var el;
 	  if (typeof value === 'undefined') {
 	    el = this[0];
@@ -1295,17 +1309,15 @@
 
 	  // Set value
 	  for (var i = 0; i < this.length; i += 1) {
-	    el = this$1[i];
+	    el = this[i];
 	    if (!el.dom7ElementDataStorage) { el.dom7ElementDataStorage = {}; }
 	    el.dom7ElementDataStorage[key] = value;
 	  }
 	  return this;
 	}
 	function removeData(key) {
-	  var this$1 = this;
-
 	  for (var i = 0; i < this.length; i += 1) {
-	    var el = this$1[i];
+	    var el = this[i];
 	    if (el.dom7ElementDataStorage && el.dom7ElementDataStorage[key]) {
 	      el.dom7ElementDataStorage[key] = null;
 	      delete el.dom7ElementDataStorage[key];
@@ -1369,23 +1381,19 @@
 	// Transforms
 	// eslint-disable-next-line
 	function transform(transform) {
-	  var this$1 = this;
-
 	  for (var i = 0; i < this.length; i += 1) {
-	    var elStyle = this$1[i].style;
+	    var elStyle = this[i].style;
 	    elStyle.webkitTransform = transform;
 	    elStyle.transform = transform;
 	  }
 	  return this;
 	}
 	function transition(duration) {
-	  var this$1 = this;
-
 	  if (typeof duration !== 'string') {
 	    duration = duration + "ms"; // eslint-disable-line
 	  }
 	  for (var i = 0; i < this.length; i += 1) {
-	    var elStyle = this$1[i].style;
+	    var elStyle = this[i].style;
 	    elStyle.webkitTransitionDuration = duration;
 	    elStyle.transitionDuration = duration;
 	  }
@@ -1393,7 +1401,6 @@
 	}
 	// Events
 	function on() {
-	  var this$1 = this;
 	  var assign;
 
 	  var args = [], len = arguments.length;
@@ -1433,7 +1440,7 @@
 	  var events = eventType.split(' ');
 	  var j;
 	  for (var i = 0; i < this.length; i += 1) {
-	    var el = this$1[i];
+	    var el = this[i];
 	    if (!targetSelector) {
 	      for (j = 0; j < events.length; j += 1) {
 	        var event = events[j];
@@ -1462,7 +1469,6 @@
 	  return this;
 	}
 	function off() {
-	  var this$1 = this;
 	  var assign;
 
 	  var args = [], len = arguments.length;
@@ -1481,7 +1487,7 @@
 	  for (var i = 0; i < events.length; i += 1) {
 	    var event = events[i];
 	    for (var j = 0; j < this.length; j += 1) {
-	      var el = this$1[j];
+	      var el = this[j];
 	      var handlers = (void 0);
 	      if (!targetSelector && el.dom7Listeners) {
 	        handlers = el.dom7Listeners[event];
@@ -1528,7 +1534,6 @@
 	  return dom.on(eventName, targetSelector, proxy, capture);
 	}
 	function trigger() {
-	  var this$1 = this;
 	  var args = [], len = arguments.length;
 	  while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -1537,7 +1542,7 @@
 	  for (var i = 0; i < events.length; i += 1) {
 	    var event = events[i];
 	    for (var j = 0; j < this.length; j += 1) {
-	      var el = this$1[j];
+	      var el = this[j];
 	      var evt = (void 0);
 	      try {
 	        evt = new win.CustomEvent(event, {
@@ -1659,18 +1664,14 @@
 	  return null;
 	}
 	function hide() {
-	  var this$1 = this;
-
 	  for (var i = 0; i < this.length; i += 1) {
-	    this$1[i].style.display = 'none';
+	    this[i].style.display = 'none';
 	  }
 	  return this;
 	}
 	function show() {
-	  var this$1 = this;
-
 	  for (var i = 0; i < this.length; i += 1) {
-	    var el = this$1[i];
+	    var el = this[i];
 	    if (el.style.display === 'none') {
 	      el.style.display = '';
 	    }
@@ -1686,8 +1687,6 @@
 	  return {};
 	}
 	function css(props, value) {
-	  var this$1 = this;
-
 	  var i;
 	  if (arguments.length === 1) {
 	    if (typeof props === 'string') {
@@ -1696,7 +1695,7 @@
 	      for (i = 0; i < this.length; i += 1) {
 	        // eslint-disable-next-line
 	        for (var prop in props) {
-	          this$1[i].style[prop] = props[prop];
+	          this[i].style[prop] = props[prop];
 	        }
 	      }
 	      return this;
@@ -1704,7 +1703,7 @@
 	  }
 	  if (arguments.length === 2 && typeof props === 'string') {
 	    for (i = 0; i < this.length; i += 1) {
-	      this$1[i].style[props] = value;
+	      this[i].style[props] = value;
 	    }
 	    return this;
 	  }
@@ -1713,42 +1712,36 @@
 
 	// Dom manipulation
 	function toArray() {
-	  var this$1 = this;
-
 	  var arr = [];
 	  for (var i = 0; i < this.length; i += 1) {
-	    arr.push(this$1[i]);
+	    arr.push(this[i]);
 	  }
 	  return arr;
 	}
 	// Iterate over the collection passing elements to `callback`
 	function each(callback) {
-	  var this$1 = this;
-
 	  // Don't bother continuing without a callback
 	  if (!callback) { return this; }
 	  // Iterate over the current collection
 	  for (var i = 0; i < this.length; i += 1) {
 	    // If the callback returns false
-	    if (callback.call(this$1[i], i, this$1[i]) === false) {
+	    if (callback.call(this[i], i, this[i]) === false) {
 	      // End the loop early
-	      return this$1;
+	      return this;
 	    }
 	  }
 	  // Return `this` to allow chained DOM operations
 	  return this;
 	}
 	function forEach(callback) {
-	  var this$1 = this;
-
 	  // Don't bother continuing without a callback
 	  if (!callback) { return this; }
 	  // Iterate over the current collection
 	  for (var i = 0; i < this.length; i += 1) {
 	    // If the callback returns false
-	    if (callback.call(this$1[i], this$1[i], i) === false) {
+	    if (callback.call(this[i], this[i], i) === false) {
 	      // End the loop early
-	      return this$1;
+	      return this;
 	    }
 	  }
 	  // Return `this` to allow chained DOM operations
@@ -1772,21 +1765,17 @@
 	}
 	// eslint-disable-next-line
 	function html(html) {
-	  var this$1 = this;
-
 	  if (typeof html === 'undefined') {
 	    return this[0] ? this[0].innerHTML : undefined;
 	  }
 
 	  for (var i = 0; i < this.length; i += 1) {
-	    this$1[i].innerHTML = html;
+	    this[i].innerHTML = html;
 	  }
 	  return this;
 	}
 	// eslint-disable-next-line
 	function text(text) {
-	  var this$1 = this;
-
 	  if (typeof text === 'undefined') {
 	    if (this[0]) {
 	      return this[0].textContent.trim();
@@ -1795,7 +1784,7 @@
 	  }
 
 	  for (var i = 0; i < this.length; i += 1) {
-	    this$1[i].textContent = text;
+	    this[i].textContent = text;
 	  }
 	  return this;
 	}
@@ -1827,10 +1816,8 @@
 	  return false;
 	}
 	function indexOf(el) {
-	  var this$1 = this;
-
 	  for (var i = 0; i < this.length; i += 1) {
-	    if (this$1[i] === el) { return i; }
+	    if (this[i] === el) { return i; }
 	  }
 	  return -1;
 	}
@@ -1863,7 +1850,6 @@
 	  return new Dom7([this[index]]);
 	}
 	function append() {
-	  var this$1 = this;
 	  var args = [], len = arguments.length;
 	  while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -1876,14 +1862,14 @@
 	        var tempDiv = doc.createElement('div');
 	        tempDiv.innerHTML = newChild;
 	        while (tempDiv.firstChild) {
-	          this$1[i].appendChild(tempDiv.firstChild);
+	          this[i].appendChild(tempDiv.firstChild);
 	        }
 	      } else if (newChild instanceof Dom7) {
 	        for (var j = 0; j < newChild.length; j += 1) {
-	          this$1[i].appendChild(newChild[j]);
+	          this[i].appendChild(newChild[j]);
 	        }
 	      } else {
-	        this$1[i].appendChild(newChild);
+	        this[i].appendChild(newChild);
 	      }
 	    }
 	  }
@@ -1896,8 +1882,6 @@
 	  return this;
 	}
 	function prepend(newChild) {
-	  var this$1 = this;
-
 	  var i;
 	  var j;
 	  for (i = 0; i < this.length; i += 1) {
@@ -1905,14 +1889,14 @@
 	      var tempDiv = doc.createElement('div');
 	      tempDiv.innerHTML = newChild;
 	      for (j = tempDiv.childNodes.length - 1; j >= 0; j -= 1) {
-	        this$1[i].insertBefore(tempDiv.childNodes[j], this$1[i].childNodes[0]);
+	        this[i].insertBefore(tempDiv.childNodes[j], this[i].childNodes[0]);
 	      }
 	    } else if (newChild instanceof Dom7) {
 	      for (j = 0; j < newChild.length; j += 1) {
-	        this$1[i].insertBefore(newChild[j], this$1[i].childNodes[0]);
+	        this[i].insertBefore(newChild[j], this[i].childNodes[0]);
 	      }
 	    } else {
-	      this$1[i].insertBefore(newChild, this$1[i].childNodes[0]);
+	      this[i].insertBefore(newChild, this[i].childNodes[0]);
 	    }
 	  }
 	  return this;
@@ -1923,29 +1907,25 @@
 	  return this;
 	}
 	function insertBefore(selector) {
-	  var this$1 = this;
-
 	  var before = $(selector);
 	  for (var i = 0; i < this.length; i += 1) {
 	    if (before.length === 1) {
-	      before[0].parentNode.insertBefore(this$1[i], before[0]);
+	      before[0].parentNode.insertBefore(this[i], before[0]);
 	    } else if (before.length > 1) {
 	      for (var j = 0; j < before.length; j += 1) {
-	        before[j].parentNode.insertBefore(this$1[i].cloneNode(true), before[j]);
+	        before[j].parentNode.insertBefore(this[i].cloneNode(true), before[j]);
 	      }
 	    }
 	  }
 	}
 	function insertAfter(selector) {
-	  var this$1 = this;
-
 	  var after = $(selector);
 	  for (var i = 0; i < this.length; i += 1) {
 	    if (after.length === 1) {
-	      after[0].parentNode.insertBefore(this$1[i], after[0].nextSibling);
+	      after[0].parentNode.insertBefore(this[i], after[0].nextSibling);
 	    } else if (after.length > 1) {
 	      for (var j = 0; j < after.length; j += 1) {
-	        after[j].parentNode.insertBefore(this$1[i].cloneNode(true), after[j].nextSibling);
+	        after[j].parentNode.insertBefore(this[i].cloneNode(true), after[j].nextSibling);
 	      }
 	    }
 	  }
@@ -2009,26 +1989,22 @@
 	  return this.nextAll(selector).add(this.prevAll(selector));
 	}
 	function parent(selector) {
-	  var this$1 = this;
-
 	  var parents = []; // eslint-disable-line
 	  for (var i = 0; i < this.length; i += 1) {
-	    if (this$1[i].parentNode !== null) {
+	    if (this[i].parentNode !== null) {
 	      if (selector) {
-	        if ($(this$1[i].parentNode).is(selector)) { parents.push(this$1[i].parentNode); }
+	        if ($(this[i].parentNode).is(selector)) { parents.push(this[i].parentNode); }
 	      } else {
-	        parents.push(this$1[i].parentNode);
+	        parents.push(this[i].parentNode);
 	      }
 	    }
 	  }
 	  return $(unique(parents));
 	}
 	function parents(selector) {
-	  var this$1 = this;
-
 	  var parents = []; // eslint-disable-line
 	  for (var i = 0; i < this.length; i += 1) {
-	    var parent = this$1[i].parentNode; // eslint-disable-line
+	    var parent = this[i].parentNode; // eslint-disable-line
 	    while (parent) {
 	      if (selector) {
 	        if ($(parent).is(selector)) { parents.push(parent); }
@@ -2051,11 +2027,9 @@
 	  return closest;
 	}
 	function find(selector) {
-	  var this$1 = this;
-
 	  var foundElements = [];
 	  for (var i = 0; i < this.length; i += 1) {
-	    var found = this$1[i].querySelectorAll(selector);
+	    var found = this[i].querySelectorAll(selector);
 	    for (var j = 0; j < found.length; j += 1) {
 	      foundElements.push(found[j]);
 	    }
@@ -2063,11 +2037,9 @@
 	  return new Dom7(foundElements);
 	}
 	function children(selector) {
-	  var this$1 = this;
-
 	  var children = []; // eslint-disable-line
 	  for (var i = 0; i < this.length; i += 1) {
-	    var childNodes = this$1[i].childNodes;
+	    var childNodes = this[i].childNodes;
 
 	    for (var j = 0; j < childNodes.length; j += 1) {
 	      if (!selector) {
@@ -2080,10 +2052,8 @@
 	  return new Dom7(unique(children));
 	}
 	function remove() {
-	  var this$1 = this;
-
 	  for (var i = 0; i < this.length; i += 1) {
-	    if (this$1[i].parentNode) { this$1[i].parentNode.removeChild(this$1[i]); }
+	    if (this[i].parentNode) { this[i].parentNode.removeChild(this[i]); }
 	  }
 	  return this;
 	}
@@ -2107,10 +2077,8 @@
 	  return dom;
 	}
 	function empty() {
-	  var this$1 = this;
-
 	  for (var i = 0; i < this.length; i += 1) {
-	    var el = this$1[i];
+	    var el = this[i];
 	    if (el.nodeType === 1) {
 	      for (var j = 0; j < el.childNodes.length; j += 1) {
 	        if (el.childNodes[j].parentNode) {
@@ -2520,7 +2488,6 @@
 
 	var noTrigger = ('resize scroll').split(' ');
 	function eventShortcut(name) {
-	  var this$1 = this;
 	  var ref;
 
 	  var args = [], len = arguments.length - 1;
@@ -2528,9 +2495,9 @@
 	  if (typeof args[0] === 'undefined') {
 	    for (var i = 0; i < this.length; i += 1) {
 	      if (noTrigger.indexOf(name) < 0) {
-	        if (name in this$1[i]) { this$1[i][name](); }
+	        if (name in this[i]) { this[i][name](); }
 	        else {
-	          $(this$1[i]).trigger(name);
+	          $(this[i]).trigger(name);
 	        }
 	      }
 	    }
@@ -2722,15 +2689,15 @@
 
 	var float32ArraySupported = typeof Float32Array === 'function';
 
-	function A$1 (aA1, aA2) { return 1.0 - 3.0 * aA2 + 3.0 * aA1; }
+	function A$2 (aA1, aA2) { return 1.0 - 3.0 * aA2 + 3.0 * aA1; }
 	function B$1 (aA1, aA2) { return 3.0 * aA2 - 6.0 * aA1; }
-	function C$2 (aA1)      { return 3.0 * aA1; }
+	function C$1 (aA1)      { return 3.0 * aA1; }
 
 	// Returns x(t) given t, x1, and x2, or y(t) given t, y1, and y2.
-	function calcBezier (aT, aA1, aA2) { return ((A$1(aA1, aA2) * aT + B$1(aA1, aA2)) * aT + C$2(aA1)) * aT; }
+	function calcBezier (aT, aA1, aA2) { return ((A$2(aA1, aA2) * aT + B$1(aA1, aA2)) * aT + C$1(aA1)) * aT; }
 
 	// Returns dx/dt given t, x1, and x2, or dy/dt given t, y1, and y2.
-	function getSlope (aT, aA1, aA2) { return 3.0 * A$1(aA1, aA2) * aT * aT + 2.0 * B$1(aA1, aA2) * aT + C$2(aA1); }
+	function getSlope (aT, aA1, aA2) { return 3.0 * A$2(aA1, aA2) * aT * aT + 2.0 * B$1(aA1, aA2) * aT + C$1(aA1); }
 
 	function binarySubdivide (aX, aA, aB, mX1, mX2) {
 	  var currentX, currentT, i = 0;
@@ -3260,7 +3227,7 @@
 	  // Windows
 	  if (windowsPhone) {
 	    device.os = 'windows';
-	    device.osVersion = windows[2];
+	    device.osVersion = windowsPhone[2];
 	    device.windowsPhone = true;
 	  }
 	  // Android
@@ -3793,7 +3760,7 @@
 	  });
 	}
 
-	var Framework7 = (function (Framework7Class$$1) {
+	var Framework7 = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Framework7(params) {
 	    Framework7Class$$1.call(this, params);
 
@@ -6216,9 +6183,9 @@
 	  if ( forwardOptions === void 0 ) forwardOptions = {};
 
 	  var router = this;
+	  var $el = $(el);
 	  var app = router.app;
 	  var view = router.view;
-
 	  var options = Utils.extend(false, {
 	    animate: router.params.animate,
 	    pushState: true,
@@ -6267,13 +6234,19 @@
 	  var separateNavbar = router.separateNavbar;
 
 	  var $viewEl = router.$el;
-	  var $newPage = $(el);
+	  var $newPage = $el;
 	  var reload = options.reloadPrevious || options.reloadCurrent || options.reloadAll;
 	  var $oldPage;
 
 	  var $navbarEl;
 	  var $newNavbarInner;
 	  var $oldNavbarInner;
+
+	  router.allowPageChange = false;
+	  if ($newPage.length === 0) {
+	    router.allowPageChange = true;
+	    return router;
+	  }
 
 	  if ($newPage.length) {
 	    // Remove theme elements
@@ -6287,17 +6260,18 @@
 	      if ($newNavbarInner.length > 0) {
 	        $newPage.children('.navbar').remove();
 	      }
-	      if ($newNavbarInner.length === 0 && $newPage[0].f7Page) {
+	      if ($newNavbarInner.length === 0 && $newPage[0] && $newPage[0].f7Page) {
 	        // Try from pageData
 	        $newNavbarInner = $newPage[0].f7Page.$navbarEl;
 	      }
 	    }
 	  }
 
-	  router.allowPageChange = false;
-	  if ($newPage.length === 0) {
-	    router.allowPageChange = true;
-	    return router;
+	  // Save Keep Alive Cache
+	  if (options.route && options.route.route && options.route.route.keepAlive && !options.route.route.keepAliveData) {
+	    options.route.route.keepAliveData = {
+	      pageEl: $el[0],
+	    };
 	  }
 
 	  // Pages In View
@@ -6329,7 +6303,8 @@
 	  $newPage
 	    .addClass(("page-" + newPagePosition))
 	    .removeClass('stacked')
-	    .trigger('page:unstack');
+	    .trigger('page:unstack')
+	    .trigger('page:position', { position: newPagePosition });
 
 	  if (dynamicNavbar && $newNavbarInner.length) {
 	    $newNavbarInner
@@ -6470,6 +6445,9 @@
 	    }
 	  }
 	  if (!newPageInDom) {
+	    router.pageCallback('mounted', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
+	  } else if (options.route && options.route.route && options.route.route.keepAlive && !$newPage[0].f7PageMounted) {
+	    $newPage[0].f7PageMounted = true;
 	    router.pageCallback('mounted', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
 	  }
 
@@ -6814,10 +6792,11 @@
 
 	  var options = {};
 	  if (route.route.options) {
-	    Utils.extend(options, route.route.options, navigateOptions, { route: route });
+	    Utils.extend(options, route.route.options, navigateOptions);
 	  } else {
-	    Utils.extend(options, navigateOptions, { route: route });
+	    Utils.extend(options, navigateOptions);
 	  }
+	  options.route = route;
 
 	  if (options && options.context) {
 	    route.context = options.context;
@@ -6832,12 +6811,16 @@
 	        router.modalLoad(modalLoadProp, route, options);
 	      }
 	    });
+	    if (route.route.keepAlive && route.route.keepAliveData) {
+	      router.load({ el: route.route.keepAliveData.pageEl }, options, false);
+	      routerLoaded = true;
+	    }
 	    ('url content component pageName el componentUrl template templateUrl').split(' ').forEach(function (pageLoadProp) {
 	      var obj;
 
 	      if (route.route[pageLoadProp] && !routerLoaded) {
 	        routerLoaded = true;
-	        router.load(( obj = {}, obj[pageLoadProp] = route.route[pageLoadProp], obj ), options);
+	        router.load(( obj = {}, obj[pageLoadProp] = route.route[pageLoadProp], obj ), options, false);
 	      }
 	    });
 	    if (routerLoaded) { return; }
@@ -7085,10 +7068,12 @@
 	    }
 	  }
 
+	  var hasContentLoadProp;
 	  ('url content component el componentUrl template templateUrl').split(' ').forEach(function (tabLoadProp) {
 	    var obj;
 
 	    if (tabRoute[tabLoadProp]) {
+	      hasContentLoadProp = true;
 	      loadTab(( obj = {}, obj[tabLoadProp] = tabRoute[tabLoadProp], obj ), options);
 	    }
 	  });
@@ -7102,6 +7087,8 @@
 	  }
 	  if (tabRoute.async) {
 	    tabRoute.async.call(router, currentRoute, previousRoute, asyncResolve, asyncReject);
+	  } else if (!hasContentLoadProp) {
+	    router.allowPageChange = true;
 	  }
 
 	  return router;
@@ -7329,6 +7316,7 @@
 
 	function backward(el, backwardOptions) {
 	  var router = this;
+	  var $el = $(el);
 	  var app = router.app;
 	  var view = router.view;
 
@@ -7340,7 +7328,7 @@
 	  var dynamicNavbar = router.dynamicNavbar;
 	  var separateNavbar = router.separateNavbar;
 
-	  var $newPage = $(el);
+	  var $newPage = $el;
 	  var $oldPage = router.$el.children('.page-current');
 
 	  if ($newPage.length) {
@@ -7359,7 +7347,7 @@
 	      if ($newNavbarInner.length > 0) {
 	        $newPage.children('.navbar').remove();
 	      }
-	      if ($newNavbarInner.length === 0 && $newPage[0].f7Page) {
+	      if ($newNavbarInner.length === 0 && $newPage[0] && $newPage[0].f7Page) {
 	        // Try from pageData
 	        $newNavbarInner = $newPage[0].f7Page.$navbarEl;
 	      }
@@ -7378,12 +7366,20 @@
 	  // Remove theme elements
 	  router.removeThemeElements($newPage);
 
+	  // Save Keep Alive Cache
+	  if (options.route && options.route.route && options.route.route.keepAlive && !options.route.route.keepAliveData) {
+	    options.route.route.keepAliveData = {
+	      pageEl: $el[0],
+	    };
+	  }
+
 	  // New Page
 	  $newPage
 	    .addClass('page-previous')
 	    .removeClass('stacked')
 	    .removeAttr('aria-hidden')
-	    .trigger('page:unstack');
+	    .trigger('page:unstack')
+	    .trigger('page:position', { position: 'previous' });
 
 	  if (dynamicNavbar && $newNavbarInner.length > 0) {
 	    $newNavbarInner
@@ -7391,7 +7387,6 @@
 	      .removeClass('stacked')
 	      .removeAttr('aria-hidden');
 	  }
-
 
 	  // Remove previous page in case of "forced"
 	  var backIndex;
@@ -7479,6 +7474,9 @@
 	      }
 	    }
 	    if (!newPageInDom) {
+	      router.pageCallback('mounted', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
+	    } else if (options.route && options.route.route && options.route.route.keepAlive && !$newPage[0].f7PageMounted) {
+	      $newPage[0].f7PageMounted = true;
 	      router.pageCallback('mounted', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
 	    }
 	  }
@@ -7881,10 +7879,11 @@
 
 	  var options = {};
 	  if (route.route.options) {
-	    Utils.extend(options, route.route.options, navigateOptions, { route: route });
+	    Utils.extend(options, route.route.options, navigateOptions);
 	  } else {
-	    Utils.extend(options, navigateOptions, { route: route });
+	    Utils.extend(options, navigateOptions);
 	  }
+	  options.route = route;
 
 	  if (options && options.context) {
 	    route.context = options.context;
@@ -7905,6 +7904,10 @@
 	  }
 	  function resolve() {
 	    var routerLoaded = false;
+	    if (route.route.keepAlive && route.route.keepAliveData) {
+	      router.loadBack({ el: route.route.keepAliveData.pageEl }, options);
+	      routerLoaded = true;
+	    }
 	    ('url content component pageName el componentUrl template templateUrl').split(' ').forEach(function (pageLoadProp) {
 	      var obj;
 
@@ -7968,16 +7971,15 @@
 	  return router;
 	}
 
-	function clearPreviousHistory() {
+	function clearPreviousPages() {
 	  var router = this;
 	  var app = router.app;
 	  var separateNavbar = router.separateNavbar;
-	  var url = router.history[router.history.length - 1];
 
 	  var $currentPageEl = $(router.currentPageEl);
 
 	  var $pagesToRemove = router.$el
-	    .children('.page:not(.stacked)')
+	    .children('.page')
 	    .filter(function (index, pageInView) { return pageInView !== $currentPageEl[0]; });
 
 	  $pagesToRemove.each(function (index, pageEl) {
@@ -7997,13 +7999,20 @@
 	      }
 	    }
 	  });
+	}
+
+	function clearPreviousHistory() {
+	  var router = this;
+	  var url = router.history[router.history.length - 1];
+
+	  router.clearPreviousPages();
 
 	  router.history = [url];
 	  router.view.history = [url];
 	  router.saveHistory();
 	}
 
-	var Router = (function (Framework7Class$$1) {
+	var Router = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Router(app, view) {
 	    Framework7Class$$1.call(this, {}, [typeof view === 'undefined' ? app : view]);
 	    var router = this;
@@ -8408,7 +8417,13 @@
 	  };
 
 	  Router.prototype.removePage = function removePage (el) {
+	    var $el = $(el);
+	    var f7Page = $el && $el[0] && $el[0].f7Page;
 	    var router = this;
+	    if (f7Page && f7Page.route && f7Page.route.route && f7Page.route.route.keepAlive) {
+	      $el.remove();
+	      return;
+	    }
 	    router.removeEl(el);
 	  };
 
@@ -8986,9 +9001,6 @@
 	      pageFrom: pageFrom,
 	    };
 
-	    if ($navbarEl && $navbarEl[0]) {
-	      $navbarEl[0].f7Page = page;
-	    }
 	    $pageEl[0].f7Page = page;
 	    return page;
 	  };
@@ -9003,6 +9015,11 @@
 	    if (!$pageEl.length) { return; }
 	    var route = options.route;
 	    var restoreScrollTopOnBack = router.params.restoreScrollTopOnBack;
+	    var keepAlive = $pageEl[0].f7Page && $pageEl[0].f7Page.route && $pageEl[0].f7Page.route.route && $pageEl[0].f7Page.route.route.keepAlive;
+
+	    if (callback === 'beforeRemove' && keepAlive) {
+	      callback = 'beforeUnmount'; // eslint-disable-line
+	    }
 
 	    var camelName = "page" + (callback[0].toUpperCase() + callback.slice(1, callback.length));
 	    var colonName = "page:" + (callback.toLowerCase());
@@ -9111,12 +9128,14 @@
 	    $pageEl.trigger(colonName, page);
 	    router.emit(camelName, page);
 
-	    if (callback === 'beforeRemove') {
+	    if (callback === 'beforeRemove' || callback === 'beforeUnmount') {
 	      detachEvents();
-	      if ($pageEl[0].f7Page && $pageEl[0].f7Page.navbarEl) {
-	        delete $pageEl[0].f7Page.navbarEl.f7Page;
+	      if (!keepAlive) {
+	        if ($pageEl[0].f7Page && $pageEl[0].f7Page.navbarEl) {
+	          delete $pageEl[0].f7Page.navbarEl.f7Page;
+	        }
+	        $pageEl[0].f7Page = null;
 	      }
-	      $pageEl[0].f7Page = null;
 	    }
 	  };
 
@@ -9401,6 +9420,8 @@
 	Router.prototype.backward = backward;
 	Router.prototype.loadBack = loadBack;
 	Router.prototype.back = back;
+	// Clear previoius pages from the DOM
+	Router.prototype.clearPreviousPages = clearPreviousPages;
 	// Clear history
 	Router.prototype.clearPreviousHistory = clearPreviousHistory;
 
@@ -9430,7 +9451,7 @@
 	  },
 	};
 
-	var View = (function (Framework7Class$$1) {
+	var View = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function View(appInstance, el, viewParams) {
 	    if ( viewParams === void 0 ) viewParams = {};
 
@@ -11578,7 +11599,16 @@
 	      $navbarInnerEl = $navbarInnerEl.find('.navbar-inner');
 	      if ($navbarInnerEl.length > 1) { return undefined; }
 	    }
-	    return $navbarInnerEl[0].f7Page;
+	    if ($navbarInnerEl.parents('.page').length) {
+	      return $navbarInnerEl.parents('.page')[0];
+	    }
+	    var pageEl;
+	    $navbarInnerEl.parents('.view').find('.page').each(function (index, el) {
+	      if (el && el.f7Page && el.f7Page.navbarEl && $navbarInnerEl[0] === el.f7Page.navbarEl) {
+	        pageEl = el;
+	      }
+	    });
+	    return pageEl;
 	  },
 	  initHideNavbarOnScroll: function initHideNavbarOnScroll(pageEl, navbarInnerEl) {
 	    var app = this;
@@ -11642,6 +11672,7 @@
 	        hide: Navbar.hide.bind(app),
 	        show: Navbar.show.bind(app),
 	        getElByPage: Navbar.getElByPage.bind(app),
+	        getPageByEl: Navbar.getPageByEl.bind(app),
 	        initHideNavbarOnScroll: Navbar.initHideNavbarOnScroll.bind(app),
 	      },
 	    });
@@ -12110,7 +12141,7 @@
 	  var dialog = dialogsQueue.shift();
 	  dialog.open();
 	}
-	var Modal = (function (Framework7Class$$1) {
+	var Modal = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Modal(app, params) {
 	    Framework7Class$$1.call(this, params, [app]);
 
@@ -12356,7 +12387,7 @@
 	  return Modal;
 	}(Framework7Class));
 
-	var CustomModal = (function (Modal$$1) {
+	var CustomModal = /*@__PURE__*/(function (Modal$$1) {
 	  function CustomModal(app, params) {
 	    var extendedParams = Utils.extend({
 	      backdrop: true,
@@ -12456,7 +12487,7 @@
 	  },
 	};
 
-	var Dialog = (function (Modal$$1) {
+	var Dialog = /*@__PURE__*/(function (Modal$$1) {
 	  function Dialog(app, params) {
 	    var extendedParams = Utils.extend({
 	      title: app.params.dialog.title,
@@ -12888,7 +12919,7 @@
 	  },
 	};
 
-	var Popup = (function (Modal$$1) {
+	var Popup = /*@__PURE__*/(function (Modal$$1) {
 	  function Popup(app, params) {
 	    var extendedParams = Utils.extend(
 	      { on: {} },
@@ -13025,7 +13056,7 @@
 	  },
 	};
 
-	var LoginScreen = (function (Modal$$1) {
+	var LoginScreen = /*@__PURE__*/(function (Modal$$1) {
 	  function LoginScreen(app, params) {
 	    var extendedParams = Utils.extend({
 	      on: {},
@@ -13102,7 +13133,7 @@
 	  },
 	};
 
-	var Popover = (function (Modal$$1) {
+	var Popover = /*@__PURE__*/(function (Modal$$1) {
 	  function Popover(app, params) {
 	    var extendedParams = Utils.extend(
 	      { on: {} },
@@ -13427,7 +13458,7 @@
 
 	/* eslint indent: ["off"] */
 
-	var Actions = (function (Modal$$1) {
+	var Actions = /*@__PURE__*/(function (Modal$$1) {
 	  function Actions(app, params) {
 	    var extendedParams = Utils.extend(
 	      { on: {} },
@@ -13719,7 +13750,7 @@
 	  },
 	};
 
-	var Sheet = (function (Modal$$1) {
+	var Sheet = /*@__PURE__*/(function (Modal$$1) {
 	  function Sheet(app, params) {
 	    var extendedParams = Utils.extend(
 	      { on: {} },
@@ -13897,7 +13928,7 @@
 	  },
 	};
 
-	var Toast = (function (Modal$$1) {
+	var Toast = /*@__PURE__*/(function (Modal$$1) {
 	  function Toast(app, params) {
 	    var extendedParams = Utils.extend({
 	      on: {},
@@ -14410,11 +14441,21 @@
 	         && $sortableContainer.hasClass('virtual-list')
 	      ) {
 	        indexFrom = $sortingEl[0].f7VirtualListIndex;
-	        indexTo = $insertBeforeEl ? $insertBeforeEl[0].f7VirtualListIndex : $insertAfterEl[0].f7VirtualListIndex;
+	        if (typeof indexFrom === 'undefined') { indexFrom = $sortingEl.attr('data-virtual-list-index'); }
+	        if ($insertBeforeEl) {
+	          indexTo = $insertBeforeEl[0].f7VirtualListIndex;
+	          if (typeof indexTo === 'undefined') { indexTo = $insertBeforeEl.attr('data-virtual-list-index'); }
+	        } else {
+	          indexTo = $insertAfterEl[0].f7VirtualListIndex;
+	          if (typeof indexTo === 'undefined') { indexTo = $insertAfterEl.attr('data-virtual-list-index'); }
+	        }
+	        if (indexTo !== null) { indexTo = parseInt(indexTo, 10); }
+	        else { indexTo = undefined; }
+
 	        var virtualList = $sortableContainer[0].f7VirtualList;
 	        if (virtualList) { virtualList.moveItem(indexFrom, indexTo); }
 	      }
-	      if (typeof indexTo !== 'undefined' && indexTo !== indexFrom) {
+	      if (typeof indexTo !== 'undefined' && !Number.isNaN(indexTo) && indexTo !== indexFrom) {
 	        $sortingEl.trigger('sortable:sort', { from: indexFrom, to: indexTo });
 	        app.emit('sortableSort', $sortingEl[0], { from: indexFrom, to: indexTo });
 	      }
@@ -15089,6 +15130,13 @@
 	  open: function open(el) {
 	    var app = this;
 	    var $el = $(el);
+	    var prevented = false;
+	    function prevent() {
+	      prevented = true;
+	    }
+	    $el.trigger('accordion:beforeopen', { prevent: prevent }, prevent);
+	    app.emit('accordionBeforeOpen', $el[0], prevent);
+	    if (prevented) { return; }
 	    var $list = $el.parents('.accordion-list').eq(0);
 	    var $contentEl = $el.children('.accordion-item-content');
 	    $contentEl.removeAttr('aria-hidden');
@@ -15121,6 +15169,13 @@
 	  close: function close(el) {
 	    var app = this;
 	    var $el = $(el);
+	    var prevented = false;
+	    function prevent() {
+	      prevented = true;
+	    }
+	    $el.trigger('accordion:beforeclose', { prevent: prevent }, prevent);
+	    app.emit('accordionBeforeClose', $el[0], prevent);
+	    if (prevented) { return; }
 	    var $contentEl = $el.children('.accordion-item-content');
 	    if ($contentEl.length === 0) { $contentEl = $el.find('.accordion-item-content'); }
 	    $el.removeClass('accordion-item-opened');
@@ -15183,7 +15238,7 @@
 	  name: 'contactsList',
 	};
 
-	var VirtualList = (function (Framework7Class$$1) {
+	var VirtualList = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function VirtualList(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -15766,7 +15821,7 @@
 	  },
 	};
 
-	var ListIndex = (function (Framework7Class$$1) {
+	var ListIndex = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function ListIndex(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -16442,7 +16497,7 @@
 	  function handleTouchStart(e) {
 	    if (!panel.swipeable) { return; }
 	    if (!app.panel.allowOpen || (!params.swipe && !params.swipeOnlyClose) || isTouched) { return; }
-	    if ($('.modal-in, .photo-browser-in').length > 0) { return; }
+	    if ($('.modal-in:not(.toast):not(.notification), .photo-browser-in').length > 0) { return; }
 	    otherPanel = app.panel[side === 'left' ? 'right' : 'left'] || {};
 	    if (!panel.opened && otherPanel.opened) { return; }
 	    if (!(params.swipeCloseOpposite || params.swipeOnlyClose)) {
@@ -16735,7 +16790,7 @@
 	  });
 	}
 
-	var Panel = (function (Framework7Class$$1) {
+	var Panel = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Panel(app, params) {
 	    var obj;
 
@@ -16769,6 +16824,7 @@
 	    }
 
 	    var $backdropEl = $('.panel-backdrop');
+
 	    if ($backdropEl.length === 0) {
 	      $backdropEl = $('<div class="panel-backdrop"></div>');
 	      $backdropEl.insertBefore($el);
@@ -16930,6 +16986,10 @@
 	        $el.insertAfter($insertBeforeEl);
 	      } else {
 	        app.root.prepend($el);
+	      }
+
+	      if ($backdropEl && $backdropEl.length && !$backdropEl.parent().is(app.root) && $backdropEl.nextAll('.panel').length === 0) {
+	        $backdropEl.insertBefore($el);
 	      }
 
 	      panel.once('panelClosed', function () {
@@ -17881,7 +17941,7 @@
 	  name: 'radio',
 	};
 
-	var Toggle = (function (Framework7Class$$1) {
+	var Toggle = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Toggle(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -18116,7 +18176,7 @@
 	  },
 	};
 
-	var Range = (function (Framework7Class$$1) {
+	var Range = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Range(app, params) {
 	    Framework7Class$$1.call(this, params, [app]);
 
@@ -18387,6 +18447,9 @@
 	      range.calcSize();
 	      range.layout();
 	    }
+	    var parentModals;
+	    var parentPanel;
+	    var parentPage;
 	    range.attachEvents = function attachEvents() {
 	      var passive = Support.passiveListener ? { passive: true } : false;
 	      range.$el.on(app.touchEvents.start, handleTouchStart, passive);
@@ -18394,12 +18457,12 @@
 	      app.on('touchend:passive', handleTouchEnd);
 	      app.on('tabShow', handleResize);
 	      app.on('resize', handleResize);
-	      range.$el
-	        .parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast')
-	        .on('modal:open', handleResize);
-	      range.$el
-	        .parents('.panel')
-	        .on('panel:open', handleResize);
+	      parentModals = range.$el.parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast');
+	      parentModals.on('modal:open', handleResize);
+	      parentPanel = range.$el.parents('.panel');
+	      parentPanel.on('panel:open', handleResize);
+	      parentPage = range.$el.parents('.page').eq(0);
+	      parentPage.on('page:reinit', handleResize);
 	    };
 	    range.detachEvents = function detachEvents() {
 	      var passive = Support.passiveListener ? { passive: true } : false;
@@ -18408,12 +18471,18 @@
 	      app.off('touchend:passive', handleTouchEnd);
 	      app.off('tabShow', handleResize);
 	      app.off('resize', handleResize);
-	      range.$el
-	        .parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast')
-	        .off('modal:open', handleResize);
-	      range.$el
-	        .parents('.panel')
-	        .off('panel:open', handleResize);
+	      if (parentModals) {
+	        parentModals.off('modal:open', handleResize);
+	      }
+	      if (parentPanel) {
+	        parentPanel.off('panel:open', handleResize);
+	      }
+	      if (parentPage) {
+	        parentPage.off('page:reinit', handleResize);
+	      }
+	      parentModals = null;
+	      parentPanel = null;
+	      parentPage = null;
 	    };
 
 	    // Install Modules
@@ -18635,7 +18704,7 @@
 	  },
 	};
 
-	var Stepper = (function (Framework7Class$$1) {
+	var Stepper = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Stepper(app, params) {
 	    Framework7Class$$1.call(this, params, [app]);
 	    var stepper = this;
@@ -19143,7 +19212,7 @@
 	  },
 	};
 
-	var SmartSelect = (function (Framework7Class$$1) {
+	var SmartSelect = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function SmartSelect(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -20194,7 +20263,7 @@
 	var PERSIAN_MONTH_NAMES = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
 	var PERSIAN_NUMBERS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 
-	var IDate = (function (Date) {
+	var IDate = /*@__PURE__*/(function (Date) {
 	  function IDate () {
 	    Date.call(this);
 
@@ -20292,7 +20361,7 @@
 	  return IDate;
 	}(Date));
 
-	var Calendar = (function (Framework7Class$$1) {
+	var Calendar = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Calendar(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -21513,7 +21582,7 @@
 	    }
 
 	    // Extra focus
-	    if (!inline && $inputEl.length && app.theme === 'md') {
+	    if (!inline && $inputEl && $inputEl.length && app.theme === 'md') {
 	      $inputEl.trigger('focus');
 	    }
 
@@ -22113,7 +22182,7 @@
 	  col.init();
 	}
 
-	var Picker = (function (Framework7Class$$1) {
+	var Picker = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Picker(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -22433,7 +22502,7 @@
 	    }
 
 	    // Extra focus
-	    if (!inline && $inputEl.length && app.theme === 'md') {
+	    if (!inline && $inputEl && $inputEl.length && app.theme === 'md') {
 	      $inputEl.trigger('focus');
 	    }
 
@@ -22775,7 +22844,7 @@
 	  },
 	};
 
-	var PullToRefresh = (function (Framework7Class$$1) {
+	var PullToRefresh = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function PullToRefresh(app, el) {
 	    Framework7Class$$1.call(this, {}, [app]);
 	    var ptr = this;
@@ -23331,7 +23400,7 @@
 	  },
 	};
 
-	var DataTable = (function (Framework7Class$$1) {
+	var DataTable = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function DataTable(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -23755,7 +23824,7 @@
 	  },
 	};
 
-	var Searchbar = (function (FrameworkClass) {
+	var Searchbar = /*@__PURE__*/(function (FrameworkClass) {
 	  function Searchbar(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -23766,6 +23835,7 @@
 	    var defaults = {
 	      el: undefined,
 	      inputEl: undefined,
+	      inputEvents: 'change input compositionend',
 	      disableButton: true,
 	      disableButtonEl: undefined,
 	      backdropEl: undefined,
@@ -23807,9 +23877,8 @@
 	    } else {
 	      $navbarEl = $el.parents('.navbar-inner');
 	      if ($navbarEl.length > 0) {
-	        if ($navbarEl[0].f7Page) {
-	          $pageEl = $navbarEl[0].f7Page.$el;
-	        } else {
+	        $pageEl = $(app.navbar.getPageByEl($navbarEl[0]));
+	        if (!$pageEl.length) {
 	          var $currentPageEl = $el.parents('.view').find('.page-current');
 	          if ($currentPageEl[0] && $currentPageEl[0].f7Page && $currentPageEl[0].f7Page.navbarEl === $navbarEl[0]) {
 	            $pageEl = $currentPageEl;
@@ -23980,7 +24049,7 @@
 	      }
 	      sb.$inputEl.on('focus', onInputFocus);
 	      sb.$inputEl.on('blur', onInputBlur);
-	      sb.$inputEl.on('change input compositionend', onInputChange);
+	      sb.$inputEl.on(sb.params.inputEvents, onInputChange);
 	      sb.$inputEl.on('input:clear', onInputClear);
 	    };
 	    sb.detachEvents = function detachEvents() {
@@ -23997,7 +24066,7 @@
 	      }
 	      sb.$inputEl.off('focus', onInputFocus);
 	      sb.$inputEl.off('blur', onInputBlur);
-	      sb.$inputEl.off('change input compositionend', onInputChange);
+	      sb.$inputEl.off(sb.params.inputEvents, onInputChange);
 	      sb.$inputEl.off('input:clear', onInputClear);
 	    };
 
@@ -24417,7 +24486,7 @@
 	  },
 	};
 
-	var Messages = (function (Framework7Class$$1) {
+	var Messages = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Messages(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -24970,7 +25039,7 @@
 	  },
 	};
 
-	var Messagebar = (function (Framework7Class$$1) {
+	var Messagebar = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Messagebar(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -27764,7 +27833,7 @@
 
 	var extendedDefaults = {};
 
-	var Swiper = (function (SwiperClass) {
+	var Swiper = /*@__PURE__*/(function (SwiperClass) {
 	  function Swiper() {
 	    var assign;
 
@@ -31623,7 +31692,7 @@
 
 	/* eslint indent: ["off"] */
 
-	var PhotoBrowser = (function (Framework7Class$$1) {
+	var PhotoBrowser = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function PhotoBrowser(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -32312,7 +32381,7 @@
 	  },
 	};
 
-	var Notification = (function (Modal$$1) {
+	var Notification = /*@__PURE__*/(function (Modal$$1) {
 	  function Notification(app, params) {
 	    var extendedParams = Utils.extend({
 	      on: {},
@@ -32561,7 +32630,7 @@
 
 	/* eslint "no-useless-escape": "off" */
 
-	var Autocomplete = (function (Framework7Class$$1) {
+	var Autocomplete = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Autocomplete(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -33379,7 +33448,7 @@
 	  },
 	};
 
-	var Tooltip = (function (Framework7Class$$1) {
+	var Tooltip = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Tooltip(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -33737,7 +33806,7 @@
 
 	/* eslint no-nested-ternary: off */
 
-	var Gauge = (function (Framework7Class$$1) {
+	var Gauge = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function Gauge(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -34067,7 +34136,7 @@
 	  },
 	};
 
-	var ViAd = (function (Framework7Class$$1) {
+	var ViAd = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function ViAd(app, params) {
 	    if ( params === void 0 ) params = {};
 
@@ -34326,7 +34395,7 @@
 	};
 
 	/**
-	 * Framework7 3.5.1
+	 * Framework7 3.6.0
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -34334,7 +34403,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: November 2, 2018
+	 * Released on: December 7, 2018
 	 */
 
 	// Install Core Modules & Components
@@ -34858,7 +34927,7 @@
 	  });
 	}
 
-	var F7AccordionContent = (function (superclass) {
+	var F7AccordionContent = /*@__PURE__*/(function (superclass) {
 	  function F7AccordionContent(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -34899,22 +34968,6 @@
 
 	F7AccordionContent.displayName = 'f7-accordion-content';
 
-	function __reactComponentEl (component) {
-	  var self = component;
-	  var el;
-	  var child = self._reactInternalFiber.child;
-
-	  while (!el && child) {
-	    if (child.stateNode && child.stateNode instanceof window.HTMLElement) {
-	      el = child.stateNode;
-	    } else {
-	      child = child.child;
-	    }
-	  }
-
-	  return el;
-	}
-
 	function __reactComponentDispatchEvent (component, events) {
 	  var args = [], len = arguments.length - 2;
 	  while ( len-- > 0 ) args[ len ] = arguments[ len + 2 ];
@@ -34936,16 +34989,33 @@
 	  });
 	}
 
-	var F7AccordionItem = (function (superclass) {
+	var F7AccordionItem = /*@__PURE__*/(function (superclass) {
 	  function F7AccordionItem(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      var self = this$1;
+	      self.onBeforeOpenBound = self.onBeforeOpen.bind(self);
+	      self.onOpenBound = self.onOpen.bind(self);
+	      self.onOpenedBound = self.onOpened.bind(self);
+	      self.onBeforeCloseBound = self.onBeforeClose.bind(self);
+	      self.onCloseBound = self.onClose.bind(self);
+	      self.onClosedBound = self.onClosed.bind(self);
+	    })();
 	  }
 
 	  if ( superclass ) F7AccordionItem.__proto__ = superclass;
 	  F7AccordionItem.prototype = Object.create( superclass && superclass.prototype );
 	  F7AccordionItem.prototype.constructor = F7AccordionItem;
 
-	  var prototypeAccessors = { slots: { configurable: true },el: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
+
+	  F7AccordionItem.prototype.onBeforeOpen = function onBeforeOpen (event) {
+	    this.dispatchEvent('accordionBeforeOpen accordion:beforeopen', event, event.detail.prevent);
+	  };
 
 	  F7AccordionItem.prototype.onOpen = function onOpen (event) {
 	    this.dispatchEvent('accordionOpen accordion:open', event);
@@ -34953,6 +35023,10 @@
 
 	  F7AccordionItem.prototype.onOpened = function onOpened (event) {
 	    this.dispatchEvent('accordionOpened accordion:opened', event);
+	  };
+
+	  F7AccordionItem.prototype.onBeforeClose = function onBeforeClose (event) {
+	    this.dispatchEvent('accordionBeforeClose accordion:beforeclose', event, event.detail.prevent);
 	  };
 
 	  F7AccordionItem.prototype.onClose = function onClose (event) {
@@ -34964,6 +35038,8 @@
 	  };
 
 	  F7AccordionItem.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var props = this.props;
 	    var className = props.className;
 	    var id = props.id;
@@ -34975,30 +35051,33 @@
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
-	      className: classes
+	      className: classes,
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      }
 	    }, this.slots['default']);
 	  };
 
 	  F7AccordionItem.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
-	    var el = self.el;
+	    var el = self.refs.el;
 	    if (!el) { return; }
+	    el.removeEventListener('accordion:beforeopen', self.onBeforeOpenBound);
 	    el.removeEventListener('accordion:open', self.onOpenBound);
 	    el.removeEventListener('accordion:opened', self.onOpenedBound);
+	    el.removeEventListener('accordion:beforeclose', self.onBeforeCloseBound);
 	    el.removeEventListener('accordion:close', self.onCloseBound);
 	    el.removeEventListener('accordion:closed', self.onClosedBound);
 	  };
 
 	  F7AccordionItem.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
-	    var el = self.el;
+	    var el = self.refs.el;
 	    if (!el) { return; }
-	    self.onOpenBound = self.onOpen.bind(self);
-	    self.onOpenedBound = self.onOpened.bind(self);
-	    self.onCloseBound = self.onClose.bind(self);
-	    self.onClosedBound = self.onClosed.bind(self);
+	    el.addEventListener('accordion:beforeopen', self.onBeforeOpenBound);
 	    el.addEventListener('accordion:open', self.onOpenBound);
 	    el.addEventListener('accordion:opened', self.onOpenedBound);
+	    el.addEventListener('accordion:beforeclose', self.onBeforeCloseBound);
 	    el.addEventListener('accordion:close', self.onCloseBound);
 	    el.addEventListener('accordion:closed', self.onClosedBound);
 	  };
@@ -35007,16 +35086,18 @@
 	    return __reactComponentSlots(this.props);
 	  };
 
-	  prototypeAccessors.el.get = function () {
-	    return __reactComponentEl(this);
-	  };
-
 	  F7AccordionItem.prototype.dispatchEvent = function dispatchEvent (events) {
 	    var args = [], len = arguments.length - 1;
 	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7AccordionItem.prototype, prototypeAccessors );
 
@@ -35032,7 +35113,7 @@
 
 	F7AccordionItem.displayName = 'f7-accordion-item';
 
-	var F7AccordionToggle = (function (superclass) {
+	var F7AccordionToggle = /*@__PURE__*/(function (superclass) {
 	  function F7AccordionToggle(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -35073,7 +35154,7 @@
 
 	F7AccordionToggle.displayName = 'f7-accordion-toggle';
 
-	var F7Accordion = (function (superclass) {
+	var F7Accordion = /*@__PURE__*/(function (superclass) {
 	  function F7Accordion(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -35114,10 +35195,16 @@
 
 	F7Accordion.displayName = 'f7-accordion';
 
-	var F7ActionsButton = (function (superclass) {
+	var F7ActionsButton = /*@__PURE__*/(function (superclass) {
 	  function F7ActionsButton(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7ActionsButton.__proto__ = superclass;
@@ -35163,13 +35250,20 @@
 	      id: id,
 	      style: style,
 	      className: classes,
-	      onClick: self.onClick.bind(self),
 	      ref: function (__reactNode) {
 	        this$1.__reactRefs['el'] = __reactNode;
 	      }
 	    }, mediaEl, react.createElement('div', {
 	      className: 'actions-button-text'
 	    }, this.slots['default']));
+	  };
+
+	  F7ActionsButton.prototype.componentWillUnmount = function componentWillUnmount () {
+	    this.refs.el.removeEventListener('click', this.onClick);
+	  };
+
+	  F7ActionsButton.prototype.componentDidMount = function componentDidMount () {
+	    this.refs.el.addEventListener('click', this.onClick);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -35207,7 +35301,7 @@
 
 	F7ActionsButton.displayName = 'f7-actions-button';
 
-	var F7ActionsGroup = (function (superclass) {
+	var F7ActionsGroup = /*@__PURE__*/(function (superclass) {
 	  function F7ActionsGroup(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -35249,22 +35343,31 @@
 
 	F7ActionsGroup.displayName = 'f7-actions-group';
 
-	var F7ActionsLabel = (function (superclass) {
+	var F7ActionsLabel = /*@__PURE__*/(function (superclass) {
 	  function F7ActionsLabel(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7ActionsLabel.__proto__ = superclass;
 	  F7ActionsLabel.prototype = Object.create( superclass && superclass.prototype );
 	  F7ActionsLabel.prototype.constructor = F7ActionsLabel;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7ActionsLabel.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('click', event);
 	  };
 
 	  F7ActionsLabel.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var className = props.className;
@@ -35278,8 +35381,18 @@
 	      id: id,
 	      style: style,
 	      className: classes,
-	      onClick: self.onClick.bind(self)
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      }
 	    }, this.slots['default']);
+	  };
+
+	  F7ActionsLabel.prototype.componentWillUnmount = function componentWillUnmount () {
+	    this.refs.el.removeEventListener('click', this.onClick);
+	  };
+
+	  F7ActionsLabel.prototype.componentDidMount = function componentDidMount () {
+	    this.refs.el.addEventListener('click', this.onClick);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -35292,6 +35405,12 @@
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7ActionsLabel.prototype, prototypeAccessors );
 
@@ -35335,7 +35454,7 @@
 	  if (callback) { callback(newValue, oldValue); }
 	}
 
-	var F7Actions = (function (superclass) {
+	var F7Actions = /*@__PURE__*/(function (superclass) {
 	  function F7Actions(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -35345,7 +35464,7 @@
 	  F7Actions.prototype = Object.create( superclass && superclass.prototype );
 	  F7Actions.prototype.constructor = F7Actions;
 
-	  var prototypeAccessors = { slots: { configurable: true },el: { configurable: true },refs: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Actions.prototype.onOpen = function onOpen (event) {
 	    this.dispatchEvent('actions:open actionsOpen', event);
@@ -35400,7 +35519,7 @@
 	  F7Actions.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
 	    if (self.f7Actions) { self.f7Actions.destroy(); }
-	    var el = self.el;
+	    var el = self.refs.el;
 	    if (!el) { return; }
 	    el.removeEventListener('actions:open', self.onOpenBound);
 	    el.removeEventListener('actions:opened', self.onOpenedBound);
@@ -35450,10 +35569,6 @@
 
 	  prototypeAccessors.slots.get = function () {
 	    return __reactComponentSlots(this.props);
-	  };
-
-	  prototypeAccessors.el.get = function () {
-	    return __reactComponentEl(this);
 	  };
 
 	  F7Actions.prototype.dispatchEvent = function dispatchEvent (events) {
@@ -35589,7 +35704,7 @@
 	  },
 	};
 
-	var F7RoutableModals = (function (superclass) {
+	var F7RoutableModals = /*@__PURE__*/(function (superclass) {
 	  function F7RoutableModals(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -35665,7 +35780,7 @@
 
 	F7RoutableModals.displayName = 'f7-routable-modals';
 
-	var F7App = (function (superclass) {
+	var F7App = /*@__PURE__*/(function (superclass) {
 	  function F7App(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -35742,7 +35857,7 @@
 
 	F7App.displayName = 'f7-app';
 
-	var F7Badge = (function (superclass) {
+	var F7Badge = /*@__PURE__*/(function (superclass) {
 	  function F7Badge(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -35783,7 +35898,7 @@
 
 	F7Badge.displayName = 'f7-badge';
 
-	var F7BlockFooter = (function (superclass) {
+	var F7BlockFooter = /*@__PURE__*/(function (superclass) {
 	  function F7BlockFooter(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -35824,7 +35939,7 @@
 
 	F7BlockFooter.displayName = 'f7-block-footer';
 
-	var F7BlockHeader = (function (superclass) {
+	var F7BlockHeader = /*@__PURE__*/(function (superclass) {
 	  function F7BlockHeader(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -35865,7 +35980,7 @@
 
 	F7BlockHeader.displayName = 'f7-block-header';
 
-	var F7BlockTitle = (function (superclass) {
+	var F7BlockTitle = /*@__PURE__*/(function (superclass) {
 	  function F7BlockTitle(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -35906,16 +36021,17 @@
 
 	F7BlockTitle.displayName = 'f7-block-title';
 
-	var F7Block = (function (superclass) {
+	var F7Block = /*@__PURE__*/(function (superclass) {
 	  function F7Block(props, context) {
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
 	  }
 
 	  if ( superclass ) F7Block.__proto__ = superclass;
 	  F7Block.prototype = Object.create( superclass && superclass.prototype );
 	  F7Block.prototype.constructor = F7Block;
 
-	  var prototypeAccessors = { slots: { configurable: true },el: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Block.prototype.onTabShow = function onTabShow (event) {
 	    this.dispatchEvent('tabShow tab:show', event);
@@ -35926,6 +36042,8 @@
 	  };
 
 	  F7Block.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var className = props.className;
@@ -35956,19 +36074,22 @@
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
-	      className: classes
+	      className: classes,
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      }
 	    }, this.slots['default']);
 	  };
 
 	  F7Block.prototype.componentWillUnmount = function componentWillUnmount () {
-	    var el = this.el;
+	    var el = this.refs.el;
 	    if (!el) { return; }
 	    el.removeEventListener('tab:show', this.onTabShowBound);
 	    el.removeEventListener('tab:hide', this.onTabHideBound);
 	  };
 
 	  F7Block.prototype.componentDidMount = function componentDidMount () {
-	    var el = this.el;
+	    var el = this.refs.el;
 	    if (!el) { return; }
 	    this.onTabShowBound = this.onTabShow.bind(this);
 	    this.onTabHideBound = this.onTabHide.bind(this);
@@ -35980,16 +36101,18 @@
 	    return __reactComponentSlots(this.props);
 	  };
 
-	  prototypeAccessors.el.get = function () {
-	    return __reactComponentEl(this);
-	  };
-
 	  F7Block.prototype.dispatchEvent = function dispatchEvent (events) {
 	    var args = [], len = arguments.length - 1;
 	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7Block.prototype, prototypeAccessors );
 
@@ -36014,7 +36137,7 @@
 
 	F7Block.displayName = 'f7-block';
 
-	var F7Icon = (function (superclass) {
+	var F7Icon = /*@__PURE__*/(function (superclass) {
 	  function F7Icon(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -36199,10 +36322,17 @@
 
 	F7Icon.displayName = 'f7-icon';
 
-	var F7Button = (function (superclass) {
+	var F7Button = /*@__PURE__*/(function (superclass) {
 	  function F7Button(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      var self = this$1;
+	      self.onClickBound = self.onClick.bind(self);
+	    })();
 	  }
 
 	  if ( superclass ) F7Button.__proto__ = superclass;
@@ -36327,13 +36457,13 @@
 	      },
 	      id: id,
 	      style: style,
-	      className: self.classes,
-	      onClick: self.onClick.bind(self)
+	      className: self.classes
 	    }, self.attrs), iconEl, textEl, this.slots['default']);
 	  };
 
 	  F7Button.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
+	    self.refs.el.removeEventListener('click', self.onClickBound);
 
 	    if (self.f7Tooltip && self.f7Tooltip.destroy) {
 	      self.f7Tooltip.destroy();
@@ -36344,6 +36474,7 @@
 
 	  F7Button.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
+	    self.refs.el.addEventListener('click', self.onClickBound);
 	    var ref = self.props;
 	    var tooltip = ref.tooltip;
 	    if (!tooltip) { return; }
@@ -36422,7 +36553,7 @@
 
 	F7Button.displayName = 'f7-button';
 
-	var F7CardContent = (function (superclass) {
+	var F7CardContent = /*@__PURE__*/(function (superclass) {
 	  function F7CardContent(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -36470,7 +36601,7 @@
 
 	F7CardContent.displayName = 'f7-card-content';
 
-	var F7CardFooter = (function (superclass) {
+	var F7CardFooter = /*@__PURE__*/(function (superclass) {
 	  function F7CardFooter(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -36511,7 +36642,7 @@
 
 	F7CardFooter.displayName = 'f7-card-footer';
 
-	var F7CardHeader = (function (superclass) {
+	var F7CardHeader = /*@__PURE__*/(function (superclass) {
 	  function F7CardHeader(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -36552,7 +36683,7 @@
 
 	F7CardHeader.displayName = 'f7-card-header';
 
-	var F7Card = (function (superclass) {
+	var F7Card = /*@__PURE__*/(function (superclass) {
 	  function F7Card(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -36627,16 +36758,23 @@
 
 	F7Card.displayName = 'f7-card';
 
-	var F7Checkbox = (function (superclass) {
+	var F7Checkbox = /*@__PURE__*/(function (superclass) {
 	  function F7Checkbox(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onChange = this$1.onChange.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7Checkbox.__proto__ = superclass;
 	  F7Checkbox.prototype = Object.create( superclass && superclass.prototype );
 	  F7Checkbox.prototype.constructor = F7Checkbox;
 
-	  var prototypeAccessors = { classes: { configurable: true },slots: { configurable: true } };
+	  var prototypeAccessors = { classes: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Checkbox.prototype.onChange = function onChange (event) {
 	    this.dispatchEvent('change', event);
@@ -36654,6 +36792,8 @@
 	  };
 
 	  F7Checkbox.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var name = props.name;
@@ -36667,6 +36807,9 @@
 	    var inputEl;
 	    {
 	      inputEl = react.createElement('input', {
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['inputEl'] = __reactNode;
+	        },
 	        type: 'checkbox',
 	        name: name,
 	        value: value,
@@ -36674,7 +36817,7 @@
 	        readOnly: readonly,
 	        checked: checked,
 	        defaultChecked: defaultChecked,
-	        onChange: self.onChange.bind(self)
+	        onChange: self.onChange
 	      });
 	    }
 	    var iconEl = react.createElement('i', {
@@ -36698,6 +36841,12 @@
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
 
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
 	  Object.defineProperties( F7Checkbox.prototype, prototypeAccessors );
 
 	  return F7Checkbox;
@@ -36717,16 +36866,24 @@
 
 	F7Checkbox.displayName = 'f7-checkbox';
 
-	var F7Chip = (function (superclass) {
+	var F7Chip = /*@__PURE__*/(function (superclass) {
 	  function F7Chip(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	      this$1.onDeleteClick = this$1.onDeleteClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7Chip.__proto__ = superclass;
 	  F7Chip.prototype = Object.create( superclass && superclass.prototype );
 	  F7Chip.prototype.constructor = F7Chip;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Chip.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('click', event);
@@ -36737,6 +36894,8 @@
 	  };
 
 	  F7Chip.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var media = props.media;
@@ -36767,9 +36926,11 @@
 
 	    if (deleteable) {
 	      deleteEl = react.createElement('a', {
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['deleteEl'] = __reactNode;
+	        },
 	        href: '#',
-	        className: 'chip-delete',
-	        onClick: self.onDeleteClick.bind(self)
+	        className: 'chip-delete'
 	      });
 	    }
 
@@ -36777,11 +36938,29 @@
 	      'chip-outline': outline
 	    }, Mixins.colorClasses(props));
 	    return react.createElement('div', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
 	      id: id,
 	      style: style,
-	      className: classes,
-	      onClick: self.onClick.bind(self)
+	      className: classes
 	    }, mediaEl, labelEl, deleteEl);
+	  };
+
+	  F7Chip.prototype.componentWillUnmount = function componentWillUnmount () {
+	    this.refs.el.removeEventListener('click', this.onClick);
+
+	    if (this.refs.deleteEl) {
+	      this.refs.deleteEl.removeEventListener('click', this.onDeleteClick);
+	    }
+	  };
+
+	  F7Chip.prototype.componentDidMount = function componentDidMount () {
+	    this.refs.el.addEventListener('click', this.onClick);
+
+	    if (this.refs.deleteEl) {
+	      this.refs.deleteEl.addEventListener('click', this.onDeleteClick);
+	    }
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -36794,6 +36973,12 @@
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7Chip.prototype, prototypeAccessors );
 
@@ -36814,22 +36999,30 @@
 
 	F7Chip.displayName = 'f7-chip';
 
-	var F7Col = (function (superclass) {
+	var F7Col = /*@__PURE__*/(function (superclass) {
 	  function F7Col(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7Col.__proto__ = superclass;
 	  F7Col.prototype = Object.create( superclass && superclass.prototype );
 	  F7Col.prototype.constructor = F7Col;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Col.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('click', event);
 	  };
 
 	  F7Col.prototype.render = function render () {
+	    var this$1 = this;
 	    var obj;
 
 	    var self = this;
@@ -36849,8 +37042,18 @@
 	      id: id,
 	      style: style,
 	      className: classes,
-	      onClick: self.onClick.bind(self)
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      }
 	    }, this.slots['default']);
+	  };
+
+	  F7Col.prototype.componentWillUnmount = function componentWillUnmount () {
+	    this.refs.el.removeEventListener('click', this.onClick);
+	  };
+
+	  F7Col.prototype.componentDidMount = function componentDidMount () {
+	    this.refs.el.addEventListener('click', this.onClick);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -36863,6 +37066,12 @@
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7Col.prototype, prototypeAccessors );
 
@@ -36891,10 +37100,16 @@
 
 	F7Col.displayName = 'f7-col';
 
-	var F7FabButton = (function (superclass) {
+	var F7FabButton = /*@__PURE__*/(function (superclass) {
 	  function F7FabButton(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7FabButton.__proto__ = superclass;
@@ -36908,6 +37123,8 @@
 	  };
 
 	  F7FabButton.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var props = this.props;
 	    var className = props.className;
 	    var id = props.id;
@@ -36928,16 +37145,19 @@
 	    }
 
 	    return react.createElement('a', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
 	      id: id,
 	      style: style,
 	      target: target,
-	      className: classes,
-	      onClick: this.onClick.bind(this)
+	      className: classes
 	    }, this.slots['default'], labelEl);
 	  };
 
 	  F7FabButton.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
+	    self.refs.el.removeEventListener('click', self.onClick);
 
 	    if (self.f7Tooltip && self.f7Tooltip.destroy) {
 	      self.f7Tooltip.destroy();
@@ -36948,6 +37168,7 @@
 
 	  F7FabButton.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
+	    self.refs.el.addEventListener('click', self.onClick);
 	    var ref = self.props;
 	    var tooltip = ref.tooltip;
 	    if (!tooltip) { return; }
@@ -37003,7 +37224,7 @@
 
 	F7FabButton.displayName = 'f7-fab-button';
 
-	var F7FabButtons = (function (superclass) {
+	var F7FabButtons = /*@__PURE__*/(function (superclass) {
 	  function F7FabButtons(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -37049,10 +37270,16 @@
 
 	F7FabButtons.displayName = 'f7-fab-buttons';
 
-	var F7Fab = (function (superclass) {
+	var F7Fab = /*@__PURE__*/(function (superclass) {
 	  function F7Fab(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7Fab.__proto__ = superclass;
@@ -37067,6 +37294,8 @@
 	  };
 
 	  F7Fab.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var className = props.className;
@@ -37112,9 +37341,11 @@
 
 	    if (linkChildren.length || linkSlots && linkSlots.length) {
 	      linkEl = react.createElement('a', {
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['linkEl'] = __reactNode;
+	        },
 	        target: target,
 	        href: href,
-	        onClick: self.onClick.bind(self),
 	        key: 'f7-fab-link'
 	      }, linkChildren, textEl, linkSlots);
 	    }
@@ -37134,6 +37365,10 @@
 	  F7Fab.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
 
+	    if (self.refs.linkEl) {
+	      self.refs.linkEl.removeEventListener('click', self.onClick);
+	    }
+
 	    if (self.f7Tooltip && self.f7Tooltip.destroy) {
 	      self.f7Tooltip.destroy();
 	      self.f7Tooltip = null;
@@ -37143,6 +37378,11 @@
 
 	  F7Fab.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
+
+	    if (self.refs.linkEl) {
+	      self.refs.linkEl.addEventListener('click', self.onClick);
+	    }
+
 	    var ref = self.props;
 	    var tooltip = ref.tooltip;
 	    if (!tooltip) { return; }
@@ -37203,7 +37443,7 @@
 
 	F7Fab.displayName = 'f7-fab';
 
-	var F7Gauge = (function (superclass) {
+	var F7Gauge = /*@__PURE__*/(function (superclass) {
 	  function F7Gauge(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -37367,10 +37607,16 @@
 
 	F7Gauge.displayName = 'f7-gauge';
 
-	var F7Toggle = (function (superclass) {
+	var F7Toggle = /*@__PURE__*/(function (superclass) {
 	  function F7Toggle(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onChange = this$1.onChange.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7Toggle.__proto__ = superclass;
@@ -37409,6 +37655,9 @@
 	    var inputEl;
 	    {
 	      inputEl = react.createElement('input', {
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['inputEl'] = __reactNode;
+	        },
 	        type: 'checkbox',
 	        name: name,
 	        disabled: disabled,
@@ -37416,7 +37665,7 @@
 	        checked: checked,
 	        defaultChecked: defaultChecked,
 	        value: value,
-	        onChange: self.onChange.bind(self)
+	        onChange: self.onChange
 	      });
 	    }
 	    return react.createElement('label', {
@@ -37499,7 +37748,7 @@
 
 	F7Toggle.displayName = 'f7-toggle';
 
-	var F7Range = (function (superclass) {
+	var F7Range = /*@__PURE__*/(function (superclass) {
 	  function F7Range(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -37672,7 +37921,7 @@
 
 	F7Range.displayName = 'f7-range';
 
-	var F7Input = (function (superclass) {
+	var F7Input = /*@__PURE__*/(function (superclass) {
 	  function F7Input(props, context) {
 	    var this$1 = this;
 
@@ -37691,14 +37940,14 @@
 
 	    (function () {
 	      var self = this$1;
-	      self.onFocusBound = self.onFocus.bind(self);
-	      self.onBlurBound = self.onBlur.bind(self);
-	      self.onInputBound = self.onInput.bind(self);
-	      self.onChangeBound = self.onChange.bind(self);
-	      self.onTextareaResizeBound = self.onTextareaResize.bind(self);
-	      self.onInputNotEmptyBound = self.onInputNotEmpty.bind(self);
-	      self.onInputEmptyBound = self.onInputEmpty.bind(self);
-	      self.onInputClearBound = self.onInputClear.bind(self);
+	      self.onFocus = self.onFocus.bind(self);
+	      self.onBlur = self.onBlur.bind(self);
+	      self.onInput = self.onInput.bind(self);
+	      self.onChange = self.onChange.bind(self);
+	      self.onTextareaResize = self.onTextareaResize.bind(self);
+	      self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
+	      self.onInputEmpty = self.onInputEmpty.bind(self);
+	      self.onInputClear = self.onInputClear.bind(self);
 	    })();
 	  }
 
@@ -37880,10 +38129,10 @@
 	          tabIndex: tabindex,
 	          'data-error-message': errorMessageForce ? undefined : errorMessage,
 	          className: inputClassName,
-	          onFocus: self.onFocusBound,
-	          onBlur: self.onBlurBound,
-	          onInput: self.onInputBound,
-	          onChange: self.onChangeBound
+	          onFocus: self.onFocus,
+	          onBlur: self.onBlur,
+	          onInput: self.onInput,
+	          onChange: self.onChange
 	        }, children);
 	      }
 	      return input;
@@ -37911,7 +38160,7 @@
 	        value: value,
 	        disabled: disabled,
 	        id: inputId,
-	        onChange: self.onChangeBound
+	        onChange: self.onChange
 	      });
 	    } else if (type === 'range') {
 	      inputEl = react.createElement(F7Range, {
@@ -37923,7 +38172,7 @@
 	        name: name,
 	        id: inputId,
 	        input: true,
-	        onRangeChange: self.onChangeBound
+	        onRangeChange: self.onChange
 	      });
 	    } else {
 	      inputEl = createInput('input');
@@ -37968,15 +38217,15 @@
 	    if (type === 'range' || type === 'toggle') { return; }
 	    var inputEl = self.refs.inputEl;
 	    if (!inputEl) { return; }
-	    inputEl.removeEventListener('input:notempty', self.onInputNotEmptyBound, false);
+	    inputEl.removeEventListener('input:notempty', self.onInputNotEmpty, false);
 
 	    if (type === 'textarea' && resizable) {
-	      inputEl.removeEventListener('textarea:resze', self.onTextareaResizeBound, false);
+	      inputEl.removeEventListener('textarea:resze', self.onTextareaResize, false);
 	    }
 
 	    if (clearButton) {
-	      inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
-	      inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
+	      inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
+	      inputEl.removeEventListener('input:clear', self.onInputClear, false);
 	    }
 	  };
 
@@ -38032,15 +38281,15 @@
 	      if (type === 'range' || type === 'toggle') { return; }
 	      var inputEl = self.refs.inputEl;
 	      if (!inputEl) { return; }
-	      inputEl.addEventListener('input:notempty', self.onInputNotEmptyBound, false);
+	      inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
 
 	      if (type === 'textarea' && resizable) {
-	        inputEl.addEventListener('textarea:resze', self.onTextareaResizeBound, false);
+	        inputEl.addEventListener('textarea:resze', self.onTextareaResize, false);
 	      }
 
 	      if (clearButton) {
-	        inputEl.addEventListener('input:empty', self.onInputEmptyBound, false);
-	        inputEl.addEventListener('input:clear', self.onInputClearBound, false);
+	        inputEl.addEventListener('input:empty', self.onInputEmpty, false);
+	        inputEl.addEventListener('input:clear', self.onInputClear, false);
 	      }
 
 	      f7.input.checkEmptyState(inputEl);
@@ -38127,7 +38376,7 @@
 
 	F7Input.displayName = 'f7-input';
 
-	var F7Label = (function (superclass) {
+	var F7Label = /*@__PURE__*/(function (superclass) {
 	  function F7Label(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -38177,8 +38426,10 @@
 
 	F7Label.displayName = 'f7-label';
 
-	var F7Link = (function (superclass) {
+	var F7Link = /*@__PURE__*/(function (superclass) {
 	  function F7Link(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
 
@@ -38186,6 +38437,11 @@
 	      return {
 	        isTabbarLabel: props.tabbarLabel
 	      };
+	    })();
+
+	    (function () {
+	      var self = this$1;
+	      self.onClick = self.onClick.bind(self);
 	    })();
 	  }
 
@@ -38308,13 +38564,14 @@
 	      },
 	      id: id,
 	      style: style,
-	      className: self.classes,
-	      onClick: self.onClick.bind(self)
+	      className: self.classes
 	    }, self.attrs), iconEl, textEl, defaultSlots);
 	  };
 
 	  F7Link.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
+	    var el = self.refs.el;
+	    el.removeEventListener('click', self.onClick);
 
 	    if (self.f7SmartSelect && self.f7SmartSelect.destroy) {
 	      self.f7SmartSelect.destroy();
@@ -38330,6 +38587,7 @@
 	  F7Link.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
+	    el.addEventListener('click', self.onClick);
 	    var ref = self.props;
 	    var tabbarLabel = ref.tabbarLabel;
 	    var tabLink = ref.tabLink;
@@ -38421,16 +38679,23 @@
 
 	F7Link.displayName = 'f7-link';
 
-	var F7ListButton = (function (superclass) {
+	var F7ListButton = /*@__PURE__*/(function (superclass) {
 	  function F7ListButton(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7ListButton.__proto__ = superclass;
 	  F7ListButton.prototype = Object.create( superclass && superclass.prototype );
 	  F7ListButton.prototype.constructor = F7ListButton;
 
-	  var prototypeAccessors = { attrs: { configurable: true },classes: { configurable: true },slots: { configurable: true } };
+	  var prototypeAccessors = { attrs: { configurable: true },classes: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
 	  F7ListButton.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('click', event);
@@ -38467,6 +38732,8 @@
 	  };
 
 	  F7ListButton.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = this.props;
 	    var className = props.className;
@@ -38481,8 +38748,18 @@
 	    }, react.createElement('a', Object.assign({
 	      className: self.classes
 	    }, self.attrs, {
-	      onClick: self.onClick.bind(self)
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['linkEl'] = __reactNode;
+	      }
 	    }), this.slots['default'], !this.slots.default && (title || text)));
+	  };
+
+	  F7ListButton.prototype.componentWillUnmount = function componentWillUnmount () {
+	    this.refs.linkEl.removeEventListener('click', this.onClick);
+	  };
+
+	  F7ListButton.prototype.componentDidMount = function componentDidMount () {
+	    this.refs.linkEl.addEventListener('click', this.onClick);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -38495,6 +38772,12 @@
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7ListButton.prototype, prototypeAccessors );
 
@@ -38518,7 +38801,7 @@
 
 	F7ListButton.displayName = 'f7-list-button';
 
-	var F7ListGroup = (function (superclass) {
+	var F7ListGroup = /*@__PURE__*/(function (superclass) {
 	  function F7ListGroup(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -38567,7 +38850,7 @@
 
 	F7ListGroup.displayName = 'f7-list-group';
 
-	var F7ListIndex = (function (superclass) {
+	var F7ListIndex = /*@__PURE__*/(function (superclass) {
 	  function F7ListIndex(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -38667,7 +38950,7 @@
 
 	    __reactComponentWatch(this, 'props.indexes', prevProps, prevState, function () {
 	      if (!this$1.f7ListIndex) { return; }
-	      this$1.f7ListIndex.params.indexes = this$1.indexes;
+	      this$1.f7ListIndex.params.indexes = this$1.props.indexes;
 	      this$1.update();
 	    });
 	  };
@@ -38710,7 +38993,7 @@
 
 	F7ListIndex.displayName = 'f7-list-index';
 
-	var F7ListInput = (function (superclass) {
+	var F7ListInput = /*@__PURE__*/(function (superclass) {
 	  function F7ListInput(props, context) {
 	    var this$1 = this;
 
@@ -38730,14 +39013,14 @@
 
 	    (function () {
 	      var self = this$1;
-	      self.onChangeBound = self.onChange.bind(self);
-	      self.onInputBound = self.onInput.bind(self);
-	      self.onFocusBound = self.onFocus.bind(self);
-	      self.onBlurBound = self.onBlur.bind(self);
-	      self.onTextareaResizeBound = self.onTextareaResize.bind(self);
-	      self.onInputNotEmptyBound = self.onInputNotEmpty.bind(self);
-	      self.onInputEmptyBound = self.onInputEmpty.bind(self);
-	      self.onInputClearBound = self.onInputClear.bind(self);
+	      self.onChange = self.onChange.bind(self);
+	      self.onInput = self.onInput.bind(self);
+	      self.onFocus = self.onFocus.bind(self);
+	      self.onBlur = self.onBlur.bind(self);
+	      self.onTextareaResize = self.onTextareaResize.bind(self);
+	      self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
+	      self.onInputEmpty = self.onInputEmpty.bind(self);
+	      self.onInputClear = self.onInputClear.bind(self);
 	    })();
 	  }
 
@@ -38847,6 +39130,7 @@
 	    var sortable = props.sortable;
 	    var media = props.media;
 	    var renderInput = props.input;
+	    var tag = props.tag;
 	    var type = props.type;
 	    var name = props.name;
 	    var value = props.value;
@@ -38934,10 +39218,10 @@
 	          tabIndex: tabindex,
 	          'data-error-message': errorMessageForce ? undefined : errorMessage,
 	          className: inputClassName,
-	          onFocus: self.onFocusBound,
-	          onBlur: self.onBlurBound,
-	          onInput: self.onInputBound,
-	          onChange: self.onChangeBound
+	          onFocus: self.onFocus,
+	          onBlur: self.onBlur,
+	          onInput: self.onInput,
+	          onChange: self.onChange
 	        }, children);
 	      }
 	      return input;
@@ -38960,7 +39244,8 @@
 	    }
 
 	    var hasErrorMessage = !!errorMessage || self.slots['error-message'] && self.slots['error-message'].length;
-	    return react.createElement('li', {
+	    var ItemTag = tag;
+	    return react.createElement(ItemTag, {
 	      ref: function (__reactNode) {
 	        this$1.__reactRefs['el'] = __reactNode;
 	      },
@@ -39007,10 +39292,10 @@
 	    var self = this;
 	    var inputEl = self.refs.inputEl;
 	    if (!inputEl) { return; }
-	    inputEl.removeEventListener('input:notempty', self.onInputNotEmptyBound, false);
-	    inputEl.removeEventListener('textarea:resze', self.onTextareaResizeBound, false);
-	    inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
-	    inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
+	    inputEl.removeEventListener('input:notempty', self.onInputNotEmpty, false);
+	    inputEl.removeEventListener('textarea:resze', self.onTextareaResize, false);
+	    inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
+	    inputEl.removeEventListener('input:clear', self.onInputClear, false);
 	  };
 
 	  F7ListInput.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
@@ -39073,10 +39358,10 @@
 	      var type = ref.type;
 	      var inputEl = self.refs.inputEl;
 	      if (!inputEl) { return; }
-	      inputEl.addEventListener('input:notempty', self.onInputNotEmptyBound, false);
-	      inputEl.addEventListener('textarea:resze', self.onTextareaResizeBound, false);
-	      inputEl.addEventListener('input:empty', self.onInputEmptyBound, false);
-	      inputEl.addEventListener('input:clear', self.onInputClearBound, false);
+	      inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
+	      inputEl.addEventListener('textarea:resze', self.onTextareaResize, false);
+	      inputEl.addEventListener('input:empty', self.onInputEmpty, false);
+	      inputEl.addEventListener('input:clear', self.onInputClear, false);
 
 	      if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
 	        setTimeout(function () {
@@ -39125,6 +39410,10 @@
 	  className: String,
 	  sortable: Boolean,
 	  media: String,
+	  tag: {
+	    type: String,
+	    default: 'li'
+	  },
 	  input: {
 	    type: Boolean,
 	    default: true
@@ -39174,7 +39463,7 @@
 
 	F7ListInput.displayName = 'f7-list-input';
 
-	var F7ListItemCell = (function (superclass) {
+	var F7ListItemCell = /*@__PURE__*/(function (superclass) {
 	  function F7ListItemCell(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -39215,7 +39504,7 @@
 
 	F7ListItemCell.displayName = 'f7-list-item-cell';
 
-	var F7ListItemContent = (function (superclass) {
+	var F7ListItemContent = /*@__PURE__*/(function (superclass) {
 	  function F7ListItemContent(props, context) {
 	    var this$1 = this;
 
@@ -39236,12 +39525,12 @@
 
 	    (function () {
 	      var self = this$1;
-	      self.onClickBound = self.onClick.bind(self);
-	      self.onChangeBound = self.onChange.bind(self);
-	      self.onFocusBound = self.onFocus.bind(self);
-	      self.onBlurBound = self.onBlur.bind(self);
-	      self.onEmptyBound = self.onEmpty.bind(self);
-	      self.onNotEmptyBound = self.onNotEmpty.bind(self);
+	      self.onClick = self.onClick.bind(self);
+	      self.onChange = self.onChange.bind(self);
+	      self.onFocus = self.onFocus.bind(self);
+	      self.onBlur = self.onBlur.bind(self);
+	      self.onEmpty = self.onEmpty.bind(self);
+	      self.onNotEmpty = self.onNotEmpty.bind(self);
 	    })();
 	  }
 
@@ -39461,7 +39750,8 @@
 	          readOnly: readonly,
 	          disabled: disabled,
 	          required: required,
-	          type: radio ? 'radio' : 'checkbox'
+	          type: radio ? 'radio' : 'checkbox',
+	          onChange: this.onChange
 	        });
 	      }
 	      inputIconEl = react.createElement('i', {
@@ -39568,29 +39858,25 @@
 	      },
 	      id: id,
 	      style: style,
-	      className: classes,
-	      onClick: self.onClickBound
+	      className: classes
 	    }, slotsContentStart, inputEl, inputIconEl, mediaEl, innerEl, slotsContent, slotsContentEnd);
 	  };
 
 	  F7ListItemContent.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
 	    var ref = self.refs;
-	    var inputEl = ref.inputEl;
 	    var el = ref.el;
-	    el.removeEventListener('input:empty', self.onEmptyBound);
-	    el.removeEventListener('input:notempty', self.onNotEmptyBound);
-	    el.removeEventListener('focus', self.onFocusBound, true);
-	    el.removeEventListener('blur', self.onBlurBound, true);
-
-	    if (inputEl) {
-	      inputEl.removeEventListener('change', self.onChangeBound);
-	    }
+	    el.removeEventListener('click', self.onClick);
+	    el.removeEventListener('input:empty', self.onEmpty);
+	    el.removeEventListener('input:notempty', self.onNotEmpty);
+	    el.removeEventListener('focus', self.onFocus, true);
+	    el.removeEventListener('blur', self.onBlur, true);
 	  };
 
 	  F7ListItemContent.prototype.componentDidUpdate = function componentDidUpdate () {
 	    var self = this;
-	    var innerEl = self.refs.innerEl;
+	    var ref = self.refs;
+	    var innerEl = ref.innerEl;
 	    if (!innerEl) { return; }
 	    var $innerEl = self.$$(innerEl);
 	    var $labelEl = $innerEl.children('.item-title.item-label');
@@ -39636,13 +39922,9 @@
 	    var self = this;
 	    var ref = self.refs;
 	    var innerEl = ref.innerEl;
-	    var inputEl = ref.inputEl;
 	    var el = ref.el;
-
-	    if (inputEl) {
-	      inputEl.addEventListener('change', self.onChangeBound);
-	    }
-
+	    var inputEl = ref.inputEl;
+	    el.addEventListener('click', self.onClick);
 	    if (!innerEl) { return; }
 	    var $innerEl = self.$$(innerEl);
 	    var $labelEl = $innerEl.children('.item-title.item-label');
@@ -39654,10 +39936,10 @@
 	    var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
 
 	    if (hasInput) {
-	      el.addEventListener('focus', self.onFocusBound, true);
-	      el.addEventListener('blur', self.onBlurBound, true);
-	      el.addEventListener('input:empty', self.onEmptyBound);
-	      el.addEventListener('input:notempty', self.onNotEmptyBound);
+	      el.addEventListener('focus', self.onFocus, true);
+	      el.addEventListener('blur', self.onBlur, true);
+	      el.addEventListener('input:empty', self.onEmpty);
+	      el.addEventListener('input:notempty', self.onNotEmpty);
 	    }
 
 	    if (!self.hasInlineLabelSet && hasInlineLabel !== self.state.hasInlineLabel) {
@@ -39752,7 +40034,7 @@
 
 	F7ListItemContent.displayName = 'f7-list-item-content';
 
-	var F7ListItemRow = (function (superclass) {
+	var F7ListItemRow = /*@__PURE__*/(function (superclass) {
 	  function F7ListItemRow(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -39793,7 +40075,7 @@
 
 	F7ListItemRow.displayName = 'f7-list-item-row';
 
-	var F7ListItem = (function (superclass) {
+	var F7ListItem = /*@__PURE__*/(function (superclass) {
 	  function F7ListItem(props, context) {
 	    var this$1 = this;
 
@@ -39810,21 +40092,23 @@
 
 	    (function () {
 	      var self = this$1;
-	      self.onClickBound = self.onClick.bind(self);
-	      self.onChangeBound = self.onChange.bind(self);
-	      self.onSwipeoutOpenBound = self.onSwipeoutOpen.bind(self);
-	      self.onSwipeoutOpenedBound = self.onSwipeoutOpened.bind(self);
-	      self.onSwipeoutCloseBound = self.onSwipeoutClose.bind(self);
-	      self.onSwipeoutClosedBound = self.onSwipeoutClosed.bind(self);
-	      self.onSwipeoutDeleteBound = self.onSwipeoutDelete.bind(self);
-	      self.onSwipeoutDeletedBound = self.onSwipeoutDeleted.bind(self);
-	      self.onSwipeoutOverswipeEnterBound = self.onSwipeoutOverswipeEnter.bind(self);
-	      self.onSwipeoutOverswipeExitBound = self.onSwipeoutOverswipeExit.bind(self);
-	      self.onSwipeoutBound = self.onSwipeout.bind(self);
-	      self.onAccOpenBound = self.onAccOpen.bind(self);
-	      self.onAccOpenedBound = self.onAccOpened.bind(self);
-	      self.onAccCloseBound = self.onAccClose.bind(self);
-	      self.onAccClosedBound = self.onAccClosed.bind(self);
+	      self.onClick = self.onClick.bind(self);
+	      self.onChange = self.onChange.bind(self);
+	      self.onSwipeoutOpen = self.onSwipeoutOpen.bind(self);
+	      self.onSwipeoutOpened = self.onSwipeoutOpened.bind(self);
+	      self.onSwipeoutClose = self.onSwipeoutClose.bind(self);
+	      self.onSwipeoutClosed = self.onSwipeoutClosed.bind(self);
+	      self.onSwipeoutDelete = self.onSwipeoutDelete.bind(self);
+	      self.onSwipeoutDeleted = self.onSwipeoutDeleted.bind(self);
+	      self.onSwipeoutOverswipeEnter = self.onSwipeoutOverswipeEnter.bind(self);
+	      self.onSwipeoutOverswipeExit = self.onSwipeoutOverswipeExit.bind(self);
+	      self.onSwipeout = self.onSwipeout.bind(self);
+	      self.onAccBeforeOpen = self.onAccBeforeOpen.bind(self);
+	      self.onAccOpen = self.onAccOpen.bind(self);
+	      self.onAccOpened = self.onAccOpened.bind(self);
+	      self.onAccBeforeClose = self.onAccBeforeClose.bind(self);
+	      self.onAccClose = self.onAccClose.bind(self);
+	      self.onAccClosed = self.onAccClosed.bind(self);
 	    })();
 	  }
 
@@ -39878,12 +40162,20 @@
 	    this.dispatchEvent('swipeout', event);
 	  };
 
+	  F7ListItem.prototype.onAccBeforeClose = function onAccBeforeClose (event) {
+	    this.dispatchEvent('accordion:beforeclose accordionBeforeClose', event, event.detail.prevent);
+	  };
+
 	  F7ListItem.prototype.onAccClose = function onAccClose (event) {
 	    this.dispatchEvent('accordion:close accordionClose', event);
 	  };
 
 	  F7ListItem.prototype.onAccClosed = function onAccClosed (event) {
 	    this.dispatchEvent('accordion:closed accordionClosed', event);
+	  };
+
+	  F7ListItem.prototype.onAccBeforeOpen = function onAccBeforeOpen (event) {
+	    this.dispatchEvent('accordion:beforeopen accordionBeforeOpen', event, event.detail.prevent);
 	  };
 
 	  F7ListItem.prototype.onAccOpen = function onAccOpen (event) {
@@ -39949,6 +40241,7 @@
 	    var sortable = props.sortable;
 	    var noChevron = props.noChevron;
 	    var chevronCenter = props.chevronCenter;
+	    var virtualListIndex = props.virtualListIndex;
 	    var isMedia = mediaItem || mediaList || self.state.isMedia;
 	    var isSortable = sortable || self.state.isSortable;
 	    var isSimple = self.state.isSimple;
@@ -39979,8 +40272,8 @@
 	        itemInput: itemInput,
 	        itemInputWithInfo: itemInputWithInfo,
 	        inlineLabel: inlineLabel,
-	        onClick: needsEvents ? self.onClickBound : null,
-	        onChange: needsEvents ? self.onChangeBound : null
+	        onClick: needsEvents ? self.onClick : null,
+	        onChange: needsEvents ? self.onChange : null
 	      }, this.slots['content-start'], this.slots['content'], this.slots['content-end'], this.slots['media'], this.slots['inner-start'], this.slots['inner'], this.slots['inner-end'], this.slots['after-start'], this.slots['after'], this.slots['after-end'], this.slots['header'], this.slots['footer'], this.slots['before-title'], this.slots['title'], this.slots['after-title'], this.slots['subtitle'], this.slots['text'], swipeout || accordionItem ? null : self.slots.default);
 
 	      if (link || href || accordionItem || smartSelect) {
@@ -39994,8 +40287,10 @@
 	          'smart-select': smartSelect
 	        }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
 	        linkEl = react.createElement('a', Object.assign({
-	          className: linkClasses,
-	          onClick: self.onClick.bind(self)
+	          ref: function (__reactNode) {
+	            this$1.__reactRefs['linkEl'] = __reactNode;
+	          },
+	          className: linkClasses
 	        }, linkAttrs), itemContentEl);
 	      }
 	    }
@@ -40019,7 +40314,8 @@
 	        },
 	        id: id,
 	        style: style,
-	        className: liClasses
+	        className: liClasses,
+	        'data-virtual-list-index': virtualListIndex
 	      }, react.createElement('span', null, this.slots['default'], !this.slots.default && title));
 	    }
 
@@ -40030,7 +40326,8 @@
 	        },
 	        id: id,
 	        style: style,
-	        className: liClasses
+	        className: liClasses,
+	        'data-virtual-list-index': virtualListIndex
 	      }, title, this.slots['default']);
 	    }
 
@@ -40041,7 +40338,8 @@
 	      },
 	      id: id,
 	      style: style,
-	      className: liClasses
+	      className: liClasses,
+	      'data-virtual-list-index': virtualListIndex
 	    }, this.slots['root-start'], swipeout ? react.createElement('div', {
 	      className: 'swipeout-content'
 	    }, linkItemEl) : linkItemEl, isSortable && react.createElement('div', {
@@ -40051,30 +40349,41 @@
 
 	  F7ListItem.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
-	    var el = self.refs.el;
-	    var ref = self.props;
-	    var swipeout = ref.swipeout;
-	    var accordionItem = ref.accordionItem;
-	    var smartSelect = ref.smartSelect;
+	    var ref = self.refs;
+	    var el = ref.el;
+	    var linkEl = ref.linkEl;
+	    var ref$1 = self.props;
+	    var link = ref$1.link;
+	    var href = ref$1.href;
+	    var smartSelect = ref$1.smartSelect;
+	    var swipeout = ref$1.swipeout;
+	    var accordionItem = ref$1.accordionItem;
+	    var needsEvents = !(link || href || accordionItem || smartSelect);
+
+	    if (!needsEvents && linkEl) {
+	      linkEl.removeEventListener('click', self.onClick);
+	    }
 
 	    if (el) {
 	      if (swipeout) {
-	        el.removeEventListener('swipeout:open', self.onSwipeoutOpenBound);
-	        el.removeEventListener('swipeout:opened', self.onSwipeoutOpenedBound);
-	        el.removeEventListener('swipeout:close', self.onSwipeoutCloseBound);
-	        el.removeEventListener('swipeout:closed', self.onSwipeoutClosedBound);
-	        el.removeEventListener('swipeout:delete', self.onSwipeoutDeleteBound);
-	        el.removeEventListener('swipeout:deleted', self.onSwipeoutDeletedBound);
-	        el.removeEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnterBound);
-	        el.removeEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExitBound);
-	        el.removeEventListener('swipeout', self.onSwipeoutBound);
+	        el.removeEventListener('swipeout:open', self.onSwipeoutOpen);
+	        el.removeEventListener('swipeout:opened', self.onSwipeoutOpened);
+	        el.removeEventListener('swipeout:close', self.onSwipeoutClose);
+	        el.removeEventListener('swipeout:closed', self.onSwipeoutClosed);
+	        el.removeEventListener('swipeout:delete', self.onSwipeoutDelete);
+	        el.removeEventListener('swipeout:deleted', self.onSwipeoutDeleted);
+	        el.removeEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnter);
+	        el.removeEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExit);
+	        el.removeEventListener('swipeout', self.onSwipeout);
 	      }
 
 	      if (accordionItem) {
-	        el.removeEventListener('accordion:open', self.onAccOpenBound);
-	        el.removeEventListener('accordion:opened', self.onAccOpenedBound);
-	        el.removeEventListener('accordion:close', self.onAccCloseBound);
-	        el.removeEventListener('accordion:closed', self.onAccClosedBound);
+	        el.removeEventListener('accordion:beforeopen', self.onAccBeforeOpen);
+	        el.removeEventListener('accordion:open', self.onAccOpen);
+	        el.removeEventListener('accordion:opened', self.onAccOpened);
+	        el.removeEventListener('accordion:beforeclose', self.onAccBeforeClose);
+	        el.removeEventListener('accordion:close', self.onAccClose);
+	        el.removeEventListener('accordion:closed', self.onAccClosed);
 	      }
 	    }
 
@@ -40126,8 +40435,24 @@
 
 	  F7ListItem.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
-	    var el = self.refs.el;
+	    var ref = self.refs;
+	    var el = ref.el;
+	    var linkEl = ref.linkEl;
 	    if (!el) { return; }
+	    var ref$1 = self.props;
+	    var link = ref$1.link;
+	    var href = ref$1.href;
+	    var smartSelect = ref$1.smartSelect;
+	    var swipeout = ref$1.swipeout;
+	    var swipeoutOpened = ref$1.swipeoutOpened;
+	    var accordionItem = ref$1.accordionItem;
+	    var smartSelectParams = ref$1.smartSelectParams;
+	    var needsEvents = !(link || href || accordionItem || smartSelect);
+
+	    if (!needsEvents && linkEl) {
+	      linkEl.addEventListener('click', self.onClick);
+	    }
+
 	    self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
 
 	    if (self.$listEl.length) {
@@ -40138,30 +40463,25 @@
 	      });
 	    }
 
-	    var ref = self.props;
-	    var swipeout = ref.swipeout;
-	    var swipeoutOpened = ref.swipeoutOpened;
-	    var accordionItem = ref.accordionItem;
-	    var smartSelect = ref.smartSelect;
-	    var smartSelectParams = ref.smartSelectParams;
-
 	    if (swipeout) {
-	      el.addEventListener('swipeout:open', self.onSwipeoutOpenBound);
-	      el.addEventListener('swipeout:opened', self.onSwipeoutOpenedBound);
-	      el.addEventListener('swipeout:close', self.onSwipeoutCloseBound);
-	      el.addEventListener('swipeout:closed', self.onSwipeoutClosedBound);
-	      el.addEventListener('swipeout:delete', self.onSwipeoutDeleteBound);
-	      el.addEventListener('swipeout:deleted', self.onSwipeoutDeletedBound);
-	      el.addEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnterBound);
-	      el.addEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExitBound);
-	      el.addEventListener('swipeout', self.onSwipeoutBound);
+	      el.addEventListener('swipeout:open', self.onSwipeoutOpen);
+	      el.addEventListener('swipeout:opened', self.onSwipeoutOpened);
+	      el.addEventListener('swipeout:close', self.onSwipeoutClose);
+	      el.addEventListener('swipeout:closed', self.onSwipeoutClosed);
+	      el.addEventListener('swipeout:delete', self.onSwipeoutDelete);
+	      el.addEventListener('swipeout:deleted', self.onSwipeoutDeleted);
+	      el.addEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnter);
+	      el.addEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExit);
+	      el.addEventListener('swipeout', self.onSwipeout);
 	    }
 
 	    if (accordionItem) {
-	      el.addEventListener('accordion:open', self.onAccOpenBound);
-	      el.addEventListener('accordion:opened', self.onAccOpenedBound);
-	      el.addEventListener('accordion:close', self.onAccCloseBound);
-	      el.addEventListener('accordion:closed', self.onAccClosedBound);
+	      el.addEventListener('accordion:beforeopen', self.onAccBeforeOpen);
+	      el.addEventListener('accordion:open', self.onAccOpen);
+	      el.addEventListener('accordion:opened', self.onAccOpened);
+	      el.addEventListener('accordion:beforeclose', self.onAccBeforeClose);
+	      el.addEventListener('accordion:close', self.onAccClose);
+	      el.addEventListener('accordion:closed', self.onAccClosed);
 	    }
 
 	    self.$f7ready(function (f7) {
@@ -40241,12 +40561,13 @@
 	  disabled: Boolean,
 	  itemInput: Boolean,
 	  itemInputWithInfo: Boolean,
-	  inlineLabel: Boolean
+	  inlineLabel: Boolean,
+	  virtualListIndex: Number
 	}, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps));
 
 	F7ListItem.displayName = 'f7-list-item';
 
-	var F7List = (function (superclass) {
+	var F7List = /*@__PURE__*/(function (superclass) {
 	  function F7List(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -40522,7 +40843,7 @@
 
 	F7List.displayName = 'f7-list';
 
-	var F7LoginScreenTitle = (function (superclass) {
+	var F7LoginScreenTitle = /*@__PURE__*/(function (superclass) {
 	  function F7LoginScreenTitle(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -40563,7 +40884,7 @@
 
 	F7LoginScreenTitle.displayName = 'f7-login-screen-title';
 
-	var F7LoginScreen = (function (superclass) {
+	var F7LoginScreen = /*@__PURE__*/(function (superclass) {
 	  function F7LoginScreen(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -40704,20 +41025,21 @@
 
 	F7LoginScreen.displayName = 'f7-login-screen';
 
-	var F7Message = (function (superclass) {
+	var F7Message = /*@__PURE__*/(function (superclass) {
 	  function F7Message(props, context) {
 	    var this$1 = this;
 
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClickBound = this$1.onClick.bind(this$1);
-	      this$1.onNameClickBound = this$1.onNameClick.bind(this$1);
-	      this$1.onTextClickBound = this$1.onTextClick.bind(this$1);
-	      this$1.onAvatarClickBound = this$1.onAvatarClick.bind(this$1);
-	      this$1.onHeaderClickBound = this$1.onHeaderClick.bind(this$1);
-	      this$1.onFooterClickBound = this$1.onFooterClick.bind(this$1);
-	      this$1.onBubbleClickBound = this$1.onBubbleClick.bind(this$1);
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	      this$1.onNameClick = this$1.onNameClick.bind(this$1);
+	      this$1.onTextClick = this$1.onTextClick.bind(this$1);
+	      this$1.onAvatarClick = this$1.onAvatarClick.bind(this$1);
+	      this$1.onHeaderClick = this$1.onHeaderClick.bind(this$1);
+	      this$1.onFooterClick = this$1.onFooterClick.bind(this$1);
+	      this$1.onBubbleClick = this$1.onBubbleClick.bind(this$1);
 	    })();
 	  }
 
@@ -40725,7 +41047,7 @@
 	  F7Message.prototype = Object.create( superclass && superclass.prototype );
 	  F7Message.prototype.constructor = F7Message;
 
-	  var prototypeAccessors = { classes: { configurable: true },slots: { configurable: true } };
+	  var prototypeAccessors = { classes: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Message.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('click', event);
@@ -40783,6 +41105,8 @@
 	  };
 
 	  F7Message.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var text = props.text;
@@ -40813,27 +41137,37 @@
 	    var slotsBubbleStart = ref['bubble-start'];
 	    var slotsBubbleEnd = ref['bubble-end'];
 	    return react.createElement('div', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
 	      id: id,
 	      style: style,
-	      className: self.classes,
-	      onClick: self.onClickBound
+	      className: self.classes
 	    }, slotsStart, (avatar || slotsAvatar) && react.createElement('div', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['avatarEl'] = __reactNode;
+	      },
 	      className: 'message-avatar',
 	      style: {
 	        backgroundImage: avatar && ("url(" + avatar + ")")
-	      },
-	      onClick: self.onAvatarClickBound
+	      }
 	    }, slotsAvatar), react.createElement('div', {
 	      className: 'message-content'
 	    }, slotsContentStart, (slotsName || name) && react.createElement('div', {
-	      className: 'message-name',
-	      onClick: self.onNameClickBound
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['nameEl'] = __reactNode;
+	      },
+	      className: 'message-name'
 	    }, slotsName || name), (slotsHeader || header) && react.createElement('div', {
-	      className: 'message-header',
-	      onClick: self.onHeaderClickBound
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['headerEl'] = __reactNode;
+	      },
+	      className: 'message-header'
 	    }, slotsHeader || header), react.createElement('div', {
-	      className: 'message-bubble',
-	      onClick: self.onBubbleClickBound
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['bubbleEl'] = __reactNode;
+	      },
+	      className: 'message-bubble'
 	    }, slotsBubbleStart, (slotsImage || image) && react.createElement('div', {
 	      className: 'message-image'
 	    }, slotsImage || react.createElement('img', {
@@ -40841,16 +41175,56 @@
 	    })), (slotsTextHeader || textHeader) && react.createElement('div', {
 	      className: 'message-text-header'
 	    }, slotsTextHeader || textHeader), (slotsText || text || typing) && react.createElement('div', {
-	      className: 'message-text',
-	      onClick: self.onTextClickBound
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['textEl'] = __reactNode;
+	      },
+	      className: 'message-text'
 	    }, slotsText || text, typing && react.createElement('div', {
 	      className: 'message-typing-indicator'
 	    }, react.createElement('div', null), react.createElement('div', null), react.createElement('div', null))), (slotsTextFooter || textFooter) && react.createElement('div', {
 	      className: 'message-text-footer'
 	    }, slotsTextFooter || textFooter), slotsBubbleEnd, slotsDefault), (slotsFooter || footer) && react.createElement('div', {
-	      className: 'message-footer',
-	      onClick: self.onFooterClickBound
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['footerEl'] = __reactNode;
+	      },
+	      className: 'message-footer'
 	    }, slotsFooter || footer), slotsContentEnd), slotsEnd);
+	  };
+
+	  F7Message.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var ref = this.refs;
+	    var el = ref.el;
+	    var nameEl = ref.nameEl;
+	    var textEl = ref.textEl;
+	    var avatarEl = ref.avatarEl;
+	    var headerEl = ref.headerEl;
+	    var footerEl = ref.footerEl;
+	    var bubbleEl = ref.bubbleEl;
+	    el.removeEventListener('click', this.onClick);
+	    if (nameEl) { nameEl.removeEventListener('click', this.onNameClick); }
+	    if (textEl) { textEl.removeEventListener('click', this.onTextClick); }
+	    if (avatarEl) { nameEl.removeEventListener('click', this.onAvatarClick); }
+	    if (headerEl) { nameEl.removeEventListener('click', this.onHeaderClick); }
+	    if (footerEl) { nameEl.removeEventListener('click', this.onFooterClick); }
+	    if (bubbleEl) { nameEl.removeEventListener('click', this.onBubbleClick); }
+	  };
+
+	  F7Message.prototype.componentDidMount = function componentDidMount () {
+	    var ref = this.refs;
+	    var el = ref.el;
+	    var nameEl = ref.nameEl;
+	    var textEl = ref.textEl;
+	    var avatarEl = ref.avatarEl;
+	    var headerEl = ref.headerEl;
+	    var footerEl = ref.footerEl;
+	    var bubbleEl = ref.bubbleEl;
+	    el.addEventListener('click', this.onClick);
+	    if (nameEl) { nameEl.addEventListener('click', this.onNameClick); }
+	    if (textEl) { textEl.addEventListener('click', this.onTextClick); }
+	    if (avatarEl) { nameEl.addEventListener('click', this.onAvatarClick); }
+	    if (headerEl) { nameEl.addEventListener('click', this.onHeaderClick); }
+	    if (footerEl) { nameEl.addEventListener('click', this.onFooterClick); }
+	    if (bubbleEl) { nameEl.addEventListener('click', this.onBubbleClick); }
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -40863,6 +41237,12 @@
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7Message.prototype, prototypeAccessors );
 
@@ -40897,15 +41277,16 @@
 
 	F7Message.displayName = 'f7-message';
 
-	var F7MessagebarAttachment = (function (superclass) {
+	var F7MessagebarAttachment = /*@__PURE__*/(function (superclass) {
 	  function F7MessagebarAttachment(props, context) {
 	    var this$1 = this;
 
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClickBound = this$1.onClick.bind(this$1);
-	      this$1.onDeleteClickBound = this$1.onDeleteClick.bind(this$1);
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	      this$1.onDeleteClick = this$1.onDeleteClick.bind(this$1);
 	    })();
 	  }
 
@@ -40913,7 +41294,7 @@
 	  F7MessagebarAttachment.prototype = Object.create( superclass && superclass.prototype );
 	  F7MessagebarAttachment.prototype.constructor = F7MessagebarAttachment;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7MessagebarAttachment.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('attachment:click attachmentClick', event);
@@ -40924,6 +41305,8 @@
 	  };
 
 	  F7MessagebarAttachment.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var deletable = props.deletable;
@@ -40933,16 +41316,36 @@
 	    var style = props.style;
 	    var classes = Utils$1.classNames(className, 'messagebar-attachment', Mixins.colorClasses(props));
 	    return react.createElement('div', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
 	      id: id,
 	      style: style,
-	      className: classes,
-	      onClick: self.onClickBound
+	      className: classes
 	    }, image && react.createElement('img', {
 	      src: image
 	    }), deletable && react.createElement('span', {
-	      className: 'messagebar-attachment-delete',
-	      onClick: self.onDeleteClickBound
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['deleteEl'] = __reactNode;
+	      },
+	      className: 'messagebar-attachment-delete'
 	    }), this.slots['default']);
+	  };
+
+	  F7MessagebarAttachment.prototype.componentWillUnmount = function componentWillUnmount () {
+	    this.refs.el.removeEventListener('click', this.onClick);
+
+	    if (this.refs.deleteEl) {
+	      this.refs.deleteEl.removeEventListener('click', this.onDeleteClick);
+	    }
+	  };
+
+	  F7MessagebarAttachment.prototype.componentDidMount = function componentDidMount () {
+	    this.refs.el.addEventListener('click', this.onClick);
+
+	    if (this.refs.deleteEl) {
+	      this.refs.deleteEl.addEventListener('click', this.onDeleteClick);
+	    }
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -40955,6 +41358,12 @@
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7MessagebarAttachment.prototype, prototypeAccessors );
 
@@ -40974,7 +41383,7 @@
 
 	F7MessagebarAttachment.displayName = 'f7-messagebar-attachment';
 
-	var F7MessagebarAttachments = (function (superclass) {
+	var F7MessagebarAttachments = /*@__PURE__*/(function (superclass) {
 	  function F7MessagebarAttachments(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -41015,14 +41424,15 @@
 
 	F7MessagebarAttachments.displayName = 'f7-messagebar-attachments';
 
-	var F7MessagebarSheetImage = (function (superclass) {
+	var F7MessagebarSheetImage = /*@__PURE__*/(function (superclass) {
 	  function F7MessagebarSheetImage(props, context) {
 	    var this$1 = this;
 
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onChangeBound = this$1.onChange.bind(this$1);
+	      this$1.onChange = this$1.onChange.bind(this$1);
 	    })();
 	  }
 
@@ -41030,7 +41440,7 @@
 	  F7MessagebarSheetImage.prototype = Object.create( superclass && superclass.prototype );
 	  F7MessagebarSheetImage.prototype.constructor = F7MessagebarSheetImage;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7MessagebarSheetImage.prototype.onChange = function onChange (event) {
 	    if (this.props.checked) { this.dispatchEvent('checked', event); }else { this.dispatchEvent('unchecked', event); }
@@ -41038,6 +41448,8 @@
 	  };
 
 	  F7MessagebarSheetImage.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var image = props.image;
@@ -41052,9 +41464,12 @@
 	    var inputEl;
 	    {
 	      inputEl = react.createElement('input', {
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['inputEl'] = __reactNode;
+	        },
 	        type: 'checkbox',
 	        checked: checked,
-	        onChange: self.onChangeBound
+	        onChange: self.onChange
 	      });
 	    }
 	    return react.createElement('label', {
@@ -41077,6 +41492,12 @@
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
 
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
 	  Object.defineProperties( F7MessagebarSheetImage.prototype, prototypeAccessors );
 
 	  return F7MessagebarSheetImage;
@@ -41092,7 +41513,7 @@
 
 	F7MessagebarSheetImage.displayName = 'f7-messagebar-sheet-image';
 
-	var F7MessagebarSheetItem = (function (superclass) {
+	var F7MessagebarSheetItem = /*@__PURE__*/(function (superclass) {
 	  function F7MessagebarSheetItem(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -41133,7 +41554,7 @@
 
 	F7MessagebarSheetItem.displayName = 'f7-messagebar-sheet-item';
 
-	var F7MessagebarSheet = (function (superclass) {
+	var F7MessagebarSheet = /*@__PURE__*/(function (superclass) {
 	  function F7MessagebarSheet(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -41174,7 +41595,7 @@
 
 	F7MessagebarSheet.displayName = 'f7-messagebar-sheet';
 
-	var F7Messagebar = (function (superclass) {
+	var F7Messagebar = /*@__PURE__*/(function (superclass) {
 	  function F7Messagebar(props, context) {
 	    var this$1 = this;
 
@@ -41182,14 +41603,14 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onChangeBound = this$1.onChange.bind(this$1);
-	      this$1.onInputBound = this$1.onInput.bind(this$1);
-	      this$1.onFocusBound = this$1.onFocus.bind(this$1);
-	      this$1.onBlurBound = this$1.onBlur.bind(this$1);
-	      this$1.onClickBound = this$1.onClick.bind(this$1);
-	      this$1.onDeleteAttachmentBound = this$1.onDeleteAttachment.bind(this$1);
-	      this$1.onClickAttachmentBound = this$1.onClickAttachment.bind(this$1);
-	      this$1.onResizePageBound = this$1.onResizePage.bind(this$1);
+	      this$1.onChange = this$1.onChange.bind(this$1);
+	      this$1.onInput = this$1.onInput.bind(this$1);
+	      this$1.onFocus = this$1.onFocus.bind(this$1);
+	      this$1.onBlur = this$1.onBlur.bind(this$1);
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	      this$1.onDeleteAttachment = this$1.onDeleteAttachment.bind(this$1);
+	      this$1.onClickAttachment = this$1.onClickAttachment.bind(this$1);
+	      this$1.onResizePage = this$1.onResizePage.bind(this$1);
 	    })();
 	  }
 
@@ -41436,12 +41857,12 @@
 	      readonly: readonly,
 	      resizable: resizable,
 	      value: value,
-	      onInput: self.onInputBound,
-	      onChange: self.onChangeBound,
-	      onFocus: self.onFocusBound,
-	      onBlur: self.onBlurBound
+	      onInput: self.onInput,
+	      onChange: self.onChange,
+	      onFocus: self.onFocus,
+	      onBlur: self.onBlur
 	    }), slotsAfterArea), (sendLink && sendLink.length > 0 || slotsSendLink) && react.createElement(F7Link, {
-	      onClick: self.onClickBound
+	      onClick: self.onClick
 	    }, slotsSendLink || sendLink), slotsInnerEnd, innerEndEls), slotsAfterInner, messagebarSheetEl);
 	  };
 
@@ -41450,9 +41871,9 @@
 	    if (self.f7Messagebar && self.f7Messagebar.destroy) { self.f7Messagebar.destroy(); }
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('messagebar:attachmentdelete', self.onDeleteAttachmentBound);
-	    el.removeEventListener('messagebar:attachmentclick', self.onClickAttachmentBound);
-	    el.removeEventListener('messagebar:resizepage', self.onResizePageBound);
+	    el.removeEventListener('messagebar:attachmentdelete', self.onDeleteAttachment);
+	    el.removeEventListener('messagebar:attachmentclick', self.onClickAttachment);
+	    el.removeEventListener('messagebar:resizepage', self.onResizePage);
 	  };
 
 	  F7Messagebar.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
@@ -41501,9 +41922,9 @@
 	    if (!init) { return; }
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.addEventListener('messagebar:attachmentdelete', self.onDeleteAttachmentBound);
-	    el.addEventListener('messagebar:attachmentclick', self.onClickAttachmentBound);
-	    el.addEventListener('messagebar:resizepage', self.onResizePageBound);
+	    el.addEventListener('messagebar:attachmentdelete', self.onDeleteAttachment);
+	    el.addEventListener('messagebar:attachmentclick', self.onClickAttachment);
+	    el.addEventListener('messagebar:resizepage', self.onResizePage);
 	    var params = Utils$1.noUndefinedProps({
 	      el: el,
 	      top: top,
@@ -41581,7 +42002,7 @@
 
 	F7Messagebar.displayName = 'f7-messagebar';
 
-	var F7MessagesTitle = (function (superclass) {
+	var F7MessagesTitle = /*@__PURE__*/(function (superclass) {
 	  function F7MessagesTitle(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -41622,7 +42043,7 @@
 
 	F7MessagesTitle.displayName = 'f7-messages-title';
 
-	var F7Messages = (function (superclass) {
+	var F7Messages = /*@__PURE__*/(function (superclass) {
 	  function F7Messages(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -41860,7 +42281,7 @@
 
 	F7Messages.displayName = 'f7-messages';
 
-	var F7NavLeft = (function (superclass) {
+	var F7NavLeft = /*@__PURE__*/(function (superclass) {
 	  function F7NavLeft(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -41936,7 +42357,7 @@
 
 	F7NavLeft.displayName = 'f7-nav-left';
 
-	var F7NavRight = (function (superclass) {
+	var F7NavRight = /*@__PURE__*/(function (superclass) {
 	  function F7NavRight(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -41981,7 +42402,7 @@
 
 	F7NavRight.displayName = 'f7-nav-right';
 
-	var F7NavTitle = (function (superclass) {
+	var F7NavTitle = /*@__PURE__*/(function (superclass) {
 	  function F7NavTitle(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -42039,7 +42460,7 @@
 
 	F7NavTitle.displayName = 'f7-nav-title';
 
-	var F7Navbar = (function (superclass) {
+	var F7Navbar = /*@__PURE__*/(function (superclass) {
 	  function F7Navbar(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -42199,7 +42620,7 @@
 
 	F7Navbar.displayName = 'f7-navbar';
 
-	var F7PageContent = (function (superclass) {
+	var F7PageContent = /*@__PURE__*/(function (superclass) {
 	  function F7PageContent(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -42414,7 +42835,7 @@
 
 	F7PageContent.displayName = 'f7-page-content';
 
-	var F7Page = (function (superclass) {
+	var F7Page = /*@__PURE__*/(function (superclass) {
 	  function F7Page(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -42473,6 +42894,13 @@
 	  F7Page.prototype.onPageUnstack = function onPageUnstack () {
 	    this.setState({
 	      routerForceUnstack: true
+	    });
+	  };
+
+	  F7Page.prototype.onPagePosition = function onPagePosition (event) {
+	    var position = event.detail.position;
+	    this.setState({
+	      routerClass: ("page-" + position)
 	    });
 	  };
 
@@ -42686,6 +43114,7 @@
 	    el.removeEventListener('page:beforeremove', self.onPageBeforeRemove);
 	    el.removeEventListener('page:stack', self.onPageStack);
 	    el.removeEventListener('page:unstack', self.onPageUnstack);
+	    el.removeEventListener('page:position', self.onPagePosition);
 	  };
 
 	  F7Page.prototype.componentDidMount = function componentDidMount () {
@@ -42710,6 +43139,7 @@
 	    self.onPageBeforeRemove = self.onPageBeforeRemove.bind(self);
 	    self.onPageStack = self.onPageStack.bind(self);
 	    self.onPageUnstack = self.onPageUnstack.bind(self);
+	    self.onPagePosition = self.onPagePosition.bind(self);
 
 	    if (ptr) {
 	      el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -42733,6 +43163,7 @@
 	    el.addEventListener('page:beforeremove', self.onPageBeforeRemove);
 	    el.addEventListener('page:stack', self.onPageStack);
 	    el.addEventListener('page:unstack', self.onPageUnstack);
+	    el.addEventListener('page:position', self.onPagePosition);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -42801,7 +43232,7 @@
 
 	F7Page.displayName = 'f7-page';
 
-	var F7Panel = (function (superclass) {
+	var F7Panel = /*@__PURE__*/(function (superclass) {
 	  function F7Panel(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -43017,7 +43448,7 @@
 
 	F7Panel.displayName = 'f7-panel';
 
-	var F7PhotoBrowser = (function (superclass) {
+	var F7PhotoBrowser = /*@__PURE__*/(function (superclass) {
 	  function F7PhotoBrowser(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -43193,7 +43624,7 @@
 
 	F7PhotoBrowser.displayName = 'f7-photo-browser';
 
-	var F7Popover = (function (superclass) {
+	var F7Popover = /*@__PURE__*/(function (superclass) {
 	  function F7Popover(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -43350,7 +43781,7 @@
 
 	F7Popover.displayName = 'f7-popover';
 
-	var F7Popup = (function (superclass) {
+	var F7Popup = /*@__PURE__*/(function (superclass) {
 	  function F7Popup(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -43506,7 +43937,7 @@
 
 	F7Popup.displayName = 'f7-popup';
 
-	var F7Preloader = (function (superclass) {
+	var F7Preloader = /*@__PURE__*/(function (superclass) {
 	  function F7Preloader(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -43582,7 +44013,7 @@
 
 	F7Preloader.displayName = 'f7-preloader';
 
-	var F7Progressbar = (function (superclass) {
+	var F7Progressbar = /*@__PURE__*/(function (superclass) {
 	  function F7Progressbar(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -43651,22 +44082,31 @@
 
 	F7Progressbar.displayName = 'f7-progressbar';
 
-	var F7Radio = (function (superclass) {
+	var F7Radio = /*@__PURE__*/(function (superclass) {
 	  function F7Radio(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onChange = this$1.onChange.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7Radio.__proto__ = superclass;
 	  F7Radio.prototype = Object.create( superclass && superclass.prototype );
 	  F7Radio.prototype.constructor = F7Radio;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Radio.prototype.onChange = function onChange (event) {
 	    this.dispatchEvent('change', event);
 	  };
 
 	  F7Radio.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var name = props.name;
@@ -43681,6 +44121,9 @@
 	    var inputEl;
 	    {
 	      inputEl = react.createElement('input', {
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['inputEl'] = __reactNode;
+	        },
 	        type: 'radio',
 	        name: name,
 	        value: value,
@@ -43688,7 +44131,7 @@
 	        readOnly: readonly,
 	        checked: checked,
 	        defaultChecked: defaultChecked,
-	        onChange: self.onChange.bind(self)
+	        onChange: self.onChange
 	      });
 	    }
 	    var iconEl = react.createElement('i', {
@@ -43715,6 +44158,12 @@
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
 
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
 	  Object.defineProperties( F7Radio.prototype, prototypeAccessors );
 
 	  return F7Radio;
@@ -43734,22 +44183,31 @@
 
 	F7Radio.displayName = 'f7-radio';
 
-	var F7Row = (function (superclass) {
+	var F7Row = /*@__PURE__*/(function (superclass) {
 	  function F7Row(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7Row.__proto__ = superclass;
 	  F7Row.prototype = Object.create( superclass && superclass.prototype );
 	  F7Row.prototype.constructor = F7Row;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Row.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('click', event);
 	  };
 
 	  F7Row.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var className = props.className;
@@ -43765,8 +44223,18 @@
 	      id: id,
 	      style: style,
 	      className: classes,
-	      onClick: self.onClick.bind(self)
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      }
 	    }, this.slots['default']);
+	  };
+
+	  F7Row.prototype.componentWillUnmount = function componentWillUnmount () {
+	    this.refs.el.removeEventListener('click', this.onClick);
+	  };
+
+	  F7Row.prototype.componentDidMount = function componentDidMount () {
+	    this.refs.el.addEventListener('click', this.onClick);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -43779,6 +44247,12 @@
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7Row.prototype, prototypeAccessors );
 
@@ -43798,10 +44272,22 @@
 
 	F7Row.displayName = 'f7-row';
 
-	var F7Searchbar = (function (superclass) {
+	var F7Searchbar = /*@__PURE__*/(function (superclass) {
 	  function F7Searchbar(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onChange = this$1.onChange.bind(this$1);
+	      this$1.onInput = this$1.onInput.bind(this$1);
+	      this$1.onFocus = this$1.onFocus.bind(this$1);
+	      this$1.onBlur = this$1.onBlur.bind(this$1);
+	      this$1.onSubmit = this$1.onSubmit.bind(this$1);
+	      this$1.onClearButtonClick = this$1.onClearButtonClick.bind(this$1);
+	      this$1.onDisableButtonClick = this$1.onDisableButtonClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7Searchbar.__proto__ = superclass;
@@ -43881,18 +44367,23 @@
 	    var className = props.className;
 	    var style = props.style;
 	    var id = props.id;
+	    var value = props.value;
 
 	    if (clearButton) {
 	      clearEl = react.createElement('span', {
-	        className: 'input-clear-button',
-	        onClick: self.onClearButtonClick.bind(self)
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['clearEl'] = __reactNode;
+	        },
+	        className: 'input-clear-button'
 	      });
 	    }
 
 	    if (disableButton) {
 	      disableEl = react.createElement('span', {
-	        className: 'searchbar-disable-button',
-	        onClick: self.onDisableButtonClick.bind(self)
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['disableEl'] = __reactNode;
+	        },
+	        className: 'searchbar-disable-button'
 	      }, disableButtonText);
 	    }
 
@@ -43902,6 +44393,21 @@
 	      'no-hairline': noHairline,
 	      'searchbar-expandable': expandable
 	    }, Mixins.colorClasses(props));
+	    var inputEl;
+	    {
+	      inputEl = react.createElement('input', {
+	        ref: function (__reactNode) {
+	          this$1.__reactRefs['inputEl'] = __reactNode;
+	        },
+	        value: value,
+	        placeholder: placeholder,
+	        type: 'search',
+	        onInput: self.onInput,
+	        onChange: self.onChange.bind(self),
+	        onFocus: self.onFocus,
+	        onBlur: self.onBlur
+	      });
+	    }
 	    return react.createElement(SearchbarTag, {
 	      ref: function (__reactNode) {
 	        this$1.__reactRefs['el'] = __reactNode;
@@ -43913,22 +44419,39 @@
 	      className: 'searchbar-inner'
 	    }, this.slots['inner-start'], react.createElement('div', {
 	      className: 'searchbar-input-wrap'
-	    }, this.slots['input-wrap-start'], react.createElement('input', {
-	      placeholder: placeholder,
-	      type: 'search',
-	      onInput: self.onInput.bind(self),
-	      onChange: self.onChange.bind(self),
-	      onFocus: self.onFocus.bind(self),
-	      onBlur: self.onBlur.bind(self)
-	    }), react.createElement('i', {
+	    }, this.slots['input-wrap-start'], inputEl, react.createElement('i', {
 	      className: 'searchbar-icon'
 	    }), clearEl, this.slots['input-wrap-end']), disableEl, this.slots['inner-end'], this.slots['default']), this.slots['after-inner']);
+	  };
+
+	  F7Searchbar.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+	    var ref = self.refs;
+	    var inputEl = ref.inputEl;
+	    var el = ref.el;
+	    var clearEl = ref.clearEl;
+	    var disableEl = ref.disableEl;
+
+	    if (self.props.form && el) {
+	      el.removeEventListener('submit', self.onSubmit, false);
+	    }
+
+	    if (clearEl) {
+	      clearEl.removeEventListener('click', self.onClearButtonClick);
+	    }
+
+	    if (disableEl) {
+	      disableEl.removeEventListener('click', self.onDisableButtonClick);
+	    }
+
+	    if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
 	  };
 
 	  F7Searchbar.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var ref = self.props;
 	    var init = ref.init;
+	    var inputEvents = ref.inputEvents;
 	    var searchContainer = ref.searchContainer;
 	    var searchIn = ref.searchIn;
 	    var searchItem = ref.searchItem;
@@ -43947,17 +44470,29 @@
 	    var hideDividers = ref.hideDividers;
 	    var hideGroups = ref.hideGroups;
 	    var form = ref.form;
-	    if (!init) { return; }
-	    var el = self.refs.el;
+	    var ref$1 = self.refs;
+	    var inputEl = ref$1.inputEl;
+	    var el = ref$1.el;
+	    var clearEl = ref$1.clearEl;
+	    var disableEl = ref$1.disableEl;
 
 	    if (form && el) {
-	      self.onSubmitBound = self.onSubmit.bind(self);
-	      el.addEventListener('submit', self.onSubmitBound, false);
+	      el.addEventListener('submit', self.onSubmit, false);
 	    }
 
+	    if (clearEl) {
+	      clearEl.addEventListener('click', self.onClearButtonClick);
+	    }
+
+	    if (disableEl) {
+	      disableEl.addEventListener('click', self.onDisableButtonClick);
+	    }
+
+	    if (!init) { return; }
 	    self.$f7ready(function () {
 	      var params = Utils$1.noUndefinedProps({
 	        el: self.refs.el,
+	        inputEvents: inputEvents,
 	        searchContainer: searchContainer,
 	        searchIn: searchIn,
 	        searchItem: searchItem,
@@ -44001,16 +44536,6 @@
 	      });
 	      self.f7Searchbar = self.$f7.searchbar.create(params);
 	    });
-	  };
-
-	  F7Searchbar.prototype.componentWillUnmount = function componentWillUnmount () {
-	    var self = this;
-
-	    if (self.props.form && self.refs.el) {
-	      self.refs.el.removeEventListener('submit', self.onSubmitBound, false);
-	    }
-
-	    if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -44060,6 +44585,11 @@
 	  clearButton: {
 	    type: Boolean,
 	    default: true
+	  },
+	  value: [String, Number, Array],
+	  inputEvents: {
+	    type: String,
+	    default: 'change input compositionend'
 	  },
 	  expandable: Boolean,
 	  searchContainer: [String, Object],
@@ -44128,7 +44658,7 @@
 
 	F7Searchbar.displayName = 'f7-searchbar';
 
-	var F7Segmented = (function (superclass) {
+	var F7Segmented = /*@__PURE__*/(function (superclass) {
 	  function F7Segmented(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -44184,7 +44714,7 @@
 
 	F7Segmented.displayName = 'f7-segmented';
 
-	var F7Sheet = (function (superclass) {
+	var F7Sheet = /*@__PURE__*/(function (superclass) {
 	  function F7Sheet(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -44194,7 +44724,7 @@
 	  F7Sheet.prototype = Object.create( superclass && superclass.prototype );
 	  F7Sheet.prototype.constructor = F7Sheet;
 
-	  var prototypeAccessors = { slots: { configurable: true },el: { configurable: true },refs: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7Sheet.prototype.onOpen = function onOpen (event) {
 	    this.dispatchEvent('sheet:open sheetOpen', event);
@@ -44274,7 +44804,7 @@
 	  F7Sheet.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
 	    if (self.f7Sheet) { self.f7Sheet.destroy(); }
-	    var el = self.el;
+	    var el = self.refs.el;
 	    if (!el) { return; }
 	    el.removeEventListener('popup:open', self.onOpenBound);
 	    el.removeEventListener('popup:opened', self.onOpenedBound);
@@ -44327,10 +44857,6 @@
 	    return __reactComponentSlots(this.props);
 	  };
 
-	  prototypeAccessors.el.get = function () {
-	    return __reactComponentEl(this);
-	  };
-
 	  F7Sheet.prototype.dispatchEvent = function dispatchEvent (events) {
 	    var args = [], len = arguments.length - 1;
 	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
@@ -44376,7 +44902,7 @@
 
 	F7Sheet.displayName = 'f7-sheet';
 
-	var F7Statusbar = (function (superclass) {
+	var F7Statusbar = /*@__PURE__*/(function (superclass) {
 	  function F7Statusbar(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -44417,7 +44943,7 @@
 
 	F7Statusbar.displayName = 'f7-statusbar';
 
-	var F7Stepper = (function (superclass) {
+	var F7Stepper = /*@__PURE__*/(function (superclass) {
 	  function F7Stepper(props, context) {
 	    var this$1 = this;
 
@@ -44425,9 +44951,9 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onInputBound = this$1.onInput.bind(this$1);
-	      this$1.onMinusClickBound = this$1.onMinusClick.bind(this$1);
-	      this$1.onPlusClickBound = this$1.onPlusClick.bind(this$1);
+	      this$1.onInput = this$1.onInput.bind(this$1);
+	      this$1.onMinusClick = this$1.onMinusClick.bind(this$1);
+	      this$1.onPlusClick = this$1.onPlusClick.bind(this$1);
 	    })();
 	  }
 
@@ -44534,13 +45060,16 @@
 	      var inputEl;
 	      {
 	        inputEl = react.createElement('input', {
+	          ref: function (__reactNode) {
+	            this$1.__reactRefs['inputEl'] = __reactNode;
+	          },
 	          type: inputType,
 	          min: inputType === 'number' ? min : undefined,
 	          max: inputType === 'number' ? max : undefined,
 	          step: inputType === 'number' ? step : undefined,
+	          onInput: self.onInput,
 	          value: value,
-	          readOnly: inputReadonly,
-	          onInput: self.onInput.bind(self)
+	          readOnly: inputReadonly
 	        });
 	      }
 	      inputWrapEl = react.createElement('div', {
@@ -44562,24 +45091,53 @@
 	      style: style,
 	      className: self.classes
 	    }, react.createElement('div', {
-	      className: 'stepper-button-minus',
-	      onClick: self.onMinusClickBound
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['minusEl'] = __reactNode;
+	      },
+	      className: 'stepper-button-minus'
 	    }), inputWrapEl, valueEl, react.createElement('div', {
-	      className: 'stepper-button-plus',
-	      onClick: self.onPlusClickBound
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['plusEl'] = __reactNode;
+	      },
+	      className: 'stepper-button-plus'
 	    }));
 	  };
 
 	  F7Stepper.prototype.componentWillUnmount = function componentWillUnmount () {
-	    if (!this.props.init) { return; }
+	    var self = this;
+	    var ref = self.refs;
+	    var minusEl = ref.minusEl;
+	    var plusEl = ref.plusEl;
 
-	    if (this.f7Stepper && this.f7Stepper.destroy) {
-	      this.f7Stepper.destroy();
+	    if (minusEl) {
+	      minusEl.removeEventListener('click', self.onMinusClick);
+	    }
+
+	    if (plusEl) {
+	      plusEl.removeEventListener('click', self.onPlusClick);
+	    }
+
+	    if (!self.props.init) { return; }
+
+	    if (self.f7Stepper && self.f7Stepper.destroy) {
+	      self.f7Stepper.destroy();
 	    }
 	  };
 
 	  F7Stepper.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
+	    var ref = self.refs;
+	    var minusEl = ref.minusEl;
+	    var plusEl = ref.plusEl;
+
+	    if (minusEl) {
+	      minusEl.addEventListener('click', self.onMinusClick);
+	    }
+
+	    if (plusEl) {
+	      plusEl.addEventListener('click', self.onPlusClick);
+	    }
+
 	    if (!self.props.init) { return; }
 	    self.$f7ready(function (f7) {
 	      var ref = self.props;
@@ -44717,7 +45275,7 @@
 
 	F7Stepper.displayName = 'f7-stepper';
 
-	var F7Subnavbar = (function (superclass) {
+	var F7Subnavbar = /*@__PURE__*/(function (superclass) {
 	  function F7Subnavbar(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -44774,7 +45332,7 @@
 
 	F7Subnavbar.displayName = 'f7-subnavbar';
 
-	var F7SwipeoutActions = (function (superclass) {
+	var F7SwipeoutActions = /*@__PURE__*/(function (superclass) {
 	  function F7SwipeoutActions(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -44828,22 +45386,31 @@
 
 	F7SwipeoutActions.displayName = 'f7-swipeout-actions';
 
-	var F7SwipeoutButton = (function (superclass) {
+	var F7SwipeoutButton = /*@__PURE__*/(function (superclass) {
 	  function F7SwipeoutButton(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
 	  }
 
 	  if ( superclass ) F7SwipeoutButton.__proto__ = superclass;
 	  F7SwipeoutButton.prototype = Object.create( superclass && superclass.prototype );
 	  F7SwipeoutButton.prototype.constructor = F7SwipeoutButton;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
 	  F7SwipeoutButton.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('click', event);
 	  };
 
 	  F7SwipeoutButton.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var props = this.props;
 	    var className = props.className;
 	    var id = props.id;
@@ -44860,13 +45427,23 @@
 	      'swipeout-close': close
 	    }, Mixins.colorClasses(props));
 	    return react.createElement('a', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
 	      href: href || '#',
 	      id: id,
 	      style: style,
 	      'data-confirm': confirmText || undefined,
-	      className: classes,
-	      onClick: this.onClick.bind(this)
+	      className: classes
 	    }, this.slots['default'], !this.slots.default && text);
+	  };
+
+	  F7SwipeoutButton.prototype.componentWillUnmount = function componentWillUnmount () {
+	    this.refs.el.removeEventListener('click', this.onClick);
+	  };
+
+	  F7SwipeoutButton.prototype.componentDidMount = function componentDidMount () {
+	    this.refs.el.addEventListener('click', this.onClick);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -44879,6 +45456,12 @@
 
 	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
 	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
 
 	  Object.defineProperties( F7SwipeoutButton.prototype, prototypeAccessors );
 
@@ -44899,7 +45482,7 @@
 
 	F7SwipeoutButton.displayName = 'f7-swipeout-button';
 
-	var F7SwiperSlide = (function (superclass) {
+	var F7SwiperSlide = /*@__PURE__*/(function (superclass) {
 	  function F7SwiperSlide(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -44944,7 +45527,7 @@
 
 	F7SwiperSlide.displayName = 'f7-swiper-slide';
 
-	var F7Swiper = (function (superclass) {
+	var F7Swiper = /*@__PURE__*/(function (superclass) {
 	  function F7Swiper(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -45129,7 +45712,7 @@
 
 	F7Swiper.displayName = 'f7-swiper';
 
-	var F7Tab = (function (superclass) {
+	var F7Tab = /*@__PURE__*/(function (superclass) {
 	  function F7Tab(props, context) {
 	    var this$1 = this;
 
@@ -45269,7 +45852,7 @@
 
 	F7Tab.displayName = 'f7-tab';
 
-	var F7Tabs = (function (superclass) {
+	var F7Tabs = /*@__PURE__*/(function (superclass) {
 	  function F7Tabs(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -45289,11 +45872,13 @@
 	    var style = props.style;
 	    var className = props.className;
 	    var routable = props.routable;
-	    var classes = Utils$1.classNames(className, {
+	    var classes = Utils$1.classNames(className, Mixins.colorClasses(props));
+	    var tabsClasses = Utils$1.classNames({
+	      'tabs': true,
 	      'tabs-animated-wrap': animated,
 	      'tabs-swipeable-wrap': swipeable,
 	      'tabs-routable': routable
-	    }, Mixins.colorClasses(props));
+	    });
 
 	    if (animated || swipeable) {
 	      return react.createElement('div', {
@@ -45301,14 +45886,14 @@
 	        style: style,
 	        className: classes
 	      }, react.createElement('div', {
-	        className: 'tabs'
+	        className: tabsClasses
 	      }, this.slots['default']));
 	    }
 
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
-	      className: Utils$1.classNames('tabs', classes)
+	      className: Utils$1.classNames(tabsClasses, classes)
 	    }, this.slots['default']);
 	  };
 
@@ -45332,7 +45917,7 @@
 
 	F7Tabs.displayName = 'f7-tabs';
 
-	var F7Toolbar = (function (superclass) {
+	var F7Toolbar = /*@__PURE__*/(function (superclass) {
 	  function F7Toolbar(props, context) {
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
@@ -45442,7 +46027,7 @@
 
 	F7Toolbar.displayName = 'f7-toolbar';
 
-	var F7View = (function (superclass) {
+	var F7View = /*@__PURE__*/(function (superclass) {
 	  function F7View(props, context) {
 	    var this$1 = this;
 
@@ -45652,6 +46237,11 @@
 	  iosSwipeBackAnimateOpacity: Boolean,
 	  iosSwipeBackActiveArea: Number,
 	  iosSwipeBackThreshold: Number,
+	  mdSwipeBack: Boolean,
+	  mdSwipeBackAnimateShadow: Boolean,
+	  mdSwipeBackAnimateOpacity: Boolean,
+	  mdSwipeBackActiveArea: Number,
+	  mdSwipeBackThreshold: Number,
 	  pushState: Boolean,
 	  pushStateRoot: String,
 	  pushStateAnimate: Boolean,
@@ -45677,7 +46267,7 @@
 
 	F7View.displayName = 'f7-view';
 
-	var F7Views = (function (superclass) {
+	var F7Views = /*@__PURE__*/(function (superclass) {
 	  function F7Views(props, context) {
 	    superclass.call(this, props, context);
 	  }
@@ -45780,6 +46370,13 @@
 	    removePage: function removePage($pageEl) {
 	      if (!$pageEl) { return; }
 	      var router = this;
+	      var f7Page;
+	      if ('length' in $pageEl) { f7Page = $pageEl[0].f7Page; }
+	      else { f7Page = $pageEl.f7Page; }
+	      if (f7Page && f7Page.route && f7Page.route.route && f7Page.route.route.keepAlive) {
+	        router.app.$($pageEl).remove();
+	        return;
+	      }
 	      var routerComponent;
 	      f7.routers.views.forEach(function (data) {
 	        if (data.el && data.el === router.el) {
@@ -46013,7 +46610,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.5.1
+	 * Framework7 React 3.6.0
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -46021,7 +46618,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: November 2, 2018
+	 * Released on: December 7, 2018
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -46174,6 +46771,12 @@
 	      react.createElement( ListItem, { link: "/form-storage/", title: "Form Storage" },
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
+	      react.createElement( ListItem, { link: "/gauge/", title: "Gauge" },
+	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	      ),
+	      react.createElement( ListItem, { link: "/grid/", title: "Grid / Layout Grid" },
+	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	      ),
 	      react.createElement( ListItem, { link: "/icons/", title: "Icons" },
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
@@ -46181,12 +46784,6 @@
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
 	      react.createElement( ListItem, { link: "/inputs/", title: "Inputs" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/gauge/", title: "Gauge" },
-	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
-	      ),
-	      react.createElement( ListItem, { link: "/grid/", title: "Grid / Layout Grid" },
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
 	      react.createElement( ListItem, { link: "/lazy-load/", title: "Lazy Load" },
@@ -46434,7 +47031,7 @@
 	  )
 	); }
 
-	var defaultExport = (function (superclass) {
+	var defaultExport = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 
@@ -46583,7 +47180,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$1 = (function (superclass) {
+	var defaultExport$1 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -47299,7 +47896,7 @@
 	  )
 	); }
 
-	var defaultExport$2 = (function (superclass) {
+	var defaultExport$2 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -47446,7 +48043,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$3 = (function (superclass) {
+	var defaultExport$3 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -47735,7 +48332,7 @@
 	  )
 	); }
 
-	var defaultExport$4 = (function (superclass) {
+	var defaultExport$4 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 	    this.deleteChipBound = this.deleteChip.bind(this);
@@ -48613,7 +49210,7 @@
 	  )
 	); }
 
-	var defaultExport$5 = (function (superclass) {
+	var defaultExport$5 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -49062,7 +49659,7 @@
 	  )
 	); }
 
-	var defaultExport$6 = (function (superclass) {
+	var defaultExport$6 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport() {
 	    superclass.call(this);
 
@@ -49332,7 +49929,7 @@
 	  )
 	); }
 
-	var defaultExport$7 = (function (superclass) {
+	var defaultExport$7 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -49968,7 +50565,7 @@
 	  )
 	); }
 
-	var defaultExport$8 = (function (superclass) {
+	var defaultExport$8 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -50154,7 +50751,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$9 = (function (superclass) {
+	var defaultExport$9 = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -50224,7 +50821,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$a = (function (superclass) {
+	var defaultExport$a = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -50273,7 +50870,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$b = (function (superclass) {
+	var defaultExport$b = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -50604,7 +51201,7 @@
 	  )
 	); }
 
-	var defaultExport$c = (function (superclass) {
+	var defaultExport$c = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -50727,7 +51324,7 @@
 	  )
 	); }
 
-	var defaultExport$d = (function (superclass) {
+	var defaultExport$d = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -50808,7 +51405,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$e = (function (superclass) {
+	var defaultExport$e = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -51042,7 +51639,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$f = (function (superclass) {
+	var defaultExport$f = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -51135,7 +51732,7 @@
 	  )
 	); }
 
-	var defaultExport$g = (function (superclass) {
+	var defaultExport$g = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -51232,7 +51829,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$h = (function (superclass) {
+	var defaultExport$h = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -51380,7 +51977,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$i = (function (superclass) {
+	var defaultExport$i = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -51483,7 +52080,7 @@
 	  )
 	); }
 
-	var defaultExport$j = (function (superclass) {
+	var defaultExport$j = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -51674,7 +52271,7 @@
 	  )
 	); }
 
-	var defaultExport$k = (function (superclass) {
+	var defaultExport$k = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -51871,7 +52468,7 @@
 	  )
 	); }
 
-	var defaultExport$l = (function (superclass) {
+	var defaultExport$l = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -51903,7 +52500,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$m = (function (superclass) {
+	var defaultExport$m = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -52590,7 +53187,7 @@
 
 	); }
 
-	var defaultExport$n = (function (superclass) {
+	var defaultExport$n = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -52848,7 +53445,7 @@
 
 	); }
 
-	var defaultExport$o = (function (superclass) {
+	var defaultExport$o = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -53258,7 +53855,7 @@
 	  )
 	); }
 
-	var defaultExport$p = (function (superclass) {
+	var defaultExport$p = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -53468,7 +54065,7 @@
 	  )
 	); }
 
-	var defaultExport$q = (function (superclass) {
+	var defaultExport$q = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -53513,7 +54110,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$r = (function (superclass) {
+	var defaultExport$r = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -53587,7 +54184,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$s = (function (superclass) {
+	var defaultExport$s = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -53661,7 +54258,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$t = (function (superclass) {
+	var defaultExport$t = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -53758,7 +54355,7 @@
 	  )
 	); }
 
-	var defaultExport$u = (function (superclass) {
+	var defaultExport$u = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -54908,7 +55505,7 @@
 	  )
 	); }
 
-	var defaultExport$v = (function (superclass) {
+	var defaultExport$v = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -54953,7 +55550,7 @@
 	          react.createElement( 'ul', null,
 	            this.state.vlData.items.map(function (item, index) { return (
 	              react.createElement( ListItem, {
-	                key: index, mediaItem: true, link: "#", title: item.title, subtitle: item.subtitle, style: {top: ((this$1.state.vlData.topPosition) + "px")} })
+	                key: index, mediaItem: true, link: "#", title: item.title, subtitle: item.subtitle, style: {top: ((this$1.state.vlData.topPosition) + "px")}, virtualListIndex: this$1.state.items.indexOf(item) })
 	            ); })
 	          )
 	        )
@@ -54974,7 +55571,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$w = (function (superclass) {
+	var defaultExport$w = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 

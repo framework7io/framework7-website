@@ -1,5 +1,5 @@
 /**
- * Framework7 3.5.1
+ * Framework7 3.6.0
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: November 2, 2018
+ * Released on: December 7, 2018
  */
 
 (function (global, factory) {
@@ -806,26 +806,22 @@
 
   // Classes and attributes
   function addClass(className) {
-    var this$1 = this;
-
     if (typeof className === 'undefined') {
       return this;
     }
     var classes = className.split(' ');
     for (var i = 0; i < classes.length; i += 1) {
       for (var j = 0; j < this.length; j += 1) {
-        if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.add(classes[i]); }
+        if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.add(classes[i]); }
       }
     }
     return this;
   }
   function removeClass(className) {
-    var this$1 = this;
-
     var classes = className.split(' ');
     for (var i = 0; i < classes.length; i += 1) {
       for (var j = 0; j < this.length; j += 1) {
-        if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.remove(classes[i]); }
+        if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.remove(classes[i]); }
       }
     }
     return this;
@@ -835,19 +831,16 @@
     return this[0].classList.contains(className);
   }
   function toggleClass(className) {
-    var this$1 = this;
-
     var classes = className.split(' ');
     for (var i = 0; i < classes.length; i += 1) {
       for (var j = 0; j < this.length; j += 1) {
-        if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.toggle(classes[i]); }
+        if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.toggle(classes[i]); }
       }
     }
     return this;
   }
   function attr(attrs, value) {
     var arguments$1 = arguments;
-    var this$1 = this;
 
     if (arguments.length === 1 && typeof attrs === 'string') {
       // Get attr
@@ -859,13 +852,13 @@
     for (var i = 0; i < this.length; i += 1) {
       if (arguments$1.length === 2) {
         // String
-        this$1[i].setAttribute(attrs, value);
+        this[i].setAttribute(attrs, value);
       } else {
         // Object
         // eslint-disable-next-line
         for (var attrName in attrs) {
-          this$1[i][attrName] = attrs[attrName];
-          this$1[i].setAttribute(attrName, attrs[attrName]);
+          this[i][attrName] = attrs[attrName];
+          this[i].setAttribute(attrName, attrs[attrName]);
         }
       }
     }
@@ -873,17 +866,14 @@
   }
   // eslint-disable-next-line
   function removeAttr(attr) {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      this$1[i].removeAttribute(attr);
+      this[i].removeAttribute(attr);
     }
     return this;
   }
   // eslint-disable-next-line
   function prop(props, value) {
     var arguments$1 = arguments;
-    var this$1 = this;
 
     if (arguments.length === 1 && typeof props === 'string') {
       // Get prop
@@ -893,12 +883,12 @@
       for (var i = 0; i < this.length; i += 1) {
         if (arguments$1.length === 2) {
           // String
-          this$1[i][props] = value;
+          this[i][props] = value;
         } else {
           // Object
           // eslint-disable-next-line
           for (var propName in props) {
-            this$1[i][propName] = props[propName];
+            this[i][propName] = props[propName];
           }
         }
       }
@@ -906,8 +896,6 @@
     }
   }
   function data(key, value) {
-    var this$1 = this;
-
     var el;
     if (typeof value === 'undefined') {
       el = this[0];
@@ -928,17 +916,15 @@
 
     // Set value
     for (var i = 0; i < this.length; i += 1) {
-      el = this$1[i];
+      el = this[i];
       if (!el.dom7ElementDataStorage) { el.dom7ElementDataStorage = {}; }
       el.dom7ElementDataStorage[key] = value;
     }
     return this;
   }
   function removeData(key) {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      var el = this$1[i];
+      var el = this[i];
       if (el.dom7ElementDataStorage && el.dom7ElementDataStorage[key]) {
         el.dom7ElementDataStorage[key] = null;
         delete el.dom7ElementDataStorage[key];
@@ -1002,23 +988,19 @@
   // Transforms
   // eslint-disable-next-line
   function transform(transform) {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      var elStyle = this$1[i].style;
+      var elStyle = this[i].style;
       elStyle.webkitTransform = transform;
       elStyle.transform = transform;
     }
     return this;
   }
   function transition(duration) {
-    var this$1 = this;
-
     if (typeof duration !== 'string') {
       duration = duration + "ms"; // eslint-disable-line
     }
     for (var i = 0; i < this.length; i += 1) {
-      var elStyle = this$1[i].style;
+      var elStyle = this[i].style;
       elStyle.webkitTransitionDuration = duration;
       elStyle.transitionDuration = duration;
     }
@@ -1026,7 +1008,6 @@
   }
   // Events
   function on() {
-    var this$1 = this;
     var assign;
 
     var args = [], len = arguments.length;
@@ -1066,7 +1047,7 @@
     var events = eventType.split(' ');
     var j;
     for (var i = 0; i < this.length; i += 1) {
-      var el = this$1[i];
+      var el = this[i];
       if (!targetSelector) {
         for (j = 0; j < events.length; j += 1) {
           var event = events[j];
@@ -1095,7 +1076,6 @@
     return this;
   }
   function off() {
-    var this$1 = this;
     var assign;
 
     var args = [], len = arguments.length;
@@ -1114,7 +1094,7 @@
     for (var i = 0; i < events.length; i += 1) {
       var event = events[i];
       for (var j = 0; j < this.length; j += 1) {
-        var el = this$1[j];
+        var el = this[j];
         var handlers = (void 0);
         if (!targetSelector && el.dom7Listeners) {
           handlers = el.dom7Listeners[event];
@@ -1161,7 +1141,6 @@
     return dom.on(eventName, targetSelector, proxy, capture);
   }
   function trigger() {
-    var this$1 = this;
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -1170,7 +1149,7 @@
     for (var i = 0; i < events.length; i += 1) {
       var event = events[i];
       for (var j = 0; j < this.length; j += 1) {
-        var el = this$1[j];
+        var el = this[j];
         var evt = (void 0);
         try {
           evt = new win.CustomEvent(event, {
@@ -1292,18 +1271,14 @@
     return null;
   }
   function hide() {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      this$1[i].style.display = 'none';
+      this[i].style.display = 'none';
     }
     return this;
   }
   function show() {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      var el = this$1[i];
+      var el = this[i];
       if (el.style.display === 'none') {
         el.style.display = '';
       }
@@ -1319,8 +1294,6 @@
     return {};
   }
   function css(props, value) {
-    var this$1 = this;
-
     var i;
     if (arguments.length === 1) {
       if (typeof props === 'string') {
@@ -1329,7 +1302,7 @@
         for (i = 0; i < this.length; i += 1) {
           // eslint-disable-next-line
           for (var prop in props) {
-            this$1[i].style[prop] = props[prop];
+            this[i].style[prop] = props[prop];
           }
         }
         return this;
@@ -1337,7 +1310,7 @@
     }
     if (arguments.length === 2 && typeof props === 'string') {
       for (i = 0; i < this.length; i += 1) {
-        this$1[i].style[props] = value;
+        this[i].style[props] = value;
       }
       return this;
     }
@@ -1346,42 +1319,36 @@
 
   // Dom manipulation
   function toArray() {
-    var this$1 = this;
-
     var arr = [];
     for (var i = 0; i < this.length; i += 1) {
-      arr.push(this$1[i]);
+      arr.push(this[i]);
     }
     return arr;
   }
   // Iterate over the collection passing elements to `callback`
   function each(callback) {
-    var this$1 = this;
-
     // Don't bother continuing without a callback
     if (!callback) { return this; }
     // Iterate over the current collection
     for (var i = 0; i < this.length; i += 1) {
       // If the callback returns false
-      if (callback.call(this$1[i], i, this$1[i]) === false) {
+      if (callback.call(this[i], i, this[i]) === false) {
         // End the loop early
-        return this$1;
+        return this;
       }
     }
     // Return `this` to allow chained DOM operations
     return this;
   }
   function forEach(callback) {
-    var this$1 = this;
-
     // Don't bother continuing without a callback
     if (!callback) { return this; }
     // Iterate over the current collection
     for (var i = 0; i < this.length; i += 1) {
       // If the callback returns false
-      if (callback.call(this$1[i], this$1[i], i) === false) {
+      if (callback.call(this[i], this[i], i) === false) {
         // End the loop early
-        return this$1;
+        return this;
       }
     }
     // Return `this` to allow chained DOM operations
@@ -1405,21 +1372,17 @@
   }
   // eslint-disable-next-line
   function html(html) {
-    var this$1 = this;
-
     if (typeof html === 'undefined') {
       return this[0] ? this[0].innerHTML : undefined;
     }
 
     for (var i = 0; i < this.length; i += 1) {
-      this$1[i].innerHTML = html;
+      this[i].innerHTML = html;
     }
     return this;
   }
   // eslint-disable-next-line
   function text(text) {
-    var this$1 = this;
-
     if (typeof text === 'undefined') {
       if (this[0]) {
         return this[0].textContent.trim();
@@ -1428,7 +1391,7 @@
     }
 
     for (var i = 0; i < this.length; i += 1) {
-      this$1[i].textContent = text;
+      this[i].textContent = text;
     }
     return this;
   }
@@ -1460,10 +1423,8 @@
     return false;
   }
   function indexOf(el) {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      if (this$1[i] === el) { return i; }
+      if (this[i] === el) { return i; }
     }
     return -1;
   }
@@ -1496,7 +1457,6 @@
     return new Dom7([this[index]]);
   }
   function append() {
-    var this$1 = this;
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -1509,14 +1469,14 @@
           var tempDiv = doc.createElement('div');
           tempDiv.innerHTML = newChild;
           while (tempDiv.firstChild) {
-            this$1[i].appendChild(tempDiv.firstChild);
+            this[i].appendChild(tempDiv.firstChild);
           }
         } else if (newChild instanceof Dom7) {
           for (var j = 0; j < newChild.length; j += 1) {
-            this$1[i].appendChild(newChild[j]);
+            this[i].appendChild(newChild[j]);
           }
         } else {
-          this$1[i].appendChild(newChild);
+          this[i].appendChild(newChild);
         }
       }
     }
@@ -1529,8 +1489,6 @@
     return this;
   }
   function prepend(newChild) {
-    var this$1 = this;
-
     var i;
     var j;
     for (i = 0; i < this.length; i += 1) {
@@ -1538,14 +1496,14 @@
         var tempDiv = doc.createElement('div');
         tempDiv.innerHTML = newChild;
         for (j = tempDiv.childNodes.length - 1; j >= 0; j -= 1) {
-          this$1[i].insertBefore(tempDiv.childNodes[j], this$1[i].childNodes[0]);
+          this[i].insertBefore(tempDiv.childNodes[j], this[i].childNodes[0]);
         }
       } else if (newChild instanceof Dom7) {
         for (j = 0; j < newChild.length; j += 1) {
-          this$1[i].insertBefore(newChild[j], this$1[i].childNodes[0]);
+          this[i].insertBefore(newChild[j], this[i].childNodes[0]);
         }
       } else {
-        this$1[i].insertBefore(newChild, this$1[i].childNodes[0]);
+        this[i].insertBefore(newChild, this[i].childNodes[0]);
       }
     }
     return this;
@@ -1556,29 +1514,25 @@
     return this;
   }
   function insertBefore(selector) {
-    var this$1 = this;
-
     var before = $(selector);
     for (var i = 0; i < this.length; i += 1) {
       if (before.length === 1) {
-        before[0].parentNode.insertBefore(this$1[i], before[0]);
+        before[0].parentNode.insertBefore(this[i], before[0]);
       } else if (before.length > 1) {
         for (var j = 0; j < before.length; j += 1) {
-          before[j].parentNode.insertBefore(this$1[i].cloneNode(true), before[j]);
+          before[j].parentNode.insertBefore(this[i].cloneNode(true), before[j]);
         }
       }
     }
   }
   function insertAfter(selector) {
-    var this$1 = this;
-
     var after = $(selector);
     for (var i = 0; i < this.length; i += 1) {
       if (after.length === 1) {
-        after[0].parentNode.insertBefore(this$1[i], after[0].nextSibling);
+        after[0].parentNode.insertBefore(this[i], after[0].nextSibling);
       } else if (after.length > 1) {
         for (var j = 0; j < after.length; j += 1) {
-          after[j].parentNode.insertBefore(this$1[i].cloneNode(true), after[j].nextSibling);
+          after[j].parentNode.insertBefore(this[i].cloneNode(true), after[j].nextSibling);
         }
       }
     }
@@ -1642,26 +1596,22 @@
     return this.nextAll(selector).add(this.prevAll(selector));
   }
   function parent(selector) {
-    var this$1 = this;
-
     var parents = []; // eslint-disable-line
     for (var i = 0; i < this.length; i += 1) {
-      if (this$1[i].parentNode !== null) {
+      if (this[i].parentNode !== null) {
         if (selector) {
-          if ($(this$1[i].parentNode).is(selector)) { parents.push(this$1[i].parentNode); }
+          if ($(this[i].parentNode).is(selector)) { parents.push(this[i].parentNode); }
         } else {
-          parents.push(this$1[i].parentNode);
+          parents.push(this[i].parentNode);
         }
       }
     }
     return $(unique(parents));
   }
   function parents(selector) {
-    var this$1 = this;
-
     var parents = []; // eslint-disable-line
     for (var i = 0; i < this.length; i += 1) {
-      var parent = this$1[i].parentNode; // eslint-disable-line
+      var parent = this[i].parentNode; // eslint-disable-line
       while (parent) {
         if (selector) {
           if ($(parent).is(selector)) { parents.push(parent); }
@@ -1684,11 +1634,9 @@
     return closest;
   }
   function find(selector) {
-    var this$1 = this;
-
     var foundElements = [];
     for (var i = 0; i < this.length; i += 1) {
-      var found = this$1[i].querySelectorAll(selector);
+      var found = this[i].querySelectorAll(selector);
       for (var j = 0; j < found.length; j += 1) {
         foundElements.push(found[j]);
       }
@@ -1696,11 +1644,9 @@
     return new Dom7(foundElements);
   }
   function children(selector) {
-    var this$1 = this;
-
     var children = []; // eslint-disable-line
     for (var i = 0; i < this.length; i += 1) {
-      var childNodes = this$1[i].childNodes;
+      var childNodes = this[i].childNodes;
 
       for (var j = 0; j < childNodes.length; j += 1) {
         if (!selector) {
@@ -1713,10 +1659,8 @@
     return new Dom7(unique(children));
   }
   function remove() {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      if (this$1[i].parentNode) { this$1[i].parentNode.removeChild(this$1[i]); }
+      if (this[i].parentNode) { this[i].parentNode.removeChild(this[i]); }
     }
     return this;
   }
@@ -1740,10 +1684,8 @@
     return dom;
   }
   function empty() {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      var el = this$1[i];
+      var el = this[i];
       if (el.nodeType === 1) {
         for (var j = 0; j < el.childNodes.length; j += 1) {
           if (el.childNodes[j].parentNode) {
@@ -2153,7 +2095,6 @@
 
   var noTrigger = ('resize scroll').split(' ');
   function eventShortcut(name) {
-    var this$1 = this;
     var ref;
 
     var args = [], len = arguments.length - 1;
@@ -2161,9 +2102,9 @@
     if (typeof args[0] === 'undefined') {
       for (var i = 0; i < this.length; i += 1) {
         if (noTrigger.indexOf(name) < 0) {
-          if (name in this$1[i]) { this$1[i][name](); }
+          if (name in this[i]) { this[i][name](); }
           else {
-            $(this$1[i]).trigger(name);
+            $(this[i]).trigger(name);
           }
         }
       }
@@ -2893,7 +2834,7 @@
     // Windows
     if (windowsPhone) {
       device.os = 'windows';
-      device.osVersion = windows[2];
+      device.osVersion = windowsPhone[2];
       device.windowsPhone = true;
     }
     // Android
@@ -3426,7 +3367,7 @@
     });
   }
 
-  var Framework7 = (function (Framework7Class$$1) {
+  var Framework7 = /*@__PURE__*/(function (Framework7Class$$1) {
     function Framework7(params) {
       Framework7Class$$1.call(this, params);
 
@@ -5849,9 +5790,9 @@
     if ( forwardOptions === void 0 ) forwardOptions = {};
 
     var router = this;
+    var $el = $(el);
     var app = router.app;
     var view = router.view;
-
     var options = Utils.extend(false, {
       animate: router.params.animate,
       pushState: true,
@@ -5900,13 +5841,19 @@
     var separateNavbar = router.separateNavbar;
 
     var $viewEl = router.$el;
-    var $newPage = $(el);
+    var $newPage = $el;
     var reload = options.reloadPrevious || options.reloadCurrent || options.reloadAll;
     var $oldPage;
 
     var $navbarEl;
     var $newNavbarInner;
     var $oldNavbarInner;
+
+    router.allowPageChange = false;
+    if ($newPage.length === 0) {
+      router.allowPageChange = true;
+      return router;
+    }
 
     if ($newPage.length) {
       // Remove theme elements
@@ -5920,17 +5867,18 @@
         if ($newNavbarInner.length > 0) {
           $newPage.children('.navbar').remove();
         }
-        if ($newNavbarInner.length === 0 && $newPage[0].f7Page) {
+        if ($newNavbarInner.length === 0 && $newPage[0] && $newPage[0].f7Page) {
           // Try from pageData
           $newNavbarInner = $newPage[0].f7Page.$navbarEl;
         }
       }
     }
 
-    router.allowPageChange = false;
-    if ($newPage.length === 0) {
-      router.allowPageChange = true;
-      return router;
+    // Save Keep Alive Cache
+    if (options.route && options.route.route && options.route.route.keepAlive && !options.route.route.keepAliveData) {
+      options.route.route.keepAliveData = {
+        pageEl: $el[0],
+      };
     }
 
     // Pages In View
@@ -5962,7 +5910,8 @@
     $newPage
       .addClass(("page-" + newPagePosition))
       .removeClass('stacked')
-      .trigger('page:unstack');
+      .trigger('page:unstack')
+      .trigger('page:position', { position: newPagePosition });
 
     if (dynamicNavbar && $newNavbarInner.length) {
       $newNavbarInner
@@ -6103,6 +6052,9 @@
       }
     }
     if (!newPageInDom) {
+      router.pageCallback('mounted', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
+    } else if (options.route && options.route.route && options.route.route.keepAlive && !$newPage[0].f7PageMounted) {
+      $newPage[0].f7PageMounted = true;
       router.pageCallback('mounted', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
     }
 
@@ -6447,10 +6399,11 @@
 
     var options = {};
     if (route.route.options) {
-      Utils.extend(options, route.route.options, navigateOptions, { route: route });
+      Utils.extend(options, route.route.options, navigateOptions);
     } else {
-      Utils.extend(options, navigateOptions, { route: route });
+      Utils.extend(options, navigateOptions);
     }
+    options.route = route;
 
     if (options && options.context) {
       route.context = options.context;
@@ -6465,12 +6418,16 @@
           router.modalLoad(modalLoadProp, route, options);
         }
       });
+      if (route.route.keepAlive && route.route.keepAliveData) {
+        router.load({ el: route.route.keepAliveData.pageEl }, options, false);
+        routerLoaded = true;
+      }
       ('url content component pageName el componentUrl template templateUrl').split(' ').forEach(function (pageLoadProp) {
         var obj;
 
         if (route.route[pageLoadProp] && !routerLoaded) {
           routerLoaded = true;
-          router.load(( obj = {}, obj[pageLoadProp] = route.route[pageLoadProp], obj ), options);
+          router.load(( obj = {}, obj[pageLoadProp] = route.route[pageLoadProp], obj ), options, false);
         }
       });
       if (routerLoaded) { return; }
@@ -6718,10 +6675,12 @@
       }
     }
 
+    var hasContentLoadProp;
     ('url content component el componentUrl template templateUrl').split(' ').forEach(function (tabLoadProp) {
       var obj;
 
       if (tabRoute[tabLoadProp]) {
+        hasContentLoadProp = true;
         loadTab(( obj = {}, obj[tabLoadProp] = tabRoute[tabLoadProp], obj ), options);
       }
     });
@@ -6735,6 +6694,8 @@
     }
     if (tabRoute.async) {
       tabRoute.async.call(router, currentRoute, previousRoute, asyncResolve, asyncReject);
+    } else if (!hasContentLoadProp) {
+      router.allowPageChange = true;
     }
 
     return router;
@@ -6962,6 +6923,7 @@
 
   function backward(el, backwardOptions) {
     var router = this;
+    var $el = $(el);
     var app = router.app;
     var view = router.view;
 
@@ -6973,7 +6935,7 @@
     var dynamicNavbar = router.dynamicNavbar;
     var separateNavbar = router.separateNavbar;
 
-    var $newPage = $(el);
+    var $newPage = $el;
     var $oldPage = router.$el.children('.page-current');
 
     if ($newPage.length) {
@@ -6992,7 +6954,7 @@
         if ($newNavbarInner.length > 0) {
           $newPage.children('.navbar').remove();
         }
-        if ($newNavbarInner.length === 0 && $newPage[0].f7Page) {
+        if ($newNavbarInner.length === 0 && $newPage[0] && $newPage[0].f7Page) {
           // Try from pageData
           $newNavbarInner = $newPage[0].f7Page.$navbarEl;
         }
@@ -7011,12 +6973,20 @@
     // Remove theme elements
     router.removeThemeElements($newPage);
 
+    // Save Keep Alive Cache
+    if (options.route && options.route.route && options.route.route.keepAlive && !options.route.route.keepAliveData) {
+      options.route.route.keepAliveData = {
+        pageEl: $el[0],
+      };
+    }
+
     // New Page
     $newPage
       .addClass('page-previous')
       .removeClass('stacked')
       .removeAttr('aria-hidden')
-      .trigger('page:unstack');
+      .trigger('page:unstack')
+      .trigger('page:position', { position: 'previous' });
 
     if (dynamicNavbar && $newNavbarInner.length > 0) {
       $newNavbarInner
@@ -7024,7 +6994,6 @@
         .removeClass('stacked')
         .removeAttr('aria-hidden');
     }
-
 
     // Remove previous page in case of "forced"
     var backIndex;
@@ -7112,6 +7081,9 @@
         }
       }
       if (!newPageInDom) {
+        router.pageCallback('mounted', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
+      } else if (options.route && options.route.route && options.route.route.keepAlive && !$newPage[0].f7PageMounted) {
+        $newPage[0].f7PageMounted = true;
         router.pageCallback('mounted', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
       }
     }
@@ -7514,10 +7486,11 @@
 
     var options = {};
     if (route.route.options) {
-      Utils.extend(options, route.route.options, navigateOptions, { route: route });
+      Utils.extend(options, route.route.options, navigateOptions);
     } else {
-      Utils.extend(options, navigateOptions, { route: route });
+      Utils.extend(options, navigateOptions);
     }
+    options.route = route;
 
     if (options && options.context) {
       route.context = options.context;
@@ -7538,6 +7511,10 @@
     }
     function resolve() {
       var routerLoaded = false;
+      if (route.route.keepAlive && route.route.keepAliveData) {
+        router.loadBack({ el: route.route.keepAliveData.pageEl }, options);
+        routerLoaded = true;
+      }
       ('url content component pageName el componentUrl template templateUrl').split(' ').forEach(function (pageLoadProp) {
         var obj;
 
@@ -7601,16 +7578,15 @@
     return router;
   }
 
-  function clearPreviousHistory() {
+  function clearPreviousPages() {
     var router = this;
     var app = router.app;
     var separateNavbar = router.separateNavbar;
-    var url = router.history[router.history.length - 1];
 
     var $currentPageEl = $(router.currentPageEl);
 
     var $pagesToRemove = router.$el
-      .children('.page:not(.stacked)')
+      .children('.page')
       .filter(function (index, pageInView) { return pageInView !== $currentPageEl[0]; });
 
     $pagesToRemove.each(function (index, pageEl) {
@@ -7630,13 +7606,20 @@
         }
       }
     });
+  }
+
+  function clearPreviousHistory() {
+    var router = this;
+    var url = router.history[router.history.length - 1];
+
+    router.clearPreviousPages();
 
     router.history = [url];
     router.view.history = [url];
     router.saveHistory();
   }
 
-  var Router = (function (Framework7Class$$1) {
+  var Router = /*@__PURE__*/(function (Framework7Class$$1) {
     function Router(app, view) {
       Framework7Class$$1.call(this, {}, [typeof view === 'undefined' ? app : view]);
       var router = this;
@@ -8041,7 +8024,13 @@
     };
 
     Router.prototype.removePage = function removePage (el) {
+      var $el = $(el);
+      var f7Page = $el && $el[0] && $el[0].f7Page;
       var router = this;
+      if (f7Page && f7Page.route && f7Page.route.route && f7Page.route.route.keepAlive) {
+        $el.remove();
+        return;
+      }
       router.removeEl(el);
     };
 
@@ -8619,9 +8608,6 @@
         pageFrom: pageFrom,
       };
 
-      if ($navbarEl && $navbarEl[0]) {
-        $navbarEl[0].f7Page = page;
-      }
       $pageEl[0].f7Page = page;
       return page;
     };
@@ -8636,6 +8622,11 @@
       if (!$pageEl.length) { return; }
       var route = options.route;
       var restoreScrollTopOnBack = router.params.restoreScrollTopOnBack;
+      var keepAlive = $pageEl[0].f7Page && $pageEl[0].f7Page.route && $pageEl[0].f7Page.route.route && $pageEl[0].f7Page.route.route.keepAlive;
+
+      if (callback === 'beforeRemove' && keepAlive) {
+        callback = 'beforeUnmount'; // eslint-disable-line
+      }
 
       var camelName = "page" + (callback[0].toUpperCase() + callback.slice(1, callback.length));
       var colonName = "page:" + (callback.toLowerCase());
@@ -8744,12 +8735,14 @@
       $pageEl.trigger(colonName, page);
       router.emit(camelName, page);
 
-      if (callback === 'beforeRemove') {
+      if (callback === 'beforeRemove' || callback === 'beforeUnmount') {
         detachEvents();
-        if ($pageEl[0].f7Page && $pageEl[0].f7Page.navbarEl) {
-          delete $pageEl[0].f7Page.navbarEl.f7Page;
+        if (!keepAlive) {
+          if ($pageEl[0].f7Page && $pageEl[0].f7Page.navbarEl) {
+            delete $pageEl[0].f7Page.navbarEl.f7Page;
+          }
+          $pageEl[0].f7Page = null;
         }
-        $pageEl[0].f7Page = null;
       }
     };
 
@@ -9034,6 +9027,8 @@
   Router.prototype.backward = backward;
   Router.prototype.loadBack = loadBack;
   Router.prototype.back = back;
+  // Clear previoius pages from the DOM
+  Router.prototype.clearPreviousPages = clearPreviousPages;
   // Clear history
   Router.prototype.clearPreviousHistory = clearPreviousHistory;
 
@@ -9063,7 +9058,7 @@
     },
   };
 
-  var View = (function (Framework7Class$$1) {
+  var View = /*@__PURE__*/(function (Framework7Class$$1) {
     function View(appInstance, el, viewParams) {
       if ( viewParams === void 0 ) viewParams = {};
 
@@ -11211,7 +11206,16 @@
         $navbarInnerEl = $navbarInnerEl.find('.navbar-inner');
         if ($navbarInnerEl.length > 1) { return undefined; }
       }
-      return $navbarInnerEl[0].f7Page;
+      if ($navbarInnerEl.parents('.page').length) {
+        return $navbarInnerEl.parents('.page')[0];
+      }
+      var pageEl;
+      $navbarInnerEl.parents('.view').find('.page').each(function (index, el) {
+        if (el && el.f7Page && el.f7Page.navbarEl && $navbarInnerEl[0] === el.f7Page.navbarEl) {
+          pageEl = el;
+        }
+      });
+      return pageEl;
     },
     initHideNavbarOnScroll: function initHideNavbarOnScroll(pageEl, navbarInnerEl) {
       var app = this;
@@ -11275,6 +11279,7 @@
           hide: Navbar.hide.bind(app),
           show: Navbar.show.bind(app),
           getElByPage: Navbar.getElByPage.bind(app),
+          getPageByEl: Navbar.getPageByEl.bind(app),
           initHideNavbarOnScroll: Navbar.initHideNavbarOnScroll.bind(app),
         },
       });
@@ -11743,7 +11748,7 @@
     var dialog = dialogsQueue.shift();
     dialog.open();
   }
-  var Modal = (function (Framework7Class$$1) {
+  var Modal = /*@__PURE__*/(function (Framework7Class$$1) {
     function Modal(app, params) {
       Framework7Class$$1.call(this, params, [app]);
 
@@ -11989,7 +11994,7 @@
     return Modal;
   }(Framework7Class));
 
-  var CustomModal = (function (Modal$$1) {
+  var CustomModal = /*@__PURE__*/(function (Modal$$1) {
     function CustomModal(app, params) {
       var extendedParams = Utils.extend({
         backdrop: true,
@@ -12089,7 +12094,7 @@
     },
   };
 
-  var Dialog = (function (Modal$$1) {
+  var Dialog = /*@__PURE__*/(function (Modal$$1) {
     function Dialog(app, params) {
       var extendedParams = Utils.extend({
         title: app.params.dialog.title,
@@ -12521,7 +12526,7 @@
     },
   };
 
-  var Popup = (function (Modal$$1) {
+  var Popup = /*@__PURE__*/(function (Modal$$1) {
     function Popup(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -12658,7 +12663,7 @@
     },
   };
 
-  var LoginScreen = (function (Modal$$1) {
+  var LoginScreen = /*@__PURE__*/(function (Modal$$1) {
     function LoginScreen(app, params) {
       var extendedParams = Utils.extend({
         on: {},
@@ -12735,7 +12740,7 @@
     },
   };
 
-  var Popover = (function (Modal$$1) {
+  var Popover = /*@__PURE__*/(function (Modal$$1) {
     function Popover(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -13060,7 +13065,7 @@
 
   /* eslint indent: ["off"] */
 
-  var Actions = (function (Modal$$1) {
+  var Actions = /*@__PURE__*/(function (Modal$$1) {
     function Actions(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -13352,7 +13357,7 @@
     },
   };
 
-  var Sheet = (function (Modal$$1) {
+  var Sheet = /*@__PURE__*/(function (Modal$$1) {
     function Sheet(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -13530,7 +13535,7 @@
     },
   };
 
-  var Toast = (function (Modal$$1) {
+  var Toast = /*@__PURE__*/(function (Modal$$1) {
     function Toast(app, params) {
       var extendedParams = Utils.extend({
         on: {},
@@ -14043,11 +14048,21 @@
            && $sortableContainer.hasClass('virtual-list')
         ) {
           indexFrom = $sortingEl[0].f7VirtualListIndex;
-          indexTo = $insertBeforeEl ? $insertBeforeEl[0].f7VirtualListIndex : $insertAfterEl[0].f7VirtualListIndex;
+          if (typeof indexFrom === 'undefined') { indexFrom = $sortingEl.attr('data-virtual-list-index'); }
+          if ($insertBeforeEl) {
+            indexTo = $insertBeforeEl[0].f7VirtualListIndex;
+            if (typeof indexTo === 'undefined') { indexTo = $insertBeforeEl.attr('data-virtual-list-index'); }
+          } else {
+            indexTo = $insertAfterEl[0].f7VirtualListIndex;
+            if (typeof indexTo === 'undefined') { indexTo = $insertAfterEl.attr('data-virtual-list-index'); }
+          }
+          if (indexTo !== null) { indexTo = parseInt(indexTo, 10); }
+          else { indexTo = undefined; }
+
           var virtualList = $sortableContainer[0].f7VirtualList;
           if (virtualList) { virtualList.moveItem(indexFrom, indexTo); }
         }
-        if (typeof indexTo !== 'undefined' && indexTo !== indexFrom) {
+        if (typeof indexTo !== 'undefined' && !Number.isNaN(indexTo) && indexTo !== indexFrom) {
           $sortingEl.trigger('sortable:sort', { from: indexFrom, to: indexTo });
           app.emit('sortableSort', $sortingEl[0], { from: indexFrom, to: indexTo });
         }
@@ -14722,6 +14737,13 @@
     open: function open(el) {
       var app = this;
       var $el = $(el);
+      var prevented = false;
+      function prevent() {
+        prevented = true;
+      }
+      $el.trigger('accordion:beforeopen', { prevent: prevent }, prevent);
+      app.emit('accordionBeforeOpen', $el[0], prevent);
+      if (prevented) { return; }
       var $list = $el.parents('.accordion-list').eq(0);
       var $contentEl = $el.children('.accordion-item-content');
       $contentEl.removeAttr('aria-hidden');
@@ -14754,6 +14776,13 @@
     close: function close(el) {
       var app = this;
       var $el = $(el);
+      var prevented = false;
+      function prevent() {
+        prevented = true;
+      }
+      $el.trigger('accordion:beforeclose', { prevent: prevent }, prevent);
+      app.emit('accordionBeforeClose', $el[0], prevent);
+      if (prevented) { return; }
       var $contentEl = $el.children('.accordion-item-content');
       if ($contentEl.length === 0) { $contentEl = $el.find('.accordion-item-content'); }
       $el.removeClass('accordion-item-opened');
@@ -14816,7 +14845,7 @@
     name: 'contactsList',
   };
 
-  var VirtualList = (function (Framework7Class$$1) {
+  var VirtualList = /*@__PURE__*/(function (Framework7Class$$1) {
     function VirtualList(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -15399,7 +15428,7 @@
     },
   };
 
-  var ListIndex = (function (Framework7Class$$1) {
+  var ListIndex = /*@__PURE__*/(function (Framework7Class$$1) {
     function ListIndex(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -16075,7 +16104,7 @@
     function handleTouchStart(e) {
       if (!panel.swipeable) { return; }
       if (!app.panel.allowOpen || (!params.swipe && !params.swipeOnlyClose) || isTouched) { return; }
-      if ($('.modal-in, .photo-browser-in').length > 0) { return; }
+      if ($('.modal-in:not(.toast):not(.notification), .photo-browser-in').length > 0) { return; }
       otherPanel = app.panel[side === 'left' ? 'right' : 'left'] || {};
       if (!panel.opened && otherPanel.opened) { return; }
       if (!(params.swipeCloseOpposite || params.swipeOnlyClose)) {
@@ -16368,7 +16397,7 @@
     });
   }
 
-  var Panel = (function (Framework7Class$$1) {
+  var Panel = /*@__PURE__*/(function (Framework7Class$$1) {
     function Panel(app, params) {
       var obj;
 
@@ -16402,6 +16431,7 @@
       }
 
       var $backdropEl = $('.panel-backdrop');
+
       if ($backdropEl.length === 0) {
         $backdropEl = $('<div class="panel-backdrop"></div>');
         $backdropEl.insertBefore($el);
@@ -16563,6 +16593,10 @@
           $el.insertAfter($insertBeforeEl);
         } else {
           app.root.prepend($el);
+        }
+
+        if ($backdropEl && $backdropEl.length && !$backdropEl.parent().is(app.root) && $backdropEl.nextAll('.panel').length === 0) {
+          $backdropEl.insertBefore($el);
         }
 
         panel.once('panelClosed', function () {
@@ -17514,7 +17548,7 @@
     name: 'radio',
   };
 
-  var Toggle = (function (Framework7Class$$1) {
+  var Toggle = /*@__PURE__*/(function (Framework7Class$$1) {
     function Toggle(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -17749,7 +17783,7 @@
     },
   };
 
-  var Range = (function (Framework7Class$$1) {
+  var Range = /*@__PURE__*/(function (Framework7Class$$1) {
     function Range(app, params) {
       Framework7Class$$1.call(this, params, [app]);
 
@@ -18020,6 +18054,9 @@
         range.calcSize();
         range.layout();
       }
+      var parentModals;
+      var parentPanel;
+      var parentPage;
       range.attachEvents = function attachEvents() {
         var passive = Support.passiveListener ? { passive: true } : false;
         range.$el.on(app.touchEvents.start, handleTouchStart, passive);
@@ -18027,12 +18064,12 @@
         app.on('touchend:passive', handleTouchEnd);
         app.on('tabShow', handleResize);
         app.on('resize', handleResize);
-        range.$el
-          .parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast')
-          .on('modal:open', handleResize);
-        range.$el
-          .parents('.panel')
-          .on('panel:open', handleResize);
+        parentModals = range.$el.parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast');
+        parentModals.on('modal:open', handleResize);
+        parentPanel = range.$el.parents('.panel');
+        parentPanel.on('panel:open', handleResize);
+        parentPage = range.$el.parents('.page').eq(0);
+        parentPage.on('page:reinit', handleResize);
       };
       range.detachEvents = function detachEvents() {
         var passive = Support.passiveListener ? { passive: true } : false;
@@ -18041,12 +18078,18 @@
         app.off('touchend:passive', handleTouchEnd);
         app.off('tabShow', handleResize);
         app.off('resize', handleResize);
-        range.$el
-          .parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast')
-          .off('modal:open', handleResize);
-        range.$el
-          .parents('.panel')
-          .off('panel:open', handleResize);
+        if (parentModals) {
+          parentModals.off('modal:open', handleResize);
+        }
+        if (parentPanel) {
+          parentPanel.off('panel:open', handleResize);
+        }
+        if (parentPage) {
+          parentPage.off('page:reinit', handleResize);
+        }
+        parentModals = null;
+        parentPanel = null;
+        parentPage = null;
       };
 
       // Install Modules
@@ -18268,7 +18311,7 @@
     },
   };
 
-  var Stepper = (function (Framework7Class$$1) {
+  var Stepper = /*@__PURE__*/(function (Framework7Class$$1) {
     function Stepper(app, params) {
       Framework7Class$$1.call(this, params, [app]);
       var stepper = this;
@@ -18776,7 +18819,7 @@
     },
   };
 
-  var SmartSelect = (function (Framework7Class$$1) {
+  var SmartSelect = /*@__PURE__*/(function (Framework7Class$$1) {
     function SmartSelect(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -19827,7 +19870,7 @@
   var PERSIAN_MONTH_NAMES = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
   var PERSIAN_NUMBERS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 
-  var IDate = (function (Date) {
+  var IDate = /*@__PURE__*/(function (Date) {
     function IDate () {
       Date.call(this);
 
@@ -19925,7 +19968,7 @@
     return IDate;
   }(Date));
 
-  var Calendar = (function (Framework7Class$$1) {
+  var Calendar = /*@__PURE__*/(function (Framework7Class$$1) {
     function Calendar(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -21146,7 +21189,7 @@
       }
 
       // Extra focus
-      if (!inline && $inputEl.length && app.theme === 'md') {
+      if (!inline && $inputEl && $inputEl.length && app.theme === 'md') {
         $inputEl.trigger('focus');
       }
 
@@ -21746,7 +21789,7 @@
     col.init();
   }
 
-  var Picker = (function (Framework7Class$$1) {
+  var Picker = /*@__PURE__*/(function (Framework7Class$$1) {
     function Picker(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -22066,7 +22109,7 @@
       }
 
       // Extra focus
-      if (!inline && $inputEl.length && app.theme === 'md') {
+      if (!inline && $inputEl && $inputEl.length && app.theme === 'md') {
         $inputEl.trigger('focus');
       }
 
@@ -22408,7 +22451,7 @@
     },
   };
 
-  var PullToRefresh = (function (Framework7Class$$1) {
+  var PullToRefresh = /*@__PURE__*/(function (Framework7Class$$1) {
     function PullToRefresh(app, el) {
       Framework7Class$$1.call(this, {}, [app]);
       var ptr = this;
@@ -22964,7 +23007,7 @@
     },
   };
 
-  var DataTable = (function (Framework7Class$$1) {
+  var DataTable = /*@__PURE__*/(function (Framework7Class$$1) {
     function DataTable(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -23388,7 +23431,7 @@
     },
   };
 
-  var Searchbar = (function (FrameworkClass) {
+  var Searchbar = /*@__PURE__*/(function (FrameworkClass) {
     function Searchbar(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -23399,6 +23442,7 @@
       var defaults = {
         el: undefined,
         inputEl: undefined,
+        inputEvents: 'change input compositionend',
         disableButton: true,
         disableButtonEl: undefined,
         backdropEl: undefined,
@@ -23440,9 +23484,8 @@
       } else {
         $navbarEl = $el.parents('.navbar-inner');
         if ($navbarEl.length > 0) {
-          if ($navbarEl[0].f7Page) {
-            $pageEl = $navbarEl[0].f7Page.$el;
-          } else {
+          $pageEl = $(app.navbar.getPageByEl($navbarEl[0]));
+          if (!$pageEl.length) {
             var $currentPageEl = $el.parents('.view').find('.page-current');
             if ($currentPageEl[0] && $currentPageEl[0].f7Page && $currentPageEl[0].f7Page.navbarEl === $navbarEl[0]) {
               $pageEl = $currentPageEl;
@@ -23613,7 +23656,7 @@
         }
         sb.$inputEl.on('focus', onInputFocus);
         sb.$inputEl.on('blur', onInputBlur);
-        sb.$inputEl.on('change input compositionend', onInputChange);
+        sb.$inputEl.on(sb.params.inputEvents, onInputChange);
         sb.$inputEl.on('input:clear', onInputClear);
       };
       sb.detachEvents = function detachEvents() {
@@ -23630,7 +23673,7 @@
         }
         sb.$inputEl.off('focus', onInputFocus);
         sb.$inputEl.off('blur', onInputBlur);
-        sb.$inputEl.off('change input compositionend', onInputChange);
+        sb.$inputEl.off(sb.params.inputEvents, onInputChange);
         sb.$inputEl.off('input:clear', onInputClear);
       };
 
@@ -24050,7 +24093,7 @@
     },
   };
 
-  var Messages = (function (Framework7Class$$1) {
+  var Messages = /*@__PURE__*/(function (Framework7Class$$1) {
     function Messages(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -24603,7 +24646,7 @@
     },
   };
 
-  var Messagebar = (function (Framework7Class$$1) {
+  var Messagebar = /*@__PURE__*/(function (Framework7Class$$1) {
     function Messagebar(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -27397,7 +27440,7 @@
 
   var extendedDefaults = {};
 
-  var Swiper = (function (SwiperClass) {
+  var Swiper = /*@__PURE__*/(function (SwiperClass) {
     function Swiper() {
       var assign;
 
@@ -31262,7 +31305,7 @@
 
   /* eslint indent: ["off"] */
 
-  var PhotoBrowser = (function (Framework7Class$$1) {
+  var PhotoBrowser = /*@__PURE__*/(function (Framework7Class$$1) {
     function PhotoBrowser(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -31951,7 +31994,7 @@
     },
   };
 
-  var Notification = (function (Modal$$1) {
+  var Notification = /*@__PURE__*/(function (Modal$$1) {
     function Notification(app, params) {
       var extendedParams = Utils.extend({
         on: {},
@@ -32200,7 +32243,7 @@
 
   /* eslint "no-useless-escape": "off" */
 
-  var Autocomplete = (function (Framework7Class$$1) {
+  var Autocomplete = /*@__PURE__*/(function (Framework7Class$$1) {
     function Autocomplete(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -33018,7 +33061,7 @@
     },
   };
 
-  var Tooltip = (function (Framework7Class$$1) {
+  var Tooltip = /*@__PURE__*/(function (Framework7Class$$1) {
     function Tooltip(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -33376,7 +33419,7 @@
 
   /* eslint no-nested-ternary: off */
 
-  var Gauge = (function (Framework7Class$$1) {
+  var Gauge = /*@__PURE__*/(function (Framework7Class$$1) {
     function Gauge(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -33706,7 +33749,7 @@
     },
   };
 
-  var ViAd = (function (Framework7Class$$1) {
+  var ViAd = /*@__PURE__*/(function (Framework7Class$$1) {
     function ViAd(app, params) {
       if ( params === void 0 ) params = {};
 

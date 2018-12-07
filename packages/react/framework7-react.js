@@ -1,5 +1,5 @@
 /**
- * Framework7 React 3.5.1
+ * Framework7 React 3.6.0
  * Build full featured iOS & Android apps using Framework7 & React
  * http://framework7.io/react/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: November 2, 2018
+ * Released on: December 7, 2018
  */
 
 (function (global, factory) {
@@ -473,7 +473,7 @@
     });
   }
 
-  var F7AccordionContent = (function (superclass) {
+  var F7AccordionContent = /*@__PURE__*/(function (superclass) {
     function F7AccordionContent(props, context) {
       superclass.call(this, props, context);
     }
@@ -514,22 +514,6 @@
 
   F7AccordionContent.displayName = 'f7-accordion-content';
 
-  function __reactComponentEl (component) {
-    var self = component;
-    var el;
-    var child = self._reactInternalFiber.child;
-
-    while (!el && child) {
-      if (child.stateNode && child.stateNode instanceof window.HTMLElement) {
-        el = child.stateNode;
-      } else {
-        child = child.child;
-      }
-    }
-
-    return el;
-  }
-
   function __reactComponentDispatchEvent (component, events) {
     var args = [], len = arguments.length - 2;
     while ( len-- > 0 ) args[ len ] = arguments[ len + 2 ];
@@ -551,16 +535,33 @@
     });
   }
 
-  var F7AccordionItem = (function (superclass) {
+  var F7AccordionItem = /*@__PURE__*/(function (superclass) {
     function F7AccordionItem(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        var self = this$1;
+        self.onBeforeOpenBound = self.onBeforeOpen.bind(self);
+        self.onOpenBound = self.onOpen.bind(self);
+        self.onOpenedBound = self.onOpened.bind(self);
+        self.onBeforeCloseBound = self.onBeforeClose.bind(self);
+        self.onCloseBound = self.onClose.bind(self);
+        self.onClosedBound = self.onClosed.bind(self);
+      })();
     }
 
     if ( superclass ) F7AccordionItem.__proto__ = superclass;
     F7AccordionItem.prototype = Object.create( superclass && superclass.prototype );
     F7AccordionItem.prototype.constructor = F7AccordionItem;
 
-    var prototypeAccessors = { slots: { configurable: true },el: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
+
+    F7AccordionItem.prototype.onBeforeOpen = function onBeforeOpen (event) {
+      this.dispatchEvent('accordionBeforeOpen accordion:beforeopen', event, event.detail.prevent);
+    };
 
     F7AccordionItem.prototype.onOpen = function onOpen (event) {
       this.dispatchEvent('accordionOpen accordion:open', event);
@@ -568,6 +569,10 @@
 
     F7AccordionItem.prototype.onOpened = function onOpened (event) {
       this.dispatchEvent('accordionOpened accordion:opened', event);
+    };
+
+    F7AccordionItem.prototype.onBeforeClose = function onBeforeClose (event) {
+      this.dispatchEvent('accordionBeforeClose accordion:beforeclose', event, event.detail.prevent);
     };
 
     F7AccordionItem.prototype.onClose = function onClose (event) {
@@ -579,6 +584,8 @@
     };
 
     F7AccordionItem.prototype.render = function render () {
+      var this$1 = this;
+
       var props = this.props;
       var className = props.className;
       var id = props.id;
@@ -590,30 +597,33 @@
       return React.createElement('div', {
         id: id,
         style: style,
-        className: classes
+        className: classes,
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        }
       }, this.slots['default']);
     };
 
     F7AccordionItem.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
-      var el = self.el;
+      var el = self.refs.el;
       if (!el) { return; }
+      el.removeEventListener('accordion:beforeopen', self.onBeforeOpenBound);
       el.removeEventListener('accordion:open', self.onOpenBound);
       el.removeEventListener('accordion:opened', self.onOpenedBound);
+      el.removeEventListener('accordion:beforeclose', self.onBeforeCloseBound);
       el.removeEventListener('accordion:close', self.onCloseBound);
       el.removeEventListener('accordion:closed', self.onClosedBound);
     };
 
     F7AccordionItem.prototype.componentDidMount = function componentDidMount () {
       var self = this;
-      var el = self.el;
+      var el = self.refs.el;
       if (!el) { return; }
-      self.onOpenBound = self.onOpen.bind(self);
-      self.onOpenedBound = self.onOpened.bind(self);
-      self.onCloseBound = self.onClose.bind(self);
-      self.onClosedBound = self.onClosed.bind(self);
+      el.addEventListener('accordion:beforeopen', self.onBeforeOpenBound);
       el.addEventListener('accordion:open', self.onOpenBound);
       el.addEventListener('accordion:opened', self.onOpenedBound);
+      el.addEventListener('accordion:beforeclose', self.onBeforeCloseBound);
       el.addEventListener('accordion:close', self.onCloseBound);
       el.addEventListener('accordion:closed', self.onClosedBound);
     };
@@ -622,16 +632,18 @@
       return __reactComponentSlots(this.props);
     };
 
-    prototypeAccessors.el.get = function () {
-      return __reactComponentEl(this);
-    };
-
     F7AccordionItem.prototype.dispatchEvent = function dispatchEvent (events) {
       var args = [], len = arguments.length - 1;
       while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7AccordionItem.prototype, prototypeAccessors );
 
@@ -647,7 +659,7 @@
 
   F7AccordionItem.displayName = 'f7-accordion-item';
 
-  var F7AccordionToggle = (function (superclass) {
+  var F7AccordionToggle = /*@__PURE__*/(function (superclass) {
     function F7AccordionToggle(props, context) {
       superclass.call(this, props, context);
     }
@@ -688,7 +700,7 @@
 
   F7AccordionToggle.displayName = 'f7-accordion-toggle';
 
-  var F7Accordion = (function (superclass) {
+  var F7Accordion = /*@__PURE__*/(function (superclass) {
     function F7Accordion(props, context) {
       superclass.call(this, props, context);
     }
@@ -729,10 +741,16 @@
 
   F7Accordion.displayName = 'f7-accordion';
 
-  var F7ActionsButton = (function (superclass) {
+  var F7ActionsButton = /*@__PURE__*/(function (superclass) {
     function F7ActionsButton(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
       this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7ActionsButton.__proto__ = superclass;
@@ -778,13 +796,20 @@
         id: id,
         style: style,
         className: classes,
-        onClick: self.onClick.bind(self),
         ref: function (__reactNode) {
           this$1.__reactRefs['el'] = __reactNode;
         }
       }, mediaEl, React.createElement('div', {
         className: 'actions-button-text'
       }, this.slots['default']));
+    };
+
+    F7ActionsButton.prototype.componentWillUnmount = function componentWillUnmount () {
+      this.refs.el.removeEventListener('click', this.onClick);
+    };
+
+    F7ActionsButton.prototype.componentDidMount = function componentDidMount () {
+      this.refs.el.addEventListener('click', this.onClick);
     };
 
     prototypeAccessors.slots.get = function () {
@@ -822,7 +847,7 @@
 
   F7ActionsButton.displayName = 'f7-actions-button';
 
-  var F7ActionsGroup = (function (superclass) {
+  var F7ActionsGroup = /*@__PURE__*/(function (superclass) {
     function F7ActionsGroup(props, context) {
       superclass.call(this, props, context);
     }
@@ -864,22 +889,31 @@
 
   F7ActionsGroup.displayName = 'f7-actions-group';
 
-  var F7ActionsLabel = (function (superclass) {
+  var F7ActionsLabel = /*@__PURE__*/(function (superclass) {
     function F7ActionsLabel(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7ActionsLabel.__proto__ = superclass;
     F7ActionsLabel.prototype = Object.create( superclass && superclass.prototype );
     F7ActionsLabel.prototype.constructor = F7ActionsLabel;
 
-    var prototypeAccessors = { slots: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7ActionsLabel.prototype.onClick = function onClick (event) {
       this.dispatchEvent('click', event);
     };
 
     F7ActionsLabel.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var className = props.className;
@@ -893,8 +927,18 @@
         id: id,
         style: style,
         className: classes,
-        onClick: self.onClick.bind(self)
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        }
       }, this.slots['default']);
+    };
+
+    F7ActionsLabel.prototype.componentWillUnmount = function componentWillUnmount () {
+      this.refs.el.removeEventListener('click', this.onClick);
+    };
+
+    F7ActionsLabel.prototype.componentDidMount = function componentDidMount () {
+      this.refs.el.addEventListener('click', this.onClick);
     };
 
     prototypeAccessors.slots.get = function () {
@@ -907,6 +951,12 @@
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7ActionsLabel.prototype, prototypeAccessors );
 
@@ -950,7 +1000,7 @@
     if (callback) { callback(newValue, oldValue); }
   }
 
-  var F7Actions = (function (superclass) {
+  var F7Actions = /*@__PURE__*/(function (superclass) {
     function F7Actions(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -960,7 +1010,7 @@
     F7Actions.prototype = Object.create( superclass && superclass.prototype );
     F7Actions.prototype.constructor = F7Actions;
 
-    var prototypeAccessors = { slots: { configurable: true },el: { configurable: true },refs: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7Actions.prototype.onOpen = function onOpen (event) {
       this.dispatchEvent('actions:open actionsOpen', event);
@@ -1015,7 +1065,7 @@
     F7Actions.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
       if (self.f7Actions) { self.f7Actions.destroy(); }
-      var el = self.el;
+      var el = self.refs.el;
       if (!el) { return; }
       el.removeEventListener('actions:open', self.onOpenBound);
       el.removeEventListener('actions:opened', self.onOpenedBound);
@@ -1065,10 +1115,6 @@
 
     prototypeAccessors.slots.get = function () {
       return __reactComponentSlots(this.props);
-    };
-
-    prototypeAccessors.el.get = function () {
-      return __reactComponentEl(this);
     };
 
     F7Actions.prototype.dispatchEvent = function dispatchEvent (events) {
@@ -1204,7 +1250,7 @@
     },
   };
 
-  var F7RoutableModals = (function (superclass) {
+  var F7RoutableModals = /*@__PURE__*/(function (superclass) {
     function F7RoutableModals(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -1280,7 +1326,7 @@
 
   F7RoutableModals.displayName = 'f7-routable-modals';
 
-  var F7App = (function (superclass) {
+  var F7App = /*@__PURE__*/(function (superclass) {
     function F7App(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -1357,7 +1403,7 @@
 
   F7App.displayName = 'f7-app';
 
-  var F7Badge = (function (superclass) {
+  var F7Badge = /*@__PURE__*/(function (superclass) {
     function F7Badge(props, context) {
       superclass.call(this, props, context);
     }
@@ -1398,7 +1444,7 @@
 
   F7Badge.displayName = 'f7-badge';
 
-  var F7BlockFooter = (function (superclass) {
+  var F7BlockFooter = /*@__PURE__*/(function (superclass) {
     function F7BlockFooter(props, context) {
       superclass.call(this, props, context);
     }
@@ -1439,7 +1485,7 @@
 
   F7BlockFooter.displayName = 'f7-block-footer';
 
-  var F7BlockHeader = (function (superclass) {
+  var F7BlockHeader = /*@__PURE__*/(function (superclass) {
     function F7BlockHeader(props, context) {
       superclass.call(this, props, context);
     }
@@ -1480,7 +1526,7 @@
 
   F7BlockHeader.displayName = 'f7-block-header';
 
-  var F7BlockTitle = (function (superclass) {
+  var F7BlockTitle = /*@__PURE__*/(function (superclass) {
     function F7BlockTitle(props, context) {
       superclass.call(this, props, context);
     }
@@ -1521,16 +1567,17 @@
 
   F7BlockTitle.displayName = 'f7-block-title';
 
-  var F7Block = (function (superclass) {
+  var F7Block = /*@__PURE__*/(function (superclass) {
     function F7Block(props, context) {
       superclass.call(this, props, context);
+      this.__reactRefs = {};
     }
 
     if ( superclass ) F7Block.__proto__ = superclass;
     F7Block.prototype = Object.create( superclass && superclass.prototype );
     F7Block.prototype.constructor = F7Block;
 
-    var prototypeAccessors = { slots: { configurable: true },el: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7Block.prototype.onTabShow = function onTabShow (event) {
       this.dispatchEvent('tabShow tab:show', event);
@@ -1541,6 +1588,8 @@
     };
 
     F7Block.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var className = props.className;
@@ -1571,19 +1620,22 @@
       return React.createElement('div', {
         id: id,
         style: style,
-        className: classes
+        className: classes,
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        }
       }, this.slots['default']);
     };
 
     F7Block.prototype.componentWillUnmount = function componentWillUnmount () {
-      var el = this.el;
+      var el = this.refs.el;
       if (!el) { return; }
       el.removeEventListener('tab:show', this.onTabShowBound);
       el.removeEventListener('tab:hide', this.onTabHideBound);
     };
 
     F7Block.prototype.componentDidMount = function componentDidMount () {
-      var el = this.el;
+      var el = this.refs.el;
       if (!el) { return; }
       this.onTabShowBound = this.onTabShow.bind(this);
       this.onTabHideBound = this.onTabHide.bind(this);
@@ -1595,16 +1647,18 @@
       return __reactComponentSlots(this.props);
     };
 
-    prototypeAccessors.el.get = function () {
-      return __reactComponentEl(this);
-    };
-
     F7Block.prototype.dispatchEvent = function dispatchEvent (events) {
       var args = [], len = arguments.length - 1;
       while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7Block.prototype, prototypeAccessors );
 
@@ -1629,7 +1683,7 @@
 
   F7Block.displayName = 'f7-block';
 
-  var F7Icon = (function (superclass) {
+  var F7Icon = /*@__PURE__*/(function (superclass) {
     function F7Icon(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -1814,10 +1868,17 @@
 
   F7Icon.displayName = 'f7-icon';
 
-  var F7Button = (function (superclass) {
+  var F7Button = /*@__PURE__*/(function (superclass) {
     function F7Button(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
       this.__reactRefs = {};
+
+      (function () {
+        var self = this$1;
+        self.onClickBound = self.onClick.bind(self);
+      })();
     }
 
     if ( superclass ) F7Button.__proto__ = superclass;
@@ -1942,13 +2003,13 @@
         },
         id: id,
         style: style,
-        className: self.classes,
-        onClick: self.onClick.bind(self)
+        className: self.classes
       }, self.attrs), iconEl, textEl, this.slots['default']);
     };
 
     F7Button.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
+      self.refs.el.removeEventListener('click', self.onClickBound);
 
       if (self.f7Tooltip && self.f7Tooltip.destroy) {
         self.f7Tooltip.destroy();
@@ -1959,6 +2020,7 @@
 
     F7Button.prototype.componentDidMount = function componentDidMount () {
       var self = this;
+      self.refs.el.addEventListener('click', self.onClickBound);
       var ref = self.props;
       var tooltip = ref.tooltip;
       if (!tooltip) { return; }
@@ -2037,7 +2099,7 @@
 
   F7Button.displayName = 'f7-button';
 
-  var F7CardContent = (function (superclass) {
+  var F7CardContent = /*@__PURE__*/(function (superclass) {
     function F7CardContent(props, context) {
       superclass.call(this, props, context);
     }
@@ -2085,7 +2147,7 @@
 
   F7CardContent.displayName = 'f7-card-content';
 
-  var F7CardFooter = (function (superclass) {
+  var F7CardFooter = /*@__PURE__*/(function (superclass) {
     function F7CardFooter(props, context) {
       superclass.call(this, props, context);
     }
@@ -2126,7 +2188,7 @@
 
   F7CardFooter.displayName = 'f7-card-footer';
 
-  var F7CardHeader = (function (superclass) {
+  var F7CardHeader = /*@__PURE__*/(function (superclass) {
     function F7CardHeader(props, context) {
       superclass.call(this, props, context);
     }
@@ -2167,7 +2229,7 @@
 
   F7CardHeader.displayName = 'f7-card-header';
 
-  var F7Card = (function (superclass) {
+  var F7Card = /*@__PURE__*/(function (superclass) {
     function F7Card(props, context) {
       superclass.call(this, props, context);
     }
@@ -2242,16 +2304,23 @@
 
   F7Card.displayName = 'f7-card';
 
-  var F7Checkbox = (function (superclass) {
+  var F7Checkbox = /*@__PURE__*/(function (superclass) {
     function F7Checkbox(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        this$1.onChange = this$1.onChange.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7Checkbox.__proto__ = superclass;
     F7Checkbox.prototype = Object.create( superclass && superclass.prototype );
     F7Checkbox.prototype.constructor = F7Checkbox;
 
-    var prototypeAccessors = { classes: { configurable: true },slots: { configurable: true } };
+    var prototypeAccessors = { classes: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
     F7Checkbox.prototype.onChange = function onChange (event) {
       this.dispatchEvent('change', event);
@@ -2269,6 +2338,8 @@
     };
 
     F7Checkbox.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var name = props.name;
@@ -2282,6 +2353,9 @@
       var inputEl;
       {
         inputEl = React.createElement('input', {
+          ref: function (__reactNode) {
+            this$1.__reactRefs['inputEl'] = __reactNode;
+          },
           type: 'checkbox',
           name: name,
           value: value,
@@ -2289,7 +2363,7 @@
           readOnly: readonly,
           checked: checked,
           defaultChecked: defaultChecked,
-          onChange: self.onChange.bind(self)
+          onChange: self.onChange
         });
       }
       var iconEl = React.createElement('i', {
@@ -2313,6 +2387,12 @@
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
 
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
+
     Object.defineProperties( F7Checkbox.prototype, prototypeAccessors );
 
     return F7Checkbox;
@@ -2332,16 +2412,24 @@
 
   F7Checkbox.displayName = 'f7-checkbox';
 
-  var F7Chip = (function (superclass) {
+  var F7Chip = /*@__PURE__*/(function (superclass) {
     function F7Chip(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+        this$1.onDeleteClick = this$1.onDeleteClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7Chip.__proto__ = superclass;
     F7Chip.prototype = Object.create( superclass && superclass.prototype );
     F7Chip.prototype.constructor = F7Chip;
 
-    var prototypeAccessors = { slots: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7Chip.prototype.onClick = function onClick (event) {
       this.dispatchEvent('click', event);
@@ -2352,6 +2440,8 @@
     };
 
     F7Chip.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var media = props.media;
@@ -2382,9 +2472,11 @@
 
       if (deleteable) {
         deleteEl = React.createElement('a', {
+          ref: function (__reactNode) {
+            this$1.__reactRefs['deleteEl'] = __reactNode;
+          },
           href: '#',
-          className: 'chip-delete',
-          onClick: self.onDeleteClick.bind(self)
+          className: 'chip-delete'
         });
       }
 
@@ -2392,11 +2484,29 @@
         'chip-outline': outline
       }, Mixins.colorClasses(props));
       return React.createElement('div', {
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        },
         id: id,
         style: style,
-        className: classes,
-        onClick: self.onClick.bind(self)
+        className: classes
       }, mediaEl, labelEl, deleteEl);
+    };
+
+    F7Chip.prototype.componentWillUnmount = function componentWillUnmount () {
+      this.refs.el.removeEventListener('click', this.onClick);
+
+      if (this.refs.deleteEl) {
+        this.refs.deleteEl.removeEventListener('click', this.onDeleteClick);
+      }
+    };
+
+    F7Chip.prototype.componentDidMount = function componentDidMount () {
+      this.refs.el.addEventListener('click', this.onClick);
+
+      if (this.refs.deleteEl) {
+        this.refs.deleteEl.addEventListener('click', this.onDeleteClick);
+      }
     };
 
     prototypeAccessors.slots.get = function () {
@@ -2409,6 +2519,12 @@
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7Chip.prototype, prototypeAccessors );
 
@@ -2429,22 +2545,30 @@
 
   F7Chip.displayName = 'f7-chip';
 
-  var F7Col = (function (superclass) {
+  var F7Col = /*@__PURE__*/(function (superclass) {
     function F7Col(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7Col.__proto__ = superclass;
     F7Col.prototype = Object.create( superclass && superclass.prototype );
     F7Col.prototype.constructor = F7Col;
 
-    var prototypeAccessors = { slots: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7Col.prototype.onClick = function onClick (event) {
       this.dispatchEvent('click', event);
     };
 
     F7Col.prototype.render = function render () {
+      var this$1 = this;
       var obj;
 
       var self = this;
@@ -2464,8 +2588,18 @@
         id: id,
         style: style,
         className: classes,
-        onClick: self.onClick.bind(self)
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        }
       }, this.slots['default']);
+    };
+
+    F7Col.prototype.componentWillUnmount = function componentWillUnmount () {
+      this.refs.el.removeEventListener('click', this.onClick);
+    };
+
+    F7Col.prototype.componentDidMount = function componentDidMount () {
+      this.refs.el.addEventListener('click', this.onClick);
     };
 
     prototypeAccessors.slots.get = function () {
@@ -2478,6 +2612,12 @@
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7Col.prototype, prototypeAccessors );
 
@@ -2506,10 +2646,16 @@
 
   F7Col.displayName = 'f7-col';
 
-  var F7FabButton = (function (superclass) {
+  var F7FabButton = /*@__PURE__*/(function (superclass) {
     function F7FabButton(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
       this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7FabButton.__proto__ = superclass;
@@ -2523,6 +2669,8 @@
     };
 
     F7FabButton.prototype.render = function render () {
+      var this$1 = this;
+
       var props = this.props;
       var className = props.className;
       var id = props.id;
@@ -2543,16 +2691,19 @@
       }
 
       return React.createElement('a', {
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        },
         id: id,
         style: style,
         target: target,
-        className: classes,
-        onClick: this.onClick.bind(this)
+        className: classes
       }, this.slots['default'], labelEl);
     };
 
     F7FabButton.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
+      self.refs.el.removeEventListener('click', self.onClick);
 
       if (self.f7Tooltip && self.f7Tooltip.destroy) {
         self.f7Tooltip.destroy();
@@ -2563,6 +2714,7 @@
 
     F7FabButton.prototype.componentDidMount = function componentDidMount () {
       var self = this;
+      self.refs.el.addEventListener('click', self.onClick);
       var ref = self.props;
       var tooltip = ref.tooltip;
       if (!tooltip) { return; }
@@ -2618,7 +2770,7 @@
 
   F7FabButton.displayName = 'f7-fab-button';
 
-  var F7FabButtons = (function (superclass) {
+  var F7FabButtons = /*@__PURE__*/(function (superclass) {
     function F7FabButtons(props, context) {
       superclass.call(this, props, context);
     }
@@ -2664,10 +2816,16 @@
 
   F7FabButtons.displayName = 'f7-fab-buttons';
 
-  var F7Fab = (function (superclass) {
+  var F7Fab = /*@__PURE__*/(function (superclass) {
     function F7Fab(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
       this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7Fab.__proto__ = superclass;
@@ -2682,6 +2840,8 @@
     };
 
     F7Fab.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var className = props.className;
@@ -2727,9 +2887,11 @@
 
       if (linkChildren.length || linkSlots && linkSlots.length) {
         linkEl = React.createElement('a', {
+          ref: function (__reactNode) {
+            this$1.__reactRefs['linkEl'] = __reactNode;
+          },
           target: target,
           href: href,
-          onClick: self.onClick.bind(self),
           key: 'f7-fab-link'
         }, linkChildren, textEl, linkSlots);
       }
@@ -2749,6 +2911,10 @@
     F7Fab.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
 
+      if (self.refs.linkEl) {
+        self.refs.linkEl.removeEventListener('click', self.onClick);
+      }
+
       if (self.f7Tooltip && self.f7Tooltip.destroy) {
         self.f7Tooltip.destroy();
         self.f7Tooltip = null;
@@ -2758,6 +2924,11 @@
 
     F7Fab.prototype.componentDidMount = function componentDidMount () {
       var self = this;
+
+      if (self.refs.linkEl) {
+        self.refs.linkEl.addEventListener('click', self.onClick);
+      }
+
       var ref = self.props;
       var tooltip = ref.tooltip;
       if (!tooltip) { return; }
@@ -2818,7 +2989,7 @@
 
   F7Fab.displayName = 'f7-fab';
 
-  var F7Gauge = (function (superclass) {
+  var F7Gauge = /*@__PURE__*/(function (superclass) {
     function F7Gauge(props, context) {
       superclass.call(this, props, context);
     }
@@ -2982,10 +3153,16 @@
 
   F7Gauge.displayName = 'f7-gauge';
 
-  var F7Toggle = (function (superclass) {
+  var F7Toggle = /*@__PURE__*/(function (superclass) {
     function F7Toggle(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
       this.__reactRefs = {};
+
+      (function () {
+        this$1.onChange = this$1.onChange.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7Toggle.__proto__ = superclass;
@@ -3024,6 +3201,9 @@
       var inputEl;
       {
         inputEl = React.createElement('input', {
+          ref: function (__reactNode) {
+            this$1.__reactRefs['inputEl'] = __reactNode;
+          },
           type: 'checkbox',
           name: name,
           disabled: disabled,
@@ -3031,7 +3211,7 @@
           checked: checked,
           defaultChecked: defaultChecked,
           value: value,
-          onChange: self.onChange.bind(self)
+          onChange: self.onChange
         });
       }
       return React.createElement('label', {
@@ -3114,7 +3294,7 @@
 
   F7Toggle.displayName = 'f7-toggle';
 
-  var F7Range = (function (superclass) {
+  var F7Range = /*@__PURE__*/(function (superclass) {
     function F7Range(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -3287,7 +3467,7 @@
 
   F7Range.displayName = 'f7-range';
 
-  var F7Input = (function (superclass) {
+  var F7Input = /*@__PURE__*/(function (superclass) {
     function F7Input(props, context) {
       var this$1 = this;
 
@@ -3306,14 +3486,14 @@
 
       (function () {
         var self = this$1;
-        self.onFocusBound = self.onFocus.bind(self);
-        self.onBlurBound = self.onBlur.bind(self);
-        self.onInputBound = self.onInput.bind(self);
-        self.onChangeBound = self.onChange.bind(self);
-        self.onTextareaResizeBound = self.onTextareaResize.bind(self);
-        self.onInputNotEmptyBound = self.onInputNotEmpty.bind(self);
-        self.onInputEmptyBound = self.onInputEmpty.bind(self);
-        self.onInputClearBound = self.onInputClear.bind(self);
+        self.onFocus = self.onFocus.bind(self);
+        self.onBlur = self.onBlur.bind(self);
+        self.onInput = self.onInput.bind(self);
+        self.onChange = self.onChange.bind(self);
+        self.onTextareaResize = self.onTextareaResize.bind(self);
+        self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
+        self.onInputEmpty = self.onInputEmpty.bind(self);
+        self.onInputClear = self.onInputClear.bind(self);
       })();
     }
 
@@ -3495,10 +3675,10 @@
             tabIndex: tabindex,
             'data-error-message': errorMessageForce ? undefined : errorMessage,
             className: inputClassName,
-            onFocus: self.onFocusBound,
-            onBlur: self.onBlurBound,
-            onInput: self.onInputBound,
-            onChange: self.onChangeBound
+            onFocus: self.onFocus,
+            onBlur: self.onBlur,
+            onInput: self.onInput,
+            onChange: self.onChange
           }, children);
         }
         return input;
@@ -3526,7 +3706,7 @@
           value: value,
           disabled: disabled,
           id: inputId,
-          onChange: self.onChangeBound
+          onChange: self.onChange
         });
       } else if (type === 'range') {
         inputEl = React.createElement(F7Range, {
@@ -3538,7 +3718,7 @@
           name: name,
           id: inputId,
           input: true,
-          onRangeChange: self.onChangeBound
+          onRangeChange: self.onChange
         });
       } else {
         inputEl = createInput('input');
@@ -3583,15 +3763,15 @@
       if (type === 'range' || type === 'toggle') { return; }
       var inputEl = self.refs.inputEl;
       if (!inputEl) { return; }
-      inputEl.removeEventListener('input:notempty', self.onInputNotEmptyBound, false);
+      inputEl.removeEventListener('input:notempty', self.onInputNotEmpty, false);
 
       if (type === 'textarea' && resizable) {
-        inputEl.removeEventListener('textarea:resze', self.onTextareaResizeBound, false);
+        inputEl.removeEventListener('textarea:resze', self.onTextareaResize, false);
       }
 
       if (clearButton) {
-        inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
-        inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
+        inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
+        inputEl.removeEventListener('input:clear', self.onInputClear, false);
       }
     };
 
@@ -3647,15 +3827,15 @@
         if (type === 'range' || type === 'toggle') { return; }
         var inputEl = self.refs.inputEl;
         if (!inputEl) { return; }
-        inputEl.addEventListener('input:notempty', self.onInputNotEmptyBound, false);
+        inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
 
         if (type === 'textarea' && resizable) {
-          inputEl.addEventListener('textarea:resze', self.onTextareaResizeBound, false);
+          inputEl.addEventListener('textarea:resze', self.onTextareaResize, false);
         }
 
         if (clearButton) {
-          inputEl.addEventListener('input:empty', self.onInputEmptyBound, false);
-          inputEl.addEventListener('input:clear', self.onInputClearBound, false);
+          inputEl.addEventListener('input:empty', self.onInputEmpty, false);
+          inputEl.addEventListener('input:clear', self.onInputClear, false);
         }
 
         f7.input.checkEmptyState(inputEl);
@@ -3742,7 +3922,7 @@
 
   F7Input.displayName = 'f7-input';
 
-  var F7Label = (function (superclass) {
+  var F7Label = /*@__PURE__*/(function (superclass) {
     function F7Label(props, context) {
       superclass.call(this, props, context);
     }
@@ -3792,8 +3972,10 @@
 
   F7Label.displayName = 'f7-label';
 
-  var F7Link = (function (superclass) {
+  var F7Link = /*@__PURE__*/(function (superclass) {
     function F7Link(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
       this.__reactRefs = {};
 
@@ -3801,6 +3983,11 @@
         return {
           isTabbarLabel: props.tabbarLabel
         };
+      })();
+
+      (function () {
+        var self = this$1;
+        self.onClick = self.onClick.bind(self);
       })();
     }
 
@@ -3923,13 +4110,14 @@
         },
         id: id,
         style: style,
-        className: self.classes,
-        onClick: self.onClick.bind(self)
+        className: self.classes
       }, self.attrs), iconEl, textEl, defaultSlots);
     };
 
     F7Link.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
+      var el = self.refs.el;
+      el.removeEventListener('click', self.onClick);
 
       if (self.f7SmartSelect && self.f7SmartSelect.destroy) {
         self.f7SmartSelect.destroy();
@@ -3945,6 +4133,7 @@
     F7Link.prototype.componentDidMount = function componentDidMount () {
       var self = this;
       var el = self.refs.el;
+      el.addEventListener('click', self.onClick);
       var ref = self.props;
       var tabbarLabel = ref.tabbarLabel;
       var tabLink = ref.tabLink;
@@ -4036,16 +4225,23 @@
 
   F7Link.displayName = 'f7-link';
 
-  var F7ListButton = (function (superclass) {
+  var F7ListButton = /*@__PURE__*/(function (superclass) {
     function F7ListButton(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7ListButton.__proto__ = superclass;
     F7ListButton.prototype = Object.create( superclass && superclass.prototype );
     F7ListButton.prototype.constructor = F7ListButton;
 
-    var prototypeAccessors = { attrs: { configurable: true },classes: { configurable: true },slots: { configurable: true } };
+    var prototypeAccessors = { attrs: { configurable: true },classes: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
     F7ListButton.prototype.onClick = function onClick (event) {
       this.dispatchEvent('click', event);
@@ -4082,6 +4278,8 @@
     };
 
     F7ListButton.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = this.props;
       var className = props.className;
@@ -4096,8 +4294,18 @@
       }, React.createElement('a', Object.assign({
         className: self.classes
       }, self.attrs, {
-        onClick: self.onClick.bind(self)
+        ref: function (__reactNode) {
+          this$1.__reactRefs['linkEl'] = __reactNode;
+        }
       }), this.slots['default'], !this.slots.default && (title || text)));
+    };
+
+    F7ListButton.prototype.componentWillUnmount = function componentWillUnmount () {
+      this.refs.linkEl.removeEventListener('click', this.onClick);
+    };
+
+    F7ListButton.prototype.componentDidMount = function componentDidMount () {
+      this.refs.linkEl.addEventListener('click', this.onClick);
     };
 
     prototypeAccessors.slots.get = function () {
@@ -4110,6 +4318,12 @@
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7ListButton.prototype, prototypeAccessors );
 
@@ -4133,7 +4347,7 @@
 
   F7ListButton.displayName = 'f7-list-button';
 
-  var F7ListGroup = (function (superclass) {
+  var F7ListGroup = /*@__PURE__*/(function (superclass) {
     function F7ListGroup(props, context) {
       superclass.call(this, props, context);
     }
@@ -4182,7 +4396,7 @@
 
   F7ListGroup.displayName = 'f7-list-group';
 
-  var F7ListIndex = (function (superclass) {
+  var F7ListIndex = /*@__PURE__*/(function (superclass) {
     function F7ListIndex(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -4282,7 +4496,7 @@
 
       __reactComponentWatch(this, 'props.indexes', prevProps, prevState, function () {
         if (!this$1.f7ListIndex) { return; }
-        this$1.f7ListIndex.params.indexes = this$1.indexes;
+        this$1.f7ListIndex.params.indexes = this$1.props.indexes;
         this$1.update();
       });
     };
@@ -4325,7 +4539,7 @@
 
   F7ListIndex.displayName = 'f7-list-index';
 
-  var F7ListInput = (function (superclass) {
+  var F7ListInput = /*@__PURE__*/(function (superclass) {
     function F7ListInput(props, context) {
       var this$1 = this;
 
@@ -4345,14 +4559,14 @@
 
       (function () {
         var self = this$1;
-        self.onChangeBound = self.onChange.bind(self);
-        self.onInputBound = self.onInput.bind(self);
-        self.onFocusBound = self.onFocus.bind(self);
-        self.onBlurBound = self.onBlur.bind(self);
-        self.onTextareaResizeBound = self.onTextareaResize.bind(self);
-        self.onInputNotEmptyBound = self.onInputNotEmpty.bind(self);
-        self.onInputEmptyBound = self.onInputEmpty.bind(self);
-        self.onInputClearBound = self.onInputClear.bind(self);
+        self.onChange = self.onChange.bind(self);
+        self.onInput = self.onInput.bind(self);
+        self.onFocus = self.onFocus.bind(self);
+        self.onBlur = self.onBlur.bind(self);
+        self.onTextareaResize = self.onTextareaResize.bind(self);
+        self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
+        self.onInputEmpty = self.onInputEmpty.bind(self);
+        self.onInputClear = self.onInputClear.bind(self);
       })();
     }
 
@@ -4462,6 +4676,7 @@
       var sortable = props.sortable;
       var media = props.media;
       var renderInput = props.input;
+      var tag = props.tag;
       var type = props.type;
       var name = props.name;
       var value = props.value;
@@ -4549,10 +4764,10 @@
             tabIndex: tabindex,
             'data-error-message': errorMessageForce ? undefined : errorMessage,
             className: inputClassName,
-            onFocus: self.onFocusBound,
-            onBlur: self.onBlurBound,
-            onInput: self.onInputBound,
-            onChange: self.onChangeBound
+            onFocus: self.onFocus,
+            onBlur: self.onBlur,
+            onInput: self.onInput,
+            onChange: self.onChange
           }, children);
         }
         return input;
@@ -4575,7 +4790,8 @@
       }
 
       var hasErrorMessage = !!errorMessage || self.slots['error-message'] && self.slots['error-message'].length;
-      return React.createElement('li', {
+      var ItemTag = tag;
+      return React.createElement(ItemTag, {
         ref: function (__reactNode) {
           this$1.__reactRefs['el'] = __reactNode;
         },
@@ -4622,10 +4838,10 @@
       var self = this;
       var inputEl = self.refs.inputEl;
       if (!inputEl) { return; }
-      inputEl.removeEventListener('input:notempty', self.onInputNotEmptyBound, false);
-      inputEl.removeEventListener('textarea:resze', self.onTextareaResizeBound, false);
-      inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
-      inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
+      inputEl.removeEventListener('input:notempty', self.onInputNotEmpty, false);
+      inputEl.removeEventListener('textarea:resze', self.onTextareaResize, false);
+      inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
+      inputEl.removeEventListener('input:clear', self.onInputClear, false);
     };
 
     F7ListInput.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
@@ -4688,10 +4904,10 @@
         var type = ref.type;
         var inputEl = self.refs.inputEl;
         if (!inputEl) { return; }
-        inputEl.addEventListener('input:notempty', self.onInputNotEmptyBound, false);
-        inputEl.addEventListener('textarea:resze', self.onTextareaResizeBound, false);
-        inputEl.addEventListener('input:empty', self.onInputEmptyBound, false);
-        inputEl.addEventListener('input:clear', self.onInputClearBound, false);
+        inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
+        inputEl.addEventListener('textarea:resze', self.onTextareaResize, false);
+        inputEl.addEventListener('input:empty', self.onInputEmpty, false);
+        inputEl.addEventListener('input:clear', self.onInputClear, false);
 
         if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
           setTimeout(function () {
@@ -4740,6 +4956,10 @@
     className: String,
     sortable: Boolean,
     media: String,
+    tag: {
+      type: String,
+      default: 'li'
+    },
     input: {
       type: Boolean,
       default: true
@@ -4789,7 +5009,7 @@
 
   F7ListInput.displayName = 'f7-list-input';
 
-  var F7ListItemCell = (function (superclass) {
+  var F7ListItemCell = /*@__PURE__*/(function (superclass) {
     function F7ListItemCell(props, context) {
       superclass.call(this, props, context);
     }
@@ -4830,7 +5050,7 @@
 
   F7ListItemCell.displayName = 'f7-list-item-cell';
 
-  var F7ListItemContent = (function (superclass) {
+  var F7ListItemContent = /*@__PURE__*/(function (superclass) {
     function F7ListItemContent(props, context) {
       var this$1 = this;
 
@@ -4851,12 +5071,12 @@
 
       (function () {
         var self = this$1;
-        self.onClickBound = self.onClick.bind(self);
-        self.onChangeBound = self.onChange.bind(self);
-        self.onFocusBound = self.onFocus.bind(self);
-        self.onBlurBound = self.onBlur.bind(self);
-        self.onEmptyBound = self.onEmpty.bind(self);
-        self.onNotEmptyBound = self.onNotEmpty.bind(self);
+        self.onClick = self.onClick.bind(self);
+        self.onChange = self.onChange.bind(self);
+        self.onFocus = self.onFocus.bind(self);
+        self.onBlur = self.onBlur.bind(self);
+        self.onEmpty = self.onEmpty.bind(self);
+        self.onNotEmpty = self.onNotEmpty.bind(self);
       })();
     }
 
@@ -5076,7 +5296,8 @@
             readOnly: readonly,
             disabled: disabled,
             required: required,
-            type: radio ? 'radio' : 'checkbox'
+            type: radio ? 'radio' : 'checkbox',
+            onChange: this.onChange
           });
         }
         inputIconEl = React.createElement('i', {
@@ -5183,29 +5404,25 @@
         },
         id: id,
         style: style,
-        className: classes,
-        onClick: self.onClickBound
+        className: classes
       }, slotsContentStart, inputEl, inputIconEl, mediaEl, innerEl, slotsContent, slotsContentEnd);
     };
 
     F7ListItemContent.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
       var ref = self.refs;
-      var inputEl = ref.inputEl;
       var el = ref.el;
-      el.removeEventListener('input:empty', self.onEmptyBound);
-      el.removeEventListener('input:notempty', self.onNotEmptyBound);
-      el.removeEventListener('focus', self.onFocusBound, true);
-      el.removeEventListener('blur', self.onBlurBound, true);
-
-      if (inputEl) {
-        inputEl.removeEventListener('change', self.onChangeBound);
-      }
+      el.removeEventListener('click', self.onClick);
+      el.removeEventListener('input:empty', self.onEmpty);
+      el.removeEventListener('input:notempty', self.onNotEmpty);
+      el.removeEventListener('focus', self.onFocus, true);
+      el.removeEventListener('blur', self.onBlur, true);
     };
 
     F7ListItemContent.prototype.componentDidUpdate = function componentDidUpdate () {
       var self = this;
-      var innerEl = self.refs.innerEl;
+      var ref = self.refs;
+      var innerEl = ref.innerEl;
       if (!innerEl) { return; }
       var $innerEl = self.$$(innerEl);
       var $labelEl = $innerEl.children('.item-title.item-label');
@@ -5251,13 +5468,9 @@
       var self = this;
       var ref = self.refs;
       var innerEl = ref.innerEl;
-      var inputEl = ref.inputEl;
       var el = ref.el;
-
-      if (inputEl) {
-        inputEl.addEventListener('change', self.onChangeBound);
-      }
-
+      var inputEl = ref.inputEl;
+      el.addEventListener('click', self.onClick);
       if (!innerEl) { return; }
       var $innerEl = self.$$(innerEl);
       var $labelEl = $innerEl.children('.item-title.item-label');
@@ -5269,10 +5482,10 @@
       var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
 
       if (hasInput) {
-        el.addEventListener('focus', self.onFocusBound, true);
-        el.addEventListener('blur', self.onBlurBound, true);
-        el.addEventListener('input:empty', self.onEmptyBound);
-        el.addEventListener('input:notempty', self.onNotEmptyBound);
+        el.addEventListener('focus', self.onFocus, true);
+        el.addEventListener('blur', self.onBlur, true);
+        el.addEventListener('input:empty', self.onEmpty);
+        el.addEventListener('input:notempty', self.onNotEmpty);
       }
 
       if (!self.hasInlineLabelSet && hasInlineLabel !== self.state.hasInlineLabel) {
@@ -5367,7 +5580,7 @@
 
   F7ListItemContent.displayName = 'f7-list-item-content';
 
-  var F7ListItemRow = (function (superclass) {
+  var F7ListItemRow = /*@__PURE__*/(function (superclass) {
     function F7ListItemRow(props, context) {
       superclass.call(this, props, context);
     }
@@ -5408,7 +5621,7 @@
 
   F7ListItemRow.displayName = 'f7-list-item-row';
 
-  var F7ListItem = (function (superclass) {
+  var F7ListItem = /*@__PURE__*/(function (superclass) {
     function F7ListItem(props, context) {
       var this$1 = this;
 
@@ -5425,21 +5638,23 @@
 
       (function () {
         var self = this$1;
-        self.onClickBound = self.onClick.bind(self);
-        self.onChangeBound = self.onChange.bind(self);
-        self.onSwipeoutOpenBound = self.onSwipeoutOpen.bind(self);
-        self.onSwipeoutOpenedBound = self.onSwipeoutOpened.bind(self);
-        self.onSwipeoutCloseBound = self.onSwipeoutClose.bind(self);
-        self.onSwipeoutClosedBound = self.onSwipeoutClosed.bind(self);
-        self.onSwipeoutDeleteBound = self.onSwipeoutDelete.bind(self);
-        self.onSwipeoutDeletedBound = self.onSwipeoutDeleted.bind(self);
-        self.onSwipeoutOverswipeEnterBound = self.onSwipeoutOverswipeEnter.bind(self);
-        self.onSwipeoutOverswipeExitBound = self.onSwipeoutOverswipeExit.bind(self);
-        self.onSwipeoutBound = self.onSwipeout.bind(self);
-        self.onAccOpenBound = self.onAccOpen.bind(self);
-        self.onAccOpenedBound = self.onAccOpened.bind(self);
-        self.onAccCloseBound = self.onAccClose.bind(self);
-        self.onAccClosedBound = self.onAccClosed.bind(self);
+        self.onClick = self.onClick.bind(self);
+        self.onChange = self.onChange.bind(self);
+        self.onSwipeoutOpen = self.onSwipeoutOpen.bind(self);
+        self.onSwipeoutOpened = self.onSwipeoutOpened.bind(self);
+        self.onSwipeoutClose = self.onSwipeoutClose.bind(self);
+        self.onSwipeoutClosed = self.onSwipeoutClosed.bind(self);
+        self.onSwipeoutDelete = self.onSwipeoutDelete.bind(self);
+        self.onSwipeoutDeleted = self.onSwipeoutDeleted.bind(self);
+        self.onSwipeoutOverswipeEnter = self.onSwipeoutOverswipeEnter.bind(self);
+        self.onSwipeoutOverswipeExit = self.onSwipeoutOverswipeExit.bind(self);
+        self.onSwipeout = self.onSwipeout.bind(self);
+        self.onAccBeforeOpen = self.onAccBeforeOpen.bind(self);
+        self.onAccOpen = self.onAccOpen.bind(self);
+        self.onAccOpened = self.onAccOpened.bind(self);
+        self.onAccBeforeClose = self.onAccBeforeClose.bind(self);
+        self.onAccClose = self.onAccClose.bind(self);
+        self.onAccClosed = self.onAccClosed.bind(self);
       })();
     }
 
@@ -5493,12 +5708,20 @@
       this.dispatchEvent('swipeout', event);
     };
 
+    F7ListItem.prototype.onAccBeforeClose = function onAccBeforeClose (event) {
+      this.dispatchEvent('accordion:beforeclose accordionBeforeClose', event, event.detail.prevent);
+    };
+
     F7ListItem.prototype.onAccClose = function onAccClose (event) {
       this.dispatchEvent('accordion:close accordionClose', event);
     };
 
     F7ListItem.prototype.onAccClosed = function onAccClosed (event) {
       this.dispatchEvent('accordion:closed accordionClosed', event);
+    };
+
+    F7ListItem.prototype.onAccBeforeOpen = function onAccBeforeOpen (event) {
+      this.dispatchEvent('accordion:beforeopen accordionBeforeOpen', event, event.detail.prevent);
     };
 
     F7ListItem.prototype.onAccOpen = function onAccOpen (event) {
@@ -5564,6 +5787,7 @@
       var sortable = props.sortable;
       var noChevron = props.noChevron;
       var chevronCenter = props.chevronCenter;
+      var virtualListIndex = props.virtualListIndex;
       var isMedia = mediaItem || mediaList || self.state.isMedia;
       var isSortable = sortable || self.state.isSortable;
       var isSimple = self.state.isSimple;
@@ -5594,8 +5818,8 @@
           itemInput: itemInput,
           itemInputWithInfo: itemInputWithInfo,
           inlineLabel: inlineLabel,
-          onClick: needsEvents ? self.onClickBound : null,
-          onChange: needsEvents ? self.onChangeBound : null
+          onClick: needsEvents ? self.onClick : null,
+          onChange: needsEvents ? self.onChange : null
         }, this.slots['content-start'], this.slots['content'], this.slots['content-end'], this.slots['media'], this.slots['inner-start'], this.slots['inner'], this.slots['inner-end'], this.slots['after-start'], this.slots['after'], this.slots['after-end'], this.slots['header'], this.slots['footer'], this.slots['before-title'], this.slots['title'], this.slots['after-title'], this.slots['subtitle'], this.slots['text'], swipeout || accordionItem ? null : self.slots.default);
 
         if (link || href || accordionItem || smartSelect) {
@@ -5609,8 +5833,10 @@
             'smart-select': smartSelect
           }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
           linkEl = React.createElement('a', Object.assign({
-            className: linkClasses,
-            onClick: self.onClick.bind(self)
+            ref: function (__reactNode) {
+              this$1.__reactRefs['linkEl'] = __reactNode;
+            },
+            className: linkClasses
           }, linkAttrs), itemContentEl);
         }
       }
@@ -5634,7 +5860,8 @@
           },
           id: id,
           style: style,
-          className: liClasses
+          className: liClasses,
+          'data-virtual-list-index': virtualListIndex
         }, React.createElement('span', null, this.slots['default'], !this.slots.default && title));
       }
 
@@ -5645,7 +5872,8 @@
           },
           id: id,
           style: style,
-          className: liClasses
+          className: liClasses,
+          'data-virtual-list-index': virtualListIndex
         }, title, this.slots['default']);
       }
 
@@ -5656,7 +5884,8 @@
         },
         id: id,
         style: style,
-        className: liClasses
+        className: liClasses,
+        'data-virtual-list-index': virtualListIndex
       }, this.slots['root-start'], swipeout ? React.createElement('div', {
         className: 'swipeout-content'
       }, linkItemEl) : linkItemEl, isSortable && React.createElement('div', {
@@ -5666,30 +5895,41 @@
 
     F7ListItem.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
-      var el = self.refs.el;
-      var ref = self.props;
-      var swipeout = ref.swipeout;
-      var accordionItem = ref.accordionItem;
-      var smartSelect = ref.smartSelect;
+      var ref = self.refs;
+      var el = ref.el;
+      var linkEl = ref.linkEl;
+      var ref$1 = self.props;
+      var link = ref$1.link;
+      var href = ref$1.href;
+      var smartSelect = ref$1.smartSelect;
+      var swipeout = ref$1.swipeout;
+      var accordionItem = ref$1.accordionItem;
+      var needsEvents = !(link || href || accordionItem || smartSelect);
+
+      if (!needsEvents && linkEl) {
+        linkEl.removeEventListener('click', self.onClick);
+      }
 
       if (el) {
         if (swipeout) {
-          el.removeEventListener('swipeout:open', self.onSwipeoutOpenBound);
-          el.removeEventListener('swipeout:opened', self.onSwipeoutOpenedBound);
-          el.removeEventListener('swipeout:close', self.onSwipeoutCloseBound);
-          el.removeEventListener('swipeout:closed', self.onSwipeoutClosedBound);
-          el.removeEventListener('swipeout:delete', self.onSwipeoutDeleteBound);
-          el.removeEventListener('swipeout:deleted', self.onSwipeoutDeletedBound);
-          el.removeEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnterBound);
-          el.removeEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExitBound);
-          el.removeEventListener('swipeout', self.onSwipeoutBound);
+          el.removeEventListener('swipeout:open', self.onSwipeoutOpen);
+          el.removeEventListener('swipeout:opened', self.onSwipeoutOpened);
+          el.removeEventListener('swipeout:close', self.onSwipeoutClose);
+          el.removeEventListener('swipeout:closed', self.onSwipeoutClosed);
+          el.removeEventListener('swipeout:delete', self.onSwipeoutDelete);
+          el.removeEventListener('swipeout:deleted', self.onSwipeoutDeleted);
+          el.removeEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnter);
+          el.removeEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExit);
+          el.removeEventListener('swipeout', self.onSwipeout);
         }
 
         if (accordionItem) {
-          el.removeEventListener('accordion:open', self.onAccOpenBound);
-          el.removeEventListener('accordion:opened', self.onAccOpenedBound);
-          el.removeEventListener('accordion:close', self.onAccCloseBound);
-          el.removeEventListener('accordion:closed', self.onAccClosedBound);
+          el.removeEventListener('accordion:beforeopen', self.onAccBeforeOpen);
+          el.removeEventListener('accordion:open', self.onAccOpen);
+          el.removeEventListener('accordion:opened', self.onAccOpened);
+          el.removeEventListener('accordion:beforeclose', self.onAccBeforeClose);
+          el.removeEventListener('accordion:close', self.onAccClose);
+          el.removeEventListener('accordion:closed', self.onAccClosed);
         }
       }
 
@@ -5741,8 +5981,24 @@
 
     F7ListItem.prototype.componentDidMount = function componentDidMount () {
       var self = this;
-      var el = self.refs.el;
+      var ref = self.refs;
+      var el = ref.el;
+      var linkEl = ref.linkEl;
       if (!el) { return; }
+      var ref$1 = self.props;
+      var link = ref$1.link;
+      var href = ref$1.href;
+      var smartSelect = ref$1.smartSelect;
+      var swipeout = ref$1.swipeout;
+      var swipeoutOpened = ref$1.swipeoutOpened;
+      var accordionItem = ref$1.accordionItem;
+      var smartSelectParams = ref$1.smartSelectParams;
+      var needsEvents = !(link || href || accordionItem || smartSelect);
+
+      if (!needsEvents && linkEl) {
+        linkEl.addEventListener('click', self.onClick);
+      }
+
       self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
 
       if (self.$listEl.length) {
@@ -5753,30 +6009,25 @@
         });
       }
 
-      var ref = self.props;
-      var swipeout = ref.swipeout;
-      var swipeoutOpened = ref.swipeoutOpened;
-      var accordionItem = ref.accordionItem;
-      var smartSelect = ref.smartSelect;
-      var smartSelectParams = ref.smartSelectParams;
-
       if (swipeout) {
-        el.addEventListener('swipeout:open', self.onSwipeoutOpenBound);
-        el.addEventListener('swipeout:opened', self.onSwipeoutOpenedBound);
-        el.addEventListener('swipeout:close', self.onSwipeoutCloseBound);
-        el.addEventListener('swipeout:closed', self.onSwipeoutClosedBound);
-        el.addEventListener('swipeout:delete', self.onSwipeoutDeleteBound);
-        el.addEventListener('swipeout:deleted', self.onSwipeoutDeletedBound);
-        el.addEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnterBound);
-        el.addEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExitBound);
-        el.addEventListener('swipeout', self.onSwipeoutBound);
+        el.addEventListener('swipeout:open', self.onSwipeoutOpen);
+        el.addEventListener('swipeout:opened', self.onSwipeoutOpened);
+        el.addEventListener('swipeout:close', self.onSwipeoutClose);
+        el.addEventListener('swipeout:closed', self.onSwipeoutClosed);
+        el.addEventListener('swipeout:delete', self.onSwipeoutDelete);
+        el.addEventListener('swipeout:deleted', self.onSwipeoutDeleted);
+        el.addEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnter);
+        el.addEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExit);
+        el.addEventListener('swipeout', self.onSwipeout);
       }
 
       if (accordionItem) {
-        el.addEventListener('accordion:open', self.onAccOpenBound);
-        el.addEventListener('accordion:opened', self.onAccOpenedBound);
-        el.addEventListener('accordion:close', self.onAccCloseBound);
-        el.addEventListener('accordion:closed', self.onAccClosedBound);
+        el.addEventListener('accordion:beforeopen', self.onAccBeforeOpen);
+        el.addEventListener('accordion:open', self.onAccOpen);
+        el.addEventListener('accordion:opened', self.onAccOpened);
+        el.addEventListener('accordion:beforeclose', self.onAccBeforeClose);
+        el.addEventListener('accordion:close', self.onAccClose);
+        el.addEventListener('accordion:closed', self.onAccClosed);
       }
 
       self.$f7ready(function (f7) {
@@ -5856,12 +6107,13 @@
     disabled: Boolean,
     itemInput: Boolean,
     itemInputWithInfo: Boolean,
-    inlineLabel: Boolean
+    inlineLabel: Boolean,
+    virtualListIndex: Number
   }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps));
 
   F7ListItem.displayName = 'f7-list-item';
 
-  var F7List = (function (superclass) {
+  var F7List = /*@__PURE__*/(function (superclass) {
     function F7List(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -6137,7 +6389,7 @@
 
   F7List.displayName = 'f7-list';
 
-  var F7LoginScreenTitle = (function (superclass) {
+  var F7LoginScreenTitle = /*@__PURE__*/(function (superclass) {
     function F7LoginScreenTitle(props, context) {
       superclass.call(this, props, context);
     }
@@ -6178,7 +6430,7 @@
 
   F7LoginScreenTitle.displayName = 'f7-login-screen-title';
 
-  var F7LoginScreen = (function (superclass) {
+  var F7LoginScreen = /*@__PURE__*/(function (superclass) {
     function F7LoginScreen(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -6319,20 +6571,21 @@
 
   F7LoginScreen.displayName = 'f7-login-screen';
 
-  var F7Message = (function (superclass) {
+  var F7Message = /*@__PURE__*/(function (superclass) {
     function F7Message(props, context) {
       var this$1 = this;
 
       superclass.call(this, props, context);
+      this.__reactRefs = {};
 
       (function () {
-        this$1.onClickBound = this$1.onClick.bind(this$1);
-        this$1.onNameClickBound = this$1.onNameClick.bind(this$1);
-        this$1.onTextClickBound = this$1.onTextClick.bind(this$1);
-        this$1.onAvatarClickBound = this$1.onAvatarClick.bind(this$1);
-        this$1.onHeaderClickBound = this$1.onHeaderClick.bind(this$1);
-        this$1.onFooterClickBound = this$1.onFooterClick.bind(this$1);
-        this$1.onBubbleClickBound = this$1.onBubbleClick.bind(this$1);
+        this$1.onClick = this$1.onClick.bind(this$1);
+        this$1.onNameClick = this$1.onNameClick.bind(this$1);
+        this$1.onTextClick = this$1.onTextClick.bind(this$1);
+        this$1.onAvatarClick = this$1.onAvatarClick.bind(this$1);
+        this$1.onHeaderClick = this$1.onHeaderClick.bind(this$1);
+        this$1.onFooterClick = this$1.onFooterClick.bind(this$1);
+        this$1.onBubbleClick = this$1.onBubbleClick.bind(this$1);
       })();
     }
 
@@ -6340,7 +6593,7 @@
     F7Message.prototype = Object.create( superclass && superclass.prototype );
     F7Message.prototype.constructor = F7Message;
 
-    var prototypeAccessors = { classes: { configurable: true },slots: { configurable: true } };
+    var prototypeAccessors = { classes: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
     F7Message.prototype.onClick = function onClick (event) {
       this.dispatchEvent('click', event);
@@ -6398,6 +6651,8 @@
     };
 
     F7Message.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var text = props.text;
@@ -6428,27 +6683,37 @@
       var slotsBubbleStart = ref['bubble-start'];
       var slotsBubbleEnd = ref['bubble-end'];
       return React.createElement('div', {
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        },
         id: id,
         style: style,
-        className: self.classes,
-        onClick: self.onClickBound
+        className: self.classes
       }, slotsStart, (avatar || slotsAvatar) && React.createElement('div', {
+        ref: function (__reactNode) {
+          this$1.__reactRefs['avatarEl'] = __reactNode;
+        },
         className: 'message-avatar',
         style: {
           backgroundImage: avatar && ("url(" + avatar + ")")
-        },
-        onClick: self.onAvatarClickBound
+        }
       }, slotsAvatar), React.createElement('div', {
         className: 'message-content'
       }, slotsContentStart, (slotsName || name) && React.createElement('div', {
-        className: 'message-name',
-        onClick: self.onNameClickBound
+        ref: function (__reactNode) {
+          this$1.__reactRefs['nameEl'] = __reactNode;
+        },
+        className: 'message-name'
       }, slotsName || name), (slotsHeader || header) && React.createElement('div', {
-        className: 'message-header',
-        onClick: self.onHeaderClickBound
+        ref: function (__reactNode) {
+          this$1.__reactRefs['headerEl'] = __reactNode;
+        },
+        className: 'message-header'
       }, slotsHeader || header), React.createElement('div', {
-        className: 'message-bubble',
-        onClick: self.onBubbleClickBound
+        ref: function (__reactNode) {
+          this$1.__reactRefs['bubbleEl'] = __reactNode;
+        },
+        className: 'message-bubble'
       }, slotsBubbleStart, (slotsImage || image) && React.createElement('div', {
         className: 'message-image'
       }, slotsImage || React.createElement('img', {
@@ -6456,16 +6721,56 @@
       })), (slotsTextHeader || textHeader) && React.createElement('div', {
         className: 'message-text-header'
       }, slotsTextHeader || textHeader), (slotsText || text || typing) && React.createElement('div', {
-        className: 'message-text',
-        onClick: self.onTextClickBound
+        ref: function (__reactNode) {
+          this$1.__reactRefs['textEl'] = __reactNode;
+        },
+        className: 'message-text'
       }, slotsText || text, typing && React.createElement('div', {
         className: 'message-typing-indicator'
       }, React.createElement('div', null), React.createElement('div', null), React.createElement('div', null))), (slotsTextFooter || textFooter) && React.createElement('div', {
         className: 'message-text-footer'
       }, slotsTextFooter || textFooter), slotsBubbleEnd, slotsDefault), (slotsFooter || footer) && React.createElement('div', {
-        className: 'message-footer',
-        onClick: self.onFooterClickBound
+        ref: function (__reactNode) {
+          this$1.__reactRefs['footerEl'] = __reactNode;
+        },
+        className: 'message-footer'
       }, slotsFooter || footer), slotsContentEnd), slotsEnd);
+    };
+
+    F7Message.prototype.componentWillUnmount = function componentWillUnmount () {
+      var ref = this.refs;
+      var el = ref.el;
+      var nameEl = ref.nameEl;
+      var textEl = ref.textEl;
+      var avatarEl = ref.avatarEl;
+      var headerEl = ref.headerEl;
+      var footerEl = ref.footerEl;
+      var bubbleEl = ref.bubbleEl;
+      el.removeEventListener('click', this.onClick);
+      if (nameEl) { nameEl.removeEventListener('click', this.onNameClick); }
+      if (textEl) { textEl.removeEventListener('click', this.onTextClick); }
+      if (avatarEl) { nameEl.removeEventListener('click', this.onAvatarClick); }
+      if (headerEl) { nameEl.removeEventListener('click', this.onHeaderClick); }
+      if (footerEl) { nameEl.removeEventListener('click', this.onFooterClick); }
+      if (bubbleEl) { nameEl.removeEventListener('click', this.onBubbleClick); }
+    };
+
+    F7Message.prototype.componentDidMount = function componentDidMount () {
+      var ref = this.refs;
+      var el = ref.el;
+      var nameEl = ref.nameEl;
+      var textEl = ref.textEl;
+      var avatarEl = ref.avatarEl;
+      var headerEl = ref.headerEl;
+      var footerEl = ref.footerEl;
+      var bubbleEl = ref.bubbleEl;
+      el.addEventListener('click', this.onClick);
+      if (nameEl) { nameEl.addEventListener('click', this.onNameClick); }
+      if (textEl) { textEl.addEventListener('click', this.onTextClick); }
+      if (avatarEl) { nameEl.addEventListener('click', this.onAvatarClick); }
+      if (headerEl) { nameEl.addEventListener('click', this.onHeaderClick); }
+      if (footerEl) { nameEl.addEventListener('click', this.onFooterClick); }
+      if (bubbleEl) { nameEl.addEventListener('click', this.onBubbleClick); }
     };
 
     prototypeAccessors.slots.get = function () {
@@ -6478,6 +6783,12 @@
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7Message.prototype, prototypeAccessors );
 
@@ -6512,15 +6823,16 @@
 
   F7Message.displayName = 'f7-message';
 
-  var F7MessagebarAttachment = (function (superclass) {
+  var F7MessagebarAttachment = /*@__PURE__*/(function (superclass) {
     function F7MessagebarAttachment(props, context) {
       var this$1 = this;
 
       superclass.call(this, props, context);
+      this.__reactRefs = {};
 
       (function () {
-        this$1.onClickBound = this$1.onClick.bind(this$1);
-        this$1.onDeleteClickBound = this$1.onDeleteClick.bind(this$1);
+        this$1.onClick = this$1.onClick.bind(this$1);
+        this$1.onDeleteClick = this$1.onDeleteClick.bind(this$1);
       })();
     }
 
@@ -6528,7 +6840,7 @@
     F7MessagebarAttachment.prototype = Object.create( superclass && superclass.prototype );
     F7MessagebarAttachment.prototype.constructor = F7MessagebarAttachment;
 
-    var prototypeAccessors = { slots: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7MessagebarAttachment.prototype.onClick = function onClick (event) {
       this.dispatchEvent('attachment:click attachmentClick', event);
@@ -6539,6 +6851,8 @@
     };
 
     F7MessagebarAttachment.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var deletable = props.deletable;
@@ -6548,16 +6862,36 @@
       var style = props.style;
       var classes = Utils.classNames(className, 'messagebar-attachment', Mixins.colorClasses(props));
       return React.createElement('div', {
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        },
         id: id,
         style: style,
-        className: classes,
-        onClick: self.onClickBound
+        className: classes
       }, image && React.createElement('img', {
         src: image
       }), deletable && React.createElement('span', {
-        className: 'messagebar-attachment-delete',
-        onClick: self.onDeleteClickBound
+        ref: function (__reactNode) {
+          this$1.__reactRefs['deleteEl'] = __reactNode;
+        },
+        className: 'messagebar-attachment-delete'
       }), this.slots['default']);
+    };
+
+    F7MessagebarAttachment.prototype.componentWillUnmount = function componentWillUnmount () {
+      this.refs.el.removeEventListener('click', this.onClick);
+
+      if (this.refs.deleteEl) {
+        this.refs.deleteEl.removeEventListener('click', this.onDeleteClick);
+      }
+    };
+
+    F7MessagebarAttachment.prototype.componentDidMount = function componentDidMount () {
+      this.refs.el.addEventListener('click', this.onClick);
+
+      if (this.refs.deleteEl) {
+        this.refs.deleteEl.addEventListener('click', this.onDeleteClick);
+      }
     };
 
     prototypeAccessors.slots.get = function () {
@@ -6570,6 +6904,12 @@
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7MessagebarAttachment.prototype, prototypeAccessors );
 
@@ -6589,7 +6929,7 @@
 
   F7MessagebarAttachment.displayName = 'f7-messagebar-attachment';
 
-  var F7MessagebarAttachments = (function (superclass) {
+  var F7MessagebarAttachments = /*@__PURE__*/(function (superclass) {
     function F7MessagebarAttachments(props, context) {
       superclass.call(this, props, context);
     }
@@ -6630,14 +6970,15 @@
 
   F7MessagebarAttachments.displayName = 'f7-messagebar-attachments';
 
-  var F7MessagebarSheetImage = (function (superclass) {
+  var F7MessagebarSheetImage = /*@__PURE__*/(function (superclass) {
     function F7MessagebarSheetImage(props, context) {
       var this$1 = this;
 
       superclass.call(this, props, context);
+      this.__reactRefs = {};
 
       (function () {
-        this$1.onChangeBound = this$1.onChange.bind(this$1);
+        this$1.onChange = this$1.onChange.bind(this$1);
       })();
     }
 
@@ -6645,7 +6986,7 @@
     F7MessagebarSheetImage.prototype = Object.create( superclass && superclass.prototype );
     F7MessagebarSheetImage.prototype.constructor = F7MessagebarSheetImage;
 
-    var prototypeAccessors = { slots: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7MessagebarSheetImage.prototype.onChange = function onChange (event) {
       if (this.props.checked) { this.dispatchEvent('checked', event); }else { this.dispatchEvent('unchecked', event); }
@@ -6653,6 +6994,8 @@
     };
 
     F7MessagebarSheetImage.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var image = props.image;
@@ -6667,9 +7010,12 @@
       var inputEl;
       {
         inputEl = React.createElement('input', {
+          ref: function (__reactNode) {
+            this$1.__reactRefs['inputEl'] = __reactNode;
+          },
           type: 'checkbox',
           checked: checked,
-          onChange: self.onChangeBound
+          onChange: self.onChange
         });
       }
       return React.createElement('label', {
@@ -6692,6 +7038,12 @@
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
 
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
+
     Object.defineProperties( F7MessagebarSheetImage.prototype, prototypeAccessors );
 
     return F7MessagebarSheetImage;
@@ -6707,7 +7059,7 @@
 
   F7MessagebarSheetImage.displayName = 'f7-messagebar-sheet-image';
 
-  var F7MessagebarSheetItem = (function (superclass) {
+  var F7MessagebarSheetItem = /*@__PURE__*/(function (superclass) {
     function F7MessagebarSheetItem(props, context) {
       superclass.call(this, props, context);
     }
@@ -6748,7 +7100,7 @@
 
   F7MessagebarSheetItem.displayName = 'f7-messagebar-sheet-item';
 
-  var F7MessagebarSheet = (function (superclass) {
+  var F7MessagebarSheet = /*@__PURE__*/(function (superclass) {
     function F7MessagebarSheet(props, context) {
       superclass.call(this, props, context);
     }
@@ -6789,7 +7141,7 @@
 
   F7MessagebarSheet.displayName = 'f7-messagebar-sheet';
 
-  var F7Messagebar = (function (superclass) {
+  var F7Messagebar = /*@__PURE__*/(function (superclass) {
     function F7Messagebar(props, context) {
       var this$1 = this;
 
@@ -6797,14 +7149,14 @@
       this.__reactRefs = {};
 
       (function () {
-        this$1.onChangeBound = this$1.onChange.bind(this$1);
-        this$1.onInputBound = this$1.onInput.bind(this$1);
-        this$1.onFocusBound = this$1.onFocus.bind(this$1);
-        this$1.onBlurBound = this$1.onBlur.bind(this$1);
-        this$1.onClickBound = this$1.onClick.bind(this$1);
-        this$1.onDeleteAttachmentBound = this$1.onDeleteAttachment.bind(this$1);
-        this$1.onClickAttachmentBound = this$1.onClickAttachment.bind(this$1);
-        this$1.onResizePageBound = this$1.onResizePage.bind(this$1);
+        this$1.onChange = this$1.onChange.bind(this$1);
+        this$1.onInput = this$1.onInput.bind(this$1);
+        this$1.onFocus = this$1.onFocus.bind(this$1);
+        this$1.onBlur = this$1.onBlur.bind(this$1);
+        this$1.onClick = this$1.onClick.bind(this$1);
+        this$1.onDeleteAttachment = this$1.onDeleteAttachment.bind(this$1);
+        this$1.onClickAttachment = this$1.onClickAttachment.bind(this$1);
+        this$1.onResizePage = this$1.onResizePage.bind(this$1);
       })();
     }
 
@@ -7051,12 +7403,12 @@
         readonly: readonly,
         resizable: resizable,
         value: value,
-        onInput: self.onInputBound,
-        onChange: self.onChangeBound,
-        onFocus: self.onFocusBound,
-        onBlur: self.onBlurBound
+        onInput: self.onInput,
+        onChange: self.onChange,
+        onFocus: self.onFocus,
+        onBlur: self.onBlur
       }), slotsAfterArea), (sendLink && sendLink.length > 0 || slotsSendLink) && React.createElement(F7Link, {
-        onClick: self.onClickBound
+        onClick: self.onClick
       }, slotsSendLink || sendLink), slotsInnerEnd, innerEndEls), slotsAfterInner, messagebarSheetEl);
     };
 
@@ -7065,9 +7417,9 @@
       if (self.f7Messagebar && self.f7Messagebar.destroy) { self.f7Messagebar.destroy(); }
       var el = self.refs.el;
       if (!el) { return; }
-      el.removeEventListener('messagebar:attachmentdelete', self.onDeleteAttachmentBound);
-      el.removeEventListener('messagebar:attachmentclick', self.onClickAttachmentBound);
-      el.removeEventListener('messagebar:resizepage', self.onResizePageBound);
+      el.removeEventListener('messagebar:attachmentdelete', self.onDeleteAttachment);
+      el.removeEventListener('messagebar:attachmentclick', self.onClickAttachment);
+      el.removeEventListener('messagebar:resizepage', self.onResizePage);
     };
 
     F7Messagebar.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
@@ -7116,9 +7468,9 @@
       if (!init) { return; }
       var el = self.refs.el;
       if (!el) { return; }
-      el.addEventListener('messagebar:attachmentdelete', self.onDeleteAttachmentBound);
-      el.addEventListener('messagebar:attachmentclick', self.onClickAttachmentBound);
-      el.addEventListener('messagebar:resizepage', self.onResizePageBound);
+      el.addEventListener('messagebar:attachmentdelete', self.onDeleteAttachment);
+      el.addEventListener('messagebar:attachmentclick', self.onClickAttachment);
+      el.addEventListener('messagebar:resizepage', self.onResizePage);
       var params = Utils.noUndefinedProps({
         el: el,
         top: top,
@@ -7196,7 +7548,7 @@
 
   F7Messagebar.displayName = 'f7-messagebar';
 
-  var F7MessagesTitle = (function (superclass) {
+  var F7MessagesTitle = /*@__PURE__*/(function (superclass) {
     function F7MessagesTitle(props, context) {
       superclass.call(this, props, context);
     }
@@ -7237,7 +7589,7 @@
 
   F7MessagesTitle.displayName = 'f7-messages-title';
 
-  var F7Messages = (function (superclass) {
+  var F7Messages = /*@__PURE__*/(function (superclass) {
     function F7Messages(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -7475,7 +7827,7 @@
 
   F7Messages.displayName = 'f7-messages';
 
-  var F7NavLeft = (function (superclass) {
+  var F7NavLeft = /*@__PURE__*/(function (superclass) {
     function F7NavLeft(props, context) {
       superclass.call(this, props, context);
     }
@@ -7551,7 +7903,7 @@
 
   F7NavLeft.displayName = 'f7-nav-left';
 
-  var F7NavRight = (function (superclass) {
+  var F7NavRight = /*@__PURE__*/(function (superclass) {
     function F7NavRight(props, context) {
       superclass.call(this, props, context);
     }
@@ -7596,7 +7948,7 @@
 
   F7NavRight.displayName = 'f7-nav-right';
 
-  var F7NavTitle = (function (superclass) {
+  var F7NavTitle = /*@__PURE__*/(function (superclass) {
     function F7NavTitle(props, context) {
       superclass.call(this, props, context);
     }
@@ -7654,7 +8006,7 @@
 
   F7NavTitle.displayName = 'f7-nav-title';
 
-  var F7Navbar = (function (superclass) {
+  var F7Navbar = /*@__PURE__*/(function (superclass) {
     function F7Navbar(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -7814,7 +8166,7 @@
 
   F7Navbar.displayName = 'f7-navbar';
 
-  var F7PageContent = (function (superclass) {
+  var F7PageContent = /*@__PURE__*/(function (superclass) {
     function F7PageContent(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -8029,7 +8381,7 @@
 
   F7PageContent.displayName = 'f7-page-content';
 
-  var F7Page = (function (superclass) {
+  var F7Page = /*@__PURE__*/(function (superclass) {
     function F7Page(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -8088,6 +8440,13 @@
     F7Page.prototype.onPageUnstack = function onPageUnstack () {
       this.setState({
         routerForceUnstack: true
+      });
+    };
+
+    F7Page.prototype.onPagePosition = function onPagePosition (event) {
+      var position = event.detail.position;
+      this.setState({
+        routerClass: ("page-" + position)
       });
     };
 
@@ -8301,6 +8660,7 @@
       el.removeEventListener('page:beforeremove', self.onPageBeforeRemove);
       el.removeEventListener('page:stack', self.onPageStack);
       el.removeEventListener('page:unstack', self.onPageUnstack);
+      el.removeEventListener('page:position', self.onPagePosition);
     };
 
     F7Page.prototype.componentDidMount = function componentDidMount () {
@@ -8325,6 +8685,7 @@
       self.onPageBeforeRemove = self.onPageBeforeRemove.bind(self);
       self.onPageStack = self.onPageStack.bind(self);
       self.onPageUnstack = self.onPageUnstack.bind(self);
+      self.onPagePosition = self.onPagePosition.bind(self);
 
       if (ptr) {
         el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -8348,6 +8709,7 @@
       el.addEventListener('page:beforeremove', self.onPageBeforeRemove);
       el.addEventListener('page:stack', self.onPageStack);
       el.addEventListener('page:unstack', self.onPageUnstack);
+      el.addEventListener('page:position', self.onPagePosition);
     };
 
     prototypeAccessors.slots.get = function () {
@@ -8416,7 +8778,7 @@
 
   F7Page.displayName = 'f7-page';
 
-  var F7Panel = (function (superclass) {
+  var F7Panel = /*@__PURE__*/(function (superclass) {
     function F7Panel(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -8632,7 +8994,7 @@
 
   F7Panel.displayName = 'f7-panel';
 
-  var F7PhotoBrowser = (function (superclass) {
+  var F7PhotoBrowser = /*@__PURE__*/(function (superclass) {
     function F7PhotoBrowser(props, context) {
       superclass.call(this, props, context);
     }
@@ -8808,7 +9170,7 @@
 
   F7PhotoBrowser.displayName = 'f7-photo-browser';
 
-  var F7Popover = (function (superclass) {
+  var F7Popover = /*@__PURE__*/(function (superclass) {
     function F7Popover(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -8965,7 +9327,7 @@
 
   F7Popover.displayName = 'f7-popover';
 
-  var F7Popup = (function (superclass) {
+  var F7Popup = /*@__PURE__*/(function (superclass) {
     function F7Popup(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -9121,7 +9483,7 @@
 
   F7Popup.displayName = 'f7-popup';
 
-  var F7Preloader = (function (superclass) {
+  var F7Preloader = /*@__PURE__*/(function (superclass) {
     function F7Preloader(props, context) {
       superclass.call(this, props, context);
     }
@@ -9197,7 +9559,7 @@
 
   F7Preloader.displayName = 'f7-preloader';
 
-  var F7Progressbar = (function (superclass) {
+  var F7Progressbar = /*@__PURE__*/(function (superclass) {
     function F7Progressbar(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -9266,22 +9628,31 @@
 
   F7Progressbar.displayName = 'f7-progressbar';
 
-  var F7Radio = (function (superclass) {
+  var F7Radio = /*@__PURE__*/(function (superclass) {
     function F7Radio(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        this$1.onChange = this$1.onChange.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7Radio.__proto__ = superclass;
     F7Radio.prototype = Object.create( superclass && superclass.prototype );
     F7Radio.prototype.constructor = F7Radio;
 
-    var prototypeAccessors = { slots: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7Radio.prototype.onChange = function onChange (event) {
       this.dispatchEvent('change', event);
     };
 
     F7Radio.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var name = props.name;
@@ -9296,6 +9667,9 @@
       var inputEl;
       {
         inputEl = React.createElement('input', {
+          ref: function (__reactNode) {
+            this$1.__reactRefs['inputEl'] = __reactNode;
+          },
           type: 'radio',
           name: name,
           value: value,
@@ -9303,7 +9677,7 @@
           readOnly: readonly,
           checked: checked,
           defaultChecked: defaultChecked,
-          onChange: self.onChange.bind(self)
+          onChange: self.onChange
         });
       }
       var iconEl = React.createElement('i', {
@@ -9330,6 +9704,12 @@
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
 
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
+
     Object.defineProperties( F7Radio.prototype, prototypeAccessors );
 
     return F7Radio;
@@ -9349,22 +9729,31 @@
 
   F7Radio.displayName = 'f7-radio';
 
-  var F7Row = (function (superclass) {
+  var F7Row = /*@__PURE__*/(function (superclass) {
     function F7Row(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7Row.__proto__ = superclass;
     F7Row.prototype = Object.create( superclass && superclass.prototype );
     F7Row.prototype.constructor = F7Row;
 
-    var prototypeAccessors = { slots: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7Row.prototype.onClick = function onClick (event) {
       this.dispatchEvent('click', event);
     };
 
     F7Row.prototype.render = function render () {
+      var this$1 = this;
+
       var self = this;
       var props = self.props;
       var className = props.className;
@@ -9380,8 +9769,18 @@
         id: id,
         style: style,
         className: classes,
-        onClick: self.onClick.bind(self)
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        }
       }, this.slots['default']);
+    };
+
+    F7Row.prototype.componentWillUnmount = function componentWillUnmount () {
+      this.refs.el.removeEventListener('click', this.onClick);
+    };
+
+    F7Row.prototype.componentDidMount = function componentDidMount () {
+      this.refs.el.addEventListener('click', this.onClick);
     };
 
     prototypeAccessors.slots.get = function () {
@@ -9394,6 +9793,12 @@
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7Row.prototype, prototypeAccessors );
 
@@ -9413,10 +9818,22 @@
 
   F7Row.displayName = 'f7-row';
 
-  var F7Searchbar = (function (superclass) {
+  var F7Searchbar = /*@__PURE__*/(function (superclass) {
     function F7Searchbar(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
       this.__reactRefs = {};
+
+      (function () {
+        this$1.onChange = this$1.onChange.bind(this$1);
+        this$1.onInput = this$1.onInput.bind(this$1);
+        this$1.onFocus = this$1.onFocus.bind(this$1);
+        this$1.onBlur = this$1.onBlur.bind(this$1);
+        this$1.onSubmit = this$1.onSubmit.bind(this$1);
+        this$1.onClearButtonClick = this$1.onClearButtonClick.bind(this$1);
+        this$1.onDisableButtonClick = this$1.onDisableButtonClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7Searchbar.__proto__ = superclass;
@@ -9496,18 +9913,23 @@
       var className = props.className;
       var style = props.style;
       var id = props.id;
+      var value = props.value;
 
       if (clearButton) {
         clearEl = React.createElement('span', {
-          className: 'input-clear-button',
-          onClick: self.onClearButtonClick.bind(self)
+          ref: function (__reactNode) {
+            this$1.__reactRefs['clearEl'] = __reactNode;
+          },
+          className: 'input-clear-button'
         });
       }
 
       if (disableButton) {
         disableEl = React.createElement('span', {
-          className: 'searchbar-disable-button',
-          onClick: self.onDisableButtonClick.bind(self)
+          ref: function (__reactNode) {
+            this$1.__reactRefs['disableEl'] = __reactNode;
+          },
+          className: 'searchbar-disable-button'
         }, disableButtonText);
       }
 
@@ -9517,6 +9939,21 @@
         'no-hairline': noHairline,
         'searchbar-expandable': expandable
       }, Mixins.colorClasses(props));
+      var inputEl;
+      {
+        inputEl = React.createElement('input', {
+          ref: function (__reactNode) {
+            this$1.__reactRefs['inputEl'] = __reactNode;
+          },
+          value: value,
+          placeholder: placeholder,
+          type: 'search',
+          onInput: self.onInput,
+          onChange: self.onChange.bind(self),
+          onFocus: self.onFocus,
+          onBlur: self.onBlur
+        });
+      }
       return React.createElement(SearchbarTag, {
         ref: function (__reactNode) {
           this$1.__reactRefs['el'] = __reactNode;
@@ -9528,22 +9965,39 @@
         className: 'searchbar-inner'
       }, this.slots['inner-start'], React.createElement('div', {
         className: 'searchbar-input-wrap'
-      }, this.slots['input-wrap-start'], React.createElement('input', {
-        placeholder: placeholder,
-        type: 'search',
-        onInput: self.onInput.bind(self),
-        onChange: self.onChange.bind(self),
-        onFocus: self.onFocus.bind(self),
-        onBlur: self.onBlur.bind(self)
-      }), React.createElement('i', {
+      }, this.slots['input-wrap-start'], inputEl, React.createElement('i', {
         className: 'searchbar-icon'
       }), clearEl, this.slots['input-wrap-end']), disableEl, this.slots['inner-end'], this.slots['default']), this.slots['after-inner']);
+    };
+
+    F7Searchbar.prototype.componentWillUnmount = function componentWillUnmount () {
+      var self = this;
+      var ref = self.refs;
+      var inputEl = ref.inputEl;
+      var el = ref.el;
+      var clearEl = ref.clearEl;
+      var disableEl = ref.disableEl;
+
+      if (self.props.form && el) {
+        el.removeEventListener('submit', self.onSubmit, false);
+      }
+
+      if (clearEl) {
+        clearEl.removeEventListener('click', self.onClearButtonClick);
+      }
+
+      if (disableEl) {
+        disableEl.removeEventListener('click', self.onDisableButtonClick);
+      }
+
+      if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
     };
 
     F7Searchbar.prototype.componentDidMount = function componentDidMount () {
       var self = this;
       var ref = self.props;
       var init = ref.init;
+      var inputEvents = ref.inputEvents;
       var searchContainer = ref.searchContainer;
       var searchIn = ref.searchIn;
       var searchItem = ref.searchItem;
@@ -9562,17 +10016,29 @@
       var hideDividers = ref.hideDividers;
       var hideGroups = ref.hideGroups;
       var form = ref.form;
-      if (!init) { return; }
-      var el = self.refs.el;
+      var ref$1 = self.refs;
+      var inputEl = ref$1.inputEl;
+      var el = ref$1.el;
+      var clearEl = ref$1.clearEl;
+      var disableEl = ref$1.disableEl;
 
       if (form && el) {
-        self.onSubmitBound = self.onSubmit.bind(self);
-        el.addEventListener('submit', self.onSubmitBound, false);
+        el.addEventListener('submit', self.onSubmit, false);
       }
 
+      if (clearEl) {
+        clearEl.addEventListener('click', self.onClearButtonClick);
+      }
+
+      if (disableEl) {
+        disableEl.addEventListener('click', self.onDisableButtonClick);
+      }
+
+      if (!init) { return; }
       self.$f7ready(function () {
         var params = Utils.noUndefinedProps({
           el: self.refs.el,
+          inputEvents: inputEvents,
           searchContainer: searchContainer,
           searchIn: searchIn,
           searchItem: searchItem,
@@ -9616,16 +10082,6 @@
         });
         self.f7Searchbar = self.$f7.searchbar.create(params);
       });
-    };
-
-    F7Searchbar.prototype.componentWillUnmount = function componentWillUnmount () {
-      var self = this;
-
-      if (self.props.form && self.refs.el) {
-        self.refs.el.removeEventListener('submit', self.onSubmitBound, false);
-      }
-
-      if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
     };
 
     prototypeAccessors.slots.get = function () {
@@ -9675,6 +10131,11 @@
     clearButton: {
       type: Boolean,
       default: true
+    },
+    value: [String, Number, Array],
+    inputEvents: {
+      type: String,
+      default: 'change input compositionend'
     },
     expandable: Boolean,
     searchContainer: [String, Object],
@@ -9743,7 +10204,7 @@
 
   F7Searchbar.displayName = 'f7-searchbar';
 
-  var F7Segmented = (function (superclass) {
+  var F7Segmented = /*@__PURE__*/(function (superclass) {
     function F7Segmented(props, context) {
       superclass.call(this, props, context);
     }
@@ -9799,7 +10260,7 @@
 
   F7Segmented.displayName = 'f7-segmented';
 
-  var F7Sheet = (function (superclass) {
+  var F7Sheet = /*@__PURE__*/(function (superclass) {
     function F7Sheet(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -9809,7 +10270,7 @@
     F7Sheet.prototype = Object.create( superclass && superclass.prototype );
     F7Sheet.prototype.constructor = F7Sheet;
 
-    var prototypeAccessors = { slots: { configurable: true },el: { configurable: true },refs: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7Sheet.prototype.onOpen = function onOpen (event) {
       this.dispatchEvent('sheet:open sheetOpen', event);
@@ -9889,7 +10350,7 @@
     F7Sheet.prototype.componentWillUnmount = function componentWillUnmount () {
       var self = this;
       if (self.f7Sheet) { self.f7Sheet.destroy(); }
-      var el = self.el;
+      var el = self.refs.el;
       if (!el) { return; }
       el.removeEventListener('popup:open', self.onOpenBound);
       el.removeEventListener('popup:opened', self.onOpenedBound);
@@ -9942,10 +10403,6 @@
       return __reactComponentSlots(this.props);
     };
 
-    prototypeAccessors.el.get = function () {
-      return __reactComponentEl(this);
-    };
-
     F7Sheet.prototype.dispatchEvent = function dispatchEvent (events) {
       var args = [], len = arguments.length - 1;
       while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
@@ -9991,7 +10448,7 @@
 
   F7Sheet.displayName = 'f7-sheet';
 
-  var F7Statusbar = (function (superclass) {
+  var F7Statusbar = /*@__PURE__*/(function (superclass) {
     function F7Statusbar(props, context) {
       superclass.call(this, props, context);
     }
@@ -10032,7 +10489,7 @@
 
   F7Statusbar.displayName = 'f7-statusbar';
 
-  var F7Stepper = (function (superclass) {
+  var F7Stepper = /*@__PURE__*/(function (superclass) {
     function F7Stepper(props, context) {
       var this$1 = this;
 
@@ -10040,9 +10497,9 @@
       this.__reactRefs = {};
 
       (function () {
-        this$1.onInputBound = this$1.onInput.bind(this$1);
-        this$1.onMinusClickBound = this$1.onMinusClick.bind(this$1);
-        this$1.onPlusClickBound = this$1.onPlusClick.bind(this$1);
+        this$1.onInput = this$1.onInput.bind(this$1);
+        this$1.onMinusClick = this$1.onMinusClick.bind(this$1);
+        this$1.onPlusClick = this$1.onPlusClick.bind(this$1);
       })();
     }
 
@@ -10149,13 +10606,16 @@
         var inputEl;
         {
           inputEl = React.createElement('input', {
+            ref: function (__reactNode) {
+              this$1.__reactRefs['inputEl'] = __reactNode;
+            },
             type: inputType,
             min: inputType === 'number' ? min : undefined,
             max: inputType === 'number' ? max : undefined,
             step: inputType === 'number' ? step : undefined,
+            onInput: self.onInput,
             value: value,
-            readOnly: inputReadonly,
-            onInput: self.onInput.bind(self)
+            readOnly: inputReadonly
           });
         }
         inputWrapEl = React.createElement('div', {
@@ -10177,24 +10637,53 @@
         style: style,
         className: self.classes
       }, React.createElement('div', {
-        className: 'stepper-button-minus',
-        onClick: self.onMinusClickBound
+        ref: function (__reactNode) {
+          this$1.__reactRefs['minusEl'] = __reactNode;
+        },
+        className: 'stepper-button-minus'
       }), inputWrapEl, valueEl, React.createElement('div', {
-        className: 'stepper-button-plus',
-        onClick: self.onPlusClickBound
+        ref: function (__reactNode) {
+          this$1.__reactRefs['plusEl'] = __reactNode;
+        },
+        className: 'stepper-button-plus'
       }));
     };
 
     F7Stepper.prototype.componentWillUnmount = function componentWillUnmount () {
-      if (!this.props.init) { return; }
+      var self = this;
+      var ref = self.refs;
+      var minusEl = ref.minusEl;
+      var plusEl = ref.plusEl;
 
-      if (this.f7Stepper && this.f7Stepper.destroy) {
-        this.f7Stepper.destroy();
+      if (minusEl) {
+        minusEl.removeEventListener('click', self.onMinusClick);
+      }
+
+      if (plusEl) {
+        plusEl.removeEventListener('click', self.onPlusClick);
+      }
+
+      if (!self.props.init) { return; }
+
+      if (self.f7Stepper && self.f7Stepper.destroy) {
+        self.f7Stepper.destroy();
       }
     };
 
     F7Stepper.prototype.componentDidMount = function componentDidMount () {
       var self = this;
+      var ref = self.refs;
+      var minusEl = ref.minusEl;
+      var plusEl = ref.plusEl;
+
+      if (minusEl) {
+        minusEl.addEventListener('click', self.onMinusClick);
+      }
+
+      if (plusEl) {
+        plusEl.addEventListener('click', self.onPlusClick);
+      }
+
       if (!self.props.init) { return; }
       self.$f7ready(function (f7) {
         var ref = self.props;
@@ -10332,7 +10821,7 @@
 
   F7Stepper.displayName = 'f7-stepper';
 
-  var F7Subnavbar = (function (superclass) {
+  var F7Subnavbar = /*@__PURE__*/(function (superclass) {
     function F7Subnavbar(props, context) {
       superclass.call(this, props, context);
     }
@@ -10389,7 +10878,7 @@
 
   F7Subnavbar.displayName = 'f7-subnavbar';
 
-  var F7SwipeoutActions = (function (superclass) {
+  var F7SwipeoutActions = /*@__PURE__*/(function (superclass) {
     function F7SwipeoutActions(props, context) {
       superclass.call(this, props, context);
     }
@@ -10443,22 +10932,31 @@
 
   F7SwipeoutActions.displayName = 'f7-swipeout-actions';
 
-  var F7SwipeoutButton = (function (superclass) {
+  var F7SwipeoutButton = /*@__PURE__*/(function (superclass) {
     function F7SwipeoutButton(props, context) {
+      var this$1 = this;
+
       superclass.call(this, props, context);
+      this.__reactRefs = {};
+
+      (function () {
+        this$1.onClick = this$1.onClick.bind(this$1);
+      })();
     }
 
     if ( superclass ) F7SwipeoutButton.__proto__ = superclass;
     F7SwipeoutButton.prototype = Object.create( superclass && superclass.prototype );
     F7SwipeoutButton.prototype.constructor = F7SwipeoutButton;
 
-    var prototypeAccessors = { slots: { configurable: true } };
+    var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
     F7SwipeoutButton.prototype.onClick = function onClick (event) {
       this.dispatchEvent('click', event);
     };
 
     F7SwipeoutButton.prototype.render = function render () {
+      var this$1 = this;
+
       var props = this.props;
       var className = props.className;
       var id = props.id;
@@ -10475,13 +10973,23 @@
         'swipeout-close': close
       }, Mixins.colorClasses(props));
       return React.createElement('a', {
+        ref: function (__reactNode) {
+          this$1.__reactRefs['el'] = __reactNode;
+        },
         href: href || '#',
         id: id,
         style: style,
         'data-confirm': confirmText || undefined,
-        className: classes,
-        onClick: this.onClick.bind(this)
+        className: classes
       }, this.slots['default'], !this.slots.default && text);
+    };
+
+    F7SwipeoutButton.prototype.componentWillUnmount = function componentWillUnmount () {
+      this.refs.el.removeEventListener('click', this.onClick);
+    };
+
+    F7SwipeoutButton.prototype.componentDidMount = function componentDidMount () {
+      this.refs.el.addEventListener('click', this.onClick);
     };
 
     prototypeAccessors.slots.get = function () {
@@ -10494,6 +11002,12 @@
 
       return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
     };
+
+    prototypeAccessors.refs.get = function () {
+      return this.__reactRefs;
+    };
+
+    prototypeAccessors.refs.set = function (refs) {};
 
     Object.defineProperties( F7SwipeoutButton.prototype, prototypeAccessors );
 
@@ -10514,7 +11028,7 @@
 
   F7SwipeoutButton.displayName = 'f7-swipeout-button';
 
-  var F7SwiperSlide = (function (superclass) {
+  var F7SwiperSlide = /*@__PURE__*/(function (superclass) {
     function F7SwiperSlide(props, context) {
       superclass.call(this, props, context);
     }
@@ -10559,7 +11073,7 @@
 
   F7SwiperSlide.displayName = 'f7-swiper-slide';
 
-  var F7Swiper = (function (superclass) {
+  var F7Swiper = /*@__PURE__*/(function (superclass) {
     function F7Swiper(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -10744,7 +11258,7 @@
 
   F7Swiper.displayName = 'f7-swiper';
 
-  var F7Tab = (function (superclass) {
+  var F7Tab = /*@__PURE__*/(function (superclass) {
     function F7Tab(props, context) {
       var this$1 = this;
 
@@ -10884,7 +11398,7 @@
 
   F7Tab.displayName = 'f7-tab';
 
-  var F7Tabs = (function (superclass) {
+  var F7Tabs = /*@__PURE__*/(function (superclass) {
     function F7Tabs(props, context) {
       superclass.call(this, props, context);
     }
@@ -10904,11 +11418,13 @@
       var style = props.style;
       var className = props.className;
       var routable = props.routable;
-      var classes = Utils.classNames(className, {
+      var classes = Utils.classNames(className, Mixins.colorClasses(props));
+      var tabsClasses = Utils.classNames({
+        'tabs': true,
         'tabs-animated-wrap': animated,
         'tabs-swipeable-wrap': swipeable,
         'tabs-routable': routable
-      }, Mixins.colorClasses(props));
+      });
 
       if (animated || swipeable) {
         return React.createElement('div', {
@@ -10916,14 +11432,14 @@
           style: style,
           className: classes
         }, React.createElement('div', {
-          className: 'tabs'
+          className: tabsClasses
         }, this.slots['default']));
       }
 
       return React.createElement('div', {
         id: id,
         style: style,
-        className: Utils.classNames('tabs', classes)
+        className: Utils.classNames(tabsClasses, classes)
       }, this.slots['default']);
     };
 
@@ -10947,7 +11463,7 @@
 
   F7Tabs.displayName = 'f7-tabs';
 
-  var F7Toolbar = (function (superclass) {
+  var F7Toolbar = /*@__PURE__*/(function (superclass) {
     function F7Toolbar(props, context) {
       superclass.call(this, props, context);
       this.__reactRefs = {};
@@ -11057,7 +11573,7 @@
 
   F7Toolbar.displayName = 'f7-toolbar';
 
-  var F7View = (function (superclass) {
+  var F7View = /*@__PURE__*/(function (superclass) {
     function F7View(props, context) {
       var this$1 = this;
 
@@ -11267,6 +11783,11 @@
     iosSwipeBackAnimateOpacity: Boolean,
     iosSwipeBackActiveArea: Number,
     iosSwipeBackThreshold: Number,
+    mdSwipeBack: Boolean,
+    mdSwipeBackAnimateShadow: Boolean,
+    mdSwipeBackAnimateOpacity: Boolean,
+    mdSwipeBackActiveArea: Number,
+    mdSwipeBackThreshold: Number,
     pushState: Boolean,
     pushStateRoot: String,
     pushStateAnimate: Boolean,
@@ -11292,7 +11813,7 @@
 
   F7View.displayName = 'f7-view';
 
-  var F7Views = (function (superclass) {
+  var F7Views = /*@__PURE__*/(function (superclass) {
     function F7Views(props, context) {
       superclass.call(this, props, context);
     }
@@ -11395,6 +11916,13 @@
       removePage: function removePage($pageEl) {
         if (!$pageEl) { return; }
         var router = this;
+        var f7Page;
+        if ('length' in $pageEl) { f7Page = $pageEl[0].f7Page; }
+        else { f7Page = $pageEl.f7Page; }
+        if (f7Page && f7Page.route && f7Page.route.route && f7Page.route.route.keepAlive) {
+          router.app.$($pageEl).remove();
+          return;
+        }
         var routerComponent;
         f7.routers.views.forEach(function (data) {
           if (data.el && data.el === router.el) {
@@ -11546,7 +12074,7 @@
   };
 
   /**
-   * Framework7 React 3.5.1
+   * Framework7 React 3.6.0
    * Build full featured iOS & Android apps using Framework7 & React
    * http://framework7.io/react/
    *
@@ -11554,7 +12082,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: November 2, 2018
+   * Released on: December 7, 2018
    */
 
   var Plugin = {

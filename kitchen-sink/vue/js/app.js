@@ -7932,26 +7932,22 @@
 
   // Classes and attributes
   function addClass$1(className) {
-    var this$1 = this;
-
     if (typeof className === 'undefined') {
       return this;
     }
     var classes = className.split(' ');
     for (var i = 0; i < classes.length; i += 1) {
       for (var j = 0; j < this.length; j += 1) {
-        if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.add(classes[i]); }
+        if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.add(classes[i]); }
       }
     }
     return this;
   }
   function removeClass$1(className) {
-    var this$1 = this;
-
     var classes = className.split(' ');
     for (var i = 0; i < classes.length; i += 1) {
       for (var j = 0; j < this.length; j += 1) {
-        if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.remove(classes[i]); }
+        if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.remove(classes[i]); }
       }
     }
     return this;
@@ -7961,19 +7957,16 @@
     return this[0].classList.contains(className);
   }
   function toggleClass(className) {
-    var this$1 = this;
-
     var classes = className.split(' ');
     for (var i = 0; i < classes.length; i += 1) {
       for (var j = 0; j < this.length; j += 1) {
-        if (typeof this$1[j] !== 'undefined' && typeof this$1[j].classList !== 'undefined') { this$1[j].classList.toggle(classes[i]); }
+        if (typeof this[j] !== 'undefined' && typeof this[j].classList !== 'undefined') { this[j].classList.toggle(classes[i]); }
       }
     }
     return this;
   }
   function attr(attrs, value) {
     var arguments$1 = arguments;
-    var this$1 = this;
 
     if (arguments.length === 1 && typeof attrs === 'string') {
       // Get attr
@@ -7985,13 +7978,13 @@
     for (var i = 0; i < this.length; i += 1) {
       if (arguments$1.length === 2) {
         // String
-        this$1[i].setAttribute(attrs, value);
+        this[i].setAttribute(attrs, value);
       } else {
         // Object
         // eslint-disable-next-line
         for (var attrName in attrs) {
-          this$1[i][attrName] = attrs[attrName];
-          this$1[i].setAttribute(attrName, attrs[attrName]);
+          this[i][attrName] = attrs[attrName];
+          this[i].setAttribute(attrName, attrs[attrName]);
         }
       }
     }
@@ -7999,17 +7992,14 @@
   }
   // eslint-disable-next-line
   function removeAttr(attr) {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      this$1[i].removeAttribute(attr);
+      this[i].removeAttribute(attr);
     }
     return this;
   }
   // eslint-disable-next-line
   function prop(props, value) {
     var arguments$1 = arguments;
-    var this$1 = this;
 
     if (arguments.length === 1 && typeof props === 'string') {
       // Get prop
@@ -8019,12 +8009,12 @@
       for (var i = 0; i < this.length; i += 1) {
         if (arguments$1.length === 2) {
           // String
-          this$1[i][props] = value;
+          this[i][props] = value;
         } else {
           // Object
           // eslint-disable-next-line
           for (var propName in props) {
-            this$1[i][propName] = props[propName];
+            this[i][propName] = props[propName];
           }
         }
       }
@@ -8032,8 +8022,6 @@
     }
   }
   function data(key, value) {
-    var this$1 = this;
-
     var el;
     if (typeof value === 'undefined') {
       el = this[0];
@@ -8054,17 +8042,15 @@
 
     // Set value
     for (var i = 0; i < this.length; i += 1) {
-      el = this$1[i];
+      el = this[i];
       if (!el.dom7ElementDataStorage) { el.dom7ElementDataStorage = {}; }
       el.dom7ElementDataStorage[key] = value;
     }
     return this;
   }
   function removeData(key) {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      var el = this$1[i];
+      var el = this[i];
       if (el.dom7ElementDataStorage && el.dom7ElementDataStorage[key]) {
         el.dom7ElementDataStorage[key] = null;
         delete el.dom7ElementDataStorage[key];
@@ -8128,23 +8114,19 @@
   // Transforms
   // eslint-disable-next-line
   function transform(transform) {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      var elStyle = this$1[i].style;
+      var elStyle = this[i].style;
       elStyle.webkitTransform = transform;
       elStyle.transform = transform;
     }
     return this;
   }
   function transition$1(duration) {
-    var this$1 = this;
-
     if (typeof duration !== 'string') {
       duration = duration + "ms"; // eslint-disable-line
     }
     for (var i = 0; i < this.length; i += 1) {
-      var elStyle = this$1[i].style;
+      var elStyle = this[i].style;
       elStyle.webkitTransitionDuration = duration;
       elStyle.transitionDuration = duration;
     }
@@ -8152,7 +8134,6 @@
   }
   // Events
   function on() {
-    var this$1 = this;
     var assign;
 
     var args = [], len = arguments.length;
@@ -8192,7 +8173,7 @@
     var events = eventType.split(' ');
     var j;
     for (var i = 0; i < this.length; i += 1) {
-      var el = this$1[i];
+      var el = this[i];
       if (!targetSelector) {
         for (j = 0; j < events.length; j += 1) {
           var event = events[j];
@@ -8221,7 +8202,6 @@
     return this;
   }
   function off() {
-    var this$1 = this;
     var assign;
 
     var args = [], len = arguments.length;
@@ -8240,7 +8220,7 @@
     for (var i = 0; i < events.length; i += 1) {
       var event = events[i];
       for (var j = 0; j < this.length; j += 1) {
-        var el = this$1[j];
+        var el = this[j];
         var handlers = (void 0);
         if (!targetSelector && el.dom7Listeners) {
           handlers = el.dom7Listeners[event];
@@ -8287,7 +8267,6 @@
     return dom.on(eventName, targetSelector, proxy, capture);
   }
   function trigger$1() {
-    var this$1 = this;
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -8296,7 +8275,7 @@
     for (var i = 0; i < events.length; i += 1) {
       var event = events[i];
       for (var j = 0; j < this.length; j += 1) {
-        var el = this$1[j];
+        var el = this[j];
         var evt = (void 0);
         try {
           evt = new win.CustomEvent(event, {
@@ -8418,18 +8397,14 @@
     return null;
   }
   function hide() {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      this$1[i].style.display = 'none';
+      this[i].style.display = 'none';
     }
     return this;
   }
   function show$1() {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      var el = this$1[i];
+      var el = this[i];
       if (el.style.display === 'none') {
         el.style.display = '';
       }
@@ -8445,8 +8420,6 @@
     return {};
   }
   function css(props, value) {
-    var this$1 = this;
-
     var i;
     if (arguments.length === 1) {
       if (typeof props === 'string') {
@@ -8455,7 +8428,7 @@
         for (i = 0; i < this.length; i += 1) {
           // eslint-disable-next-line
           for (var prop in props) {
-            this$1[i].style[prop] = props[prop];
+            this[i].style[prop] = props[prop];
           }
         }
         return this;
@@ -8463,7 +8436,7 @@
     }
     if (arguments.length === 2 && typeof props === 'string') {
       for (i = 0; i < this.length; i += 1) {
-        this$1[i].style[props] = value;
+        this[i].style[props] = value;
       }
       return this;
     }
@@ -8472,42 +8445,36 @@
 
   // Dom manipulation
   function toArray$1() {
-    var this$1 = this;
-
     var arr = [];
     for (var i = 0; i < this.length; i += 1) {
-      arr.push(this$1[i]);
+      arr.push(this[i]);
     }
     return arr;
   }
   // Iterate over the collection passing elements to `callback`
   function each(callback) {
-    var this$1 = this;
-
     // Don't bother continuing without a callback
     if (!callback) { return this; }
     // Iterate over the current collection
     for (var i = 0; i < this.length; i += 1) {
       // If the callback returns false
-      if (callback.call(this$1[i], i, this$1[i]) === false) {
+      if (callback.call(this[i], i, this[i]) === false) {
         // End the loop early
-        return this$1;
+        return this;
       }
     }
     // Return `this` to allow chained DOM operations
     return this;
   }
   function forEach(callback) {
-    var this$1 = this;
-
     // Don't bother continuing without a callback
     if (!callback) { return this; }
     // Iterate over the current collection
     for (var i = 0; i < this.length; i += 1) {
       // If the callback returns false
-      if (callback.call(this$1[i], this$1[i], i) === false) {
+      if (callback.call(this[i], this[i], i) === false) {
         // End the loop early
-        return this$1;
+        return this;
       }
     }
     // Return `this` to allow chained DOM operations
@@ -8531,21 +8498,17 @@
   }
   // eslint-disable-next-line
   function html(html) {
-    var this$1 = this;
-
     if (typeof html === 'undefined') {
       return this[0] ? this[0].innerHTML : undefined;
     }
 
     for (var i = 0; i < this.length; i += 1) {
-      this$1[i].innerHTML = html;
+      this[i].innerHTML = html;
     }
     return this;
   }
   // eslint-disable-next-line
   function text(text) {
-    var this$1 = this;
-
     if (typeof text === 'undefined') {
       if (this[0]) {
         return this[0].textContent.trim();
@@ -8554,7 +8517,7 @@
     }
 
     for (var i = 0; i < this.length; i += 1) {
-      this$1[i].textContent = text;
+      this[i].textContent = text;
     }
     return this;
   }
@@ -8586,10 +8549,8 @@
     return false;
   }
   function indexOf(el) {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      if (this$1[i] === el) { return i; }
+      if (this[i] === el) { return i; }
     }
     return -1;
   }
@@ -8622,7 +8583,6 @@
     return new Dom7([this[index]]);
   }
   function append() {
-    var this$1 = this;
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -8635,14 +8595,14 @@
           var tempDiv = doc.createElement('div');
           tempDiv.innerHTML = newChild;
           while (tempDiv.firstChild) {
-            this$1[i].appendChild(tempDiv.firstChild);
+            this[i].appendChild(tempDiv.firstChild);
           }
         } else if (newChild instanceof Dom7) {
           for (var j = 0; j < newChild.length; j += 1) {
-            this$1[i].appendChild(newChild[j]);
+            this[i].appendChild(newChild[j]);
           }
         } else {
-          this$1[i].appendChild(newChild);
+          this[i].appendChild(newChild);
         }
       }
     }
@@ -8655,8 +8615,6 @@
     return this;
   }
   function prepend(newChild) {
-    var this$1 = this;
-
     var i;
     var j;
     for (i = 0; i < this.length; i += 1) {
@@ -8664,14 +8622,14 @@
         var tempDiv = doc.createElement('div');
         tempDiv.innerHTML = newChild;
         for (j = tempDiv.childNodes.length - 1; j >= 0; j -= 1) {
-          this$1[i].insertBefore(tempDiv.childNodes[j], this$1[i].childNodes[0]);
+          this[i].insertBefore(tempDiv.childNodes[j], this[i].childNodes[0]);
         }
       } else if (newChild instanceof Dom7) {
         for (j = 0; j < newChild.length; j += 1) {
-          this$1[i].insertBefore(newChild[j], this$1[i].childNodes[0]);
+          this[i].insertBefore(newChild[j], this[i].childNodes[0]);
         }
       } else {
-        this$1[i].insertBefore(newChild, this$1[i].childNodes[0]);
+        this[i].insertBefore(newChild, this[i].childNodes[0]);
       }
     }
     return this;
@@ -8682,29 +8640,25 @@
     return this;
   }
   function insertBefore$1(selector) {
-    var this$1 = this;
-
     var before = $(selector);
     for (var i = 0; i < this.length; i += 1) {
       if (before.length === 1) {
-        before[0].parentNode.insertBefore(this$1[i], before[0]);
+        before[0].parentNode.insertBefore(this[i], before[0]);
       } else if (before.length > 1) {
         for (var j = 0; j < before.length; j += 1) {
-          before[j].parentNode.insertBefore(this$1[i].cloneNode(true), before[j]);
+          before[j].parentNode.insertBefore(this[i].cloneNode(true), before[j]);
         }
       }
     }
   }
   function insertAfter(selector) {
-    var this$1 = this;
-
     var after = $(selector);
     for (var i = 0; i < this.length; i += 1) {
       if (after.length === 1) {
-        after[0].parentNode.insertBefore(this$1[i], after[0].nextSibling);
+        after[0].parentNode.insertBefore(this[i], after[0].nextSibling);
       } else if (after.length > 1) {
         for (var j = 0; j < after.length; j += 1) {
-          after[j].parentNode.insertBefore(this$1[i].cloneNode(true), after[j].nextSibling);
+          after[j].parentNode.insertBefore(this[i].cloneNode(true), after[j].nextSibling);
         }
       }
     }
@@ -8768,26 +8722,22 @@
     return this.nextAll(selector).add(this.prevAll(selector));
   }
   function parent(selector) {
-    var this$1 = this;
-
     var parents = []; // eslint-disable-line
     for (var i = 0; i < this.length; i += 1) {
-      if (this$1[i].parentNode !== null) {
+      if (this[i].parentNode !== null) {
         if (selector) {
-          if ($(this$1[i].parentNode).is(selector)) { parents.push(this$1[i].parentNode); }
+          if ($(this[i].parentNode).is(selector)) { parents.push(this[i].parentNode); }
         } else {
-          parents.push(this$1[i].parentNode);
+          parents.push(this[i].parentNode);
         }
       }
     }
     return $(unique(parents));
   }
   function parents(selector) {
-    var this$1 = this;
-
     var parents = []; // eslint-disable-line
     for (var i = 0; i < this.length; i += 1) {
-      var parent = this$1[i].parentNode; // eslint-disable-line
+      var parent = this[i].parentNode; // eslint-disable-line
       while (parent) {
         if (selector) {
           if ($(parent).is(selector)) { parents.push(parent); }
@@ -8810,11 +8760,9 @@
     return closest;
   }
   function find(selector) {
-    var this$1 = this;
-
     var foundElements = [];
     for (var i = 0; i < this.length; i += 1) {
-      var found = this$1[i].querySelectorAll(selector);
+      var found = this[i].querySelectorAll(selector);
       for (var j = 0; j < found.length; j += 1) {
         foundElements.push(found[j]);
       }
@@ -8822,11 +8770,9 @@
     return new Dom7(foundElements);
   }
   function children(selector) {
-    var this$1 = this;
-
     var children = []; // eslint-disable-line
     for (var i = 0; i < this.length; i += 1) {
-      var childNodes = this$1[i].childNodes;
+      var childNodes = this[i].childNodes;
 
       for (var j = 0; j < childNodes.length; j += 1) {
         if (!selector) {
@@ -8839,10 +8785,8 @@
     return new Dom7(unique(children));
   }
   function remove$3() {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      if (this$1[i].parentNode) { this$1[i].parentNode.removeChild(this$1[i]); }
+      if (this[i].parentNode) { this[i].parentNode.removeChild(this[i]); }
     }
     return this;
   }
@@ -8866,10 +8810,8 @@
     return dom;
   }
   function empty() {
-    var this$1 = this;
-
     for (var i = 0; i < this.length; i += 1) {
-      var el = this$1[i];
+      var el = this[i];
       if (el.nodeType === 1) {
         for (var j = 0; j < el.childNodes.length; j += 1) {
           if (el.childNodes[j].parentNode) {
@@ -9279,7 +9221,6 @@
 
   var noTrigger = ('resize scroll').split(' ');
   function eventShortcut(name) {
-    var this$1 = this;
     var ref;
 
     var args = [], len = arguments.length - 1;
@@ -9287,9 +9228,9 @@
     if (typeof args[0] === 'undefined') {
       for (var i = 0; i < this.length; i += 1) {
         if (noTrigger.indexOf(name) < 0) {
-          if (name in this$1[i]) { this$1[i][name](); }
+          if (name in this[i]) { this[i][name](); }
           else {
-            $(this$1[i]).trigger(name);
+            $(this[i]).trigger(name);
           }
         }
       }
@@ -10019,7 +9960,7 @@
     // Windows
     if (windowsPhone) {
       device.os = 'windows';
-      device.osVersion = windows[2];
+      device.osVersion = windowsPhone[2];
       device.windowsPhone = true;
     }
     // Android
@@ -10552,7 +10493,7 @@
     });
   }
 
-  var Framework7 = (function (Framework7Class$$1) {
+  var Framework7 = /*@__PURE__*/(function (Framework7Class$$1) {
     function Framework7(params) {
       Framework7Class$$1.call(this, params);
 
@@ -12975,9 +12916,9 @@
     if ( forwardOptions === void 0 ) forwardOptions = {};
 
     var router = this;
+    var $el = $(el);
     var app = router.app;
     var view = router.view;
-
     var options = Utils.extend(false, {
       animate: router.params.animate,
       pushState: true,
@@ -13026,13 +12967,19 @@
     var separateNavbar = router.separateNavbar;
 
     var $viewEl = router.$el;
-    var $newPage = $(el);
+    var $newPage = $el;
     var reload = options.reloadPrevious || options.reloadCurrent || options.reloadAll;
     var $oldPage;
 
     var $navbarEl;
     var $newNavbarInner;
     var $oldNavbarInner;
+
+    router.allowPageChange = false;
+    if ($newPage.length === 0) {
+      router.allowPageChange = true;
+      return router;
+    }
 
     if ($newPage.length) {
       // Remove theme elements
@@ -13046,17 +12993,18 @@
         if ($newNavbarInner.length > 0) {
           $newPage.children('.navbar').remove();
         }
-        if ($newNavbarInner.length === 0 && $newPage[0].f7Page) {
+        if ($newNavbarInner.length === 0 && $newPage[0] && $newPage[0].f7Page) {
           // Try from pageData
           $newNavbarInner = $newPage[0].f7Page.$navbarEl;
         }
       }
     }
 
-    router.allowPageChange = false;
-    if ($newPage.length === 0) {
-      router.allowPageChange = true;
-      return router;
+    // Save Keep Alive Cache
+    if (options.route && options.route.route && options.route.route.keepAlive && !options.route.route.keepAliveData) {
+      options.route.route.keepAliveData = {
+        pageEl: $el[0],
+      };
     }
 
     // Pages In View
@@ -13088,7 +13036,8 @@
     $newPage
       .addClass(("page-" + newPagePosition))
       .removeClass('stacked')
-      .trigger('page:unstack');
+      .trigger('page:unstack')
+      .trigger('page:position', { position: newPagePosition });
 
     if (dynamicNavbar && $newNavbarInner.length) {
       $newNavbarInner
@@ -13229,6 +13178,9 @@
       }
     }
     if (!newPageInDom) {
+      router.pageCallback('mounted', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
+    } else if (options.route && options.route.route && options.route.route.keepAlive && !$newPage[0].f7PageMounted) {
+      $newPage[0].f7PageMounted = true;
       router.pageCallback('mounted', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
     }
 
@@ -13573,10 +13525,11 @@
 
     var options = {};
     if (route.route.options) {
-      Utils.extend(options, route.route.options, navigateOptions, { route: route });
+      Utils.extend(options, route.route.options, navigateOptions);
     } else {
-      Utils.extend(options, navigateOptions, { route: route });
+      Utils.extend(options, navigateOptions);
     }
+    options.route = route;
 
     if (options && options.context) {
       route.context = options.context;
@@ -13591,12 +13544,16 @@
           router.modalLoad(modalLoadProp, route, options);
         }
       });
+      if (route.route.keepAlive && route.route.keepAliveData) {
+        router.load({ el: route.route.keepAliveData.pageEl }, options, false);
+        routerLoaded = true;
+      }
       ('url content component pageName el componentUrl template templateUrl').split(' ').forEach(function (pageLoadProp) {
         var obj;
 
         if (route.route[pageLoadProp] && !routerLoaded) {
           routerLoaded = true;
-          router.load(( obj = {}, obj[pageLoadProp] = route.route[pageLoadProp], obj ), options);
+          router.load(( obj = {}, obj[pageLoadProp] = route.route[pageLoadProp], obj ), options, false);
         }
       });
       if (routerLoaded) { return; }
@@ -13844,10 +13801,12 @@
       }
     }
 
+    var hasContentLoadProp;
     ('url content component el componentUrl template templateUrl').split(' ').forEach(function (tabLoadProp) {
       var obj;
 
       if (tabRoute[tabLoadProp]) {
+        hasContentLoadProp = true;
         loadTab(( obj = {}, obj[tabLoadProp] = tabRoute[tabLoadProp], obj ), options);
       }
     });
@@ -13861,6 +13820,8 @@
     }
     if (tabRoute.async) {
       tabRoute.async.call(router, currentRoute, previousRoute, asyncResolve, asyncReject);
+    } else if (!hasContentLoadProp) {
+      router.allowPageChange = true;
     }
 
     return router;
@@ -14088,6 +14049,7 @@
 
   function backward(el, backwardOptions) {
     var router = this;
+    var $el = $(el);
     var app = router.app;
     var view = router.view;
 
@@ -14099,7 +14061,7 @@
     var dynamicNavbar = router.dynamicNavbar;
     var separateNavbar = router.separateNavbar;
 
-    var $newPage = $(el);
+    var $newPage = $el;
     var $oldPage = router.$el.children('.page-current');
 
     if ($newPage.length) {
@@ -14118,7 +14080,7 @@
         if ($newNavbarInner.length > 0) {
           $newPage.children('.navbar').remove();
         }
-        if ($newNavbarInner.length === 0 && $newPage[0].f7Page) {
+        if ($newNavbarInner.length === 0 && $newPage[0] && $newPage[0].f7Page) {
           // Try from pageData
           $newNavbarInner = $newPage[0].f7Page.$navbarEl;
         }
@@ -14137,12 +14099,20 @@
     // Remove theme elements
     router.removeThemeElements($newPage);
 
+    // Save Keep Alive Cache
+    if (options.route && options.route.route && options.route.route.keepAlive && !options.route.route.keepAliveData) {
+      options.route.route.keepAliveData = {
+        pageEl: $el[0],
+      };
+    }
+
     // New Page
     $newPage
       .addClass('page-previous')
       .removeClass('stacked')
       .removeAttr('aria-hidden')
-      .trigger('page:unstack');
+      .trigger('page:unstack')
+      .trigger('page:position', { position: 'previous' });
 
     if (dynamicNavbar && $newNavbarInner.length > 0) {
       $newNavbarInner
@@ -14150,7 +14120,6 @@
         .removeClass('stacked')
         .removeAttr('aria-hidden');
     }
-
 
     // Remove previous page in case of "forced"
     var backIndex;
@@ -14238,6 +14207,9 @@
         }
       }
       if (!newPageInDom) {
+        router.pageCallback('mounted', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
+      } else if (options.route && options.route.route && options.route.route.keepAlive && !$newPage[0].f7PageMounted) {
+        $newPage[0].f7PageMounted = true;
         router.pageCallback('mounted', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
       }
     }
@@ -14640,10 +14612,11 @@
 
     var options = {};
     if (route.route.options) {
-      Utils.extend(options, route.route.options, navigateOptions, { route: route });
+      Utils.extend(options, route.route.options, navigateOptions);
     } else {
-      Utils.extend(options, navigateOptions, { route: route });
+      Utils.extend(options, navigateOptions);
     }
+    options.route = route;
 
     if (options && options.context) {
       route.context = options.context;
@@ -14664,6 +14637,10 @@
     }
     function resolve() {
       var routerLoaded = false;
+      if (route.route.keepAlive && route.route.keepAliveData) {
+        router.loadBack({ el: route.route.keepAliveData.pageEl }, options);
+        routerLoaded = true;
+      }
       ('url content component pageName el componentUrl template templateUrl').split(' ').forEach(function (pageLoadProp) {
         var obj;
 
@@ -14727,16 +14704,15 @@
     return router;
   }
 
-  function clearPreviousHistory() {
+  function clearPreviousPages() {
     var router = this;
     var app = router.app;
     var separateNavbar = router.separateNavbar;
-    var url = router.history[router.history.length - 1];
 
     var $currentPageEl = $(router.currentPageEl);
 
     var $pagesToRemove = router.$el
-      .children('.page:not(.stacked)')
+      .children('.page')
       .filter(function (index, pageInView) { return pageInView !== $currentPageEl[0]; });
 
     $pagesToRemove.each(function (index, pageEl) {
@@ -14756,13 +14732,20 @@
         }
       }
     });
+  }
+
+  function clearPreviousHistory() {
+    var router = this;
+    var url = router.history[router.history.length - 1];
+
+    router.clearPreviousPages();
 
     router.history = [url];
     router.view.history = [url];
     router.saveHistory();
   }
 
-  var Router = (function (Framework7Class$$1) {
+  var Router = /*@__PURE__*/(function (Framework7Class$$1) {
     function Router(app, view) {
       Framework7Class$$1.call(this, {}, [typeof view === 'undefined' ? app : view]);
       var router = this;
@@ -15167,7 +15150,13 @@
     };
 
     Router.prototype.removePage = function removePage (el) {
+      var $el = $(el);
+      var f7Page = $el && $el[0] && $el[0].f7Page;
       var router = this;
+      if (f7Page && f7Page.route && f7Page.route.route && f7Page.route.route.keepAlive) {
+        $el.remove();
+        return;
+      }
       router.removeEl(el);
     };
 
@@ -15745,9 +15734,6 @@
         pageFrom: pageFrom,
       };
 
-      if ($navbarEl && $navbarEl[0]) {
-        $navbarEl[0].f7Page = page;
-      }
       $pageEl[0].f7Page = page;
       return page;
     };
@@ -15762,6 +15748,11 @@
       if (!$pageEl.length) { return; }
       var route = options.route;
       var restoreScrollTopOnBack = router.params.restoreScrollTopOnBack;
+      var keepAlive = $pageEl[0].f7Page && $pageEl[0].f7Page.route && $pageEl[0].f7Page.route.route && $pageEl[0].f7Page.route.route.keepAlive;
+
+      if (callback === 'beforeRemove' && keepAlive) {
+        callback = 'beforeUnmount'; // eslint-disable-line
+      }
 
       var camelName = "page" + (callback[0].toUpperCase() + callback.slice(1, callback.length));
       var colonName = "page:" + (callback.toLowerCase());
@@ -15870,12 +15861,14 @@
       $pageEl.trigger(colonName, page);
       router.emit(camelName, page);
 
-      if (callback === 'beforeRemove') {
+      if (callback === 'beforeRemove' || callback === 'beforeUnmount') {
         detachEvents();
-        if ($pageEl[0].f7Page && $pageEl[0].f7Page.navbarEl) {
-          delete $pageEl[0].f7Page.navbarEl.f7Page;
+        if (!keepAlive) {
+          if ($pageEl[0].f7Page && $pageEl[0].f7Page.navbarEl) {
+            delete $pageEl[0].f7Page.navbarEl.f7Page;
+          }
+          $pageEl[0].f7Page = null;
         }
-        $pageEl[0].f7Page = null;
       }
     };
 
@@ -16160,6 +16153,8 @@
   Router.prototype.backward = backward;
   Router.prototype.loadBack = loadBack;
   Router.prototype.back = back;
+  // Clear previoius pages from the DOM
+  Router.prototype.clearPreviousPages = clearPreviousPages;
   // Clear history
   Router.prototype.clearPreviousHistory = clearPreviousHistory;
 
@@ -16189,7 +16184,7 @@
     },
   };
 
-  var View = (function (Framework7Class$$1) {
+  var View = /*@__PURE__*/(function (Framework7Class$$1) {
     function View(appInstance, el, viewParams) {
       if ( viewParams === void 0 ) viewParams = {};
 
@@ -18337,7 +18332,16 @@
         $navbarInnerEl = $navbarInnerEl.find('.navbar-inner');
         if ($navbarInnerEl.length > 1) { return undefined; }
       }
-      return $navbarInnerEl[0].f7Page;
+      if ($navbarInnerEl.parents('.page').length) {
+        return $navbarInnerEl.parents('.page')[0];
+      }
+      var pageEl;
+      $navbarInnerEl.parents('.view').find('.page').each(function (index, el) {
+        if (el && el.f7Page && el.f7Page.navbarEl && $navbarInnerEl[0] === el.f7Page.navbarEl) {
+          pageEl = el;
+        }
+      });
+      return pageEl;
     },
     initHideNavbarOnScroll: function initHideNavbarOnScroll(pageEl, navbarInnerEl) {
       var app = this;
@@ -18401,6 +18405,7 @@
           hide: Navbar.hide.bind(app),
           show: Navbar.show.bind(app),
           getElByPage: Navbar.getElByPage.bind(app),
+          getPageByEl: Navbar.getPageByEl.bind(app),
           initHideNavbarOnScroll: Navbar.initHideNavbarOnScroll.bind(app),
         },
       });
@@ -18869,7 +18874,7 @@
     var dialog = dialogsQueue.shift();
     dialog.open();
   }
-  var Modal = (function (Framework7Class$$1) {
+  var Modal = /*@__PURE__*/(function (Framework7Class$$1) {
     function Modal(app, params) {
       Framework7Class$$1.call(this, params, [app]);
 
@@ -19115,7 +19120,7 @@
     return Modal;
   }(Framework7Class));
 
-  var CustomModal = (function (Modal$$1) {
+  var CustomModal = /*@__PURE__*/(function (Modal$$1) {
     function CustomModal(app, params) {
       var extendedParams = Utils.extend({
         backdrop: true,
@@ -19215,7 +19220,7 @@
     },
   };
 
-  var Dialog = (function (Modal$$1) {
+  var Dialog = /*@__PURE__*/(function (Modal$$1) {
     function Dialog(app, params) {
       var extendedParams = Utils.extend({
         title: app.params.dialog.title,
@@ -19647,7 +19652,7 @@
     },
   };
 
-  var Popup = (function (Modal$$1) {
+  var Popup = /*@__PURE__*/(function (Modal$$1) {
     function Popup(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -19784,7 +19789,7 @@
     },
   };
 
-  var LoginScreen = (function (Modal$$1) {
+  var LoginScreen = /*@__PURE__*/(function (Modal$$1) {
     function LoginScreen(app, params) {
       var extendedParams = Utils.extend({
         on: {},
@@ -19861,7 +19866,7 @@
     },
   };
 
-  var Popover = (function (Modal$$1) {
+  var Popover = /*@__PURE__*/(function (Modal$$1) {
     function Popover(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -20186,7 +20191,7 @@
 
   /* eslint indent: ["off"] */
 
-  var Actions = (function (Modal$$1) {
+  var Actions = /*@__PURE__*/(function (Modal$$1) {
     function Actions(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -20478,7 +20483,7 @@
     },
   };
 
-  var Sheet = (function (Modal$$1) {
+  var Sheet = /*@__PURE__*/(function (Modal$$1) {
     function Sheet(app, params) {
       var extendedParams = Utils.extend(
         { on: {} },
@@ -20656,7 +20661,7 @@
     },
   };
 
-  var Toast = (function (Modal$$1) {
+  var Toast = /*@__PURE__*/(function (Modal$$1) {
     function Toast(app, params) {
       var extendedParams = Utils.extend({
         on: {},
@@ -21169,11 +21174,21 @@
            && $sortableContainer.hasClass('virtual-list')
         ) {
           indexFrom = $sortingEl[0].f7VirtualListIndex;
-          indexTo = $insertBeforeEl ? $insertBeforeEl[0].f7VirtualListIndex : $insertAfterEl[0].f7VirtualListIndex;
+          if (typeof indexFrom === 'undefined') { indexFrom = $sortingEl.attr('data-virtual-list-index'); }
+          if ($insertBeforeEl) {
+            indexTo = $insertBeforeEl[0].f7VirtualListIndex;
+            if (typeof indexTo === 'undefined') { indexTo = $insertBeforeEl.attr('data-virtual-list-index'); }
+          } else {
+            indexTo = $insertAfterEl[0].f7VirtualListIndex;
+            if (typeof indexTo === 'undefined') { indexTo = $insertAfterEl.attr('data-virtual-list-index'); }
+          }
+          if (indexTo !== null) { indexTo = parseInt(indexTo, 10); }
+          else { indexTo = undefined; }
+
           var virtualList = $sortableContainer[0].f7VirtualList;
           if (virtualList) { virtualList.moveItem(indexFrom, indexTo); }
         }
-        if (typeof indexTo !== 'undefined' && indexTo !== indexFrom) {
+        if (typeof indexTo !== 'undefined' && !Number.isNaN(indexTo) && indexTo !== indexFrom) {
           $sortingEl.trigger('sortable:sort', { from: indexFrom, to: indexTo });
           app.emit('sortableSort', $sortingEl[0], { from: indexFrom, to: indexTo });
         }
@@ -21848,6 +21863,13 @@
     open: function open(el) {
       var app = this;
       var $el = $(el);
+      var prevented = false;
+      function prevent() {
+        prevented = true;
+      }
+      $el.trigger('accordion:beforeopen', { prevent: prevent }, prevent);
+      app.emit('accordionBeforeOpen', $el[0], prevent);
+      if (prevented) { return; }
       var $list = $el.parents('.accordion-list').eq(0);
       var $contentEl = $el.children('.accordion-item-content');
       $contentEl.removeAttr('aria-hidden');
@@ -21880,6 +21902,13 @@
     close: function close(el) {
       var app = this;
       var $el = $(el);
+      var prevented = false;
+      function prevent() {
+        prevented = true;
+      }
+      $el.trigger('accordion:beforeclose', { prevent: prevent }, prevent);
+      app.emit('accordionBeforeClose', $el[0], prevent);
+      if (prevented) { return; }
       var $contentEl = $el.children('.accordion-item-content');
       if ($contentEl.length === 0) { $contentEl = $el.find('.accordion-item-content'); }
       $el.removeClass('accordion-item-opened');
@@ -21942,7 +21971,7 @@
     name: 'contactsList',
   };
 
-  var VirtualList = (function (Framework7Class$$1) {
+  var VirtualList = /*@__PURE__*/(function (Framework7Class$$1) {
     function VirtualList(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -22525,7 +22554,7 @@
     },
   };
 
-  var ListIndex = (function (Framework7Class$$1) {
+  var ListIndex = /*@__PURE__*/(function (Framework7Class$$1) {
     function ListIndex(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -23201,7 +23230,7 @@
     function handleTouchStart(e) {
       if (!panel.swipeable) { return; }
       if (!app.panel.allowOpen || (!params.swipe && !params.swipeOnlyClose) || isTouched) { return; }
-      if ($('.modal-in, .photo-browser-in').length > 0) { return; }
+      if ($('.modal-in:not(.toast):not(.notification), .photo-browser-in').length > 0) { return; }
       otherPanel = app.panel[side === 'left' ? 'right' : 'left'] || {};
       if (!panel.opened && otherPanel.opened) { return; }
       if (!(params.swipeCloseOpposite || params.swipeOnlyClose)) {
@@ -23494,7 +23523,7 @@
     });
   }
 
-  var Panel = (function (Framework7Class$$1) {
+  var Panel = /*@__PURE__*/(function (Framework7Class$$1) {
     function Panel(app, params) {
       var obj;
 
@@ -23528,6 +23557,7 @@
       }
 
       var $backdropEl = $('.panel-backdrop');
+
       if ($backdropEl.length === 0) {
         $backdropEl = $('<div class="panel-backdrop"></div>');
         $backdropEl.insertBefore($el);
@@ -23689,6 +23719,10 @@
           $el.insertAfter($insertBeforeEl);
         } else {
           app.root.prepend($el);
+        }
+
+        if ($backdropEl && $backdropEl.length && !$backdropEl.parent().is(app.root) && $backdropEl.nextAll('.panel').length === 0) {
+          $backdropEl.insertBefore($el);
         }
 
         panel.once('panelClosed', function () {
@@ -24640,7 +24674,7 @@
     name: 'radio',
   };
 
-  var Toggle = (function (Framework7Class$$1) {
+  var Toggle = /*@__PURE__*/(function (Framework7Class$$1) {
     function Toggle(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -24875,7 +24909,7 @@
     },
   };
 
-  var Range = (function (Framework7Class$$1) {
+  var Range = /*@__PURE__*/(function (Framework7Class$$1) {
     function Range(app, params) {
       Framework7Class$$1.call(this, params, [app]);
 
@@ -25146,6 +25180,9 @@
         range.calcSize();
         range.layout();
       }
+      var parentModals;
+      var parentPanel;
+      var parentPage;
       range.attachEvents = function attachEvents() {
         var passive = Support.passiveListener ? { passive: true } : false;
         range.$el.on(app.touchEvents.start, handleTouchStart, passive);
@@ -25153,12 +25190,12 @@
         app.on('touchend:passive', handleTouchEnd);
         app.on('tabShow', handleResize);
         app.on('resize', handleResize);
-        range.$el
-          .parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast')
-          .on('modal:open', handleResize);
-        range.$el
-          .parents('.panel')
-          .on('panel:open', handleResize);
+        parentModals = range.$el.parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast');
+        parentModals.on('modal:open', handleResize);
+        parentPanel = range.$el.parents('.panel');
+        parentPanel.on('panel:open', handleResize);
+        parentPage = range.$el.parents('.page').eq(0);
+        parentPage.on('page:reinit', handleResize);
       };
       range.detachEvents = function detachEvents() {
         var passive = Support.passiveListener ? { passive: true } : false;
@@ -25167,12 +25204,18 @@
         app.off('touchend:passive', handleTouchEnd);
         app.off('tabShow', handleResize);
         app.off('resize', handleResize);
-        range.$el
-          .parents('.sheet-modal, .actions-modal, .popup, .popover, .login-screen, .dialog, .toast')
-          .off('modal:open', handleResize);
-        range.$el
-          .parents('.panel')
-          .off('panel:open', handleResize);
+        if (parentModals) {
+          parentModals.off('modal:open', handleResize);
+        }
+        if (parentPanel) {
+          parentPanel.off('panel:open', handleResize);
+        }
+        if (parentPage) {
+          parentPage.off('page:reinit', handleResize);
+        }
+        parentModals = null;
+        parentPanel = null;
+        parentPage = null;
       };
 
       // Install Modules
@@ -25394,7 +25437,7 @@
     },
   };
 
-  var Stepper = (function (Framework7Class$$1) {
+  var Stepper = /*@__PURE__*/(function (Framework7Class$$1) {
     function Stepper(app, params) {
       Framework7Class$$1.call(this, params, [app]);
       var stepper = this;
@@ -25902,7 +25945,7 @@
     },
   };
 
-  var SmartSelect = (function (Framework7Class$$1) {
+  var SmartSelect = /*@__PURE__*/(function (Framework7Class$$1) {
     function SmartSelect(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -26953,7 +26996,7 @@
   var PERSIAN_MONTH_NAMES = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
   var PERSIAN_NUMBERS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 
-  var IDate = (function (Date) {
+  var IDate = /*@__PURE__*/(function (Date) {
     function IDate () {
       Date.call(this);
 
@@ -27051,7 +27094,7 @@
     return IDate;
   }(Date));
 
-  var Calendar = (function (Framework7Class$$1) {
+  var Calendar = /*@__PURE__*/(function (Framework7Class$$1) {
     function Calendar(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -28272,7 +28315,7 @@
       }
 
       // Extra focus
-      if (!inline && $inputEl.length && app.theme === 'md') {
+      if (!inline && $inputEl && $inputEl.length && app.theme === 'md') {
         $inputEl.trigger('focus');
       }
 
@@ -28872,7 +28915,7 @@
     col.init();
   }
 
-  var Picker = (function (Framework7Class$$1) {
+  var Picker = /*@__PURE__*/(function (Framework7Class$$1) {
     function Picker(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -29192,7 +29235,7 @@
       }
 
       // Extra focus
-      if (!inline && $inputEl.length && app.theme === 'md') {
+      if (!inline && $inputEl && $inputEl.length && app.theme === 'md') {
         $inputEl.trigger('focus');
       }
 
@@ -29534,7 +29577,7 @@
     },
   };
 
-  var PullToRefresh = (function (Framework7Class$$1) {
+  var PullToRefresh = /*@__PURE__*/(function (Framework7Class$$1) {
     function PullToRefresh(app, el) {
       Framework7Class$$1.call(this, {}, [app]);
       var ptr = this;
@@ -30090,7 +30133,7 @@
     },
   };
 
-  var DataTable = (function (Framework7Class$$1) {
+  var DataTable = /*@__PURE__*/(function (Framework7Class$$1) {
     function DataTable(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -30514,7 +30557,7 @@
     },
   };
 
-  var Searchbar = (function (FrameworkClass) {
+  var Searchbar = /*@__PURE__*/(function (FrameworkClass) {
     function Searchbar(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -30525,6 +30568,7 @@
       var defaults = {
         el: undefined,
         inputEl: undefined,
+        inputEvents: 'change input compositionend',
         disableButton: true,
         disableButtonEl: undefined,
         backdropEl: undefined,
@@ -30566,9 +30610,8 @@
       } else {
         $navbarEl = $el.parents('.navbar-inner');
         if ($navbarEl.length > 0) {
-          if ($navbarEl[0].f7Page) {
-            $pageEl = $navbarEl[0].f7Page.$el;
-          } else {
+          $pageEl = $(app.navbar.getPageByEl($navbarEl[0]));
+          if (!$pageEl.length) {
             var $currentPageEl = $el.parents('.view').find('.page-current');
             if ($currentPageEl[0] && $currentPageEl[0].f7Page && $currentPageEl[0].f7Page.navbarEl === $navbarEl[0]) {
               $pageEl = $currentPageEl;
@@ -30739,7 +30782,7 @@
         }
         sb.$inputEl.on('focus', onInputFocus);
         sb.$inputEl.on('blur', onInputBlur);
-        sb.$inputEl.on('change input compositionend', onInputChange);
+        sb.$inputEl.on(sb.params.inputEvents, onInputChange);
         sb.$inputEl.on('input:clear', onInputClear);
       };
       sb.detachEvents = function detachEvents() {
@@ -30756,7 +30799,7 @@
         }
         sb.$inputEl.off('focus', onInputFocus);
         sb.$inputEl.off('blur', onInputBlur);
-        sb.$inputEl.off('change input compositionend', onInputChange);
+        sb.$inputEl.off(sb.params.inputEvents, onInputChange);
         sb.$inputEl.off('input:clear', onInputClear);
       };
 
@@ -31176,7 +31219,7 @@
     },
   };
 
-  var Messages = (function (Framework7Class$$1) {
+  var Messages = /*@__PURE__*/(function (Framework7Class$$1) {
     function Messages(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -31729,7 +31772,7 @@
     },
   };
 
-  var Messagebar = (function (Framework7Class$$1) {
+  var Messagebar = /*@__PURE__*/(function (Framework7Class$$1) {
     function Messagebar(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -34523,7 +34566,7 @@
 
   var extendedDefaults = {};
 
-  var Swiper = (function (SwiperClass) {
+  var Swiper = /*@__PURE__*/(function (SwiperClass) {
     function Swiper() {
       var assign;
 
@@ -38382,7 +38425,7 @@
 
   /* eslint indent: ["off"] */
 
-  var PhotoBrowser = (function (Framework7Class$$1) {
+  var PhotoBrowser = /*@__PURE__*/(function (Framework7Class$$1) {
     function PhotoBrowser(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -39071,7 +39114,7 @@
     },
   };
 
-  var Notification = (function (Modal$$1) {
+  var Notification = /*@__PURE__*/(function (Modal$$1) {
     function Notification(app, params) {
       var extendedParams = Utils.extend({
         on: {},
@@ -39320,7 +39363,7 @@
 
   /* eslint "no-useless-escape": "off" */
 
-  var Autocomplete = (function (Framework7Class$$1) {
+  var Autocomplete = /*@__PURE__*/(function (Framework7Class$$1) {
     function Autocomplete(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -40138,7 +40181,7 @@
     },
   };
 
-  var Tooltip = (function (Framework7Class$$1) {
+  var Tooltip = /*@__PURE__*/(function (Framework7Class$$1) {
     function Tooltip(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -40496,7 +40539,7 @@
 
   /* eslint no-nested-ternary: off */
 
-  var Gauge = (function (Framework7Class$$1) {
+  var Gauge = /*@__PURE__*/(function (Framework7Class$$1) {
     function Gauge(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -40826,7 +40869,7 @@
     },
   };
 
-  var ViAd = (function (Framework7Class$$1) {
+  var ViAd = /*@__PURE__*/(function (Framework7Class$$1) {
     function ViAd(app, params) {
       if ( params === void 0 ) params = {};
 
@@ -41085,7 +41128,7 @@
   };
 
   /**
-   * Framework7 3.5.1
+   * Framework7 3.6.0
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -41093,7 +41136,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: November 2, 2018
+   * Released on: December 7, 2018
    */
 
   // Install Core Modules & Components
@@ -41530,26 +41573,36 @@
       opened: Boolean
     }, Mixins.colorProps),
 
-    mounted: function mounted() {
+    created: function created() {
       var self = this;
-      var el = self.$el;
-      if (!el) { return; }
+      self.onBeforeOpenBound = self.onBeforeOpen.bind(self);
       self.onOpenBound = self.onOpen.bind(self);
       self.onOpenedBound = self.onOpened.bind(self);
+      self.onBeforeCloseBound = self.onBeforeClose.bind(self);
       self.onCloseBound = self.onClose.bind(self);
       self.onClosedBound = self.onClosed.bind(self);
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      el.addEventListener('accordion:beforeopen', self.onBeforeOpenBound);
       el.addEventListener('accordion:open', self.onOpenBound);
       el.addEventListener('accordion:opened', self.onOpenedBound);
+      el.addEventListener('accordion:beforeclose', self.onBeforeCloseBound);
       el.addEventListener('accordion:close', self.onCloseBound);
       el.addEventListener('accordion:closed', self.onClosedBound);
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var el = self.$el;
+      var el = self.$refs.el;
       if (!el) { return; }
+      el.removeEventListener('accordion:beforeopen', self.onBeforeOpenBound);
       el.removeEventListener('accordion:open', self.onOpenBound);
       el.removeEventListener('accordion:opened', self.onOpenedBound);
+      el.removeEventListener('accordion:beforeclose', self.onBeforeCloseBound);
       el.removeEventListener('accordion:close', self.onCloseBound);
       el.removeEventListener('accordion:closed', self.onClosedBound);
     },
@@ -41567,6 +41620,7 @@
       return _h('div', {
         style: style,
         class: classes,
+        ref: 'el',
         attrs: {
           id: id
         }
@@ -41574,12 +41628,20 @@
     },
 
     methods: {
+      onBeforeOpen: function onBeforeOpen(event) {
+        this.dispatchEvent('accordionBeforeOpen accordion:beforeopen', event, event.detail.prevent);
+      },
+
       onOpen: function onOpen(event) {
         this.dispatchEvent('accordionOpen accordion:open', event);
       },
 
       onOpened: function onOpened(event) {
         this.dispatchEvent('accordionOpened accordion:opened', event);
+      },
+
+      onBeforeClose: function onBeforeClose(event) {
+        this.dispatchEvent('accordionBeforeClose accordion:beforeclose', event, event.detail.prevent);
       },
 
       onClose: function onClose(event) {
@@ -41701,15 +41763,24 @@
         style: style,
         class: classes,
         ref: 'el',
-        on: {
-          click: self.onClick.bind(self)
-        },
         attrs: {
           id: id
         }
       }, [mediaEl, _h('div', {
         class: 'actions-button-text'
       }, [this.$slots['default']])]);
+    },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      this.$refs.el.addEventListener('click', this.onClick);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      this.$refs.el.removeEventListener('click', this.onClick);
     },
 
     methods: {
@@ -41793,13 +41864,23 @@
       return _h('div', {
         style: style,
         class: classes,
-        on: {
-          click: self.onClick.bind(self)
-        },
+        ref: 'el',
         attrs: {
           id: id
         }
       }, [this.$slots['default']]);
+    },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      this.$refs.el.addEventListener('click', this.onClick);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      this.$refs.el.removeEventListener('click', this.onClick);
     },
 
     methods: {
@@ -41913,7 +41994,7 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Actions) { self.f7Actions.destroy(); }
-      var el = self.$el;
+      var el = self.$refs.el;
       if (!el) { return; }
       el.removeEventListener('actions:open', self.onOpenBound);
       el.removeEventListener('actions:opened', self.onOpenedBound);
@@ -42331,7 +42412,7 @@
     }, Mixins.colorProps),
 
     mounted: function mounted() {
-      var el = this.$el;
+      var el = this.$refs.el;
       if (!el) { return; }
       this.onTabShowBound = this.onTabShow.bind(this);
       this.onTabHideBound = this.onTabHide.bind(this);
@@ -42340,7 +42421,7 @@
     },
 
     beforeDestroy: function beforeDestroy() {
-      var el = this.$el;
+      var el = this.$refs.el;
       if (!el) { return; }
       el.removeEventListener('tab:show', this.onTabShowBound);
       el.removeEventListener('tab:hide', this.onTabHideBound);
@@ -42378,6 +42459,7 @@
       return _h('div', {
         style: style,
         class: classes,
+        ref: 'el',
         attrs: {
           id: id
         }
@@ -42690,9 +42772,6 @@
         style: style,
         class: self.classes
       }, self.attrs, {
-        on: {
-          click: self.onClick.bind(self)
-        },
         attrs: {
           id: id
         }
@@ -42789,8 +42868,14 @@
       }
     },
 
+    created: function created() {
+      var self = this;
+      self.onClickBound = self.onClick.bind(self);
+    },
+
     mounted: function mounted() {
       var self = this;
+      self.$refs.el.addEventListener('click', self.onClickBound);
       var ref = self.props;
       var tooltip = ref.tooltip;
       if (!tooltip) { return; }
@@ -42804,6 +42889,7 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
+      self.$refs.el.removeEventListener('click', self.onClickBound);
 
       if (self.f7Tooltip && self.f7Tooltip.destroy) {
         self.f7Tooltip.destroy();
@@ -43004,6 +43090,7 @@
       var inputEl;
       {
         inputEl = _h('input', {
+          ref: 'inputEl',
           domProps: {
             value: value,
             disabled: disabled,
@@ -43011,7 +43098,7 @@
             checked: checked
           },
           on: {
-            change: self.onChange.bind(self)
+            change: self.onChange
           },
           attrs: {
             type: 'checkbox',
@@ -43050,6 +43137,11 @@
       }
 
     },
+
+    created: function created() {
+      this.onChange = this.onChange.bind(this);
+    },
+
     methods: {
       onChange: function onChange(event) {
         this.dispatchEvent('change', event);
@@ -43109,10 +43201,8 @@
 
       if (deleteable) {
         deleteEl = _h('a', {
+          ref: 'deleteEl',
           class: 'chip-delete',
-          on: {
-            click: self.onDeleteClick.bind(self)
-          },
           attrs: {
             href: '#'
           }
@@ -43123,15 +43213,34 @@
         'chip-outline': outline
       }, Mixins.colorClasses(props));
       return _h('div', {
+        ref: 'el',
         style: style,
         class: classes,
-        on: {
-          click: self.onClick.bind(self)
-        },
         attrs: {
           id: id
         }
       }, [mediaEl, labelEl, deleteEl]);
+    },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+      this.onDeleteClick = this.onDeleteClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      this.$refs.el.addEventListener('click', this.onClick);
+
+      if (this.$refs.deleteEl) {
+        this.$refs.deleteEl.addEventListener('click', this.onDeleteClick);
+      }
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      this.$refs.el.removeEventListener('click', this.onClick);
+
+      if (this.$refs.deleteEl) {
+        this.$refs.deleteEl.removeEventListener('click', this.onDeleteClick);
+      }
     },
 
     methods: {
@@ -43199,13 +43308,23 @@
       return _h(ColTag, {
         style: style,
         class: classes,
-        on: {
-          click: self.onClick.bind(self)
-        },
+        ref: 'el',
         attrs: {
           id: id
         }
       }, [this.$slots['default']]);
+    },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      this.$refs.el.addEventListener('click', this.onClick);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      this.$refs.el.removeEventListener('click', this.onClick);
     },
 
     methods: {
@@ -43261,11 +43380,9 @@
       }
 
       return _h('a', {
+        ref: 'el',
         style: style,
         class: classes,
-        on: {
-          click: this.onClick.bind(this)
-        },
         attrs: {
           id: id,
           target: target
@@ -43294,8 +43411,13 @@
       }
     },
 
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+    },
+
     mounted: function mounted() {
       var self = this;
+      self.$refs.el.addEventListener('click', self.onClick);
       var ref = self.props;
       var tooltip = ref.tooltip;
       if (!tooltip) { return; }
@@ -43309,6 +43431,7 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
+      self.$refs.el.removeEventListener('click', self.onClick);
 
       if (self.f7Tooltip && self.f7Tooltip.destroy) {
         self.f7Tooltip.destroy();
@@ -43421,10 +43544,8 @@
 
       if (linkChildren.length || linkSlots && linkSlots.length) {
         linkEl = _h('a', {
+          ref: 'linkEl',
           key: 'f7-fab-link',
-          on: {
-            click: self.onClick.bind(self)
-          },
           attrs: {
             target: target,
             href: href
@@ -43468,8 +43589,17 @@
       }
     },
 
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+    },
+
     mounted: function mounted() {
       var self = this;
+
+      if (self.$refs.linkEl) {
+        self.$refs.linkEl.addEventListener('click', self.onClick);
+      }
+
       var ref = self.props;
       var tooltip = ref.tooltip;
       if (!tooltip) { return; }
@@ -43483,6 +43613,10 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
+
+      if (self.$refs.linkEl) {
+        self.$refs.linkEl.removeEventListener('click', self.onClick);
+      }
 
       if (self.f7Tooltip && self.f7Tooltip.destroy) {
         self.f7Tooltip.destroy();
@@ -43709,6 +43843,7 @@
       var inputEl;
       {
         inputEl = _h('input', {
+          ref: 'inputEl',
           domProps: {
             disabled: disabled,
             readOnly: readonly,
@@ -43716,7 +43851,7 @@
             checked: checked
           },
           on: {
-            change: self.onChange.bind(self)
+            change: self.onChange
           },
           attrs: {
             type: 'checkbox',
@@ -43742,6 +43877,10 @@
         if (!self.f7Toggle) { return; }
         self.f7Toggle.checked = newValue;
       }
+    },
+
+    created: function created() {
+      this.onChange = this.onChange.bind(this);
     },
 
     mounted: function mounted() {
@@ -44098,10 +44237,10 @@
               required: required
             },
             on: {
-              focus: self.onFocusBound,
-              blur: self.onBlurBound,
-              input: self.onInputBound,
-              change: self.onChangeBound
+              focus: self.onFocus,
+              blur: self.onBlur,
+              input: self.onInput,
+              change: self.onChange
             },
             attrs: {
               name: name,
@@ -44149,7 +44288,7 @@
       } else if (type === 'toggle') {
         inputEl = _h(f7Toggle, {
           on: {
-            change: self.onChangeBound
+            change: self.onChange
           },
           attrs: {
             checked: checked,
@@ -44163,7 +44302,7 @@
       } else if (type === 'range') {
         inputEl = _h(f7Range, {
           on: {
-            rangeChange: self.onChangeBound
+            rangeChange: self.onChange
           },
           attrs: {
             value: value,
@@ -44218,14 +44357,14 @@
 
     created: function created() {
       var self = this;
-      self.onFocusBound = self.onFocus.bind(self);
-      self.onBlurBound = self.onBlur.bind(self);
-      self.onInputBound = self.onInput.bind(self);
-      self.onChangeBound = self.onChange.bind(self);
-      self.onTextareaResizeBound = self.onTextareaResize.bind(self);
-      self.onInputNotEmptyBound = self.onInputNotEmpty.bind(self);
-      self.onInputEmptyBound = self.onInputEmpty.bind(self);
-      self.onInputClearBound = self.onInputClear.bind(self);
+      self.onFocus = self.onFocus.bind(self);
+      self.onBlur = self.onBlur.bind(self);
+      self.onInput = self.onInput.bind(self);
+      self.onChange = self.onChange.bind(self);
+      self.onTextareaResize = self.onTextareaResize.bind(self);
+      self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
+      self.onInputEmpty = self.onInputEmpty.bind(self);
+      self.onInputClear = self.onInputClear.bind(self);
     },
 
     mounted: function mounted() {
@@ -44241,15 +44380,15 @@
         if (type === 'range' || type === 'toggle') { return; }
         var inputEl = self.$refs.inputEl;
         if (!inputEl) { return; }
-        inputEl.addEventListener('input:notempty', self.onInputNotEmptyBound, false);
+        inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
 
         if (type === 'textarea' && resizable) {
-          inputEl.addEventListener('textarea:resze', self.onTextareaResizeBound, false);
+          inputEl.addEventListener('textarea:resze', self.onTextareaResize, false);
         }
 
         if (clearButton) {
-          inputEl.addEventListener('input:empty', self.onInputEmptyBound, false);
-          inputEl.addEventListener('input:clear', self.onInputClearBound, false);
+          inputEl.addEventListener('input:empty', self.onInputEmpty, false);
+          inputEl.addEventListener('input:clear', self.onInputClear, false);
         }
 
         f7.input.checkEmptyState(inputEl);
@@ -44299,15 +44438,15 @@
       if (type === 'range' || type === 'toggle') { return; }
       var inputEl = self.$refs.inputEl;
       if (!inputEl) { return; }
-      inputEl.removeEventListener('input:notempty', self.onInputNotEmptyBound, false);
+      inputEl.removeEventListener('input:notempty', self.onInputNotEmpty, false);
 
       if (type === 'textarea' && resizable) {
-        inputEl.removeEventListener('textarea:resze', self.onTextareaResizeBound, false);
+        inputEl.removeEventListener('textarea:resze', self.onTextareaResize, false);
       }
 
       if (clearButton) {
-        inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
-        inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
+        inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
+        inputEl.removeEventListener('input:clear', self.onInputClear, false);
       }
     },
 
@@ -44558,9 +44697,6 @@
         style: style,
         class: self.classes
       }, self.attrs, {
-        on: {
-          click: self.onClick.bind(self)
-        },
         attrs: {
           id: id
         }
@@ -44575,9 +44711,15 @@
       }
     },
 
+    created: function created() {
+      var self = this;
+      self.onClick = self.onClick.bind(self);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
+      el.addEventListener('click', self.onClick);
       var ref = self.props;
       var tabbarLabel = ref.tabbarLabel;
       var tabLink = ref.tabLink;
@@ -44612,6 +44754,8 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
+      var el = self.$refs.el;
+      el.removeEventListener('click', self.onClick);
 
       if (self.f7SmartSelect && self.f7SmartSelect.destroy) {
         self.f7SmartSelect.destroy();
@@ -44718,9 +44862,7 @@
       }, [_h('a', __vueComponentTransformJSXProps(Object.assign({
         class: self.classes
       }, self.attrs, {
-        on: {
-          click: self.onClick.bind(self)
-        }
+        ref: 'linkEl'
       })), [this.$slots['default'] || [title || text]])]);
     },
 
@@ -44760,6 +44902,19 @@
       }
 
     },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      this.$refs.linkEl.addEventListener('click', this.onClick);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      this.$refs.linkEl.removeEventListener('click', this.onClick);
+    },
+
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
@@ -44902,7 +45057,7 @@
     watch: {
       'props.indexes': function watchIndexes() {
         if (!this.f7ListIndex) { return; }
-        this.f7ListIndex.params.indexes = this.indexes;
+        this.f7ListIndex.params.indexes = this.props.indexes;
         this.update();
       }
     },
@@ -44939,6 +45094,10 @@
       id: [String, Number],
       sortable: Boolean,
       media: String,
+      tag: {
+        type: String,
+        default: 'li'
+      },
       input: {
         type: Boolean,
         default: true
@@ -45018,6 +45177,7 @@
       var sortable = props.sortable;
       var media = props.media;
       var renderInput = props.input;
+      var tag = props.tag;
       var type = props.type;
       var name = props.name;
       var value = props.value;
@@ -45083,10 +45243,10 @@
               required: required
             },
             on: {
-              focus: self.onFocusBound,
-              blur: self.onBlurBound,
-              input: self.onInputBound,
-              change: self.onChangeBound
+              focus: self.onFocus,
+              blur: self.onBlur,
+              input: self.onInput,
+              change: self.onChange
             },
             attrs: {
               name: name,
@@ -45134,7 +45294,8 @@
       }
 
       var hasErrorMessage = !!errorMessage || self.$slots['error-message'] && self.$slots['error-message'].length;
-      return _h('li', {
+      var ItemTag = tag;
+      return _h(ItemTag, {
         ref: 'el',
         style: style,
         class: Utils$1.classNames(className, {
@@ -45209,14 +45370,14 @@
 
     created: function created() {
       var self = this;
-      self.onChangeBound = self.onChange.bind(self);
-      self.onInputBound = self.onInput.bind(self);
-      self.onFocusBound = self.onFocus.bind(self);
-      self.onBlurBound = self.onBlur.bind(self);
-      self.onTextareaResizeBound = self.onTextareaResize.bind(self);
-      self.onInputNotEmptyBound = self.onInputNotEmpty.bind(self);
-      self.onInputEmptyBound = self.onInputEmpty.bind(self);
-      self.onInputClearBound = self.onInputClear.bind(self);
+      self.onChange = self.onChange.bind(self);
+      self.onInput = self.onInput.bind(self);
+      self.onFocus = self.onFocus.bind(self);
+      self.onBlur = self.onBlur.bind(self);
+      self.onTextareaResize = self.onTextareaResize.bind(self);
+      self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
+      self.onInputEmpty = self.onInputEmpty.bind(self);
+      self.onInputClear = self.onInputClear.bind(self);
     },
 
     mounted: function mounted() {
@@ -45232,10 +45393,10 @@
         var type = ref.type;
         var inputEl = self.$refs.inputEl;
         if (!inputEl) { return; }
-        inputEl.addEventListener('input:notempty', self.onInputNotEmptyBound, false);
-        inputEl.addEventListener('textarea:resze', self.onTextareaResizeBound, false);
-        inputEl.addEventListener('input:empty', self.onInputEmptyBound, false);
-        inputEl.addEventListener('input:clear', self.onInputClearBound, false);
+        inputEl.addEventListener('input:notempty', self.onInputNotEmpty, false);
+        inputEl.addEventListener('textarea:resze', self.onTextareaResize, false);
+        inputEl.addEventListener('input:empty', self.onInputEmpty, false);
+        inputEl.addEventListener('input:clear', self.onInputClear, false);
 
         if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
           setTimeout(function () {
@@ -45294,10 +45455,10 @@
       var self = this;
       var inputEl = self.$refs.inputEl;
       if (!inputEl) { return; }
-      inputEl.removeEventListener('input:notempty', self.onInputNotEmptyBound, false);
-      inputEl.removeEventListener('textarea:resze', self.onTextareaResizeBound, false);
-      inputEl.removeEventListener('input:empty', self.onInputEmptyBound, false);
-      inputEl.removeEventListener('input:clear', self.onInputClearBound, false);
+      inputEl.removeEventListener('input:notempty', self.onInputNotEmpty, false);
+      inputEl.removeEventListener('textarea:resze', self.onTextareaResize, false);
+      inputEl.removeEventListener('input:empty', self.onInputEmpty, false);
+      inputEl.removeEventListener('input:clear', self.onInputClear, false);
     },
 
     methods: {
@@ -45602,6 +45763,9 @@
               required: required,
               value: value
             },
+            on: {
+              change: this.onChange
+            },
             attrs: {
               name: name,
               type: radio ? 'radio' : 'checkbox'
@@ -45710,9 +45874,6 @@
         ref: 'el',
         style: style,
         class: classes,
-        on: {
-          click: self.onClickBound
-        },
         attrs: {
           id: id
         }
@@ -45721,12 +45882,12 @@
 
     created: function created() {
       var self = this;
-      self.onClickBound = self.onClick.bind(self);
-      self.onChangeBound = self.onChange.bind(self);
-      self.onFocusBound = self.onFocus.bind(self);
-      self.onBlurBound = self.onBlur.bind(self);
-      self.onEmptyBound = self.onEmpty.bind(self);
-      self.onNotEmptyBound = self.onNotEmpty.bind(self);
+      self.onClick = self.onClick.bind(self);
+      self.onChange = self.onChange.bind(self);
+      self.onFocus = self.onFocus.bind(self);
+      self.onBlur = self.onBlur.bind(self);
+      self.onEmpty = self.onEmpty.bind(self);
+      self.onNotEmpty = self.onNotEmpty.bind(self);
     },
 
     beforeMount: function beforeMount() {
@@ -45741,13 +45902,9 @@
       var self = this;
       var ref = self.$refs;
       var innerEl = ref.innerEl;
-      var inputEl = ref.inputEl;
       var el = ref.el;
-
-      if (inputEl) {
-        inputEl.addEventListener('change', self.onChangeBound);
-      }
-
+      var inputEl = ref.inputEl;
+      el.addEventListener('click', self.onClick);
       if (!innerEl) { return; }
       var $innerEl = self.$$(innerEl);
       var $labelEl = $innerEl.children('.item-title.item-label');
@@ -45759,10 +45916,10 @@
       var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
 
       if (hasInput) {
-        el.addEventListener('focus', self.onFocusBound, true);
-        el.addEventListener('blur', self.onBlurBound, true);
-        el.addEventListener('input:empty', self.onEmptyBound);
-        el.addEventListener('input:notempty', self.onNotEmptyBound);
+        el.addEventListener('focus', self.onFocus, true);
+        el.addEventListener('blur', self.onBlur, true);
+        el.addEventListener('input:empty', self.onEmpty);
+        el.addEventListener('input:notempty', self.onNotEmpty);
       }
 
       if (!self.hasInlineLabelSet && hasInlineLabel !== self.state.hasInlineLabel) {
@@ -45798,7 +45955,8 @@
 
     updated: function updated() {
       var self = this;
-      var innerEl = self.$refs.innerEl;
+      var ref = self.$refs;
+      var innerEl = ref.innerEl;
       if (!innerEl) { return; }
       var $innerEl = self.$$(innerEl);
       var $labelEl = $innerEl.children('.item-title.item-label');
@@ -45843,16 +46001,12 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var ref = self.$refs;
-      var inputEl = ref.inputEl;
       var el = ref.el;
-      el.removeEventListener('input:empty', self.onEmptyBound);
-      el.removeEventListener('input:notempty', self.onNotEmptyBound);
-      el.removeEventListener('focus', self.onFocusBound, true);
-      el.removeEventListener('blur', self.onBlurBound, true);
-
-      if (inputEl) {
-        inputEl.removeEventListener('change', self.onChangeBound);
-      }
+      el.removeEventListener('click', self.onClick);
+      el.removeEventListener('input:empty', self.onEmpty);
+      el.removeEventListener('input:notempty', self.onNotEmpty);
+      el.removeEventListener('focus', self.onFocus, true);
+      el.removeEventListener('blur', self.onBlur, true);
     },
 
     methods: {
@@ -46027,7 +46181,8 @@
       disabled: Boolean,
       itemInput: Boolean,
       itemInputWithInfo: Boolean,
-      inlineLabel: Boolean
+      inlineLabel: Boolean,
+      virtualListIndex: Number
     }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
 
     data: function data() {
@@ -46092,6 +46247,7 @@
       var sortable = props.sortable;
       var noChevron = props.noChevron;
       var chevronCenter = props.chevronCenter;
+      var virtualListIndex = props.virtualListIndex;
       var isMedia = mediaItem || mediaList || self.state.isMedia;
       var isSortable = sortable || self.state.isSortable;
       var isSimple = self.state.isSimple;
@@ -46100,8 +46256,8 @@
         var needsEvents = !(link || href || accordionItem || smartSelect);
         itemContentEl = _h(F7ListItemContent, {
           on: needsEvents ? {
-            click: self.onClickBound,
-            change: self.onChangeBound
+            click: self.onClick,
+            change: self.onChange
           } : undefined,
           attrs: {
             title: title,
@@ -46141,12 +46297,9 @@
             'smart-select': smartSelect
           }, Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
           linkEl = _h('a', __vueComponentTransformJSXProps(Object.assign({
+            ref: 'linkEl',
             class: linkClasses
-          }, linkAttrs, {
-            on: {
-              click: self.onClick.bind(self)
-            }
-          })), [itemContentEl]);
+          }, linkAttrs)), [itemContentEl]);
         }
       }
 
@@ -46168,7 +46321,8 @@
           style: style,
           class: liClasses,
           attrs: {
-            id: id
+            id: id,
+            'data-virtual-list-index': virtualListIndex
           }
         }, [_h('span', [this.$slots['default'] || [title]])]);
       }
@@ -46179,7 +46333,8 @@
           style: style,
           class: liClasses,
           attrs: {
-            id: id
+            id: id,
+            'data-virtual-list-index': virtualListIndex
           }
         }, [title, this.$slots['default']]);
       }
@@ -46190,7 +46345,8 @@
         style: style,
         class: liClasses,
         attrs: {
-          id: id
+          id: id,
+          'data-virtual-list-index': virtualListIndex
         }
       }, [this.$slots['root-start'], swipeout ? _h('div', {
         class: 'swipeout-content'
@@ -46215,27 +46371,45 @@
 
     created: function created() {
       var self = this;
-      self.onClickBound = self.onClick.bind(self);
-      self.onChangeBound = self.onChange.bind(self);
-      self.onSwipeoutOpenBound = self.onSwipeoutOpen.bind(self);
-      self.onSwipeoutOpenedBound = self.onSwipeoutOpened.bind(self);
-      self.onSwipeoutCloseBound = self.onSwipeoutClose.bind(self);
-      self.onSwipeoutClosedBound = self.onSwipeoutClosed.bind(self);
-      self.onSwipeoutDeleteBound = self.onSwipeoutDelete.bind(self);
-      self.onSwipeoutDeletedBound = self.onSwipeoutDeleted.bind(self);
-      self.onSwipeoutOverswipeEnterBound = self.onSwipeoutOverswipeEnter.bind(self);
-      self.onSwipeoutOverswipeExitBound = self.onSwipeoutOverswipeExit.bind(self);
-      self.onSwipeoutBound = self.onSwipeout.bind(self);
-      self.onAccOpenBound = self.onAccOpen.bind(self);
-      self.onAccOpenedBound = self.onAccOpened.bind(self);
-      self.onAccCloseBound = self.onAccClose.bind(self);
-      self.onAccClosedBound = self.onAccClosed.bind(self);
+      self.onClick = self.onClick.bind(self);
+      self.onChange = self.onChange.bind(self);
+      self.onSwipeoutOpen = self.onSwipeoutOpen.bind(self);
+      self.onSwipeoutOpened = self.onSwipeoutOpened.bind(self);
+      self.onSwipeoutClose = self.onSwipeoutClose.bind(self);
+      self.onSwipeoutClosed = self.onSwipeoutClosed.bind(self);
+      self.onSwipeoutDelete = self.onSwipeoutDelete.bind(self);
+      self.onSwipeoutDeleted = self.onSwipeoutDeleted.bind(self);
+      self.onSwipeoutOverswipeEnter = self.onSwipeoutOverswipeEnter.bind(self);
+      self.onSwipeoutOverswipeExit = self.onSwipeoutOverswipeExit.bind(self);
+      self.onSwipeout = self.onSwipeout.bind(self);
+      self.onAccBeforeOpen = self.onAccBeforeOpen.bind(self);
+      self.onAccOpen = self.onAccOpen.bind(self);
+      self.onAccOpened = self.onAccOpened.bind(self);
+      self.onAccBeforeClose = self.onAccBeforeClose.bind(self);
+      self.onAccClose = self.onAccClose.bind(self);
+      self.onAccClosed = self.onAccClosed.bind(self);
     },
 
     mounted: function mounted() {
       var self = this;
-      var el = self.$refs.el;
+      var ref = self.$refs;
+      var el = ref.el;
+      var linkEl = ref.linkEl;
       if (!el) { return; }
+      var ref$1 = self.props;
+      var link = ref$1.link;
+      var href = ref$1.href;
+      var smartSelect = ref$1.smartSelect;
+      var swipeout = ref$1.swipeout;
+      var swipeoutOpened = ref$1.swipeoutOpened;
+      var accordionItem = ref$1.accordionItem;
+      var smartSelectParams = ref$1.smartSelectParams;
+      var needsEvents = !(link || href || accordionItem || smartSelect);
+
+      if (!needsEvents && linkEl) {
+        linkEl.addEventListener('click', self.onClick);
+      }
+
       self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
 
       if (self.$listEl.length) {
@@ -46246,30 +46420,25 @@
         });
       }
 
-      var ref = self.props;
-      var swipeout = ref.swipeout;
-      var swipeoutOpened = ref.swipeoutOpened;
-      var accordionItem = ref.accordionItem;
-      var smartSelect = ref.smartSelect;
-      var smartSelectParams = ref.smartSelectParams;
-
       if (swipeout) {
-        el.addEventListener('swipeout:open', self.onSwipeoutOpenBound);
-        el.addEventListener('swipeout:opened', self.onSwipeoutOpenedBound);
-        el.addEventListener('swipeout:close', self.onSwipeoutCloseBound);
-        el.addEventListener('swipeout:closed', self.onSwipeoutClosedBound);
-        el.addEventListener('swipeout:delete', self.onSwipeoutDeleteBound);
-        el.addEventListener('swipeout:deleted', self.onSwipeoutDeletedBound);
-        el.addEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnterBound);
-        el.addEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExitBound);
-        el.addEventListener('swipeout', self.onSwipeoutBound);
+        el.addEventListener('swipeout:open', self.onSwipeoutOpen);
+        el.addEventListener('swipeout:opened', self.onSwipeoutOpened);
+        el.addEventListener('swipeout:close', self.onSwipeoutClose);
+        el.addEventListener('swipeout:closed', self.onSwipeoutClosed);
+        el.addEventListener('swipeout:delete', self.onSwipeoutDelete);
+        el.addEventListener('swipeout:deleted', self.onSwipeoutDeleted);
+        el.addEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnter);
+        el.addEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExit);
+        el.addEventListener('swipeout', self.onSwipeout);
       }
 
       if (accordionItem) {
-        el.addEventListener('accordion:open', self.onAccOpenBound);
-        el.addEventListener('accordion:opened', self.onAccOpenedBound);
-        el.addEventListener('accordion:close', self.onAccCloseBound);
-        el.addEventListener('accordion:closed', self.onAccClosedBound);
+        el.addEventListener('accordion:beforeopen', self.onAccBeforeOpen);
+        el.addEventListener('accordion:open', self.onAccOpen);
+        el.addEventListener('accordion:opened', self.onAccOpened);
+        el.addEventListener('accordion:beforeclose', self.onAccBeforeClose);
+        el.addEventListener('accordion:close', self.onAccClose);
+        el.addEventListener('accordion:closed', self.onAccClosed);
       }
 
       self.$f7ready(function (f7) {
@@ -46315,30 +46484,41 @@
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      var el = self.$refs.el;
-      var ref = self.props;
-      var swipeout = ref.swipeout;
-      var accordionItem = ref.accordionItem;
-      var smartSelect = ref.smartSelect;
+      var ref = self.$refs;
+      var el = ref.el;
+      var linkEl = ref.linkEl;
+      var ref$1 = self.props;
+      var link = ref$1.link;
+      var href = ref$1.href;
+      var smartSelect = ref$1.smartSelect;
+      var swipeout = ref$1.swipeout;
+      var accordionItem = ref$1.accordionItem;
+      var needsEvents = !(link || href || accordionItem || smartSelect);
+
+      if (!needsEvents && linkEl) {
+        linkEl.removeEventListener('click', self.onClick);
+      }
 
       if (el) {
         if (swipeout) {
-          el.removeEventListener('swipeout:open', self.onSwipeoutOpenBound);
-          el.removeEventListener('swipeout:opened', self.onSwipeoutOpenedBound);
-          el.removeEventListener('swipeout:close', self.onSwipeoutCloseBound);
-          el.removeEventListener('swipeout:closed', self.onSwipeoutClosedBound);
-          el.removeEventListener('swipeout:delete', self.onSwipeoutDeleteBound);
-          el.removeEventListener('swipeout:deleted', self.onSwipeoutDeletedBound);
-          el.removeEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnterBound);
-          el.removeEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExitBound);
-          el.removeEventListener('swipeout', self.onSwipeoutBound);
+          el.removeEventListener('swipeout:open', self.onSwipeoutOpen);
+          el.removeEventListener('swipeout:opened', self.onSwipeoutOpened);
+          el.removeEventListener('swipeout:close', self.onSwipeoutClose);
+          el.removeEventListener('swipeout:closed', self.onSwipeoutClosed);
+          el.removeEventListener('swipeout:delete', self.onSwipeoutDelete);
+          el.removeEventListener('swipeout:deleted', self.onSwipeoutDeleted);
+          el.removeEventListener('swipeout:overswipeenter', self.onSwipeoutOverswipeEnter);
+          el.removeEventListener('swipeout:overswipeexit', self.onSwipeoutOverswipeExit);
+          el.removeEventListener('swipeout', self.onSwipeout);
         }
 
         if (accordionItem) {
-          el.removeEventListener('accordion:open', self.onAccOpenBound);
-          el.removeEventListener('accordion:opened', self.onAccOpenedBound);
-          el.removeEventListener('accordion:close', self.onAccCloseBound);
-          el.removeEventListener('accordion:closed', self.onAccClosedBound);
+          el.removeEventListener('accordion:beforeopen', self.onAccBeforeOpen);
+          el.removeEventListener('accordion:open', self.onAccOpen);
+          el.removeEventListener('accordion:opened', self.onAccOpened);
+          el.removeEventListener('accordion:beforeclose', self.onAccBeforeClose);
+          el.removeEventListener('accordion:close', self.onAccClose);
+          el.removeEventListener('accordion:closed', self.onAccClosed);
         }
       }
 
@@ -46392,12 +46572,20 @@
         this.dispatchEvent('swipeout', event);
       },
 
+      onAccBeforeClose: function onAccBeforeClose(event) {
+        this.dispatchEvent('accordion:beforeclose accordionBeforeClose', event, event.detail.prevent);
+      },
+
       onAccClose: function onAccClose(event) {
         this.dispatchEvent('accordion:close accordionClose', event);
       },
 
       onAccClosed: function onAccClosed(event) {
         this.dispatchEvent('accordion:closed accordionClosed', event);
+      },
+
+      onAccBeforeOpen: function onAccBeforeOpen(event) {
+        this.dispatchEvent('accordion:beforeopen accordionBeforeOpen', event, event.detail.prevent);
       },
 
       onAccOpen: function onAccOpen(event) {
@@ -46864,16 +47052,6 @@
       typing: Boolean
     }, Mixins.colorProps),
 
-    created: function created() {
-      this.onClickBound = this.onClick.bind(this);
-      this.onNameClickBound = this.onNameClick.bind(this);
-      this.onTextClickBound = this.onTextClick.bind(this);
-      this.onAvatarClickBound = this.onAvatarClick.bind(this);
-      this.onHeaderClickBound = this.onHeaderClick.bind(this);
-      this.onFooterClickBound = this.onFooterClick.bind(this);
-      this.onBubbleClickBound = this.onBubbleClick.bind(this);
-    },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
@@ -46906,39 +47084,29 @@
       var slotsBubbleStart = ref['bubble-start'];
       var slotsBubbleEnd = ref['bubble-end'];
       return _h('div', {
+        ref: 'el',
         style: style,
         class: self.classes,
-        on: {
-          click: self.onClickBound
-        },
         attrs: {
           id: id
         }
       }, [slotsStart, (avatar || slotsAvatar) && _h('div', {
+        ref: 'avatarEl',
         class: 'message-avatar',
         style: {
           backgroundImage: avatar && ("url(" + avatar + ")")
-        },
-        on: {
-          click: self.onAvatarClickBound
         }
       }, [slotsAvatar]), _h('div', {
         class: 'message-content'
       }, [slotsContentStart, (slotsName || name) && _h('div', {
-        class: 'message-name',
-        on: {
-          click: self.onNameClickBound
-        }
+        ref: 'nameEl',
+        class: 'message-name'
       }, [slotsName || name]), (slotsHeader || header) && _h('div', {
-        class: 'message-header',
-        on: {
-          click: self.onHeaderClickBound
-        }
+        ref: 'headerEl',
+        class: 'message-header'
       }, [slotsHeader || header]), _h('div', {
-        class: 'message-bubble',
-        on: {
-          click: self.onBubbleClickBound
-        }
+        ref: 'bubbleEl',
+        class: 'message-bubble'
       }, [slotsBubbleStart, (slotsImage || image) && _h('div', {
         class: 'message-image'
       }, [slotsImage || _h('img', {
@@ -46948,19 +47116,15 @@
       })]), (slotsTextHeader || textHeader) && _h('div', {
         class: 'message-text-header'
       }, [slotsTextHeader || textHeader]), (slotsText || text || typing) && _h('div', {
-        class: 'message-text',
-        on: {
-          click: self.onTextClickBound
-        }
+        ref: 'textEl',
+        class: 'message-text'
       }, [slotsText || text, typing && _h('div', {
         class: 'message-typing-indicator'
       }, [_h('div'), _h('div'), _h('div')])]), (slotsTextFooter || textFooter) && _h('div', {
         class: 'message-text-footer'
       }, [slotsTextFooter || textFooter]), slotsBubbleEnd, slotsDefault]), (slotsFooter || footer) && _h('div', {
-        class: 'message-footer',
-        on: {
-          click: self.onFooterClickBound
-        }
+        ref: 'footerEl',
+        class: 'message-footer'
       }, [slotsFooter || footer]), slotsContentEnd]), slotsEnd]);
     },
 
@@ -46997,6 +47161,53 @@
       }
 
     },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+      this.onNameClick = this.onNameClick.bind(this);
+      this.onTextClick = this.onTextClick.bind(this);
+      this.onAvatarClick = this.onAvatarClick.bind(this);
+      this.onHeaderClick = this.onHeaderClick.bind(this);
+      this.onFooterClick = this.onFooterClick.bind(this);
+      this.onBubbleClick = this.onBubbleClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      var ref = this.$refs;
+      var el = ref.el;
+      var nameEl = ref.nameEl;
+      var textEl = ref.textEl;
+      var avatarEl = ref.avatarEl;
+      var headerEl = ref.headerEl;
+      var footerEl = ref.footerEl;
+      var bubbleEl = ref.bubbleEl;
+      el.addEventListener('click', this.onClick);
+      if (nameEl) { nameEl.addEventListener('click', this.onNameClick); }
+      if (textEl) { textEl.addEventListener('click', this.onTextClick); }
+      if (avatarEl) { nameEl.addEventListener('click', this.onAvatarClick); }
+      if (headerEl) { nameEl.addEventListener('click', this.onHeaderClick); }
+      if (footerEl) { nameEl.addEventListener('click', this.onFooterClick); }
+      if (bubbleEl) { nameEl.addEventListener('click', this.onBubbleClick); }
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var ref = this.$refs;
+      var el = ref.el;
+      var nameEl = ref.nameEl;
+      var textEl = ref.textEl;
+      var avatarEl = ref.avatarEl;
+      var headerEl = ref.headerEl;
+      var footerEl = ref.footerEl;
+      var bubbleEl = ref.bubbleEl;
+      el.removeEventListener('click', this.onClick);
+      if (nameEl) { nameEl.removeEventListener('click', this.onNameClick); }
+      if (textEl) { textEl.removeEventListener('click', this.onTextClick); }
+      if (avatarEl) { nameEl.removeEventListener('click', this.onAvatarClick); }
+      if (headerEl) { nameEl.removeEventListener('click', this.onHeaderClick); }
+      if (footerEl) { nameEl.removeEventListener('click', this.onFooterClick); }
+      if (bubbleEl) { nameEl.removeEventListener('click', this.onBubbleClick); }
+    },
+
     methods: {
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
@@ -47047,11 +47258,6 @@
       }
     }, Mixins.colorProps),
 
-    created: function created() {
-      this.onClickBound = this.onClick.bind(this);
-      this.onDeleteClickBound = this.onDeleteClick.bind(this);
-    },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
@@ -47063,11 +47269,9 @@
       var style = props.style;
       var classes = Utils$1.classNames(className, 'messagebar-attachment', Mixins.colorClasses(props));
       return _h('div', {
+        ref: 'el',
         style: style,
         class: classes,
-        on: {
-          click: self.onClickBound
-        },
         attrs: {
           id: id
         }
@@ -47076,11 +47280,30 @@
           src: image
         }
       }), deletable && _h('span', {
-        class: 'messagebar-attachment-delete',
-        on: {
-          click: self.onDeleteClickBound
-        }
+        ref: 'deleteEl',
+        class: 'messagebar-attachment-delete'
       }), this.$slots['default']]);
+    },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+      this.onDeleteClick = this.onDeleteClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      this.$refs.el.addEventListener('click', this.onClick);
+
+      if (this.$refs.deleteEl) {
+        this.$refs.deleteEl.addEventListener('click', this.onDeleteClick);
+      }
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      this.$refs.el.removeEventListener('click', this.onClick);
+
+      if (this.$refs.deleteEl) {
+        this.$refs.deleteEl.removeEventListener('click', this.onDeleteClick);
+      }
     },
 
     methods: {
@@ -47146,10 +47369,6 @@
       checked: Boolean
     }, Mixins.colorProps),
 
-    created: function created() {
-      this.onChangeBound = this.onChange.bind(this);
-    },
-
     render: function render() {
       var _h = this.$createElement;
       var self = this;
@@ -47166,11 +47385,12 @@
       var inputEl;
       {
         inputEl = _h('input', {
+          ref: 'inputEl',
           domProps: {
             checked: checked
           },
           on: {
-            change: self.onChangeBound
+            change: self.onChange
           },
           attrs: {
             type: 'checkbox'
@@ -47186,6 +47406,10 @@
       }, [inputEl, _h('i', {
         class: 'icon icon-checkbox'
       }), this.$slots['default']]);
+    },
+
+    created: function created() {
+      this.onChange = this.onChange.bind(this);
     },
 
     methods: {
@@ -47311,14 +47535,14 @@
     }, Mixins.colorProps),
 
     created: function created() {
-      this.onChangeBound = this.onChange.bind(this);
-      this.onInputBound = this.onInput.bind(this);
-      this.onFocusBound = this.onFocus.bind(this);
-      this.onBlurBound = this.onBlur.bind(this);
-      this.onClickBound = this.onClick.bind(this);
-      this.onDeleteAttachmentBound = this.onDeleteAttachment.bind(this);
-      this.onClickAttachmentBound = this.onClickAttachment.bind(this);
-      this.onResizePageBound = this.onResizePage.bind(this);
+      this.onChange = this.onChange.bind(this);
+      this.onInput = this.onInput.bind(this);
+      this.onFocus = this.onFocus.bind(this);
+      this.onBlur = this.onBlur.bind(this);
+      this.onClick = this.onClick.bind(this);
+      this.onDeleteAttachment = this.onDeleteAttachment.bind(this);
+      this.onClickAttachment = this.onClickAttachment.bind(this);
+      this.onResizePage = this.onResizePage.bind(this);
     },
 
     render: function render() {
@@ -47377,10 +47601,10 @@
       }, [slotsBeforeArea, messagebarAttachmentsEl, _h(F7Input, {
         ref: 'area',
         on: {
-          input: self.onInputBound,
-          change: self.onChangeBound,
-          focus: self.onFocusBound,
-          blur: self.onBlurBound
+          input: self.onInput,
+          change: self.onChange,
+          focus: self.onFocus,
+          blur: self.onBlur
         },
         attrs: {
           type: 'textarea',
@@ -47394,7 +47618,7 @@
         }
       }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(f7Link, {
         on: {
-          click: self.onClickBound
+          click: self.onClick
         }
       }, [slotsSendLink || sendLink]), slotsInnerEnd, innerEndEls]), slotsAfterInner, messagebarSheetEl]);
     },
@@ -47442,9 +47666,9 @@
       if (!init) { return; }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('messagebar:attachmentdelete', self.onDeleteAttachmentBound);
-      el.addEventListener('messagebar:attachmentclick', self.onClickAttachmentBound);
-      el.addEventListener('messagebar:resizepage', self.onResizePageBound);
+      el.addEventListener('messagebar:attachmentdelete', self.onDeleteAttachment);
+      el.addEventListener('messagebar:attachmentclick', self.onClickAttachment);
+      el.addEventListener('messagebar:resizepage', self.onResizePage);
       var params = Utils$1.noUndefinedProps({
         el: el,
         top: top,
@@ -47483,9 +47707,9 @@
       if (self.f7Messagebar && self.f7Messagebar.destroy) { self.f7Messagebar.destroy(); }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('messagebar:attachmentdelete', self.onDeleteAttachmentBound);
-      el.removeEventListener('messagebar:attachmentclick', self.onClickAttachmentBound);
-      el.removeEventListener('messagebar:resizepage', self.onResizePageBound);
+      el.removeEventListener('messagebar:attachmentdelete', self.onDeleteAttachment);
+      el.removeEventListener('messagebar:attachmentclick', self.onClickAttachment);
+      el.removeEventListener('messagebar:resizepage', self.onResizePage);
     },
 
     methods: {
@@ -48597,6 +48821,7 @@
       self.onPageBeforeRemove = self.onPageBeforeRemove.bind(self);
       self.onPageStack = self.onPageStack.bind(self);
       self.onPageUnstack = self.onPageUnstack.bind(self);
+      self.onPagePosition = self.onPagePosition.bind(self);
 
       if (ptr) {
         el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -48620,6 +48845,7 @@
       el.addEventListener('page:beforeremove', self.onPageBeforeRemove);
       el.addEventListener('page:stack', self.onPageStack);
       el.addEventListener('page:unstack', self.onPageUnstack);
+      el.addEventListener('page:position', self.onPagePosition);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -48641,6 +48867,7 @@
       el.removeEventListener('page:beforeremove', self.onPageBeforeRemove);
       el.removeEventListener('page:stack', self.onPageStack);
       el.removeEventListener('page:unstack', self.onPageUnstack);
+      el.removeEventListener('page:position', self.onPagePosition);
     },
 
     methods: {
@@ -48683,6 +48910,13 @@
       onPageUnstack: function onPageUnstack() {
         this.setState({
           routerForceUnstack: true
+        });
+      },
+
+      onPagePosition: function onPagePosition(event) {
+        var position = event.detail.position;
+        this.setState({
+          routerClass: ("page-" + position)
         });
       },
 
@@ -49566,6 +49800,7 @@
       var inputEl;
       {
         inputEl = _h('input', {
+          ref: 'inputEl',
           domProps: {
             value: value,
             disabled: disabled,
@@ -49573,7 +49808,7 @@
             checked: checked
           },
           on: {
-            change: self.onChange.bind(self)
+            change: self.onChange
           },
           attrs: {
             type: 'radio',
@@ -49596,6 +49831,10 @@
           id: id
         }
       }, [inputEl, iconEl, this.$slots['default']]);
+    },
+
+    created: function created() {
+      this.onChange = this.onChange.bind(this);
     },
 
     methods: {
@@ -49646,13 +49885,23 @@
       return _h(RowTag, {
         style: style,
         class: classes,
-        on: {
-          click: self.onClick.bind(self)
-        },
+        ref: 'el',
         attrs: {
           id: id
         }
       }, [this.$slots['default']]);
+    },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      this.$refs.el.addEventListener('click', this.onClick);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      this.$refs.el.removeEventListener('click', this.onClick);
     },
 
     methods: {
@@ -49701,6 +49950,11 @@
       clearButton: {
         type: Boolean,
         default: true
+      },
+      value: [String, Number, Array],
+      inputEvents: {
+        type: String,
+        default: 'change input compositionend'
       },
       expandable: Boolean,
       searchContainer: [String, Object],
@@ -49784,22 +50038,19 @@
       var className = props.className;
       var style = props.style;
       var id = props.id;
+      var value = props.value;
 
       if (clearButton) {
         clearEl = _h('span', {
-          class: 'input-clear-button',
-          on: {
-            click: self.onClearButtonClick.bind(self)
-          }
+          ref: 'clearEl',
+          class: 'input-clear-button'
         });
       }
 
       if (disableButton) {
         disableEl = _h('span', {
-          class: 'searchbar-disable-button',
-          on: {
-            click: self.onDisableButtonClick.bind(self)
-          }
+          ref: 'disableEl',
+          class: 'searchbar-disable-button'
         }, [disableButtonText]);
       }
 
@@ -49809,6 +50060,25 @@
         'no-hairline': noHairline,
         'searchbar-expandable': expandable
       }, Mixins.colorClasses(props));
+      var inputEl;
+      {
+        inputEl = _h('input', {
+          ref: 'inputEl',
+          domProps: {
+            value: value
+          },
+          on: {
+            input: self.onInput,
+            change: self.onChange,
+            focus: self.onFocus,
+            blur: self.onBlur
+          },
+          attrs: {
+            placeholder: placeholder,
+            type: 'search'
+          }
+        });
+      }
       return _h(SearchbarTag, {
         ref: 'el',
         style: style,
@@ -49820,36 +50090,26 @@
         class: 'searchbar-inner'
       }, [this.$slots['inner-start'], _h('div', {
         class: 'searchbar-input-wrap'
-      }, [this.$slots['input-wrap-start'], _h('input', {
-        on: {
-          input: self.onInput.bind(self),
-          change: self.onChange.bind(self),
-          focus: self.onFocus.bind(self),
-          blur: self.onBlur.bind(self)
-        },
-        attrs: {
-          placeholder: placeholder,
-          type: 'search'
-        }
-      }), _h('i', {
+      }, [this.$slots['input-wrap-start'], inputEl, _h('i', {
         class: 'searchbar-icon'
       }), clearEl, this.$slots['input-wrap-end']]), disableEl, this.$slots['inner-end'], this.$slots['default']]), this.$slots['after-inner']]);
     },
 
-    beforeDestroy: function beforeDestroy() {
-      var self = this;
-
-      if (self.props.form && self.$refs.el) {
-        self.$refs.el.removeEventListener('submit', self.onSubmitBound, false);
-      }
-
-      if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
+    created: function created() {
+      this.onChange = this.onChange.bind(this);
+      this.onInput = this.onInput.bind(this);
+      this.onFocus = this.onFocus.bind(this);
+      this.onBlur = this.onBlur.bind(this);
+      this.onSubmit = this.onSubmit.bind(this);
+      this.onClearButtonClick = this.onClearButtonClick.bind(this);
+      this.onDisableButtonClick = this.onDisableButtonClick.bind(this);
     },
 
     mounted: function mounted() {
       var self = this;
       var ref = self.props;
       var init = ref.init;
+      var inputEvents = ref.inputEvents;
       var searchContainer = ref.searchContainer;
       var searchIn = ref.searchIn;
       var searchItem = ref.searchItem;
@@ -49868,17 +50128,29 @@
       var hideDividers = ref.hideDividers;
       var hideGroups = ref.hideGroups;
       var form = ref.form;
-      if (!init) { return; }
-      var el = self.$refs.el;
+      var ref$1 = self.$refs;
+      var inputEl = ref$1.inputEl;
+      var el = ref$1.el;
+      var clearEl = ref$1.clearEl;
+      var disableEl = ref$1.disableEl;
 
       if (form && el) {
-        self.onSubmitBound = self.onSubmit.bind(self);
-        el.addEventListener('submit', self.onSubmitBound, false);
+        el.addEventListener('submit', self.onSubmit, false);
       }
 
+      if (clearEl) {
+        clearEl.addEventListener('click', self.onClearButtonClick);
+      }
+
+      if (disableEl) {
+        disableEl.addEventListener('click', self.onDisableButtonClick);
+      }
+
+      if (!init) { return; }
       self.$f7ready(function () {
         var params = Utils$1.noUndefinedProps({
           el: self.$refs.el,
+          inputEvents: inputEvents,
           searchContainer: searchContainer,
           searchIn: searchIn,
           searchItem: searchItem,
@@ -49922,6 +50194,29 @@
         });
         self.f7Searchbar = self.$f7.searchbar.create(params);
       });
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      var ref = self.$refs;
+      var inputEl = ref.inputEl;
+      var el = ref.el;
+      var clearEl = ref.clearEl;
+      var disableEl = ref.disableEl;
+
+      if (self.props.form && el) {
+        el.removeEventListener('submit', self.onSubmit, false);
+      }
+
+      if (clearEl) {
+        clearEl.removeEventListener('click', self.onClearButtonClick);
+      }
+
+      if (disableEl) {
+        disableEl.removeEventListener('click', self.onDisableButtonClick);
+      }
+
+      if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
     },
 
     methods: {
@@ -50155,7 +50450,7 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       if (self.f7Sheet) { self.f7Sheet.destroy(); }
-      var el = self.$el;
+      var el = self.$refs.el;
       if (!el) { return; }
       el.removeEventListener('popup:open', self.onOpenBound);
       el.removeEventListener('popup:opened', self.onOpenedBound);
@@ -50337,12 +50632,13 @@
         var inputEl;
         {
           inputEl = _h('input', {
+            ref: 'inputEl',
             domProps: {
               readOnly: inputReadonly,
               value: value
             },
             on: {
-              input: self.onInput.bind(self)
+              input: self.onInput
             },
             attrs: {
               type: inputType,
@@ -50371,15 +50667,11 @@
           id: id
         }
       }, [_h('div', {
-        class: 'stepper-button-minus',
-        on: {
-          click: self.onMinusClickBound
-        }
+        ref: 'minusEl',
+        class: 'stepper-button-minus'
       }), inputWrapEl, valueEl, _h('div', {
-        class: 'stepper-button-plus',
-        on: {
-          click: self.onPlusClickBound
-        }
+        ref: 'plusEl',
+        class: 'stepper-button-plus'
       })]);
     },
 
@@ -50426,13 +50718,25 @@
     },
 
     created: function created() {
-      this.onInputBound = this.onInput.bind(this);
-      this.onMinusClickBound = this.onMinusClick.bind(this);
-      this.onPlusClickBound = this.onPlusClick.bind(this);
+      this.onInput = this.onInput.bind(this);
+      this.onMinusClick = this.onMinusClick.bind(this);
+      this.onPlusClick = this.onPlusClick.bind(this);
     },
 
     mounted: function mounted() {
       var self = this;
+      var ref = self.$refs;
+      var minusEl = ref.minusEl;
+      var plusEl = ref.plusEl;
+
+      if (minusEl) {
+        minusEl.addEventListener('click', self.onMinusClick);
+      }
+
+      if (plusEl) {
+        plusEl.addEventListener('click', self.onPlusClick);
+      }
+
       if (!self.props.init) { return; }
       self.$f7ready(function (f7) {
         var ref = self.props;
@@ -50473,10 +50777,23 @@
     },
 
     beforeDestroy: function beforeDestroy() {
-      if (!this.props.init) { return; }
+      var self = this;
+      var ref = self.$refs;
+      var minusEl = ref.minusEl;
+      var plusEl = ref.plusEl;
 
-      if (this.f7Stepper && this.f7Stepper.destroy) {
-        this.f7Stepper.destroy();
+      if (minusEl) {
+        minusEl.removeEventListener('click', self.onMinusClick);
+      }
+
+      if (plusEl) {
+        plusEl.removeEventListener('click', self.onPlusClick);
+      }
+
+      if (!self.props.init) { return; }
+
+      if (self.f7Stepper && self.f7Stepper.destroy) {
+        self.f7Stepper.destroy();
       }
     },
 
@@ -50650,17 +50967,27 @@
         'swipeout-close': close
       }, Mixins.colorClasses(props));
       return _h('a', {
+        ref: 'el',
         style: style,
         class: classes,
-        on: {
-          click: this.onClick.bind(this)
-        },
         attrs: {
           href: href || '#',
           id: id,
           'data-confirm': confirmText || undefined
         }
       }, [this.$slots['default'] || [text]]);
+    },
+
+    created: function created() {
+      this.onClick = this.onClick.bind(this);
+    },
+
+    mounted: function mounted() {
+      this.$refs.el.addEventListener('click', this.onClick);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      this.$refs.el.removeEventListener('click', this.onClick);
     },
 
     methods: {
@@ -50990,11 +51317,13 @@
       var style = props.style;
       var className = props.className;
       var routable = props.routable;
-      var classes = Utils$1.classNames(className, {
+      var classes = Utils$1.classNames(className, Mixins.colorClasses(props));
+      var tabsClasses = Utils$1.classNames({
+        'tabs': true,
         'tabs-animated-wrap': animated,
         'tabs-swipeable-wrap': swipeable,
         'tabs-routable': routable
-      }, Mixins.colorClasses(props));
+      });
 
       if (animated || swipeable) {
         return _h('div', {
@@ -51004,13 +51333,13 @@
             id: id
           }
         }, [_h('div', {
-          class: 'tabs'
+          class: tabsClasses
         }, [this.$slots['default']])]);
       }
 
       return _h('div', {
         style: style,
-        class: Utils$1.classNames('tabs', classes),
+        class: Utils$1.classNames(tabsClasses, classes),
         attrs: {
           id: id
         }
@@ -51143,6 +51472,11 @@
       iosSwipeBackAnimateOpacity: Boolean,
       iosSwipeBackActiveArea: Number,
       iosSwipeBackThreshold: Number,
+      mdSwipeBack: Boolean,
+      mdSwipeBackAnimateShadow: Boolean,
+      mdSwipeBackAnimateOpacity: Boolean,
+      mdSwipeBackActiveArea: Number,
+      mdSwipeBackThreshold: Number,
       pushState: Boolean,
       pushStateRoot: String,
       pushStateAnimate: Boolean,
@@ -51433,6 +51767,13 @@
       removePage: function removePage($pageEl) {
         if (!$pageEl) { return; }
         var router = this;
+        var f7Page;
+        if ('length' in $pageEl) { f7Page = $pageEl[0].f7Page; }
+        else { f7Page = $pageEl.f7Page; }
+        if (f7Page && f7Page.route && f7Page.route.route && f7Page.route.route.keepAlive) {
+          router.app.$($pageEl).remove();
+          return;
+        }
         var routerComponent;
         f7.routers.views.forEach(function (data) {
           if (data.el && data.el === router.el) {
@@ -51693,7 +52034,7 @@
   };
 
   /**
-   * Framework7 Vue 3.5.1
+   * Framework7 Vue 3.6.0
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -51701,10 +52042,10 @@
    *
    * Released under the MIT License
    *
-   * Released on: November 2, 2018
+   * Released on: December 7, 2018
    */
 
-  var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
+  var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
@@ -54337,7 +54678,7 @@
     },
   };
 
-  var VirtualList$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title"}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : 73}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle}})}))])],1)},staticRenderFns: [],
+  var VirtualList$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title"}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : 73}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}))])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Subnavbar: f7Subnavbar, f7Searchbar: f7Searchbar, f7Block: f7Block,
     },
@@ -54410,129 +54751,6 @@
       },
     },
   };
-
-  function createCommonjsModule(fn, module) {
-  	return module = { exports: {} }, fn(module, module.exports), module.exports;
-  }
-
-  /*
-  object-assign
-  (c) Sindre Sorhus
-  @license MIT
-  */
-  /* eslint-disable no-unused-vars */
-  var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-  var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-  var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-  function toObject$1(val) {
-  	if (val === null || val === undefined) {
-  		throw new TypeError('Object.assign cannot be called with null or undefined');
-  	}
-
-  	return Object(val);
-  }
-
-  function shouldUseNative() {
-  	try {
-  		if (!Object.assign) {
-  			return false;
-  		}
-
-  		// Detect buggy property enumeration order in older V8 versions.
-
-  		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-  		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
-  		test1[5] = 'de';
-  		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-  			return false;
-  		}
-
-  		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-  		var test2 = {};
-  		for (var i = 0; i < 10; i++) {
-  			test2['_' + String.fromCharCode(i)] = i;
-  		}
-  		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-  			return test2[n];
-  		});
-  		if (order2.join('') !== '0123456789') {
-  			return false;
-  		}
-
-  		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-  		var test3 = {};
-  		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-  			test3[letter] = letter;
-  		});
-  		if (Object.keys(Object.assign({}, test3)).join('') !==
-  				'abcdefghijklmnopqrst') {
-  			return false;
-  		}
-
-  		return true;
-  	} catch (err) {
-  		// We don't expect any of the above to throw, but better to be safe.
-  		return false;
-  	}
-  }
-
-  var objectAssign = shouldUseNative() ? Object.assign : function (target, source) {
-  	var arguments$1 = arguments;
-
-  	var from;
-  	var to = toObject$1(target);
-  	var symbols;
-
-  	for (var s = 1; s < arguments.length; s++) {
-  		from = Object(arguments$1[s]);
-
-  		for (var key in from) {
-  			if (hasOwnProperty$1.call(from, key)) {
-  				to[key] = from[key];
-  			}
-  		}
-
-  		if (getOwnPropertySymbols) {
-  			symbols = getOwnPropertySymbols(from);
-  			for (var i = 0; i < symbols.length; i++) {
-  				if (propIsEnumerable.call(from, symbols[i])) {
-  					to[symbols[i]] = from[symbols[i]];
-  				}
-  			}
-  		}
-  	}
-
-  	return to;
-  };
-
-  var n="function"===typeof Symbol&&Symbol.for,p$1=n?Symbol.for("react.element"):60103,q=n?Symbol.for("react.portal"):60106,r=n?Symbol.for("react.fragment"):60107,t=n?Symbol.for("react.strict_mode"):60108,u=n?Symbol.for("react.profiler"):60114,v=n?Symbol.for("react.provider"):60109,w=n?Symbol.for("react.context"):60110,x=n?Symbol.for("react.async_mode"):60111,y=n?Symbol.for("react.forward_ref"):60112;var z="function"===typeof Symbol&&Symbol.iterator;function A$1(a,b,d,c,e,g,h,f){if(!a){a=void 0;if(void 0===b){ a=Error("Minified exception occurred; use the non-minified dev environment for the full error message and additional helpful warnings."); }else{var k=[d,c,e,g,h,f],l=0;a=Error(b.replace(/%s/g,function(){return k[l++]}));a.name="Invariant Violation";}a.framesToPop=1;throw a;}}
-  function B$1(a){
-  var arguments$1 = arguments;
-  for(var b=arguments.length-1,d="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=0;c<b;c++){ d+="&args[]="+encodeURIComponent(arguments$1[c+1]); }A$1(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",d);}var C$1={isMounted:function(){return !1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},D={};
-  function E(a,b,d){this.props=a;this.context=b;this.refs=D;this.updater=d||C$1;}E.prototype.isReactComponent={};E.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?B$1("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};E.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function F(){}F.prototype=E.prototype;function G(a,b,d){this.props=a;this.context=b;this.refs=D;this.updater=d||C$1;}var H=G.prototype=new F;
-  H.constructor=G;objectAssign(H,E.prototype);H.isPureReactComponent=!0;var I={current:null,currentDispatcher:null},J=Object.prototype.hasOwnProperty,K={key:!0,ref:!0,__self:!0,__source:!0};
-  function L(a,b,d){
-  var arguments$1 = arguments;
-  var c=void 0,e={},g=null,h=null;if(null!=b){ for(c in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(g=""+b.key),b){ J.call(b,c)&&!K.hasOwnProperty(c)&&(e[c]=b[c]); } }var f=arguments.length-2;if(1===f){ e.children=d; }else if(1<f){for(var k=Array(f),l=0;l<f;l++){ k[l]=arguments$1[l+2]; }e.children=k;}if(a&&a.defaultProps){ for(c in f=a.defaultProps,f){ void 0===e[c]&&(e[c]=f[c]); } }return {$$typeof:p$1,type:a,key:g,ref:h,props:e,_owner:I.current}}
-  function M(a,b){return {$$typeof:p$1,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}}function N(a){return "object"===typeof a&&null!==a&&a.$$typeof===p$1}function escape(a){var b={"=":"=0",":":"=2"};return "$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var O=/\/+/g,P=[];function Q(a,b,d,c){if(P.length){var e=P.pop();e.result=a;e.keyPrefix=b;e.func=d;e.context=c;e.count=0;return e}return {result:a,keyPrefix:b,func:d,context:c,count:0}}
-  function R(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>P.length&&P.push(a);}
-  function S(a,b,d,c){var e=typeof a;if("undefined"===e||"boolean"===e){ a=null; }var g=!1;if(null===a){ g=!0; }else { switch(e){case "string":case "number":g=!0;break;case "object":switch(a.$$typeof){case p$1:case q:g=!0;}} }if(g){ return d(c,a,""===b?"."+T(a,0):b),1; }g=0;b=""===b?".":b+":";if(Array.isArray(a)){ for(var h=0;h<a.length;h++){e=a[h];var f=b+T(e,h);g+=S(e,f,d,c);} }else if(null===a||"object"!==typeof a?f=null:(f=z&&a[z]||a["@@iterator"],f="function"===typeof f?f:null),"function"===typeof f){ for(a=f.call(a),h=
-  0;!(e=a.next()).done;){ e=e.value,f=b+T(e,h++),g+=S(e,f,d,c); } }else{ "object"===e&&(d=""+a,B$1("31","[object Object]"===d?"object with keys {"+Object.keys(a).join(", ")+"}":d,"")); }return g}function U(a,b,d){return null==a?0:S(a,"",b,d)}function T(a,b){return "object"===typeof a&&null!==a&&null!=a.key?escape(a.key):b.toString(36)}function V(a,b){a.func.call(a.context,b,a.count++);}
-  function aa(a,b,d){var c=a.result,e=a.keyPrefix;a=a.func.call(a.context,b,a.count++);Array.isArray(a)?W(a,c,d,function(a){return a}):null!=a&&(N(a)&&(a=M(a,e+(!a.key||b&&b.key===a.key?"":(""+a.key).replace(O,"$&/")+"/")+d)),c.push(a));}function W(a,b,d,c,e){var g="";null!=d&&(g=(""+d).replace(O,"$&/")+"/");b=Q(b,g,c,e);U(a,aa,b);R(b);}function ba(a,b){var d=I.currentDispatcher;null===d?B$1("277"):void 0;return d.readContext(a,b)}
-  var X={Children:{map:function(a,b,d){if(null==a){ return a; }var c=[];W(a,c,null,b,d);return c},forEach:function(a,b,d){if(null==a){ return a; }b=Q(null,null,b,d);U(a,V,b);R(b);},count:function(a){return U(a,function(){return null},null)},toArray:function(a){var b=[];W(a,b,null,function(a){return a});return b},only:function(a){N(a)?void 0:B$1("143");return a}},createRef:function(){return {current:null}},Component:E,PureComponent:G,createContext:function(a,b){void 0===b&&(b=null);a={$$typeof:w,_calculateChangedBits:b,
-  _currentValue:a,_currentValue2:a,Provider:null,Consumer:null,unstable_read:null};a.Provider={$$typeof:v,_context:a};a.Consumer=a;a.unstable_read=ba.bind(null,a);return a},forwardRef:function(a){return {$$typeof:y,render:a}},Fragment:r,StrictMode:t,unstable_AsyncMode:x,unstable_Profiler:u,createElement:L,cloneElement:function(a,b,d){
-  var arguments$1 = arguments;
-  null===a||void 0===a?B$1("267",a):void 0;var c=void 0,e=objectAssign({},a.props),g=a.key,h=a.ref,f=a._owner;if(null!=b){void 0!==b.ref&&(h=b.ref,f=I.current);void 0!==b.key&&(g=""+b.key);
-  var k=void 0;a.type&&a.type.defaultProps&&(k=a.type.defaultProps);for(c in b){ J.call(b,c)&&!K.hasOwnProperty(c)&&(e[c]=void 0===b[c]&&void 0!==k?k[c]:b[c]); }}c=arguments.length-2;if(1===c){ e.children=d; }else if(1<c){k=Array(c);for(var l=0;l<c;l++){ k[l]=arguments$1[l+2]; }e.children=k;}return {$$typeof:p$1,type:a.type,key:g,ref:h,props:e,_owner:f}},createFactory:function(a){var b=L.bind(null,a);b.type=a;return b},isValidElement:N,version:"16.5.2",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:I,
-  assign:objectAssign}},Y={default:X},Z=Y&&X||Y;var react_production_min=Z.default||Z;
-
-  var react = createCommonjsModule(function (module) {
-
-  {
-    module.exports = react_production_min;
-  }
-  });
 
   var RoutableModals$1 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)},staticRenderFns: [],
     components: {
