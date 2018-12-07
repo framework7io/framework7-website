@@ -171,11 +171,14 @@ block content
         tr
           th(colspan="2") &lt;f7-page&gt; events
         tr
+          td page:mounted
+          td Event will be triggered when page with <code>keepAlive</code> route is mounted/attached to DOM
+        tr
           td page:init
           td Event will be triggered after Framework7 initialize required page's components and navbar
         tr
           td page:reinit
-          td This event will be triggered in case of navigating to the page that was already initialized.
+          td This event will be triggered in case of navigating to the page that was already initialized
         tr
           td page:beforein
           td Event will be triggered when everything initialized and page is ready to be transitioned into view (into active/current position)
@@ -189,8 +192,11 @@ block content
           td page:afterout
           td Event will be triggered after page transitioned out of view
         tr
+          td page:beforeunmount
+          td Event will be triggered when page with <code>keepAlive</code> route is going to be unmounted/detached from DOM
+        tr
           td page:beforeremove
-          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for <code>keepAlive</code> routes.
         tr
           td ptr:pullstart
           td Event will be triggered when you start to move pull to refresh content

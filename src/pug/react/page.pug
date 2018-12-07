@@ -171,6 +171,9 @@ block content
         tr
           th(colspan="2") &lt;Page&gt; events
         tr
+          td pageMounted
+          td Event will be triggered when page with <code>keepAlive</code> route is mounted/attached to DOM
+        tr
           td pageInit
           td Event will be triggered after Framework7 initialize required page's components and navbar
         tr
@@ -189,8 +192,11 @@ block content
           td pageAfterOut
           td Event will be triggered after page transitioned out of view
         tr
+          td pageBeforeUnmount
+          td Event will be triggered when page with <code>keepAlive</code> route is going to be unmounted/detached from DOM
+        tr
           td pageBeforeRemove
-          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. This event won't be triggered for <code>keepAlive</code> routes.
         tr
           td ptrPullStart
           td Event will be triggered when you start to move pull to refresh content

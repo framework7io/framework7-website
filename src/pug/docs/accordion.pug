@@ -196,6 +196,10 @@ block content
           th Description
       tbody
         tr
+          td accordion:beforeopen
+          td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
+          td Event will be triggered right before accordion content starts its opening animation. <code>event.detail.prevent</code> contains function that will prevent accordion from opening when called
+        tr
           td accordion:open
           td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
           td Event will be triggered when accordion content starts its opening animation
@@ -203,6 +207,10 @@ block content
           td accordion:opened
           td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
           td Event will be triggered after accordion content completes its opening animation
+        tr
+          td accordion:beforeclose
+          td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
+          td Event will be triggered right before accordion content starts its closing animation. <code>event.detail.prevent</code> contains function that will prevent accordion from closing when called
         tr
           td accordion:close
           td Accordion item<span>&lt;div class="accordion-item"&gt;</span>
@@ -221,6 +229,10 @@ block content
           th Description
       tbody
         tr
+          td accordionBeforeOpen
+          td <span>(el, prevent)</span>
+          td Event will be triggered right before accordion content starts its opening animation. <code>prevent</code> contains function that will prevent accordion from opening when called
+        tr
           td accordionOpen
           td <span>(el)</span>
           td Event will be triggered when accordion content starts its opening animation
@@ -228,6 +240,10 @@ block content
           td accordionOpened
           td <span>(el)</span>
           td Event will be triggered after accordion content completes its opening animation
+        tr
+          td accordionBeforeClose
+          td <span>(el, prevent)</span>
+          td Event will be triggered right before accordion content starts its closing animation. <code>prevent</code> contains function that will prevent accordion from closing when called
         tr
           td accordionClose
           td <span>(el)</span>

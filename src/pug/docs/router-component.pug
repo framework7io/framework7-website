@@ -236,6 +236,9 @@ block content
             pageAfterOut: function (e, page) {
               console.log('page after out');
             },
+            pageBeforeUnmount: function (e, page) {
+              console.log('page before unmount');
+            },
             pageBeforeRemove: function (e, page) {
               console.log('page before remove');
             },
@@ -414,6 +417,72 @@ block content
               ...
             }
           </script>
+    h3 Usage With WebPack
+    p There is a special <a href="https://github.com/framework7io/framework7-component-loader" target="_blank">framework7-component-loader</a> for WebPack that allows to bundle Single-File Components into main bundle and not to use XHR (e.g. <code>componentUrl</code>) to load and parse component files each time.
+    p This loader parses Single-File component's file and transforms it to plain JS object during bundling process. So, potentially, it can increase app performance because there won't be runtime parsing and compilation.
+    p When this loader is configured, we need to store Single-File components in <code><b>.f7.html</b></code> files and use <code>export default</code> for component export:
+    :code(lang="html")
+      <template>
+        <div class="page">
+          ...
+        </div>
+      </template>
+      <script>
+        export default {
+          data() {
+            return {
+              foo: 'bar',
+            }
+          },
+          methods: {
+            doThis() {
+              // ...
+            }
+          }
+        }
+      </script>
+    p It also possible to import required dependencies and styles:
+    :code(lang="html")
+      <template>
+        <div class="page">
+          ...
+        </div>
+      </template>
+      <script>
+        import './path/to/some-styles.css';
+        import utils from './path/to/utils.js';
+
+        export default {
+          data() {
+            return {
+              foo: 'bar',
+              now: utils.now(),
+            }
+          },
+          methods: {
+            doThis() {
+              // ...
+            }
+          }
+        }
+      </script>
+    p And then we can import it and add to routes:
+    :code(lang="js")
+      // routes.js
+
+      import NewsPages from './path/to/news.f7.html';
+      import ServicePages from './path/to/services.f7.html';
+
+      export default [
+        {
+          path: '/news/',
+          component: NewsPages,
+        },
+        {
+          path: '/services/',
+          component: ServicesPages,
+        }
+      ]
     h2 Virtual DOM
     .important-note
       p

@@ -235,6 +235,12 @@ block content
             br
             | array
           td Function (or array of functions) that will be executed before route unload/leave. To proceed navigation <code>resolve</code> must be called. In case of <code>array</code> then every function in array must be resolved to proceed.
+        tr
+          th(colspan="4") keepAlive
+        tr
+          td keepAlive
+          td boolean
+          td Enables so called <code>keepAlive</code> route. When enabled then once loaded page and its component (Vue, React or Router component) will be never destroyed. Instead, it will be detached from DOM and reused again when required.
     p Here is an example for most of the possible options:
     :code(lang="js")
           routes: [
@@ -792,7 +798,7 @@ block content
 
 
     h2 Redirect & Alias
-    h3 Alias
+    h4 Alias
     p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
     :code(lang="js")
           routes = [
@@ -811,7 +817,7 @@ block content
     ul
       li if we request page by <code>/foo/</code> or <code>/bar/</code> URL then first route will match and we get the page loaded from <code>somepage.html</code>
       li if we request page by <code>/foo2/</code> , <code>/bar2/</code>, <code>/baz/</code>, <code>/baz2/</code> URL then second route will match and we the page loaded from <code>anotherpage.html</code>
-    h3 Redirect
+    h4 Redirect
     p We can pass route redirect using <code>redirect</code> property:
     ul
       li if we pass <code>redirect</code> as a <code>string</code>, we must pass here direct redirect url
@@ -848,6 +854,52 @@ block content
     .important-note
       p Note in redirects we pass URL, not the route path like in alias
 
+    h2 Keep Alive
+    .important-note
+      p
+       b keepAlive routes available from Framework7 version 3.6.0.
+    p When <code>keepAlive</code> enabled, then once router loads such page, the page and, if applicable, its component (Vue, React or Router component) will be never destroyed. Instead, it will be detached from DOM and reused again when required.
+    p It can be useful to enable for "heavy" pages which are not too often updated. For example, page with map, or with heavy canvas or other computation. With usual logic, all those heavy computations will happen each time this page is visited. But with keepAlive it will be done once, and with all next visits, router will reuse already rendered page DOM element.
+    p It also can be useful if you really need to preserve page state. With enabled keepAlive, the next time page will be loaded, all DOM modifications and form elements state will be preserved.
+    p But there are things to pay attention:
+    ul
+      li It is not supported for <code>async</code> routes
+      li It is supported only for pages (not for panels and modals)
+      li If you have dynamic route path (like <code>/some-page/:foo/:bar</code>) or you rely on page route query (<code>?foo=bar</code>), then query and route params won't be changed after its initial load.
+      li <code>page:beforeremove</code>,<code>pageBeforeRemove</code> page events will never be fired for such page
+      li If you use it as Vue component, then <code>beforeDestroy</code>,<code>destroyed</code> hooks will never be fired for such component. <code>created</code>, <code>mounted</code> hooks will fire only once.
+      li If you use it as React component, then <code>componentWillUnmount</code> method will never be fired for such component. <code>componentWillMount</code>, <code>componentDidMount</code> methods will fire only once.
+      li If you use it as F7's Router component, then <code>beforeDestroy</code>, <code>destroyed</code> hooks will never be fired for such component. <code>created</code>, <code>mounted</code> hooks will fire only once.
+    p To avoid pitfalls with component's and page lifecycle, it is recommend to rely on following page events:
+    ul
+      li
+        p <code>page:mounted</code> - will be always called for keepAlive route page when its DOM element attached or reattached again.
+      li
+        p <code>page:beforeunmount</code> - will be always called for keepAlive route page when its DOM element is going to be detached from DOM.
+    p To make keepAlive route we just need to pass <code>keepAlive: true</code> to its parameters:
+    :code(lang="js")
+      import SomPageComponent from './some-page.js';
+
+      var routes = [
+        /* Usual route */
+        {
+          path: '/',
+          url: './pages/home.html',
+        },
+        /* Alive route. Will be loaded from file first time, and then will reuse rendered DOM element */
+        {
+          path: '/map/',
+          url: './pages/map.html',
+          keepAlive: true,
+        },
+
+        /* Alive route. Will be created as component, and then will reuse rendered DOM element */
+        {
+          path: '/some-page/',
+          component: SomPageComponent,
+          keepAlive: true,
+        },
+      ];
 
 
 

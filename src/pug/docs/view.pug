@@ -605,6 +605,9 @@ block content
           td router.clearPreviousHistory()
           td Clear router previous pages history and remove all previous pages from DOM
         tr
+          td router.clearPreviousPages()
+          td Works mostly like <code>clearPreviousHistory</code> but only removes previous pages from DOM
+        tr
           td router.updateCurrentUrl(<span>url</span>)
           td Updates current route url, and updates `router.currentRoute` properties (query, params, hash, etc.) based on passed url. This method doesn't load or reload any content. It just changes current route url.
         tr
@@ -754,7 +757,7 @@ block content
         tr
           td pageMounted
           td <span>(pageData)</span>
-          td Event will be triggered when new page just inserted to DOM. As an argument event receives <a href="page.html#page-data">Page Data</a>
+          td Event will be triggered when new page just inserted to DOM. Or when page with <code>keepAlive</code> route is mounted/attached to DOM. As an argument event receives <a href="page.html#page-data">Page Data</a>
         tr
           td pageInit
           td <span>(pageData)</span>
@@ -780,9 +783,13 @@ block content
           td <span>(pageData)</span>
           td Event will be triggered after page transitioned out of view. As an argument event receives <a href="page.html#page-data">Page Data</a>
         tr
+          td pageBeforeUnmount
+          td <span>(pageData)</span>
+          td Event will be triggered when page with <code>keepAlive</code> route is going to be unmounted/detached from DOM. As an argument event receives <a href="page.html#page-data">Page Data</a>
+        tr
           td pageBeforeRemove
           td <span>(pageData)</span>
-          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. As an argument event receives <a href="page.html#page-data">Page Data</a>
+          td Event will be triggered right before Page will be removed from DOM. This event could be very useful if you need to detach some events / destroy some plugins to free memory. As an argument event receives <a href="page.html#page-data">Page Data</a>. This event won't be triggered for <code>keepAlive</code> routes.
         tr
           th(colspan="3") Routable Tabs Events
         tr
