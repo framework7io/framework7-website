@@ -1,5 +1,5 @@
 /**
- * Framework7 React 3.6.0
+ * Framework7 React 3.6.2
  * Build full featured iOS & Android apps using Framework7 & React
  * http://framework7.io/react/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: December 7, 2018
+ * Released on: December 11, 2018
  */
 
 (function (global, factory) {
@@ -6749,10 +6749,10 @@
       el.removeEventListener('click', this.onClick);
       if (nameEl) { nameEl.removeEventListener('click', this.onNameClick); }
       if (textEl) { textEl.removeEventListener('click', this.onTextClick); }
-      if (avatarEl) { nameEl.removeEventListener('click', this.onAvatarClick); }
-      if (headerEl) { nameEl.removeEventListener('click', this.onHeaderClick); }
-      if (footerEl) { nameEl.removeEventListener('click', this.onFooterClick); }
-      if (bubbleEl) { nameEl.removeEventListener('click', this.onBubbleClick); }
+      if (avatarEl) { avatarEl.removeEventListener('click', this.onAvatarClick); }
+      if (headerEl) { headerEl.removeEventListener('click', this.onHeaderClick); }
+      if (footerEl) { footerEl.removeEventListener('click', this.onFooterClick); }
+      if (bubbleEl) { bubbleEl.removeEventListener('click', this.onBubbleClick); }
     };
 
     F7Message.prototype.componentDidMount = function componentDidMount () {
@@ -6767,10 +6767,10 @@
       el.addEventListener('click', this.onClick);
       if (nameEl) { nameEl.addEventListener('click', this.onNameClick); }
       if (textEl) { textEl.addEventListener('click', this.onTextClick); }
-      if (avatarEl) { nameEl.addEventListener('click', this.onAvatarClick); }
-      if (headerEl) { nameEl.addEventListener('click', this.onHeaderClick); }
-      if (footerEl) { nameEl.addEventListener('click', this.onFooterClick); }
-      if (bubbleEl) { nameEl.addEventListener('click', this.onBubbleClick); }
+      if (avatarEl) { avatarEl.addEventListener('click', this.onAvatarClick); }
+      if (headerEl) { headerEl.addEventListener('click', this.onHeaderClick); }
+      if (footerEl) { footerEl.addEventListener('click', this.onFooterClick); }
+      if (bubbleEl) { bubbleEl.addEventListener('click', this.onBubbleClick); }
     };
 
     prototypeAccessors.slots.get = function () {
@@ -11419,10 +11419,12 @@
       var className = props.className;
       var routable = props.routable;
       var classes = Utils.classNames(className, Mixins.colorClasses(props));
-      var tabsClasses = Utils.classNames({
-        'tabs': true,
+      var wrapClasses = Utils.classNames({
         'tabs-animated-wrap': animated,
-        'tabs-swipeable-wrap': swipeable,
+        'tabs-swipeable-wrap': swipeable
+      });
+      var tabsClasses = Utils.classNames({
+        tabs: true,
         'tabs-routable': routable
       });
 
@@ -11430,7 +11432,7 @@
         return React.createElement('div', {
           id: id,
           style: style,
-          className: classes
+          className: Utils.classNames(wrapClasses, classes)
         }, React.createElement('div', {
           className: tabsClasses
         }, this.slots['default']));
@@ -11767,7 +11769,7 @@
     url: String,
     main: Boolean,
     stackPages: Boolean,
-    xhrCache: String,
+    xhrCache: Boolean,
     xhrCacheIgnore: Array,
     xhrCacheIgnoreGetParameters: Boolean,
     xhrCacheDuration: Number,
@@ -12074,7 +12076,7 @@
   };
 
   /**
-   * Framework7 React 3.6.0
+   * Framework7 React 3.6.2
    * Build full featured iOS & Android apps using Framework7 & React
    * http://framework7.io/react/
    *
@@ -12082,7 +12084,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: December 7, 2018
+   * Released on: December 11, 2018
    */
 
   var Plugin = {
