@@ -12,7 +12,7 @@
   var del = require('del');
   var yaml = require('js-yaml');
   var path = require('path');
-  var iconsManifest = require('./icons/manifest-icons.json');
+  var iconsManifest = require('./src/manifest-icons.json');
   var useCDN = true;
   var cdnPath = '//cdn.framework7.io';
   var pkg = require('./package.json');
