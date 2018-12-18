@@ -352,4 +352,9 @@
     }, 0);
   }
   testAdBlock();
+
+  if($('.home-featured').length) {
+    var scrollBarWidth = window.innerWidth-$(window).width()
+    $( "<style>.home-featured::before { width: calc(100vw -  "+scrollBarWidth+"px); }</style>" ).appendTo( ".home-featured" )
+  }
   })();
