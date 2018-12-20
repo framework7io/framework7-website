@@ -1,5 +1,37 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/youbeep.png"
+  iconRounded: true
+  title: "YouBeep"
+  author:
+    url: https://www.youbeep.com/
+    name: YouBeep
+  links:
+    appstore: https://itunes.apple.com/pt/app/youbeep/id904328941
+    googleplay: https://play.google.com/store/apps/details?id=com.xhockware.youbeep.app
+  description: |
+    A mobile shopping and checkout solution that reduces checkout time, while enhancing the overall customer shopping experience. Ideal for retailers looking to improve customer satisfaction while also reducing operational costs.
+
+    • Check-in at store entrance reading a checkin QRCode
+    • Scan your products with your smartphone while you shop
+    • Keep track of how much you'll spent at the checkout
+    • Checkout reading a checkout QRCode in less than a minute, skipping checkout lines
+    • Receive special offers or promotions in store
+    • Have access to updated product information and promotions in store
+    • Create and manage your own shopping lists
+    • Add products to your shopping lists with search, voice recognition or scanning product barcodes
+    • Login with your favorite social accounts
+    • Find all stores compliant with YouBeep system
+    • Check other features available...
+
+  screenshots:
+  - "#{cdn}/i/showcase/youbeep-1.png"
+  - "#{cdn}/i/showcase/youbeep-2.png"
+  - "#{cdn}/i/showcase/youbeep-3.png"
+  - "#{cdn}/i/showcase/youbeep-4.png"
+  - "#{cdn}/i/showcase/youbeep-5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/tdk.jpg"
   iconRounded: true
   title: "TKD 2018"
