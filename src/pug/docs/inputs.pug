@@ -143,6 +143,27 @@ block content
         p <code>item-input-with-info</code> - required additional class on input item
       li
         p <code>&lt;div class="item-input-info"&gt;...&lt;/div&gt;</code> - element with additional information
+    h3 Input Dropdown
+    p It is also possible to indicate dropdown input (like select) with additional <code>input-dropdown-wrap</code> class. It will add small dropdown icon on the right (▼):
+    :code
+      <div class="list">
+        <ul>
+          ...
+          <li class="item-content item-input">
+            <div class="item-media">... icon/image here ...</div>
+            <div class="item-inner">
+              <div class="item-title item-label">Name</div>
+              <!-- additional "input-dropdown-wrap" class -->
+              <div class="item-input-wrap input-dropdown-wrap">
+                <select>
+                  ...
+                </select>
+              </div>
+            </div>
+          </li>
+          ...
+        </ul>
+      </div>
     h2 Supported Inputs
     p Here is the list of input elements that you can put inside of <code>item-input-wrap</code>:
     table
@@ -410,7 +431,7 @@ block content
                   </div>
                   <div class="item-inner">
                     <div class="item-title item-label">Gender</div>
-                    <div class="item-input-wrap">
+                    <div class="item-input-wrap input-dropdown-wrap">
                       <select placeholder="Please choose...">
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -547,7 +568,7 @@ block content
                   </div>
                   <div class="item-inner">
                     <div class="item-title item-label">Gender</div>
-                    <div class="item-input-wrap">
+                    <div class="item-input-wrap input-dropdown-wrap">
                       <select placeholder="Please choose...">
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>

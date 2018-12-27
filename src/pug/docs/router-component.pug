@@ -261,6 +261,42 @@ block content
               }
             }
           }
+    h2 Component Root Element
+    p Component template or render function must return only single HTML element. And it must be an element that is supported by router:
+    ul
+      li
+        p If you load pages as router component then router component must return Page element:
+          :code
+            <template>
+              <div class="page">
+                ...
+              </div>
+            </template>
+      li
+        p If you load modal (<a href="routes.html#routable-modals">Routable Modals</a>) as router component then router component must return that modal element:
+          :code
+            <template>
+              <div class="popup">
+                ...
+              </div>
+            </template>
+      li
+        p If you load panel (<a href="routes.html#routable-panels">Routable Panels</a>) as router component then router component must return Panel element:
+          :code
+            <template>
+              <div class="panel panel-left panel-cover">
+                ...
+              </div>
+            </template>
+      li
+        p If you load tab content (<a href="routes.html#routable-tabs">Routable Tabs</a>) as router component then router component must return Tab's child element that will be inserted inside of routable Tab:
+          :code
+            <template>
+              <div class="some-element">
+                ...
+              </div>
+            </template>
+
     h2 Single File Component
     p It is not very comfortable to specify all component routes under same routes array, especially if we have a lot of such routes. This is why we can use <code>componentUrl</code> instead and out component into single file:
     :code(lang="js")
