@@ -1,8 +1,7 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+(function (factory) {
 	typeof define === 'function' && define.amd ? define(factory) :
-	(factory());
-}(this, (function () { 'use strict';
+	factory();
+}(function () { 'use strict';
 
 	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -4318,7 +4317,7 @@
 	  return {
 	    positionSticky: positionSticky,
 	    touch: (function checkTouch() {
-	      return !!(('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
+	      return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
 	    }()),
 
 	    pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator)),
@@ -4895,6 +4894,10 @@
 	          e.preventDefault();
 	        }
 	      }
+	      if (params.activeState) { removeActive(); }
+	      if (useRipple) {
+	        rippleTouchEnd();
+	      }
 	      return true;
 	    }
 
@@ -4912,6 +4915,9 @@
 
 	    if ((touchEndTime - lastClickTime) < params.fastClicksDelayBetweenClicks) {
 	      setTimeout(removeActive, 0);
+	      if (useRipple) {
+	        rippleTouchEnd();
+	      }
 	      return true;
 	    }
 
@@ -9604,17 +9610,17 @@
 
 	function initClicks(app) {
 	  function handleClicks(e) {
-	    var clicked = $(e.target);
-	    var clickedLink = clicked.closest('a');
-	    var isLink = clickedLink.length > 0;
-	    var url = isLink && clickedLink.attr('href');
-	    var isTabLink = isLink && clickedLink.hasClass('tab-link') && (clickedLink.attr('data-tab') || (url && url.indexOf('#') === 0));
+	    var $clickedEl = $(e.target);
+	    var $clickedLinkEl = $clickedEl.closest('a');
+	    var isLink = $clickedLinkEl.length > 0;
+	    var url = isLink && $clickedLinkEl.attr('href');
+	    var isTabLink = isLink && $clickedLinkEl.hasClass('tab-link') && ($clickedLinkEl.attr('data-tab') || (url && url.indexOf('#') === 0));
 
 	    // Check if link is external
 	    if (isLink) {
 	      // eslint-disable-next-line
-	      if (clickedLink.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
-	        var target = clickedLink.attr('target');
+	      if ($clickedLinkEl.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
+	        var target = $clickedLinkEl.attr('target');
 	        if (
 	          url
 	          && win.cordova
@@ -9633,7 +9639,7 @@
 	      var moduleClicks = app.modules[moduleName].clicks;
 	      if (!moduleClicks) { return; }
 	      Object.keys(moduleClicks).forEach(function (clickSelector) {
-	        var matchingClickedElement = clicked.closest(clickSelector).eq(0);
+	        var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
 	        if (matchingClickedElement.length > 0) {
 	          moduleClicks[clickSelector].call(app, matchingClickedElement, matchingClickedElement.dataset());
 	        }
@@ -9644,16 +9650,16 @@
 	    var clickedLinkData = {};
 	    if (isLink) {
 	      e.preventDefault();
-	      clickedLinkData = clickedLink.dataset();
+	      clickedLinkData = $clickedLinkEl.dataset();
 	    }
 	    var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
-	    if (validUrl || clickedLink.hasClass('back')) {
+	    if (validUrl || $clickedLinkEl.hasClass('back')) {
 	      var view;
 	      if (clickedLinkData.view) {
 	        view = $(clickedLinkData.view)[0].f7View;
 	      } else {
-	        view = clicked.parents('.view')[0] && clicked.parents('.view')[0].f7View;
-	        if (!clickedLink.hasClass('back') && view && view.params.linksView) {
+	        view = $clickedEl.parents('.view')[0] && $clickedEl.parents('.view')[0].f7View;
+	        if (!$clickedLinkEl.hasClass('back') && view && view.params.linksView) {
 	          if (typeof view.params.linksView === 'string') { view = $(view.params.linksView)[0].f7View; }
 	          else if (view.params.linksView instanceof View) { view = view.params.linksView; }
 	        }
@@ -9669,7 +9675,10 @@
 	          // something wrong there
 	        }
 	      }
-	      if (clickedLink.hasClass('back')) { view.router.back(url, clickedLinkData); }
+	      if ($clickedLinkEl[0].f7RouteProps) {
+	        clickedLinkData.props = $clickedLinkEl[0].f7RouteProps;
+	      }
+	      if ($clickedLinkEl.hasClass('back')) { view.router.back(url, clickedLinkData); }
 	      else { view.router.navigate(url, clickedLinkData); }
 	    }
 	  }
@@ -12752,13 +12761,15 @@
 	          var title = args[1];
 	          var callbackOk = args[2];
 	          var callbackCancel = args[3];
+	          var defaultValue = args[4];
 	          if (typeof args[1] === 'function') {
-	            (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], title = assign[3]);
+	            (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], defaultValue = assign[3], title = assign[4]);
 	          }
+	          defaultValue = typeof defaultValue === 'undefined' ? '' : defaultValue;
 	          return new Dialog(app, {
 	            title: typeof title === 'undefined' ? defaultDialogTitle() : title,
 	            text: text,
-	            content: '<div class="dialog-input-field item-input"><div class="item-input-wrap"><input type="text" class="dialog-input"></div></div>',
+	            content: ("<div class=\"dialog-input-field item-input\"><div class=\"item-input-wrap\"><input type=\"text\" value=\"" + defaultValue + "\" class=\"dialog-input\"></div></div>"),
 	            buttons: [
 	              {
 	                text: app.params.dialog.buttonCancel,
@@ -13415,7 +13426,7 @@
 	  params: {
 	    popover: {
 	      closeByBackdropClick: true,
-	      closeByOutsideClick: false,
+	      closeByOutsideClick: true,
 	      backdrop: true,
 	    },
 	  },
@@ -16340,14 +16351,14 @@
 	    // Remove active class from old tabs
 	    var $oldTabEl = $tabsEl.children('.tab-active');
 	    $oldTabEl.removeClass('tab-active');
-	    if (!swiper || (swiper && !swiper.animating)) {
+	    if (!swiper || (swiper && !swiper.animating) || (swiper && tabRoute)) {
 	      $oldTabEl.trigger('tab:hide');
 	      app.emit('tabHide', $oldTabEl[0]);
 	    }
 
 	    // Trigger 'show' event on new tab
 	    $newTabEl.addClass('tab-active');
-	    if (!swiper || (swiper && !swiper.animating)) {
+	    if (!swiper || (swiper && !swiper.animating) || (swiper && tabRoute)) {
 	      $newTabEl.trigger('tab:show');
 	      app.emit('tabShow', $newTabEl[0]);
 	    }
@@ -18181,6 +18192,7 @@
 	    Framework7Class$$1.call(this, params, [app]);
 
 	    var range = this;
+
 	    var defaults = {
 	      el: null,
 	      inputEl: null,
@@ -18191,6 +18203,7 @@
 	      max: 100,
 	      value: 0,
 	      draggableBar: true,
+	      formatLabel: null,
 	    };
 
 	    // Extend defaults with modules params
@@ -18530,7 +18543,7 @@
 	        if (realLeft < 0) { leftPos = knobWidth / 2; }
 	        if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
 	        $knobEl.css(positionProperty, (leftPos + "px"));
-	        if (label) { labels[knobIndex].text(value[knobIndex]); }
+	        if (label) { labels[knobIndex].text(range.formatLabel(value[knobIndex], labels[knobIndex][0])); }
 	      });
 	    } else {
 	      var progress$1 = ((value - min) / (max - min));
@@ -18541,7 +18554,7 @@
 	      if (realLeft < 0) { leftPos = knobWidth / 2; }
 	      if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
 	      knobs[0].css(positionProperty, (leftPos + "px"));
-	      if (label) { labels[0].text(value); }
+	      if (label) { labels[0].text(range.formatLabel(value, labels[0][0])); }
 	    }
 	    if ((range.dual && value.indexOf(min) >= 0) || (!range.dual && value === min)) {
 	      range.$el.addClass('range-slider-min');
@@ -18610,6 +18623,12 @@
 
 	  Range.prototype.getValue = function getValue () {
 	    return this.value;
+	  };
+
+	  Range.prototype.formatLabel = function formatLabel (value, labelEl) {
+	    var range = this;
+	    if (range.params.formatLabel) { return range.params.formatLabel.call(range, value, labelEl); }
+	    return value;
 	  };
 
 	  Range.prototype.init = function init () {
@@ -25559,7 +25578,7 @@
 	  var slideSize;
 	  var slidesPerColumn = params.slidesPerColumn;
 	  var slidesPerRow = slidesNumberEvenToRows / slidesPerColumn;
-	  var numFullColumns = slidesPerRow - ((params.slidesPerColumn * slidesPerRow) - slidesLength);
+	  var numFullColumns = Math.floor(slidesLength / params.slidesPerColumn);
 	  for (var i = 0; i < slidesLength; i += 1) {
 	    slideSize = 0;
 	    var slide = slides.eq(i);
@@ -25618,13 +25637,29 @@
 	      } else {
 	        // eslint-disable-next-line
 	        if (swiper.isHorizontal()) {
-	          slideSize = parseFloat(slideStyles.getPropertyValue('width'))
-	            + parseFloat(slideStyles.getPropertyValue('margin-left'))
-	            + parseFloat(slideStyles.getPropertyValue('margin-right'));
+	          var width = parseFloat(slideStyles.getPropertyValue('width'));
+	          var paddingLeft = parseFloat(slideStyles.getPropertyValue('padding-left'));
+	          var paddingRight = parseFloat(slideStyles.getPropertyValue('padding-right'));
+	          var marginLeft = parseFloat(slideStyles.getPropertyValue('margin-left'));
+	          var marginRight = parseFloat(slideStyles.getPropertyValue('margin-right'));
+	          var boxSizing = slideStyles.getPropertyValue('box-sizing');
+	          if (boxSizing && boxSizing === 'border-box') {
+	            slideSize = width + marginLeft + marginRight;
+	          } else {
+	            slideSize = width + paddingLeft + paddingRight + marginLeft + marginRight;
+	          }
 	        } else {
-	          slideSize = parseFloat(slideStyles.getPropertyValue('height'))
-	            + parseFloat(slideStyles.getPropertyValue('margin-top'))
-	            + parseFloat(slideStyles.getPropertyValue('margin-bottom'));
+	          var height = parseFloat(slideStyles.getPropertyValue('height'));
+	          var paddingTop = parseFloat(slideStyles.getPropertyValue('padding-top'));
+	          var paddingBottom = parseFloat(slideStyles.getPropertyValue('padding-bottom'));
+	          var marginTop = parseFloat(slideStyles.getPropertyValue('margin-top'));
+	          var marginBottom = parseFloat(slideStyles.getPropertyValue('margin-bottom'));
+	          var boxSizing$1 = slideStyles.getPropertyValue('box-sizing');
+	          if (boxSizing$1 && boxSizing$1 === 'border-box') {
+	            slideSize = height + marginTop + marginBottom;
+	          } else {
+	            slideSize = height + paddingTop + paddingBottom + marginTop + marginBottom;
+	          }
 	        }
 	      }
 	      if (currentTransform) {
@@ -26571,7 +26606,7 @@
 	  var $wrapperEl = swiper.$wrapperEl;
 	  var params = swiper.params;
 	  var slides = swiper.slides;
-	  $wrapperEl.children(("." + (params.slideClass) + "." + (params.slideDuplicateClass))).remove();
+	  $wrapperEl.children(("." + (params.slideClass) + "." + (params.slideDuplicateClass) + ",." + (params.slideClass) + "." + (params.slideBlankClass))).remove();
 	  slides.removeAttr('data-swiper-slide-index');
 	}
 
@@ -28379,7 +28414,7 @@
 	      }
 	    }
 	    // Observe container
-	    swiper.observer.attach(swiper.$el[0], { childList: false });
+	    swiper.observer.attach(swiper.$el[0], { childList: swiper.params.observeSlideChildren });
 
 	    // Observe wrapper
 	    swiper.observer.attach(swiper.$wrapperEl[0], { attributes: false });
@@ -28398,6 +28433,7 @@
 	  params: {
 	    observer: false,
 	    observeParents: false,
+	    observeSlideChildren: false,
 	  },
 	  create: function create() {
 	    var swiper = this;
@@ -29616,7 +29652,7 @@
 	    }
 	    if (!gesture.$imageEl || gesture.$imageEl.length === 0) { return; }
 	    if (Support.gestures) {
-	      swiper.zoom.scale = e.scale * zoom.currentScale;
+	      zoom.scale = e.scale * zoom.currentScale;
 	    } else {
 	      zoom.scale = (gesture.scaleMove / gesture.scaleStart) * zoom.currentScale;
 	    }
@@ -29803,12 +29839,13 @@
 	    if (gesture.$slideEl && swiper.previousIndex !== swiper.activeIndex) {
 	      gesture.$imageEl.transform('translate3d(0,0,0) scale(1)');
 	      gesture.$imageWrapEl.transform('translate3d(0,0,0)');
-	      gesture.$slideEl = undefined;
-	      gesture.$imageEl = undefined;
-	      gesture.$imageWrapEl = undefined;
 
 	      zoom.scale = 1;
 	      zoom.currentScale = 1;
+
+	      gesture.$slideEl = undefined;
+	      gesture.$imageEl = undefined;
+	      gesture.$imageWrapEl = undefined;
 	    }
 	  },
 	  // Toggle Zoom
@@ -30031,11 +30068,27 @@
 	        prevTime: undefined,
 	      },
 	    };
+
 	    ('onGestureStart onGestureChange onGestureEnd onTouchStart onTouchMove onTouchEnd onTransitionEnd toggle enable disable in out').split(' ').forEach(function (methodName) {
 	      zoom[methodName] = Zoom[methodName].bind(swiper);
 	    });
 	    Utils.extend(swiper, {
 	      zoom: zoom,
+	    });
+
+	    var scale = 1;
+	    Object.defineProperty(swiper.zoom, 'scale', {
+	      get: function get() {
+	        return scale;
+	      },
+	      set: function set(value) {
+	        if (scale !== value) {
+	          var imageEl = swiper.zoom.gesture.$imageEl ? swiper.zoom.gesture.$imageEl[0] : undefined;
+	          var slideEl = swiper.zoom.gesture.$slideEl ? swiper.zoom.gesture.$slideEl[0] : undefined;
+	          swiper.emit('zoomChange', value, imageEl, slideEl);
+	        }
+	        scale = value;
+	      },
 	    });
 	  },
 	  on: {
@@ -34395,7 +34448,7 @@
 	};
 
 	/**
-	 * Framework7 3.6.0
+	 * Framework7 3.6.3
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -34403,7 +34456,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: December 7, 2018
+	 * Released on: December 27, 2018
 	 */
 
 	// Install Core Modules & Components
@@ -34616,6 +34669,7 @@
 	    reloadPrevious: Boolean,
 	    routeTabId: String,
 	    view: String,
+	    routeProps: Object,
 	  },
 	  linkRouterAttrs: function linkRouterAttrs(props) {
 	    var force = props.force;
@@ -36463,7 +36517,9 @@
 
 	  F7Button.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
-	    self.refs.el.removeEventListener('click', self.onClickBound);
+	    var el = self.refs.el;
+	    el.removeEventListener('click', self.onClickBound);
+	    delete el.f7RouteProps;
 
 	    if (self.f7Tooltip && self.f7Tooltip.destroy) {
 	      self.f7Tooltip.destroy();
@@ -36472,15 +36528,41 @@
 	    }
 	  };
 
+	  F7Button.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
+	    var this$1 = this;
+
+	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
+	      var self = this$1;
+	      if (!newText || !self.f7Tooltip) { return; }
+	      self.f7Tooltip.setText(newText);
+	    });
+
+	    var self = this;
+	    var el = self.refs.el;
+	    var ref = self.props;
+	    var routeProps = ref.routeProps;
+
+	    if (routeProps) {
+	      el.f7RouteProps = routeProps;
+	    }
+	  };
+
 	  F7Button.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
-	    self.refs.el.addEventListener('click', self.onClickBound);
+	    var el = self.refs.el;
+	    el.addEventListener('click', self.onClickBound);
 	    var ref = self.props;
 	    var tooltip = ref.tooltip;
+	    var routeProps = ref.routeProps;
+
+	    if (routeProps) {
+	      el.f7RouteProps = routeProps;
+	    }
+
 	    if (!tooltip) { return; }
 	    self.$f7ready(function (f7) {
 	      self.f7Tooltip = f7.tooltip.create({
-	        targetEl: self.refs.el,
+	        targetEl: el,
 	        text: tooltip
 	      });
 	    });
@@ -36502,16 +36584,6 @@
 	  };
 
 	  prototypeAccessors.refs.set = function (refs) {};
-
-	  F7Button.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
-	    var this$1 = this;
-
-	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
-	      var self = this$1;
-	      if (!newText || !self.f7Tooltip) { return; }
-	      self.f7Tooltip.setText(newText);
-	    });
-	  };
 
 	  Object.defineProperties( F7Button.prototype, prototypeAccessors );
 
@@ -37822,6 +37894,7 @@
 	      var label = props.label;
 	      var dual = props.dual;
 	      var draggableBar = props.draggableBar;
+	      var formatLabel = props.formatLabel;
 	      self.f7Range = f7.range.create(Utils$1.noUndefinedProps({
 	        el: self.refs.el,
 	        value: value,
@@ -37831,6 +37904,7 @@
 	        label: label,
 	        dual: dual,
 	        draggableBar: draggableBar,
+	        formatLabel: formatLabel,
 	        on: {
 	          change: function change(range, val) {
 	            self.dispatchEvent('range:change rangeChange', val);
@@ -37916,7 +37990,8 @@
 	  draggableBar: {
 	    type: Boolean,
 	    default: true
-	  }
+	  },
+	  formatLabel: Function
 	}, Mixins.colorProps));
 
 	F7Range.displayName = 'f7-range';
@@ -37929,12 +38004,9 @@
 	    this.__reactRefs = {};
 
 	    this.state = (function () {
-	      var value = props.value;
-	      var defaultValue = props.defaultValue;
 	      return {
 	        inputFocused: false,
-	        inputInvalid: false,
-	        currentInputValue: typeof value === 'undefined' ? defaultValue : value
+	        inputInvalid: false
 	      };
 	    })();
 
@@ -37955,7 +38027,23 @@
 	  F7Input.prototype = Object.create( superclass && superclass.prototype );
 	  F7Input.prototype.constructor = F7Input;
 
-	  var prototypeAccessors = { inputWithValue: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
+
+	  F7Input.prototype.domValue = function domValue () {
+	    var self = this;
+	    var ref = self.refs;
+	    var inputEl = ref.inputEl;
+	    if (!inputEl) { return undefined; }
+	    return inputEl.value;
+	  };
+
+	  F7Input.prototype.inputHasValue = function inputHasValue () {
+	    var self = this;
+	    var ref = self.props;
+	    var value = ref.value;
+	    var domValue = self.domValue();
+	    return typeof value === 'undefined' ? domValue || domValue === 0 : value || value === 0;
+	  };
 
 	  F7Input.prototype.validateInput = function validateInput (inputEl) {
 	    var self = this;
@@ -38002,10 +38090,6 @@
 	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
 	      self.validateInput(self.refs.inputEl);
 	    }
-
-	    self.setState({
-	      currentInputValue: event.target.value
-	    });
 	  };
 
 	  F7Input.prototype.onFocus = function onFocus (event) {
@@ -38079,22 +38163,32 @@
 	    var noStoreData = props.noStoreData;
 	    var noFormStoreData = props.noFormStoreData;
 	    var ignoreStoreData = props.ignoreStoreData;
+	    var domValue = self.domValue();
+	    var inputHasValue = self.inputHasValue();
 	    var inputEl;
 
-	    var createInput = function (tag, children) {
-	      var InputTag = tag;
+	    var createInput = function (InputTag, children) {
 	      var needsValue = type !== 'file';
-	      var needsType = tag === 'input';
+	      var needsType = InputTag === 'input';
 	      var inputClassName = Utils$1.classNames(!wrap && className, {
 	        resizable: type === 'textarea' && resizable,
 	        'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
 	        'input-invalid': errorMessage && errorMessageForce || self.state.inputInvalid,
-	        'input-with-value': self.inputWithValue,
+	        'input-with-value': inputHasValue,
 	        'input-focused': self.state.inputFocused
 	      });
 	      var input;
+	      var inputValue;
+
+	      if (needsValue) {
+	        if (typeof value !== 'undefined') { inputValue = value; }else { inputValue = domValue; }
+	      }
+
+	      var valueProps = {};
+	      if ('value' in props) { valueProps.value = inputValue; }
+	      if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
 	      {
-	        input = react.createElement(InputTag, {
+	        input = react.createElement(InputTag, Object.assign({
 	          ref: function (__reactNode) {
 	            this$1.__reactRefs['inputEl'] = __reactNode;
 	          },
@@ -38103,8 +38197,6 @@
 	          type: needsType ? type : undefined,
 	          placeholder: placeholder,
 	          id: inputId,
-	          value: needsValue ? value : undefined,
-	          defaultValue: defaultValue,
 	          size: size,
 	          accept: accept,
 	          autoComplete: autocomplete,
@@ -38133,7 +38225,7 @@
 	          onBlur: self.onBlur,
 	          onInput: self.onInput,
 	          onChange: self.onChange
-	        }, children);
+	        }, valueProps), children);
 	      }
 	      return input;
 	    };
@@ -38199,15 +38291,6 @@
 	    return inputEl;
 	  };
 
-	  prototypeAccessors.inputWithValue.get = function () {
-	    var self = this;
-	    var ref = self.props;
-	    var value = ref.value;
-	    var ref$1 = self.state;
-	    var currentInputValue = ref$1.currentInputValue;
-	    return typeof value === 'undefined' ? currentInputValue : value || value === 0;
-	  };
-
 	  F7Input.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
 	    var ref = self.props;
@@ -38236,12 +38319,8 @@
 	      var self = this$1;
 	      var ref = self.props;
 	      var type = ref.type;
-	      var value = ref.value;
 	      if (type === 'range' || type === 'toggle') { return; }
 	      if (!self.$f7) { return; }
-	      self.setState({
-	        currentInputValue: value
-	      });
 	      self.updateInputOnDidUpdate = true;
 	    });
 
@@ -38572,6 +38651,7 @@
 	    var self = this;
 	    var el = self.refs.el;
 	    el.removeEventListener('click', self.onClick);
+	    delete el.f7RouteProps;
 
 	    if (self.f7SmartSelect && self.f7SmartSelect.destroy) {
 	      self.f7SmartSelect.destroy();
@@ -38581,6 +38661,25 @@
 	      self.f7Tooltip.destroy();
 	      self.f7Tooltip = null;
 	      delete self.f7Tooltip;
+	    }
+	  };
+
+	  F7Link.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
+	    var this$1 = this;
+
+	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
+	      var self = this$1;
+	      if (!newText || !self.f7Tooltip) { return; }
+	      self.f7Tooltip.setText(newText);
+	    });
+
+	    var self = this;
+	    var el = self.refs.el;
+	    var ref = self.props;
+	    var routeProps = ref.routeProps;
+
+	    if (routeProps) {
+	      el.f7RouteProps = routeProps;
 	    }
 	  };
 
@@ -38594,6 +38693,7 @@
 	    var tooltip = ref.tooltip;
 	    var smartSelect = ref.smartSelect;
 	    var smartSelectParams = ref.smartSelectParams;
+	    var routeProps = ref.routeProps;
 	    var isTabbarLabel = false;
 
 	    if (tabbarLabel || (tabLink || tabLink === '') && self.$$(el).parents('.tabbar-labels').length) {
@@ -38603,6 +38703,7 @@
 	    self.setState({
 	      isTabbarLabel: isTabbarLabel
 	    });
+	    if (routeProps) { el.f7RouteProps = routeProps; }
 	    self.$f7ready(function (f7) {
 	      if (smartSelect) {
 	        var ssParams = Utils$1.extend({
@@ -38636,16 +38737,6 @@
 	  };
 
 	  prototypeAccessors.refs.set = function (refs) {};
-
-	  F7Link.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
-	    var this$1 = this;
-
-	    __reactComponentWatch(this, 'props.tooltip', prevProps, prevState, function (newText) {
-	      var self = this$1;
-	      if (!newText || !self.f7Tooltip) { return; }
-	      self.f7Tooltip.setText(newText);
-	    });
-	  };
 
 	  Object.defineProperties( F7Link.prototype, prototypeAccessors );
 
@@ -38755,11 +38846,34 @@
 	  };
 
 	  F7ListButton.prototype.componentWillUnmount = function componentWillUnmount () {
-	    this.refs.linkEl.removeEventListener('click', this.onClick);
+	    var self = this;
+	    var linkEl = self.refs.linkEl;
+	    linkEl.removeEventListener('click', this.onClick);
+	    delete linkEl.f7RouteProps;
+	  };
+
+	  F7ListButton.prototype.componentDidUpdate = function componentDidUpdate () {
+	    var self = this;
+	    var linkEl = self.refs.linkEl;
+	    var ref = self.props;
+	    var routeProps = ref.routeProps;
+
+	    if (routeProps) {
+	      linkEl.f7RouteProps = routeProps;
+	    }
 	  };
 
 	  F7ListButton.prototype.componentDidMount = function componentDidMount () {
-	    this.refs.linkEl.addEventListener('click', this.onClick);
+	    var self = this;
+	    var linkEl = self.refs.linkEl;
+	    var ref = self.props;
+	    var routeProps = ref.routeProps;
+
+	    if (routeProps) {
+	      linkEl.f7RouteProps = routeProps;
+	    }
+
+	    linkEl.addEventListener('click', self.onClick);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -39001,13 +39115,10 @@
 	    this.__reactRefs = {};
 
 	    this.state = (function () {
-	      var value = props.value;
-	      var defaultValue = props.defaultValue;
 	      return {
 	        isSortable: props.sortable,
 	        inputFocused: false,
-	        inputInvalid: false,
-	        currentInputValue: typeof value === 'undefined' ? defaultValue : value
+	        inputInvalid: false
 	      };
 	    })();
 
@@ -39028,7 +39139,23 @@
 	  F7ListInput.prototype = Object.create( superclass && superclass.prototype );
 	  F7ListInput.prototype.constructor = F7ListInput;
 
-	  var prototypeAccessors = { inputHasValue: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
+
+	  F7ListInput.prototype.domValue = function domValue () {
+	    var self = this;
+	    var ref = self.refs;
+	    var inputEl = ref.inputEl;
+	    if (!inputEl) { return undefined; }
+	    return inputEl.value;
+	  };
+
+	  F7ListInput.prototype.inputHasValue = function inputHasValue () {
+	    var self = this;
+	    var ref = self.props;
+	    var value = ref.value;
+	    var domValue = self.domValue();
+	    return typeof value === 'undefined' ? domValue || domValue === 0 : value || value === 0;
+	  };
 
 	  F7ListInput.prototype.validateInput = function validateInput (inputEl) {
 	    var self = this;
@@ -39075,10 +39202,6 @@
 	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
 	      self.validateInput(self.refs.inputEl);
 	    }
-
-	    self.setState({
-	      currentInputValue: event.target.value
-	    });
 	  };
 
 	  F7ListInput.prototype.onFocus = function onFocus (event) {
@@ -39105,15 +39228,6 @@
 
 	  F7ListInput.prototype.onChange = function onChange (event) {
 	    this.dispatchEvent('change', event);
-	  };
-
-	  prototypeAccessors.inputHasValue.get = function () {
-	    var self = this;
-	    var ref = self.props;
-	    var value = ref.value;
-	    var ref$1 = self.state;
-	    var currentInputValue = ref$1.currentInputValue;
-	    return typeof value === 'undefined' ? currentInputValue : value || value === 0;
 	  };
 
 	  F7ListInput.prototype.render = function render () {
@@ -39169,22 +39283,32 @@
 	    var label = props.label;
 	    var inlineLabel = props.inlineLabel;
 	    var floatingLabel = props.floatingLabel;
+	    var domValue = self.domValue();
+	    var inputHasValue = self.inputHasValue();
 	    var isSortable = sortable || self.state.isSortable;
 
-	    var createInput = function (tag, children) {
-	      var InputTag = tag;
+	    var createInput = function (InputTag, children) {
 	      var needsValue = type !== 'file';
-	      var needsType = tag === 'input';
+	      var needsType = InputTag === 'input';
 	      var inputClassName = Utils$1.classNames({
 	        resizable: type === 'textarea' && resizable,
 	        'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
 	        'input-invalid': errorMessage && errorMessageForce || inputInvalid,
-	        'input-with-value': self.inputHasValue,
+	        'input-with-value': inputHasValue,
 	        'input-focused': inputFocused
 	      });
 	      var input;
+	      var inputValue;
+
+	      if (needsValue) {
+	        if (typeof value !== 'undefined') { inputValue = value; }else { inputValue = domValue; }
+	      }
+
+	      var valueProps = {};
+	      if ('value' in props) { valueProps.value = inputValue; }
+	      if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
 	      {
-	        input = react.createElement(InputTag, {
+	        input = react.createElement(InputTag, Object.assign({
 	          ref: function (__reactNode) {
 	            this$1.__reactRefs['inputEl'] = __reactNode;
 	          },
@@ -39193,8 +39317,6 @@
 	          type: needsType ? type : undefined,
 	          placeholder: placeholder,
 	          id: inputId,
-	          value: needsValue ? value : undefined,
-	          defaultValue: defaultValue,
 	          size: size,
 	          accept: accept,
 	          autoComplete: autocomplete,
@@ -39222,7 +39344,7 @@
 	          onBlur: self.onBlur,
 	          onInput: self.onInput,
 	          onChange: self.onChange
-	        }, children);
+	        }, valueProps), children);
 	      }
 	      return input;
 	    };
@@ -39259,7 +39381,7 @@
 	        'inline-label': inlineLabel,
 	        'item-input-focused': inputFocused,
 	        'item-input-with-info': !!info || self.slots.info && self.slots.info.length,
-	        'item-input-with-value': self.inputHasValue,
+	        'item-input-with-value': inputHasValue,
 	        'item-input-with-error-message': hasErrorMessage && errorMessageForce || inputInvalid,
 	        'item-input-invalid': hasErrorMessage && errorMessageForce || inputInvalid
 	      })
@@ -39303,12 +39425,7 @@
 
 	    __reactComponentWatch(this, 'props.value', prevProps, prevState, function () {
 	      var self = this$1;
-	      var ref = self.props;
-	      var value = ref.value;
 	      if (!self.$f7) { return; }
-	      self.setState({
-	        currentInputValue: value
-	      });
 	      self.updateInputOnDidUpdate = true;
 	    });
 
@@ -40360,8 +40477,12 @@
 	    var accordionItem = ref$1.accordionItem;
 	    var needsEvents = !(link || href || accordionItem || smartSelect);
 
-	    if (!needsEvents && linkEl) {
-	      linkEl.removeEventListener('click', self.onClick);
+	    if (linkEl) {
+	      if (!needsEvents) {
+	        linkEl.removeEventListener('click', self.onClick);
+	      }
+
+	      delete linkEl.f7RouteProps;
 	    }
 
 	    if (el) {
@@ -40409,6 +40530,15 @@
 
 	    var self = this;
 	    var $listEl = self.$listEl;
+	    var ref = self.refs;
+	    var linkEl = ref.linkEl;
+	    var ref$1 = self.props;
+	    var routeProps = ref$1.routeProps;
+
+	    if (linkEl && routeProps) {
+	      linkEl.f7RouteProps = routeProps;
+	    }
+
 	    if (!$listEl || $listEl && $listEl.length === 0) { return; }
 	    var isMedia = $listEl.hasClass('media-list');
 	    var isSimple = $listEl.hasClass('simple-list');
@@ -40447,10 +40577,15 @@
 	    var swipeoutOpened = ref$1.swipeoutOpened;
 	    var accordionItem = ref$1.accordionItem;
 	    var smartSelectParams = ref$1.smartSelectParams;
+	    var routeProps = ref$1.routeProps;
 	    var needsEvents = !(link || href || accordionItem || smartSelect);
 
 	    if (!needsEvents && linkEl) {
 	      linkEl.addEventListener('click', self.onClick);
+	    }
+
+	    if (linkEl && routeProps) {
+	      linkEl.f7RouteProps = routeProps;
 	    }
 
 	    self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
@@ -41203,10 +41338,10 @@
 	    el.removeEventListener('click', this.onClick);
 	    if (nameEl) { nameEl.removeEventListener('click', this.onNameClick); }
 	    if (textEl) { textEl.removeEventListener('click', this.onTextClick); }
-	    if (avatarEl) { nameEl.removeEventListener('click', this.onAvatarClick); }
-	    if (headerEl) { nameEl.removeEventListener('click', this.onHeaderClick); }
-	    if (footerEl) { nameEl.removeEventListener('click', this.onFooterClick); }
-	    if (bubbleEl) { nameEl.removeEventListener('click', this.onBubbleClick); }
+	    if (avatarEl) { avatarEl.removeEventListener('click', this.onAvatarClick); }
+	    if (headerEl) { headerEl.removeEventListener('click', this.onHeaderClick); }
+	    if (footerEl) { footerEl.removeEventListener('click', this.onFooterClick); }
+	    if (bubbleEl) { bubbleEl.removeEventListener('click', this.onBubbleClick); }
 	  };
 
 	  F7Message.prototype.componentDidMount = function componentDidMount () {
@@ -41221,10 +41356,10 @@
 	    el.addEventListener('click', this.onClick);
 	    if (nameEl) { nameEl.addEventListener('click', this.onNameClick); }
 	    if (textEl) { textEl.addEventListener('click', this.onTextClick); }
-	    if (avatarEl) { nameEl.addEventListener('click', this.onAvatarClick); }
-	    if (headerEl) { nameEl.addEventListener('click', this.onHeaderClick); }
-	    if (footerEl) { nameEl.addEventListener('click', this.onFooterClick); }
-	    if (bubbleEl) { nameEl.addEventListener('click', this.onBubbleClick); }
+	    if (avatarEl) { avatarEl.addEventListener('click', this.onAvatarClick); }
+	    if (headerEl) { headerEl.addEventListener('click', this.onHeaderClick); }
+	    if (footerEl) { footerEl.addEventListener('click', this.onFooterClick); }
+	    if (bubbleEl) { bubbleEl.addEventListener('click', this.onBubbleClick); }
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -45873,10 +46008,12 @@
 	    var className = props.className;
 	    var routable = props.routable;
 	    var classes = Utils$1.classNames(className, Mixins.colorClasses(props));
-	    var tabsClasses = Utils$1.classNames({
-	      'tabs': true,
+	    var wrapClasses = Utils$1.classNames({
 	      'tabs-animated-wrap': animated,
-	      'tabs-swipeable-wrap': swipeable,
+	      'tabs-swipeable-wrap': swipeable
+	    });
+	    var tabsClasses = Utils$1.classNames({
+	      tabs: true,
 	      'tabs-routable': routable
 	    });
 
@@ -45884,7 +46021,7 @@
 	      return react.createElement('div', {
 	        id: id,
 	        style: style,
-	        className: classes
+	        className: Utils$1.classNames(wrapClasses, classes)
 	      }, react.createElement('div', {
 	        className: tabsClasses
 	      }, this.slots['default']));
@@ -46221,7 +46358,7 @@
 	  url: String,
 	  main: Boolean,
 	  stackPages: Boolean,
-	  xhrCache: String,
+	  xhrCache: Boolean,
 	  xhrCacheIgnore: Array,
 	  xhrCacheIgnoreGetParameters: Boolean,
 	  xhrCacheDuration: Number,
@@ -46610,7 +46747,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.6.0
+	 * Framework7 React 3.6.3
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -46618,7 +46755,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: December 7, 2018
+	 * Released on: December 27, 2018
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -47941,7 +48078,7 @@
 	          )
 	        ),
 
-	        react.createElement( BlockTitle, null, "Open in Mondal" ),
+	        react.createElement( BlockTitle, null, "Open in Modal" ),
 	        react.createElement( List, { noHairlinesMd: true },
 	          react.createElement( ListItem, null,
 	            react.createElement( Input$2, { type: "text", placeholder: "Select date", readonly: true, inputId: "demo-calendar-modal" })
@@ -56157,4 +56294,4 @@
 	  document.getElementById('app')
 	);
 
-})));
+}));

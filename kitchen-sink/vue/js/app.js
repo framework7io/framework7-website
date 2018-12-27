@@ -1,8 +1,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.app = factory());
-}(this, (function () { 'use strict';
+  global.app = factory();
+}(typeof self !== 'undefined' ? self : this, function () { 'use strict';
 
   /*!
    * Vue.js v2.5.17
@@ -11051,7 +11051,7 @@
     return {
       positionSticky: positionSticky,
       touch: (function checkTouch() {
-        return !!(('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
+        return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
 
       pointerEvents: !!(win.navigator.pointerEnabled || win.PointerEvent || ('maxTouchPoints' in win.navigator)),
@@ -11628,6 +11628,10 @@
             e.preventDefault();
           }
         }
+        if (params.activeState) { removeActive(); }
+        if (useRipple) {
+          rippleTouchEnd();
+        }
         return true;
       }
 
@@ -11645,6 +11649,9 @@
 
       if ((touchEndTime - lastClickTime) < params.fastClicksDelayBetweenClicks) {
         setTimeout(removeActive, 0);
+        if (useRipple) {
+          rippleTouchEnd();
+        }
         return true;
       }
 
@@ -16337,17 +16344,17 @@
 
   function initClicks(app) {
     function handleClicks(e) {
-      var clicked = $(e.target);
-      var clickedLink = clicked.closest('a');
-      var isLink = clickedLink.length > 0;
-      var url = isLink && clickedLink.attr('href');
-      var isTabLink = isLink && clickedLink.hasClass('tab-link') && (clickedLink.attr('data-tab') || (url && url.indexOf('#') === 0));
+      var $clickedEl = $(e.target);
+      var $clickedLinkEl = $clickedEl.closest('a');
+      var isLink = $clickedLinkEl.length > 0;
+      var url = isLink && $clickedLinkEl.attr('href');
+      var isTabLink = isLink && $clickedLinkEl.hasClass('tab-link') && ($clickedLinkEl.attr('data-tab') || (url && url.indexOf('#') === 0));
 
       // Check if link is external
       if (isLink) {
         // eslint-disable-next-line
-        if (clickedLink.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
-          var target = clickedLink.attr('target');
+        if ($clickedLinkEl.is(app.params.clicks.externalLinks) || (url && url.indexOf('javascript:') >= 0)) {
+          var target = $clickedLinkEl.attr('target');
           if (
             url
             && win.cordova
@@ -16366,7 +16373,7 @@
         var moduleClicks = app.modules[moduleName].clicks;
         if (!moduleClicks) { return; }
         Object.keys(moduleClicks).forEach(function (clickSelector) {
-          var matchingClickedElement = clicked.closest(clickSelector).eq(0);
+          var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
           if (matchingClickedElement.length > 0) {
             moduleClicks[clickSelector].call(app, matchingClickedElement, matchingClickedElement.dataset());
           }
@@ -16377,16 +16384,16 @@
       var clickedLinkData = {};
       if (isLink) {
         e.preventDefault();
-        clickedLinkData = clickedLink.dataset();
+        clickedLinkData = $clickedLinkEl.dataset();
       }
       var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
-      if (validUrl || clickedLink.hasClass('back')) {
+      if (validUrl || $clickedLinkEl.hasClass('back')) {
         var view;
         if (clickedLinkData.view) {
           view = $(clickedLinkData.view)[0].f7View;
         } else {
-          view = clicked.parents('.view')[0] && clicked.parents('.view')[0].f7View;
-          if (!clickedLink.hasClass('back') && view && view.params.linksView) {
+          view = $clickedEl.parents('.view')[0] && $clickedEl.parents('.view')[0].f7View;
+          if (!$clickedLinkEl.hasClass('back') && view && view.params.linksView) {
             if (typeof view.params.linksView === 'string') { view = $(view.params.linksView)[0].f7View; }
             else if (view.params.linksView instanceof View) { view = view.params.linksView; }
           }
@@ -16402,7 +16409,10 @@
             // something wrong there
           }
         }
-        if (clickedLink.hasClass('back')) { view.router.back(url, clickedLinkData); }
+        if ($clickedLinkEl[0].f7RouteProps) {
+          clickedLinkData.props = $clickedLinkEl[0].f7RouteProps;
+        }
+        if ($clickedLinkEl.hasClass('back')) { view.router.back(url, clickedLinkData); }
         else { view.router.navigate(url, clickedLinkData); }
       }
     }
@@ -19485,13 +19495,15 @@
             var title = args[1];
             var callbackOk = args[2];
             var callbackCancel = args[3];
+            var defaultValue = args[4];
             if (typeof args[1] === 'function') {
-              (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], title = assign[3]);
+              (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], defaultValue = assign[3], title = assign[4]);
             }
+            defaultValue = typeof defaultValue === 'undefined' ? '' : defaultValue;
             return new Dialog(app, {
               title: typeof title === 'undefined' ? defaultDialogTitle() : title,
               text: text,
-              content: '<div class="dialog-input-field item-input"><div class="item-input-wrap"><input type="text" class="dialog-input"></div></div>',
+              content: ("<div class=\"dialog-input-field item-input\"><div class=\"item-input-wrap\"><input type=\"text\" value=\"" + defaultValue + "\" class=\"dialog-input\"></div></div>"),
               buttons: [
                 {
                   text: app.params.dialog.buttonCancel,
@@ -20148,7 +20160,7 @@
     params: {
       popover: {
         closeByBackdropClick: true,
-        closeByOutsideClick: false,
+        closeByOutsideClick: true,
         backdrop: true,
       },
     },
@@ -23073,14 +23085,14 @@
       // Remove active class from old tabs
       var $oldTabEl = $tabsEl.children('.tab-active');
       $oldTabEl.removeClass('tab-active');
-      if (!swiper || (swiper && !swiper.animating)) {
+      if (!swiper || (swiper && !swiper.animating) || (swiper && tabRoute)) {
         $oldTabEl.trigger('tab:hide');
         app.emit('tabHide', $oldTabEl[0]);
       }
 
       // Trigger 'show' event on new tab
       $newTabEl.addClass('tab-active');
-      if (!swiper || (swiper && !swiper.animating)) {
+      if (!swiper || (swiper && !swiper.animating) || (swiper && tabRoute)) {
         $newTabEl.trigger('tab:show');
         app.emit('tabShow', $newTabEl[0]);
       }
@@ -24914,6 +24926,7 @@
       Framework7Class$$1.call(this, params, [app]);
 
       var range = this;
+
       var defaults = {
         el: null,
         inputEl: null,
@@ -24924,6 +24937,7 @@
         max: 100,
         value: 0,
         draggableBar: true,
+        formatLabel: null,
       };
 
       // Extend defaults with modules params
@@ -25263,7 +25277,7 @@
           if (realLeft < 0) { leftPos = knobWidth / 2; }
           if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
           $knobEl.css(positionProperty, (leftPos + "px"));
-          if (label) { labels[knobIndex].text(value[knobIndex]); }
+          if (label) { labels[knobIndex].text(range.formatLabel(value[knobIndex], labels[knobIndex][0])); }
         });
       } else {
         var progress$1 = ((value - min) / (max - min));
@@ -25274,7 +25288,7 @@
         if (realLeft < 0) { leftPos = knobWidth / 2; }
         if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
         knobs[0].css(positionProperty, (leftPos + "px"));
-        if (label) { labels[0].text(value); }
+        if (label) { labels[0].text(range.formatLabel(value, labels[0][0])); }
       }
       if ((range.dual && value.indexOf(min) >= 0) || (!range.dual && value === min)) {
         range.$el.addClass('range-slider-min');
@@ -25343,6 +25357,12 @@
 
     Range.prototype.getValue = function getValue () {
       return this.value;
+    };
+
+    Range.prototype.formatLabel = function formatLabel (value, labelEl) {
+      var range = this;
+      if (range.params.formatLabel) { return range.params.formatLabel.call(range, value, labelEl); }
+      return value;
     };
 
     Range.prototype.init = function init () {
@@ -32292,7 +32312,7 @@
     var slideSize;
     var slidesPerColumn = params.slidesPerColumn;
     var slidesPerRow = slidesNumberEvenToRows / slidesPerColumn;
-    var numFullColumns = slidesPerRow - ((params.slidesPerColumn * slidesPerRow) - slidesLength);
+    var numFullColumns = Math.floor(slidesLength / params.slidesPerColumn);
     for (var i = 0; i < slidesLength; i += 1) {
       slideSize = 0;
       var slide = slides.eq(i);
@@ -32351,13 +32371,29 @@
         } else {
           // eslint-disable-next-line
           if (swiper.isHorizontal()) {
-            slideSize = parseFloat(slideStyles.getPropertyValue('width'))
-              + parseFloat(slideStyles.getPropertyValue('margin-left'))
-              + parseFloat(slideStyles.getPropertyValue('margin-right'));
+            var width = parseFloat(slideStyles.getPropertyValue('width'));
+            var paddingLeft = parseFloat(slideStyles.getPropertyValue('padding-left'));
+            var paddingRight = parseFloat(slideStyles.getPropertyValue('padding-right'));
+            var marginLeft = parseFloat(slideStyles.getPropertyValue('margin-left'));
+            var marginRight = parseFloat(slideStyles.getPropertyValue('margin-right'));
+            var boxSizing = slideStyles.getPropertyValue('box-sizing');
+            if (boxSizing && boxSizing === 'border-box') {
+              slideSize = width + marginLeft + marginRight;
+            } else {
+              slideSize = width + paddingLeft + paddingRight + marginLeft + marginRight;
+            }
           } else {
-            slideSize = parseFloat(slideStyles.getPropertyValue('height'))
-              + parseFloat(slideStyles.getPropertyValue('margin-top'))
-              + parseFloat(slideStyles.getPropertyValue('margin-bottom'));
+            var height = parseFloat(slideStyles.getPropertyValue('height'));
+            var paddingTop = parseFloat(slideStyles.getPropertyValue('padding-top'));
+            var paddingBottom = parseFloat(slideStyles.getPropertyValue('padding-bottom'));
+            var marginTop = parseFloat(slideStyles.getPropertyValue('margin-top'));
+            var marginBottom = parseFloat(slideStyles.getPropertyValue('margin-bottom'));
+            var boxSizing$1 = slideStyles.getPropertyValue('box-sizing');
+            if (boxSizing$1 && boxSizing$1 === 'border-box') {
+              slideSize = height + marginTop + marginBottom;
+            } else {
+              slideSize = height + paddingTop + paddingBottom + marginTop + marginBottom;
+            }
           }
         }
         if (currentTransform) {
@@ -33304,7 +33340,7 @@
     var $wrapperEl = swiper.$wrapperEl;
     var params = swiper.params;
     var slides = swiper.slides;
-    $wrapperEl.children(("." + (params.slideClass) + "." + (params.slideDuplicateClass))).remove();
+    $wrapperEl.children(("." + (params.slideClass) + "." + (params.slideDuplicateClass) + ",." + (params.slideClass) + "." + (params.slideBlankClass))).remove();
     slides.removeAttr('data-swiper-slide-index');
   }
 
@@ -35112,7 +35148,7 @@
         }
       }
       // Observe container
-      swiper.observer.attach(swiper.$el[0], { childList: false });
+      swiper.observer.attach(swiper.$el[0], { childList: swiper.params.observeSlideChildren });
 
       // Observe wrapper
       swiper.observer.attach(swiper.$wrapperEl[0], { attributes: false });
@@ -35131,6 +35167,7 @@
     params: {
       observer: false,
       observeParents: false,
+      observeSlideChildren: false,
     },
     create: function create() {
       var swiper = this;
@@ -36349,7 +36386,7 @@
       }
       if (!gesture.$imageEl || gesture.$imageEl.length === 0) { return; }
       if (Support.gestures) {
-        swiper.zoom.scale = e.scale * zoom.currentScale;
+        zoom.scale = e.scale * zoom.currentScale;
       } else {
         zoom.scale = (gesture.scaleMove / gesture.scaleStart) * zoom.currentScale;
       }
@@ -36536,12 +36573,13 @@
       if (gesture.$slideEl && swiper.previousIndex !== swiper.activeIndex) {
         gesture.$imageEl.transform('translate3d(0,0,0) scale(1)');
         gesture.$imageWrapEl.transform('translate3d(0,0,0)');
-        gesture.$slideEl = undefined;
-        gesture.$imageEl = undefined;
-        gesture.$imageWrapEl = undefined;
 
         zoom.scale = 1;
         zoom.currentScale = 1;
+
+        gesture.$slideEl = undefined;
+        gesture.$imageEl = undefined;
+        gesture.$imageWrapEl = undefined;
       }
     },
     // Toggle Zoom
@@ -36764,11 +36802,27 @@
           prevTime: undefined,
         },
       };
+
       ('onGestureStart onGestureChange onGestureEnd onTouchStart onTouchMove onTouchEnd onTransitionEnd toggle enable disable in out').split(' ').forEach(function (methodName) {
         zoom[methodName] = Zoom[methodName].bind(swiper);
       });
       Utils.extend(swiper, {
         zoom: zoom,
+      });
+
+      var scale = 1;
+      Object.defineProperty(swiper.zoom, 'scale', {
+        get: function get() {
+          return scale;
+        },
+        set: function set(value) {
+          if (scale !== value) {
+            var imageEl = swiper.zoom.gesture.$imageEl ? swiper.zoom.gesture.$imageEl[0] : undefined;
+            var slideEl = swiper.zoom.gesture.$slideEl ? swiper.zoom.gesture.$slideEl[0] : undefined;
+            swiper.emit('zoomChange', value, imageEl, slideEl);
+          }
+          scale = value;
+        },
       });
     },
     on: {
@@ -41128,7 +41182,7 @@
   };
 
   /**
-   * Framework7 3.6.0
+   * Framework7 3.6.3
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -41136,7 +41190,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: December 7, 2018
+   * Released on: December 27, 2018
    */
 
   // Install Core Modules & Components
@@ -41349,6 +41403,7 @@
       reloadPrevious: Boolean,
       routeTabId: String,
       view: String,
+      routeProps: Object,
     },
     linkRouterAttrs: function linkRouterAttrs(props) {
       var force = props.force;
@@ -42275,7 +42330,7 @@
     }
   };
 
-  var f7Badge = {
+  var F7Badge = {
     name: 'f7-badge',
     props: Object.assign({
       id: [String, Number]
@@ -42491,7 +42546,7 @@
     }
   };
 
-  var f7Icon = {
+  var F7Icon = {
     name: 'f7-icon',
     props: Object.assign({
       id: [String, Number],
@@ -42752,7 +42807,7 @@
       var iosThemeIcon = iconIfIos || iconIos;
 
       if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
-        iconEl = _h(f7Icon, {
+        iconEl = _h(F7Icon, {
           attrs: {
             material: iconMaterial,
             ion: iconIon,
@@ -42875,21 +42930,41 @@
 
     mounted: function mounted() {
       var self = this;
-      self.$refs.el.addEventListener('click', self.onClickBound);
+      var el = self.$refs.el;
+      el.addEventListener('click', self.onClickBound);
       var ref = self.props;
       var tooltip = ref.tooltip;
+      var routeProps = ref.routeProps;
+
+      if (routeProps) {
+        el.f7RouteProps = routeProps;
+      }
+
       if (!tooltip) { return; }
       self.$f7ready(function (f7) {
         self.f7Tooltip = f7.tooltip.create({
-          targetEl: self.$refs.el,
+          targetEl: el,
           text: tooltip
         });
       });
     },
 
+    updated: function updated() {
+      var self = this;
+      var el = self.$refs.el;
+      var ref = self.props;
+      var routeProps = ref.routeProps;
+
+      if (routeProps) {
+        el.f7RouteProps = routeProps;
+      }
+    },
+
     beforeDestroy: function beforeDestroy() {
       var self = this;
-      self.$refs.el.removeEventListener('click', self.onClickBound);
+      var el = self.$refs.el;
+      el.removeEventListener('click', self.onClickBound);
+      delete el.f7RouteProps;
 
       if (self.f7Tooltip && self.f7Tooltip.destroy) {
         self.f7Tooltip.destroy();
@@ -42900,7 +42975,7 @@
 
   };
 
-  var f7CardContent = {
+  var F7CardContent = {
     name: 'f7-card-content',
     props: Object.assign({
       id: [String, Number],
@@ -42937,7 +43012,7 @@
     }
   };
 
-  var f7CardFooter = {
+  var F7CardFooter = {
     name: 'f7-card-footer',
     props: Object.assign({
       id: [String, Number]
@@ -42967,7 +43042,7 @@
     }
   };
 
-  var f7CardHeader = {
+  var F7CardHeader = {
     name: 'f7-card-header',
     props: Object.assign({
       id: [String, Number]
@@ -43031,11 +43106,11 @@
       }, Mixins.colorClasses(props));
 
       if (title || self.$slots && self.$slots.header) {
-        headerEl = _h(f7CardHeader, [title, this.$slots['header']]);
+        headerEl = _h(F7CardHeader, [title, this.$slots['header']]);
       }
 
       if (content || self.$slots && self.$slots.content) {
-        contentEl = _h(f7CardContent, {
+        contentEl = _h(F7CardContent, {
           attrs: {
             padding: padding
           }
@@ -43043,7 +43118,7 @@
       }
 
       if (footer || self.$slots && self.$slots.footer) {
-        footerEl = _h(f7CardFooter, [footer, this.$slots['footer']]);
+        footerEl = _h(F7CardFooter, [footer, this.$slots['footer']]);
       }
 
       return _h('div', {
@@ -43808,7 +43883,7 @@
     }
   };
 
-  var f7Toggle = {
+  var F7Toggle = {
     name: 'f7-toggle',
     props: Object.assign({
       id: [String, Number],
@@ -43932,7 +44007,7 @@
     }
   };
 
-  var f7Range = {
+  var F7Range = {
     name: 'f7-range',
     props: Object.assign({
       id: [String, Number],
@@ -43971,7 +44046,8 @@
       draggableBar: {
         type: Boolean,
         default: true
-      }
+      },
+      formatLabel: Function
     }, Mixins.colorProps),
 
     render: function render() {
@@ -44025,6 +44101,7 @@
         var label = props.label;
         var dual = props.dual;
         var draggableBar = props.draggableBar;
+        var formatLabel = props.formatLabel;
         self.f7Range = f7.range.create(Utils$1.noUndefinedProps({
           el: self.$refs.el,
           value: value,
@@ -44034,6 +44111,7 @@
           label: label,
           dual: dual,
           draggableBar: draggableBar,
+          formatLabel: formatLabel,
           on: {
             change: function change(range, val) {
               self.dispatchEvent('range:change rangeChange', val);
@@ -44135,34 +44213,15 @@
       var props = __vueComponentProps(this);
 
       var state = (function () {
-        var value = props.value;
-        var defaultValue = props.defaultValue;
         return {
           inputFocused: false,
-          inputInvalid: false,
-          currentInputValue: typeof value === 'undefined' ? defaultValue : value
+          inputInvalid: false
         };
       })();
 
       return {
         state: state
       };
-    },
-
-    computed: {
-      inputWithValue: function inputWithValue() {
-        var self = this;
-        var ref = self.props;
-        var value = ref.value;
-        var ref$1 = self.state;
-        var currentInputValue = ref$1.currentInputValue;
-        return typeof value === 'undefined' ? currentInputValue : value || value === 0;
-      },
-
-      props: function props() {
-        return __vueComponentProps(this);
-      }
-
     },
 
     render: function render() {
@@ -44209,33 +44268,42 @@
       var noStoreData = props.noStoreData;
       var noFormStoreData = props.noFormStoreData;
       var ignoreStoreData = props.ignoreStoreData;
+      var domValue = self.domValue();
+      var inputHasValue = self.inputHasValue();
       var inputEl;
 
-      var createInput = function (tag, children) {
-        var InputTag = tag;
+      var createInput = function (InputTag, children) {
         var needsValue = type !== 'file';
-        var needsType = tag === 'input';
+        var needsType = InputTag === 'input';
         var inputClassName = Utils$1.classNames(!wrap && className, {
           resizable: type === 'textarea' && resizable,
           'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
           'input-invalid': errorMessage && errorMessageForce || self.state.inputInvalid,
-          'input-with-value': self.inputWithValue,
+          'input-with-value': inputHasValue,
           'input-focused': self.state.inputFocused
         });
         var input;
+        var inputValue;
+
+        if (needsValue) {
+          if (typeof value !== 'undefined') { inputValue = value; }else { inputValue = domValue; }
+        }
+
+        var valueProps = {};
+        if ('value' in props) { valueProps.value = inputValue; }
+        if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
         {
           input = _h(InputTag, {
             ref: 'inputEl',
             style: inputStyle,
             class: inputClassName,
-            domProps: {
-              value: needsValue ? value || self.state.currentInputValue : undefined,
+            domProps: Object.assign({
               checked: checked,
               disabled: disabled,
               readOnly: readonly,
               multiple: multiple,
               required: required
-            },
+            }, valueProps),
             on: {
               focus: self.onFocus,
               blur: self.onBlur,
@@ -44286,7 +44354,7 @@
       } else if (slotsDefault && slotsDefault.length > 0 || !type) {
         inputEl = slotsDefault;
       } else if (type === 'toggle') {
-        inputEl = _h(f7Toggle, {
+        inputEl = _h(F7Toggle, {
           on: {
             change: self.onChange
           },
@@ -44300,7 +44368,7 @@
           }
         });
       } else if (type === 'range') {
-        inputEl = _h(f7Range, {
+        inputEl = _h(F7Range, {
           on: {
             rangeChange: self.onChange
           },
@@ -44345,12 +44413,8 @@
         var self = this;
         var ref = self.props;
         var type = ref.type;
-        var value = ref.value;
         if (type === 'range' || type === 'toggle') { return; }
         if (!self.$f7) { return; }
-        self.setState({
-          currentInputValue: value
-        });
         self.updateInputOnDidUpdate = true;
       }
     },
@@ -44451,6 +44515,22 @@
     },
 
     methods: {
+      domValue: function domValue() {
+        var self = this;
+        var ref = self.$refs;
+        var inputEl = ref.inputEl;
+        if (!inputEl) { return undefined; }
+        return inputEl.value;
+      },
+
+      inputHasValue: function inputHasValue() {
+        var self = this;
+        var ref = self.props;
+        var value = ref.value;
+        var domValue = self.domValue();
+        return typeof value === 'undefined' ? domValue || domValue === 0 : value || value === 0;
+      },
+
       validateInput: function validateInput(inputEl) {
         var self = this;
         var f7 = self.$f7;
@@ -44496,10 +44576,6 @@
         if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
-
-        self.setState({
-          currentInputValue: event.target.value
-        });
       },
 
       onFocus: function onFocus(event) {
@@ -44537,6 +44613,12 @@
 
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
+      }
+
+    },
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
       }
 
     }
@@ -44581,7 +44663,7 @@
     }
   });
 
-  var f7Link = {
+  var F7Link = {
     name: 'f7-link',
     props: Object.assign({
       id: [String, Number],
@@ -44649,7 +44731,7 @@
       var iconBadgeEl;
 
       if (text) {
-        if (badge) { badgeEl = _h(f7Badge, {
+        if (badge) { badgeEl = _h(F7Badge, {
           attrs: {
             color: badgeColor
           }
@@ -44664,14 +44746,14 @@
 
       if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
         if (iconBadge) {
-          iconBadgeEl = _h(f7Badge, {
+          iconBadgeEl = _h(F7Badge, {
             attrs: {
               color: badgeColor
             }
           }, [iconBadge]);
         }
 
-        iconEl = _h(f7Icon, {
+        iconEl = _h(F7Icon, {
           attrs: {
             material: iconMaterial,
             f7: iconF7,
@@ -44726,6 +44808,7 @@
       var tooltip = ref.tooltip;
       var smartSelect = ref.smartSelect;
       var smartSelectParams = ref.smartSelectParams;
+      var routeProps = ref.routeProps;
       var isTabbarLabel = false;
 
       if (tabbarLabel || (tabLink || tabLink === '') && self.$$(el).parents('.tabbar-labels').length) {
@@ -44735,6 +44818,7 @@
       self.setState({
         isTabbarLabel: isTabbarLabel
       });
+      if (routeProps) { el.f7RouteProps = routeProps; }
       self.$f7ready(function (f7) {
         if (smartSelect) {
           var ssParams = Utils$1.extend({
@@ -44752,10 +44836,22 @@
       });
     },
 
+    updated: function updated() {
+      var self = this;
+      var el = self.$refs.el;
+      var ref = self.props;
+      var routeProps = ref.routeProps;
+
+      if (routeProps) {
+        el.f7RouteProps = routeProps;
+      }
+    },
+
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
       el.removeEventListener('click', self.onClick);
+      delete el.f7RouteProps;
 
       if (self.f7SmartSelect && self.f7SmartSelect.destroy) {
         self.f7SmartSelect.destroy();
@@ -44908,11 +45004,34 @@
     },
 
     mounted: function mounted() {
-      this.$refs.linkEl.addEventListener('click', this.onClick);
+      var self = this;
+      var linkEl = self.$refs.linkEl;
+      var ref = self.props;
+      var routeProps = ref.routeProps;
+
+      if (routeProps) {
+        linkEl.f7RouteProps = routeProps;
+      }
+
+      linkEl.addEventListener('click', self.onClick);
+    },
+
+    updated: function updated() {
+      var self = this;
+      var linkEl = self.$refs.linkEl;
+      var ref = self.props;
+      var routeProps = ref.routeProps;
+
+      if (routeProps) {
+        linkEl.f7RouteProps = routeProps;
+      }
     },
 
     beforeDestroy: function beforeDestroy() {
-      this.$refs.linkEl.removeEventListener('click', this.onClick);
+      var self = this;
+      var linkEl = self.$refs.linkEl;
+      linkEl.removeEventListener('click', this.onClick);
+      delete linkEl.f7RouteProps;
     },
 
     methods: {
@@ -45149,13 +45268,10 @@
       var props = __vueComponentProps(this);
 
       var state = (function () {
-        var value = props.value;
-        var defaultValue = props.defaultValue;
         return {
           isSortable: props.sortable,
           inputFocused: false,
-          inputInvalid: false,
-          currentInputValue: typeof value === 'undefined' ? defaultValue : value
+          inputInvalid: false
         };
       })();
 
@@ -45216,32 +45332,41 @@
       var label = props.label;
       var inlineLabel = props.inlineLabel;
       var floatingLabel = props.floatingLabel;
+      var domValue = self.domValue();
+      var inputHasValue = self.inputHasValue();
       var isSortable = sortable || self.state.isSortable;
 
-      var createInput = function (tag, children) {
-        var InputTag = tag;
+      var createInput = function (InputTag, children) {
         var needsValue = type !== 'file';
-        var needsType = tag === 'input';
+        var needsType = InputTag === 'input';
         var inputClassName = Utils$1.classNames({
           resizable: type === 'textarea' && resizable,
           'no-store-data': noFormStoreData || noStoreData || ignoreStoreData,
           'input-invalid': errorMessage && errorMessageForce || inputInvalid,
-          'input-with-value': self.inputHasValue,
+          'input-with-value': inputHasValue,
           'input-focused': inputFocused
         });
         var input;
+        var inputValue;
+
+        if (needsValue) {
+          if (typeof value !== 'undefined') { inputValue = value; }else { inputValue = domValue; }
+        }
+
+        var valueProps = {};
+        if ('value' in props) { valueProps.value = inputValue; }
+        if ('defaultValue' in props) { valueProps.defaultValue = defaultValue; }
         {
           input = _h(InputTag, {
             ref: 'inputEl',
             style: inputStyle,
             class: inputClassName,
-            domProps: {
-              value: needsValue ? value || self.state.currentInputValue : undefined,
+            domProps: Object.assign({
               disabled: disabled,
               readOnly: readonly,
               multiple: multiple,
               required: required
-            },
+            }, valueProps),
             on: {
               focus: self.onFocus,
               blur: self.onBlur,
@@ -45309,7 +45434,7 @@
           'inline-label': inlineLabel,
           'item-input-focused': inputFocused,
           'item-input-with-info': !!info || self.$slots.info && self.$slots.info.length,
-          'item-input-with-value': self.inputHasValue,
+          'item-input-with-value': inputHasValue,
           'item-input-with-error-message': hasErrorMessage && errorMessageForce || inputInvalid,
           'item-input-invalid': hasErrorMessage && errorMessageForce || inputInvalid
         })
@@ -45340,30 +45465,10 @@
       }), this.$slots['root'], this.$slots['root-end']]);
     },
 
-    computed: {
-      inputHasValue: function inputHasValue() {
-        var self = this;
-        var ref = self.props;
-        var value = ref.value;
-        var ref$1 = self.state;
-        var currentInputValue = ref$1.currentInputValue;
-        return typeof value === 'undefined' ? currentInputValue : value || value === 0;
-      },
-
-      props: function props() {
-        return __vueComponentProps(this);
-      }
-
-    },
     watch: {
       'props.value': function watchValue() {
         var self = this;
-        var ref = self.props;
-        var value = ref.value;
         if (!self.$f7) { return; }
-        self.setState({
-          currentInputValue: value
-        });
         self.updateInputOnDidUpdate = true;
       }
     },
@@ -45462,6 +45567,22 @@
     },
 
     methods: {
+      domValue: function domValue() {
+        var self = this;
+        var ref = self.$refs;
+        var inputEl = ref.inputEl;
+        if (!inputEl) { return undefined; }
+        return inputEl.value;
+      },
+
+      inputHasValue: function inputHasValue() {
+        var self = this;
+        var ref = self.props;
+        var value = ref.value;
+        var domValue = self.domValue();
+        return typeof value === 'undefined' ? domValue || domValue === 0 : value || value === 0;
+      },
+
       validateInput: function validateInput(inputEl) {
         var self = this;
         var f7 = self.$f7;
@@ -45507,10 +45628,6 @@
         if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
-
-        self.setState({
-          currentInputValue: event.target.value
-        });
       },
 
       onFocus: function onFocus(event) {
@@ -45548,6 +45665,12 @@
 
       setState: function setState(updater, callback) {
         __vueComponentSetState(this, updater, callback);
+      }
+
+    },
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
       }
 
     }
@@ -45831,7 +45954,7 @@
         }
 
         if (badge) {
-          badgeEl = _h(f7Badge, {
+          badgeEl = _h(F7Badge, {
             attrs: {
               color: badgeColor
             }
@@ -46404,10 +46527,15 @@
       var swipeoutOpened = ref$1.swipeoutOpened;
       var accordionItem = ref$1.accordionItem;
       var smartSelectParams = ref$1.smartSelectParams;
+      var routeProps = ref$1.routeProps;
       var needsEvents = !(link || href || accordionItem || smartSelect);
 
       if (!needsEvents && linkEl) {
         linkEl.addEventListener('click', self.onClick);
+      }
+
+      if (linkEl && routeProps) {
+        linkEl.f7RouteProps = routeProps;
       }
 
       self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
@@ -46458,6 +46586,15 @@
     updated: function updated() {
       var self = this;
       var $listEl = self.$listEl;
+      var ref = self.$refs;
+      var linkEl = ref.linkEl;
+      var ref$1 = self.props;
+      var routeProps = ref$1.routeProps;
+
+      if (linkEl && routeProps) {
+        linkEl.f7RouteProps = routeProps;
+      }
+
       if (!$listEl || $listEl && $listEl.length === 0) { return; }
       var isMedia = $listEl.hasClass('media-list');
       var isSimple = $listEl.hasClass('simple-list');
@@ -46495,8 +46632,12 @@
       var accordionItem = ref$1.accordionItem;
       var needsEvents = !(link || href || accordionItem || smartSelect);
 
-      if (!needsEvents && linkEl) {
-        linkEl.removeEventListener('click', self.onClick);
+      if (linkEl) {
+        if (!needsEvents) {
+          linkEl.removeEventListener('click', self.onClick);
+        }
+
+        delete linkEl.f7RouteProps;
       }
 
       if (el) {
@@ -47184,10 +47325,10 @@
       el.addEventListener('click', this.onClick);
       if (nameEl) { nameEl.addEventListener('click', this.onNameClick); }
       if (textEl) { textEl.addEventListener('click', this.onTextClick); }
-      if (avatarEl) { nameEl.addEventListener('click', this.onAvatarClick); }
-      if (headerEl) { nameEl.addEventListener('click', this.onHeaderClick); }
-      if (footerEl) { nameEl.addEventListener('click', this.onFooterClick); }
-      if (bubbleEl) { nameEl.addEventListener('click', this.onBubbleClick); }
+      if (avatarEl) { avatarEl.addEventListener('click', this.onAvatarClick); }
+      if (headerEl) { headerEl.addEventListener('click', this.onHeaderClick); }
+      if (footerEl) { footerEl.addEventListener('click', this.onFooterClick); }
+      if (bubbleEl) { bubbleEl.addEventListener('click', this.onBubbleClick); }
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -47202,10 +47343,10 @@
       el.removeEventListener('click', this.onClick);
       if (nameEl) { nameEl.removeEventListener('click', this.onNameClick); }
       if (textEl) { textEl.removeEventListener('click', this.onTextClick); }
-      if (avatarEl) { nameEl.removeEventListener('click', this.onAvatarClick); }
-      if (headerEl) { nameEl.removeEventListener('click', this.onHeaderClick); }
-      if (footerEl) { nameEl.removeEventListener('click', this.onFooterClick); }
-      if (bubbleEl) { nameEl.removeEventListener('click', this.onBubbleClick); }
+      if (avatarEl) { avatarEl.removeEventListener('click', this.onAvatarClick); }
+      if (headerEl) { headerEl.removeEventListener('click', this.onHeaderClick); }
+      if (footerEl) { footerEl.removeEventListener('click', this.onFooterClick); }
+      if (bubbleEl) { bubbleEl.removeEventListener('click', this.onBubbleClick); }
     },
 
     methods: {
@@ -47616,7 +47757,7 @@
           resizable: resizable,
           value: value
         }
-      }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(f7Link, {
+      }), slotsAfterArea]), (sendLink && sendLink.length > 0 || slotsSendLink) && _h(F7Link, {
         on: {
           click: self.onClick
         }
@@ -48130,7 +48271,7 @@
     }
   };
 
-  var f7NavLeft = {
+  var F7NavLeft = {
     name: 'f7-nav-left',
     props: Object.assign({
       id: [String, Number],
@@ -48153,7 +48294,7 @@
       var linkEl;
 
       if (backLink) {
-        linkEl = _h(f7Link, {
+        linkEl = _h(F7Link, {
           class: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
           on: {
             click: this.onBackClick.bind(this)
@@ -48235,7 +48376,7 @@
     }
   };
 
-  var f7NavTitle = {
+  var F7NavTitle = {
     name: 'f7-nav-title',
     props: Object.assign({
       id: [String, Number],
@@ -48331,7 +48472,7 @@
 
       if (inner) {
         if (backLink) {
-          leftEl = _h(f7NavLeft, {
+          leftEl = _h(F7NavLeft, {
             on: {
               backClick: self.onBackClick.bind(self)
             },
@@ -48344,7 +48485,7 @@
         }
 
         if (title || subtitle) {
-          titleEl = _h(f7NavTitle, {
+          titleEl = _h(F7NavTitle, {
             attrs: {
               title: title,
               subtitle: subtitle
@@ -48426,7 +48567,7 @@
     }
   };
 
-  var f7PageContent = {
+  var F7PageContent = {
     name: 'f7-page-content',
     props: Object.assign({
       id: [String, Number],
@@ -48771,7 +48912,7 @@
         }, [slotsFixed, slotsStatic, slotsDefault]);
       }
 
-      var pageContentEl = _h(f7PageContent, {
+      var pageContentEl = _h(F7PageContent, {
         attrs: {
           ptr: ptr,
           ptrDistance: ptrDistance,
@@ -51318,17 +51459,19 @@
       var className = props.className;
       var routable = props.routable;
       var classes = Utils$1.classNames(className, Mixins.colorClasses(props));
-      var tabsClasses = Utils$1.classNames({
-        'tabs': true,
+      var wrapClasses = Utils$1.classNames({
         'tabs-animated-wrap': animated,
-        'tabs-swipeable-wrap': swipeable,
+        'tabs-swipeable-wrap': swipeable
+      });
+      var tabsClasses = Utils$1.classNames({
+        tabs: true,
         'tabs-routable': routable
       });
 
       if (animated || swipeable) {
         return _h('div', {
           style: style,
-          class: classes,
+          class: Utils$1.classNames(wrapClasses, classes),
           attrs: {
             id: id
           }
@@ -51456,7 +51599,7 @@
       url: String,
       main: Boolean,
       stackPages: Boolean,
-      xhrCache: String,
+      xhrCache: Boolean,
       xhrCacheIgnore: Array,
       xhrCacheIgnoreGetParameters: Boolean,
       xhrCacheDuration: Number,
@@ -52034,7 +52177,7 @@
   };
 
   /**
-   * Framework7 Vue 3.6.0
+   * Framework7 Vue 3.6.3
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -52042,22 +52185,22 @@
    *
    * Released under the MIT License
    *
-   * Released on: December 7, 2018
+   * Released on: December 27, 2018
    */
 
   var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
-      f7NavLeft: f7NavLeft,
-      f7NavTitle: f7NavTitle,
+      f7NavLeft: F7NavLeft,
+      f7NavTitle: F7NavTitle,
       f7NavRight: f7NavRight,
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: f7Link,
+      f7Link: F7Link,
       f7Searchbar: f7Searchbar,
-      f7Icon: f7Icon,
+      f7Icon: F7Icon,
     },
   };
 
@@ -52068,7 +52211,7 @@
       f7Block: f7Block,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: f7Link,
+      f7Link: F7Link,
     },
   };
 
@@ -52080,7 +52223,7 @@
       f7Block: f7Block,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: f7Link,
+      f7Link: F7Link,
     },
   };
 
@@ -52116,7 +52259,7 @@
       f7Navbar: f7Navbar,
       f7BlockTitle: f7BlockTitle,
       f7Block: f7Block,
-      f7Link: f7Link,
+      f7Link: F7Link,
       f7Button: f7Button,
       f7Actions: f7Actions,
       f7ActionsGroup: f7ActionsGroup,
@@ -52560,11 +52703,11 @@
       f7Navbar: f7Navbar,
       f7NavRight: f7NavRight,
       f7Toolbar: f7Toolbar,
-      f7Link: f7Link,
-      f7Badge: f7Badge,
+      f7Link: F7Link,
+      f7Badge: F7Badge,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Icon: f7Icon,
+      f7Icon: F7Icon,
     },
   };
 
@@ -52583,7 +52726,7 @@
     }
   };
 
-  var Calendar$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block"},[_c('p',[_vm._v("Calendar is a touch optimized component that provides an easy way to handle dates.")]),_vm._v(" "),_c('p',[_vm._v("Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Default setup")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date","readonly":"readonly","id":"demo-calendar-default"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Custom date format")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-date-format"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Multiple Values")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select multiple dates","readonly":"readonly","id":"demo-calendar-multiple"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Range Picker")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date range","readonly":"readonly","id":"demo-calendar-range"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Open in Mondal")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-modal"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Calendar Page")]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('ul',[_c('li',[_c('a',{staticClass:"item-content item-link",attrs:{"href":"/calendar-page/"}},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Open Calendar Page")])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Inline with custom toolbar")]),_vm._v(" "),_c('div',{staticClass:"block block-strong no-padding"},[_c('div',{attrs:{"id":"demo-calendar-inline-container"}})]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Jalali Calendar")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date in Jalali","readonly":"readonly","id":"demo-jcalendar-default"}})])])])])])])])],1)},staticRenderFns: [],
+  var Calendar$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block"},[_c('p',[_vm._v("Calendar is a touch optimized component that provides an easy way to handle dates.")]),_vm._v(" "),_c('p',[_vm._v("Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Default setup")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date","readonly":"readonly","id":"demo-calendar-default"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Custom date format")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-date-format"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Multiple Values")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select multiple dates","readonly":"readonly","id":"demo-calendar-multiple"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Range Picker")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date range","readonly":"readonly","id":"demo-calendar-range"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Open in Modal")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-modal"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Calendar Page")]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('ul',[_c('li',[_c('a',{staticClass:"item-content item-link",attrs:{"href":"/calendar-page/"}},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Open Calendar Page")])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Inline with custom toolbar")]),_vm._v(" "),_c('div',{staticClass:"block block-strong no-padding"},[_c('div',{attrs:{"id":"demo-calendar-inline-container"}})]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Jalali Calendar")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date in Jalali","readonly":"readonly","id":"demo-jcalendar-default"}})])])])])])])])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -52678,7 +52821,7 @@
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
-      f7NavTitle: f7NavTitle,
+      f7NavTitle: F7NavTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
     },
@@ -52794,12 +52937,12 @@
       f7Block: f7Block,
       f7BlockTitle: f7BlockTitle,
       f7Card: f7Card,
-      f7CardHeader: f7CardHeader,
-      f7CardContent: f7CardContent,
-      f7CardFooter: f7CardFooter,
+      f7CardHeader: F7CardHeader,
+      f7CardContent: F7CardContent,
+      f7CardFooter: F7CardFooter,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: f7Link,
+      f7Link: F7Link,
     },
   };
 
@@ -52822,7 +52965,7 @@
       f7BlockTitle: f7BlockTitle,
       f7Chip: f7Chip,
       f7Block: f7Block,
-      f7Icon: f7Icon,
+      f7Icon: F7Icon,
     },
     methods: {
       deleteChip: function deleteChip(e) {
@@ -52862,8 +53005,8 @@
       f7Navbar: f7Navbar,
       f7Page: f7Page,
       f7BlockTitle: f7BlockTitle,
-      f7Link: f7Link,
-      f7Icon: f7Icon,
+      f7Link: F7Link,
+      f7Icon: F7Icon,
     },
   };
 
@@ -52984,13 +53127,13 @@
 
   var Fab$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button","back-link":"Back"}}),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"right-top"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"left"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"right-bottom"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"top"}},[_c('f7-fab-button',{attrs:{"label":"Action 1"}},[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',{attrs:{"label":"Action 2"}},[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',{attrs:{"label":"Third Action"}},[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"left-bottom"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"top"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"left-top"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"bottom"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"center-center"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"center"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("4")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"center-bottom","text":"Create"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Fab: f7Fab, f7FabButtons: f7FabButtons, f7FabButton: f7FabButton, f7Icon: f7Icon, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Fab: f7Fab, f7FabButtons: f7FabButtons, f7FabButton: f7FabButton, f7Icon: F7Icon, f7Block: f7Block,
     },
   };
 
   var FabMorph = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button Morph","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{staticClass:"fab-morph-target",attrs:{"tabbar":"","labels":"","bottom-md":""}},[_c('f7-link',{attrs:{"tab-link":"","tab-link-active":"","icon-ios":"f7:email_fill","icon-md":"material:email","text":"Inbox"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:today","icon-md":"material:today","text":"Calendar"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:cloud","icon-md":"material:file_upload","text":"Upload"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"right-bottom","morph-to":".toolbar.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"left-bottom","morph-to":".demo-fab-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"center-bottom","morph-to":".demo-fab-fullscreen-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('div',{staticClass:"list links-list demo-fab-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])]),_vm._v(" "),_c('div',{staticClass:"demo-fab-fullscreen-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('f7-block-title',[_vm._v("Choose Something")]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])])],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7Toolbar: f7Toolbar, f7Fab: f7Fab, f7Icon: f7Icon, f7Link: f7Link,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7Toolbar: f7Toolbar, f7Fab: f7Fab, f7Icon: F7Icon, f7Link: F7Link,
     },
   };
 
@@ -53102,9 +53245,9 @@
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Icon: f7Icon,
+      f7Icon: F7Icon,
       f7ListInput: f7ListInput,
-      f7Range: f7Range,
+      f7Range: F7Range,
     },
   };
 
@@ -53128,8 +53271,8 @@
       f7ListItemCell: f7ListItemCell,
       f7ListItemRow: f7ListItemRow,
       f7BlockFooter: f7BlockFooter,
-      f7Icon: f7Icon,
-      f7Toggle: f7Toggle,
+      f7Icon: F7Icon,
+      f7Toggle: F7Toggle,
     },
   };
 
@@ -53148,7 +53291,7 @@
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
-      f7Link: f7Link,
+      f7Link: F7Link,
       f7LoginScreen: f7LoginScreen,
       f7List: f7List,
       f7ListItem: f7ListItem,
@@ -53218,7 +53361,7 @@
       f7MessagebarAttachment: f7MessagebarAttachment,
       f7MessagebarSheet: f7MessagebarSheet,
       f7MessagebarSheetImage: f7MessagebarSheetImage,
-      f7Link: f7Link,
+      f7Link: F7Link,
     },
     data: function data() {
       return {
@@ -53434,7 +53577,7 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7NavRight: f7NavRight,
-      f7Link: f7Link,
+      f7Link: F7Link,
     },
   };
 
@@ -53771,7 +53914,7 @@
       f7Popup: f7Popup,
       f7Block: f7Block,
       f7NavRight: f7NavRight,
-      f7Link: f7Link,
+      f7Link: F7Link,
       f7Button: f7Button,
     },
     data: function data() {
@@ -53808,7 +53951,7 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7Block: f7Block,
-      f7Link: f7Link,
+      f7Link: F7Link,
       f7Button: f7Button,
     },
   };
@@ -53976,11 +54119,11 @@
       f7Navbar: f7Navbar,
       f7Page: f7Page,
       f7BlockTitle: f7BlockTitle,
-      f7Range: f7Range,
+      f7Range: F7Range,
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7ListItemCell: f7ListItemCell,
-      f7Icon: f7Icon,
+      f7Icon: F7Icon,
     },
     data: function data() {
       return {
@@ -54015,7 +54158,7 @@
       f7Subnavbar: f7Subnavbar,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Link: f7Link,
+      f7Link: F7Link,
       f7NavRight: f7NavRight,
     },
   };
@@ -54025,11 +54168,11 @@
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7Sheet: f7Sheet,
-      f7PageContent: f7PageContent,
+      f7PageContent: F7PageContent,
       f7Toolbar: f7Toolbar,
       f7Block: f7Block,
       f7Button: f7Button,
-      f7Link: f7Link,
+      f7Link: F7Link,
       f7Row: f7Row,
     },
     data: function data() {
@@ -54083,8 +54226,8 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7NavRight: f7NavRight,
-      f7Link: f7Link,
-      f7Icon: f7Icon,
+      f7Link: F7Link,
+      f7Icon: F7Icon,
     },
   };
 
@@ -54330,7 +54473,7 @@
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Icon: f7Icon,
+      f7Icon: F7Icon,
       f7SwipeoutActions: f7SwipeoutActions,
       f7SwipeoutButton: f7SwipeoutButton,
       f7Block: f7Block,
@@ -54397,25 +54540,25 @@
 
   var TabsStatic = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
     },
   };
 
   var TabsAnimated = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
     },
   };
 
   var TabsSwipeable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
     },
   };
 
   var TabsRoutable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
     },
   };
 
@@ -54557,13 +54700,13 @@
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7Toggle: f7Toggle,
+      f7Toggle: F7Toggle,
     },
   };
 
   var ToolbarTabbar = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),(_vm.$theme.md)?_c('f7-block-title',[_vm._v("Toolbar Position")]):_vm._e(),_vm._v(" "),(_vm.$theme.md)?_c('f7-block',[_c('p',[_vm._v("Material (MD) theme toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)]):_vm._e()],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: f7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: F7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
@@ -54574,7 +54717,7 @@
 
   var Tabbar = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
@@ -54585,7 +54728,7 @@
 
   var TabbarLabels = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:email_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:today_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
@@ -54596,7 +54739,7 @@
 
   var TabbarScrollable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])})),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}))],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: f7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
     data: function data() {
       return {
@@ -54612,7 +54755,7 @@
 
   var ToolbarHideScroll = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom-md":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: f7Link, f7Block: f7Block,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: F7Link, f7Block: f7Block,
     },
   };
 
@@ -54621,8 +54764,8 @@
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7NavRight: f7NavRight,
-      f7Link: f7Link,
-      f7Icon: f7Icon,
+      f7Link: F7Link,
+      f7Icon: F7Icon,
       f7Block: f7Block,
       f7BlockTitle: f7BlockTitle,
       f7Button: f7Button,
@@ -54760,7 +54903,7 @@
 
   var RoutablePopup = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)},staticRenderFns: [],
     components: {
-      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: f7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
+      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: F7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
     },
   };
 
@@ -55251,4 +55394,4 @@
 
   return app;
 
-})));
+}));
