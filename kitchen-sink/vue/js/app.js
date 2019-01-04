@@ -1,11 +1,11 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  global.app = factory();
-}(typeof self !== 'undefined' ? self : this, function () { 'use strict';
+  (global = global || self, global.app = factory());
+}(this, function () { 'use strict';
 
   /*!
-   * Vue.js v2.5.17
+   * Vue.js v2.5.21
    * (c) 2014-2018 Evan You
    * Released under the MIT License.
    */
@@ -13,8 +13,8 @@
 
   var emptyObject = Object.freeze({});
 
-  // these helpers produces better vm code in JS engines due to their
-  // explicitness and function inlining
+  // These helpers produce better VM code in JS engines due to their
+  // explicitness and function inlining.
   function isUndef (v) {
     return v === undefined || v === null
   }
@@ -32,7 +32,7 @@
   }
 
   /**
-   * Check if value is primitive
+   * Check if value is primitive.
    */
   function isPrimitive (value) {
     return (
@@ -54,7 +54,7 @@
   }
 
   /**
-   * Get the raw type string of a value e.g. [object Object]
+   * Get the raw type string of a value, e.g., [object Object].
    */
   var _toString = Object.prototype.toString;
 
@@ -94,7 +94,7 @@
   }
 
   /**
-   * Convert a input value to a number for persistence.
+   * Convert an input value to a number for persistence.
    * If the conversion fails, return original string.
    */
   function toNumber (val) {
@@ -126,12 +126,12 @@
   var isBuiltInTag = makeMap('slot,component', true);
 
   /**
-   * Check if a attribute is a reserved attribute.
+   * Check if an attribute is a reserved attribute.
    */
   var isReservedAttribute = makeMap('key,ref,slot,slot-scope,is');
 
   /**
-   * Remove an item from an array
+   * Remove an item from an array.
    */
   function remove (arr, item) {
     if (arr.length) {
@@ -143,7 +143,7 @@
   }
 
   /**
-   * Check whether the object has the property.
+   * Check whether an object has the property.
    */
   var hasOwnProperty = Object.prototype.hasOwnProperty;
   function hasOwn (obj, key) {
@@ -185,11 +185,11 @@
   });
 
   /**
-   * Simple bind polyfill for environments that do not support it... e.g.
-   * PhantomJS 1.x. Technically we don't need this anymore since native bind is
-   * now more performant in most browsers, but removing it would be breaking for
-   * code that was able to run in PhantomJS 1.x, so this must be kept for
-   * backwards compatibility.
+   * Simple bind polyfill for environments that do not support it,
+   * e.g., PhantomJS 1.x. Technically, we don't need this anymore
+   * since native bind is now performant enough in most browsers.
+   * But removing it would mean breaking code that was able to run in
+   * PhantomJS 1.x, so this must be kept for backward compatibility.
    */
 
   /* istanbul ignore next */
@@ -251,10 +251,12 @@
     return res
   }
 
+  /* eslint-disable no-unused-vars */
+
   /**
    * Perform no operation.
    * Stubbing args to make Flow happy without leaving useless transpiled code
-   * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/)
+   * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/).
    */
   function noop (a, b, c) {}
 
@@ -263,15 +265,12 @@
    */
   var no = function (a, b, c) { return false; };
 
+  /* eslint-enable no-unused-vars */
+
   /**
-   * Return same value
+   * Return the same value.
    */
   var identity = function (_) { return _; };
-
-  /**
-   * Generate a static keys string from compiler modules.
-   */
-
 
   /**
    * Check if two values are loosely equal - that is,
@@ -289,6 +288,8 @@
           return a.length === b.length && a.every(function (e, i) {
             return looseEqual(e, b[i])
           })
+        } else if (a instanceof Date && b instanceof Date) {
+          return a.getTime() === b.getTime()
         } else if (!isArrayA && !isArrayB) {
           var keysA = Object.keys(a);
           var keysB = Object.keys(b);
@@ -310,6 +311,11 @@
     }
   }
 
+  /**
+   * Return the first index at which a loosely equal value can be
+   * found in the array (if value is a plain object, the array must
+   * contain an object of the same shape), or -1 if it is not present.
+   */
   function looseIndexOf (arr, val) {
     for (var i = 0; i < arr.length; i++) {
       if (looseEqual(arr[i], val)) { return i }
@@ -353,6 +359,8 @@
   ];
 
   /*  */
+
+
 
   var config = ({
     /**
@@ -435,6 +443,12 @@
      * Platform-dependent.
      */
     mustUseProp: no,
+
+    /**
+     * Perform updates asynchronously. Intended to be used by Vue Test Utils
+     * This will significantly reduce performance if set to false.
+     */
+    async: true,
 
     /**
      * Exposed for legacy reasons
@@ -525,7 +539,7 @@
       if (!inBrowser && !inWeex && typeof global !== 'undefined') {
         // detect presence of vue-server-renderer and avoid
         // Webpack shimming the process
-        _isServer = global['process'].env.VUE_ENV === 'server';
+        _isServer = global['process'] && global['process'].env.VUE_ENV === 'server';
       } else {
         _isServer = false;
       }
@@ -552,7 +566,7 @@
     _Set = Set;
   } else {
     // a non-standard Set polyfill that only works with primitive keys.
-    _Set = (function () {
+    _Set = /*@__PURE__*/(function () {
       function Set () {
         this.set = Object.create(null);
       }
@@ -575,7 +589,6 @@
   var warn = noop;
 
   /*  */
-
 
   var uid = 0;
 
@@ -616,13 +629,14 @@
   Dep.target = null;
   var targetStack = [];
 
-  function pushTarget (_target) {
-    if (Dep.target) { targetStack.push(Dep.target); }
-    Dep.target = _target;
+  function pushTarget (target) {
+    targetStack.push(target);
+    Dep.target = target;
   }
 
   function popTarget () {
-    Dep.target = targetStack.pop();
+    targetStack.pop();
+    Dep.target = targetStack[targetStack.length - 1];
   }
 
   /*  */
@@ -693,7 +707,10 @@
     var cloned = new VNode(
       vnode.tag,
       vnode.data,
-      vnode.children,
+      // #7975
+      // clone children array to avoid mutating original in case of cloning
+      // a child.
+      vnode.children && vnode.children.slice(),
       vnode.text,
       vnode.elm,
       vnode.context,
@@ -707,6 +724,7 @@
     cloned.fnContext = vnode.fnContext;
     cloned.fnOptions = vnode.fnOptions;
     cloned.fnScopeId = vnode.fnScopeId;
+    cloned.asyncMeta = vnode.asyncMeta;
     cloned.isCloned = true;
     return cloned
   }
@@ -786,10 +804,11 @@
     this.vmCount = 0;
     def(value, '__ob__', this);
     if (Array.isArray(value)) {
-      var augment = hasProto
-        ? protoAugment
-        : copyAugment;
-      augment(value, arrayMethods, arrayKeys);
+      if (hasProto) {
+        protoAugment(value, arrayMethods);
+      } else {
+        copyAugment(value, arrayMethods, arrayKeys);
+      }
       this.observeArray(value);
     } else {
       this.walk(value);
@@ -797,14 +816,14 @@
   };
 
   /**
-   * Walk through each property and convert them into
+   * Walk through all properties and convert them into
    * getter/setters. This method should only be called when
    * value type is Object.
    */
   Observer.prototype.walk = function walk (obj) {
     var keys = Object.keys(obj);
     for (var i = 0; i < keys.length; i++) {
-      defineReactive(obj, keys[i]);
+      defineReactive$$1(obj, keys[i]);
     }
   };
 
@@ -820,17 +839,17 @@
   // helpers
 
   /**
-   * Augment an target Object or Array by intercepting
+   * Augment a target Object or Array by intercepting
    * the prototype chain using __proto__
    */
-  function protoAugment (target, src, keys) {
+  function protoAugment (target, src) {
     /* eslint-disable no-proto */
     target.__proto__ = src;
     /* eslint-enable no-proto */
   }
 
   /**
-   * Augment an target Object or Array by defining
+   * Augment a target Object or Array by defining
    * hidden properties.
    */
   /* istanbul ignore next */
@@ -871,7 +890,7 @@
   /**
    * Define a reactive property on an Object.
    */
-  function defineReactive (
+  function defineReactive$$1 (
     obj,
     key,
     val,
@@ -887,10 +906,10 @@
 
     // cater for pre-defined getter/setters
     var getter = property && property.get;
-    if (!getter && arguments.length === 2) {
+    var setter = property && property.set;
+    if ((!getter || setter) && arguments.length === 2) {
       val = obj[key];
     }
-    var setter = property && property.set;
 
     var childOb = !shallow && observe(val);
     Object.defineProperty(obj, key, {
@@ -915,6 +934,8 @@
         if (newVal === value || (newVal !== newVal && value !== value)) {
           return
         }
+        // #7981: for accessor properties without setter
+        if (getter && !setter) { return }
         if (setter) {
           setter.call(obj, newVal);
         } else {
@@ -949,7 +970,7 @@
       target[key] = val;
       return val
     }
-    defineReactive(ob.value, key, val);
+    defineReactive$$1(ob.value, key, val);
     ob.dep.notify();
     return val
   }
@@ -1012,7 +1033,11 @@
       fromVal = from[key];
       if (!hasOwn(to, key)) {
         set(to, key, fromVal);
-      } else if (isPlainObject(toVal) && isPlainObject(fromVal)) {
+      } else if (
+        toVal !== fromVal &&
+        isPlainObject(toVal) &&
+        isPlainObject(fromVal)
+      ) {
         mergeData(toVal, fromVal);
       }
     }
@@ -1283,15 +1308,22 @@
     normalizeProps(child, vm);
     normalizeInject(child, vm);
     normalizeDirectives(child);
-    var extendsFrom = child.extends;
-    if (extendsFrom) {
-      parent = mergeOptions(parent, extendsFrom, vm);
-    }
-    if (child.mixins) {
-      for (var i = 0, l = child.mixins.length; i < l; i++) {
-        parent = mergeOptions(parent, child.mixins[i], vm);
+
+    // Apply extends and mixins on the child options,
+    // but only if it is a raw options object that isn't
+    // the result of another mergeOptions call.
+    // Only merged options has the _base property.
+    if (!child._base) {
+      if (child.extends) {
+        parent = mergeOptions(parent, child.extends, vm);
+      }
+      if (child.mixins) {
+        for (var i = 0, l = child.mixins.length; i < l; i++) {
+          parent = mergeOptions(parent, child.mixins[i], vm);
+        }
       }
     }
+
     var options = {};
     var key;
     for (key in parent) {
@@ -1337,6 +1369,8 @@
   }
 
   /*  */
+
+
 
   function validateProp (
     key,
@@ -1467,7 +1501,6 @@
   }
 
   /*  */
-  /* globals MessageChannel */
 
   var callbacks = [];
   var pending = false;
@@ -1545,9 +1578,11 @@
   function withMacroTask (fn) {
     return fn._withTask || (fn._withTask = function () {
       useMacroTask = true;
-      var res = fn.apply(null, arguments);
-      useMacroTask = false;
-      return res
+      try {
+        return fn.apply(null, arguments)
+      } finally {
+        useMacroTask = false;
+      }
     })
   }
 
@@ -1658,19 +1693,22 @@
     oldOn,
     add,
     remove$$1,
+    createOnceHandler,
     vm
   ) {
-    var name, def, cur, old, event;
+    var name, def$$1, cur, old, event;
     for (name in on) {
-      def = cur = on[name];
+      def$$1 = cur = on[name];
       old = oldOn[name];
       event = normalizeEvent(name);
-      /* istanbul ignore if */
       if (isUndef(cur)) ; else if (isUndef(old)) {
         if (isUndef(cur.fns)) {
           cur = on[name] = createFnInvoker(cur);
         }
-        add(event.name, cur, event.once, event.capture, event.passive, event.params);
+        if (isTrue(event.once)) {
+          cur = on[name] = createOnceHandler(event.name, cur, event.capture);
+        }
+        add(event.name, cur, event.capture, event.passive, event.params);
       } else if (cur !== old) {
         old.fns = cur;
         on[name] = old;
@@ -1909,9 +1947,13 @@
       var contexts = factory.contexts = [context];
       var sync = true;
 
-      var forceRender = function () {
+      var forceRender = function (renderCompleted) {
         for (var i = 0, l = contexts.length; i < l; i++) {
           contexts[i].$forceUpdate();
+        }
+
+        if (renderCompleted) {
+          contexts.length = 0;
         }
       };
 
@@ -1921,14 +1963,14 @@
         // invoke callbacks only if this is not a synchronous resolve
         // (async resolves are shimmed as synchronous during SSR)
         if (!sync) {
-          forceRender();
+          forceRender(true);
         }
       });
 
       var reject = once(function (reason) {
         if (isDef(factory.errorComp)) {
           factory.error = true;
-          forceRender();
+          forceRender(true);
         }
       });
 
@@ -1955,7 +1997,7 @@
               setTimeout(function () {
                 if (isUndef(factory.resolved) && isUndef(factory.error)) {
                   factory.loading = true;
-                  forceRender();
+                  forceRender(false);
                 }
               }, res.delay || 200);
             }
@@ -2016,16 +2058,22 @@
 
   var target;
 
-  function add (event, fn, once) {
-    if (once) {
-      target.$once(event, fn);
-    } else {
-      target.$on(event, fn);
-    }
+  function add (event, fn) {
+    target.$on(event, fn);
   }
 
   function remove$1 (event, fn) {
     target.$off(event, fn);
+  }
+
+  function createOnceHandler (event, fn) {
+    var _target = target;
+    return function onceHandler () {
+      var res = fn.apply(null, arguments);
+      if (res !== null) {
+        _target.$off(event, onceHandler);
+      }
+    }
   }
 
   function updateComponentListeners (
@@ -2034,19 +2082,17 @@
     oldListeners
   ) {
     target = vm;
-    updateListeners(listeners, oldListeners || {}, add, remove$1, vm);
+    updateListeners(listeners, oldListeners || {}, add, remove$1, createOnceHandler, vm);
     target = undefined;
   }
 
   function eventsMixin (Vue) {
     var hookRE = /^hook:/;
     Vue.prototype.$on = function (event, fn) {
-      var this$1 = this;
-
       var vm = this;
       if (Array.isArray(event)) {
         for (var i = 0, l = event.length; i < l; i++) {
-          this$1.$on(event[i], fn);
+          vm.$on(event[i], fn);
         }
       } else {
         (vm._events[event] || (vm._events[event] = [])).push(fn);
@@ -2071,8 +2117,6 @@
     };
 
     Vue.prototype.$off = function (event, fn) {
-      var this$1 = this;
-
       var vm = this;
       // all
       if (!arguments.length) {
@@ -2082,7 +2126,7 @@
       // array of events
       if (Array.isArray(event)) {
         for (var i = 0, l = event.length; i < l; i++) {
-          this$1.$off(event[i], fn);
+          vm.$off(event[i], fn);
         }
         return vm
       }
@@ -2198,6 +2242,14 @@
 
   var activeInstance = null;
 
+  function setActiveInstance(vm) {
+    var prevActiveInstance = activeInstance;
+    activeInstance = vm;
+    return function () {
+      activeInstance = prevActiveInstance;
+    }
+  }
+
   function initLifecycle (vm) {
     var options = vm.$options;
 
@@ -2227,31 +2279,20 @@
   function lifecycleMixin (Vue) {
     Vue.prototype._update = function (vnode, hydrating) {
       var vm = this;
-      if (vm._isMounted) {
-        callHook(vm, 'beforeUpdate');
-      }
       var prevEl = vm.$el;
       var prevVnode = vm._vnode;
-      var prevActiveInstance = activeInstance;
-      activeInstance = vm;
+      var restoreActiveInstance = setActiveInstance(vm);
       vm._vnode = vnode;
       // Vue.prototype.__patch__ is injected in entry points
       // based on the rendering backend used.
       if (!prevVnode) {
         // initial render
-        vm.$el = vm.__patch__(
-          vm.$el, vnode, hydrating, false /* removeOnly */,
-          vm.$options._parentElm,
-          vm.$options._refElm
-        );
-        // no need for the ref nodes after initial patch
-        // this prevents keeping a detached DOM tree in memory (#5851)
-        vm.$options._parentElm = vm.$options._refElm = null;
+        vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */);
       } else {
         // updates
         vm.$el = vm.__patch__(prevVnode, vnode);
       }
-      activeInstance = prevActiveInstance;
+      restoreActiveInstance();
       // update __vue__ reference
       if (prevEl) {
         prevEl.__vue__ = null;
@@ -2340,7 +2381,13 @@
     // we set this to vm._watcher inside the watcher's constructor
     // since the watcher's initial patch may call $forceUpdate (e.g. inside child
     // component's mounted hook), which relies on vm._watcher being already defined
-    new Watcher(vm, updateComponent, noop, null, true /* isRenderWatcher */);
+    new Watcher(vm, updateComponent, noop, {
+      before: function before () {
+        if (vm._isMounted && !vm._isDestroyed) {
+          callHook(vm, 'beforeUpdate');
+        }
+      }
+    }, true /* isRenderWatcher */);
     hydrating = false;
 
     // manually mounted instance, call mounted on self
@@ -2508,6 +2555,9 @@
     // as we run existing watchers
     for (index = 0; index < queue.length; index++) {
       watcher = queue[index];
+      if (watcher.before) {
+        watcher.before();
+      }
       id = watcher.id;
       has[id] = null;
       watcher.run();
@@ -2535,7 +2585,7 @@
     while (i--) {
       var watcher = queue[i];
       var vm = watcher.vm;
-      if (vm._watcher === watcher && vm._isMounted) {
+      if (vm._watcher === watcher && vm._isMounted && !vm._isDestroyed) {
         callHook(vm, 'updated');
       }
     }
@@ -2589,6 +2639,8 @@
 
   /*  */
 
+
+
   var uid$1 = 0;
 
   /**
@@ -2614,6 +2666,7 @@
       this.user = !!options.user;
       this.lazy = !!options.lazy;
       this.sync = !!options.sync;
+      this.before = options.before;
     } else {
       this.deep = this.user = this.lazy = this.sync = false;
     }
@@ -2632,7 +2685,7 @@
     } else {
       this.getter = parsePath(expOrFn);
       if (!this.getter) {
-        this.getter = function () {};
+        this.getter = noop;
       }
     }
     this.value = this.lazy
@@ -2685,13 +2738,11 @@
    * Clean up for dependency collection.
    */
   Watcher.prototype.cleanupDeps = function cleanupDeps () {
-      var this$1 = this;
-
     var i = this.deps.length;
     while (i--) {
-      var dep = this$1.deps[i];
-      if (!this$1.newDepIds.has(dep.id)) {
-        dep.removeSub(this$1);
+      var dep = this.deps[i];
+      if (!this.newDepIds.has(dep.id)) {
+        dep.removeSub(this);
       }
     }
     var tmp = this.depIds;
@@ -2763,11 +2814,9 @@
    * Depend on all deps collected by this watcher.
    */
   Watcher.prototype.depend = function depend () {
-      var this$1 = this;
-
     var i = this.deps.length;
     while (i--) {
-      this$1.deps[i].depend();
+      this.deps[i].depend();
     }
   };
 
@@ -2775,8 +2824,6 @@
    * Remove self from all dependencies' subscriber list.
    */
   Watcher.prototype.teardown = function teardown () {
-      var this$1 = this;
-
     if (this.active) {
       // remove self from vm's watcher list
       // this is a somewhat expensive operation so we skip it
@@ -2786,7 +2833,7 @@
       }
       var i = this.deps.length;
       while (i--) {
-        this$1.deps[i].removeSub(this$1);
+        this.deps[i].removeSub(this);
       }
       this.active = false;
     }
@@ -2843,7 +2890,7 @@
       var value = validateProp(key, propsOptions, propsData, vm);
       /* istanbul ignore else */
       {
-        defineReactive(props, key, value);
+        defineReactive$$1(props, key, value);
       }
       // static props are already proxied on the component's prototype
       // during Vue.extend(). We only need to proxy props defined at
@@ -2933,17 +2980,15 @@
     if (typeof userDef === 'function') {
       sharedPropertyDefinition.get = shouldCache
         ? createComputedGetter(key)
-        : userDef;
+        : createGetterInvoker(userDef);
       sharedPropertyDefinition.set = noop;
     } else {
       sharedPropertyDefinition.get = userDef.get
         ? shouldCache && userDef.cache !== false
           ? createComputedGetter(key)
-          : userDef.get
+          : createGetterInvoker(userDef.get)
         : noop;
-      sharedPropertyDefinition.set = userDef.set
-        ? userDef.set
-        : noop;
+      sharedPropertyDefinition.set = userDef.set || noop;
     }
     Object.defineProperty(target, key, sharedPropertyDefinition);
   }
@@ -2963,10 +3008,16 @@
     }
   }
 
+  function createGetterInvoker(fn) {
+    return function computedGetter () {
+      return fn.call(this, this)
+    }
+  }
+
   function initMethods (vm, methods) {
     var props = vm.$options.props;
     for (var key in methods) {
-      vm[key] = methods[key] == null ? noop : bind(methods[key], vm);
+      vm[key] = typeof methods[key] !== 'function' ? noop : bind(methods[key], vm);
     }
   }
 
@@ -3026,7 +3077,11 @@
       options.user = true;
       var watcher = new Watcher(vm, expOrFn, cb, options);
       if (options.immediate) {
-        cb.call(vm, watcher.value);
+        try {
+          cb.call(vm, watcher.value);
+        } catch (error) {
+          handleError(error, vm, ("callback for immediate watcher \"" + (watcher.expression) + "\""));
+        }
       }
       return function unwatchFn () {
         watcher.teardown();
@@ -3052,7 +3107,7 @@
       Object.keys(result).forEach(function (key) {
         /* istanbul ignore else */
         {
-          defineReactive(vm, key, result[key]);
+          defineReactive$$1(vm, key, result[key]);
         }
       });
       toggleObserving(true);
@@ -3122,9 +3177,10 @@
         ret[i] = render(val[key], key, i);
       }
     }
-    if (isDef(ret)) {
-      (ret)._isVList = true;
+    if (!isDef(ret)) {
+      ret = [];
     }
+    (ret)._isVList = true;
     return ret
   }
 
@@ -3148,12 +3204,7 @@
       }
       nodes = scopedSlotFn(props) || fallback;
     } else {
-      var slotNodes = this.$slots[name];
-      // warn duplicate slot usage
-      if (slotNodes) {
-        slotNodes._rendered = true;
-      }
-      nodes = slotNodes || fallback;
+      nodes = this.$slots[name] || fallback;
     }
 
     var target = props && props.slot;
@@ -3236,12 +3287,13 @@
               ? data.domProps || (data.domProps = {})
               : data.attrs || (data.attrs = {});
           }
-          if (!(key in hash)) {
+          var camelizedKey = camelize(key);
+          if (!(key in hash) && !(camelizedKey in hash)) {
             hash[key] = value[key];
 
             if (isSync) {
               var on = data.on || (data.on = {});
-              on[("update:" + key)] = function ($event) {
+              on[("update:" + camelizedKey)] = function ($event) {
                 value[key] = $event;
               };
             }
@@ -3442,18 +3494,18 @@
     var vnode = options.render.call(null, renderContext._c, renderContext);
 
     if (vnode instanceof VNode) {
-      return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options)
+      return cloneAndMarkFunctionalResult(vnode, data, renderContext.parent, options, renderContext)
     } else if (Array.isArray(vnode)) {
       var vnodes = normalizeChildren(vnode) || [];
       var res = new Array(vnodes.length);
       for (var i = 0; i < vnodes.length; i++) {
-        res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options);
+        res[i] = cloneAndMarkFunctionalResult(vnodes[i], data, renderContext.parent, options, renderContext);
       }
       return res
     }
   }
 
-  function cloneAndMarkFunctionalResult (vnode, data, contextVm, options) {
+  function cloneAndMarkFunctionalResult (vnode, data, contextVm, options, renderContext) {
     // #7817 clone node before setting fnContext, otherwise if the node is reused
     // (e.g. it was from a cached normal slot) the fnContext causes named slots
     // that should not be matched to match.
@@ -3474,20 +3526,7 @@
 
   /*  */
 
-
-
-
-  // Register the component hook to weex native render engine.
-  // The hook will be triggered by native, not javascript.
-
-
-  // Updates the state of the component to weex native render engine.
-
   /*  */
-
-  // https://github.com/Hanks10100/weex-native-directive/tree/master/component
-
-  // listening on native callback
 
   /*  */
 
@@ -3495,12 +3534,7 @@
 
   // inline hooks to be invoked on component VNodes during patch
   var componentVNodeHooks = {
-    init: function init (
-      vnode,
-      hydrating,
-      parentElm,
-      refElm
-    ) {
+    init: function init (vnode, hydrating) {
       if (
         vnode.componentInstance &&
         !vnode.componentInstance._isDestroyed &&
@@ -3512,9 +3546,7 @@
       } else {
         var child = vnode.componentInstance = createComponentInstanceForVnode(
           vnode,
-          activeInstance,
-          parentElm,
-          refElm
+          activeInstance
         );
         child.$mount(hydrating ? vnode.elm : undefined, hydrating);
       }
@@ -3660,25 +3692,14 @@
       asyncFactory
     );
 
-    // Weex specific: invoke recycle-list optimized @render function for
-    // extracting cell-slot template.
-    // https://github.com/Hanks10100/weex-native-directive/tree/master/component
-    /* istanbul ignore if */
     return vnode
   }
 
-  function createComponentInstanceForVnode (
-    vnode, // we know it's MountedComponentVNode but flow doesn't
-    parent, // activeInstance in lifecycle state
-    parentElm,
-    refElm
-  ) {
+  function createComponentInstanceForVnode (vnode, parent) {
     var options = {
       _isComponent: true,
-      parent: parent,
       _parentVnode: vnode,
-      _parentElm: parentElm || null,
-      _refElm: refElm || null
+      parent: parent
     };
     // check inline-template render functions
     var inlineTemplate = vnode.data.inlineTemplate;
@@ -3693,20 +3714,43 @@
     var hooks = data.hook || (data.hook = {});
     for (var i = 0; i < hooksToMerge.length; i++) {
       var key = hooksToMerge[i];
-      hooks[key] = componentVNodeHooks[key];
+      var existing = hooks[key];
+      var toMerge = componentVNodeHooks[key];
+      if (existing !== toMerge && !(existing && existing._merged)) {
+        hooks[key] = existing ? mergeHook$1(toMerge, existing) : toMerge;
+      }
     }
+  }
+
+  function mergeHook$1 (f1, f2) {
+    var merged = function (a, b) {
+      // flow complains about extra args which is why we use any
+      f1(a, b);
+      f2(a, b);
+    };
+    merged._merged = true;
+    return merged
   }
 
   // transform component v-model info (value and callback) into
   // prop and event handler respectively.
   function transformModel (options, data) {
     var prop = (options.model && options.model.prop) || 'value';
-    var event = (options.model && options.model.event) || 'input';(data.props || (data.props = {}))[prop] = data.model.value;
+    var event = (options.model && options.model.event) || 'input'
+    ;(data.props || (data.props = {}))[prop] = data.model.value;
     var on = data.on || (data.on = {});
-    if (isDef(on[event])) {
-      on[event] = [data.model.callback].concat(on[event]);
+    var existing = on[event];
+    var callback = data.model.callback;
+    if (isDef(existing)) {
+      if (
+        Array.isArray(existing)
+          ? existing.indexOf(callback) === -1
+          : existing !== callback
+      ) {
+        on[event] = [callback].concat(existing);
+      }
     } else {
-      on[event] = data.model.callback;
+      on[event] = callback;
     }
   }
 
@@ -3777,7 +3821,7 @@
           config.parsePlatformTagName(tag), data, children,
           undefined, undefined, context
         );
-      } else if (isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
+      } else if ((!data || !data.pre) && isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
         // component
         vnode = createComponent(Ctor, data, context, children, tag);
       } else {
@@ -3859,8 +3903,8 @@
 
     /* istanbul ignore else */
     {
-      defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
-      defineReactive(vm, '$listeners', options._parentListeners || emptyObject, null, true);
+      defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
+      defineReactive$$1(vm, '$listeners', options._parentListeners || emptyObject, null, true);
     }
   }
 
@@ -3960,8 +4004,6 @@
     var parentVnode = options._parentVnode;
     opts.parent = options.parent;
     opts._parentVnode = parentVnode;
-    opts._parentElm = options._parentElm;
-    opts._refElm = options._refElm;
 
     var vnodeComponentOptions = parentVnode.componentOptions;
     opts.propsData = vnodeComponentOptions.propsData;
@@ -4192,6 +4234,8 @@
 
   /*  */
 
+
+
   function getComponentName (opts) {
     return opts && (opts.Ctor.options.name || opts.tag)
   }
@@ -4255,10 +4299,8 @@
     },
 
     destroyed: function destroyed () {
-      var this$1 = this;
-
-      for (var key in this$1.cache) {
-        pruneCacheEntry(this$1.cache, key, this$1.keys);
+      for (var key in this.cache) {
+        pruneCacheEntry(this.cache, key, this.keys);
       }
     },
 
@@ -4339,7 +4381,7 @@
       warn: warn,
       extend: extend,
       mergeOptions: mergeOptions,
-      defineReactive: defineReactive
+      defineReactive: defineReactive$$1
     };
 
     Vue.set = set;
@@ -4381,7 +4423,7 @@
     value: FunctionalRenderContext
   });
 
-  Vue.version = '2.5.17';
+  Vue.version = '2.5.21';
 
   /*  */
 
@@ -4536,8 +4578,6 @@
     true
   );
 
-
-
   var isReservedTag = function (tag) {
     return isHTMLTag(tag) || isSVG(tag)
   };
@@ -4656,20 +4696,19 @@
     node.setAttribute(scopeId, '');
   }
 
-
-  var nodeOps = Object.freeze({
-  	createElement: createElement$1,
-  	createElementNS: createElementNS,
-  	createTextNode: createTextNode,
-  	createComment: createComment,
-  	insertBefore: insertBefore,
-  	removeChild: removeChild,
-  	appendChild: appendChild,
-  	parentNode: parentNode,
-  	nextSibling: nextSibling,
-  	tagName: tagName,
-  	setTextContent: setTextContent,
-  	setStyleScope: setStyleScope
+  var nodeOps = /*#__PURE__*/Object.freeze({
+    createElement: createElement$1,
+    createElementNS: createElementNS,
+    createTextNode: createTextNode,
+    createComment: createComment,
+    insertBefore: insertBefore,
+    removeChild: removeChild,
+    appendChild: appendChild,
+    parentNode: parentNode,
+    nextSibling: nextSibling,
+    tagName: tagName,
+    setTextContent: setTextContent,
+    setStyleScope: setStyleScope
   });
 
   /*  */
@@ -4788,13 +4827,13 @@
     }
 
     function createRmCb (childElm, listeners) {
-      function remove () {
-        if (--remove.listeners === 0) {
+      function remove$$1 () {
+        if (--remove$$1.listeners === 0) {
           removeNode(childElm);
         }
       }
-      remove.listeners = listeners;
-      return remove
+      remove$$1.listeners = listeners;
+      return remove$$1
     }
 
     function removeNode (el) {
@@ -4860,7 +4899,7 @@
       if (isDef(i)) {
         var isReactivated = isDef(vnode.componentInstance) && i.keepAlive;
         if (isDef(i = i.hook) && isDef(i = i.init)) {
-          i(vnode, false /* hydrating */, parentElm, refElm);
+          i(vnode, false /* hydrating */);
         }
         // after calling the init hook, if the vnode is a child component
         // it should've created a child instance and mounted it. the child
@@ -4868,6 +4907,7 @@
         // in that case we can just return the element and be done.
         if (isDef(vnode.componentInstance)) {
           initComponent(vnode, insertedVnodeQueue);
+          insert(parentElm, vnode.elm, refElm);
           if (isTrue(isReactivated)) {
             reactivateComponent(vnode, insertedVnodeQueue, parentElm, refElm);
           }
@@ -4919,7 +4959,7 @@
     function insert (parent, elm, ref$$1) {
       if (isDef(parent)) {
         if (isDef(ref$$1)) {
-          if (ref$$1.parentNode === parent) {
+          if (nodeOps.parentNode(ref$$1) === parent) {
             nodeOps.insertBefore(parent, elm, ref$$1);
           }
         } else {
@@ -5067,20 +5107,20 @@
         } else if (isUndef(oldEndVnode)) {
           oldEndVnode = oldCh[--oldEndIdx];
         } else if (sameVnode(oldStartVnode, newStartVnode)) {
-          patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue);
+          patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
           oldStartVnode = oldCh[++oldStartIdx];
           newStartVnode = newCh[++newStartIdx];
         } else if (sameVnode(oldEndVnode, newEndVnode)) {
-          patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue);
+          patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx);
           oldEndVnode = oldCh[--oldEndIdx];
           newEndVnode = newCh[--newEndIdx];
         } else if (sameVnode(oldStartVnode, newEndVnode)) { // Vnode moved right
-          patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue);
+          patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx);
           canMove && nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm));
           oldStartVnode = oldCh[++oldStartIdx];
           newEndVnode = newCh[--newEndIdx];
         } else if (sameVnode(oldEndVnode, newStartVnode)) { // Vnode moved left
-          patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue);
+          patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
           canMove && nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm);
           oldEndVnode = oldCh[--oldEndIdx];
           newStartVnode = newCh[++newStartIdx];
@@ -5094,7 +5134,7 @@
           } else {
             vnodeToMove = oldCh[idxInOld];
             if (sameVnode(vnodeToMove, newStartVnode)) {
-              patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue);
+              patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx);
               oldCh[idxInOld] = undefined;
               canMove && nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm);
             } else {
@@ -5120,9 +5160,21 @@
       }
     }
 
-    function patchVnode (oldVnode, vnode, insertedVnodeQueue, removeOnly) {
+    function patchVnode (
+      oldVnode,
+      vnode,
+      insertedVnodeQueue,
+      ownerArray,
+      index,
+      removeOnly
+    ) {
       if (oldVnode === vnode) {
         return
+      }
+
+      if (isDef(vnode.elm) && isDef(ownerArray)) {
+        // clone reused vnode
+        vnode = ownerArray[index] = cloneVNode(vnode);
       }
 
       var elm = vnode.elm = oldVnode.elm;
@@ -5268,7 +5320,7 @@
       return true
     }
 
-    return function patch (oldVnode, vnode, hydrating, removeOnly, parentElm, refElm) {
+    return function patch (oldVnode, vnode, hydrating, removeOnly) {
       if (isUndef(vnode)) {
         if (isDef(oldVnode)) { invokeDestroyHook(oldVnode); }
         return
@@ -5280,12 +5332,12 @@
       if (isUndef(oldVnode)) {
         // empty mount (likely as component), create new root element
         isInitialPatch = true;
-        createElm(vnode, insertedVnodeQueue, parentElm, refElm);
+        createElm(vnode, insertedVnodeQueue);
       } else {
         var isRealElement = isDef(oldVnode.nodeType);
         if (!isRealElement && sameVnode(oldVnode, vnode)) {
           // patch existing root node
-          patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly);
+          patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly);
         } else {
           if (isRealElement) {
             // mounting to a real element
@@ -5308,7 +5360,7 @@
 
           // replacing existing element
           var oldElm = oldVnode.elm;
-          var parentElm$1 = nodeOps.parentNode(oldElm);
+          var parentElm = nodeOps.parentNode(oldElm);
 
           // create new node
           createElm(
@@ -5317,7 +5369,7 @@
             // extremely rare edge case: do not insert if old element is in a
             // leaving transition. Only happens when combining transition +
             // keep-alive + HOCs. (#4590)
-            oldElm._leaveCb ? null : parentElm$1,
+            oldElm._leaveCb ? null : parentElm,
             nodeOps.nextSibling(oldElm)
           );
 
@@ -5352,8 +5404,8 @@
           }
 
           // destroy old node
-          if (isDef(parentElm$1)) {
-            removeVnodes(parentElm$1, [oldVnode], 0, 0);
+          if (isDef(parentElm)) {
+            removeVnodes(parentElm, [oldVnode], 0, 0);
           } else if (isDef(oldVnode.tag)) {
             invokeDestroyHook(oldVnode);
           }
@@ -5568,7 +5620,7 @@
       /* istanbul ignore if */
       if (
         isIE && !isIE9 &&
-        el.tagName === 'TEXTAREA' &&
+        (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') &&
         key === 'placeholder' && !el.__ieph
       ) {
         var blocker = function (e) {
@@ -5630,38 +5682,7 @@
 
   /*  */
 
-
-
-
-
-
-
-
-
-  // add a raw attr (use this in preTransforms)
-
-
-
-
-
-
-
-
-  // note: this only removes the attr from the Array (attrsList) so that it
-  // doesn't get processed by processAttrs.
-  // By default it does NOT remove it from the map (attrsMap) because the map is
-  // needed during codegen.
-
   /*  */
-
-  /**
-   * Cross-platform code generation for component v-model
-   */
-
-
-  /**
-   * Cross-platform codegen helper for generating v-model value assignment code.
-   */
 
   /*  */
 
@@ -5695,7 +5716,7 @@
 
   var target$1;
 
-  function createOnceHandler (handler, event, capture) {
+  function createOnceHandler$1 (event, handler, capture) {
     var _target = target$1; // save current target element in closure
     return function onceHandler () {
       var res = handler.apply(null, arguments);
@@ -5708,12 +5729,10 @@
   function add$1 (
     event,
     handler,
-    once$$1,
     capture,
     passive
   ) {
     handler = withMacroTask(handler);
-    if (once$$1) { handler = createOnceHandler(handler, event, capture); }
     target$1.addEventListener(
       event,
       handler,
@@ -5744,7 +5763,7 @@
     var oldOn = oldVnode.data.on || {};
     target$1 = vnode.elm;
     normalizeEvents(on);
-    updateListeners(on, oldOn, add$1, remove$2, vnode.context);
+    updateListeners(on, oldOn, add$1, remove$2, createOnceHandler$1, vnode.context);
     target$1 = undefined;
   }
 
@@ -6010,6 +6029,8 @@
 
   /*  */
 
+  var whitespaceRE = /\s+/;
+
   /**
    * Add class with compatibility for SVG since classList is not supported on
    * SVG elements in IE
@@ -6023,7 +6044,7 @@
     /* istanbul ignore else */
     if (el.classList) {
       if (cls.indexOf(' ') > -1) {
-        cls.split(/\s+/).forEach(function (c) { return el.classList.add(c); });
+        cls.split(whitespaceRE).forEach(function (c) { return el.classList.add(c); });
       } else {
         el.classList.add(cls);
       }
@@ -6048,7 +6069,7 @@
     /* istanbul ignore else */
     if (el.classList) {
       if (cls.indexOf(' ') > -1) {
-        cls.split(/\s+/).forEach(function (c) { return el.classList.remove(c); });
+        cls.split(whitespaceRE).forEach(function (c) { return el.classList.remove(c); });
       } else {
         el.classList.remove(cls);
       }
@@ -6072,20 +6093,20 @@
 
   /*  */
 
-  function resolveTransition (def) {
-    if (!def) {
+  function resolveTransition (def$$1) {
+    if (!def$$1) {
       return
     }
     /* istanbul ignore else */
-    if (typeof def === 'object') {
+    if (typeof def$$1 === 'object') {
       var res = {};
-      if (def.css !== false) {
-        extend(res, autoCssTransition(def.name || 'v'));
+      if (def$$1.css !== false) {
+        extend(res, autoCssTransition(def$$1.name || 'v'));
       }
-      extend(res, def);
+      extend(res, def$$1);
       return res
-    } else if (typeof def === 'string') {
-      return autoCssTransition(def)
+    } else if (typeof def$$1 === 'string') {
+      return autoCssTransition(def$$1)
     }
   }
 
@@ -6188,11 +6209,12 @@
 
   function getTransitionInfo (el, expectedType) {
     var styles = window.getComputedStyle(el);
-    var transitionDelays = styles[transitionProp + 'Delay'].split(', ');
-    var transitionDurations = styles[transitionProp + 'Duration'].split(', ');
+    // JSDOM may return undefined for transition properties
+    var transitionDelays = (styles[transitionProp + 'Delay'] || '').split(', ');
+    var transitionDurations = (styles[transitionProp + 'Duration'] || '').split(', ');
     var transitionTimeout = getTimeout(transitionDelays, transitionDurations);
-    var animationDelays = styles[animationProp + 'Delay'].split(', ');
-    var animationDurations = styles[animationProp + 'Duration'].split(', ');
+    var animationDelays = (styles[animationProp + 'Delay'] || '').split(', ');
+    var animationDurations = (styles[animationProp + 'Duration'] || '').split(', ');
     var animationTimeout = getTimeout(animationDelays, animationDurations);
 
     var type;
@@ -6246,8 +6268,12 @@
     }))
   }
 
+  // Old versions of Chromium (below 61.0.3163.100) formats floating pointer numbers
+  // in a locale-dependent way, using a comma instead of a dot.
+  // If comma is not replaced with a dot, the input will be rounded down (i.e. acting
+  // as a floor function) causing unexpected behaviors
   function toMs (s) {
-    return Number(s.slice(0, -1)) * 1000
+    return Number(s.slice(0, -1).replace(',', '.')) * 1000
   }
 
   /*  */
@@ -6471,7 +6497,7 @@
         return
       }
       // record leaving element
-      if (!vnode.data.show) {
+      if (!vnode.data.show && el.parentNode) {
         (el.parentNode._pending || (el.parentNode._pending = {}))[(vnode.key)] = vnode;
       }
       beforeLeave && beforeLeave(el);
@@ -6767,9 +6793,6 @@
 
   /*  */
 
-  // Provides transition support for a single element/component.
-  // supports transition mode (out-in / in-out)
-
   var transitionProps = {
     name: String,
     appear: Boolean,
@@ -6835,6 +6858,10 @@
     return oldChild.key === child.key && oldChild.tag === child.tag
   }
 
+  var isNotTextNode = function (c) { return c.tag || isAsyncPlaceholder(c); };
+
+  var isVShowDirective = function (d) { return d.name === 'show'; };
+
   var Transition = {
     name: 'transition',
     props: transitionProps,
@@ -6849,7 +6876,7 @@
       }
 
       // filter out text nodes (possible whitespaces)
-      children = children.filter(function (c) { return c.tag || isAsyncPlaceholder(c); });
+      children = children.filter(isNotTextNode);
       /* istanbul ignore if */
       if (!children.length) {
         return
@@ -6895,7 +6922,7 @@
 
       // mark v-show
       // so that the transition module can hand over the control to the directive
-      if (child.data.directives && child.data.directives.some(function (d) { return d.name === 'show'; })) {
+      if (child.data.directives && child.data.directives.some(isVShowDirective)) {
         child.data.show = true;
       }
 
@@ -6937,17 +6964,6 @@
 
   /*  */
 
-  // Provides transition support for list items.
-  // supports move transitions using the FLIP technique.
-
-  // Because the vdom's children update algorithm is "unstable" - i.e.
-  // it doesn't guarantee the relative positioning of removed elements,
-  // we force transition-group to update its children into two passes:
-  // in the first pass, we remove all nodes that need to be removed,
-  // triggering their leaving transition; in the second pass, we insert/move
-  // into the final desired state. This way in the second pass removed
-  // nodes will remain where they should be.
-
   var props = extend({
     tag: String,
     moveClass: String
@@ -6957,6 +6973,25 @@
 
   var TransitionGroup = {
     props: props,
+
+    beforeMount: function beforeMount () {
+      var this$1 = this;
+
+      var update = this._update;
+      this._update = function (vnode, hydrating) {
+        var restoreActiveInstance = setActiveInstance(this$1);
+        // force removing pass
+        this$1.__patch__(
+          this$1._vnode,
+          this$1.kept,
+          false, // hydrating
+          true // removeOnly (!important, avoids unnecessary moves)
+        );
+        this$1._vnode = this$1.kept;
+        restoreActiveInstance();
+        update.call(this$1, vnode, hydrating);
+      };
+    },
 
     render: function render (h) {
       var tag = this.tag || this.$vnode.data.tag || 'span';
@@ -6997,17 +7032,6 @@
       return h(tag, null, children)
     },
 
-    beforeUpdate: function beforeUpdate () {
-      // force removing pass
-      this.__patch__(
-        this._vnode,
-        this.kept,
-        false, // hydrating
-        true // removeOnly (!important, avoids unnecessary moves)
-      );
-      this._vnode = this.kept;
-    },
-
     updated: function updated () {
       var children = this.prevChildren;
       var moveClass = this.moveClass || ((this.name || 'v') + '-move');
@@ -7033,6 +7057,9 @@
           addTransitionClass(el, moveClass);
           s.transform = s.WebkitTransform = s.transitionDuration = '';
           el.addEventListener(transitionEndEvent, el._moveCb = function cb (e) {
+            if (e && e.target !== el) {
+              return
+            }
             if (!e || /transform$/.test(e.propertyName)) {
               el.removeEventListener(transitionEndEvent, cb);
               el._moveCb = null;
@@ -12911,8 +12938,15 @@
     leaveCurrentRoute();
   }
 
+  function appRouterCheck (router, method) {
+    if (!router.view) {
+      throw new Error(("Framework7: it is not allowed to use router methods on global app router. Use router methods only on related View, e.g. app.views.main.router." + method + "(...)"));
+    }
+  }
+
   function refreshPage() {
     var router = this;
+    appRouterCheck(router, 'refreshPage');
     return router.navigate(router.currentRoute.url, {
       ignoreCache: true,
       reloadCurrent: true,
@@ -13496,12 +13530,7 @@
       throw new Error(("Framework7: can't construct URL for route with name \"" + name + "\""));
     }
     var app = router.app;
-    if (!router.view) {
-      if (app.views.main) {
-        app.views.main.router.navigate(url, navigateOptions);
-      }
-      return router;
-    }
+    appRouterCheck(router, 'navigate');
     if (url === '#' || url === '') {
       return router;
     }
@@ -14462,10 +14491,9 @@
     return router;
   }
   function back() {
-    var ref;
-
     var args = [], len = arguments.length;
     while ( len-- ) args[ len ] = arguments[ len ];
+
     var router = this;
     if (router.swipeBackActive) { return router; }
     var navigateUrl;
@@ -14499,10 +14527,7 @@
     }
 
     var app = router.app;
-    if (!router.view) {
-      (ref = app.views.main.router).back.apply(ref, args);
-      return router;
-    }
+    appRouterCheck(router, 'back');
 
     var currentRouteIsModal = router.currentRoute.modal;
     var modalType;
@@ -14713,6 +14738,7 @@
 
   function clearPreviousPages() {
     var router = this;
+    appRouterCheck(router, 'clearPreviousPages');
     var app = router.app;
     var separateNavbar = router.separateNavbar;
 
@@ -14743,6 +14769,7 @@
 
   function clearPreviousHistory() {
     var router = this;
+    appRouterCheck(router, 'clearPreviousHistory');
     var url = router.history[router.history.length - 1];
 
     router.clearPreviousPages();
@@ -15904,6 +15931,7 @@
 
     Router.prototype.updateCurrentUrl = function updateCurrentUrl (newUrl) {
       var router = this;
+      appRouterCheck(router, 'updateCurrentUrl');
       // Update history
       if (router.history.length) {
         router.history[router.history.length - 1] = newUrl;
@@ -41182,15 +41210,15 @@
   };
 
   /**
-   * Framework7 3.6.3
+   * Framework7 3.6.5
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
-   * Copyright 2014-2018 Vladimir Kharlampidi
+   * Copyright 2014-2019 Vladimir Kharlampidi
    *
    * Released under the MIT License
    *
-   * Released on: December 27, 2018
+   * Released on: January 4, 2019
    */
 
   // Install Core Modules & Components
@@ -52177,15 +52205,15 @@
   };
 
   /**
-   * Framework7 Vue 3.6.3
+   * Framework7 Vue 3.6.5
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
-   * Copyright 2014-2018 Vladimir Kharlampidi
+   * Copyright 2014-2019 Vladimir Kharlampidi
    *
    * Released under the MIT License
    *
-   * Released on: December 27, 2018
+   * Released on: January 4, 2019
    */
 
   var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
@@ -52236,7 +52264,7 @@
     },
   };
 
-  var Accordion$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Accordion","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("List View Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum. ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum. ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":"","inset":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum. ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum. ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Collapsible")]),_vm._v(" "),_c('f7-block',{attrs:{"inner":"","accordion-list":""}},_vm._l((3),function(n){return _c('f7-accordion-item',{key:n},[_c('f7-accordion-toggle',[_c('b',[_vm._v("Item "+_vm._s(n))])]),_vm._v(" "),_c('f7-accordion-content',[_vm._v("Content "+_vm._s(n))])],1)}))],1)},staticRenderFns: [],
+  var Accordion$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Accordion","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("List View Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum. ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum. ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":"","inset":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum. ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v(" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum. ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Collapsible")]),_vm._v(" "),_c('f7-block',{attrs:{"inner":"","accordion-list":""}},_vm._l((3),function(n){return _c('f7-accordion-item',{key:n},[_c('f7-accordion-toggle',[_c('b',[_vm._v("Item "+_vm._s(n))])]),_vm._v(" "),_c('f7-accordion-content',[_vm._v("Content "+_vm._s(n))])],1)}),1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53178,7 +53206,7 @@
   var f7Icons = 'add add_round add_round_fill alarm alarm_fill albums albums_fill arrow_down arrow_down_fill arrow_left arrow_left_fill arrow_right arrow_right_fill arrow_up arrow_up_fill at at_fill bag bag_fill bars bell bell_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill calendar calendar_fill camera camera_fill card card_fill chat chat_fill chats chats_fill check check_round check_round_fill chevron_down chevron_left chevron_right chevron_up circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill document document_fill document_text document_text_fill down download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill email email_fill eye eye_fill fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_fill film film_fill filter filter-fill flag flag_fill folder folder_fill forward forward_fill gear gear_fill graph_round graph_round_fill graph_square graph_square_fill heart heart_fill help help_fill home home_fill images images_fill info info_fill keyboard keyboard_fill layers layers_fill left list list_fill lock lock_fill login login_fill logout logout_fill menu mic mic_fill money_dollar money_dollar_fill money_euro money_euro_fill money_pound money_pound_fill money_rubl money_rubl_fill money_yen money_yen_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill person person_fill persons persons_fill phone phone_fill phone_round phone_round_fill photos photos_fill pie pie_fill play play_fill play_round play_round_fill radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill right search search_strong settings settings_fill share share_fill social_facebook social_facebook_fill social_github social_github_fill social_googleplus social_instagram social_instagram_fill social_linkedin social_linkedin_fill social_rss social_rss_fill social_twitter social_twitter_fill sort sort_fill star star_fill star_half stopwatch stopwatch_fill tabs tabs_fill tags tags_fill tape tape_fill ticket ticket_fill time time_fill timer timer_fill today today_fill trash trash_fill tune tune_fill undo unlock unlock_fill up videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill world world_fill zoom_in zoom_out';
   var mdIcons = '3d_rotation ac_unit access_alarm access_alarms access_time accessibility accessible account_balance account_balance_wallet account_box account_circle adb add add_a_photo add_alarm add_alert add_box add_circle add_circle_outline add_location add_shopping_cart add_to_photos add_to_queue adjust airline_seat_flat airline_seat_flat_angled airline_seat_individual_suite airline_seat_legroom_extra airline_seat_legroom_normal airline_seat_legroom_reduced airline_seat_recline_extra airline_seat_recline_normal airplanemode_active airplanemode_inactive airplay airport_shuttle alarm alarm_add alarm_off alarm_on album all_inclusive all_out android announcement apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_drop_up arrow_forward arrow_upward art_track aspect_ratio assessment assignment assignment_ind assignment_late assignment_return assignment_returned assignment_turned_in assistant assistant_photo attach_file attach_money attachment audiotrack autorenew av_timer backspace backup battery_alert battery_charging_full battery_full battery_std battery_unknown beach_access beenhere block bluetooth bluetooth_audio bluetooth_connected bluetooth_disabled bluetooth_searching blur_circular blur_linear blur_off blur_on book bookmark bookmark_border border_all border_bottom border_clear border_color border_horizontal border_inner border_left border_outer border_right border_style border_top border_vertical branding_watermark brightness_1 brightness_2 brightness_3 brightness_4 brightness_5 brightness_6 brightness_7 brightness_auto brightness_high brightness_low brightness_medium broken_image brush bubble_chart bug_report build burst_mode business business_center cached cake call call_end call_made call_merge call_missed call_missed_outgoing call_received call_split call_to_action camera camera_alt camera_enhance camera_front camera_rear camera_roll cancel card_giftcard card_membership card_travel casino cast cast_connected center_focus_strong center_focus_weak change_history chat chat_bubble chat_bubble_outline check check_box check_box_outline_blank check_circle chevron_left chevron_right child_care child_friendly chrome_reader_mode class clear clear_all close closed_caption cloud cloud_circle cloud_done cloud_download cloud_off cloud_queue cloud_upload code collections collections_bookmark color_lens colorize comment compare compare_arrows computer confirmation_number contact_mail contact_phone contacts content_copy content_cut content_paste control_point control_point_duplicate copyright create create_new_folder credit_card crop crop_16_9 crop_3_2 crop_5_4 crop_7_5 crop_din crop_free crop_landscape crop_original crop_portrait crop_rotate crop_square dashboard data_usage date_range dehaze delete delete_forever delete_sweep description desktop_mac desktop_windows details developer_board developer_mode device_hub devices devices_other dialer_sip dialpad directions directions_bike directions_boat directions_bus directions_car directions_railway directions_run directions_subway directions_transit directions_walk disc_full dns do_not_disturb do_not_disturb_alt do_not_disturb_off do_not_disturb_on dock domain done done_all donut_large donut_small drafts drag_handle drive_eta dvr edit edit_location eject email enhanced_encryption equalizer error error_outline euro_symbol ev_station event event_available event_busy event_note event_seat exit_to_app expand_less expand_more explicit explore exposure exposure_neg_1 exposure_neg_2 exposure_plus_1 exposure_plus_2 exposure_zero extension face fast_forward fast_rewind favorite favorite_border featured_play_list featured_video feedback fiber_dvr fiber_manual_record fiber_new fiber_pin fiber_smart_record file_download file_upload filter filter_1 filter_2 filter_3 filter_4 filter_5 filter_6 filter_7 filter_8 filter_9 filter_9_plus filter_b_and_w filter_center_focus filter_drama filter_frames filter_hdr filter_list filter_none filter_tilt_shift filter_vintage find_in_page find_replace fingerprint first_page fitness_center flag flare flash_auto flash_off flash_on flight flight_land flight_takeoff flip flip_to_back flip_to_front folder folder_open folder_shared folder_special font_download format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_fill format_color_reset format_color_text format_indent_decrease format_indent_increase format_italic format_line_spacing format_list_bulleted format_list_numbered format_paint format_quote format_shapes format_size format_strikethrough format_textdirection_l_to_r format_textdirection_r_to_l format_underlined forum forward forward_10 forward_30 forward_5 free_breakfast fullscreen fullscreen_exit functions g_translate gamepad games gavel gesture get_app gif golf_course gps_fixed gps_not_fixed gps_off grade gradient grain graphic_eq grid_off grid_on group group_add group_work hd hdr_off hdr_on hdr_strong hdr_weak headset headset_mic healing hearing help help_outline high_quality highlight highlight_off history home hot_tub hotel hourglass_empty hourglass_full http https image image_aspect_ratio import_contacts import_export important_devices inbox indeterminate_check_box info info_outline input insert_chart insert_comment insert_drive_file insert_emoticon insert_invitation insert_link insert_photo invert_colors invert_colors_off iso keyboard keyboard_arrow_down keyboard_arrow_left keyboard_arrow_right keyboard_arrow_up keyboard_backspace keyboard_capslock keyboard_hide keyboard_return keyboard_tab keyboard_voice kitchen label label_outline landscape language laptop laptop_chromebook laptop_mac laptop_windows last_page launch layers layers_clear leak_add leak_remove lens library_add library_books library_music lightbulb_outline line_style line_weight linear_scale link linked_camera list live_help live_tv local_activity local_airport local_atm local_bar local_cafe local_car_wash local_convenience_store local_dining local_drink local_florist local_gas_station local_grocery_store local_hospital local_hotel local_laundry_service local_library local_mall local_movies local_offer local_parking local_pharmacy local_phone local_pizza local_play local_post_office local_printshop local_see local_shipping local_taxi location_city location_disabled location_off location_on location_searching lock lock_open lock_outline looks looks_3 looks_4 looks_5 looks_6 looks_one looks_two loop loupe low_priority loyalty mail mail_outline map markunread markunread_mailbox memory menu merge_type message mic mic_none mic_off mms mode_comment mode_edit monetization_on money_off monochrome_photos mood mood_bad more more_horiz more_vert motorcycle mouse move_to_inbox movie movie_creation movie_filter multiline_chart music_note music_video my_location nature nature_people navigate_before navigate_next navigation near_me network_cell network_check network_locked network_wifi new_releases next_week nfc no_encryption no_sim not_interested note note_add notifications notifications_active notifications_none notifications_off notifications_paused offline_pin ondemand_video opacity open_in_browser open_in_new open_with pages pageview palette pan_tool panorama panorama_fish_eye panorama_horizontal panorama_vertical panorama_wide_angle party_mode pause pause_circle_filled pause_circle_outline payment people people_outline perm_camera_mic perm_contact_calendar perm_data_setting perm_device_information perm_identity perm_media perm_phone_msg perm_scan_wifi person person_add person_outline person_pin person_pin_circle personal_video pets phone phone_android phone_bluetooth_speaker phone_forwarded phone_in_talk phone_iphone phone_locked phone_missed phone_paused phonelink phonelink_erase phonelink_lock phonelink_off phonelink_ring phonelink_setup photo photo_album photo_camera photo_filter photo_library photo_size_select_actual photo_size_select_large photo_size_select_small picture_as_pdf picture_in_picture picture_in_picture_alt pie_chart pie_chart_outlined pin_drop place play_arrow play_circle_filled play_circle_outline play_for_work playlist_add playlist_add_check playlist_play plus_one poll polymer pool portable_wifi_off portrait power power_input power_settings_new pregnant_woman present_to_all print priority_high public publish query_builder question_answer queue queue_music queue_play_next radio radio_button_checked radio_button_unchecked rate_review receipt recent_actors record_voice_over redeem redo refresh remove remove_circle remove_circle_outline remove_from_queue remove_red_eye remove_shopping_cart reorder repeat repeat_one replay replay_10 replay_30 replay_5 reply reply_all report report_problem restaurant restaurant_menu restore restore_page ring_volume room room_service rotate_90_degrees_ccw rotate_left rotate_right rounded_corner router rowing rss_feed rv_hookup satellite save scanner schedule school screen_lock_landscape screen_lock_portrait screen_lock_rotation screen_rotation screen_share sd_card sd_storage search security select_all send sentiment_dissatisfied sentiment_neutral sentiment_satisfied sentiment_very_dissatisfied sentiment_very_satisfied settings settings_applications settings_backup_restore settings_bluetooth settings_brightness settings_cell settings_ethernet settings_input_antenna settings_input_component settings_input_composite settings_input_hdmi settings_input_svideo settings_overscan settings_phone settings_power settings_remote settings_system_daydream settings_voice share shop shop_two shopping_basket shopping_cart short_text show_chart shuffle signal_cellular_4_bar signal_cellular_connected_no_internet_4_bar signal_cellular_no_sim signal_cellular_null signal_cellular_off signal_wifi_4_bar signal_wifi_4_bar_lock signal_wifi_off sim_card sim_card_alert skip_next skip_previous slideshow slow_motion_video smartphone smoke_free smoking_rooms sms sms_failed snooze sort sort_by_alpha spa space_bar speaker speaker_group speaker_notes speaker_notes_off speaker_phone spellcheck star star_border star_half stars stay_current_landscape stay_current_portrait stay_primary_landscape stay_primary_portrait stop stop_screen_share storage store store_mall_directory straighten streetview strikethrough_s style subdirectory_arrow_left subdirectory_arrow_right subject subscriptions subtitles subway supervisor_account surround_sound swap_calls swap_horiz swap_vert swap_vertical_circle switch_camera switch_video sync sync_disabled sync_problem system_update system_update_alt tab tab_unselected tablet tablet_android tablet_mac tag_faces tap_and_play terrain text_fields text_format textsms texture theaters thumb_down thumb_up thumbs_up_down time_to_leave timelapse timeline timer timer_10 timer_3 timer_off title toc today toll tonality touch_app toys track_changes traffic train tram transfer_within_a_station transform translate trending_down trending_flat trending_up tune turned_in turned_in_not tv unarchive undo unfold_less unfold_more update usb verified_user vertical_align_bottom vertical_align_center vertical_align_top vibration video_call video_label video_library videocam videocam_off videogame_asset view_agenda view_array view_carousel view_column view_comfy view_compact view_day view_headline view_list view_module view_quilt view_stream view_week vignette visibility visibility_off voice_chat voicemail volume_down volume_mute volume_off volume_up vpn_key vpn_lock wallpaper warning watch watch_later wb_auto wb_cloudy wb_incandescent wb_iridescent wb_sunny wc web web_asset weekend whatshot widgets wifi wifi_lock wifi_tethering work wrap_text youtube_searched_for zoom_in zoom_out zoom_out_map';
 
-  var Icons = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Icons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with the premium and free "),_c('a',{staticClass:"external",attrs:{"href":"https://github.com/nolimits4web/Framework7-Icons","target":"_blank"}},[_vm._v("Framework7 Icons")]),_vm._v(" iOS-icons font developed specially to be used with iOS theme of Framework7. As for Material theme we recommend to use great-designed "),_c('a',{staticClass:"external",attrs:{"href":"https://material.io/icons/","target":"_blank"}},[_vm._v("Material Icons")]),_vm._v(" font. Both of these fonts use a typographic feature called "),_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("ligatures")]),_vm._v(". It’s easy to incorporate icons into your app. Here’s a small example:")]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"f7-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"f7-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"material-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"material-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("Ligatures")]),_vm._v(" allow rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.")])]),_vm._v(" "),_c('f7-block-header',[_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',{attrs:{"tab-link":"#tab-f7","tab-link-active":""}},[_vm._v("F7 Icons")]),_vm._v(" "),_c('f7-button',{attrs:{"tab-link":"#tab-md"}},[_vm._v("Material Icons")])],1)],1),_vm._v(" "),_c('f7-block',{staticClass:"tabs",attrs:{"strong":""}},[_c('f7-tab',{attrs:{"id":"tab-f7","tab-active":""}},[_c('f7-row',_vm._l((_vm.f7Icons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"f7-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}))],1),_vm._v(" "),_c('f7-tab',{attrs:{"id":"tab-md"}},[_c('f7-row',_vm._l((_vm.mdIcons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"material-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}))],1)],1)],1)},staticRenderFns: [],
+  var Icons = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Icons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with the premium and free "),_c('a',{staticClass:"external",attrs:{"href":"https://github.com/nolimits4web/Framework7-Icons","target":"_blank"}},[_vm._v("Framework7 Icons")]),_vm._v(" iOS-icons font developed specially to be used with iOS theme of Framework7. As for Material theme we recommend to use great-designed "),_c('a',{staticClass:"external",attrs:{"href":"https://material.io/icons/","target":"_blank"}},[_vm._v("Material Icons")]),_vm._v(" font. Both of these fonts use a typographic feature called "),_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("ligatures")]),_vm._v(". It’s easy to incorporate icons into your app. Here’s a small example:")]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"f7-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"f7-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"material-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"material-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("Ligatures")]),_vm._v(" allow rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.")])]),_vm._v(" "),_c('f7-block-header',[_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',{attrs:{"tab-link":"#tab-f7","tab-link-active":""}},[_vm._v("F7 Icons")]),_vm._v(" "),_c('f7-button',{attrs:{"tab-link":"#tab-md"}},[_vm._v("Material Icons")])],1)],1),_vm._v(" "),_c('f7-block',{staticClass:"tabs",attrs:{"strong":""}},[_c('f7-tab',{attrs:{"id":"tab-f7","tab-active":""}},[_c('f7-row',_vm._l((_vm.f7Icons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"f7-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1),_vm._v(" "),_c('f7-tab',{attrs:{"id":"tab-md"}},[_c('f7-row',_vm._l((_vm.mdIcons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"material-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
@@ -53199,7 +53227,7 @@
     },
   };
 
-  var InfiniteScroll$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"infinite":"","infinite-distance":50,"infinite-preloader":_vm.showPreloader},on:{"infinite":_vm.loadMore}},[_c('f7-navbar',{attrs:{"title":"Infinite Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-list',_vm._l((_vm.items),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":("Item " + item)}})}))],1)},staticRenderFns: [],
+  var InfiniteScroll$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"infinite":"","infinite-distance":50,"infinite-preloader":_vm.showPreloader},on:{"infinite":_vm.loadMore}},[_c('f7-navbar',{attrs:{"title":"Infinite Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-list',_vm._l((_vm.items),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":("Item " + item)}})}),1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53349,7 +53377,7 @@
     },
   };
 
-  var Messages$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible,"value":_vm.messageText},on:{"input":function($event){_vm.messageText = $event.target.value;}}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){_vm.deleteAttachment(image);}}})})),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}))],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)},staticRenderFns: [],
+  var Messages$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible,"value":_vm.messageText},on:{"input":function($event){_vm.messageText = $event.target.value;}}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){_vm.deleteAttachment(image);}}})}),1),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}),1)],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -54737,7 +54765,7 @@
     },
   };
 
-  var TabbarScrollable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])})),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}))],1)},staticRenderFns: [],
+  var TabbarScrollable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
     },
@@ -54821,7 +54849,7 @@
     },
   };
 
-  var VirtualList$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title"}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : 73}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}))])],1)},staticRenderFns: [],
+  var VirtualList$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title"}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : 73}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Subnavbar: f7Subnavbar, f7Searchbar: f7Searchbar, f7Block: f7Block,
     },
