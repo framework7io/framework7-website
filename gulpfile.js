@@ -101,7 +101,7 @@
 
 
   // Build All
-  gulp.task('build', ['pug', 'less'], function (cb) {
+  gulp.task('build', gulp.series(['pug', 'less']), function (cb) {
     cb();
   });
 
@@ -111,12 +111,10 @@
   gulp.task('watch', function () {
     checkIsLocal(process.argv.slice(3));
 
-    gulp.watch('./src/less/**/*.*', [ 'less' ]);
-    gulp.watch('./src/pug/**/*.pug', (data) => {
+    gulp.watch('./src/less/**/*.*', gulp.series([ 'less' ]));
+    gulp.watch('./src/pug/**/*.pug', { events: ['change'] }).on('change', (path) => {
       checkIsLocal(process.argv.slice(3));
-      if (data.type !== 'changed') return;
-      const filePath = data.path.split('/src/pug/')[1];
-      // if (filePath.indexOf('react') === 0) return;
+      const filePath = path.split('src/pug/')[1];
       if (filePath.indexOf('_') === 0 || filePath.indexOf('_layout.pug') >= 0) {
         buildPages();
         return;
@@ -169,9 +167,9 @@
     return gulp.src('./index.html').pipe(open({ uri: 'http://localhost:3000/index.html'}));
   });
 
-  gulp.task('server', [ 'watch', 'connect', 'open' ]);
+  gulp.task('server', gulp.parallel([ 'watch', 'connect', 'open' ]));
 
-  gulp.task('default', [ 'server' ]);
+  gulp.task('default', gulp.series([ 'server' ]));
 
-  gulp.task('test', [ 'build' ]);
+  gulp.task('test', gulp.series([ 'build' ]));
   })();
