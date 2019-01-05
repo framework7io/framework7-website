@@ -1,36 +1,26 @@
 .internal-header {
-  height: 160px;
   color: #fff;
   box-sizing: border-box;
   position: relative;
   z-index: 500;
+  background: linear-gradient(to bottom, @pinkColor 20%, @redColor);
+  padding-top: 20px;
+  padding-bottom: 20px;
   > .center {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     height: 100%;
-    &:before {
-      position: absolute;
-      content: '';
-      border-left: 180px solid transparent;
-      border-right: 500px solid transparent;
-      border-top: 160px solid @brightColor;
-      left: 150px;
-      bottom: 0;
-      transform-origin: left bottom;
-      z-index: -1;
-    }
   }
   .logo-holder {
-    width: 160px;
     margin-right: 30px;
+    margin-bottom: -30px;
   }
   .logo {
     width: 160px;
     height: 160px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 30px;
     border-radius: 50%;
     box-sizing: border-box;
     box-shadow: 0px 10px 50px rgba(0,0,0,0.3);
@@ -52,6 +42,10 @@
     font-weight: 400;
     line-height: 1;
     margin-bottom: 20px;
+    img {
+      width: 230px;
+      height: auto;
+    }
     .version {
       vertical-align: super;
       font-size: 12px;
@@ -65,6 +59,8 @@
     padding: 0;
     display: flex;
     margin-left: -10px;
+    font-weight: 500;
+    font-size: 15px;
     li {
       margin: 0;
       position: relative;
@@ -76,7 +72,9 @@
       transform: translateX(-50%) translateY(0px);
     }
     ul {
+      font-size: 14px;
       opacity: 0;
+      font-weight: normal;
       pointer-events: none;
       visibility: hidden;
       position: absolute;
@@ -94,14 +92,6 @@
       transform: translateX(-50%) translateY(10px);
       top: 100%;
       margin-top: 10px;
-      &:before {
-        content: '';
-        height: 10px;
-        bottom: 100%;
-        width: 100%;
-        position: absolute;
-        left: 0;
-      }
       &:after {
         content: '';
         width: 0;
@@ -118,7 +108,7 @@
         margin-top: 6px;
       }
       a {
-        color: #555;
+        color: #000;
         text-decoration: none;
         &:hover {
           color: @primaryColor;
@@ -147,6 +137,8 @@
     left: 0;
     bottom: 0;
     flex-shrink: 0;
+    border: none;
+    background: rgba(255,255,255,0.1);
   }
   .patreon-github {
     display: flex;
@@ -154,6 +146,7 @@
     margin-bottom: -10px;
     .patreon-button {
       margin-left: -10px;
+      font-weight: bold;
       &:not(:hover) {
         background: none;
       }
@@ -170,7 +163,8 @@
 }
 
 .bsa-cpc {
-  background: darken(@primaryColor, 5%);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: @redColor;
   height: 30px;
   position: relative;
   z-index: 100;
@@ -238,21 +232,10 @@
 
 @media (max-width: 960px) {
   .internal-header {
-    height: auto;
-    > .center {
-      padding-top: 20px;
-      padding-bottom: 20px;
-      &:before {
-        left: 50px;
-      }
-    }
     .header-content {
       max-width: 100%;
       min-width: 0;
       width: auto;
-    }
-    .logo-holder {
-      width: 120px;
     }
     .logo {
       width: 120px;
@@ -278,13 +261,6 @@
 }
 @media (max-width: 900px) {
   .internal-header {
-    > .center {
-      padding-top: 10px;
-      padding-bottom: 10px;
-      &:before {
-        left: 50px;
-      }
-    }
     .patreon-github {
       display: block;
       .github-buttons {
@@ -302,6 +278,15 @@
     }
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 800px) {
+  .internal-header {
+    .logo-holder {
+      margin-right: 20px;
+    }
+    .logo {
+      width: 100px;
+      height: 100px;
+    }
+  }
 
 }

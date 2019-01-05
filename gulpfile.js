@@ -41,6 +41,9 @@
     var doc = yaml.safeLoad(fs.readFileSync(`./src/pug/${ymlPath}`, 'utf8'));
     return doc;
   }
+  function inlineSvg(svgPath) {
+    return fs.readFileSync(svgPath, 'utf-8');
+  }
   /* ==================================================================
   Check CDN
   ================================================================== */
@@ -83,6 +86,7 @@
           cdn: useCDN ? cdnPath : '',
           icons: iconsManifest.icons,
           getYamlData,
+          inlineSvg,
         }
       }))
       .on('error', (err) => {
@@ -112,9 +116,9 @@
     checkIsLocal(process.argv.slice(3));
 
     gulp.watch('./src/less/**/*.*', gulp.series([ 'less' ]));
-    gulp.watch('./src/pug/**/*.pug', { events: ['change'] }).on('change', (path) => {
+    gulp.watch('./src/pug/**/*.pug', { events: ['change'] }).on('change', (changedPath) => {
       checkIsLocal(process.argv.slice(3));
-      const filePath = path.split('src/pug/')[1];
+      const filePath = changedPath.split('src/pug/')[1];
       if (filePath.indexOf('_') === 0 || filePath.indexOf('_layout.pug') >= 0) {
         buildPages();
         return;
@@ -139,6 +143,7 @@
             cdn: useCDN ? cdnPath : '',
             icons: iconsManifest.icons,
             getYamlData,
+            inlineSvg,
           }
         }))
         .on('error', (err) => {

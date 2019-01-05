@@ -1,10 +1,11 @@
 @import url('_mixins.less');
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700');
+@import url('./fonts.less');
 
 body {
-  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-family: Sailec,-apple-system, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 16px;
-  color: #333;
+  color: #000;
   margin: 0;
   padding: 0;
   position: relative;
@@ -51,7 +52,8 @@ h1, h2, h3, h4, h5, .h1, .h2, .h3, .h4, .h5 {
   font-weight: 500;
 }
 h1, .h1 {
-  font-size: 38px;
+  font-weight: bold;
+  font-size: 40px;
   line-height: 1.2;
   &:first-child {
     margin-top: 0;
@@ -158,13 +160,6 @@ main {
   }
 }
 
-.color-example {
-  display: inline-block;
-  border: 1px solid #eee;
-  width: 100px;
-  height: 44px;
-}
-
 .carbon {
   width: 300px;
   font-size: 13px;
@@ -235,6 +230,7 @@ main {
   border-radius: 11px;
   background: rgba(255,255,255,0.1);
   transition: 200ms;
+  font-weight: 500;
   &:hover {
     background: rgba(0,0,0,0.1);
 
