@@ -163,7 +163,7 @@ block content
           // Pass as empty object as target to copy a into b
           var b = app.utils.extend({}, a);
 
-          console.log(b); // { apple:0, cherry: 97 }
+          console.log(b); // { apple: 0, cherry: 97 }
           console.log(a === b); // false
     :code(lang="js")
           var a = {
@@ -171,28 +171,28 @@ block content
             cherry: 97
           };
           var b = {
-            bannana: 10,
+            banana: 10,
             pineapple: 20,
           }
 
           // Extends a with b
           app.utils.extend(a, b);
 
-          console.log(a); // { apple: 0, cherry: 97, bannana: 10, peneapple: 20 }
+          console.log(a); // { apple: 0, cherry: 97, banana: 10, pineapple: 20 }
     :code(lang="js")
           var a = {
             apple: 0,
             cherry: 97
           };
           var b = {
-            bannana: 10,
+            banana: 10,
             pineapple: 20,
           }
 
           // Create new object c from the merge of a and b
           var c = app.utils.extend({}, a, b);
 
-          console.log(c); // { apple: 0, cherry: 97, bannana: 10, peneapple: 20 }
+          console.log(c); // { apple: 0, cherry: 97, banana: 10, pineapple: 20 }
     :code(lang="js")
           var a = {
             apple: 0,
@@ -206,7 +206,7 @@ block content
           // Extend a with b
           app.utils.extend(a, b);
 
-          console.log(a); // { apple: 10, cherry: 97, peneapple: 20 }
+          console.log(a); // { apple: 10, cherry: 97, pineapple: 20 }
 
     h3 uniqueNumber
     .method-wrap
