@@ -292,10 +292,10 @@ main img {
   border-radius: 11px;
   background: rgba(255, 255, 255, 0.1);
   transition: 200ms;
-  font-weight: 500;
+  font-weight: bold;
 }
 .patreon-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: #A00D0F;
 }
 .patreon-button .patreon-logo {
   display: inline-block;
@@ -700,6 +700,14 @@ header .carbon a {
   top: 100%;
   margin-top: 10px;
 }
+.internal-header ul.nav ul:before {
+  position: absolute;
+  bottom: 100%;
+  width: 100%;
+  height: 10px;
+  left: 0;
+  content: '';
+}
 .internal-header ul.nav ul:after {
   content: '';
   width: 0;
@@ -734,7 +742,7 @@ header .carbon a {
 }
 .internal-header ul.nav > li:hover > a,
 .internal-header ul.nav > li.active > a {
-  background: rgba(0, 0, 0, 0.1);
+  background: #A00D0F;
 }
 .internal-header .carbon {
   margin-left: auto;
