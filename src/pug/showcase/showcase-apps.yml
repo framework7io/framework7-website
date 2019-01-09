@@ -2780,4 +2780,29 @@
   - "#{cdn}/i/showcase/gunluc1.png"
   - "#{cdn}/i/showcase/gunluc2.png"
   - "#{cdn}/i/showcase/gunluc3.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/tanahalhaperek.png"
+  iconRounded: true
+  title: "929 - תנ\"ך על הפרק"
+  author:
+    url: https://play.google.com/store/apps/developer?id=DoradSoft
+    name: DoradSoft
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.tanah.daily929
+    website: http://www.xn--febl3a.co.il/
+  description: |
+    Bible learning program
+  features:
+  - Bible text
+  - Commentary
+  - Articles
+  - Video and audio leasons
+  - Reading recordings
+  screenshots:
+  - "#{cdn}/i/showcase/tanahalhaperek1.png"
+  - "#{cdn}/i/showcase/tanahalhaperek2.png"
+  - "#{cdn}/i/showcase/tanahalhaperek3.png"
+  - "#{cdn}/i/showcase/tanahalhaperek4.png"
+  - "#{cdn}/i/showcase/tanahalhaperek5.png"
 

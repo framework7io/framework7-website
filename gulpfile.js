@@ -101,9 +101,7 @@
 
 
   // Build All
-  gulp.task('build', gulp.series(['pug', 'less']), function (cb) {
-    cb();
-  });
+  gulp.task('build', gulp.series('pug', 'less'));
 
   /* =================================
   Watch
@@ -111,10 +109,10 @@
   gulp.task('watch', function () {
     checkIsLocal(process.argv.slice(3));
 
-    gulp.watch('./src/less/**/*.*', gulp.series([ 'less' ]));
-    gulp.watch('./src/pug/**/*.pug', { events: ['change'] }).on('change', (path) => {
+    gulp.watch('./src/less/**/*.*', gulp.series('less'));
+    gulp.watch('./src/pug/**/*.pug', { events: ['change'] }).on('change', (changedPath) => {
       checkIsLocal(process.argv.slice(3));
-      const filePath = path.split('src/pug/')[1];
+      const filePath = changedPath.split('src/pug/')[1];
       if (filePath.indexOf('_') === 0 || filePath.indexOf('_layout.pug') >= 0) {
         buildPages();
         return;
@@ -167,9 +165,9 @@
     return gulp.src('./index.html').pipe(open({ uri: 'http://localhost:3000/index.html'}));
   });
 
-  gulp.task('server', gulp.parallel([ 'watch', 'connect', 'open' ]));
+  gulp.task('server', gulp.parallel('watch', 'connect', 'open' ));
 
-  gulp.task('default', gulp.series([ 'server' ]));
+  gulp.task('default', gulp.series('server'));
 
-  gulp.task('test', gulp.series([ 'build' ]));
-  })();
+  gulp.task('test', gulp.series('build'));
+})();
