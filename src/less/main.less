@@ -3,7 +3,7 @@
 @import url('./fonts.less');
 
 body {
-  font-family: Sailec,-apple-system, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-family: Sailec, -apple-system, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 16px;
   color: #000;
   margin: 0;
@@ -34,7 +34,7 @@ body {
   }
 }
 a {
-  color: @primaryColor;
+  color: @redColor;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
@@ -61,6 +61,7 @@ h1, .h1 {
 }
 
 h2, .h2 {
+  font-weight: bold;
   font-size: 32px;
   line-height: 1.3;
   margin: 25px 0 15px;
@@ -150,9 +151,9 @@ main {
 
 .important-note {
   padding: 5px 10px 5px 15px;
-  background: lighten(@primaryColor,45%);
+  background: lighten(@redColor,45%);
   color: #000;
-  border-left: 3px solid @primaryColor;
+  border-left: 3px solid @redColor;
   transition-duration: 400ms;
   ul {
     margin: 0;
@@ -228,12 +229,10 @@ main {
   padding: 0 10px;
   display: inline-block;
   border-radius: 11px;
-  background: rgba(255,255,255,0.1);
   transition: 200ms;
   font-weight: bold;
   &:hover {
     background: @lightBrownColor;
-
   }
   .patreon-logo {
     display: inline-block;
@@ -263,7 +262,7 @@ main {
     }
   }
   .patreon-text {
-    font-size: 12px;
+    font-size: 14px;
     display: inline-block;
     vertical-align: middle;
     line-height: 1;

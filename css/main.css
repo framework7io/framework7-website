@@ -124,6 +124,7 @@ h1:first-child,
 }
 h2,
 .h2 {
+  font-weight: bold;
   font-size: 32px;
   line-height: 1.3;
   margin: 25px 0 15px;
@@ -290,7 +291,6 @@ main img {
   padding: 0 10px;
   display: inline-block;
   border-radius: 11px;
-  background: rgba(255, 255, 255, 0.1);
   transition: 200ms;
   font-weight: bold;
 }
@@ -324,7 +324,7 @@ main img {
   top: 0;
 }
 .patreon-button .patreon-text {
-  font-size: 12px;
+  font-size: 14px;
   display: inline-block;
   vertical-align: middle;
   line-height: 1;
@@ -344,11 +344,6 @@ header {
   background: #EE350F;
   font-size: 14px;
   line-height: 1.5;
-}
-header .logo {
-  background: url('../i/logo.svg') no-repeat center;
-  background-size: contain;
-  display: block;
 }
 header .carbon {
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -591,9 +586,14 @@ header .carbon a {
   display: flex;
   align-items: center;
   margin-top: 10px;
+  flex-wrap: nowrap;
 }
 .home-header .github-buttons {
   margin-right: 20px;
+}
+.home-header .github-buttons,
+.home-header .patreon-button {
+  flex-shrink: 0;
 }
 @media (max-width: 900px) {
   .home-header .slogan {
@@ -609,8 +609,8 @@ header .carbon a {
   position: relative;
   z-index: 500;
   background: linear-gradient(to bottom, #EE0F58 20%, #EE350F);
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 .internal-header > .center {
   display: flex;
@@ -623,6 +623,9 @@ header .carbon a {
   margin-bottom: -30px;
 }
 .internal-header .logo {
+  background: url('../i/logo.svg') no-repeat center;
+  background-size: contain;
+  display: block;
   width: 160px;
   height: 160px;
   margin-left: auto;
@@ -719,6 +722,12 @@ header .carbon a {
   border-right: 10px solid transparent;
   border-bottom: 10px solid #fff;
   position: absolute;
+}
+.internal-header ul.nav ul li.divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin-left: -20px;
+  margin-right: -20px;
 }
 .internal-header ul.nav ul li + li {
   margin-top: 6px;
@@ -1158,6 +1167,7 @@ body.body-docs main > .center {
   display: flex;
 }
 .docs-content {
+  font-family: -apple-system, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
   flex-shrink: 10;
   box-sizing: border-box;
   position: relative;
@@ -1365,7 +1375,7 @@ b.ios-only:before {
   background: #f3f3f3;
   color: #555;
   display: inline-block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   text-align: center;
   transition: 200ms;
@@ -1379,7 +1389,7 @@ b.ios-only:before {
   border-radius: 0 10px 10px 0;
 }
 .docs-demo-device .docs-demo-device-buttons a:hover {
-  background: rgba(238, 53, 15, 0.1);
+  background: rgba(238, 53, 15, 0.2);
 }
 .docs-demo-device .docs-demo-device-buttons a.active {
   background-color: #EE350F;
@@ -1476,7 +1486,7 @@ ul.method-parameters .parameter-type {
 }
 .docs-index {
   font-size: 14px;
-  border-left: 2px solid #666;
+  border-left: 2px solid #000;
   margin: 1em 0;
   padding: 0;
   padding-left: 20px;
@@ -1511,7 +1521,7 @@ ul.method-parameters .parameter-type {
   margin-bottom: 0;
 }
 .docs-index a {
-  color: #333;
+  color: #000;
 }
 .docs-index ul {
   list-style: none;
@@ -1526,8 +1536,6 @@ ul.method-parameters .parameter-type {
   padding-left: 20px;
   box-sizing: border-box;
   flex-shrink: 0;
-  color: #615353;
-  background: #f7f1f1;
   background: #ffffff;
   position: relative;
   padding-top: 40px;
@@ -1555,7 +1563,7 @@ ul.method-parameters .parameter-type {
   }
 }
 .docs-nav .title {
-  color: #181818;
+  color: #000;
   margin-bottom: 10px;
   font-weight: 700;
   font-size: 16px;
@@ -1602,7 +1610,7 @@ ul.method-parameters .parameter-type {
   transform: translateY(-50%);
 }
 .docs-nav a {
-  color: #3a2b2b;
+  color: #000;
   text-decoration: none;
   display: block;
   padding-right: 10px;
@@ -1699,7 +1707,7 @@ ul.method-parameters .parameter-type {
   position: -moz-sticky;
   position: sticky;
   top: 0;
-  background: #d6300d;
+  background: #EE350F;
   cursor: pointer;
   width: 36px;
   height: 30px;
@@ -1985,7 +1993,7 @@ table.double-events-table tr:nth-child(4n - 4) td {
   margin-left: auto;
   margin-right: auto;
   cursor: pointer;
-  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
   border-radius: 45px;
   position: relative;
   display: block;
@@ -2064,18 +2072,18 @@ table.double-events-table tr:nth-child(4n - 4) td {
   white-space: nowrap;
 }
 .apps .app-badges span {
-  background: #A00D0F;
+  background: #0D9EF1;
   display: inline-block;
   text-align: center;
   box-sizing: border-box;
   min-width: 24px;
-  color: #FCFF00;
+  color: #fff;
   font-size: 12px;
   font-weight: bold;
   line-height: 18px;
   height: 18px;
+  border-radius: 9px;
   padding: 0 5px;
-  border-radius: 4px;
 }
 .apps .app-badges span + span {
   margin-left: 5px;
@@ -2120,192 +2128,6 @@ table.double-events-table tr:nth-child(4n - 4) td {
     border-radius: 35px;
   }
 }
-.example {
-  margin: 40px 0;
-}
-.example .device {
-  margin: 0 auto;
-  position: relative;
-  background: #111;
-  box-shadow: 0px 0px 0px 2px #aaa;
-  z-index: 1000;
-  padding: 100px 30px;
-  border-radius: 55px;
-}
-.example .device:after {
-  content: '';
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  left: 50%;
-  margin-left: -30px;
-  bottom: 20px;
-  border-radius: 100%;
-  box-sizing: border-box;
-  border: 5px solid #333;
-}
-.example .device:before {
-  content: '';
-  width: 60px;
-  height: 10px;
-  border-radius: 10px;
-  position: absolute;
-  left: 50%;
-  margin-left: -30px;
-  background: #333;
-  top: 50px;
-}
-.example .device.device-android {
-  border-radius: 20px;
-  width: 360px;
-  padding: 60px 20px;
-  height: 640px;
-  margin-left: -15px;
-}
-.example .device.device-android:before {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  position: absolute;
-  left: 50%;
-  margin-left: -7px;
-  background: #666;
-  top: 25px;
-}
-.example .device.device-android:after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  position: absolute;
-  left: 50px;
-  background: #444;
-  top: 30px;
-  margin-left: 0;
-}
-.example .device.device-android iframe {
-  width: 360px;
-  height: 640px;
-}
-.example .device-inner {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-.example iframe {
-  max-width: 100%;
-}
-.example .device-v {
-  padding: 100px 30px;
-}
-.example .device-v + .info {
-  margin-left: 424px;
-}
-.example .device-h {
-  max-width: 1024px;
-  padding: 30px 80px;
-  border-radius: 30px;
-}
-.example .device-h:after {
-  left: auto;
-  right: 10px;
-  bottom: auto;
-  top: 50%;
-  margin-left: 0;
-  margin-top: -30px;
-}
-.example .device-h:before {
-  width: 10px;
-  height: 60px;
-  top: 50%;
-  margin-left: auto;
-  margin-top: -30px;
-  left: 35px;
-}
-.example .device-left {
-  float: left;
-  margin: 0;
-  margin-right: 40px;
-}
-.example .example-author {
-  margin-bottom: 20px;
-}
-.example h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-}
-.example h2 + .example-author {
-  margin-top: -20px;
-}
-.example .info {
-  padding-top: 30px;
-}
-.example .center-info {
-  margin-left: 50px;
-  margin-right: 50px;
-  margin-bottom: 20px;
-}
-.example a.button {
-  border-radius: 10em;
-  display: inline-block;
-  transition: 200ms;
-  background-color: #f3f3f3;
-  color: #333;
-  text-decoration: none;
-}
-.example a.button:hover {
-  background: #EE350F;
-  color: #fff;
-}
-.example a.button:active {
-  background: #EE350F;
-  color: #fff;
-}
-.example a.button + a.button {
-  margin-left: 15px;
-}
-.example a.button:hover {
-  background: rgba(183, 47, 32, 0.1);
-}
-.example .buttons {
-  margin-top: 25px;
-}
-.example .app-launcher {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: #111;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  border: 1px solid #333;
-}
-.example .app-launcher span {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  color: #fff;
-  font-size: 21px;
-  font-weight: 300;
-  cursor: pointer;
-}
-.example .app-launcher span:before {
-  position: absolute;
-  bottom: 100%;
-  width: 64px;
-  height: 64px;
-  margin-bottom: 10px;
-  border: 1px solid #fff;
-  border-radius: 18px;
-  content: '';
-  left: 50%;
-  margin-left: -33px;
-}
-.example .app-launcher span:hover {
-  opacity: 0.8;
-}
 .showcase-apps {
   display: flex;
   justify-content: flex-start;
@@ -2330,7 +2152,7 @@ table.double-events-table tr:nth-child(4n - 4) td {
 }
 .showcase-apps .app-icon img {
   max-width: 100%;
-  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
 }
 .showcase-apps .app-icon.app-icon-rounded img {
   border-radius: 45px;
@@ -2591,21 +2413,11 @@ table.double-events-table tr:nth-child(4n - 4) td {
     margin-left: 0px;
   }
 }
-.tutorial.video .tutorial-title a:after {
-  content: '▶︎';
-  background: #EE350F;
-  width: 20px;
-  box-sizing: border-box;
-  height: 20px;
-  display: inline-block;
+.tutorial.video .tutorial-title i {
+  color: #EE350F;
+  font-size: 20px;
+  margin-left: 4px;
   vertical-align: middle;
-  border-radius: 10px;
-  margin-left: 5px;
-  color: #fff;
-  text-align: center;
-  line-height: 20px;
-  font-size: 10px;
-  padding-left: 2px;
 }
 .tutorial-title {
   font-weight: 500;
@@ -2615,68 +2427,28 @@ table.double-events-table tr:nth-child(4n - 4) td {
 }
 .tutorial-title a {
   color: inherit;
-  transition-duration: 200ms;
+  transition-duration: 100ms;
   display: block;
 }
 .tutorial-title a:hover {
   color: #EE350F;
   text-decoration: none;
 }
-.tutorial-title span.video {
-  margin-left: 5px;
-  background: #8c2418;
-  width: 20px;
-  height: 20px;
-  border-radius: 100%;
-  color: #fff;
-  font-weight: normal;
-  display: inline-block;
-  vertical-align: middle;
-  position: relative;
-}
-.tutorial-title span.video:after {
-  content: '';
-  width: 0;
-  height: 0;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  border-left: 6px solid #fff;
-  position: absolute;
-  left: 50%;
-  margin-left: -3px;
-  margin-top: -4px;
-  top: 50%;
-}
 .tutorial-author {
   display: block;
   margin-top: 5px;
+  font-weight: 500;
 }
-.tutorial-date {
-  color: #777;
-  margin-bottom: 5px;
-}
-a.donate-button {
-  border-radius: 10em;
-  display: inline-block;
-  transition: 200ms;
-  background-color: #f3f3f3;
-  color: #333;
+.tutorial-author a {
+  opacity: 0.7;
   text-decoration: none;
 }
-a.donate-button:hover {
-  background: #EE350F;
-  color: #fff;
+.tutorial-author a:hover {
+  opacity: 1;
 }
-a.donate-button:active {
-  background: #EE350F;
-  color: #fff;
-}
-a.donate-button:hover {
-  background: rgba(183, 47, 32, 0.1);
-}
-h1 + .tutorial-author {
-  margin-top: -20px;
-  margin-bottom: 25px;
+.tutorial-date {
+  color: #555;
+  margin-bottom: 5px;
 }
 .tutorial-badges {
   position: absolute;
@@ -2685,18 +2457,18 @@ h1 + .tutorial-author {
   white-space: nowrap;
 }
 .tutorial-badges span {
-  background: #A00D0F;
+  background: #0D9EF1;
   display: inline-block;
   text-align: center;
   box-sizing: border-box;
   min-width: 24px;
-  color: #FCFF00;
+  color: #fff;
   font-size: 12px;
   font-weight: bold;
   line-height: 18px;
   height: 18px;
+  border-radius: 9px;
   padding: 0 5px;
-  border-radius: 4px;
 }
 .tutorial-badges span + span {
   margin-left: 5px;

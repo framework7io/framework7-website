@@ -10,6 +10,7 @@ body.body-docs {
 }
 
 .docs-content {
+  font-family: -apple-system, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
   flex-shrink: 10;
   box-sizing: border-box;
   position: relative;
@@ -203,10 +204,10 @@ span.ios-only, span.md-only, b.md-only, b.ios-only {
     a {
       width: 80px;
       text-align: center;
-      background: @buttonBg;
+      background: #f3f3f3;
       color: #555;
       display: inline-block;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       text-align: center;
       transition: 200ms;
@@ -219,10 +220,10 @@ span.ios-only, span.md-only, b.md-only, b.ios-only {
         border-radius: 0 10px 10px 0;
       }
       &:hover {
-        background: rgba(red(@primaryColor), green(@primaryColor), blue(@primaryColor), 0.1);
+        background: rgba(red(@redColor), green(@redColor), blue(@redColor), 0.2);
       }
       &.active {
-        background-color: @primaryColor;
+        background-color: @redColor;
         color: #fff;
       }
     }
@@ -317,7 +318,7 @@ ul.method-parameters {
 
 .docs-index {
   font-size: 14px;
-  border-left: 2px solid #666;
+  border-left: 2px solid #000;
   margin: 1em 0;
   padding: 0;
   padding-left: 20px;
@@ -351,7 +352,7 @@ ul.method-parameters {
     }
   }
   a {
-    color: #333;
+    color: #000;
   }
   ul {
     list-style: none;
@@ -364,14 +365,11 @@ ul.method-parameters {
   }
 }
 .docs-nav {
-  // border-right: 1px solid #f1f1f1;
   width: 200px;
   margin-left: -40px;
   padding-left: 20px;
   box-sizing: border-box;
   flex-shrink: 0;
-  color: #615353;
-  background: #f7f1f1;
   background: #ffffff;
   position: relative;
   padding-top: 40px;
@@ -394,7 +392,7 @@ ul.method-parameters {
     margin-right: 20px;
   }
   .title {
-    color: #181818;
+    color: #000;
     margin-bottom: 10px;
     font-weight: 700;
     font-size: 16px;
@@ -436,19 +434,19 @@ ul.method-parameters {
       width: 1000px;
       height: 100%;
       padding: 5px 0;
-      background: @primaryColor;
+      background: @redColor;
       top: 50%;
       transform: translateY(-50%);
     }
   }
   a {
-    color: #3a2b2b;
+    color: #000;
     text-decoration: none;
     display: block;
     padding-right: 10px;
     position: relative;
     &:hover {
-      color: @primaryColor;
+      color: @redColor;
     }
     &.active {
       font-weight: 500;
@@ -508,8 +506,6 @@ ul.method-parameters {
     display: block;
   }
   input[type="search"] {
-    @bdColor: darken(@primaryColor, 20%);
-    @bdColor: #000;
     border: none;
     appearance: none;
     -webkit-appearance: none;
@@ -524,7 +520,7 @@ ul.method-parameters {
     border-radius: 15px;
     color: #000;
     transition: 400ms;
-    border: 2px solid rgba(red(@bdColor), green(@bdColor), blue(@bdColor), 0.1);
+    border: 2px solid rgba(0, 0, 0, 0.1);
     font-size: 13px;
     z-index: 200;
     position: relative;
@@ -541,7 +537,7 @@ ul.method-parameters {
   position: -moz-sticky;
   position: sticky;
   top: 0;
-  background: darken(@primaryColor, 5%);
+  background: @redColor;
   cursor: pointer;
   width: 36px;
   height: 30px;

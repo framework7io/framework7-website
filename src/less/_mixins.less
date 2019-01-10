@@ -5,31 +5,26 @@
 @lightBrownColor: #A00D0F;
 @yellowColor: #FCFF00;
 
-@brightColor: #FB3E17;
 @darkColor: #b72f20;
 @greenColor: darken(green, 5%);
-@buttonBg: #f3f3f3;
-@footerBg: #f4f4f4;
 @blueColor: #0D9EF1;
-
-
 
 .monospace() {
   font-family: 'Roboto Mono', 'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 .badge() {
-  background: @lightBrownColor;
+  background: @blueColor;
   display: inline-block;
   text-align: center;
   box-sizing: border-box;
   min-width: 24px;
-  color: @yellowColor;
+  color: #fff;
   font-size: 12px;
   font-weight: bold;
   line-height: 18px;
   height: 18px;
+  border-radius: 9px;
   padding: 0 5px;
-  border-radius: 4px;
   + span {
     margin-left: 5px;
   }
@@ -38,15 +33,15 @@
   border-radius: 10em;
   display: inline-block;
   transition: 200ms;
-  background-color: @buttonBg;
+  background-color: #f3f3f3;
   color: #333;
   text-decoration: none;
   &:hover {
-    background: @primaryColor;
+    background: @redColor;
     color: #fff;
   }
   &:active {
-    background: @primaryColor;
+    background: @redColor;
     color: #fff;
   }
 }

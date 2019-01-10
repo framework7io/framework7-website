@@ -33,21 +33,11 @@
       margin-left: 0px;
     }
   }
-  &.video .tutorial-title a:after{
-    content: '▶︎';
-    background: @primaryColor;
-    width: 20px;
-    box-sizing: border-box;
-    height: 20px;
-    display: inline-block;
+  &.video .tutorial-title i {
+    color: @redColor;
+    font-size: 20px;
+    margin-left: 4px;
     vertical-align: middle;
-    border-radius: 10px;
-    margin-left: 5px;
-    color: #fff;
-    text-align: center;
-    line-height: 20px;
-    font-size: 10px;
-    padding-left: 2px;
   }
 }
 .tutorial-title {
@@ -55,57 +45,29 @@
   margin: 0;
   a {
     color: inherit;
-    transition-duration: 200ms;
+    transition-duration: 100ms;
     display: block;
     &:hover {
-      color: @primaryColor;
+      color: @redColor;
       text-decoration: none;
-    }
-  }
-  span.video {
-    margin-left: 5px;
-    background:darken(@darkColor,10%);
-    width: 20px;
-    height: 20px;
-    border-radius: 100%;
-    color:#fff;
-    font-weight: normal;
-    display: inline-block;
-    vertical-align: middle;
-    position: relative;
-    &:after {
-      content: '';
-      width: 0;
-      height: 0;
-      position: absolute;
-      border-top: 4px solid transparent;
-      border-bottom: 4px solid transparent;
-      border-left: 6px solid #fff;
-      position: absolute;
-      left: 50%;
-      margin-left: -3px;
-      margin-top: -4px;
-      top: 50%;
     }
   }
 }
 .tutorial-author {
   display: block;
   margin-top: 5px;
-}
-.tutorial-date {
-  color: #777;
-  margin-bottom: 5px;
-}
-a.donate-button {
-  .button();
-  &:hover {
-    background: rgba(red(@darkColor),green(@darkColor),blue(@darkColor),0.1);
+  font-weight: 500;
+  a {
+    opacity: 0.7;
+    text-decoration: none;
+    &:hover {
+      opacity: 1;
+    }
   }
 }
-h1 + .tutorial-author {
-  margin-top: -20px;
-  margin-bottom: 25px;
+.tutorial-date {
+  color: #555;
+  margin-bottom: 5px;
 }
 .tutorial-badges {
   position: absolute;
