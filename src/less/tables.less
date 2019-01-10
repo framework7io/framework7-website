@@ -1,6 +1,5 @@
 table {
   width: 100%;
-  color: #333;
   font-size: 14px;
   margin: 1em 0 2em;
   th,td {
@@ -43,12 +42,12 @@ table.params-table {
   }
   tbody {
     td:first-child:not([colspan]), td:nth-child(2), td:nth-child(3):not(:last-child) {
-      color: @darkColor;
+      color: @docsCodeRed;
       .monospace();
       font-weight: 500;
     }
     td:nth-child(2) {
-      color: @greenColor;
+      color: @docsCodeGreen;
     }
     td:nth-child(n + 3) {
       word-break: break-word;
@@ -95,12 +94,12 @@ table.methods-table {
     white-space: nowrap;
     font-weight: 500;
     span {
-      color: @darkColor;
+      color: @docsCodeRed;
     }
   }
   .parameter-type {
     .monospace();
-    color: @greenColor;
+    color: @docsCodeGreen;
   }
   ul.method-parameters {
     margin: 0;
@@ -129,7 +128,7 @@ table.methods-table {
       white-space: normal;
       font-weight: 500;
       span {
-        color: @darkColor;
+        color: @docsCodeRed;
       }
     }
   }
@@ -144,7 +143,7 @@ table.events-table {
   tbody td:nth-child(2) span, tbody td:nth-child(3) span {
     white-space: nowrap;
     .monospace();
-    color: @darkColor;
+    color: @docsCodeRed;
     font-weight: 500;
     display: block;
   }
