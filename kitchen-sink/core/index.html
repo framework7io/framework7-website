@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#2196f3">
   <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap:">
   <title>Framework7</title>
-  <link rel="stylesheet" href="../../packages/core/css/framework7.min.css">
+  <link rel="stylesheet" href="../../packages/core/css/framework7.bundle.min.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="apple-touch-icon" href="img/f7-icon-square.png">
   <link rel="icon" href="img/f7-icon.png">
@@ -98,9 +98,12 @@
             <div class="title sliding">Framework7</div>
             <div class="right">
               <a class="link icon-only searchbar-enable" data-searchbar=".searchbar-components">
-                <i class="icon f7-icons ios-only">search_strong</i>
+                <i class="icon f7-icons ios-only">search</i>
                 <i class="icon material-icons md-only">search</i>
               </a>
+            </div>
+            <div class="title-large">
+              <div class="title-large-text">Framework7</div>
             </div>
             <form data-search-container=".components-list" data-search-in="a" class="searchbar searchbar-expandable searchbar-components searchbar-init">
               <div class="searchbar-inner">
@@ -183,6 +186,14 @@
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
                     <div class="item-title">Cards</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="item-content item-link" href="/cards-expandable/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Cards Expandable</div>
                   </div>
                 </a>
               </li>
@@ -339,6 +350,14 @@
                 </a>
               </li>
               <li>
+                  <a class="item-content item-link" href="/menu/">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner">
+                      <div class="item-title">Menu</div>
+                    </div>
+                  </a>
+                </li>
+              <li>
                 <a class="item-content item-link" href="/messages/">
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
@@ -463,6 +482,14 @@
                   <div class="item-media"><i class="icon icon-f7"></i></div>
                   <div class="item-inner">
                     <div class="item-title">Sheet Modal</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="item-content item-link" href="/skeleton/">
+                  <div class="item-media"><i class="icon icon-f7"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title">Skeleton (Ghost) Layouts</div>
                   </div>
                 </a>
               </li>
@@ -625,7 +652,7 @@
       </div>
     </div>
   </div>
-  <script src="../../packages/core/js/framework7.min.js"></script>
+  <script src="../../packages/core/js/framework7.bundle.min.js"></script>
   <script src="js/routes.js"></script>
   <script src="js/app.js"></script>
 </body>

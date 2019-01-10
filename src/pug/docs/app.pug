@@ -170,8 +170,8 @@ block content
         tr.subparam-row
           td fastClicks
           td boolean
-          td true
-          td Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. You can disable this built-in library if you want to use other third party fast clicks script.
+          td false
+          td Fast clicks is a built-in library that removes 300ms delay from links and form elements in mobile browser while you click them. Modern browsers are smart enough to eliminate that click delay. You can enable this built-in library if you target old devices or experience click delays.
         tr.subparam-row
           td fastClicksDistanceThreshold
           td number
@@ -190,8 +190,8 @@ block content
         tr.subparam-row
           td disableContextMenu
           td boolean
-          td true
-          td
+          td false
+          td Set to true to disable context menu (with right click or tap and hold)
         tr.subparam-row
           td tapHold
           td boolean
@@ -218,12 +218,17 @@ block content
           td a, button, label, span, .actions-button
           td CSS selector of elements where enabled <code>activeState</code> will add appropriate active class
         tr.subparam-row
-          td materialRipple
+          td iosTouchRipple
+          td boolean
+          td false
+          td Enables touch ripple effect for iOS theme
+        tr.subparam-row
+          td mdTouchRipple
           td boolean
           td true
-          td Enables Material theme specific touch ripple effect
+          td Enables touch ripple effect for MD theme
         tr.subparam-row
-          td materialRippleElements
+          td touchRippleElements
           td string
           td .ripple, .link, .item-link, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell, .notification-close-button
           td CSS selector of elements to apply touch ripple effect on click
@@ -407,3 +412,4 @@ block content
             console.log('Panel ' + panel.side + ' opened');
           });
 
+    h2 CSS Variables

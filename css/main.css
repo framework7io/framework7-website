@@ -2661,6 +2661,14 @@ code.less .variable {
 code.less .url {
   color: #C2E988;
 }
+code .code-color {
+  width: 0.8em;
+  height: 0.8em;
+  display: inline-block;
+  margin-right: 3px;
+  box-sizing: border-box;
+  border: 1px solid #fff;
+}
 footer {
   background: #fff;
   color: #000;

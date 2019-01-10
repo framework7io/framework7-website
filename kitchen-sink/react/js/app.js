@@ -110,10 +110,10 @@
 	var arguments$1 = arguments;
 	for(var b=arguments.length-1,e="https://reactjs.org/docs/error-decoder.html?invariant="+a,c=0;c<b;c++){ e+="&args[]="+encodeURIComponent(arguments$1[c+1]); }aa(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",e);}var E={isMounted:function(){return !1},enqueueForceUpdate:function(){},enqueueReplaceState:function(){},enqueueSetState:function(){}},F={};
 	function G(a,b,e){this.props=a;this.context=b;this.refs=F;this.updater=e||E;}G.prototype.isReactComponent={};G.prototype.setState=function(a,b){"object"!==typeof a&&"function"!==typeof a&&null!=a?D("85"):void 0;this.updater.enqueueSetState(this,a,b,"setState");};G.prototype.forceUpdate=function(a){this.updater.enqueueForceUpdate(this,a,"forceUpdate");};function H(){}H.prototype=G.prototype;function I(a,b,e){this.props=a;this.context=b;this.refs=F;this.updater=e||E;}var J=I.prototype=new H;
-	J.constructor=I;objectAssign(J,G.prototype);J.isPureReactComponent=!0;var K={current:null,currentDispatcher:null},L=Object.prototype.hasOwnProperty,M={key:!0,ref:!0,__self:!0,__source:!0};
+	J.constructor=I;objectAssign(J,G.prototype);J.isPureReactComponent=!0;var K={current:null,currentDispatcher:null},L$1=Object.prototype.hasOwnProperty,M={key:!0,ref:!0,__self:!0,__source:!0};
 	function N(a,b,e){
 	var arguments$1 = arguments;
-	var c=void 0,d={},g=null,h=null;if(null!=b){ for(c in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(g=""+b.key),b){ L.call(b,c)&&!M.hasOwnProperty(c)&&(d[c]=b[c]); } }var f=arguments.length-2;if(1===f){ d.children=e; }else if(1<f){for(var l=Array(f),m=0;m<f;m++){ l[m]=arguments$1[m+2]; }d.children=l;}if(a&&a.defaultProps){ for(c in f=a.defaultProps,f){ void 0===d[c]&&(d[c]=f[c]); } }return {$$typeof:p,type:a,key:g,ref:h,props:d,_owner:K.current}}
+	var c=void 0,d={},g=null,h=null;if(null!=b){ for(c in void 0!==b.ref&&(h=b.ref),void 0!==b.key&&(g=""+b.key),b){ L$1.call(b,c)&&!M.hasOwnProperty(c)&&(d[c]=b[c]); } }var f=arguments.length-2;if(1===f){ d.children=e; }else if(1<f){for(var l=Array(f),m=0;m<f;m++){ l[m]=arguments$1[m+2]; }d.children=l;}if(a&&a.defaultProps){ for(c in f=a.defaultProps,f){ void 0===d[c]&&(d[c]=f[c]); } }return {$$typeof:p,type:a,key:g,ref:h,props:d,_owner:K.current}}
 	function ba(a,b){return {$$typeof:p,type:a.type,key:b,ref:a.ref,props:a.props,_owner:a._owner}}function O(a){return "object"===typeof a&&null!==a&&a.$$typeof===p}function escape(a){var b={"=":"=0",":":"=2"};return "$"+(""+a).replace(/[=:]/g,function(a){return b[a]})}var P=/\/+/g,Q=[];function R(a,b,e,c){if(Q.length){var d=Q.pop();d.result=a;d.keyPrefix=b;d.func=e;d.context=c;d.count=0;return d}return {result:a,keyPrefix:b,func:e,context:c,count:0}}
 	function S(a){a.result=null;a.keyPrefix=null;a.func=null;a.context=null;a.count=0;10>Q.length&&Q.push(a);}
 	function T(a,b,e,c){var d=typeof a;if("undefined"===d||"boolean"===d){ a=null; }var g=!1;if(null===a){ g=!0; }else { switch(d){case "string":case "number":g=!0;break;case "object":switch(a.$$typeof){case p:case q:g=!0;}} }if(g){ return e(c,a,""===b?"."+U(a,0):b),1; }g=0;b=""===b?".":b+":";if(Array.isArray(a)){ for(var h=0;h<a.length;h++){d=a[h];var f=b+U(d,h);g+=T(d,f,e,c);} }else if(null===a||"object"!==typeof a?f=null:(f=C&&a[C]||a["@@iterator"],f="function"===typeof f?f:null),"function"===typeof f){ for(a=f.call(a),h=
@@ -123,7 +123,7 @@
 	_currentValue:a,_currentValue2:a,_threadCount:0,Provider:null,Consumer:null};a.Provider={$$typeof:v,_context:a};return a.Consumer=a},forwardRef:function(a){return {$$typeof:y,render:a}},lazy:function(a){return {$$typeof:B,_ctor:a,_status:-1,_result:null}},memo:function(a,b){return {$$typeof:A,type:a,compare:void 0===b?null:b}},Fragment:r,StrictMode:t,Suspense:z,createElement:N,cloneElement:function(a,b,e){
 	var arguments$1 = arguments;
 	null===a||void 0===a?D("267",a):void 0;var c=void 0,d=objectAssign({},a.props),g=a.key,h=a.ref,f=a._owner;
-	if(null!=b){void 0!==b.ref&&(h=b.ref,f=K.current);void 0!==b.key&&(g=""+b.key);var l=void 0;a.type&&a.type.defaultProps&&(l=a.type.defaultProps);for(c in b){ L.call(b,c)&&!M.hasOwnProperty(c)&&(d[c]=void 0===b[c]&&void 0!==l?l[c]:b[c]); }}c=arguments.length-2;if(1===c){ d.children=e; }else if(1<c){l=Array(c);for(var m=0;m<c;m++){ l[m]=arguments$1[m+2]; }d.children=l;}return {$$typeof:p,type:a.type,key:g,ref:h,props:d,_owner:f}},createFactory:function(a){var b=N.bind(null,a);b.type=a;return b},isValidElement:O,version:"16.7.0",
+	if(null!=b){void 0!==b.ref&&(h=b.ref,f=K.current);void 0!==b.key&&(g=""+b.key);var l=void 0;a.type&&a.type.defaultProps&&(l=a.type.defaultProps);for(c in b){ L$1.call(b,c)&&!M.hasOwnProperty(c)&&(d[c]=void 0===b[c]&&void 0!==l?l[c]:b[c]); }}c=arguments.length-2;if(1===c){ d.children=e; }else if(1<c){l=Array(c);for(var m=0;m<c;m++){ l[m]=arguments$1[m+2]; }d.children=l;}return {$$typeof:p,type:a.type,key:g,ref:h,props:d,_owner:f}},createFactory:function(a){var b=N.bind(null,a);b.type=a;return b},isValidElement:O,version:"16.7.0",
 	unstable_ConcurrentMode:x,unstable_Profiler:u,__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:K,assign:objectAssign}},Y={default:X},Z=Y&&X||Y;var react_production_min=Z.default||Z;
 
 	var react = createCommonjsModule(function (module) {
@@ -269,10 +269,10 @@
 	function xe(a,b){a=9===a.nodeType||11===a.nodeType?a:a.ownerDocument;var c=Od(a);b=ta[b];for(var d=0;d<b.length;d++){var e=b[d];if(!c.hasOwnProperty(e)||!c[e]){switch(e){case "scroll":Kd("scroll",a);break;case "focus":case "blur":Kd("focus",a);Kd("blur",a);c.blur=!0;c.focus=!0;break;case "cancel":case "close":Sb(e)&&Kd(e,a);break;case "invalid":case "submit":case "reset":break;default:-1===bb.indexOf(e)&&H$1(e,a);}c[e]=!0;}}}function ye(){}var ze=null,Ae=null;
 	function Be(a,b){switch(a){case "button":case "input":case "select":case "textarea":return !!b.autoFocus}return !1}function Ce(a,b){return "textarea"===a||"option"===a||"noscript"===a||"string"===typeof b.children||"number"===typeof b.children||"object"===typeof b.dangerouslySetInnerHTML&&null!==b.dangerouslySetInnerHTML&&null!=b.dangerouslySetInnerHTML.__html}var De="function"===typeof setTimeout?setTimeout:void 0,Ee="function"===typeof clearTimeout?clearTimeout:void 0;
 	function Fe(a,b,c,d,e){a[Ha]=e;"input"===c&&"radio"===e.type&&null!=e.name&&Bc(a,e);we(c,d);d=we(c,e);for(var f=0;f<b.length;f+=2){var g=b[f],h=b[f+1];"style"===g?te(a,h):"dangerouslySetInnerHTML"===g?oe(a,h):"children"===g?pe(a,h):xc(a,g,h,d);}switch(c){case "input":Cc(a,e);break;case "textarea":ie(a,e);break;case "select":b=a._wrapperState.wasMultiple,a._wrapperState.wasMultiple=!!e.multiple,c=e.value,null!=c?fe(a,!!e.multiple,c,!1):b!==!!e.multiple&&(null!=e.defaultValue?fe(a,!!e.multiple,e.defaultValue,
-	!0):fe(a,!!e.multiple,e.multiple?[]:"",!1));}}function Ge(a){for(a=a.nextSibling;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}function He(a){for(a=a.firstChild;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}var Ie=[],Je=-1;function I$1(a){0>Je||(a.current=Ie[Je],Ie[Je]=null,Je--);}function J$1(a,b){Je++;Ie[Je]=a.current;a.current=b;}var Ke={},K$1={current:Ke},L$1={current:!1},Le=Ke;
-	function Me(a,b){var c=a.type.contextTypes;if(!c){ return Ke; }var d=a.stateNode;if(d&&d.__reactInternalMemoizedUnmaskedChildContext===b){ return d.__reactInternalMemoizedMaskedChildContext; }var e={},f;for(f in c){ e[f]=b[f]; }d&&(a=a.stateNode,a.__reactInternalMemoizedUnmaskedChildContext=b,a.__reactInternalMemoizedMaskedChildContext=e);return e}function M$1(a){a=a.childContextTypes;return null!==a&&void 0!==a}function Ne(a){I$1(L$1,a);I$1(K$1,a);}function Oe(a){I$1(L$1,a);I$1(K$1,a);}
-	function Pe(a,b,c){K$1.current!==Ke?t$1("168"):void 0;J$1(K$1,b,a);J$1(L$1,c,a);}function Qe(a,b,c){var d=a.stateNode;a=b.childContextTypes;if("function"!==typeof d.getChildContext){ return c; }d=d.getChildContext();for(var e in d){ e in a?void 0:t$1("108",mc(b)||"Unknown",e); }return objectAssign({},c,d)}function Re(a){var b=a.stateNode;b=b&&b.__reactInternalMemoizedMergedChildContext||Ke;Le=K$1.current;J$1(K$1,b,a);J$1(L$1,L$1.current,a);return !0}
-	function Se(a,b,c){var d=a.stateNode;d?void 0:t$1("169");c?(b=Qe(a,b,Le),d.__reactInternalMemoizedMergedChildContext=b,I$1(L$1,a),I$1(K$1,a),J$1(K$1,b,a)):I$1(L$1,a);J$1(L$1,c,a);}var Te=null,Ue=null;function Ve(a){return function(b){try{return a(b)}catch(c){}}}
+	!0):fe(a,!!e.multiple,e.multiple?[]:"",!1));}}function Ge(a){for(a=a.nextSibling;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}function He(a){for(a=a.firstChild;a&&1!==a.nodeType&&3!==a.nodeType;){ a=a.nextSibling; }return a}var Ie=[],Je=-1;function I$1(a){0>Je||(a.current=Ie[Je],Ie[Je]=null,Je--);}function J$1(a,b){Je++;Ie[Je]=a.current;a.current=b;}var Ke={},K$1={current:Ke},L$2={current:!1},Le=Ke;
+	function Me(a,b){var c=a.type.contextTypes;if(!c){ return Ke; }var d=a.stateNode;if(d&&d.__reactInternalMemoizedUnmaskedChildContext===b){ return d.__reactInternalMemoizedMaskedChildContext; }var e={},f;for(f in c){ e[f]=b[f]; }d&&(a=a.stateNode,a.__reactInternalMemoizedUnmaskedChildContext=b,a.__reactInternalMemoizedMaskedChildContext=e);return e}function M$1(a){a=a.childContextTypes;return null!==a&&void 0!==a}function Ne(a){I$1(L$2,a);I$1(K$1,a);}function Oe(a){I$1(L$2,a);I$1(K$1,a);}
+	function Pe(a,b,c){K$1.current!==Ke?t$1("168"):void 0;J$1(K$1,b,a);J$1(L$2,c,a);}function Qe(a,b,c){var d=a.stateNode;a=b.childContextTypes;if("function"!==typeof d.getChildContext){ return c; }d=d.getChildContext();for(var e in d){ e in a?void 0:t$1("108",mc(b)||"Unknown",e); }return objectAssign({},c,d)}function Re(a){var b=a.stateNode;b=b&&b.__reactInternalMemoizedMergedChildContext||Ke;Le=K$1.current;J$1(K$1,b,a);J$1(L$2,L$2.current,a);return !0}
+	function Se(a,b,c){var d=a.stateNode;d?void 0:t$1("169");c?(b=Qe(a,b,Le),d.__reactInternalMemoizedMergedChildContext=b,I$1(L$2,a),I$1(K$1,a),J$1(K$1,b,a)):I$1(L$2,a);J$1(L$2,c,a);}var Te=null,Ue=null;function Ve(a){return function(b){try{return a(b)}catch(c){}}}
 	function We(a){if("undefined"===typeof __REACT_DEVTOOLS_GLOBAL_HOOK__){ return !1; }var b=__REACT_DEVTOOLS_GLOBAL_HOOK__;if(b.isDisabled||!b.supportsFiber){ return !0; }try{var c=b.inject(a);Te=Ve(function(a){return b.onCommitFiberRoot(c,a)});Ue=Ve(function(a){return b.onCommitFiberUnmount(c,a)});}catch(d){}return !0}
 	function Xe(a,b,c,d){this.tag=a;this.key=c;this.sibling=this.child=this.return=this.stateNode=this.type=this.elementType=null;this.index=0;this.ref=null;this.pendingProps=b;this.firstContextDependency=this.memoizedState=this.updateQueue=this.memoizedProps=null;this.mode=d;this.effectTag=0;this.lastEffect=this.firstEffect=this.nextEffect=null;this.childExpirationTime=this.expirationTime=0;this.alternate=null;}function N$1(a,b,c,d){return new Xe(a,b,c,d)}
 	function Ye(a){a=a.prototype;return !(!a||!a.isReactComponent)}function Ze(a){if("function"===typeof a){ return Ye(a)?1:0; }if(void 0!==a&&null!==a){a=a.$$typeof;if(a===gc){ return 11; }if(a===ic){ return 14 }}return 2}
@@ -319,21 +319,21 @@
 	function rg(a,b,c,d,e,f){if(null===a){var g=c.type;if("function"===typeof g&&!Ye(g)&&void 0===g.defaultProps&&null===c.compare&&void 0===c.defaultProps){ return b.tag=15,b.type=g,sg(a,b,g,d,e,f); }a=af(c.type,null,d,null,b.mode,f);a.ref=b.ref;a.return=b;return b.child=a}g=a.child;if(e<f&&(e=g.memoizedProps,c=c.compare,c=null!==c?c:jd,c(e,d)&&a.ref===b.ref)){ return tg(a,b,f); }b.effectTag|=1;a=$e(g,d,f);a.ref=b.ref;a.return=b;return b.child=a}
 	function sg(a,b,c,d,e,f){return null!==a&&e<f&&jd(a.memoizedProps,d)&&a.ref===b.ref?tg(a,b,f):ug(a,b,c,d,f)}function vg(a,b){var c=b.ref;if(null===a&&null!==c||null!==a&&a.ref!==c){ b.effectTag|=128; }}function ug(a,b,c,d,e){var f=M$1(c)?Le:K$1.current;f=Me(b,f);Df(b,e);c=c(d,f);b.effectTag|=1;Q$1(a,b,c,e);return b.child}
 	function wg(a,b,c,d,e){if(M$1(c)){var f=!0;Re(b);}else { f=!1; }Df(b,e);if(null===b.stateNode){ null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2),Xf(b,c,d,e),$f(b,c,d,e),d=!0; }else if(null===a){var g=b.stateNode,h=b.memoizedProps;g.props=h;var k=g.context,l=c.contextType;"object"===typeof l&&null!==l?l=Of.currentDispatcher.readContext(l):(l=M$1(c)?Le:K$1.current,l=Me(b,l));var m=c.getDerivedStateFromProps,r="function"===typeof m||"function"===typeof g.getSnapshotBeforeUpdate;r||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&
-	"function"!==typeof g.componentWillReceiveProps||(h!==d||k!==l)&&Zf(b,g,d,l);kf=!1;var w=b.memoizedState;k=g.state=w;var y=b.updateQueue;null!==y&&(tf(b,y,d,g,e),k=b.memoizedState);h!==d||w!==k||L$1.current||kf?("function"===typeof m&&(Qf(b,c,m,d),k=b.memoizedState),(h=kf||Wf(b,c,h,d,w,k,l))?(r||"function"!==typeof g.UNSAFE_componentWillMount&&"function"!==typeof g.componentWillMount||("function"===typeof g.componentWillMount&&g.componentWillMount(),"function"===typeof g.UNSAFE_componentWillMount&&
+	"function"!==typeof g.componentWillReceiveProps||(h!==d||k!==l)&&Zf(b,g,d,l);kf=!1;var w=b.memoizedState;k=g.state=w;var y=b.updateQueue;null!==y&&(tf(b,y,d,g,e),k=b.memoizedState);h!==d||w!==k||L$2.current||kf?("function"===typeof m&&(Qf(b,c,m,d),k=b.memoizedState),(h=kf||Wf(b,c,h,d,w,k,l))?(r||"function"!==typeof g.UNSAFE_componentWillMount&&"function"!==typeof g.componentWillMount||("function"===typeof g.componentWillMount&&g.componentWillMount(),"function"===typeof g.UNSAFE_componentWillMount&&
 	g.UNSAFE_componentWillMount()),"function"===typeof g.componentDidMount&&(b.effectTag|=4)):("function"===typeof g.componentDidMount&&(b.effectTag|=4),b.memoizedProps=d,b.memoizedState=k),g.props=d,g.state=k,g.context=l,d=h):("function"===typeof g.componentDidMount&&(b.effectTag|=4),d=!1);}else { g=b.stateNode,h=b.memoizedProps,g.props=b.type===b.elementType?h:P$1(b.type,h),k=g.context,l=c.contextType,"object"===typeof l&&null!==l?l=Of.currentDispatcher.readContext(l):(l=M$1(c)?Le:K$1.current,l=Me(b,l)),m=c.getDerivedStateFromProps,
-	(r="function"===typeof m||"function"===typeof g.getSnapshotBeforeUpdate)||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&"function"!==typeof g.componentWillReceiveProps||(h!==d||k!==l)&&Zf(b,g,d,l),kf=!1,k=b.memoizedState,w=g.state=k,y=b.updateQueue,null!==y&&(tf(b,y,d,g,e),w=b.memoizedState),h!==d||k!==w||L$1.current||kf?("function"===typeof m&&(Qf(b,c,m,d),w=b.memoizedState),(m=kf||Wf(b,c,h,d,k,w,l))?(r||"function"!==typeof g.UNSAFE_componentWillUpdate&&"function"!==typeof g.componentWillUpdate||
+	(r="function"===typeof m||"function"===typeof g.getSnapshotBeforeUpdate)||"function"!==typeof g.UNSAFE_componentWillReceiveProps&&"function"!==typeof g.componentWillReceiveProps||(h!==d||k!==l)&&Zf(b,g,d,l),kf=!1,k=b.memoizedState,w=g.state=k,y=b.updateQueue,null!==y&&(tf(b,y,d,g,e),w=b.memoizedState),h!==d||k!==w||L$2.current||kf?("function"===typeof m&&(Qf(b,c,m,d),w=b.memoizedState),(m=kf||Wf(b,c,h,d,k,w,l))?(r||"function"!==typeof g.UNSAFE_componentWillUpdate&&"function"!==typeof g.componentWillUpdate||
 	("function"===typeof g.componentWillUpdate&&g.componentWillUpdate(d,w,l),"function"===typeof g.UNSAFE_componentWillUpdate&&g.UNSAFE_componentWillUpdate(d,w,l)),"function"===typeof g.componentDidUpdate&&(b.effectTag|=4),"function"===typeof g.getSnapshotBeforeUpdate&&(b.effectTag|=256)):("function"!==typeof g.componentDidUpdate||h===a.memoizedProps&&k===a.memoizedState||(b.effectTag|=4),"function"!==typeof g.getSnapshotBeforeUpdate||h===a.memoizedProps&&k===a.memoizedState||(b.effectTag|=256),b.memoizedProps=
 	d,b.memoizedState=w),g.props=d,g.state=w,g.context=l,d=m):("function"!==typeof g.componentDidUpdate||h===a.memoizedProps&&k===a.memoizedState||(b.effectTag|=4),"function"!==typeof g.getSnapshotBeforeUpdate||h===a.memoizedProps&&k===a.memoizedState||(b.effectTag|=256),d=!1); }return xg(a,b,c,d,f,e)}
 	function xg(a,b,c,d,e,f){vg(a,b);var g=0!==(b.effectTag&64);if(!d&&!g){ return e&&Se(b,c,!1),tg(a,b,f); }d=b.stateNode;pg.current=b;var h=g&&"function"!==typeof c.getDerivedStateFromError?null:d.render();b.effectTag|=1;null!==a&&g?(b.child=eg(b,a.child,null,f),b.child=eg(b,null,h,f)):Q$1(a,b,h,f);b.memoizedState=d.state;e&&Se(b,c,!0);return b.child}function yg(a){var b=a.stateNode;b.pendingContext?Pe(a,b.pendingContext,b.pendingContext!==b.context):b.context&&Pe(a,b.context,!1);Jf(a,b.containerInfo);}
 	function zg(a,b,c){var d=b.mode,e=b.pendingProps,f=b.memoizedState;if(0===(b.effectTag&64)){f=null;var g=!1;}else { f={timedOutAt:null!==f?f.timedOutAt:0},g=!0,b.effectTag&=-65; }if(null===a){ if(g){var h=e.fallback;a=bf(null,d,0,null);0===(b.mode&1)&&(a.child=null!==b.memoizedState?b.child.child:b.child);d=bf(h,d,c,null);a.sibling=d;c=a;c.return=d.return=b;}else { c=d=fg(b,null,e.children,c); } }else { null!==a.memoizedState?(d=a.child,h=d.sibling,g?(c=e.fallback,e=$e(d,d.pendingProps,0),0===(b.mode&1)&&(g=null!==
 	b.memoizedState?b.child.child:b.child,g!==d.child&&(e.child=g)),d=e.sibling=$e(h,c,h.expirationTime),c=e,e.childExpirationTime=0,c.return=d.return=b):c=d=eg(b,d.child,e.children,c)):(h=a.child,g?(g=e.fallback,e=bf(null,d,0,null),e.child=h,0===(b.mode&1)&&(e.child=null!==b.memoizedState?b.child.child:b.child),d=e.sibling=bf(g,d,c,null),d.effectTag|=2,c=e,e.childExpirationTime=0,c.return=d.return=b):d=c=eg(b,h,e.children,c)),b.stateNode=a.stateNode; }b.memoizedState=f;b.child=c;return d}
 	function tg(a,b,c){null!==a&&(b.firstContextDependency=a.firstContextDependency);if(b.childExpirationTime<c){ return null; }null!==a&&b.child!==a.child?t$1("153"):void 0;if(null!==b.child){a=b.child;c=$e(a,a.pendingProps,a.expirationTime);b.child=c;for(c.return=b;null!==a.sibling;){ a=a.sibling,c=c.sibling=$e(a,a.pendingProps,a.expirationTime),c.return=b; }c.sibling=null;}return b.child}
-	function Ag(a,b,c){var d=b.expirationTime;if(null!==a&&a.memoizedProps===b.pendingProps&&!L$1.current&&d<c){switch(b.tag){case 3:yg(b);og();break;case 5:Lf(b);break;case 1:M$1(b.type)&&Re(b);break;case 4:Jf(b,b.stateNode.containerInfo);break;case 10:Bf(b,b.memoizedProps.value);break;case 13:if(null!==b.memoizedState){d=b.child.childExpirationTime;if(0!==d&&d>=c){ return zg(a,b,c); }b=tg(a,b,c);return null!==b?b.sibling:null}}return tg(a,b,c)}b.expirationTime=0;switch(b.tag){case 2:d=b.elementType;null!==
+	function Ag(a,b,c){var d=b.expirationTime;if(null!==a&&a.memoizedProps===b.pendingProps&&!L$2.current&&d<c){switch(b.tag){case 3:yg(b);og();break;case 5:Lf(b);break;case 1:M$1(b.type)&&Re(b);break;case 4:Jf(b,b.stateNode.containerInfo);break;case 10:Bf(b,b.memoizedProps.value);break;case 13:if(null!==b.memoizedState){d=b.child.childExpirationTime;if(0!==d&&d>=c){ return zg(a,b,c); }b=tg(a,b,c);return null!==b?b.sibling:null}}return tg(a,b,c)}b.expirationTime=0;switch(b.tag){case 2:d=b.elementType;null!==
 	a&&(a.alternate=null,b.alternate=null,b.effectTag|=2);a=b.pendingProps;var e=Me(b,K$1.current);Df(b,c);e=d(a,e);b.effectTag|=1;if("object"===typeof e&&null!==e&&"function"===typeof e.render&&void 0===e.$$typeof){b.tag=1;if(M$1(d)){var f=!0;Re(b);}else { f=!1; }b.memoizedState=null!==e.state&&void 0!==e.state?e.state:null;var g=d.getDerivedStateFromProps;"function"===typeof g&&Qf(b,d,g,a);e.updater=Vf;b.stateNode=e;e._reactInternalFiber=b;$f(b,d,a,c);b=xg(null,b,d,!0,f,c);}else { b.tag=0,Q$1(null,b,e,c),b=b.child; }
 	return b;case 16:e=b.elementType;null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2);f=b.pendingProps;a=Nf(e);b.type=a;e=b.tag=Ze(a);f=P$1(a,f);g=void 0;switch(e){case 0:g=ug(null,b,a,f,c);break;case 1:g=wg(null,b,a,f,c);break;case 11:g=qg(null,b,a,f,c);break;case 14:g=rg(null,b,a,P$1(a.type,f),d,c);break;default:t$1("306",a,"");}return g;case 0:return d=b.type,e=b.pendingProps,e=b.elementType===d?e:P$1(d,e),ug(a,b,d,e,c);case 1:return d=b.type,e=b.pendingProps,e=b.elementType===d?e:P$1(d,e),wg(a,b,
 	d,e,c);case 3:yg(b);d=b.updateQueue;null===d?t$1("282"):void 0;e=b.memoizedState;e=null!==e?e.element:null;tf(b,d,b.pendingProps,null,c);d=b.memoizedState.element;if(d===e){ og(),b=tg(a,b,c); }else{e=b.stateNode;if(e=(null===a||null===a.child)&&e.hydrate){ hg=He(b.stateNode.containerInfo),gg=b,e=ig=!0; }e?(b.effectTag|=2,b.child=fg(b,null,d,c)):(Q$1(a,b,d,c),og());b=b.child;}return b;case 5:return Lf(b),null===a&&lg(b),d=b.type,e=b.pendingProps,f=null!==a?a.memoizedProps:null,g=e.children,Ce(d,e)?g=null:null!==
 	f&&Ce(d,f)&&(b.effectTag|=16),vg(a,b),1!==c&&b.mode&1&&e.hidden?(b.expirationTime=1,b=null):(Q$1(a,b,g,c),b=b.child),b;case 6:return null===a&&lg(b),null;case 13:return zg(a,b,c);case 4:return Jf(b,b.stateNode.containerInfo),d=b.pendingProps,null===a?b.child=eg(b,null,d,c):Q$1(a,b,d,c),b.child;case 11:return d=b.type,e=b.pendingProps,e=b.elementType===d?e:P$1(d,e),qg(a,b,d,e,c);case 7:return Q$1(a,b,b.pendingProps,c),b.child;case 8:return Q$1(a,b,b.pendingProps.children,c),b.child;case 12:return Q$1(a,b,b.pendingProps.children,
-	c),b.child;case 10:a:{d=b.type._context;e=b.pendingProps;g=b.memoizedProps;f=e.value;Bf(b,f);if(null!==g){var h=g.value;f=h===f&&(0!==h||1/h===1/f)||h!==h&&f!==f?0:("function"===typeof d._calculateChangedBits?d._calculateChangedBits(h,f):1073741823)|0;if(0===f){if(g.children===e.children&&!L$1.current){b=tg(a,b,c);break a}}else { for(g=b.child,null!==g&&(g.return=b);null!==g;){h=g.firstContextDependency;if(null!==h){do{if(h.context===d&&0!==(h.observedBits&f)){if(1===g.tag){var k=nf(c);k.tag=2;pf(g,k);}g.expirationTime<
+	c),b.child;case 10:a:{d=b.type._context;e=b.pendingProps;g=b.memoizedProps;f=e.value;Bf(b,f);if(null!==g){var h=g.value;f=h===f&&(0!==h||1/h===1/f)||h!==h&&f!==f?0:("function"===typeof d._calculateChangedBits?d._calculateChangedBits(h,f):1073741823)|0;if(0===f){if(g.children===e.children&&!L$2.current){b=tg(a,b,c);break a}}else { for(g=b.child,null!==g&&(g.return=b);null!==g;){h=g.firstContextDependency;if(null!==h){do{if(h.context===d&&0!==(h.observedBits&f)){if(1===g.tag){var k=nf(c);k.tag=2;pf(g,k);}g.expirationTime<
 	c&&(g.expirationTime=c);k=g.alternate;null!==k&&k.expirationTime<c&&(k.expirationTime=c);for(var l=g.return;null!==l;){k=l.alternate;if(l.childExpirationTime<c){ l.childExpirationTime=c,null!==k&&k.childExpirationTime<c&&(k.childExpirationTime=c); }else if(null!==k&&k.childExpirationTime<c){ k.childExpirationTime=c; }else { break; }l=l.return;}}k=g.child;h=h.next;}while(null!==h)}else { k=10===g.tag?g.type===b.type?null:g.child:g.child; }if(null!==k){ k.return=g; }else { for(k=g;null!==k;){if(k===b){k=null;break}g=k.sibling;
 	if(null!==g){g.return=k.return;k=g;break}k=k.return;} }g=k;} }}Q$1(a,b,e.children,c);b=b.child;}return b;case 9:return e=b.type,f=b.pendingProps,d=f.children,Df(b,c),e=Ef(e,f.unstable_observedBits),d=d(e),b.effectTag|=1,Q$1(a,b,d,c),b.child;case 14:return e=b.type,f=P$1(e,b.pendingProps),f=P$1(e.type,f),rg(a,b,e,f,d,c);case 15:return sg(a,b,b.type,b.pendingProps,d,c);case 17:return d=b.type,e=b.pendingProps,e=b.elementType===d?e:P$1(d,e),null!==a&&(a.alternate=null,b.alternate=null,b.effectTag|=2),b.tag=1,M$1(d)?(a=
 	!0,Re(b)):a=!1,Df(b,c),Xf(b,d,e,c),$f(b,d,e,c),xg(null,b,d,!0,a,c);default:t$1("156");}}function Bg(a){a.effectTag|=4;}var Cg=void 0,Gg=void 0,Hg=void 0,Ig=void 0;Cg=function(a,b){for(var c=b.child;null!==c;){if(5===c.tag||6===c.tag){ a.appendChild(c.stateNode); }else if(4!==c.tag&&null!==c.child){c.child.return=c;c=c.child;continue}if(c===b){ break; }for(;null===c.sibling;){if(null===c.return||c.return===b){ return; }c=c.return;}c.sibling.return=c.return;c=c.sibling;}};Gg=function(){};
@@ -410,6 +410,34 @@
 	void 0:t$1("40");return a._reactRootContainer?(Uh(function(){fi(null,null,a,!1,function(){a._reactRootContainer=null;});}),!0):!1},unstable_createPortal:function(){return gi.apply(void 0,arguments)},unstable_batchedUpdates:Th,unstable_interactiveUpdates:Wh,flushSync:function(a,b){X$1?t$1("187"):void 0;var c=Z$1;Z$1=!0;try{return wh(a,b)}finally{Z$1=c,Qh(1073741823,!1);}},unstable_createRoot:hi,unstable_flushControlled:function(a){var b=Z$1;Z$1=!0;try{wh(a);}finally{(Z$1=b)||X$1||Qh(1073741823,!1);}},__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{Events:[Ja,
 	Ka,La,Ca.injectEventPluginsByName,qa,Ra,function(a){za(a,Qa);},Ib,Jb,Jd,Ea]}};function hi(a,b){di(a)?void 0:t$1("299","unstable_createRoot");return new ci(a,!0,null!=b&&!0===b.hydrate)}(function(a){var b=a.findFiberByHostInstance;return We(objectAssign({},a,{overrideProps:null,findHostInstanceByFiber:function(a){a=nd(a);return null===a?null:a.stateNode},findFiberByHostInstance:function(a){return b?b(a):null}}))})({findFiberByHostInstance:Ia,bundleType:0,version:"16.7.0",rendererPackageName:"react-dom"});
 	var li={default:ki},mi=li&&ki||li;var reactDom_production_min=mi.default||mi;
+
+	var reactDom = createCommonjsModule(function (module) {
+
+	function checkDCE() {
+	  /* global __REACT_DEVTOOLS_GLOBAL_HOOK__ */
+	  if (
+	    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined' ||
+	    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== 'function'
+	  ) {
+	    return;
+	  }
+	  try {
+	    // Verify that the code above has been dead code eliminated (DCE'd).
+	    __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(checkDCE);
+	  } catch (err) {
+	    // DevTools shouldn't crash React, no matter what.
+	    // We should still report in case we break this code.
+	    console.error(err);
+	  }
+	}
+
+	{
+	  // DCE check should happen before ReactDOM bundle executes so that
+	  // DevTools can report bad minification during injection.
+	  checkDCE();
+	  module.exports = reactDom_production_min;
+	}
+	});
 
 	/**
 	 * Template7 1.4.0
@@ -2878,55 +2906,6 @@
 	  }
 	}
 
-	var createPromise = function createPromise(handler) {
-	  var resolved = false;
-	  var rejected = false;
-	  var resolveArgs;
-	  var rejectArgs;
-	  var promiseHandlers = {
-	    then: undefined,
-	    catch: undefined,
-	  };
-	  var promise = {
-	    then: function then(thenHandler) {
-	      if (resolved) {
-	        thenHandler.apply(void 0, resolveArgs);
-	      } else {
-	        promiseHandlers.then = thenHandler;
-	      }
-	      return promise;
-	    },
-	    catch: function catch$1(catchHandler) {
-	      if (rejected) {
-	        catchHandler.apply(void 0, rejectArgs);
-	      } else {
-	        promiseHandlers.catch = catchHandler;
-	      }
-	      return promise;
-	    },
-	  };
-
-	  function resolve() {
-	    var args = [], len = arguments.length;
-	    while ( len-- ) args[ len ] = arguments[ len ];
-
-	    resolved = true;
-	    if (promiseHandlers.then) { promiseHandlers.then.apply(promiseHandlers, args); }
-	    else { resolveArgs = args; }
-	  }
-	  function reject() {
-	    var args = [], len = arguments.length;
-	    while ( len-- ) args[ len ] = arguments[ len ];
-
-	    rejected = true;
-	    if (promiseHandlers.catch) { promiseHandlers.catch.apply(promiseHandlers, args); }
-	    else { rejectArgs = args; }
-	  }
-	  handler(resolve, reject);
-
-	  return promise;
-	};
-
 	var uniqueNumber = 1;
 
 	var Utils = {
@@ -2942,6 +2921,7 @@
 	    return mask.replace(/x/g, function () { return map[Math.floor((Math.random() * length))]; });
 	  },
 	  mdPreloaderContent: "\n    <span class=\"preloader-inner\">\n      <span class=\"preloader-inner-gap\"></span>\n      <span class=\"preloader-inner-left\">\n          <span class=\"preloader-inner-half-circle\"></span>\n      </span>\n      <span class=\"preloader-inner-right\">\n          <span class=\"preloader-inner-half-circle\"></span>\n      </span>\n    </span>\n  ".trim(),
+	  iosPreloaderContent: ("\n    <span class=\"preloader-inner\">\n      " + (Array.from({ length: 12 }).map(function () { return '<span class="preloader-inner-line"></span>'; }).join('')) + "\n    </span>\n  ").trim(),
 	  eventNameToColonCase: function eventNameToColonCase(eventName) {
 	    var hasColon;
 	    return eventName.split('').map(function (char, index) {
@@ -2985,9 +2965,6 @@
 	  },
 	  now: function now() {
 	    return Date.now();
-	  },
-	  promise: function promise(handler) {
-	    return win.Promise ? new Promise(handler) : createPromise(handler);
 	  },
 	  requestAnimationFrame: function requestAnimationFrame(callback) {
 	    if (win.requestAnimationFrame) { return win.requestAnimationFrame(callback); }
@@ -3179,6 +3156,78 @@
 	    }
 	    return to;
 	  },
+	  colorHexToRgb: function colorHexToRgb(hex) {
+	    var h = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, function (m, r, g, b) { return r + r + g + g + b + b; });
+	    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);
+	    return result
+	      ? result.slice(1).map(function (n) { return parseInt(n, 16); })
+	      : null;
+	  },
+	  colorRgbToHex: function colorRgbToHex(r, g, b) {
+	    var result = [r, g, b].map(function (n) {
+	      var hex = n.toString(16);
+	      return hex.length === 1 ? ("0" + hex) : hex;
+	    }).join('');
+	    return ("#" + result);
+	  },
+	  colorRgbToHsl: function colorRgbToHsl(r, g, b) {
+	    r /= 255; // eslint-disable-line
+	    g /= 255; // eslint-disable-line
+	    b /= 255; // eslint-disable-line
+	    var max = Math.max(r, g, b);
+	    var min = Math.min(r, g, b);
+	    var d = max - min;
+	    var h;
+	    if (d === 0) { h = 0; }
+	    else if (max === r) { h = ((g - b) / d) % 6; }
+	    else if (max === g) { h = (b - r) / d + 2; }
+	    else if (max === b) { h = (r - g) / d + 4; }
+	    var l = (min + max) / 2;
+	    var s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+	    return [h * 60, s, l];
+	  },
+	  colorHslToRgb: function colorHslToRgb(h, s, l) {
+	    var c = (1 - Math.abs(2 * l - 1)) * s;
+	    var hp = h / 60;
+	    var x = c * (1 - Math.abs((hp % 2) - 1));
+	    var rgb1;
+	    if (Number.isNaN(h) || typeof h === 'undefined') {
+	      rgb1 = [0, 0, 0];
+	    } else if (hp <= 1) { rgb1 = [c, x, 0]; }
+	    else if (hp <= 2) { rgb1 = [x, c, 0]; }
+	    else if (hp <= 3) { rgb1 = [0, c, x]; }
+	    else if (hp <= 4) { rgb1 = [0, x, c]; }
+	    else if (hp <= 5) { rgb1 = [x, 0, c]; }
+	    else if (hp <= 6) { rgb1 = [c, 0, x]; }
+	    var m = l - (c / 2);
+	    return rgb1.map(function (n) { return Math.max(0, Math.min(255, Math.round(255 * (n + m)))); });
+	  },
+	  colorThemeCSSProperties: function colorThemeCSSProperties() {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
+
+	    var hex;
+	    var rgb;
+	    if (args.length === 1) {
+	      hex = args[0];
+	      rgb = Utils.colorHexToRgb(hex);
+	    } else if (args.length === 3) {
+	      rgb = args;
+	      hex = Utils.colorRgbToHex.apply(Utils, rgb);
+	    }
+	    if (!rgb) { return {}; }
+	    var hsl = Utils.colorRgbToHsl.apply(Utils, rgb);
+	    var hslShade = [hsl[0], hsl[1], Math.max(0, (hsl[2] - 0.08))];
+	    var hslTint = [hsl[0], hsl[1], Math.max(0, (hsl[2] + 0.08))];
+	    var shade = Utils.colorRgbToHex.apply(Utils, Utils.colorHslToRgb.apply(Utils, hslShade));
+	    var tint = Utils.colorRgbToHex.apply(Utils, Utils.colorHslToRgb.apply(Utils, hslTint));
+	    return {
+	      '--f7-theme-color': hex,
+	      '--f7-theme-color-rgb': rgb.join(', '),
+	      '--f7-theme-color-shade': shade,
+	      '--f7-theme-color-tint': tint,
+	    };
+	  },
 	};
 
 	var Device = (function Device() {
@@ -3266,10 +3315,9 @@
 
 	  // Webview
 	  device.webView = !!((iphone || ipad || ipod) && (ua.match(/.*AppleWebKit(?!.*Safari)/i) || win.navigator.standalone))
-	                     || (win.matchMedia && win.matchMedia('(display-mode: standalone)').matches);
+	    || (win.matchMedia && win.matchMedia('(display-mode: standalone)').matches);
 	  device.webview = device.webView;
 	  device.standalone = device.webView;
-
 
 	  // Desktop
 	  device.desktop = !(device.os || device.android || device.webView);
@@ -3288,8 +3336,14 @@
 	      && metaViewport && metaViewport.getAttribute('content').indexOf('minimal-ui') >= 0;
 	  }
 
+	  // Meta statusbar
+	  var metaStatusbar = doc.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+
 	  // Check for status bar and fullscreen app mode
 	  device.needsStatusbarOverlay = function needsStatusbarOverlay() {
+	    if (device.standalone && device.ios && metaStatusbar && metaStatusbar.content === 'black-translucent') {
+	      return true;
+	    }
 	    if ((device.webView || (device.android && device.cordova)) && (win.innerWidth * win.innerHeight === win.screen.width * win.screen.height)) {
 	      if (device.iphoneX && (win.orientation === 90 || win.orientation === -90)) {
 	        return false;
@@ -4302,23 +4356,9 @@
 	};
 
 	var Support = (function Support() {
-	  var positionSticky = (function supportPositionSticky() {
-	    var support = false;
-	    var div = doc.createElement('div');
-	    ('sticky -webkit-sticky -moz-sticky').split(' ').forEach(function (prop) {
-	      if (support) { return; }
-	      div.style.position = prop;
-	      if (div.style.position === prop) {
-	        support = true;
-	      }
-	    });
-	    return support;
-	  }());
-
 	  var testDiv = doc.createElement('div');
 
 	  return {
-	    positionSticky: positionSticky,
 	    touch: (function checkTouch() {
 	      return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
 	    }()),
@@ -4367,6 +4407,10 @@
 	    gestures: (function checkGestures() {
 	      return 'ongesturestart' in win;
 	    }()),
+
+	    intersectionObserver: (function checkObserver() {
+	      return ('IntersectionObserver' in win);
+	    }()),
 	  };
 	}());
 
@@ -4382,7 +4426,12 @@
 	    init: function init() {
 	      var classNames = [];
 	      var html = doc.querySelector('html');
+	      var metaStatusbar = doc.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
 	      if (!html) { return; }
+	      if (Device.standalone && Device.ios && metaStatusbar && metaStatusbar.content === 'black-translucent') {
+	        classNames.push('device-full-viewport');
+	      }
+
 	      // Pixel Ratio
 	      classNames.push(("device-pixel-ratio-" + (Math.floor(Device.pixelRatio))));
 	      if (Device.pixelRatio >= 2) {
@@ -4434,9 +4483,6 @@
 	      var html = doc.querySelector('html');
 	      if (!html) { return; }
 	      var classNames = [];
-	      if (Support.positionSticky) {
-	        classNames.push('support-position-sticky');
-	      }
 	      // Add html classes
 	      classNames.forEach(function (className) {
 	        html.classList.add(className);
@@ -4528,7 +4574,7 @@
 	function initTouch() {
 	  var app = this;
 	  var params = app.params.touch;
-	  var useRipple = app.theme === 'md' && params.materialRipple;
+	  var useRipple = params[((app.theme) + "TouchRipple")];
 
 	  if (Device.ios && Device.webView) {
 	    // Strange hack required for iOS 8 webview to work on inputs
@@ -4546,6 +4592,7 @@
 	  var isMoved;
 	  var tapHoldFired;
 	  var tapHoldTimeout;
+	  var preventClick;
 
 	  var activableElement;
 	  var activeTimeout;
@@ -4570,8 +4617,12 @@
 	    return activable || target;
 	  }
 
+	  function isInsideScrollableViewLight(el) {
+	    var pageContent = el.parents('.page-content');
+	    return pageContent.length > 0;
+	  }
 	  function isInsideScrollableView(el) {
-	    var pageContent = el.parents('.page-content, .panel');
+	    var pageContent = el.parents('.page-content');
 
 	    if (pageContent.length === 0) {
 	      return false;
@@ -4664,7 +4715,7 @@
 
 	  // Ripple handlers
 	  function findRippleElement(el) {
-	    var rippleElements = params.materialRippleElements;
+	    var rippleElements = params.touchRippleElements;
 	    var $el = $(el);
 	    if ($el.is(rippleElements)) {
 	      if ($el.hasClass('no-ripple')) {
@@ -4698,7 +4749,11 @@
 	      rippleTarget = undefined;
 	      return;
 	    }
-	    if (!isInsideScrollableView(rippleTarget)) {
+	    var inScrollable = params.fastClicks
+	      ? isInsideScrollableView(rippleTarget)
+	      : isInsideScrollableViewLight(rippleTarget);
+
+	    if (!inScrollable) {
 	      createRipple(rippleTarget, touchStartX, touchStartY);
 	    } else {
 	      rippleTimeout = setTimeout(function () {
@@ -4843,14 +4898,7 @@
 
 	    if (params.activeState) {
 	      activableElement = findActivableElement(targetElement);
-	      // If it's inside a scrollable view, we don't trigger active-state yet,
-	      // because it can be a scroll instead. Based on the link:
-	      // http://labnote.beedesk.com/click-scroll-and-pseudo-active-on-mobile-webk
-	      if (!isInsideScrollableView(activableElement)) {
-	        addActive();
-	      } else {
-	        activeTimeout = setTimeout(addActive, 80);
-	      }
+	      activeTimeout = setTimeout(addActive, 0);
 	    }
 	    if (useRipple) {
 	      rippleTouchStart(targetElement, touchStartX, touchStartY);
@@ -5041,6 +5089,121 @@
 	    return allowClick;
 	  }
 
+	  function handleTouchStartLight(e) {
+	    isMoved = false;
+	    tapHoldFired = false;
+	    preventClick = false;
+	    if (e.targetTouches.length > 1) {
+	      if (activableElement) { removeActive(); }
+	      return true;
+	    }
+	    if (e.touches.length > 1 && activableElement) {
+	      removeActive();
+	    }
+	    if (params.tapHold) {
+	      if (tapHoldTimeout) { clearTimeout(tapHoldTimeout); }
+	      tapHoldTimeout = setTimeout(function () {
+	        if (e && e.touches && e.touches.length > 1) { return; }
+	        tapHoldFired = true;
+	        e.preventDefault();
+	        preventClick = true;
+	        $(e.target).trigger('taphold');
+	      }, params.tapHoldDelay);
+	    }
+	    targetElement = e.target;
+	    touchStartX = e.targetTouches[0].pageX;
+	    touchStartY = e.targetTouches[0].pageY;
+
+	    if (params.activeState) {
+	      activableElement = findActivableElement(targetElement);
+	      if (!isInsideScrollableViewLight(activableElement)) {
+	        addActive();
+	      } else {
+	        activeTimeout = setTimeout(addActive, 80);
+	      }
+	    }
+	    if (useRipple) {
+	      rippleTouchStart(targetElement, touchStartX, touchStartY);
+	    }
+	    return true;
+	  }
+	  function handleTouchMoveLight(e) {
+	    var distance = params.fastClicks ? params.fastClicksDistanceThreshold : 0;
+	    if (distance) {
+	      var pageX = e.targetTouches[0].pageX;
+	      var pageY = e.targetTouches[0].pageY;
+	      if (Math.abs(pageX - touchStartX) > distance || Math.abs(pageY - touchStartY) > distance) {
+	        isMoved = true;
+	      }
+	    } else {
+	      isMoved = true;
+	    }
+	    if (isMoved) {
+	      preventClick = true;
+	      if (params.tapHold) {
+	        clearTimeout(tapHoldTimeout);
+	      }
+	      if (params.activeState) {
+	        clearTimeout(activeTimeout);
+	        removeActive();
+	      }
+	      if (useRipple) {
+	        rippleTouchMove();
+	      }
+	    }
+	  }
+	  function handleTouchEndLight(e) {
+	    clearTimeout(activeTimeout);
+	    clearTimeout(tapHoldTimeout);
+	    if (doc.activeElement === e.target) {
+	      if (params.activeState) { removeActive(); }
+	      if (useRipple) {
+	        rippleTouchEnd();
+	      }
+	      return true;
+	    }
+	    if (params.activeState) {
+	      addActive();
+	      setTimeout(removeActive, 0);
+	    }
+	    if (useRipple) {
+	      rippleTouchEnd();
+	    }
+	    if ((params.tapHoldPreventClicks && tapHoldFired) || preventClick) {
+	      if (e.cancelable) { e.preventDefault(); }
+	      preventClick = true;
+	      return false;
+	    }
+	    return true;
+	  }
+	  function handleClickLight(e) {
+	    var localPreventClick = preventClick;
+	    if (targetElement && e.target !== targetElement) {
+	      localPreventClick = true;
+	    }
+	    if (params.tapHold && params.tapHoldPreventClicks && tapHoldFired) {
+	      localPreventClick = true;
+	    }
+	    if (localPreventClick) {
+	      e.stopImmediatePropagation();
+	      e.stopPropagation();
+	      e.preventDefault();
+	    }
+
+	    if (params.tapHold) {
+	      tapHoldTimeout = setTimeout(
+	        function () {
+	          tapHoldFired = false;
+	        },
+	        (Device.ios || Device.androidChrome ? 100 : 400)
+	      );
+	    }
+	    preventClick = false;
+	    targetElement = null;
+
+	    return !localPreventClick;
+	  }
+
 	  function emitAppTouchEvent(name, e) {
 	    app.emit({
 	      events: name,
@@ -5098,10 +5261,18 @@
 	  }
 
 	  if (Support.touch) {
-	    app.on('click', handleClick);
-	    app.on('touchstart', handleTouchStart);
-	    app.on('touchmove', handleTouchMove);
-	    app.on('touchend', handleTouchEnd);
+	    if (params.fastClicks) {
+	      app.on('click', handleClick);
+	      app.on('touchstart', handleTouchStart);
+	      app.on('touchmove', handleTouchMove);
+	      app.on('touchend', handleTouchEnd);
+	    } else {
+	      app.on('click', handleClickLight);
+	      app.on('touchstart', handleTouchStartLight);
+	      app.on('touchmove', handleTouchMoveLight);
+	      app.on('touchend', handleTouchEndLight);
+	    }
+
 	    doc.addEventListener('touchcancel', handleTouchCancel, { passive: true });
 	  } else if (params.activeState) {
 	    app.on('touchstart', handleMouseDown);
@@ -5124,21 +5295,22 @@
 	  params: {
 	    touch: {
 	      // Fast clicks
-	      fastClicks: true,
+	      fastClicks: false,
 	      fastClicksDistanceThreshold: 10,
 	      fastClicksDelayBetweenClicks: 50,
 	      fastClicksExclude: '', // CSS selector
 	      // ContextMenu
-	      disableContextMenu: true,
+	      disableContextMenu: false,
 	      // Tap Hold
 	      tapHold: false,
 	      tapHoldDelay: 750,
 	      tapHoldPreventClicks: true,
 	      // Active State
 	      activeState: true,
-	      activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus',
-	      materialRipple: true,
-	      materialRippleElements: '.ripple, .link, .item-link, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus',
+	      activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item',
+	      mdTouchRipple: true,
+	      iosTouchRipple: false,
+	      touchRippleElements: '.ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content',
 	    },
 	  },
 	  instance: {
@@ -5684,24 +5856,236 @@
 	  var touchesDiff;
 	  var allowViewTouchMove = true;
 	  var touchStartTime;
-	  var currentNavbar = [];
-	  var previousNavbar = [];
-	  var currentNavElements;
-	  var previousNavElements;
-	  var activeNavBackIcon;
-	  var activeNavBackIconText;
-	  var previousNavBackIcon;
-	  // let previousNavBackIconText;
+	  var $currentNavbarInner = [];
+	  var $previousNavbarInner = [];
 	  var dynamicNavbar;
 	  var separateNavbar;
 	  var pageShadow;
 	  var pageOpacity;
-	  var navbarWidth;
+
+	  var animatableNavEls;
 
 	  var paramsSwipeBackAnimateShadow = params[((app.theme) + "SwipeBackAnimateShadow")];
 	  var paramsSwipeBackAnimateOpacity = params[((app.theme) + "SwipeBackAnimateOpacity")];
 	  var paramsSwipeBackActiveArea = params[((app.theme) + "SwipeBackActiveArea")];
 	  var paramsSwipeBackThreshold = params[((app.theme) + "SwipeBackThreshold")];
+
+	  var transformOrigin = app.rtl ? 'right center' : 'left center';
+
+	  function animatableNavElements() {
+	    var els = [];
+	    var inverter = app.rtl ? -1 : 1;
+	    var currentNavIsLarge = $currentNavbarInner.hasClass('navbar-inner-large');
+	    var previousNavIsLarge = $previousNavbarInner.hasClass('navbar-inner-large');
+	    var fromLarge = currentNavIsLarge && !$currentNavbarInner.hasClass('navbar-inner-large-collapsed');
+	    var toLarge = previousNavIsLarge && !$previousNavbarInner.hasClass('navbar-inner-large-collapsed');
+	    var $currentNavElements = $currentNavbarInner.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+	    var $previousNavElements = $previousNavbarInner.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+	    var activeNavBackIconText;
+	    var previousNavBackIconText;
+
+	    if (params.iosAnimateNavbarBackIcon) {
+	      if ($currentNavbarInner.hasClass('sliding')) {
+	        activeNavBackIconText = $currentNavbarInner.children('.left').find('.back .icon + span').eq(0);
+	      } else {
+	        activeNavBackIconText = $currentNavbarInner.children('.left.sliding').find('.back .icon + span').eq(0);
+	      }
+	      if ($previousNavbarInner.hasClass('sliding')) {
+	        previousNavBackIconText = $previousNavbarInner.children('.left').find('.back .icon + span').eq(0);
+	      } else {
+	        previousNavBackIconText = $previousNavbarInner.children('.left.sliding').find('.back .icon + span').eq(0);
+	      }
+	      if (activeNavBackIconText.length) {
+	        $previousNavElements.each(function (index, el) {
+	          if (!$(el).hasClass('title')) { return; }
+	          el.f7NavbarLeftOffset += activeNavBackIconText.prev('.icon')[0].offsetWidth;
+	        });
+	      }
+	    }
+	    $currentNavElements
+	      .each(function (index, navEl) {
+	        var $navEl = $(navEl);
+	        var isSubnavbar = $navEl.hasClass('subnavbar');
+	        var isLeft = $navEl.hasClass('left');
+	        var isTitle = $navEl.hasClass('title');
+	        if (!fromLarge && $navEl.hasClass('.title-large')) { return; }
+	        var el = {
+	          el: navEl,
+	        };
+	        if (fromLarge) {
+	          if (isTitle) { return; }
+	          if ($navEl.hasClass('title-large')) {
+	            if (!separateNavbar) { return; }
+	            if (toLarge) {
+	              if (els.indexOf(el) < 0) { els.push(el); }
+	              el.overflow = 'visible';
+	              el.transform = 'translateX(100%)';
+	              $navEl.find('.title-large-text, .title-large-inner').each(function (subIndex, subNavEl) {
+	                els.push({
+	                  el: subNavEl,
+	                  transform: function (progress) { return ("translateX(" + (-100 + progress * 100 * inverter) + "%)"); },
+	                });
+	              });
+	            } else {
+	              if (els.indexOf(el) < 0) { els.push(el); }
+	              el.overflow = 'visible';
+	              el.transform = function (progress) { return ("translateY(calc(" + (-progress) + " * var(--f7-navbar-large-title-height)))"); };
+	              $navEl.find('.title-large-text, .title-large-inner').each(function (subIndex, subNavEl) {
+	                els.push({
+	                  el: subNavEl,
+	                  transform: function (progress) { return ("translateX(" + (progress * 100 * inverter) + "%) translateY(calc(" + progress + " * var(--f7-navbar-large-title-height)))"); },
+	                });
+	              });
+	            }
+	            return;
+	          }
+	        }
+	        if (toLarge) {
+	          if (!fromLarge) {
+	            if ($navEl.hasClass('title-large')) {
+	              if (!separateNavbar) { return; }
+	              if (els.indexOf(el) < 0) { els.push(el); }
+	              el.opacity = 0;
+	            }
+	          }
+	          if (isLeft && separateNavbar) {
+	            if (els.indexOf(el) < 0) { els.push(el); }
+	            el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
+	            $navEl.find('.back span').each(function (subIndex, subNavEl) {
+	              els.push({
+	                el: subNavEl,
+	                'transform-origin': transformOrigin,
+	                transform: function (progress) { return ("translateY(calc(var(--f7-navbar-height) * " + progress + ")) scale(" + (1 + (1 * progress)) + ")"); },
+	              });
+	            });
+	            return;
+	          }
+	        }
+	        if ($navEl.hasClass('title-large')) { return; }
+	        if (els.indexOf(el) < 0) { els.push(el); }
+	        if (!isSubnavbar) {
+	          el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
+	        }
+	        if ($navEl.hasClass('sliding') >= 0 || $currentNavbarInner.hasClass('sliding')) {
+	          var transformTarget = el;
+	          if (isLeft && activeNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
+	            var textEl = { el: activeNavBackIconText[0] };
+	            transformTarget = textEl;
+	            els.push(textEl);
+	          }
+	          transformTarget.transform = function (progress) {
+	            var activeNavTranslate = progress * transformTarget.el.f7NavbarRightOffset;
+	            if (Device.pixelRatio === 1) { activeNavTranslate = Math.round(activeNavTranslate); }
+	            if (isSubnavbar && currentNavIsLarge && separateNavbar) {
+	              return ("translate3d(" + activeNavTranslate + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)");
+	            }
+	            return ("translate3d(" + activeNavTranslate + "px,0,0)");
+	          };
+	        }
+	      });
+	    $previousNavElements
+	      .each(function (index, navEl) {
+	        var $navEl = $(navEl);
+	        var isSubnavbar = $navEl.hasClass('subnavbar');
+	        var isLeft = $navEl.hasClass('left');
+	        var isTitle = $navEl.hasClass('title');
+	        var el = {
+	          el: navEl,
+	        };
+	        if (toLarge) {
+	          if (isTitle) { return; }
+	          if (els.indexOf(el) < 0) { els.push(el); }
+
+	          if ($navEl.hasClass('title-large')) {
+	            if (!separateNavbar) { return; }
+	            if (fromLarge) {
+	              el.opacity = 1;
+	              el.overflow = 'visible';
+	              el.transform = 'translateY(0)';
+	              $navEl.find('.title-large-text').each(function (subIndex, subNavEl) {
+	                els.push({
+	                  el: subNavEl,
+	                  'transform-origin': transformOrigin,
+	                  opacity: function (progress) { return (Math.pow( progress, 3 )); },
+	                  transform: function (progress) { return ("translateY(calc(" + (-1 + progress * 1) + " * var(--f7-navbar-large-title-height))) scale(" + (0.5 + progress * 0.5) + ")"); },
+	                });
+	              });
+	            } else {
+	              el.transform = function (progress) { return ("translateY(calc(" + (progress - 1) + " * var(--f7-navbar-large-title-height)))"); };
+	              el.opacity = 1;
+	              el.overflow = 'hidden';
+	              $navEl.find('.title-large-text').each(function (subIndex, subNavEl) {
+	                els.push({
+	                  el: subNavEl,
+	                  'transform-origin': transformOrigin,
+	                  opacity: function (progress) { return (Math.pow( progress, 3 )); },
+	                  transform: function (progress) { return ("scale(" + (0.5 + progress * 0.5) + ")"); },
+	                });
+	              });
+	            }
+	            $navEl.find('.title-large-inner').each(function (subIndex, subNavEl) {
+	              els.push({
+	                el: subNavEl,
+	                'transform-origin': transformOrigin,
+	                opacity: function (progress) { return (Math.pow( progress, 3 )); },
+	                transform: function (progress) { return ("translateX(" + (-100 * (1 - progress) * inverter) + "%)"); },
+	              });
+	            });
+	            return;
+	          }
+	        }
+	        if ($navEl.hasClass('title-large')) { return; }
+	        if (els.indexOf(el) < 0) { els.push(el); }
+	        if (!isSubnavbar) {
+	          el.opacity = function (progress) { return (Math.pow( progress, 3 )); };
+	        }
+	        if ($navEl.hasClass('sliding') >= 0 || $previousNavbarInner.hasClass('sliding')) {
+	          var transformTarget = el;
+	          if (isLeft && previousNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
+	            var textEl = { el: activeNavBackIconText[0] };
+	            transformTarget = textEl;
+	            els.push(textEl);
+	          }
+	          transformTarget.transform = function (progress) {
+	            var previousNavTranslate = transformTarget.el.f7NavbarLeftOffset * (1 - progress);
+	            if (Device.pixelRatio === 1) { previousNavTranslate = Math.round(previousNavTranslate); }
+	            if (isSubnavbar && previousNavIsLarge && separateNavbar) {
+	              return ("translate3d(" + previousNavTranslate + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)");
+	            }
+	            return ("translate3d(" + previousNavTranslate + "px,0,0)");
+	          };
+	        }
+	      });
+	    return els;
+	  }
+
+	  function setAnimatableNavElements(ref) {
+	    if ( ref === void 0 ) ref = {};
+	    var progress = ref.progress;
+	    var reset = ref.reset;
+	    var transition = ref.transition;
+
+	    var styles = ['overflow', 'transform', 'transform-origin', 'opacity'];
+	    for (var i = 0; i < animatableNavEls.length; i += 1) {
+	      var el = animatableNavEls[i];
+	      if (el && el.el) {
+	        if (transition === true) { el.el.classList.add('navbar-page-transitioning'); }
+	        if (transition === false) { el.el.classList.remove('navbar-page-transitioning'); }
+	        for (var j = 0; j < styles.length; j += 1) {
+	          var styleProp = styles[j];
+	          if (el[styleProp]) {
+	            if (reset) {
+	              el.el.style[styleProp] = '';
+	            } else if (typeof el[styleProp] === 'function') {
+	              el.el.style[styleProp] = el[styleProp](progress);
+	            } else {
+	              el.el.style[styleProp] = el[styleProp];
+	            }
+	          }
+	        }
+	      }
+	    }
+	  }
 
 	  function handleTouchStart(e) {
 	    var swipeBackEnabled = params[((app.theme) + "SwipeBack")];
@@ -5739,7 +6123,7 @@
 	      }
 
 	      currentPage = target.closest('.page');
-	      if (currentPage.hasClass('no-swipeback') || target.closest('.no-swipeback').length > 0) { cancel = true; }
+	      if (currentPage.hasClass('no-swipeback') || target.closest('.no-swipeback, .card-opened').length > 0) { cancel = true; }
 	      previousPage = $el.find('.page-previous:not(.stacked)');
 
 	      var notFromBorder = touchesStart.x - $el.offset().left > paramsSwipeBackActiveArea;
@@ -5773,29 +6157,14 @@
 
 	      if (dynamicNavbar) {
 	        if (separateNavbar) {
-	          currentNavbar = $navbarEl.find('.navbar-current:not(.stacked)');
-	          previousNavbar = $navbarEl.find('.navbar-previous:not(.stacked)');
+	          $currentNavbarInner = $navbarEl.find('.navbar-current:not(.stacked)');
+	          $previousNavbarInner = $navbarEl.find('.navbar-previous:not(.stacked)');
 	        } else {
-	          currentNavbar = currentPage.children('.navbar').children('.navbar-inner');
-	          previousNavbar = previousPage.children('.navbar').children('.navbar-inner');
+	          $currentNavbarInner = currentPage.children('.navbar').children('.navbar-inner');
+	          $previousNavbarInner = previousPage.children('.navbar').children('.navbar-inner');
 	        }
-	        navbarWidth = $navbarEl[0].offsetWidth;
-	        currentNavElements = currentNavbar.children('.left, .title, .right, .subnavbar, .fading');
-	        previousNavElements = previousNavbar.children('.left, .title, .right, .subnavbar, .fading');
-	        if (params.iosAnimateNavbarBackIcon) {
-	          if (currentNavbar.hasClass('sliding')) {
-	            activeNavBackIcon = currentNavbar.children('.left').find('.back .icon');
-	            activeNavBackIconText = currentNavbar.children('.left').find('.back span').eq(0);
-	          } else {
-	            activeNavBackIcon = currentNavbar.children('.left.sliding').find('.back .icon');
-	            activeNavBackIconText = currentNavbar.children('.left.sliding').find('.back span').eq(0);
-	          }
-	          if (previousNavbar.hasClass('sliding')) {
-	            previousNavBackIcon = previousNavbar.children('.left').find('.back .icon');
-	          } else {
-	            previousNavBackIcon = previousNavbar.children('.left.sliding').find('.back .icon');
-	          }
-	        }
+
+	        animatableNavEls = animatableNavElements($previousNavbarInner, $currentNavbarInner);
 	      }
 
 	      // Close/Hide Any Picker
@@ -5814,15 +6183,16 @@
 	    // Touches diff
 	    touchesDiff = (pageX - touchesStart.x - paramsSwipeBackThreshold) * inverter;
 	    if (touchesDiff < 0) { touchesDiff = 0; }
-	    var percentage = touchesDiff / viewContainerWidth;
+	    var percentage = Math.min(Math.max(touchesDiff / viewContainerWidth, 0), 1);
 
 	    // Swipe Back Callback
 	    var callbackData = {
 	      percentage: percentage,
+	      progress: percentage,
 	      currentPageEl: currentPage[0],
 	      previousPageEl: previousPage[0],
-	      currentNavbarEl: currentNavbar[0],
-	      previousNavbarEl: previousNavbar[0],
+	      currentNavbarEl: $currentNavbarInner[0],
+	      previousNavbarEl: $previousNavbarInner[0],
 	    };
 	    $el.trigger('swipeback:move', callbackData);
 	    router.emit('swipebackMove', callbackData);
@@ -5830,6 +6200,13 @@
 	    // Transform pages
 	    var currentPageTranslate = touchesDiff * inverter;
 	    var previousPageTranslate = ((touchesDiff / 5) - (viewContainerWidth / 5)) * inverter;
+	    if (!app.rtl) {
+	      currentPageTranslate = Math.min(currentPageTranslate, viewContainerWidth);
+	      previousPageTranslate = Math.min(previousPageTranslate, 0);
+	    } else {
+	      currentPageTranslate = Math.max(currentPageTranslate, -viewContainerWidth);
+	      previousPageTranslate = Math.max(previousPageTranslate, 0);
+	    }
 	    if (Device.pixelRatio === 1) {
 	      currentPageTranslate = Math.round(currentPageTranslate);
 	      previousPageTranslate = Math.round(previousPageTranslate);
@@ -5847,49 +6224,9 @@
 	    if (paramsSwipeBackAnimateOpacity) { pageOpacity[0].style.opacity = 1 - (1 * percentage); }
 
 	    // Dynamic Navbars Animation
-	    if (dynamicNavbar) {
-	      currentNavElements.each(function (index, navEl) {
-	        var $navEl = $(navEl);
-	        if (!$navEl.is('.subnavbar')) { $navEl[0].style.opacity = (1 - (Math.pow( percentage, 0.33 ))); }
-	        if ($navEl[0].className.indexOf('sliding') >= 0 || currentNavbar.hasClass('sliding')) {
-	          var activeNavTranslate = percentage * $navEl[0].f7NavbarRightOffset;
-	          if (Device.pixelRatio === 1) { activeNavTranslate = Math.round(activeNavTranslate); }
-	          $navEl.transform(("translate3d(" + activeNavTranslate + "px,0,0)"));
-	          if (params.iosAnimateNavbarBackIcon) {
-	            if ($navEl[0].className.indexOf('left') >= 0 && activeNavBackIcon.length > 0) {
-	              var iconTranslate = -activeNavTranslate;
-	              if (!separateNavbar) {
-	                iconTranslate -= navbarWidth * percentage;
-	              }
-	              activeNavBackIcon.transform(("translate3d(" + iconTranslate + "px,0,0)"));
-	            }
-	          }
-	        }
-	      });
-	      previousNavElements.each(function (index, navEl) {
-	        var $navEl = $(navEl);
-	        if (!$navEl.is('.subnavbar')) { $navEl[0].style.opacity = (Math.pow( percentage, 3 )); }
-	        if ($navEl[0].className.indexOf('sliding') >= 0 || previousNavbar.hasClass('sliding')) {
-	          var previousNavTranslate = $navEl[0].f7NavbarLeftOffset * (1 - percentage);
-	          if ($navEl[0].className.indexOf('title') >= 0 && activeNavBackIcon && activeNavBackIcon.length && activeNavBackIconText.length) {
-	            previousNavTranslate = ($navEl[0].f7NavbarLeftOffset + activeNavBackIconText[0].offsetLeft) * (1 - percentage);
-	          } else {
-	            previousNavTranslate = $navEl[0].f7NavbarLeftOffset * (1 - percentage);
-	          }
-	          if (Device.pixelRatio === 1) { previousNavTranslate = Math.round(previousNavTranslate); }
-	          $navEl.transform(("translate3d(" + previousNavTranslate + "px,0,0)"));
-	          if (params.iosAnimateNavbarBackIcon) {
-	            if ($navEl[0].className.indexOf('left') >= 0 && previousNavBackIcon.length > 0) {
-	              var iconTranslate = -previousNavTranslate;
-	              if (!separateNavbar) {
-	                iconTranslate += (navbarWidth / 5) * (1 - percentage);
-	              }
-	              previousNavBackIcon.transform(("translate3d(" + iconTranslate + "px,0,0)"));
-	            }
-	          }
-	        }
-	      });
-	    }
+	    if (!dynamicNavbar) { return; }
+
+	    setAnimatableNavElements({ progress: percentage });
 	  }
 	  function handleTouchEnd() {
 	    app.preventSwipePanelBySwipeBack = false;
@@ -5907,10 +6244,7 @@
 	      if (pageShadow && pageShadow.length > 0) { pageShadow.remove(); }
 	      if (pageOpacity && pageOpacity.length > 0) { pageOpacity.remove(); }
 	      if (dynamicNavbar) {
-	        currentNavElements.transform('').css({ opacity: '' });
-	        previousNavElements.transform('').css({ opacity: '' });
-	        if (activeNavBackIcon && activeNavBackIcon.length > 0) { activeNavBackIcon.transform(''); }
-	        if (previousNavBackIcon && activeNavBackIcon.length > 0) { previousNavBackIcon.transform(''); }
+	        setAnimatableNavElements({ reset: true });
 	      }
 	      return;
 	    }
@@ -5926,8 +6260,8 @@
 	      if (pageShadow) { pageShadow[0].style.opacity = ''; }
 	      if (pageOpacity) { pageOpacity[0].style.opacity = ''; }
 	      if (dynamicNavbar) {
-	        currentNavbar.removeClass('navbar-current').addClass('navbar-next');
-	        previousNavbar.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
+	        $currentNavbarInner.removeClass('navbar-current').addClass('navbar-next');
+	        $previousNavbarInner.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
 	      }
 	      pageChanged = true;
 	    }
@@ -5936,32 +6270,7 @@
 	    $([currentPage[0], previousPage[0]]).addClass('page-transitioning page-transitioning-swipeback').transform('');
 
 	    if (dynamicNavbar) {
-	      currentNavElements.css({ opacity: '' })
-	        .each(function (navElIndex, navEl) {
-	          var translate = pageChanged ? navEl.f7NavbarRightOffset : 0;
-	          var sliding = $(navEl);
-	          var iconTranslate = pageChanged ? -translate : 0;
-	          if (!separateNavbar && pageChanged) { iconTranslate -= navbarWidth; }
-	          sliding.transform(("translate3d(" + translate + "px,0,0)"));
-	          if (params.iosAnimateNavbarBackIcon) {
-	            if (sliding.hasClass('left') && activeNavBackIcon.length > 0) {
-	              activeNavBackIcon.addClass('navbar-transitioning').transform(("translate3d(" + iconTranslate + "px,0,0)"));
-	            }
-	          }
-	        }).addClass('navbar-transitioning');
-
-	      previousNavElements.transform('').css({ opacity: '' }).each(function (navElIndex, navEl) {
-	        var translate = pageChanged ? 0 : navEl.f7NavbarLeftOffset;
-	        var sliding = $(navEl);
-	        var iconTranslate = pageChanged ? 0 : -translate;
-	        if (!separateNavbar && !pageChanged) { iconTranslate += navbarWidth / 5; }
-	        sliding.transform(("translate3d(" + translate + "px,0,0)"));
-	        if (params.iosAnimateNavbarBackIcon) {
-	          if (sliding.hasClass('left') && previousNavBackIcon.length > 0) {
-	            previousNavBackIcon.addClass('navbar-transitioning').transform(("translate3d(" + iconTranslate + "px,0,0)"));
-	          }
-	        }
-	      }).addClass('navbar-transitioning');
+	      setAnimatableNavElements({ progress: pageChanged ? 1 : 0, transition: true });
 	    }
 	    allowViewTouchMove = false;
 	    router.allowPageChange = false;
@@ -5970,8 +6279,8 @@
 	    var callbackData = {
 	      currentPageEl: currentPage[0],
 	      previousPageEl: previousPage[0],
-	      currentNavbarEl: currentNavbar[0],
-	      previousNavbarEl: previousNavbar[0],
+	      currentNavbarEl: $currentNavbarInner[0],
+	      previousNavbarEl: $previousNavbarInner[0],
 	    };
 
 	    if (pageChanged) {
@@ -5980,8 +6289,8 @@
 	      router.currentPage = previousPage[0];
 
 	      // Page before animation callback
-	      router.pageCallback('beforeOut', currentPage, currentNavbar, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
-	      router.pageCallback('beforeIn', previousPage, previousNavbar, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
+	      router.pageCallback('beforeOut', currentPage, $currentNavbarInner, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
+	      router.pageCallback('beforeIn', previousPage, $previousNavbarInner, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
 
 	      $el.trigger('swipeback:beforechange', callbackData);
 	      router.emit('swipebackBeforeChange', callbackData);
@@ -5992,12 +6301,8 @@
 
 	    currentPage.transitionEnd(function () {
 	      $([currentPage[0], previousPage[0]]).removeClass('page-transitioning page-transitioning-swipeback');
-
 	      if (dynamicNavbar) {
-	        currentNavElements.removeClass('navbar-transitioning').css({ opacity: '' }).transform('');
-	        previousNavElements.removeClass('navbar-transitioning').css({ opacity: '' }).transform('');
-	        if (activeNavBackIcon && activeNavBackIcon.length > 0) { activeNavBackIcon.removeClass('navbar-transitioning'); }
-	        if (previousNavBackIcon && previousNavBackIcon.length > 0) { previousNavBackIcon.removeClass('navbar-transitioning'); }
+	        setAnimatableNavElements({ reset: true, transition: false });
 	      }
 	      allowViewTouchMove = true;
 	      router.allowPageChange = true;
@@ -6015,20 +6320,20 @@
 	        }
 
 	        // Page after animation callback
-	        router.pageCallback('afterOut', currentPage, currentNavbar, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
-	        router.pageCallback('afterIn', previousPage, previousNavbar, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
+	        router.pageCallback('afterOut', currentPage, $currentNavbarInner, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
+	        router.pageCallback('afterIn', previousPage, $previousNavbarInner, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
 
 	        // Remove Old Page
 	        if (params.stackPages && router.initialPages.indexOf(currentPage[0]) >= 0) {
 	          currentPage.addClass('stacked');
 	          if (separateNavbar) {
-	            currentNavbar.addClass('stacked');
+	            $currentNavbarInner.addClass('stacked');
 	          }
 	        } else {
-	          router.pageCallback('beforeRemove', currentPage, currentNavbar, 'next', { swipeBack: true });
+	          router.pageCallback('beforeRemove', currentPage, $currentNavbarInner, 'next', { swipeBack: true });
 	          router.removePage(currentPage);
 	          if (separateNavbar) {
-	            router.removeNavbar(currentNavbar);
+	            router.removeNavbar($currentNavbarInner);
 	          }
 	        }
 
@@ -6434,6 +6739,9 @@
 	      $newPage.insertBefore($oldPage);
 	    }
 	    if (separateNavbar && $newNavbarInner.length) {
+	      if ($newNavbarInner.children('.title-large').length) {
+	        $newNavbarInner.addClass('navbar-inner-large');
+	      }
 	      if ($oldNavbarInner.length) {
 	        $newNavbarInner.insertBefore($oldNavbarInner);
 	      } else {
@@ -6454,6 +6762,9 @@
 	      }
 	    }
 	    if (separateNavbar && $newNavbarInner.length) {
+	      if ($newNavbarInner.children('.title-large').length) {
+	        $newNavbarInner.addClass('navbar-inner-large');
+	      }
 	      if (!router.$navbarEl.parents(doc).length) {
 	        router.$el.prepend(router.$navbarEl);
 	      }
@@ -6601,7 +6912,7 @@
 	    }
 	  }
 	  if (options.animate) {
-	    var delay = router.app.theme === 'md' ? router.params.materialPageLoadDelay : router.params.iosPageLoadDelay;
+	    var delay = router.app.theme === 'md' ? router.params.mdPageLoadDelay : router.params.iosPageLoadDelay;
 	    if (delay) {
 	      setTimeout(function () {
 	        setPositionClasses();
@@ -7474,6 +7785,9 @@
 	      }
 	    }
 	    if (separateNavbar && $newNavbarInner.length) {
+	      if ($newNavbarInner.children('.title-large').length) {
+	        $newNavbarInner.addClass('navbar-inner-large');
+	      }
 	      $newNavbarInner.insertBefore($oldNavbarInner);
 	      if ($oldNavbarInner.length > 0) {
 	        $newNavbarInner.insertBefore($oldNavbarInner);
@@ -8105,25 +8419,27 @@
 	  Router.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  Router.prototype.constructor = Router;
 
-	  Router.prototype.animatableNavElements = function animatableNavElements (newNavbarInner, oldNavbarInner) {
+	  Router.prototype.animatableNavElements = function animatableNavElements (newNavbarInner, oldNavbarInner, toLarge, fromLarge, direction) {
 	    var router = this;
 	    var dynamicNavbar = router.dynamicNavbar;
+	    var separateNavbar = router.separateNavbar;
 	    var animateIcon = router.params.iosAnimateNavbarBackIcon;
 
 	    var newNavEls;
 	    var oldNavEls;
-	    function animatableNavEl(el, navbarInner) {
-	      var $el = $(el);
+	    function animatableNavEl($el, navbarInner) {
 	      var isSliding = $el.hasClass('sliding') || navbarInner.hasClass('sliding');
 	      var isSubnavbar = $el.hasClass('subnavbar');
 	      var needsOpacityTransition = isSliding ? !isSubnavbar : true;
-	      var hasIcon = isSliding && animateIcon && $el.hasClass('left') && $el.find('.back .icon').length > 0;
-	      var $iconEl;
-	      if (hasIcon) { $iconEl = $el.find('.back .icon'); }
+	      var $iconEl = $el.find('.back .icon');
+	      var isIconLabel;
+	      if (isSliding && animateIcon && $el.hasClass('left') && $iconEl.length > 0 && $iconEl.next('span').length) {
+	        $el = $iconEl.next('span'); // eslint-disable-line
+	        isIconLabel = true;
+	      }
 	      return {
 	        $el: $el,
-	        $iconEl: $iconEl,
-	        hasIcon: hasIcon,
+	        isIconLabel: isIconLabel,
 	        leftOffset: $el[0].f7NavbarLeftOffset,
 	        rightOffset: $el[0].f7NavbarRightOffset,
 	        isSliding: isSliding,
@@ -8135,10 +8451,19 @@
 	      newNavEls = [];
 	      oldNavEls = [];
 	      newNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
-	        newNavEls.push(animatableNavEl(navEl, newNavbarInner));
+	        var $navEl = $(navEl);
+	        if ($navEl.hasClass('left') && fromLarge && direction === 'forward' && separateNavbar) { return; }
+	        if ($navEl.hasClass('title') && toLarge) { return; }
+	        newNavEls.push(animatableNavEl($navEl, newNavbarInner));
 	      });
 	      oldNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
-	        oldNavEls.push(animatableNavEl(navEl, oldNavbarInner));
+	        var $navEl = $(navEl);
+	        if ($navEl.hasClass('left') && toLarge && !fromLarge && direction === 'forward' && separateNavbar) { return; }
+	        if ($navEl.hasClass('left') && toLarge && direction === 'backward' && separateNavbar) { return; }
+	        if ($navEl.hasClass('title') && fromLarge) {
+	          return;
+	        }
+	        oldNavEls.push(animatableNavEl($navEl, oldNavbarInner));
 	      });
 	      [oldNavEls, newNavEls].forEach(function (navEls) {
 	        navEls.forEach(function (navEl) {
@@ -8148,9 +8473,9 @@
 	          var otherEls = navEls === oldNavEls ? newNavEls : oldNavEls;
 	          if (!(isSliding && $el.hasClass('title') && otherEls)) { return; }
 	          otherEls.forEach(function (otherNavEl) {
-	            if (otherNavEl.$el.hasClass('left') && otherNavEl.hasIcon) {
-	              var iconTextEl = otherNavEl.$el.find('.back span')[0];
-	              n.leftOffset += iconTextEl ? iconTextEl.offsetLeft : 0;
+	            if (otherNavEl.isIconLabel) {
+	              var iconTextEl = otherNavEl.$el[0];
+	              n.leftOffset += iconTextEl ? (iconTextEl.offsetLeft || 0) : 0;
 	            }
 	          });
 	        });
@@ -8160,63 +8485,85 @@
 	    return { newNavEls: newNavEls, oldNavEls: oldNavEls };
 	  };
 
-	  Router.prototype.animateWithCSS = function animateWithCSS (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
+	  Router.prototype.animate = function animate (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
 	    var router = this;
+	    if (router.params.animateCustom) {
+	      router.params.animateCustom.apply(router, [oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback]);
+	      return;
+	    }
 	    var dynamicNavbar = router.dynamicNavbar;
-	    var separateNavbar = router.separateNavbar;
 	    var ios = router.app.theme === 'ios';
 	    // Router Animation class
 	    var routerTransitionClass = "router-transition-" + direction + " router-transition-css-" + direction;
 
 	    var newNavEls;
 	    var oldNavEls;
-	    var navbarWidth = 0;
+
+	    var fromLarge;
+	    var toLarge;
+
+	    var oldIsLarge;
+	    var newIsLarge;
 
 	    if (ios && dynamicNavbar) {
-	      if (!separateNavbar) {
-	        navbarWidth = newNavbarInner[0].offsetWidth;
-	      }
-	      var navEls = router.animatableNavElements(newNavbarInner, oldNavbarInner);
+	      oldIsLarge = oldNavbarInner && oldNavbarInner.hasClass('navbar-inner-large');
+	      newIsLarge = newNavbarInner && newNavbarInner.hasClass('navbar-inner-large');
+	      fromLarge = oldIsLarge && !oldNavbarInner.hasClass('navbar-inner-large-collapsed');
+	      toLarge = newIsLarge && !newNavbarInner.hasClass('navbar-inner-large-collapsed');
+	      var navEls = router.animatableNavElements(newNavbarInner, oldNavbarInner, toLarge, fromLarge, direction);
 	      newNavEls = navEls.newNavEls;
 	      oldNavEls = navEls.oldNavEls;
 	    }
 
 	    function animateNavbars(progress) {
-	      if (ios && dynamicNavbar) {
-	        newNavEls.forEach(function (navEl) {
-	          var $el = navEl.$el;
-	          var offset = direction === 'forward' ? navEl.rightOffset : navEl.leftOffset;
-	          if (navEl.isSliding) {
+	      if (!(ios && dynamicNavbar)) { return; }
+	      if (progress === 1) {
+	        if (toLarge) {
+	          newNavbarInner.addClass('router-navbar-transition-to-large');
+	          oldNavbarInner.addClass('router-navbar-transition-to-large');
+	        }
+	        if (fromLarge) {
+	          newNavbarInner.addClass('router-navbar-transition-from-large');
+	          oldNavbarInner.addClass('router-navbar-transition-from-large');
+	        }
+	      }
+	      newNavEls.forEach(function (navEl) {
+	        var $el = navEl.$el;
+	        var offset = direction === 'forward' ? navEl.rightOffset : navEl.leftOffset;
+	        if (navEl.isSliding) {
+	          if (navEl.isSubnavbar && newIsLarge) {
+	            $el[0].style.setProperty('transform', ("translate3d(" + (offset * (1 - progress)) + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)"), 'important');
+	          } else {
 	            $el.transform(("translate3d(" + (offset * (1 - progress)) + "px,0,0)"));
 	          }
-	          if (navEl.hasIcon) {
-	            if (direction === 'forward') {
-	              navEl.$iconEl.transform(("translate3d(" + ((-offset - navbarWidth) * (1 - progress)) + "px,0,0)"));
-	            } else {
-	              navEl.$iconEl.transform(("translate3d(" + ((-offset + (navbarWidth / 5)) * (1 - progress)) + "px,0,0)"));
-	            }
-	          }
-	        });
-	        oldNavEls.forEach(function (navEl) {
-	          var $el = navEl.$el;
-	          var offset = direction === 'forward' ? navEl.leftOffset : navEl.rightOffset;
-	          if (navEl.isSliding) {
+	        }
+	      });
+	      oldNavEls.forEach(function (navEl) {
+	        var $el = navEl.$el;
+	        var offset = direction === 'forward' ? navEl.leftOffset : navEl.rightOffset;
+	        if (navEl.isSliding) {
+	          if (navEl.isSubnavbar && oldIsLarge) {
+	            $el.transform(("translate3d(" + (offset * (progress)) + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)"));
+	          } else {
 	            $el.transform(("translate3d(" + (offset * (progress)) + "px,0,0)"));
 	          }
-	          if (navEl.hasIcon) {
-	            if (direction === 'forward') {
-	              navEl.$iconEl.transform(("translate3d(" + ((-offset + (navbarWidth / 5)) * (progress)) + "px,0,0)"));
-	            } else {
-	              navEl.$iconEl.transform(("translate3d(" + ((-offset - navbarWidth) * (progress)) + "px,0,0)"));
-	            }
-	          }
-	        });
-	      }
+	        }
+	      });
 	    }
 
 	    // AnimationEnd Callback
 	    function onDone() {
 	      if (router.dynamicNavbar) {
+	        if (newNavbarInner) {
+	          newNavbarInner.removeClass('router-navbar-transition-to-large router-navbar-transition-from-large');
+	          newNavbarInner.addClass('navbar-no-title-large-transition');
+	          Utils.nextFrame(function () {
+	            newNavbarInner.removeClass('navbar-no-title-large-transition');
+	          });
+	        }
+	        if (oldNavbarInner) {
+	          oldNavbarInner.removeClass('router-navbar-transition-to-large router-navbar-transition-from-large');
+	        }
 	        if (newNavbarInner.hasClass('sliding')) {
 	          newNavbarInner.find('.title, .left, .right, .left .icon, .subnavbar').transform('');
 	        } else {
@@ -8248,165 +8595,6 @@
 	    } else {
 	      // Add class, start animation
 	      router.$el.addClass(routerTransitionClass);
-	    }
-	  };
-
-	  Router.prototype.animateWithJS = function animateWithJS (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
-	    var router = this;
-	    var dynamicNavbar = router.dynamicNavbar;
-	    var separateNavbar = router.separateNavbar;
-	    var ios = router.app.theme === 'ios';
-	    var duration = ios ? 400 : 250;
-	    var routerTransitionClass = "router-transition-" + direction + " router-transition-js-" + direction;
-
-	    var startTime = null;
-	    var done = false;
-
-	    var newNavEls;
-	    var oldNavEls;
-	    var navbarWidth = 0;
-
-	    if (ios && dynamicNavbar) {
-	      if (!separateNavbar) {
-	        navbarWidth = newNavbarInner[0].offsetWidth;
-	      }
-	      var navEls = router.animatableNavElements(newNavbarInner, oldNavbarInner);
-	      newNavEls = navEls.newNavEls;
-	      oldNavEls = navEls.oldNavEls;
-	    }
-
-	    var $shadowEl;
-	    var $opacityEl;
-
-	    if (ios) {
-	      $shadowEl = $('<div class="page-shadow-effect"></div>');
-	      $opacityEl = $('<div class="page-opacity-effect"></div>');
-
-	      if (direction === 'forward') {
-	        newPage.append($shadowEl);
-	        oldPage.append($opacityEl);
-	      } else {
-	        newPage.append($opacityEl);
-	        oldPage.append($shadowEl);
-	      }
-	    }
-	    var easing = Utils.bezier(0.25, 0.1, 0.25, 1);
-
-	    function onDone() {
-	      newPage.transform('').css('opacity', '');
-	      oldPage.transform('').css('opacity', '');
-	      if (ios) {
-	        $shadowEl.remove();
-	        $opacityEl.remove();
-	        if (dynamicNavbar) {
-	          newNavEls.forEach(function (navEl) {
-	            navEl.$el.transform('');
-	            navEl.$el.css('opacity', '');
-	          });
-	          oldNavEls.forEach(function (navEl) {
-	            navEl.$el.transform('');
-	            navEl.$el.css('opacity', '');
-	          });
-	          newNavEls = [];
-	          oldNavEls = [];
-	        }
-	      }
-
-	      router.$el.removeClass(routerTransitionClass);
-
-	      if (callback) { callback(); }
-	    }
-
-	    function render() {
-	      var time = Utils.now();
-	      if (!startTime) { startTime = time; }
-	      var progress = Math.max(Math.min((time - startTime) / duration, 1), 0);
-	      var easeProgress = easing(progress);
-
-	      if (progress >= 1) {
-	        done = true;
-	      }
-	      var inverter = router.app.rtl ? -1 : 1;
-	      if (ios) {
-	        if (direction === 'forward') {
-	          newPage.transform(("translate3d(" + ((1 - easeProgress) * 100 * inverter) + "%,0,0)"));
-	          oldPage.transform(("translate3d(" + (-easeProgress * 20 * inverter) + "%,0,0)"));
-	          $shadowEl[0].style.opacity = easeProgress;
-	          $opacityEl[0].style.opacity = easeProgress;
-	        } else {
-	          newPage.transform(("translate3d(" + (-(1 - easeProgress) * 20 * inverter) + "%,0,0)"));
-	          oldPage.transform(("translate3d(" + (easeProgress * 100 * inverter) + "%,0,0)"));
-	          $shadowEl[0].style.opacity = 1 - easeProgress;
-	          $opacityEl[0].style.opacity = 1 - easeProgress;
-	        }
-	        if (dynamicNavbar) {
-	          newNavEls.forEach(function (navEl) {
-	            var $el = navEl.$el;
-	            var offset = direction === 'forward' ? navEl.rightOffset : navEl.leftOffset;
-	            if (navEl.needsOpacityTransition) {
-	              $el[0].style.opacity = easeProgress;
-	            }
-	            if (navEl.isSliding) {
-	              $el.transform(("translate3d(" + (offset * (1 - easeProgress)) + "px,0,0)"));
-	            }
-	            if (navEl.hasIcon) {
-	              if (direction === 'forward') {
-	                navEl.$iconEl.transform(("translate3d(" + ((-offset - navbarWidth) * (1 - easeProgress)) + "px,0,0)"));
-	              } else {
-	                navEl.$iconEl.transform(("translate3d(" + ((-offset + (navbarWidth / 5)) * (1 - easeProgress)) + "px,0,0)"));
-	              }
-	            }
-	          });
-	          oldNavEls.forEach(function (navEl) {
-	            var $el = navEl.$el;
-	            var offset = direction === 'forward' ? navEl.leftOffset : navEl.rightOffset;
-	            if (navEl.needsOpacityTransition) {
-	              $el[0].style.opacity = (1 - easeProgress);
-	            }
-	            if (navEl.isSliding) {
-	              $el.transform(("translate3d(" + (offset * (easeProgress)) + "px,0,0)"));
-	            }
-	            if (navEl.hasIcon) {
-	              if (direction === 'forward') {
-	                navEl.$iconEl.transform(("translate3d(" + ((-offset + (navbarWidth / 5)) * (easeProgress)) + "px,0,0)"));
-	              } else {
-	                navEl.$iconEl.transform(("translate3d(" + ((-offset - navbarWidth) * (easeProgress)) + "px,0,0)"));
-	              }
-	            }
-	          });
-	        }
-	      } else if (direction === 'forward') {
-	        newPage.transform(("translate3d(0, " + ((1 - easeProgress) * 56) + "px,0)"));
-	        newPage.css('opacity', easeProgress);
-	      } else {
-	        oldPage.transform(("translate3d(0, " + (easeProgress * 56) + "px,0)"));
-	        oldPage.css('opacity', 1 - easeProgress);
-	      }
-
-	      if (done) {
-	        onDone();
-	        return;
-	      }
-	      Utils.requestAnimationFrame(render);
-	    }
-
-	    router.$el.addClass(routerTransitionClass);
-
-	    Utils.requestAnimationFrame(render);
-	  };
-
-	  Router.prototype.animate = function animate () {
-	    var args = [], len = arguments.length;
-	    while ( len-- ) args[ len ] = arguments[ len ];
-
-	    // Args: oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback
-	    var router = this;
-	    if (router.params.animateCustom) {
-	      router.params.animateCustom.apply(router, args);
-	    } else if (router.params.animateWithJS) {
-	      router.animateWithJS.apply(router, args);
-	    } else {
-	      router.animateWithCSS.apply(router, args);
 	    }
 	  };
 
@@ -8750,7 +8938,7 @@
 	    if (params.xhrCacheIgnoreGetParameters && url.indexOf('?') >= 0) {
 	      url = url.split('?')[0];
 	    }
-	    return Utils.promise(function (resolve, reject) {
+	    return new Promise(function (resolve, reject) {
 	      if (params.xhrCache && !ignoreCache && url.indexOf('nocache') < 0 && params.xhrCacheIgnore.indexOf(url) < 0) {
 	        for (var i = 0; i < router.cache.xhr.length; i += 1) {
 	          var cachedUrl = router.cache.xhr[i];
@@ -8826,7 +9014,9 @@
 	            $app: router.app,
 	            $root: Utils.extend({}, router.app.data, router.app.methods),
 	            $route: options.route,
+	            $f7route: options.route,
 	            $router: router,
+	            $f7router: router,
 	            $theme: {
 	              ios: router.app.theme === 'ios',
 	              md: router.app.theme === 'md',
@@ -8904,7 +9094,9 @@
 	        context,
 	        {
 	          $route: options.route,
+	          $f7route: options.route,
 	          $router: router,
+	          $f7router: router,
 	          $theme: {
 	            ios: app.theme === 'ios',
 	            md: app.theme === 'md',
@@ -9344,10 +9536,17 @@
 	            if (!router.$navbarEl.parents(doc).length) {
 	              router.$el.prepend(router.$navbarEl);
 	            }
+	            $navbarInnerEl.addClass('navbar-current');
 	            router.$navbarEl.append($navbarInnerEl);
+	            if ($navbarInnerEl.children('.title-large').length) {
+	              $navbarInnerEl.addClass('navbar-inner-large');
+	            }
 	            $pageEl.children('.navbar').remove();
 	          } else {
 	            router.$navbarEl.addClass('navbar-hidden');
+	            if ($navbarInnerEl.children('.title-large').length) {
+	              router.$navbarEl.addClass('navbar-hidden navbar-large-hidden');
+	            }
 	          }
 	        }
 	        var initOptions = {
@@ -9357,11 +9556,11 @@
 	          Utils.extend(initOptions, router.currentRoute.route.options);
 	        }
 	        router.currentPageEl = $pageEl[0];
-	        if (router.dynamicNavbar && $navbarInnerEl.length) {
+	        if (router.separateNavbar && $navbarInnerEl.length) {
 	          router.currentNavbarEl = $navbarInnerEl[0];
 	        }
 	        router.removeThemeElements($pageEl);
-	        if (router.dynamicNavbar && $navbarInnerEl.length) {
+	        if (router.separateNavbar && $navbarInnerEl.length) {
 	          router.removeThemeElements($navbarInnerEl);
 	        }
 	        if (initOptions.route.route.tab) {
@@ -9645,7 +9844,7 @@
 	      Object.keys(moduleClicks).forEach(function (clickSelector) {
 	        var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
 	        if (matchingClickedElement.length > 0) {
-	          moduleClicks[clickSelector].call(app, matchingClickedElement, matchingClickedElement.dataset());
+	          moduleClicks[clickSelector].call(app, matchingClickedElement, matchingClickedElement.dataset(), e);
 	        }
 	      });
 	    });
@@ -9689,14 +9888,15 @@
 
 	  app.on('click', handleClicks);
 
+	  // TODO: check if need this in iOS
 	  // Prevent scrolling on overlays
-	  function preventScrolling(e) {
-	    e.preventDefault();
-	  }
-	  if (Support.touch && !Device.android) {
-	    var activeListener = Support.passiveListener ? { passive: false, capture: false } : false;
-	    $(doc).on((app.params.touch.fastClicks ? 'touchstart' : 'touchmove'), '.panel-backdrop, .dialog-backdrop, .preloader-backdrop, .popup-backdrop, .searchbar-backdrop', preventScrolling, activeListener);
-	  }
+	  // function preventScrolling(e) {
+	  //   e.preventDefault();
+	  // }
+	  // if (Support.touch && !Device.android) {
+	  //   const activeListener = Support.passiveListener ? { passive: false, capture: false } : false;
+	  //   $(document).on((app.params.touch.fastClicks ? 'touchstart' : 'touchmove'), '.panel-backdrop, .dialog-backdrop, .preloader-backdrop, .popup-backdrop, .searchbar-backdrop', preventScrolling, activeListener);
+	  // }
 	}
 	var ClicksModule = {
 	  name: 'clicks',
@@ -9729,7 +9929,7 @@
 	var keyPrefix = 'f7storage-';
 	var Storage = {
 	  get: function get(key) {
-	    return Utils.promise(function (resolve, reject) {
+	    return new Promise(function (resolve, reject) {
 	      try {
 	        var value = JSON.parse(win.localStorage.getItem(("" + keyPrefix + key)));
 	        resolve(value);
@@ -9739,7 +9939,7 @@
 	    });
 	  },
 	  set: function set(key, value) {
-	    return Utils.promise(function (resolve, reject) {
+	    return new Promise(function (resolve, reject) {
 	      try {
 	        win.localStorage.setItem(("" + keyPrefix + key), JSON.stringify(value));
 	        resolve();
@@ -9749,7 +9949,7 @@
 	    });
 	  },
 	  remove: function remove(key) {
-	    return Utils.promise(function (resolve, reject) {
+	    return new Promise(function (resolve, reject) {
 	      try {
 	        win.localStorage.removeItem(("" + keyPrefix + key));
 	        resolve();
@@ -9765,7 +9965,7 @@
 
 	  },
 	  keys: function keys() {
-	    return Utils.promise(function (resolve, reject) {
+	    return new Promise(function (resolve, reject) {
 	      try {
 	        var keys = Object.keys(win.localStorage)
 	          .filter(function (keyName) { return keyName.indexOf(keyPrefix) === 0; })
@@ -9777,7 +9977,7 @@
 	    });
 	  },
 	  forEach: function forEach(callback) {
-	    return Utils.promise(function (resolve, reject) {
+	    return new Promise(function (resolve, reject) {
 	      try {
 	        Object.keys(win.localStorage)
 	          .filter(function (keyName) { return keyName.indexOf(keyPrefix) === 0; })
@@ -10763,6 +10963,7 @@
 	      $$: $,
 	      $dom7: $,
 	      $app: app,
+	      $f7: app,
 	      $options: Utils.extend({ id: id }, options),
 	    }
 	  );
@@ -11076,6 +11277,90 @@
 	  },
 	};
 
+	var SW = {
+	  registrations: [],
+	  register: function register(path, scope) {
+	    var app = this;
+	    if (!('serviceWorker' in window.navigator) || !app.serviceWorker.container) {
+	      return new Promise(function (resolve, reject) {
+	        reject(new Error('Service worker is not supported'));
+	      });
+	    }
+	    return new Promise(function (resolve, reject) {
+	      app.serviceWorker.container.register(path, (scope ? { scope: scope } : {}))
+	        .then(function (reg) {
+	          SW.registrations.push(reg);
+	          app.emit('swRegisterSuccess', reg);
+	          resolve(reg);
+	        }).catch(function (error) {
+	          app.emit('swRegisterError', error);
+	          reject(error);
+	        });
+	    });
+	  },
+	  unregister: function unregister(registration) {
+	    var app = this;
+	    if (!('serviceWorker' in window.navigator) || !app.serviceWorker.container) {
+	      return new Promise(function (resolve, reject) {
+	        reject(new Error('Service worker is not supported'));
+	      });
+	    }
+	    var registrations;
+	    if (!registration) { registrations = SW.registrations; }
+	    else if (Array.isArray(registration)) { registrations = registration; }
+	    else { registrations = [registration]; }
+	    return Promise.all(registrations.map(function (reg) { return new Promise(function (resolve, reject) {
+	      reg.unregister()
+	        .then(function () {
+	          if (SW.registrations.indexOf(reg) >= 0) {
+	            SW.registrations.splice(SW.registrations.indexOf(reg), 1);
+	          }
+	          app.emit('swUnregisterSuccess', true);
+	          resolve();
+	        })
+	        .catch(function (error) {
+	          app.emit('swUnregisterError', error);
+	          reject(error);
+	        });
+	    }); }));
+	  },
+	};
+
+	var ServiceWorkerModule = {
+	  name: 'sw',
+	  params: {
+	    serviceWorker: {
+	      path: undefined,
+	      scope: undefined,
+	    },
+	  },
+	  create: function create() {
+	    var app = this;
+	    Utils.extend(app, {
+	      serviceWorker: {
+	        container: ('serviceWorker' in window.navigator) ? window.navigator.serviceWorker : undefined,
+	        registrations: SW.registrations,
+	        register: SW.register.bind(app),
+	        unregister: SW.unregister.bind(app),
+	      },
+	    });
+	  },
+	  on: {
+	    init: function init() {
+	      if (!('serviceWorker' in window.navigator)) { return; }
+	      var app = this;
+	      if (!app.serviceWorker.container) { return; }
+	      var paths = app.params.serviceWorker.path;
+	      var scope = app.params.serviceWorker.scope;
+	      if (!paths || (Array.isArray(paths) && !paths.length)) { return; }
+	      var toRegister = Array.isArray(paths) ? paths : [paths];
+	      toRegister.forEach(function (path) {
+	        app.serviceWorker.register(path, scope);
+	      });
+	    },
+	  },
+	};
+
 	var Statusbar = {
 	  hide: function hide() {
 	    $('html').removeClass('with-statusbar');
@@ -11157,10 +11442,6 @@
 	        $('html').removeClass('with-statusbar');
 	      }
 	    }
-	  },
-	  iosOverlaysWebView: function iosOverlaysWebView(overlays) {
-	    if (!Device.ios) { return; }
-	    Statusbar.overlaysWebView(overlays);
 	  },
 	  checkOverlay: function checkOverlay() {
 	    if (Device.needsStatusbarOverlay()) {
@@ -11269,9 +11550,6 @@
 	        setBackgroundColor: Statusbar.setBackgroundColor,
 	        isVisible: Statusbar.isVisible,
 	        init: Statusbar.init.bind(app),
-
-	        iosOverlaysWebView: Statusbar.iosOverlaysWebView,
-	        setIosTextColor: Statusbar.iosSetTextColor,
 	      },
 	    });
 	  },
@@ -11361,7 +11639,6 @@
 	      pushStateOnLoad: true,
 	      // Animate Pages
 	      animate: true,
-	      animateWithJS: false,
 	      // iOS Dynamic Navbar
 	      iosDynamicNavbar: true,
 	      iosSeparateDynamicNavbar: true,
@@ -11369,7 +11646,7 @@
 	      iosAnimateNavbarBackIcon: true,
 	      // Delays
 	      iosPageLoadDelay: 0,
-	      materialPageLoadDelay: 0,
+	      mdPageLoadDelay: 0,
 	      // Routes hooks
 	      routesBeforeEnter: null,
 	      routesBeforeLeave: null,
@@ -11433,7 +11710,7 @@
 	var Navbar = {
 	  size: function size(el) {
 	    var app = this;
-	    if (app.theme !== 'ios') { return; }
+	    if (app.theme === 'md' && !app.params.navbar.mdCenterTitle) { return; }
 	    var $el = $(el);
 	    if ($el.hasClass('navbar')) {
 	      $el = $el.children('.navbar-inner').each(function (index, navbarEl) {
@@ -11441,6 +11718,7 @@
 	      });
 	      return;
 	    }
+
 	    if (
 	      $el.hasClass('stacked')
 	      || $el.parents('.stacked').length > 0
@@ -11449,6 +11727,14 @@
 	    ) {
 	      return;
 	    }
+
+	    if (app.theme === 'md' && app.params.navbar.mdCenterTitle) {
+	      $el.addClass('navbar-inner-centered-title');
+	    }
+	    if (app.theme === 'ios' && !app.params.navbar.iosCenterTitle) {
+	      $el.addClass('navbar-inner-left-title');
+	    }
+
 	    var $viewEl = $el.parents('.view').eq(0);
 	    var left = app.rtl ? $el.children('.right') : $el.children('.left');
 	    var right = app.rtl ? $el.children('.left') : $el.children('.right');
@@ -11508,7 +11794,7 @@
 	    // RTL inverter
 	    var inverter = app.rtl ? -1 : 1;
 
-	    if (dynamicNavbar) {
+	    if (dynamicNavbar && app.theme === 'ios') {
 	      if (title.hasClass('sliding') || (title.length > 0 && sliding)) {
 	        var titleLeftOffset = (-(currLeft + diff) * inverter) + separateNavbarLeftOffset;
 	        var titleRightOffset = ((navbarInnerWidth - currLeft - diff - titleWidth) * inverter) - separateNavbarRightOffset;
@@ -11532,7 +11818,14 @@
 	          left[0].f7NavbarLeftOffset = -leftWidth + separateNavbarLeftOffset;
 	          left[0].f7NavbarRightOffset = ((navbarInnerWidth - left[0].offsetWidth) / 2) - separateNavbarRightOffset;
 	          if (router && router.params.iosAnimateNavbarBackIcon && left.find('.back .icon').length > 0) {
-	            left[0].f7NavbarRightOffset -= left.find('.back .icon')[0].offsetWidth;
+	            if (left.find('.back .icon ~ span').length) {
+	              var leftOffset = left[0].f7NavbarLeftOffset;
+	              var rightOffset = left[0].f7NavbarRightOffset;
+	              left[0].f7NavbarLeftOffset = 0;
+	              left[0].f7NavbarRightOffset = 0;
+	              left.find('.back .icon ~ span')[0].f7NavbarLeftOffset = leftOffset;
+	              left.find('.back .icon ~ span')[0].f7NavbarRightOffset = rightOffset - left.find('.back .icon')[0].offsetWidth;
+	            }
 	          }
 	        }
 	      }
@@ -11551,8 +11844,11 @@
 	      }
 	    }
 
-	    // Title left
-	    if (app.params.navbar.iosCenterTitle) {
+	    // Center title
+	    if (
+	      (app.theme === 'ios' && app.params.navbar.iosCenterTitle)
+	      || (app.theme === 'md' && app.params.navbar.mdCenterTitle)
+	    ) {
 	      var titleLeft = diff;
 	      if (app.rtl && noLeft && noRight && title.length > 0) { titleLeft = -titleLeft; }
 	      title.css({ left: (titleLeft + "px") });
@@ -11566,6 +11862,9 @@
 	    if (!$el.length) { return; }
 	    if ($el.hasClass('navbar-hidden')) { return; }
 	    var className = "navbar-hidden" + (animate ? ' navbar-transitioning' : '');
+	    if ($el.find('.navbar-current .title-large').length) {
+	      className += ' navbar-large-hidden';
+	    }
 	    $el.transitionEnd(function () {
 	      $el.removeClass('navbar-transitioning');
 	    });
@@ -11585,11 +11884,11 @@
 	        $el.removeClass('navbar-transitioning');
 	      });
 	    }
-	    $el.removeClass('navbar-hidden');
+	    $el.removeClass('navbar-hidden navbar-large-hidden');
 	  },
 	  getElByPage: function getElByPage(page) {
 	    var $pageEl;
-	    var $navbarEl;
+	    var $navbarInnerEl;
 	    var pageData;
 	    if (page.$navbarEl || page.$el) {
 	      pageData = page;
@@ -11599,12 +11898,12 @@
 	      if ($pageEl.length > 0) { pageData = $pageEl[0].f7Page; }
 	    }
 	    if (pageData && pageData.$navbarEl && pageData.$navbarEl.length > 0) {
-	      $navbarEl = pageData.$navbarEl;
+	      $navbarInnerEl = pageData.$navbarEl;
 	    } else if ($pageEl) {
-	      $navbarEl = $pageEl.children('.navbar').children('.navbar-inner');
+	      $navbarInnerEl = $pageEl.children('.navbar').children('.navbar-inner');
 	    }
-	    if (!$navbarEl || ($navbarEl && $navbarEl.length === 0)) { return undefined; }
-	    return $navbarEl[0];
+	    if (!$navbarInnerEl || ($navbarInnerEl && $navbarInnerEl.length === 0)) { return undefined; }
+	    return $navbarInnerEl[0];
 	  },
 	  getPageByEl: function getPageByEl(navbarInnerEl) {
 	    var $navbarInnerEl = $(navbarInnerEl);
@@ -11623,10 +11922,68 @@
 	    });
 	    return pageEl;
 	  },
-	  initHideNavbarOnScroll: function initHideNavbarOnScroll(pageEl, navbarInnerEl) {
+
+	  collapseLargeTitle: function collapseLargeTitle(navbarInnerEl) {
+	    var app = this;
+	    var $navbarInnerEl = $(navbarInnerEl);
+	    if ($navbarInnerEl.hasClass('navbar')) {
+	      $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
+	      if ($navbarInnerEl.length > 1) {
+	        $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+	      }
+	      if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+	        return;
+	      }
+	    }
+	    $navbarInnerEl.addClass('navbar-inner-large-collapsed');
+	    if (app.theme === 'md') {
+	      $navbarInnerEl.parents('.navbar').addClass('navbar-large-collapsed');
+	    }
+	  },
+	  expandLargeTitle: function expandLargeTitle(navbarInnerEl) {
+	    var app = this;
+	    var $navbarInnerEl = $(navbarInnerEl);
+	    if ($navbarInnerEl.hasClass('navbar')) {
+	      $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
+	      if ($navbarInnerEl.length > 1) {
+	        $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+	      }
+	      if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+	        return;
+	      }
+	    }
+	    $navbarInnerEl.removeClass('navbar-inner-large-collapsed');
+	    if (app.theme === 'md') {
+	      $navbarInnerEl.parents('.navbar').removeClass('navbar-large-collapsed');
+	    }
+	  },
+	  toggleLargeTitle: function toggleLargeTitle(navbarInnerEl) {
+	    var app = this;
+	    var $navbarInnerEl = $(navbarInnerEl);
+	    if ($navbarInnerEl.hasClass('navbar')) {
+	      $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
+	      if ($navbarInnerEl.length > 1) {
+	        $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+	      }
+	      if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+	        return;
+	      }
+	    }
+	    if ($navbarInnerEl.hasClass('navbar-inner-large-collapsed')) {
+	      app.navbar.expandLargeTitle($navbarInnerEl);
+	    } else {
+	      app.navbar.collapseLargeTitle($navbarInnerEl);
+	    }
+	  },
+	  initNavbarOnScroll: function initNavbarOnScroll(pageEl, navbarInnerEl, needHide, needCollapse) {
 	    var app = this;
 	    var $pageEl = $(pageEl);
-	    var $navbarEl = $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
+	    var $navbarInnerEl = $(navbarInnerEl);
+	    var $navbarEl = app.theme === 'md'
+	      ? $navbarInnerEl.parents('.navbar')
+	      : $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
+	    var navbarHideHeight = 44;
+	    var snapPageScrollToLargeTitle = app.params.navbar.snapPageScrollToLargeTitle;
 
 	    var previousScrollTop;
 	    var currentScrollTop;
@@ -11636,10 +11993,87 @@
 	    var reachEnd;
 	    var action;
 	    var navbarHidden;
-	    function handleScroll() {
-	      var scrollContent = this;
-	      if ($pageEl.hasClass('page-previous')) { return; }
-	      currentScrollTop = scrollContent.scrollTop;
+
+	    var navbarCollapsed;
+	    var navbarTitleLargeHeight;
+	    if (needCollapse) {
+	      navbarTitleLargeHeight = $navbarInnerEl.css('--f7-navbar-large-title-height');
+	      if (navbarTitleLargeHeight && navbarTitleLargeHeight.indexOf('px') >= 0) {
+	        navbarTitleLargeHeight = parseInt(navbarTitleLargeHeight, 10);
+	        if (Number.isNaN(navbarTitleLargeHeight)) {
+	          navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
+	        }
+	      } else {
+	        navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
+	      }
+	    }
+
+	    var scrollChanged;
+	    var scrollContent;
+	    var scrollTimeoutId;
+	    var touchEndTimeoutId;
+	    var touchSnapTimeout = 70;
+	    var desktopSnapTimeout = 300;
+
+	    function snapLargeNavbar() {
+	      var inSearchbarExpanded = $navbarInnerEl.hasClass('with-searchbar-expandable-enabled');
+	      if (inSearchbarExpanded) { return; }
+	      if (!scrollContent || currentScrollTop < 0) { return; }
+	      if (currentScrollTop >= navbarTitleLargeHeight / 2 && currentScrollTop < navbarTitleLargeHeight) {
+	        $(scrollContent).scrollTop(navbarTitleLargeHeight, 100);
+	      } else if (currentScrollTop < navbarTitleLargeHeight) {
+	        $(scrollContent).scrollTop(0, 200);
+	      }
+	    }
+
+	    function handleLargeNavbarCollapse() {
+	      var collapseProgress = Math.min(Math.max((currentScrollTop / navbarTitleLargeHeight), 0), 1);
+	      var inSearchbarExpanded = $navbarInnerEl.hasClass('with-searchbar-expandable-enabled');
+	      if (inSearchbarExpanded) { return; }
+	      navbarCollapsed = $navbarInnerEl.hasClass('navbar-inner-large-collapsed');
+	      if (collapseProgress === 0 && navbarCollapsed) {
+	        app.navbar.expandLargeTitle($navbarInnerEl[0]);
+	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+	        if (app.theme === 'md') {
+	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+	        }
+	      } else if (collapseProgress === 1 && !navbarCollapsed) {
+	        app.navbar.collapseLargeTitle($navbarInnerEl[0]);
+	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+	        if (app.theme === 'md') {
+	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+	        }
+	      } else if ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed)) {
+	        $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+	        if (app.theme === 'md') {
+	          $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+	        }
+	      } else {
+	        $navbarInnerEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
+	        if (app.theme === 'md') {
+	          $navbarEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
+	        }
+	      }
+
+	      if (snapPageScrollToLargeTitle) {
+	        if (!Support.touch) {
+	          clearTimeout(scrollTimeoutId);
+	          scrollTimeoutId = setTimeout(function () {
+	            snapLargeNavbar();
+	          }, desktopSnapTimeout);
+	        } else if (touchEndTimeoutId) {
+	          clearTimeout(touchEndTimeoutId);
+	          touchEndTimeoutId = null;
+	          touchEndTimeoutId = setTimeout(function () {
+	            snapLargeNavbar();
+	            clearTimeout(touchEndTimeoutId);
+	            touchEndTimeoutId = null;
+	          }, touchSnapTimeout);
+	        }
+	      }
+	    }
+
+	    function handleTitleHideShow() {
 	      scrollHeight = scrollContent.scrollHeight;
 	      offsetHeight = scrollContent.offsetHeight;
 	      reachEnd = currentScrollTop + offsetHeight >= scrollHeight;
@@ -11650,12 +12084,12 @@
 	          action = 'show';
 	        }
 	      } else if (previousScrollTop > currentScrollTop) {
-	        if (app.params.navbar.showOnPageScrollTop || currentScrollTop <= 44) {
+	        if (app.params.navbar.showOnPageScrollTop || currentScrollTop <= navbarHideHeight) {
 	          action = 'show';
 	        } else {
 	          action = 'hide';
 	        }
-	      } else if (currentScrollTop > 44) {
+	      } else if (currentScrollTop > navbarHideHeight) {
 	        action = 'hide';
 	      } else {
 	        action = 'show';
@@ -11668,11 +12102,49 @@
 	        app.navbar.hide($navbarEl);
 	        navbarHidden = true;
 	      }
-
 	      previousScrollTop = currentScrollTop;
 	    }
+
+	    function handleScroll() {
+	      scrollContent = this;
+	      currentScrollTop = scrollContent.scrollTop;
+	      scrollChanged = currentScrollTop;
+
+	      if (needCollapse) {
+	        handleLargeNavbarCollapse();
+	      }
+	      if ($pageEl.hasClass('page-previous')) { return; }
+	      if (needHide) {
+	        handleTitleHideShow();
+	      }
+	    }
+	    function handeTouchStart() {
+	      scrollChanged = false;
+	    }
+	    function handleTouchEnd() {
+	      clearTimeout(touchEndTimeoutId);
+	      touchEndTimeoutId = null;
+	      touchEndTimeoutId = setTimeout(function () {
+	        if (scrollChanged !== false) {
+	          snapLargeNavbar();
+	          clearTimeout(touchEndTimeoutId);
+	          touchEndTimeoutId = null;
+	        }
+	      }, touchSnapTimeout);
+	    }
 	    $pageEl.on('scroll', '.page-content', handleScroll, true);
-	    $pageEl[0].f7ScrollNavbarHandler = handleScroll;
+	    if (Support.touch && needCollapse && snapPageScrollToLargeTitle) {
+	      app.on('touchstart:passive', handeTouchStart);
+	      app.on('touchend:passive', handleTouchEnd);
+	    }
+	    $pageEl[0].f7DetachNavbarScrollHandlers = function f7DetachNavbarScrollHandlers() {
+	      delete $pageEl[0].f7DetachNavbarScrollHandlers;
+	      $pageEl.off('scroll', '.page-content', handleScroll, true);
+	      if (Support.touch && needCollapse && snapPageScrollToLargeTitle) {
+	        app.off('touchstart:passive', handeTouchStart);
+	        app.off('touchend:passive', handleTouchEnd);
+	      }
+	    };
 	  },
 	};
 	var Navbar$1 = {
@@ -11686,7 +12158,10 @@
 	        show: Navbar.show.bind(app),
 	        getElByPage: Navbar.getElByPage.bind(app),
 	        getPageByEl: Navbar.getPageByEl.bind(app),
-	        initHideNavbarOnScroll: Navbar.initHideNavbarOnScroll.bind(app),
+	        collapseLargeTitle: Navbar.collapseLargeTitle.bind(app),
+	        expandLargeTitle: Navbar.expandLargeTitle.bind(app),
+	        toggleLargeTitle: Navbar.toggleLargeTitle.bind(app),
+	        initNavbarOnScroll: Navbar.initNavbarOnScroll.bind(app),
 	      },
 	    });
 	  },
@@ -11694,22 +12169,24 @@
 	    navbar: {
 	      scrollTopOnTitleClick: true,
 	      iosCenterTitle: true,
+	      mdCenterTitle: false,
 	      hideOnPageScroll: false,
 	      showOnPageScrollEnd: true,
 	      showOnPageScrollTop: true,
+	      collapseLargeTitleOnScroll: true,
+	      snapPageScrollToLargeTitle: true,
 	    },
 	  },
 	  on: {
 	    'panelBreakpoint resize': function onResize() {
 	      var app = this;
-	      if (app.theme !== 'ios') { return; }
 	      $('.navbar').each(function (index, navbarEl) {
 	        app.navbar.size(navbarEl);
 	      });
 	    },
 	    pageBeforeRemove: function pageBeforeRemove(page) {
-	      if (page.$el[0].f7ScrollNavbarHandler) {
-	        page.$el.off('scroll', '.page-content', page.$el[0].f7ScrollNavbarHandler, true);
+	      if (page.$el[0].f7DetachNavbarScrollHandlers) {
+	        page.$el[0].f7DetachNavbarScrollHandlers();
 	      }
 	    },
 	    pageBeforeIn: function pageBeforeIn(page) {
@@ -11732,18 +12209,33 @@
 	    },
 	    pageReinit: function pageReinit(page) {
 	      var app = this;
-	      if (app.theme !== 'ios') { return; }
-	      var $navbarEl = $(app.navbar.getElByPage(page));
-	      if (!$navbarEl || $navbarEl.length === 0) { return; }
-	      app.navbar.size($navbarEl);
+	      var $navbarInnerEl = $(app.navbar.getElByPage(page));
+	      if (!$navbarInnerEl || $navbarInnerEl.length === 0) { return; }
+	      app.navbar.size($navbarInnerEl);
 	    },
 	    pageInit: function pageInit(page) {
 	      var app = this;
-	      var $navbarEl = $(app.navbar.getElByPage(page));
-	      if (!$navbarEl || $navbarEl.length === 0) { return; }
-	      if (app.theme === 'ios') {
-	        app.navbar.size($navbarEl);
+	      var $navbarInnerEl = $(app.navbar.getElByPage(page));
+	      if (!$navbarInnerEl || $navbarInnerEl.length === 0) { return; }
+
+	      // Size
+	      app.navbar.size($navbarInnerEl);
+
+	      // Need Collapse On Scroll
+	      var needCollapseOnScrollHandler;
+	      if ($navbarInnerEl.children('.title-large').length > 0) {
+	        $navbarInnerEl.addClass('navbar-inner-large');
 	      }
+	      if ($navbarInnerEl.hasClass('navbar-inner-large')) {
+	        if (app.params.navbar.collapseLargeTitleOnScroll) { needCollapseOnScrollHandler = true; }
+	        if (app.theme === 'md') {
+	          $navbarInnerEl.parents('.navbar').addClass('navbar-large');
+	        }
+	        page.$el.addClass('page-with-navbar-large');
+	      }
+
+	      // Need Hide On Scroll
+	      var needHideOnScrollHandler;
 	      if (
 	        app.params.navbar.hideOnPageScroll
 	        || page.$el.find('.hide-navbar-on-scroll').length
@@ -11757,34 +12249,60 @@
 	          || page.$el.find('.keep-bars-on-scroll').length
 	          || page.$el.hasClass('keep-bars-on-scroll')
 	        ) {
-	          return;
+	          needHideOnScrollHandler = false;
+	        } else {
+	          needHideOnScrollHandler = true;
 	        }
-	        app.navbar.initHideNavbarOnScroll(page.el, $navbarEl[0]);
+	      }
+
+	      if (needCollapseOnScrollHandler || needHideOnScrollHandler) {
+	        app.navbar.initNavbarOnScroll(page.el, $navbarInnerEl[0], needHideOnScrollHandler, needCollapseOnScrollHandler);
 	      }
 	    },
 	    modalOpen: function modalOpen(modal) {
 	      var app = this;
-	      if (app.theme !== 'ios') { return; }
+	      if (
+	        (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+	        || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+	      ) {
+	        return;
+	      }
 	      modal.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
 	        app.navbar.size(navbarEl);
 	      });
 	    },
 	    panelOpen: function panelOpen(panel) {
 	      var app = this;
-	      if (app.theme !== 'ios') { return; }
+	      if (
+	        (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+	        || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+	      ) {
+	        return;
+	      }
 	      panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
 	        app.navbar.size(navbarEl);
 	      });
 	    },
 	    panelSwipeOpen: function panelSwipeOpen(panel) {
 	      var app = this;
-	      if (app.theme !== 'ios') { return; }
+	      if (
+	        (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+	        || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+	      ) {
+	        return;
+	      }
 	      panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
 	        app.navbar.size(navbarEl);
 	      });
 	    },
 	    tabShow: function tabShow(tabEl) {
 	      var app = this;
+	      if (
+	        (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+	        || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+	      ) {
+	        return;
+	      }
 	      $(tabEl).find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
 	        app.navbar.size(navbarEl);
 	      });
@@ -11829,7 +12347,12 @@
 	    'navbar-inner': {
 	      postpatch: function postpatch(vnode) {
 	        var app = this;
-	        if (app.theme !== 'ios') { return; }
+	        if (
+	          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+	          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+	        ) {
+	          return;
+	        }
 	        app.navbar.size(vnode.elm);
 	      },
 	    },
@@ -12769,11 +13292,11 @@
 	          if (typeof args[1] === 'function') {
 	            (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], defaultValue = assign[3], title = assign[4]);
 	          }
-	          defaultValue = typeof defaultValue === 'undefined' ? '' : defaultValue;
+	          defaultValue = typeof defaultValue === 'undefined' || defaultValue === null ? '' : defaultValue;
 	          return new Dialog(app, {
 	            title: typeof title === 'undefined' ? defaultDialogTitle() : title,
 	            text: text,
-	            content: ("<div class=\"dialog-input-field item-input\"><div class=\"item-input-wrap\"><input type=\"text\" value=\"" + defaultValue + "\" class=\"dialog-input\"></div></div>"),
+	            content: ("<div class=\"dialog-input-field input\"><input type=\"text\" class=\"dialog-input\" value=\"" + defaultValue + "\"></div>"),
 	            buttons: [
 	              {
 	                text: app.params.dialog.buttonCancel,
@@ -12837,7 +13360,7 @@
 	          return new Dialog(app, {
 	            title: typeof title === 'undefined' ? defaultDialogTitle() : title,
 	            text: text,
-	            content: ("\n              <div class=\"dialog-input-field dialog-input-double item-input\">\n                <div class=\"item-input-wrap\">\n                  <input type=\"text\" name=\"dialog-username\" placeholder=\"" + (app.params.dialog.usernamePlaceholder) + "\" class=\"dialog-input\">\n                </div>\n              </div>\n              <div class=\"dialog-input-field dialog-input-double item-input\">\n                <div class=\"item-input-wrap\">\n                  <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n                </div>\n              </div>"),
+	            content: ("\n              <div class=\"dialog-input-field dialog-input-double input\">\n                <input type=\"text\" name=\"dialog-username\" placeholder=\"" + (app.params.dialog.usernamePlaceholder) + "\" class=\"dialog-input\">\n              </div>\n              <div class=\"dialog-input-field dialog-input-double input\">\n                <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n              </div>"),
 	            buttons: [
 	              {
 	                text: app.params.dialog.buttonCancel,
@@ -12872,7 +13395,7 @@
 	          return new Dialog(app, {
 	            title: typeof title === 'undefined' ? defaultDialogTitle() : title,
 	            text: text,
-	            content: ("\n              <div class=\"dialog-input-field item-input\">\n                <div class=\"item-input-wrap\">\n                  <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n                </div>\n              </div>"),
+	            content: ("\n              <div class=\"dialog-input-field input\">\n                <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n              </div>"),
 	            buttons: [
 	              {
 	                text: app.params.dialog.buttonCancel,
@@ -12892,7 +13415,7 @@
 	          }).open();
 	        },
 	        preloader: function preloader(title, color) {
-	          var preloaderInner = app.theme !== 'md' ? '' : Utils.mdPreloaderContent;
+	          var preloaderInner = Utils[((app.theme) + "PreloaderContent")] || '';
 	          return new Dialog(app, {
 	            title: typeof title === 'undefined' || title === null ? app.params.dialog.preloaderTitle : title,
 	            content: ("<div class=\"preloader" + (color ? (" color-" + color) : '') + "\">" + preloaderInner + "</div>"),
@@ -13535,7 +14058,7 @@
 	      var buttonEl = this;
 	      var buttonIndex;
 	      var groupIndex;
-	      if ($(buttonEl).hasClass('item-link')) {
+	      if ($(buttonEl).hasClass('list-button')) {
 	        buttonIndex = $(buttonEl).parents('li').index();
 	        groupIndex = $(buttonEl).parents('.list').index();
 	      } else {
@@ -13579,12 +14102,12 @@
 	        });
 	        popover.open(animate);
 	        popover.once('popoverOpened', function () {
-	          popover.$el.find('.item-link').each(function (groupIndex, buttonEl) {
+	          popover.$el.find('.list-button').each(function (groupIndex, buttonEl) {
 	            $(buttonEl).on('click', buttonOnClick);
 	          });
 	        });
 	        popover.once('popoverClosed', function () {
-	          popover.$el.find('.item-link').each(function (groupIndex, buttonEl) {
+	          popover.$el.find('.list-button').each(function (groupIndex, buttonEl) {
 	            $(buttonEl).off('click', buttonOnClick);
 	          });
 	          Utils.nextTick(function () {
@@ -13713,13 +14236,12 @@
 	                    itemClasses.push('popover-from-actions-label');
 	                    return ("<li class=\"" + (itemClasses.join(' ')) + "\">" + text + "</li>");
 	                  }
-	                  itemClasses.push('item-link');
 	                  if (icon) {
-	                    itemClasses.push('item-content');
+	                    itemClasses.push('item-link item-content');
 	                    return ("\n                      <li>\n                        <a class=\"" + (itemClasses.join(' ')) + "\">\n                          <div class=\"item-media\">\n                            " + icon + "\n                          </div>\n                          <div class=\"item-inner\">\n                            <div class=\"item-title\">\n                              " + text + "\n                            </div>\n                          </div>\n                        </a>\n                      </li>\n                    ");
 	                  }
 	                  itemClasses.push('list-button');
-	                  return ("\n                    <li>\n                      <a href=\"#\" class=\"list-button " + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
+	                  return ("\n                    <li>\n                      <a href=\"#\" class=\"" + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
 	                }).join('')) + "\n              </ul>\n            </div>\n          "); }).join('')) + "\n        </div>\n      </div>\n    ").trim();
 	  };
 
@@ -14034,7 +14556,6 @@
 
 	  Toast.prototype.render = function render () {
 	    var toast = this;
-	    var app = toast.app;
 	    if (toast.params.render) { return toast.params.render.call(toast, toast); }
 	    var ref = toast.params;
 	    var position = ref.position;
@@ -14044,7 +14565,7 @@
 	    var closeButton = ref.closeButton;
 	    var closeButtonColor = ref.closeButtonColor;
 	    var closeButtonText = ref.closeButtonText;
-	    return ("\n      <div class=\"toast toast-" + position + " " + (cssClass || '') + " " + (icon ? 'toast-with-icon' : '') + "\">\n        <div class=\"toast-content\">\n          " + (icon ? ("<div class=\"toast-icon\">" + icon + "</div>") : '') + "\n          <div class=\"toast-text\">" + text + "</div>\n          " + (closeButton && !icon ? ("\n          <a class=\"toast-button " + (app.theme === 'md' ? 'button' : 'link') + " " + (closeButtonColor ? ("color-" + closeButtonColor) : '') + "\">" + closeButtonText + "</a>\n          ").trim() : '') + "\n        </div>\n      </div>\n    ").trim();
+	    return ("\n      <div class=\"toast toast-" + position + " " + (cssClass || '') + " " + (icon ? 'toast-with-icon' : '') + "\">\n        <div class=\"toast-content\">\n          " + (icon ? ("<div class=\"toast-icon\">" + icon + "</div>") : '') + "\n          <div class=\"toast-text\">" + text + "</div>\n          " + (closeButton && !icon ? ("\n          <a class=\"toast-button button " + (closeButtonColor ? ("color-" + closeButtonColor) : '') + "\">" + closeButtonText + "</a>\n          ").trim() : '') + "\n        </div>\n      </div>\n    ").trim();
 	  };
 
 	  return Toast;
@@ -14093,10 +14614,9 @@
 	var Preloader = {
 	  init: function init(el) {
 	    var app = this;
-	    if (app.theme !== 'md') { return; }
 	    var $el = $(el);
-	    if ($el.length === 0 || $el.children('.preloader-inner').length > 0) { return; }
-	    $el.append(Utils.mdPreloaderContent);
+	    if ($el.length === 0 || $el.children('.preloader-inner').length > 0 || $el.children('.preloader-inner-line').length > 0) { return; }
+	    $el.append(Utils[((app.theme) + "PreloaderContent")]);
 	  },
 	  // Modal
 	  visible: false,
@@ -14105,7 +14625,7 @@
 
 	    var app = this;
 	    if (Preloader.visible) { return; }
-	    var preloaderInner = app.theme !== 'md' ? '' : Utils.mdPreloaderContent;
+	    var preloaderInner = Utils[((app.theme) + "PreloaderContent")] || '';
 	    $('html').addClass('with-modal-preloader');
 	    app.root.append(("\n      <div class=\"preloader-backdrop\"></div>\n      <div class=\"preloader-modal\">\n        <div class=\"preloader color-" + color + "\">" + preloaderInner + "</div>\n      </div>\n    "));
 	    Preloader.visible = true;
@@ -14133,14 +14653,12 @@
 	  on: {
 	    photoBrowserOpen: function photoBrowserOpen(pb) {
 	      var app = this;
-	      if (app.theme !== 'md') { return; }
 	      pb.$el.find('.preloader').each(function (index, preloaderEl) {
 	        app.preloader.init(preloaderEl);
 	      });
 	    },
 	    pageInit: function pageInit(page) {
 	      var app = this;
-	      if (app.theme !== 'md') { return; }
 	      page.$el.find('.preloader').each(function (index, preloaderEl) {
 	        app.preloader.init(preloaderEl);
 	      });
@@ -14151,7 +14669,6 @@
 	      insert: function insert(vnode) {
 	        var app = this;
 	        var preloaderEl = vnode.elm;
-	        if (app.theme !== 'md') { return; }
 	        app.preloader.init(preloaderEl);
 	      },
 	    },
@@ -16519,7 +17036,7 @@
 	      if (otherPanel.opened) { return; }
 	    }
 	    if (e.target && e.target.nodeName.toLowerCase() === 'input' && e.target.type === 'range') { return; }
-	    if ($(e.target).closest('.range-slider, .tabs-swipeable-wrap, .calendar-months, .no-swipe-panel').length > 0) { return; }
+	    if ($(e.target).closest('.range-slider, .tabs-swipeable-wrap, .calendar-months, .no-swipe-panel, .card-opened').length > 0) { return; }
 	    touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
 	    touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
 	    if (params.swipeOnlyClose && !panel.opened) {
@@ -17326,8 +17843,428 @@
 	  },
 	};
 
+	var CardExpandable = {
+	  open: function open(cardEl, animate) {
+	    var assign;
+
+	    if ( cardEl === void 0 ) cardEl = '.card-expandable';
+	    if ( animate === void 0 ) animate = true;
+	    var app = this;
+	    if ($('.card-opened').length) { return; }
+	    var $cardEl = $(cardEl).eq(0);
+
+	    if (!$cardEl || !$cardEl.length) { return; }
+	    if ($cardEl.hasClass('card-opened') || $cardEl.hasClass('card-opening') || $cardEl.hasClass('card-closing')) { return; }
+
+	    var $pageEl = $cardEl.parents('.page').eq(0);
+	    if (!$pageEl.length) { return; }
+
+	    var prevented;
+
+	    function prevent() {
+	      prevented = true;
+	    }
+
+	    $cardEl.trigger('card:beforeopen', { prevent: prevent });
+	    app.emit('cardBeforeOpen', $cardEl[0], prevent);
+
+	    if (prevented) { return; }
+
+	    var $backropEl;
+	    if (app.params.card.backrop) {
+	      $backropEl = $cardEl.parents('.page-content').find('.card-backdrop');
+	      if (!$backropEl.length) {
+	        $backropEl = $('<div class="card-backdrop"></div>');
+	        $cardEl.parents('.page-content').append($backropEl);
+	      }
+	    }
+
+	    var $navbarEl;
+	    var $toolbarEl;
+	    if (app.params.card.hideNavbarOnOpen) {
+	      $navbarEl = $pageEl.children('.navbar');
+	      if (!$navbarEl.length) {
+	        if ($pageEl[0].f7Page) { $navbarEl = $pageEl[0].f7Page.$navbarEl; }
+	      }
+	    }
+	    if (app.params.card.hideToolbarOnOpen) {
+	      $toolbarEl = $pageEl.children('.toolbar');
+	      if (!$toolbarEl.length) {
+	        $toolbarEl = $pageEl.parents('.view').children('.toolbar');
+	      }
+	      if (!$toolbarEl.length) {
+	        $toolbarEl = $pageEl.parents('.views').children('.toolbar');
+	      }
+	    }
+
+	    var currTransform = $cardEl.css('transform');
+	    var hasTransform;
+	    if (currTransform && currTransform.match(/[2-9]/)) {
+	      hasTransform = true;
+	    }
+	    var $cardContentEl = $cardEl.children('.card-content');
+
+	    var $cardSizeEl = $(document.createElement('div')).addClass('card-expandable-size');
+	    $cardEl.append($cardSizeEl);
+
+	    var cardWidth = $cardEl[0].offsetWidth;
+	    var cardHeight = $cardEl[0].offsetHeight;
+	    var pageWidth = $pageEl[0].offsetWidth;
+	    var pageHeight = $pageEl[0].offsetHeight;
+
+	    var maxWidth = $cardSizeEl[0].offsetWidth || pageWidth;
+	    var maxHeight = $cardSizeEl[0].offsetHeight || pageHeight;
+
+	    var scaleX = maxWidth / cardWidth;
+	    var scaleY = maxHeight / cardHeight;
+
+	    var offset = $cardEl.offset();
+
+	    var cardLeftOffset;
+	    var cardTopOffset;
+
+	    if (hasTransform) {
+	      cardLeftOffset = $cardEl[0].offsetLeft;
+	      cardTopOffset = $cardEl[0].offsetTop - $cardEl.parents('.page-content')[0].scrollTop;
+	    } else {
+	      cardLeftOffset = offset.left;
+	      cardTopOffset = offset.top - $pageEl.offset().top;
+	      if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
+	    }
+
+	    cardLeftOffset -= (pageWidth - maxWidth) / 2;
+	    cardTopOffset -= (pageHeight - maxHeight) / 2;
+
+	    var cardRightOffset = maxWidth - cardWidth - cardLeftOffset;
+	    if (app.rtl) {
+	      (assign = [cardRightOffset, cardLeftOffset], cardLeftOffset = assign[0], cardRightOffset = assign[1]);
+	    }
+	    var cardBottomOffset = maxHeight - cardHeight - cardTopOffset;
+	    var translateX = (cardRightOffset - cardLeftOffset) / 2;
+	    var translateY = (cardBottomOffset - cardTopOffset) / 2;
+	    if (app.params.card.hideNavbarOnOpen && $navbarEl && $navbarEl.length) {
+	      app.navbar.hide($navbarEl, animate);
+	    }
+	    if (app.params.card.hideToolbarOnOpen && $toolbarEl && $toolbarEl.length) {
+	      app.toolbar.hide($toolbarEl, animate);
+	    }
+	    if ($backropEl) {
+	      $backropEl.removeClass('card-backdrop-out').addClass('card-backdrop-in');
+	    }
+	    $cardEl.removeClass('card-transitioning');
+	    if (animate) {
+	      $cardEl.addClass('card-opening');
+	    }
+	    $cardEl.trigger('card:open');
+	    app.emit('cardOpen', $cardEl[0]);
+	    function transitionEnd() {
+	      $cardEl.addClass('card-opened');
+	      $cardEl.removeClass('card-opening');
+	      $cardEl.trigger('card:opened');
+	      app.emit('cardOpened', $cardEl[0]);
+	    }
+	    $cardContentEl
+	      .css({
+	        width: (maxWidth + "px"),
+	        height: (maxHeight + "px"),
+	      })
+	      .transform(("translate3d(" + (app.rtl ? (cardLeftOffset + translateX) : (-cardLeftOffset - translateX)) + "px, 0px, 0) scale(" + (1 / scaleX) + ", " + (1 / scaleY) + ")"));
+
+	    $cardEl
+	      .transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+	    if (animate) {
+	      $cardEl.transitionEnd(function () {
+	        transitionEnd();
+	      });
+	    } else {
+	      transitionEnd();
+	    }
+
+	    $pageEl.addClass('page-with-card-opened');
+
+	    function onResize() {
+	      var assign;
+
+	      $cardEl.removeClass('card-transitioning');
+	      cardWidth = $cardEl[0].offsetWidth;
+	      cardHeight = $cardEl[0].offsetHeight;
+	      pageWidth = $pageEl[0].offsetWidth;
+	      pageHeight = $pageEl[0].offsetHeight;
+	      maxWidth = $cardSizeEl[0].offsetWidth || pageWidth;
+	      maxHeight = $cardSizeEl[0].offsetHeight || pageHeight;
+
+	      scaleX = maxWidth / cardWidth;
+	      scaleY = maxHeight / cardHeight;
+
+	      $cardEl.transform('translate3d(0px, 0px, 0) scale(1)');
+	      offset = $cardEl.offset();
+
+	      cardLeftOffset = offset.left - (pageWidth - maxWidth) / 2;
+	      if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
+	      cardTopOffset = offset.top - (pageHeight - maxHeight) / 2;
+
+	      cardRightOffset = maxWidth - cardWidth - cardLeftOffset;
+	      cardBottomOffset = maxHeight - cardHeight - cardTopOffset;
+	      if (app.rtl) {
+	        (assign = [cardRightOffset, cardLeftOffset], cardLeftOffset = assign[0], cardRightOffset = assign[1]);
+	      }
+	      translateX = (cardRightOffset - cardLeftOffset) / 2;
+	      translateY = (cardBottomOffset - cardTopOffset) / 2;
+
+	      $cardEl.transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+	      $cardContentEl
+	        .css({
+	          width: (maxWidth + "px"),
+	          height: (maxHeight + "px"),
+	        })
+	        .transform(("translate3d(" + (app.rtl ? (cardLeftOffset + translateX) : (-cardLeftOffset - translateX)) + "px, 0px, 0) scale(" + (1 / scaleX) + ", " + (1 / scaleY) + ")"));
+	    }
+
+	    var cardScrollTop;
+	    var isTouched;
+	    var isMoved;
+	    var touchStartX;
+	    var touchStartY;
+	    var touchEndX;
+	    var touchEndY;
+	    var isScrolling;
+	    var progress;
+	    var isV;
+	    var isH;
+	    function onTouchStart(e) {
+	      if (!$(e.target).closest($cardEl).length) { return; }
+	      if (!$cardEl.hasClass('card-opened')) { return; }
+	      cardScrollTop = $cardContentEl.scrollTop();
+	      isTouched = true;
+	      touchStartX = e.targetTouches[0].pageX;
+	      touchStartY = e.targetTouches[0].pageY;
+	      isScrolling = undefined;
+	      isV = false;
+	      isH = false;
+	    }
+	    function onTouchMove(e) {
+	      if (!isTouched) { return; }
+	      touchEndX = e.targetTouches[0].pageX;
+	      touchEndY = e.targetTouches[0].pageY;
+	      if (typeof isScrolling === 'undefined') {
+	        isScrolling = !!(isScrolling || Math.abs(touchEndY - touchStartY) > Math.abs(touchEndX - touchStartX));
+	      }
+	      if (!isH && !isV) {
+	        if (!isScrolling && e.targetTouches[0].clientX <= 50) {
+	          isH = true;
+	        } else {
+	          isV = true;
+	        }
+	      }
+
+	      if (!(isH || isV) || (isV && cardScrollTop !== 0)) {
+	        isTouched = true;
+	        isMoved = true;
+	        return;
+	      }
+	      if (!isMoved) {
+	        $cardEl.removeClass('card-transitioning');
+	      }
+
+	      isMoved = true;
+	      progress = isV ? Math.max((touchEndY - touchStartY) / 150, 0) : Math.max((touchEndX - touchStartX) / (cardWidth / 2), 0);
+	      if ((progress > 0 && isV) || isH) {
+	        if (isV && app.device.ios) {
+	          $cardContentEl.css('-webkit-overflow-scrolling', 'auto');
+	          $cardContentEl.scrollTop(0);
+	        }
+	        e.preventDefault();
+	      }
+
+	      if (progress > 1) { progress = Math.pow( progress, 0.3 ); }
+	      if (progress > (isV ? 1.3 : 1.1)) {
+	        isTouched = false;
+	        isMoved = false;
+	        app.card.close($cardEl);
+	      } else {
+	        $cardEl.transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + (scaleX * (1 - progress * 0.2)) + ", " + (scaleY * (1 - progress * 0.2)) + ")"));
+	      }
+	    }
+	    function onTouchEnd() {
+	      if (!isTouched || !isMoved) { return; }
+	      isTouched = false;
+	      isMoved = false;
+	      if (app.device.ios) {
+	        $cardContentEl.css('-webkit-overflow-scrolling', '');
+	      }
+	      if (progress >= 0.8) {
+	        app.card.close($cardEl);
+	      } else {
+	        $cardEl
+	          .addClass('card-transitioning')
+	          .transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+	      }
+	    }
+
+	    $cardEl[0].detachEventHandlers = function detachEventHandlers() {
+	      app.off('resize', onResize);
+	      if (Support.touch && app.params.card.swipeToClose) {
+	        app.off('touchstart:passive', onTouchStart);
+	        app.off('touchmove:active', onTouchMove);
+	        app.off('touchend:passive', onTouchEnd);
+	      }
+	    };
+
+	    app.on('resize', onResize);
+	    if (Support.touch && app.params.card.swipeToClose) {
+	      app.on('touchstart:passive', onTouchStart);
+	      app.on('touchmove:active', onTouchMove);
+	      app.on('touchend:passive', onTouchEnd);
+	    }
+	  },
+	  close: function close(cardEl, animate) {
+	    if ( cardEl === void 0 ) cardEl = '.card-expandable.card-opened';
+	    if ( animate === void 0 ) animate = true;
+
+	    var app = this;
+	    var $cardEl = $(cardEl).eq(0);
+	    if (!$cardEl || !$cardEl.length) { return; }
+	    if (!$cardEl.hasClass('card-opened') || $cardEl.hasClass('card-opening') || $cardEl.hasClass('card-closing')) { return; }
+
+	    var $cardContentEl = $cardEl.children('.card-content');
+
+	    var $pageEl = $cardEl.parents('.page').eq(0);
+	    if (!$pageEl.length) { return; }
+	    var $navbarEl;
+	    var $toolbarEl;
+
+	    var $backropEl;
+	    if (app.params.card.backrop) {
+	      $backropEl = $cardEl.parents('.page-content').find('.card-backdrop');
+	    }
+
+	    if (app.params.card.hideNavbarOnOpen) {
+	      $navbarEl = $pageEl.children('.navbar');
+	      if (!$navbarEl.length) {
+	        if ($pageEl[0].f7Page) { $navbarEl = $pageEl[0].f7Page.$navbarEl; }
+	      }
+	      if ($navbarEl && $navbarEl.length) {
+	        app.navbar.show($navbarEl, animate);
+	      }
+	    }
+	    if (app.params.card.hideToolbarOnOpen) {
+	      $toolbarEl = $pageEl.children('.toolbar');
+	      if (!$toolbarEl.length) {
+	        $toolbarEl = $pageEl.parents('.view').children('.toolbar');
+	      }
+	      if (!$toolbarEl.length) {
+	        $toolbarEl = $pageEl.parents('.views').children('.toolbar');
+	      }
+	      if ($toolbarEl && $toolbarEl.length) {
+	        app.toolbar.show($toolbarEl, animate);
+	      }
+	    }
+	    $pageEl.removeClass('page-with-card-opened');
+
+
+	    if ($backropEl && $backropEl.length) {
+	      $backropEl.removeClass('card-backdrop-in').addClass('card-backdrop-out');
+	    }
+
+	    $cardEl.removeClass('card-opened card-transitioning');
+	    if (animate) {
+	      $cardEl.addClass('card-closing');
+	    } else {
+	      $cardEl.addClass('card-no-transition');
+	    }
+	    $cardEl.transform('');
+	    $cardEl.trigger('card:close');
+	    app.emit('cardClose', $cardEl[0]);
+
+	    function transitionEnd() {
+	      $cardEl.removeClass('card-closing card-no-transition');
+	      $cardEl.trigger('card:closed');
+	      $cardEl.find('.card-expandable-size').remove();
+	      app.emit('cardClosed', $cardEl[0]);
+	    }
+	    $cardContentEl
+	      .css({
+	        width: '',
+	        height: '',
+	      })
+	      .transform('')
+	      .scrollTop(0, animate ? 300 : 0);
+	    if (animate) {
+	      $cardContentEl.transitionEnd(function () {
+	        transitionEnd();
+	      });
+	    } else {
+	      transitionEnd();
+	    }
+
+	    if ($cardEl[0].detachEventHandlers) {
+	      $cardEl[0].detachEventHandlers();
+	      delete $cardEl[0].detachEventHandlers;
+	    }
+	  },
+	  toggle: function toggle(cardEl, animate) {
+	    if ( cardEl === void 0 ) cardEl = '.card-expandable';
+
+	    var app = this;
+	    var $cardEl = $(cardEl).eq(0);
+	    if (!$cardEl.length) { return; }
+	    if ($cardEl.hasClass('card-opened')) {
+	      app.card.close($cardEl, animate);
+	    } else {
+	      app.card.open($cardEl, animate);
+	    }
+	  },
+	};
+
 	var Card = {
 	  name: 'card',
+	  params: {
+	    card: {
+	      hideNavbarOnOpen: true,
+	      hideToolbarOnOpen: true,
+	      swipeToClose: true,
+	      closeByBackdropClick: true,
+	      backrop: true,
+	    },
+	  },
+	  create: function create() {
+	    var app = this;
+	    Utils.extend(app, {
+	      card: {
+	        open: CardExpandable.open.bind(app),
+	        close: CardExpandable.close.bind(app),
+	        toggle: CardExpandable.toggle.bind(app),
+	      },
+	    });
+	  },
+	  clicks: {
+	    '.card-close': function closeCard($clickedEl, data) {
+	      var app = this;
+	      app.card.close(data.card);
+	    },
+	    '.card-open': function closeCard($clickedEl, data) {
+	      var app = this;
+	      app.card.open(data.card);
+	    },
+	    '.card-expandable': function toggleExpandableCard($clickedEl) {
+	      var app = this;
+	      if ($clickedEl.hasClass('card-opened') || $clickedEl.hasClass('card-opening') || $clickedEl.hasClass('card-closing')) { return; }
+	      app.card.open($clickedEl);
+	    },
+	    '.card-backdrop-in': function onBackdropClick() {
+	      var app = this;
+	      var needToClose = false;
+	      if (app.params.card.closeByBackdropClick) { needToClose = true; }
+	      var $openedCardEl = $('.card-opened');
+	      if (!$openedCardEl.length) { return; }
+	      if ($openedCardEl.attr('data-close-on-backdrop-click') === 'true') {
+	        needToClose = true;
+	      } else if ($openedCardEl.attr('data-close-on-backdrop-click') === 'false') {
+	        needToClose = false;
+	      }
+	      if (needToClose) { app.card.close($openedCardEl); }
+	    },
+	  },
 	};
 
 	var Chip = {
@@ -17851,7 +18788,7 @@
 	      app.input.checkEmptyState($inputEl);
 
 	      // Check validation
-	      if ($inputEl.dataset().validate || $inputEl.attr('validate') !== null) {
+	      if ($inputEl.attr('data-validate-on-blur') === null && ($inputEl.dataset().validate || $inputEl.attr('validate') !== null)) {
 	        app.input.validate($inputEl);
 	      }
 
@@ -17862,7 +18799,7 @@
 	    }
 	    function onInvalid(e) {
 	      var $inputEl = $(this);
-	      if ($inputEl.dataset().validate || $inputEl.attr('validate') !== null) {
+	      if ($inputEl.attr('data-validate-on-blur') === null && ($inputEl.dataset().validate || $inputEl.attr('validate') !== null)) {
 	        e.preventDefault();
 	        app.input.validate($inputEl);
 	      }
@@ -18207,7 +19144,13 @@
 	      max: 100,
 	      value: 0,
 	      draggableBar: true,
+	      vertical: false,
+	      verticalReversed: false,
 	      formatLabel: null,
+	      scale: false,
+	      scaleSteps: 5,
+	      scaleSubSteps: 0,
+	      formatScaleLabel: null,
 	    };
 
 	    // Extend defaults with modules params
@@ -18225,12 +19168,12 @@
 
 	    var dataset = $el.dataset();
 
-	    ('step min max value').split(' ').forEach(function (paramName) {
+	    ('step min max value scaleSteps scaleSubSteps').split(' ').forEach(function (paramName) {
 	      if (typeof params[paramName] === 'undefined' && typeof dataset[paramName] !== 'undefined') {
 	        range.params[paramName] = parseFloat(dataset[paramName]);
 	      }
 	    });
-	    ('dual label').split(' ').forEach(function (paramName) {
+	    ('dual label vertical verticalReversed scale').split(' ').forEach(function (paramName) {
 	      if (typeof params[paramName] === 'undefined' && typeof dataset[paramName] !== 'undefined') {
 	        range.params[paramName] = dataset[paramName];
 	      }
@@ -18259,7 +19202,14 @@
 	    var min = ref.min;
 	    var max = ref.max;
 	    var value = ref.value;
+	    var vertical = ref.vertical;
+	    var verticalReversed = ref.verticalReversed;
+	    var scale = ref.scale;
+	    var scaleSteps = ref.scaleSteps;
+	    var scaleSubSteps = ref.scaleSubSteps;
+
 	    Utils.extend(range, {
+	      app: app,
 	      $el: $el,
 	      el: $el[0],
 	      $inputEl: $inputEl,
@@ -18271,6 +19221,11 @@
 	      max: max,
 	      value: value,
 	      previousValue: value,
+	      vertical: vertical,
+	      verticalReversed: verticalReversed,
+	      scale: scale,
+	      scaleSteps: scaleSteps,
+	      scaleSubSteps: scaleSubSteps,
 	    });
 
 	    if ($inputEl) {
@@ -18294,6 +19249,16 @@
 	      $el.addClass('range-slider-label');
 	    }
 
+	    // Vertical
+	    if (range.vertical) {
+	      $el.addClass('range-slider-vertical');
+	      if (range.verticalReversed) {
+	        $el.addClass('range-slider-vertical-reversed');
+	      }
+	    } else {
+	      $el.addClass('range-slider-horizontal');
+	    }
+
 	    // Check for layout
 	    var $barEl = $('<div class="range-bar"></div>');
 	    var $barActiveEl = $('<div class="range-bar-active"></div>');
@@ -18302,7 +19267,6 @@
 	    // Create Knobs
 	    var knobHTML = "\n      <div class=\"range-knob-wrap\">\n        <div class=\"range-knob\"></div>\n        " + (range.label ? '<div class="range-knob-label"></div>' : '') + "\n      </div>\n    ";
 	    var knobs = [$(knobHTML)];
-	    var labels = [];
 
 	    if (range.dual) {
 	      knobs.push($(knobHTML));
@@ -18314,6 +19278,7 @@
 	    });
 
 	    // Labels
+	    var labels = [];
 	    if (range.label) {
 	      labels.push(knobs[0].find('.range-knob-label'));
 	      if (range.dual) {
@@ -18321,12 +19286,19 @@
 	      }
 	    }
 
+	    // Scale
+	    var $scaleEl;
+	    if (range.scale && range.scaleSteps > 1) {
+	      $scaleEl = $(("\n        <div class=\"range-scale\">\n          " + (range.renderScale()) + "\n        </div>\n      "));
+	      $el.append($scaleEl);
+	    }
+
 	    Utils.extend(range, {
-	      app: app,
 	      knobs: knobs,
 	      labels: labels,
 	      $barEl: $barEl,
 	      $barActiveEl: $barActiveEl,
+	      $scaleEl: $scaleEl,
 	    });
 
 	    $el[0].f7Range = range;
@@ -18335,7 +19307,9 @@
 	    var isTouched;
 	    var touchesStart = {};
 	    var isScrolling;
+	    var rangeOffset;
 	    var rangeOffsetLeft;
+	    var rangeOffsetTop;
 	    var $touchedKnobEl;
 	    var dualValueIndex;
 	    var valueChangedByTouch;
@@ -18355,10 +19329,15 @@
 
 	      isTouched = true;
 	      isScrolling = undefined;
-	      rangeOffsetLeft = $el.offset().left;
+	      rangeOffset = $el.offset();
+	      rangeOffsetLeft = rangeOffset.left;
+	      rangeOffsetTop = rangeOffset.top;
 
 	      var progress;
-	      if (range.app.rtl) {
+	      if (range.vertical) {
+	        progress = (touchesStart.y - rangeOffsetTop) / range.rangeHeight;
+	        if (!range.verticalReversed) { progress = 1 - progress; }
+	      } else if (range.app.rtl) {
 	        progress = ((rangeOffsetLeft + range.rangeWidth) - touchesStart.x) / range.rangeWidth;
 	      } else {
 	        progress = (touchesStart.x - rangeOffsetLeft) / range.rangeWidth;
@@ -18391,7 +19370,11 @@
 	      var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
 
 	      if (typeof isScrolling === 'undefined') {
-	        isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
+	        if (range.vertical) {
+	          isScrolling = !(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
+	        } else {
+	          isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
+	        }
 	      }
 	      if (isScrolling) {
 	        isTouched = false;
@@ -18400,7 +19383,10 @@
 	      e.preventDefault();
 
 	      var progress;
-	      if (range.app.rtl) {
+	      if (range.vertical) {
+	        progress = (pageY - rangeOffsetTop) / range.rangeHeight;
+	        if (!range.verticalReversed) { progress = 1 - progress; }
+	      } else if (range.app.rtl) {
 	        progress = ((rangeOffsetLeft + range.rangeWidth) - pageX) / range.rangeWidth;
 	      } else {
 	        progress = (pageX - rangeOffsetLeft) / range.rangeWidth;
@@ -18517,10 +19503,17 @@
 
 	  Range.prototype.calcSize = function calcSize () {
 	    var range = this;
-	    var width = range.$el.outerWidth();
-	    if (width === 0) { return; }
-	    range.rangeWidth = width;
-	    range.knobWidth = range.knobs[0].outerWidth();
+	    if (range.vertical) {
+	      var height = range.$el.outerHeight();
+	      if (height === 0) { return; }
+	      range.rangeHeight = height;
+	      range.knobHeight = range.knobs[0].outerHeight();
+	    } else {
+	      var width = range.$el.outerWidth();
+	      if (width === 0) { return; }
+	      range.rangeWidth = width;
+	      range.knobWidth = range.knobs[0].outerWidth();
+	    }
 	  };
 
 	  Range.prototype.layout = function layout () {
@@ -18529,7 +19522,9 @@
 	    var range = this;
 	    var app = range.app;
 	    var knobWidth = range.knobWidth;
+	    var knobHeight = range.knobHeight;
 	    var rangeWidth = range.rangeWidth;
+	    var rangeHeight = range.rangeHeight;
 	    var min = range.min;
 	    var max = range.max;
 	    var knobs = range.knobs;
@@ -18537,27 +19532,38 @@
 	    var value = range.value;
 	    var label = range.label;
 	    var labels = range.labels;
-	    var positionProperty = app.rtl ? 'right' : 'left';
+	    var vertical = range.vertical;
+	    var verticalReversed = range.verticalReversed;
+	    var knobSize = vertical ? knobHeight : knobWidth;
+	    var rangeSize = vertical ? rangeHeight : rangeWidth;
+	    // eslint-disable-next-line
+	    var positionProperty = vertical
+	      ? (verticalReversed ? 'top' : 'bottom')
+	      : (app.rtl ? 'right' : 'left');
 	    if (range.dual) {
 	      var progress = [((value[0] - min) / (max - min)), ((value[1] - min) / (max - min))];
-	      $barActiveEl.css(( obj = {}, obj[positionProperty] = ((progress[0] * 100) + "%"), obj.width = (((progress[1] - progress[0]) * 100) + "%"), obj ));
+	      $barActiveEl.css(( obj = {}, obj[positionProperty] = ((progress[0] * 100) + "%"), obj[vertical ? 'height' : 'width'] = (((progress[1] - progress[0]) * 100) + "%"), obj ));
 	      knobs.forEach(function ($knobEl, knobIndex) {
-	        var leftPos = rangeWidth * progress[knobIndex];
-	        var realLeft = (rangeWidth * progress[knobIndex]) - (knobWidth / 2);
-	        if (realLeft < 0) { leftPos = knobWidth / 2; }
-	        if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
-	        $knobEl.css(positionProperty, (leftPos + "px"));
+	        var startPos = rangeSize * progress[knobIndex];
+	        if (app.theme === 'ios') {
+	          var realStartPos = (rangeSize * progress[knobIndex]) - (knobSize / 2);
+	          if (realStartPos < 0) { startPos = knobSize / 2; }
+	          if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
+	        }
+	        $knobEl.css(positionProperty, (startPos + "px"));
 	        if (label) { labels[knobIndex].text(range.formatLabel(value[knobIndex], labels[knobIndex][0])); }
 	      });
 	    } else {
 	      var progress$1 = ((value - min) / (max - min));
-	      $barActiveEl.css('width', ((progress$1 * 100) + "%"));
+	      $barActiveEl.css(vertical ? 'height' : 'width', ((progress$1 * 100) + "%"));
 
-	      var leftPos = rangeWidth * progress$1;
-	      var realLeft = (rangeWidth * progress$1) - (knobWidth / 2);
-	      if (realLeft < 0) { leftPos = knobWidth / 2; }
-	      if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
-	      knobs[0].css(positionProperty, (leftPos + "px"));
+	      var startPos = rangeSize * progress$1;
+	      if (app.theme === 'ios') {
+	        var realStartPos = (rangeSize * progress$1) - (knobSize / 2);
+	        if (realStartPos < 0) { startPos = knobSize / 2; }
+	        if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
+	      }
+	      knobs[0].css(positionProperty, (startPos + "px"));
 	      if (label) { labels[0].text(range.formatLabel(value, labels[0][0])); }
 	    }
 	    if ((range.dual && value.indexOf(min) >= 0) || (!range.dual && value === min)) {
@@ -18633,6 +19639,63 @@
 	    var range = this;
 	    if (range.params.formatLabel) { return range.params.formatLabel.call(range, value, labelEl); }
 	    return value;
+	  };
+
+	  Range.prototype.formatScaleLabel = function formatScaleLabel (value) {
+	    var range = this;
+	    if (range.params.formatScaleLabel) { return range.params.formatScaleLabel.call(range, value); }
+	    return value;
+	  };
+
+	  Range.prototype.renderScale = function renderScale () {
+	    var range = this;
+	    var app = range.app;
+	    var verticalReversed = range.verticalReversed;
+	    var vertical = range.vertical;
+
+	    // eslint-disable-next-line
+	    var positionProperty = vertical
+	      ? (verticalReversed ? 'top' : 'bottom')
+	      : (app.rtl ? 'right' : 'left');
+
+	    var html = '';
+
+	    Array
+	      .from({ length: range.scaleSteps + 1 })
+	      .forEach(function (scaleEl, index) {
+	        var scaleStepValue = (range.max - range.min) / range.scaleSteps;
+	        var scaleValue = range.min + scaleStepValue * index;
+	        var progress = ((scaleValue - range.min) / (range.max - range.min));
+	        html += "<div class=\"range-scale-step\" style=\"" + positionProperty + ": " + (progress * 100) + "%\">" + (range.formatScaleLabel(scaleValue)) + "</div>";
+
+	        if (range.scaleSubSteps && range.scaleSubSteps > 1 && index < range.scaleSteps) {
+	          Array
+	            .from({ length: range.scaleSubSteps - 1 })
+	            .forEach(function (subStepEl, subIndex) {
+	              var subStep = scaleStepValue / range.scaleSubSteps;
+	              var scaleSubValue = scaleValue + subStep * (subIndex + 1);
+	              var subProgress = ((scaleSubValue - range.min) / (range.max - range.min));
+	              html += "<div class=\"range-scale-step range-scale-substep\" style=\"" + positionProperty + ": " + (subProgress * 100) + "%\"></div>";
+	            });
+	        }
+	      });
+
+	    return html;
+	  };
+
+	  Range.prototype.updateScale = function updateScale () {
+	    var range = this;
+	    if (!range.scale || range.scaleSteps < 2) {
+	      if (range.$scaleEl) { range.$scaleEl.remove(); }
+	      delete range.$scaleEl;
+	      return;
+	    }
+	    if (!range.$scaleEl) {
+	      range.$scaleEl = $('<div class="range-scale"></div>');
+	      range.$el.append(range.$scaleEl);
+	    }
+
+	    range.$scaleEl.html(range.renderScale());
 	  };
 
 	  Range.prototype.init = function init () {
@@ -19312,7 +20375,7 @@
 	      var value = ss.$selectEl.val();
 	      ss.$el.trigger('smartselect:change', ss, value);
 	      ss.emit('local::change smartSelectChange', ss, value);
-	      ss.setValue();
+	      ss.setTextValue();
 	    }
 	    ss.attachEvents = function attachEvents() {
 	      $el.on('click', onClick);
@@ -19380,6 +20443,43 @@
 	  SmartSelect.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
 	  SmartSelect.prototype.constructor = SmartSelect;
 
+	  SmartSelect.prototype.setValue = function setValue (value) {
+	    var ss = this;
+	    var newValue = value;
+	    var optionText = [];
+	    var optionEl;
+	    var displayAs;
+	    var text;
+	    if (ss.multiple) {
+	      if (!Array.isArray(newValue)) { newValue = [newValue]; }
+	      for (var i = 0; i < ss.selectEl.options.length; i += 1) {
+	        optionEl = ss.selectEl.options[i];
+	        if (newValue.indexOf(optionEl.value) >= 0) {
+	          optionEl.selected = true;
+	        } else {
+	          optionEl.selected = false;
+	        }
+	        if (optionEl.selected) {
+	          displayAs = optionEl.dataset ? optionEl.dataset.displayAs : $(optionEl).data('display-value-as');
+	          text = displayAs && typeof displayAs !== 'undefined' ? displayAs : optionEl.textContent;
+	          optionText.push(text.trim());
+	        }
+	      }
+	    } else {
+	      optionEl = ss.$selectEl.find(("option[value=\"" + newValue + "\"]"))[0];
+	      displayAs = optionEl.dataset ? optionEl.dataset.displayAs : $(optionEl).data('display-as');
+	      text = displayAs && typeof displayAs !== 'undefined' ? displayAs : optionEl.textContent;
+	      optionText = [text];
+	      ss.selectEl.value = newValue;
+	    }
+	    ss.$valueEl.text(optionText.join(', '));
+	  };
+
+	  SmartSelect.prototype.getValue = function getValue () {
+	    var ss = this;
+	    return ss.$selectEl.val();
+	  };
+
 	  SmartSelect.prototype.getView = function getView () {
 	    var ss = this;
 	    var view = ss.view || ss.params.view;
@@ -19409,7 +20509,7 @@
 	    }
 	  };
 
-	  SmartSelect.prototype.setValue = function setValue (value) {
+	  SmartSelect.prototype.setTextValue = function setTextValue (value) {
 	    var ss = this;
 	    var valueArray = [];
 	    if (typeof value !== 'undefined') {
@@ -19519,7 +20619,7 @@
 	      pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
 	    }
 	    var cssClass = ss.params.cssClass;
-	    var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+	    var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
 	    return pageHtml;
 	  };
 
@@ -19532,7 +20632,7 @@
 	      pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
 	    }
 	    var cssClass = ss.params.cssClass || '';
-	    var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+	    var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
 	    return popupHtml;
 	  };
 
@@ -19540,7 +20640,7 @@
 	    var ss = this;
 	    if (ss.params.renderSheet) { return ss.params.renderSheet.call(ss, ss.items); }
 	    var cssClass = ss.params.cssClass;
-	    var sheetHtml = "\n      <div class=\"sheet-modal smart-select-sheet " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"toolbar " + (ss.params.toolbarColorTheme ? ("theme-" + (ss.params.toolbarColorTheme)) : '') + "\">\n          <div class=\"toolbar-inner\">\n            <div class=\"left\"></div>\n            <div class=\"right\">\n              <a class=\"link sheet-close\">" + (ss.params.sheetCloseLinkText) + "</a>\n            </div>\n          </div>\n        </div>\n        <div class=\"sheet-modal-inner\">\n          <div class=\"page-content\">\n            <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n              <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+	    var sheetHtml = "\n      <div class=\"sheet-modal smart-select-sheet " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"toolbar toolbar-top " + (ss.params.toolbarColorTheme ? ("color-" + (ss.params.toolbarColorTheme)) : '') + "\">\n          <div class=\"toolbar-inner\">\n            <div class=\"left\"></div>\n            <div class=\"right\">\n              <a class=\"link sheet-close\">" + (ss.params.sheetCloseLinkText) + "</a>\n            </div>\n          </div>\n        </div>\n        <div class=\"sheet-modal-inner\">\n          <div class=\"page-content\">\n            <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n              <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
 	    return sheetHtml;
 	  };
 
@@ -19548,7 +20648,7 @@
 	    var ss = this;
 	    if (ss.params.renderPopover) { return ss.params.renderPopover.call(ss, ss.items); }
 	    var cssClass = ss.params.cssClass;
-	    var popoverHtml = "\n      <div class=\"popover smart-select-popover " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+	    var popoverHtml = "\n      <div class=\"popover smart-select-popover " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
 	    return popoverHtml;
 	  };
 
@@ -19850,7 +20950,7 @@
 	  SmartSelect.prototype.init = function init () {
 	    var ss = this;
 	    ss.attachEvents();
-	    ss.setValue();
+	    ss.setTextValue();
 	  };
 
 	  SmartSelect.prototype.destroy = function destroy () {
@@ -21420,43 +22520,24 @@
 	      var dayName = params.dayNamesShort[dayIndex];
 	      weekDaysHtml += "<div class=\"calendar-week-day\">" + dayName + "</div>";
 	    }
-	    return ("\n    <div class=\"calendar-week-header\">\n    " + weekDaysHtml + "\n    </div>\n  ").trim();
+	    return ("\n    <div class=\"calendar-week-header\">\n      " + weekDaysHtml + "\n    </div>\n  ").trim();
 	  };
 
 	  Calendar.prototype.renderMonthSelector = function renderMonthSelector () {
 	    var calendar = this;
-	    var app = calendar.app;
 	    if (calendar.params.renderMonthSelector) {
 	      return calendar.params.renderMonthSelector.call(calendar);
 	    }
 
-	    var needsBlackIcon;
-	    if (calendar.inline && calendar.$containerEl.closest('.theme-dark').length === 0) {
-	      needsBlackIcon = true;
-	    } else if (app.root.closest('.theme-dark').length === 0) {
-	      needsBlackIcon = true;
-	    }
-
-	    var iconColor = app.theme === 'md' && needsBlackIcon ? 'color-black' : '';
-	    return ("\n    <div class=\"calendar-month-selector\">\n    <a href=\"#\" class=\"link icon-only calendar-prev-month-button\">\n      <i class=\"icon icon-prev " + iconColor + "\"></i>\n    </a>\n    <span class=\"current-month-value\"></span>\n    <a href=\"#\" class=\"link icon-only calendar-next-month-button\">\n      <i class=\"icon icon-next " + iconColor + "\"></i>\n    </a>\n    </div>\n  ").trim();
+	    return "\n    <div class=\"calendar-month-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-month-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-month-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-month-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
 	  };
 
 	  Calendar.prototype.renderYearSelector = function renderYearSelector () {
 	    var calendar = this;
-	    var app = calendar.app;
 	    if (calendar.params.renderYearSelector) {
 	      return calendar.params.renderYearSelector.call(calendar);
 	    }
-
-	    var needsBlackIcon;
-	    if (calendar.inline && calendar.$containerEl.closest('.theme-dark').length === 0) {
-	      needsBlackIcon = true;
-	    } else if (app.root.closest('.theme-dark').length === 0) {
-	      needsBlackIcon = true;
-	    }
-
-	    var iconColor = app.theme === 'md' && needsBlackIcon ? 'color-black' : '';
-	    return ("\n    <div class=\"calendar-year-selector\">\n    <a href=\"#\" class=\"link icon-only calendar-prev-year-button\">\n      <i class=\"icon icon-prev " + iconColor + "\"></i>\n    </a>\n    <span class=\"current-year-value\"></span>\n    <a href=\"#\" class=\"link icon-only calendar-next-year-button\">\n      <i class=\"icon icon-next " + iconColor + "\"></i>\n    </a>\n    </div>\n  ").trim();
+	    return "\n    <div class=\"calendar-year-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-year-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-year-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-year-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
 	  };
 
 	  Calendar.prototype.renderHeader = function renderHeader () {
@@ -21464,7 +22545,7 @@
 	    if (calendar.params.renderHeader) {
 	      return calendar.params.renderHeader.call(calendar);
 	    }
-	    return ("\n    <div class=\"calendar-header\">\n    <div class=\"calendar-selected-date\">" + (calendar.params.headerPlaceholder) + "</div>\n    </div>\n  ").trim();
+	    return ("\n    <div class=\"calendar-header\">\n      <div class=\"calendar-selected-date\">" + (calendar.params.headerPlaceholder) + "</div>\n    </div>\n  ").trim();
 	  };
 
 	  Calendar.prototype.renderFooter = function renderFooter () {
@@ -21473,7 +22554,7 @@
 	    if (calendar.params.renderFooter) {
 	      return calendar.params.renderFooter.call(calendar);
 	    }
-	    return ("\n    <div class=\"calendar-footer\">\n    <a href=\"#\" class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
+	    return ("\n    <div class=\"calendar-footer\">\n      <a href=\"#\" class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
 	  };
 
 	  Calendar.prototype.renderToolbar = function renderToolbar () {
@@ -21481,7 +22562,7 @@
 	    if (calendar.params.renderToolbar) {
 	      return calendar.params.renderToolbar.call(calendar, calendar);
 	    }
-	    return ("\n    <div class=\"toolbar no-shadow\">\n    <div class=\"toolbar-inner\">\n      " + (calendar.renderMonthSelector()) + "\n      " + (calendar.renderYearSelector()) + "\n    </div>\n    </div>\n  ").trim();
+	    return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        " + (calendar.renderMonthSelector()) + "\n        " + (calendar.renderYearSelector()) + "\n      </div>\n    </div>\n  ").trim();
 	  };
 	  // eslint-disable-next-line
 	  Calendar.prototype.renderInline = function renderInline () {
@@ -21495,7 +22576,7 @@
 	    var weekHeader = ref.weekHeader;
 	    var value = calendar.value;
 	    var date = value && value.length ? value[0] : new calendar.DateHandleClass().setHours(0, 0, 0);
-	    var inlineHtml = ("\n    <div class=\"calendar calendar-inline " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n    " + (header ? calendar.renderHeader() : '') + "\n    " + (toolbar ? calendar.renderToolbar() : '') + "\n    " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n    <div class=\"calendar-months\">\n      " + (calendar.renderMonths(date)) + "\n    </div>\n    " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
+	    var inlineHtml = ("\n    <div class=\"calendar calendar-inline " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n      " + (header ? calendar.renderHeader() : '') + "\n      " + (toolbar ? calendar.renderToolbar() : '') + "\n      " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n      <div class=\"calendar-months\">\n        " + (calendar.renderMonths(date)) + "\n      </div>\n      " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
 
 	    return inlineHtml;
 	  };
@@ -21511,7 +22592,7 @@
 	    var weekHeader = ref.weekHeader;
 	    var value = calendar.value;
 	    var date = value && value.length ? value[0] : new calendar.DateHandleClass().setHours(0, 0, 0);
-	    var sheetHtml = ("\n    <div class=\"calendar calendar-modal " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n    " + (header ? calendar.renderHeader() : '') + "\n    " + (toolbar ? calendar.renderToolbar() : '') + "\n    " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n    <div class=\"calendar-months\">\n      " + (calendar.renderMonths(date)) + "\n    </div>\n    " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
+	    var sheetHtml = ("\n    <div class=\"calendar calendar-modal " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n      " + (header ? calendar.renderHeader() : '') + "\n      " + (toolbar ? calendar.renderToolbar() : '') + "\n      " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n      <div class=\"calendar-months\">\n        " + (calendar.renderMonths(date)) + "\n      </div>\n      " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
 
 	    return sheetHtml;
 	  };
@@ -21527,7 +22608,7 @@
 	    var weekHeader = ref.weekHeader;
 	    var value = calendar.value;
 	    var date = value && value.length ? value[0] : new calendar.DateHandleClass().setHours(0, 0, 0);
-	    var sheetHtml = ("\n    <div class=\"sheet-modal calendar calendar-sheet " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n    " + (header ? calendar.renderHeader() : '') + "\n    " + (toolbar ? calendar.renderToolbar() : '') + "\n    " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n    <div class=\"sheet-modal-inner calendar-months\">\n      " + (calendar.renderMonths(date)) + "\n    </div>\n    " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
+	    var sheetHtml = ("\n    <div class=\"sheet-modal calendar calendar-sheet " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n      " + (header ? calendar.renderHeader() : '') + "\n      " + (toolbar ? calendar.renderToolbar() : '') + "\n      " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n      <div class=\"sheet-modal-inner calendar-months\">\n        " + (calendar.renderMonths(date)) + "\n      </div>\n      " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
 
 	    return sheetHtml;
 	  };
@@ -21543,7 +22624,7 @@
 	    var weekHeader = ref.weekHeader;
 	    var value = calendar.value;
 	    var date = value && value.length ? value[0] : new calendar.DateHandleClass().setHours(0, 0, 0);
-	    var popoverHtml = ("\n    <div class=\"popover calendar-popover\">\n    <div class=\"popover-inner\">\n      <div class=\"calendar " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n      " + (header ? calendar.renderHeader() : '') + "\n      " + (toolbar ? calendar.renderToolbar() : '') + "\n      " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n      <div class=\"calendar-months\">\n        " + (calendar.renderMonths(date)) + "\n      </div>\n      " + (footer ? calendar.renderFooter() : '') + "\n      </div>\n    </div>\n    </div>\n  ").trim();
+	    var popoverHtml = ("\n    <div class=\"popover calendar-popover\">\n      <div class=\"popover-inner\">\n        <div class=\"calendar " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n        " + (header ? calendar.renderHeader() : '') + "\n        " + (toolbar ? calendar.renderToolbar() : '') + "\n        " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n        <div class=\"calendar-months\">\n          " + (calendar.renderMonths(date)) + "\n        </div>\n        " + (footer ? calendar.renderFooter() : '') + "\n        </div>\n      </div>\n    </div>\n  ").trim();
 
 	    return popoverHtml;
 	  };
@@ -22425,7 +23506,7 @@
 	  Picker.prototype.renderToolbar = function renderToolbar () {
 	    var picker = this;
 	    if (picker.params.renderToolbar) { return picker.params.renderToolbar.call(picker, picker); }
-	    return ("\n      <div class=\"toolbar no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a href=\"#\" class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
+	    return ("\n      <div class=\"toolbar toolbar-top no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a href=\"#\" class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
 	  };
 	  // eslint-disable-next-line
 	  Picker.prototype.renderColumn = function renderColumn (col, onlyItems) {
@@ -22878,6 +23959,8 @@
 	    ptr.el = $el[0];
 	    ptr.app = app;
 
+	    ptr.bottom = ptr.$el.hasClass('ptr-bottom');
+
 	    // Extend defaults with modules params
 	    ptr.useModulesParams({});
 
@@ -22912,6 +23995,7 @@
 	    var touchesDiff;
 	    var refresh = false;
 	    var useTranslate = false;
+	    var forceUseTranslate = false;
 	    var startTranslate = 0;
 	    var translate;
 	    var scrollTop;
@@ -22920,11 +24004,14 @@
 	    var dynamicTriggerDistance;
 	    var pullStarted;
 	    var hasNavbar = false;
+	    var scrollHeight;
+	    var offsetHeight;
+	    var maxScrollTop;
 	    var $pageEl = $el.parents('.page');
 
 	    if ($pageEl.find('.navbar').length > 0 || $pageEl.parents('.view').children('.navbar').length > 0) { hasNavbar = true; }
 	    if ($pageEl.hasClass('no-navbar')) { hasNavbar = false; }
-	    if (!hasNavbar) { $el.addClass('ptr-no-navbar'); }
+	    if (!hasNavbar && !ptr.bottom) { $el.addClass('ptr-no-navbar'); }
 
 	    // Define trigger distance
 	    if ($el.attr('data-ptr-distance')) {
@@ -22987,12 +24074,16 @@
 	      }
 
 	      scrollTop = $el[0].scrollTop;
-	      if (typeof wasScrolled === 'undefined' && scrollTop !== 0) { wasScrolled = true; }
 
 	      if (!isMoved) {
 	        $el.removeClass('ptr-transitioning');
 	        var targetIsEl;
 	        var targetIsScrollable;
+	        scrollHeight = $el[0].scrollHeight;
+	        offsetHeight = $el[0].offsetHeight;
+	        if (ptr.bottom) {
+	          maxScrollTop = scrollHeight - offsetHeight;
+	        }
 	        $(e.target).parents().each(function (index, targetEl) {
 	          if (targetEl === el) {
 	            targetIsEl = true;
@@ -23003,39 +24094,63 @@
 	          }
 	        });
 
-	        if (targetIsScrollable || scrollTop > $el[0].offsetHeight) {
+	        if (targetIsScrollable || scrollTop > scrollHeight) {
 	          isTouched = false;
 	          return;
 	        }
 	        if (dynamicTriggerDistance) {
 	          triggerDistance = $el.attr('data-ptr-distance');
-	          if (triggerDistance.indexOf('%') >= 0) { triggerDistance = ($el[0].offsetHeight * parseInt(triggerDistance, 10)) / 100; }
+	          if (triggerDistance.indexOf('%') >= 0) { triggerDistance = (scrollHeight * parseInt(triggerDistance, 10)) / 100; }
 	        }
 	        startTranslate = $el.hasClass('ptr-refreshing') ? triggerDistance : 0;
-	        if ($el[0].scrollHeight === $el[0].offsetHeight || Device.os !== 'ios' || isMaterial) {
+	        if (scrollHeight === offsetHeight || Device.os !== 'ios' || isMaterial) {
 	          useTranslate = true;
 	        } else {
 	          useTranslate = false;
 	        }
+	        forceUseTranslate = false;
 	      }
 	      isMoved = true;
 	      touchesDiff = pageY - touchesStart.y;
 
-	      if ((touchesDiff > 0 && scrollTop <= 0) || scrollTop < 0) {
-	        // iOS 8 fix
-	        if (Device.os === 'ios' && parseInt(Device.osVersion.split('.')[0], 10) > 7 && scrollTop === 0 && !wasScrolled) { useTranslate = true; }
+	      if (typeof wasScrolled === 'undefined' && (ptr.bottom ? scrollTop !== maxScrollTop : scrollTop !== 0)) { wasScrolled = true; }
 
-	        if (useTranslate) {
-	          e.preventDefault();
-	          translate = (Math.pow( touchesDiff, 0.85 )) + startTranslate;
+	      var ptrStarted = ptr.bottom
+	        ? (touchesDiff < 0 && scrollTop >= maxScrollTop) || scrollTop > maxScrollTop
+	        : (touchesDiff > 0 && scrollTop <= 0) || scrollTop < 0;
+
+	      if (ptrStarted) {
+	        // iOS 8 fix
+	        if (Device.os === 'ios' && parseInt(Device.osVersion.split('.')[0], 10) > 7) {
+	          if (!ptr.bottom && scrollTop === 0 && !wasScrolled) { useTranslate = true; }
+	          if (ptr.bottom && scrollTop === maxScrollTop && !wasScrolled) { useTranslate = true; }
+	        }
+
+	        if (!useTranslate && ptr.bottom && !isMaterial) {
+	          $el.css('-webkit-overflow-scrolling', 'auto');
+	          $el.scrollTop(maxScrollTop);
+	          forceUseTranslate = true;
+	        }
+
+	        if (useTranslate || forceUseTranslate) {
+	          if (e.cancelable) {
+	            e.preventDefault();
+	          }
+	          translate = (ptr.bottom ? -1 * (Math.pow( Math.abs(touchesDiff), 0.85 )) : Math.pow( touchesDiff, 0.85 )) + startTranslate;
 	          if (isMaterial) {
 	            $preloaderEl.transform(("translate3d(0," + translate + "px,0)"))
-	              .find('.ptr-arrow').transform(("rotate(" + ((180 * (touchesDiff / 66)) + 100) + "deg)"));
+	              .find('.ptr-arrow').transform(("rotate(" + ((180 * (Math.abs(touchesDiff) / 66)) + 100) + "deg)"));
 	          } else {
-	            $el.transform(("translate3d(0," + translate + "px,0)"));
+	            // eslint-disable-next-line
+	            if (ptr.bottom) {
+	              $el.children().transform(("translate3d(0," + translate + "px,0)"));
+	            } else {
+	              $el.transform(("translate3d(0," + translate + "px,0)"));
+	            }
 	          }
 	        }
-	        if ((useTranslate && (Math.pow( touchesDiff, 0.85 )) > triggerDistance) || (!useTranslate && touchesDiff >= triggerDistance * 2)) {
+
+	        if (((useTranslate || forceUseTranslate) && (Math.pow( Math.abs(touchesDiff), 0.85 )) > triggerDistance) || (!useTranslate && Math.abs(touchesDiff) >= triggerDistance * 2)) {
 	          refresh = true;
 	          $el.addClass('ptr-pull-up').removeClass('ptr-pull-down');
 	        } else {
@@ -23088,7 +24203,16 @@
 	        $preloaderEl.transform('')
 	          .find('.ptr-arrow').transform('');
 	      } else {
-	        $el.transform('');
+	        // eslint-disable-next-line
+	        if (ptr.bottom) {
+	          $el.children().transform('');
+	        } else {
+	          $el.transform('');
+	        }
+	      }
+
+	      if (!useTranslate && ptr.bottom && !isMaterial) {
+	        $el.css('-webkit-overflow-scrolling', '');
 	      }
 
 	      if (refresh) {
@@ -23114,13 +24238,13 @@
 	    ptr.attachEvents = function attachEvents() {
 	      var passive = Support.passiveListener ? { passive: true } : false;
 	      $el.on(app.touchEvents.start, handleTouchStart, passive);
-	      app.on('touchmove', handleTouchMove);
+	      app.on('touchmove:active', handleTouchMove);
 	      app.on('touchend:passive', handleTouchEnd);
 	    };
 	    ptr.detachEvents = function detachEvents() {
 	      var passive = Support.passiveListener ? { passive: true } : false;
 	      $el.off(app.touchEvents.start, handleTouchStart, passive);
-	      app.off('touchmove', handleTouchMove);
+	      app.off('touchmove:active', handleTouchMove);
 	      app.off('touchend:passive', handleTouchEnd);
 	    };
 
@@ -23226,14 +24350,14 @@
 	    var $pageEl = $(pageEl).closest('.page').eq(0);
 
 	    // Lazy images
-	    var lazyLoadImages = $pageEl.find('.lazy');
-	    if (lazyLoadImages.length === 0 && !$pageEl.hasClass('lazy')) { return; }
+	    var $lazyLoadImages = $pageEl.find('.lazy');
+	    if ($lazyLoadImages.length === 0 && !$pageEl.hasClass('lazy')) { return; }
 
 	    // Placeholder
 	    var placeholderSrc = app.params.lazy.placeholder;
 
 	    if (placeholderSrc !== false) {
-	      lazyLoadImages.each(function (index, lazyEl) {
+	      $lazyLoadImages.each(function (index, lazyEl) {
 	        if ($(lazyEl).attr('data-src') && !$(lazyEl).attr('src')) { $(lazyEl).attr('src', placeholderSrc); }
 	      });
 	    }
@@ -23251,6 +24375,43 @@
 	        imageIsLoading = true;
 	        app.lazy.loadImage(imagesSequence[0], onImageComplete);
 	      }
+	    }
+
+	    function observerCallback(entries, observer) {
+	      entries.forEach(function (entry) {
+	        if (entry.isIntersecting) {
+	          if (app.params.lazy.sequential && imageIsLoading) {
+	            if (imagesSequence.indexOf(entry.target) < 0) { imagesSequence.push(entry.target); }
+	            return;
+	          }
+	          // Load image
+	          imageIsLoading = true;
+	          app.lazy.loadImage(entry.target, onImageComplete);
+	          // Detach
+	          observer.unobserve(entry.target);
+	        }
+	      });
+	    }
+	    if (app.params.lazy.observer && Support.intersectionObserver) {
+	      var observer = $pageEl[0].f7LazyObserver;
+	      if (!observer) {
+	        observer = new win.IntersectionObserver(observerCallback, {
+	          root: $pageEl[0],
+	        });
+	      }
+	      $lazyLoadImages.each(function (index, el) {
+	        if (el.f7LazyObserverAdded) { return; }
+	        el.f7LazyObserverAdded = true;
+	        observer.observe(el);
+	      });
+	      if (!$pageEl[0].f7LazyDestroy) {
+	        $pageEl[0].f7LazyDestroy = function () {
+	          observer.disconnect();
+	          delete $pageEl[0].f7LazyDestroy;
+	          delete $pageEl[0].f7LazyObserver;
+	        };
+	      }
+	      return;
 	    }
 
 	    function lazyHandler() {
@@ -23373,6 +24534,7 @@
 	      placeholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEXCwsK592mkAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==',
 	      threshold: 0,
 	      sequential: true,
+	      observer: true,
 	    },
 	  },
 	  create: function create() {
@@ -23396,6 +24558,7 @@
 	    },
 	    pageAfterIn: function pageAfterIn(page) {
 	      var app = this;
+	      if (app.params.lazy.observer && Support.intersectionObserver) { return; }
 	      if (page.$el.find('.lazy').length > 0 || page.$el.hasClass('lazy')) {
 	        app.lazy.create(page.$el);
 	      }
@@ -23415,6 +24578,7 @@
 	    },
 	    tabBeforeRemove: function tabBeforeRemove(tabEl) {
 	      var app = this;
+	      if (app.params.lazy.observer && Support.intersectionObserver) { return; }
 	      var $tabEl = $(tabEl);
 	      if ($tabEl.find('.lazy').length > 0 || $tabEl.hasClass('lazy')) {
 	        app.lazy.destroy($tabEl);
@@ -24050,12 +25214,18 @@
 	      if (!sb || (sb && !sb.$el)) { return; }
 	      if (sb.enabled) {
 	        sb.$el.removeClass('searchbar-enabled');
+	        if (sb.expandable) {
+	          sb.$el.parents('.navbar-inner').removeClass('with-searchbar-expandable-enabled');
+	        }
 	      }
 	    }
 	    function onPageBeforeIn() {
 	      if (!sb || (sb && !sb.$el)) { return; }
 	      if (sb.enabled) {
 	        sb.$el.addClass('searchbar-enabled');
+	        if (sb.expandable) {
+	          sb.$el.parents('.navbar-inner').addClass('with-searchbar-expandable-enabled');
+	        }
 	      }
 	    }
 	    sb.attachEvents = function attachEvents() {
@@ -24150,6 +25320,17 @@
 	        }
 	        sb.$disableButtonEl.css(("margin-" + (app.rtl ? 'left' : 'right')), '0px');
 	      }
+	      if (sb.expandable) {
+	        if (sb.$el.parents('.navbar-inner').hasClass('navbar-inner-large') && sb.$pageEl) {
+	          sb.$pageEl.find('.page-content').addClass('with-searchbar-expandable-enabled');
+	        }
+	        if (app.theme === 'md' && sb.$el.parent('.navbar-inner').parent('.navbar').length) {
+	          sb.$el.parent('.navbar-inner').parent('.navbar').addClass('with-searchbar-expandable-enabled');
+	        } else {
+	          sb.$el.parent('.navbar-inner').addClass('with-searchbar-expandable-enabled');
+	          sb.$el.parent('.navbar-inner-large').addClass('navbar-inner-large-collapsed');
+	        }
+	      }
 	      if (sb.$hideOnEnableEl) { sb.$hideOnEnableEl.addClass('hidden-by-searchbar'); }
 	      sb.$el.trigger('searchbar:enable');
 	      sb.emit('local::enable searchbarEnable', sb);
@@ -24191,10 +25372,22 @@
 	    var app = sb.app;
 	    sb.$inputEl.val('').trigger('change');
 	    sb.$el.removeClass('searchbar-enabled searchbar-focused searchbar-enabled-no-disable-button');
+	    if (sb.expandable) {
+	      if (sb.$el.parents('.navbar-inner').hasClass('navbar-inner-large') && sb.$pageEl) {
+	        sb.$pageEl.find('.page-content').removeClass('with-searchbar-expandable-enabled');
+	      }
+	      if (app.theme === 'md' && sb.$el.parent('.navbar-inner').parent('.navbar').length) {
+	        sb.$el.parent('.navbar-inner').parent('.navbar').removeClass('with-searchbar-expandable-enabled');
+	      } else {
+	        sb.$el.parent('.navbar-inner').removeClass('with-searchbar-expandable-enabled');
+	        if (sb.$pageEl) {
+	          sb.$pageEl.find('.page-content').trigger('scroll');
+	        }
+	      }
+	    }
 	    if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme === 'ios') {
 	      sb.$disableButtonEl.css(("margin-" + (app.rtl ? 'left' : 'right')), ((-sb.disableButtonEl.offsetWidth) + "px"));
 	    }
-
 	    if (sb.$backdropEl && ((sb.$searchContainer && sb.$searchContainer.length) || sb.params.customSearch)) {
 	      sb.backdropHide();
 	    }
@@ -31931,7 +33124,7 @@
 	    var iconsColor = pb.params.iconsColor;
 	    if (!pb.params.iconsColor && pb.params.theme === 'dark') { iconsColor = 'white'; }
 
-	    var toolbarHtml = ("\n      <div class=\"toolbar tabbar toolbar-bottom-md\">\n        <div class=\"toolbar-inner\">\n          <a href=\"#\" class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a href=\"#\" class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
+	    var toolbarHtml = ("\n      <div class=\"toolbar toolbar-bottom tabbar\">\n        <div class=\"toolbar-inner\">\n          <a href=\"#\" class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a href=\"#\" class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
 	    return toolbarHtml;
 	  };
 
@@ -31952,7 +33145,7 @@
 	  PhotoBrowser.prototype.renderLazyPhoto = function renderLazyPhoto (photo, index) {
 	    var pb = this;
 	    if (pb.params.renderLazyPhoto) { return pb.params.renderLazyPhoto.call(pb, photo, index); }
-	    var photoHtml = ("\n      <div class=\"photo-browser-slide photo-browser-slide-lazy swiper-slide\" data-swiper-slide-index=\"" + index + "\">\n          <div class=\"preloader swiper-lazy-preloader " + (pb.params.theme === 'dark' ? 'color-white' : '') + "\">" + (pb.app.theme === 'md' ? Utils.mdPreloaderContent : '') + "</div>\n          <span class=\"swiper-zoom-container\">\n              <img data-src=\"" + (photo.url ? photo.url : photo) + "\" class=\"swiper-lazy\">\n          </span>\n      </div>\n    ").trim();
+	    var photoHtml = ("\n      <div class=\"photo-browser-slide photo-browser-slide-lazy swiper-slide\" data-swiper-slide-index=\"" + index + "\">\n          <div class=\"preloader swiper-lazy-preloader " + (pb.params.theme === 'dark' ? 'color-white' : '') + "\">" + (Utils[((pb.app.theme) + "PreloaderContent")] || '') + "</div>\n          <span class=\"swiper-zoom-container\">\n              <img data-src=\"" + (photo.url ? photo.url : photo) + "\" class=\"swiper-lazy\">\n          </span>\n      </div>\n    ").trim();
 	    return photoHtml;
 	  };
 
@@ -33111,7 +34304,7 @@
 
 	  Autocomplete.prototype.renderPreloader = function renderPreloader () {
 	    var ac = this;
-	    return ("\n      <div class=\"autocomplete-preloader preloader " + (ac.params.preloaderColor ? ("color-" + (ac.params.preloaderColor)) : '') + "\">" + (ac.app.theme === 'md' ? Utils.mdPreloaderContent : '') + "</div>\n    ").trim();
+	    return ("\n      <div class=\"autocomplete-preloader preloader " + (ac.params.preloaderColor ? ("color-" + (ac.params.preloaderColor)) : '') + "\">" + (Utils[((ac.app.theme) + "PreloaderContent")] || '') + "</div>\n    ").trim();
 	  };
 
 	  Autocomplete.prototype.renderSearchbar = function renderSearchbar () {
@@ -33145,7 +34338,7 @@
 	    if (typeof pageTitle === 'undefined' && ac.$openerEl && ac.$openerEl.length) {
 	      pageTitle = ac.$openerEl.find('.item-title').text().trim();
 	    }
-	    var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-theme-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-theme-" + (ac.params.navbarColorTheme)) : '') + "\">\n          <div class=\"left sliding\">\n            <a href=\"#\" class=\"link " + (ac.params.openIn === 'page' ? 'back' : 'popup-close') + "\" " + (ac.params.openIn === 'popup' ? 'data-popup=".autocomplete-popup"' : '') + ">\n              <i class=\"icon icon-back\"></i>\n              <span class=\"ios-only\">" + (ac.params.openIn === 'page' ? ac.params.pageBackLinkText : ac.params.popupCloseLinkText) + "</span>\n            </a>\n          </div>\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + (ac.params.preloader ? ("\n          <div class=\"right\">\n            " + (ac.renderPreloader()) + "\n          </div>\n          ") : '') + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
+	    var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n          <div class=\"left sliding\">\n            <a href=\"#\" class=\"link " + (ac.params.openIn === 'page' ? 'back' : 'popup-close') + "\" " + (ac.params.openIn === 'popup' ? 'data-popup=".autocomplete-popup"' : '') + ">\n              <i class=\"icon icon-back\"></i>\n              <span class=\"ios-only\">" + (ac.params.openIn === 'page' ? ac.params.pageBackLinkText : ac.params.popupCloseLinkText) + "</span>\n            </a>\n          </div>\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + (ac.params.preloader ? ("\n          <div class=\"right\">\n            " + (ac.renderPreloader()) + "\n          </div>\n          ") : '') + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
 	    return navbarHtml;
 	  };
 
@@ -33160,7 +34353,7 @@
 	    var ac = this;
 	    if (ac.params.renderPage) { return ac.params.renderPage.call(ac, ac.items); }
 
-	    var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar()) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-theme-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
+	    var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar()) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
 	    return pageHtml;
 	  };
 
@@ -34193,6 +35386,38 @@
 	  },
 	};
 
+	var Skeleton = {
+	  name: 'skeleton',
+	};
+
+	var Menu = {
+	  name: 'menu',
+	  on: {
+	    click: function click(e) {
+	      var openedMenus = $('.menu-item-dropdown-opened');
+	      if (!openedMenus.length) { return; }
+	      openedMenus.each(function (index, el) {
+	        if (!$(e.target).closest('.menu-item-dropdown-opened').length) {
+	          $(el).removeClass('menu-item-dropdown-opened');
+	        }
+	      });
+	    },
+	  },
+	  clicks: {
+	    '.menu-item-dropdown': function onClick($clickedEl, dataset, e) {
+	      if ($clickedEl.hasClass('menu-item-dropdown-opened')) {
+	        if ($(e.target).closest('.menu-dropdown').length) { return; }
+	        $clickedEl.removeClass('menu-item-dropdown-opened');
+	      } else {
+	        $clickedEl.addClass('menu-item-dropdown-opened');
+	      }
+	    },
+	    '.menu-close': function onClick() {
+	      $('.menu-item-dropdown-opened').removeClass('menu-item-dropdown-opened');
+	    },
+	  },
+	};
+
 	var ViAd = /*@__PURE__*/(function (Framework7Class$$1) {
 	  function ViAd(app, params) {
 	    if ( params === void 0 ) params = {};
@@ -34452,7 +35677,7 @@
 	};
 
 	/**
-	 * Framework7 3.6.5
+	 * Framework7 4.0.0-beta.14
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -34460,7 +35685,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: January 4, 2019
+	 * Released on: January 10, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -34476,6 +35701,7 @@
 	  HistoryModule,
 	  StorageModule,
 	  ComponentModule,
+	  ServiceWorkerModule,
 	  Statusbar$1,
 	  View$1,
 	  Navbar$1,
@@ -34528,6 +35754,8 @@
 	  Autocomplete$1,
 	  Tooltip$1,
 	  Gauge$1,
+	  Skeleton,
+	  Menu,
 	  Vi,
 	  Elevation,
 	  Typography
@@ -34617,7 +35845,18 @@
 	        });
 	      } else if (arg) { classes.push(arg); }
 	    });
-	    return classes.join(' ');
+	    var uniqueClasses = [];
+	    classes.forEach(function (c) {
+	      if (uniqueClasses.indexOf(c) < 0) { uniqueClasses.push(c); }
+	    });
+	    return uniqueClasses.join(' ');
+	  },
+	  bindMethods: function bindMethods(context, methods) {
+	    if ( methods === void 0 ) methods = [];
+
+	    for (var i = 0; i < methods.length; i += 1) {
+	      if (context[methods[i]]) { context[methods[i]] = context[methods[i]].bind(context); }
+	    }
 	  },
 	};
 
@@ -34746,6 +35985,16 @@
 	    sortableEnable: [Boolean, String],
 	    sortableDisable: [Boolean, String],
 	    sortableToggle: [Boolean, String],
+
+	    // Card
+	    cardOpen: [Boolean, String],
+	    cardClose: [Boolean, String],
+
+	    // Menu
+	    menuClose: {
+	      type: [Boolean, String],
+	      default: undefined,
+	    },
 	  },
 	  linkActionsAttrs: function linkActionsAttrs(props) {
 	    var searchbarEnable = props.searchbarEnable;
@@ -34767,6 +36016,8 @@
 	    var sortableEnable = props.sortableEnable;
 	    var sortableDisable = props.sortableDisable;
 	    var sortableToggle = props.sortableToggle;
+	    var cardOpen = props.cardOpen;
+	    var cardClose = props.cardClose;
 
 	    return {
 	      'data-searchbar': (Utils$1.isStringProp(searchbarEnable) && searchbarEnable)
@@ -34788,6 +36039,8 @@
 	      'data-sortable': (Utils$1.isStringProp(sortableEnable) && sortableEnable)
 	                       || (Utils$1.isStringProp(sortableDisable) && sortableDisable)
 	                       || (Utils$1.isStringProp(sortableToggle) && sortableToggle) || undefined,
+	      'data-card': (Utils$1.isStringProp(cardOpen) && cardOpen)
+	                    || (Utils$1.isStringProp(cardClose) && cardClose) || undefined,
 	    };
 	  },
 	  linkActionsClasses: function linkActionsClasses(props) {
@@ -34810,27 +36063,33 @@
 	    var sortableEnable = props.sortableEnable;
 	    var sortableDisable = props.sortableDisable;
 	    var sortableToggle = props.sortableToggle;
+	    var cardOpen = props.cardOpen;
+	    var cardClose = props.cardClose;
+	    var menuClose = props.menuClose;
 
 	    return {
 	      'searchbar-enable': searchbarEnable || searchbarEnable === '',
 	      'searchbar-disable': searchbarDisable || searchbarDisable === '',
 	      'searchbar-clear': searchbarClear || searchbarClear === '',
 	      'searchbar-toggle': searchbarToggle || searchbarToggle === '',
-	      'panel-close': Utils$1.isTrueProp(panelClose) || panelClose,
+	      'panel-close': panelClose || panelClose === '',
 	      'panel-open': panelOpen || panelOpen === '',
-	      'popup-close': Utils$1.isTrueProp(popupClose) || popupClose,
+	      'popup-close': popupClose || popupClose === '',
 	      'popup-open': popupOpen || popupOpen === '',
-	      'actions-close': Utils$1.isTrueProp(actionsClose) || actionsClose,
+	      'actions-close': actionsClose || actionsClose === '',
 	      'actions-open': actionsOpen || actionsOpen === '',
-	      'popover-close': Utils$1.isTrueProp(popoverClose) || popoverClose,
+	      'popover-close': popoverClose || popoverClose === '',
 	      'popover-open': popoverOpen || popoverOpen === '',
-	      'sheet-close': Utils$1.isTrueProp(sheetClose) || sheetClose,
+	      'sheet-close': sheetClose || sheetClose === '',
 	      'sheet-open': sheetOpen || sheetOpen === '',
-	      'login-screen-close': Utils$1.isTrueProp(loginScreenClose) || loginScreenClose,
+	      'login-screen-close': loginScreenClose || loginScreenClose === '',
 	      'login-screen-open': loginScreenOpen || loginScreenOpen === '',
-	      'sortable-enable': Utils$1.isTrueProp(sortableEnable) || sortableEnable,
-	      'sortable-disable': Utils$1.isTrueProp(sortableDisable) || sortableDisable,
-	      'sortable-toggle': sortableToggle === true || (typeof sortableToggle === 'string' && sortableToggle.length),
+	      'sortable-enable': sortableEnable || sortableEnable === '',
+	      'sortable-disable': sortableDisable || sortableDisable === '',
+	      'sortable-toggle': sortableToggle || sortableToggle === '',
+	      'card-close': cardClose || cardClose === '',
+	      'card-open': cardOpen || cardOpen === '',
+	      'menu-close': menuClose || menuClose === '',
 	    };
 	  },
 	};
@@ -35055,13 +36314,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      var self = this$1;
-	      self.onBeforeOpenBound = self.onBeforeOpen.bind(self);
-	      self.onOpenBound = self.onOpen.bind(self);
-	      self.onOpenedBound = self.onOpened.bind(self);
-	      self.onBeforeCloseBound = self.onBeforeClose.bind(self);
-	      self.onCloseBound = self.onClose.bind(self);
-	      self.onClosedBound = self.onClosed.bind(self);
+	      Utils$1.bindMethods(this$1, 'onBeforeOpen onOpen onOpened onBeforeClose onClose onClosed'.split(' '));
 	    })();
 	  }
 
@@ -35120,24 +36373,24 @@
 	    var self = this;
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('accordion:beforeopen', self.onBeforeOpenBound);
-	    el.removeEventListener('accordion:open', self.onOpenBound);
-	    el.removeEventListener('accordion:opened', self.onOpenedBound);
-	    el.removeEventListener('accordion:beforeclose', self.onBeforeCloseBound);
-	    el.removeEventListener('accordion:close', self.onCloseBound);
-	    el.removeEventListener('accordion:closed', self.onClosedBound);
+	    el.removeEventListener('accordion:beforeopen', self.onBeforeOpen);
+	    el.removeEventListener('accordion:open', self.onOpen);
+	    el.removeEventListener('accordion:opened', self.onOpened);
+	    el.removeEventListener('accordion:beforeclose', self.onBeforeClose);
+	    el.removeEventListener('accordion:close', self.onClose);
+	    el.removeEventListener('accordion:closed', self.onClosed);
 	  };
 
 	  F7AccordionItem.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.addEventListener('accordion:beforeopen', self.onBeforeOpenBound);
-	    el.addEventListener('accordion:open', self.onOpenBound);
-	    el.addEventListener('accordion:opened', self.onOpenedBound);
-	    el.addEventListener('accordion:beforeclose', self.onBeforeCloseBound);
-	    el.addEventListener('accordion:close', self.onCloseBound);
-	    el.addEventListener('accordion:closed', self.onClosedBound);
+	    el.addEventListener('accordion:beforeopen', self.onBeforeOpen);
+	    el.addEventListener('accordion:open', self.onOpen);
+	    el.addEventListener('accordion:opened', self.onOpened);
+	    el.addEventListener('accordion:beforeclose', self.onBeforeClose);
+	    el.addEventListener('accordion:close', self.onClose);
+	    el.addEventListener('accordion:closed', self.onClosed);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -35261,7 +36514,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -35409,7 +36662,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -35514,8 +36767,14 @@
 
 	var F7Actions = /*@__PURE__*/(function (superclass) {
 	  function F7Actions(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	    })();
 	  }
 
 	  if ( superclass ) F7Actions.__proto__ = superclass;
@@ -35579,24 +36838,20 @@
 	    if (self.f7Actions) { self.f7Actions.destroy(); }
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('actions:open', self.onOpenBound);
-	    el.removeEventListener('actions:opened', self.onOpenedBound);
-	    el.removeEventListener('actions:close', self.onCloseBound);
-	    el.removeEventListener('actions:closed', self.onClosedBound);
+	    el.removeEventListener('actions:open', self.onOpen);
+	    el.removeEventListener('actions:opened', self.onOpened);
+	    el.removeEventListener('actions:close', self.onClose);
+	    el.removeEventListener('actions:closed', self.onClosed);
 	  };
 
 	  F7Actions.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    self.onOpenBound = self.onOpen.bind(self);
-	    self.onOpenedBound = self.onOpened.bind(self);
-	    self.onCloseBound = self.onClose.bind(self);
-	    self.onClosedBound = self.onClosed.bind(self);
-	    el.addEventListener('actions:open', self.onOpenBound);
-	    el.addEventListener('actions:opened', self.onOpenedBound);
-	    el.addEventListener('actions:close', self.onCloseBound);
-	    el.addEventListener('actions:closed', self.onClosedBound);
+	    el.addEventListener('actions:open', self.onOpen);
+	    el.addEventListener('actions:opened', self.onOpened);
+	    el.addEventListener('actions:close', self.onClose);
+	    el.addEventListener('actions:closed', self.onClosed);
 	    var props = self.props;
 	    var grid = props.grid;
 	    var target = props.target;
@@ -36054,7 +37309,12 @@
 	    var className = props.className;
 	    var id = props.id;
 	    var style = props.style;
-	    var classes = Utils$1.classNames(className, 'block-title', Mixins.colorClasses(props));
+	    var large = props.large;
+	    var medium = props.medium;
+	    var classes = Utils$1.classNames(className, 'block-title', {
+	      'block-title-large': large,
+	      'block-title-medium': medium
+	    }, Mixins.colorClasses(props));
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
@@ -36074,15 +37334,23 @@
 	__reactComponentSetProps(F7BlockTitle, Object.assign({
 	  id: [String, Number],
 	  className: String,
-	  style: Object
+	  style: Object,
+	  large: Boolean,
+	  medium: Boolean
 	}, Mixins.colorProps));
 
 	F7BlockTitle.displayName = 'f7-block-title';
 
 	var F7Block = /*@__PURE__*/(function (superclass) {
 	  function F7Block(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onTabShow', 'onTabHide']);
+	    })();
 	  }
 
 	  if ( superclass ) F7Block.__proto__ = superclass;
@@ -36142,17 +37410,15 @@
 	  F7Block.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var el = this.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('tab:show', this.onTabShowBound);
-	    el.removeEventListener('tab:hide', this.onTabHideBound);
+	    el.removeEventListener('tab:show', this.onTabShow);
+	    el.removeEventListener('tab:hide', this.onTabHide);
 	  };
 
 	  F7Block.prototype.componentDidMount = function componentDidMount () {
 	    var el = this.refs.el;
 	    if (!el) { return; }
-	    this.onTabShowBound = this.onTabShow.bind(this);
-	    this.onTabHideBound = this.onTabHide.bind(this);
-	    el.addEventListener('tab:show', this.onTabShowBound);
-	    el.addEventListener('tab:hide', this.onTabHideBound);
+	    el.addEventListener('tab:show', this.onTabShow);
+	    el.addEventListener('tab:hide', this.onTabHide);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -36388,8 +37654,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      var self = this$1;
-	      self.onClickBound = self.onClick.bind(self);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -36432,15 +37697,19 @@
 	    var fill = props.fill;
 	    var fillIos = props.fillIos;
 	    var fillMd = props.fillMd;
-	    var big = props.big;
-	    var bigIos = props.bigIos;
-	    var bigMd = props.bigMd;
+	    var large = props.large;
+	    var largeIos = props.largeIos;
+	    var largeMd = props.largeMd;
 	    var small = props.small;
 	    var smallIos = props.smallIos;
 	    var smallMd = props.smallMd;
 	    var raised = props.raised;
+	    var raisedIos = props.raisedIos;
+	    var raisedMd = props.raisedMd;
 	    var active = props.active;
 	    var outline = props.outline;
+	    var outlineIos = props.outlineIos;
+	    var outlineMd = props.outlineMd;
 	    var disabled = props.disabled;
 	    var className = props.className;
 	    return Utils$1.classNames(className, 'button', {
@@ -36453,15 +37722,19 @@
 	      'button-fill': fill,
 	      'button-fill-ios': fillIos,
 	      'button-fill-md': fillMd,
-	      'button-big': big,
-	      'button-big-ios': bigIos,
-	      'button-big-md': bigMd,
+	      'button-large': large,
+	      'button-large-ios': largeIos,
+	      'button-large-md': largeMd,
 	      'button-small': small,
 	      'button-small-ios': smallIos,
 	      'button-small-md': smallMd,
 	      'button-raised': raised,
+	      'button-raised-ios': raisedIos,
+	      'button-raised-md': raisedMd,
 	      'button-active': active,
 	      'button-outline': outline,
+	      'button-outline-ios': outlineIos,
+	      'button-outline-md': outlineMd,
 	      disabled: disabled
 	    }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
 	  };
@@ -36522,7 +37795,7 @@
 	  F7Button.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
 	    var el = self.refs.el;
-	    el.removeEventListener('click', self.onClickBound);
+	    el.removeEventListener('click', self.onClick);
 	    delete el.f7RouteProps;
 
 	    if (self.f7Tooltip && self.f7Tooltip.destroy) {
@@ -36554,7 +37827,7 @@
 	  F7Button.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
-	    el.addEventListener('click', self.onClickBound);
+	    el.addEventListener('click', self.onClick);
 	    var ref = self.props;
 	    var tooltip = ref.tooltip;
 	    var routeProps = ref.routeProps;
@@ -36614,14 +37887,18 @@
 	  fill: Boolean,
 	  fillMd: Boolean,
 	  fillIos: Boolean,
-	  big: Boolean,
-	  bigMd: Boolean,
-	  bigIos: Boolean,
+	  large: Boolean,
+	  largeMd: Boolean,
+	  largeIos: Boolean,
 	  small: Boolean,
 	  smallMd: Boolean,
 	  smallIos: Boolean,
 	  raised: Boolean,
+	  raisedMd: Boolean,
+	  raisedIos: Boolean,
 	  outline: Boolean,
+	  outlineMd: Boolean,
+	  outlineIos: Boolean,
 	  active: Boolean,
 	  disabled: Boolean,
 	  tooltip: String
@@ -36761,16 +38038,57 @@
 
 	var F7Card = /*@__PURE__*/(function (superclass) {
 	  function F7Card(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, 'onBeforeOpen onOpen onOpened onClose onClosed'.split(' '));
+	    })();
 	  }
 
 	  if ( superclass ) F7Card.__proto__ = superclass;
 	  F7Card.prototype = Object.create( superclass && superclass.prototype );
 	  F7Card.prototype.constructor = F7Card;
 
-	  var prototypeAccessors = { slots: { configurable: true } };
+	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
+
+	  F7Card.prototype.open = function open () {
+	    var self = this;
+	    if (!self.refs.el) { return; }
+	    self.$f7.card.open(self.refs.el);
+	  };
+
+	  F7Card.prototype.close = function close () {
+	    var self = this;
+	    if (!self.refs.el) { return; }
+	    self.$f7.card.close(self.refs.el);
+	  };
+
+	  F7Card.prototype.onBeforeOpen = function onBeforeOpen (e) {
+	    this.dispatchEvent('cardBeforeOpen card:beforeopen', e.target, e.detail.prevent);
+	  };
+
+	  F7Card.prototype.onOpen = function onOpen (e) {
+	    this.dispatchEvent('cardOpen card:open', e.target);
+	  };
+
+	  F7Card.prototype.onOpened = function onOpened (e) {
+	    this.dispatchEvent('cardOpened card:opened', e.target);
+	  };
+
+	  F7Card.prototype.onClose = function onClose (e) {
+	    this.dispatchEvent('cardClose card:close', e.target);
+	  };
+
+	  F7Card.prototype.onClosed = function onClosed (e) {
+	    this.dispatchEvent('cardClosed card:closed', e.target);
+	  };
 
 	  F7Card.prototype.render = function render () {
+	    var this$1 = this;
+
 	    var self = this;
 	    var props = self.props;
 	    var className = props.className;
@@ -36781,11 +38099,19 @@
 	    var footer = props.footer;
 	    var padding = props.padding;
 	    var outline = props.outline;
+	    var expandable = props.expandable;
+	    var expandableAnimateWidth = props.expandableAnimateWidth;
+	    var noShadow = props.noShadow;
+	    var noBorder = props.noBorder;
 	    var headerEl;
 	    var contentEl;
 	    var footerEl;
 	    var classes = Utils$1.classNames(className, 'card', {
-	      'card-outline': outline
+	      'card-outline': outline,
+	      'card-expandable': expandable,
+	      'card-expandable-animate-width': expandableAnimateWidth,
+	      'no-shadow': noShadow,
+	      'no-border': noBorder
 	    }, Mixins.colorClasses(props));
 
 	    if (title || self.slots && self.slots.header) {
@@ -36805,12 +38131,72 @@
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
-	      className: classes
+	      className: classes,
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      }
 	    }, headerEl, contentEl, footerEl, this.slots['default']);
+	  };
+
+	  F7Card.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+	    if (!self.props.expandable) { return; }
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    el.removeEventListener('card:beforeopen', self.onBeforeOpen);
+	    el.removeEventListener('card:open', self.onOpen);
+	    el.removeEventListener('card:opened', self.onOpened);
+	    el.removeEventListener('card:close', self.onClose);
+	    el.removeEventListener('card:closed', self.onClosed);
+	  };
+
+	  F7Card.prototype.componentDidMount = function componentDidMount () {
+	    var self = this;
+	    if (!self.props.expandable) { return; }
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    el.addEventListener('card:beforeopen', self.onBeforeOpen);
+	    el.addEventListener('card:open', self.onOpen);
+	    el.addEventListener('card:opened', self.onOpened);
+	    el.addEventListener('card:close', self.onClose);
+	    el.addEventListener('card:closed', self.onClosed);
+
+	    if (self.props.expandable && self.props.expandableOpened) {
+	      self.$f7ready(function () {
+	        self.$f7.card.open(el, false);
+	      });
+	    }
 	  };
 
 	  prototypeAccessors.slots.get = function () {
 	    return __reactComponentSlots(this.props);
+	  };
+
+	  F7Card.prototype.dispatchEvent = function dispatchEvent (events) {
+	    var args = [], len = arguments.length - 1;
+	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
+	  F7Card.prototype.componentDidUpdate = function componentDidUpdate (prevProps, prevState) {
+	    var this$1 = this;
+
+	    __reactComponentWatch(this, 'props.expandableOpened', prevProps, prevState, function (expandableOpened) {
+	      var self = this$1;
+
+	      if (opened) {
+	        self.open();
+	      } else {
+	        self.close();
+	      }
+	    });
 	  };
 
 	  Object.defineProperties( F7Card.prototype, prototypeAccessors );
@@ -36826,6 +38212,11 @@
 	  content: [String, Number],
 	  footer: [String, Number],
 	  outline: Boolean,
+	  expandable: Boolean,
+	  expandableAnimateWidth: Boolean,
+	  expandableOpened: Boolean,
+	  noShadow: Boolean,
+	  noBorder: Boolean,
 	  padding: {
 	    type: Boolean,
 	    default: true
@@ -36842,7 +38233,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onChange = this$1.onChange.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onChange']);
 	    })();
 	  }
 
@@ -36950,8 +38341,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
-	      this$1.onDeleteClick = this$1.onDeleteClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick', 'onDeleteClick']);
 	    })();
 	  }
 
@@ -37083,7 +38473,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -37185,6 +38575,10 @@
 
 	    (function () {
 	      this$1.onClick = this$1.onClick.bind(this$1);
+	    })();
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -37354,7 +38748,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -37691,7 +39085,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onChange = this$1.onChange.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onChange']);
 	    })();
 	  }
 
@@ -37864,7 +39258,12 @@
 	    var input = ref.input;
 	    var inputId = ref.inputId;
 	    var name = ref.name;
+	    var vertical = ref.vertical;
+	    var verticalReversed = ref.verticalReversed;
 	    var classes = Utils$1.classNames(className, 'range-slider', {
+	      'range-slider-horizontal': !vertical,
+	      'range-slider-vertical': vertical,
+	      'range-slider-vertical-reversed': vertical && verticalReversed,
 	      disabled: disabled
 	    }, Mixins.colorClasses(props));
 	    return react.createElement('div', {
@@ -37898,7 +39297,13 @@
 	      var label = props.label;
 	      var dual = props.dual;
 	      var draggableBar = props.draggableBar;
+	      var vertical = props.vertical;
+	      var verticalReversed = props.verticalReversed;
 	      var formatLabel = props.formatLabel;
+	      var scale = props.scale;
+	      var scaleSteps = props.scaleSteps;
+	      var scaleSubSteps = props.scaleSubSteps;
+	      var formatScaleLabel = props.formatScaleLabel;
 	      self.f7Range = f7.range.create(Utils$1.noUndefinedProps({
 	        el: self.refs.el,
 	        value: value,
@@ -37908,7 +39313,13 @@
 	        label: label,
 	        dual: dual,
 	        draggableBar: draggableBar,
+	        vertical: vertical,
+	        verticalReversed: verticalReversed,
 	        formatLabel: formatLabel,
+	        scale: scale,
+	        scaleSteps: scaleSteps,
+	        scaleSubSteps: scaleSubSteps,
+	        formatScaleLabel: formatScaleLabel,
 	        on: {
 	          change: function change(range, val) {
 	            self.dispatchEvent('range:change rangeChange', val);
@@ -37987,15 +39398,36 @@
 	    type: Boolean,
 	    default: false
 	  },
-	  name: String,
-	  inputId: String,
-	  input: Boolean,
-	  disabled: Boolean,
+	  vertical: {
+	    type: Boolean,
+	    default: false
+	  },
+	  verticalReversed: {
+	    type: Boolean,
+	    default: false
+	  },
 	  draggableBar: {
 	    type: Boolean,
 	    default: true
 	  },
-	  formatLabel: Function
+	  formatLabel: Function,
+	  scale: {
+	    type: Boolean,
+	    default: false
+	  },
+	  scaleSteps: {
+	    type: Number,
+	    default: 5
+	  },
+	  scaleSubSteps: {
+	    type: Number,
+	    default: 0
+	  },
+	  formatScaleLabel: Function,
+	  name: String,
+	  input: Boolean,
+	  inputId: String,
+	  disabled: Boolean
 	}, Mixins.colorProps));
 
 	F7Range.displayName = 'f7-range';
@@ -38015,15 +39447,7 @@
 	    })();
 
 	    (function () {
-	      var self = this$1;
-	      self.onFocus = self.onFocus.bind(self);
-	      self.onBlur = self.onBlur.bind(self);
-	      self.onInput = self.onInput.bind(self);
-	      self.onChange = self.onChange.bind(self);
-	      self.onTextareaResize = self.onTextareaResize.bind(self);
-	      self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
-	      self.onInputEmpty = self.onInputEmpty.bind(self);
-	      self.onInputClear = self.onInputClear.bind(self);
+	      Utils$1.bindMethods(this$1, 'onFocus onBlur onInput onChange onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
 	    })();
 	  }
 
@@ -38089,9 +39513,10 @@
 	    var self = this;
 	    var ref = self.props;
 	    var validate = ref.validate;
+	    var validateOnBlur = ref.validateOnBlur;
 	    self.dispatchEvent('input', event);
 
-	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
+	    if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && self.refs && self.refs.inputEl) {
 	      self.validateInput(self.refs.inputEl);
 	    }
 	  };
@@ -38107,9 +39532,10 @@
 	    var self = this;
 	    var ref = self.props;
 	    var validate = ref.validate;
+	    var validateOnBlur = ref.validateOnBlur;
 	    self.dispatchEvent('blur', event);
 
-	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
+	    if ((validate || validate === '' || validateOnBlur || validateOnBlur === '') && self.refs && self.refs.inputEl) {
 	      self.validateInput(self.refs.inputEl);
 	    }
 
@@ -38155,6 +39581,7 @@
 	    var inputStyle = props.inputStyle;
 	    var pattern = props.pattern;
 	    var validate = props.validate;
+	    var validateOnBlur = props.validateOnBlur;
 	    var tabindex = props.tabindex;
 	    var resizable = props.resizable;
 	    var clearButton = props.clearButton;
@@ -38162,6 +39589,7 @@
 	    var errorMessageForce = props.errorMessageForce;
 	    var info = props.info;
 	    var wrap = props.wrap;
+	    var dropdown = props.dropdown;
 	    var style = props.style;
 	    var className = props.className;
 	    var noStoreData = props.noStoreData;
@@ -38221,7 +39649,8 @@
 	          required: required,
 	          pattern: pattern,
 	          validate: typeof validate === 'string' && validate.length ? validate : undefined,
-	          'data-validate': validate === true || validate === '' ? true : undefined,
+	          'data-validate': validate === true || validate === '' || validateOnBlur === true || validateOnBlur === '' ? true : undefined,
+	          'data-validate-on-blur': validateOnBlur === true || validateOnBlur === '' ? true : undefined,
 	          tabIndex: tabindex,
 	          'data-error-message': errorMessageForce ? undefined : errorMessage,
 	          className: inputClassName,
@@ -38275,7 +39704,9 @@
 	    }
 
 	    if (wrap) {
-	      var wrapClasses = Utils$1.classNames(className, 'item-input-wrap', Mixins.colorClasses(props));
+	      var wrapClasses = Utils$1.classNames(className, 'input', {
+	        'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
+	      }, Mixins.colorClasses(props));
 	      return react.createElement('div', {
 	        id: id,
 	        ref: function (__reactNode) {
@@ -38284,11 +39715,11 @@
 	        className: wrapClasses,
 	        style: style
 	      }, inputEl, errorMessage && errorMessageForce && react.createElement('div', {
-	        className: 'item-input-error-message'
+	        className: 'input-error-message'
 	      }, errorMessage), clearButton && react.createElement('span', {
 	        className: 'input-clear-button'
 	      }), (info || slotsInfo && slotsInfo.length) && react.createElement('div', {
-	        className: 'item-input-info'
+	        className: 'input-info'
 	      }, info, this.slots['info']));
 	    }
 
@@ -38331,6 +39762,7 @@
 	    var self = this;
 	    var ref = self.props;
 	    var validate = ref.validate;
+	    var validateOnBlur = ref.validateOnBlur;
 	    var resizable = ref.resizable;
 	    var f7 = self.$f7;
 	    if (!f7) { return; }
@@ -38341,7 +39773,7 @@
 	      self.updateInputOnDidUpdate = false;
 	      f7.input.checkEmptyState(inputEl);
 
-	      if (validate) {
+	      if (validate && !validateOnBlur) {
 	        self.validateInput(inputEl);
 	      }
 
@@ -38356,6 +39788,7 @@
 	    self.$f7ready(function (f7) {
 	      var ref = self.props;
 	      var validate = ref.validate;
+	      var validateOnBlur = ref.validateOnBlur;
 	      var resizable = ref.resizable;
 	      var type = ref.type;
 	      var clearButton = ref.clearButton;
@@ -38377,7 +39810,7 @@
 
 	      f7.input.checkEmptyState(inputEl);
 
-	      if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
+	      if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
 	        setTimeout(function () {
 	          self.validateInput(inputEl);
 	        }, 0);
@@ -38442,6 +39875,7 @@
 	  inputStyle: Object,
 	  pattern: String,
 	  validate: [Boolean, String],
+	  validateOnBlur: Boolean,
 	  tabindex: [String, Number],
 	  resizable: Boolean,
 	  clearButton: Boolean,
@@ -38454,60 +39888,14 @@
 	  wrap: {
 	    type: Boolean,
 	    default: true
+	  },
+	  dropdown: {
+	    type: [String, Boolean],
+	    default: 'auto'
 	  }
 	}, Mixins.colorProps));
 
 	F7Input.displayName = 'f7-input';
-
-	var F7Label = /*@__PURE__*/(function (superclass) {
-	  function F7Label(props, context) {
-	    superclass.call(this, props, context);
-	  }
-
-	  if ( superclass ) F7Label.__proto__ = superclass;
-	  F7Label.prototype = Object.create( superclass && superclass.prototype );
-	  F7Label.prototype.constructor = F7Label;
-
-	  var prototypeAccessors = { slots: { configurable: true } };
-
-	  F7Label.prototype.render = function render () {
-	    var self = this;
-	    var props = self.props;
-	    var inline = props.inline;
-	    var id = props.id;
-	    var style = props.style;
-	    var className = props.className;
-	    var floating = props.floating;
-	    var classes = Utils$1.classNames(className, 'item-title', {
-	      'item-label-inline': inline,
-	      'item-label': !floating,
-	      'item-floating-label': floating
-	    }, Mixins.colorClasses(props));
-	    return react.createElement('div', {
-	      id: id,
-	      style: style,
-	      className: classes
-	    }, this.slots['default']);
-	  };
-
-	  prototypeAccessors.slots.get = function () {
-	    return __reactComponentSlots(this.props);
-	  };
-
-	  Object.defineProperties( F7Label.prototype, prototypeAccessors );
-
-	  return F7Label;
-	}(react.Component));
-
-	__reactComponentSetProps(F7Label, Object.assign({
-	  id: [String, Number],
-	  className: String,
-	  style: Object,
-	  floating: Boolean,
-	  inline: Boolean
-	}, Mixins.colorProps));
-
-	F7Label.displayName = 'f7-label';
 
 	var F7Link = /*@__PURE__*/(function (superclass) {
 	  function F7Link(props, context) {
@@ -38523,8 +39911,7 @@
 	    })();
 
 	    (function () {
-	      var self = this$1;
-	      self.onClick = self.onClick.bind(self);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -38782,7 +40169,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -38818,7 +40205,6 @@
 	    var tabLink = props.tabLink;
 	    var tabLinkActive = props.tabLinkActive;
 	    return Utils$1.classNames({
-	      'item-link': true,
 	      'list-button': true,
 	      'tab-link': tabLink || tabLink === '',
 	      'tab-link-active': tabLinkActive,
@@ -39127,15 +40513,7 @@
 	    })();
 
 	    (function () {
-	      var self = this$1;
-	      self.onChange = self.onChange.bind(self);
-	      self.onInput = self.onInput.bind(self);
-	      self.onFocus = self.onFocus.bind(self);
-	      self.onBlur = self.onBlur.bind(self);
-	      self.onTextareaResize = self.onTextareaResize.bind(self);
-	      self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
-	      self.onInputEmpty = self.onInputEmpty.bind(self);
-	      self.onInputClear = self.onInputClear.bind(self);
+	      Utils$1.bindMethods(this$1, 'onChange onInput onFocus onBlur onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
 	    })();
 	  }
 
@@ -39201,9 +40579,10 @@
 	    var self = this;
 	    var ref = self.props;
 	    var validate = ref.validate;
+	    var validateOnBlur = ref.validateOnBlur;
 	    self.dispatchEvent('input', event);
 
-	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
+	    if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && self.refs && self.refs.inputEl) {
 	      self.validateInput(self.refs.inputEl);
 	    }
 	  };
@@ -39219,9 +40598,10 @@
 	    var self = this;
 	    var ref = self.props;
 	    var validate = ref.validate;
+	    var validateOnBlur = ref.validateOnBlur;
 	    self.dispatchEvent('blur', event);
 
-	    if ((validate || validate === '') && self.refs && self.refs.inputEl) {
+	    if ((validate || validate === '' || validateOnBlur || validateOnBlur === '') && self.refs && self.refs.inputEl) {
 	      self.validateInput(self.refs.inputEl);
 	    }
 
@@ -39247,8 +40627,9 @@
 	    var className = props.className;
 	    var sortable = props.sortable;
 	    var media = props.media;
+	    var dropdown = props.dropdown;
 	    var renderInput = props.input;
-	    var tag = props.tag;
+	    var wrap = props.wrap;
 	    var type = props.type;
 	    var name = props.name;
 	    var value = props.value;
@@ -39275,6 +40656,7 @@
 	    var inputStyle = props.inputStyle;
 	    var pattern = props.pattern;
 	    var validate = props.validate;
+	    var validateOnBlur = props.validateOnBlur;
 	    var tabindex = props.tabindex;
 	    var resizable = props.resizable;
 	    var clearButton = props.clearButton;
@@ -39340,7 +40722,8 @@
 	          required: required,
 	          pattern: pattern,
 	          validate: typeof validate === 'string' && validate.length ? validate : undefined,
-	          'data-validate': validate === true || validate === '' ? true : undefined,
+	          'data-validate': validate === true || validate === '' || validateOnBlur === true || validateOnBlur === '' ? true : undefined,
+	          'data-validate-on-blur': validateOnBlur === true || validateOnBlur === '' ? true : undefined,
 	          tabIndex: tabindex,
 	          'data-error-message': errorMessageForce ? undefined : errorMessage,
 	          className: inputClassName,
@@ -39370,18 +40753,13 @@
 	    }
 
 	    var hasErrorMessage = !!errorMessage || self.slots['error-message'] && self.slots['error-message'].length;
-	    var ItemTag = tag;
-	    return react.createElement(ItemTag, {
+	    var ItemContent = react.createElement('div', {
 	      ref: function (__reactNode) {
-	        this$1.__reactRefs['el'] = __reactNode;
+	        this$1.__reactRefs['itemContentEl'] = __reactNode;
 	      },
-	      id: id,
-	      style: style,
-	      className: Utils$1.classNames(className, {
+	      className: Utils$1.classNames('item-content item-input', !wrap && className, !wrap && {
 	        disabled: disabled
-	      }, Mixins.colorClasses(props))
-	    }, this.slots['root-start'], react.createElement('div', {
-	      className: Utils$1.classNames('item-content item-input', {
+	      }, !wrap && Mixins.colorClasses(props), {
 	        'inline-label': inlineLabel,
 	        'item-input-focused': inputFocused,
 	        'item-input-with-info': !!info || self.slots.info && self.slots.info.length,
@@ -39401,7 +40779,7 @@
 	      })
 	    }, label, this.slots['label']), react.createElement('div', {
 	      className: Utils$1.classNames('item-input-wrap', {
-	        'input-dropdown': type === 'select'
+	        'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
 	      })
 	    }, inputEl, this.slots['input'], hasErrorMessage && errorMessageForce && react.createElement('div', {
 	      className: 'item-input-error-message'
@@ -39409,7 +40787,22 @@
 	      className: 'input-clear-button'
 	    }), (info || self.slots.info) && react.createElement('div', {
 	      className: 'item-input-info'
-	    }, info, this.slots['info'])), this.slots['inner'], this.slots['inner-end']), this.slots['content'], this.slots['content-end']), isSortable && react.createElement('div', {
+	    }, info, this.slots['info'])), this.slots['inner'], this.slots['inner-end']), this.slots['content'], this.slots['content-end']);
+
+	    if (!wrap) {
+	      return ItemContent;
+	    }
+
+	    return react.createElement('li', {
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
+	      id: id,
+	      style: style,
+	      className: Utils$1.classNames(className, {
+	        disabled: disabled
+	      }, Mixins.colorClasses(props))
+	    }, this.slots['root-start'], ItemContent, isSortable && react.createElement('div', {
 	      className: 'sortable-handler'
 	    }), this.slots['root'], this.slots['root-end']);
 	  };
@@ -39446,6 +40839,7 @@
 
 	    var ref = self.props;
 	    var validate = ref.validate;
+	    var validateOnBlur = ref.validateOnBlur;
 	    var resizable = ref.resizable;
 	    var type = ref.type;
 	    var f7 = self.$f7;
@@ -39456,7 +40850,7 @@
 	      if (!inputEl) { return; }
 	      self.updateInputOnDidUpdate = false;
 
-	      if (validate) {
+	      if (validate && !validateOnBlur) {
 	        self.validateInput(inputEl);
 	      }
 
@@ -39469,10 +40863,12 @@
 	  F7ListInput.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
-	    if (!el) { return; }
+	    var itemContentEl = self.refs.itemContentEl;
+	    if (!el && !itemContentEl) { return; }
 	    self.$f7ready(function (f7) {
 	      var ref = self.props;
 	      var validate = ref.validate;
+	      var validateOnBlur = ref.validateOnBlur;
 	      var resizable = ref.resizable;
 	      var value = ref.value;
 	      var defaultValue = ref.defaultValue;
@@ -39484,7 +40880,7 @@
 	      inputEl.addEventListener('input:empty', self.onInputEmpty, false);
 	      inputEl.addEventListener('input:clear', self.onInputClear, false);
 
-	      if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
+	      if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
 	        setTimeout(function () {
 	          self.validateInput(inputEl);
 	        }, 0);
@@ -39494,7 +40890,7 @@
 	        f7.input.resizeTextarea(inputEl);
 	      }
 	    });
-	    self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
+	    self.$listEl = self.$$(el || itemContentEl).parents('.list, .list-group').eq(0);
 
 	    if (self.$listEl.length) {
 	      self.setState({
@@ -39531,9 +40927,13 @@
 	  className: String,
 	  sortable: Boolean,
 	  media: String,
-	  tag: {
-	    type: String,
-	    default: 'li'
+	  dropdown: {
+	    type: [String, Boolean],
+	    default: 'auto'
+	  },
+	  wrap: {
+	    type: Boolean,
+	    default: true
 	  },
 	  input: {
 	    type: Boolean,
@@ -39568,6 +40968,7 @@
 	  inputStyle: Object,
 	  pattern: String,
 	  validate: [Boolean, String],
+	  validateOnBlur: Boolean,
 	  tabindex: [String, Number],
 	  resizable: Boolean,
 	  clearButton: Boolean,
@@ -39632,26 +41033,8 @@
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
 
-	    this.state = (function () {
-	      return {
-	        hasInput: false,
-	        hasInlineLabel: false,
-	        hasInputInfo: false,
-	        hasInputErrorMessage: false,
-	        hasInputValue: false,
-	        hasInputFocused: false,
-	        hasInputInvalid: false
-	      };
-	    })();
-
 	    (function () {
-	      var self = this$1;
-	      self.onClick = self.onClick.bind(self);
-	      self.onChange = self.onChange.bind(self);
-	      self.onFocus = self.onFocus.bind(self);
-	      self.onBlur = self.onBlur.bind(self);
-	      self.onEmpty = self.onEmpty.bind(self);
-	      self.onNotEmpty = self.onNotEmpty.bind(self);
+	      Utils$1.bindMethods(this$1, 'onClick onChange'.split(' '));
 	    })();
 	  }
 
@@ -39661,84 +41044,12 @@
 
 	  var prototypeAccessors = { slots: { configurable: true },refs: { configurable: true } };
 
-	  F7ListItemContent.prototype.checkHasInputState = function checkHasInputState () {
-	    var self = this;
-	    var props = self.props;
-	    var itemInput = props.itemInput;
-	    var inlineLabel = props.inlineLabel;
-	    var itemInputWithInfo = props.itemInputWithInfo;
-	    var hasInput = itemInput || self.state.hasInput;
-	    var hasInlineLabel = inlineLabel || self.state.hasInlineLabel;
-	    var hasInputInfo = itemInputWithInfo || self.state.hasInputInfo;
-	    var hasInputErrorMessage = self.state.hasInputErrorMessage;
-
-	    if (hasInput && !self.state.hasInput) {
-	      self.hasInputSet = true;
-	      self.setState({
-	        hasInput: hasInput
-	      });
-	    } else if (!hasInput) {
-	      self.hasInputSet = false;
-	    }
-
-	    if (hasInputInfo && !self.state.hasInputInfo) {
-	      self.hasInputInfoSet = true;
-	      self.setState({
-	        hasInputInfo: hasInputInfo
-	      });
-	    } else if (!hasInputInfo) {
-	      self.hasInputInfoSet = false;
-	    }
-
-	    if (hasInputErrorMessage && !self.state.hasInputErrorMessage) {
-	      self.hasInputErrorMessageSet = true;
-	      self.setState({
-	        hasInputErrorMessage: hasInputErrorMessage
-	      });
-	    } else if (!hasInputInfo) {
-	      self.hasInputErrorMessageSet = false;
-	    }
-
-	    if (hasInlineLabel && !self.state.hasInlineLabel) {
-	      self.hasInlineLabelSet = true;
-	      self.setState({
-	        hasInlineLabel: hasInlineLabel
-	      });
-	    } else if (!hasInlineLabel) {
-	      self.hasInlineLabelSet = false;
-	    }
-	  };
-
 	  F7ListItemContent.prototype.onClick = function onClick (event) {
 	    this.dispatchEvent('click', event);
 	  };
 
 	  F7ListItemContent.prototype.onChange = function onChange (event) {
 	    this.dispatchEvent('change', event);
-	  };
-
-	  F7ListItemContent.prototype.onFocus = function onFocus () {
-	    this.setState({
-	      hasInputFocused: true
-	    });
-	  };
-
-	  F7ListItemContent.prototype.onBlur = function onBlur () {
-	    this.setState({
-	      hasInputFocused: false
-	    });
-	  };
-
-	  F7ListItemContent.prototype.onEmpty = function onEmpty () {
-	    this.setState({
-	      hasInputValue: false
-	    });
-	  };
-
-	  F7ListItemContent.prototype.onNotEmpty = function onNotEmpty () {
-	    this.setState({
-	      hasInputValue: true
-	    });
 	  };
 
 	  F7ListItemContent.prototype.render = function render () {
@@ -39769,16 +41080,6 @@
 	    var mediaList = props.mediaList;
 	    var mediaItem = props.mediaItem;
 	    var badgeColor = props.badgeColor;
-	    var itemInput = props.itemInput;
-	    var inlineLabel = props.inlineLabel;
-	    var itemInputWithInfo = props.itemInputWithInfo;
-	    var hasInputFocused = self.state.hasInputFocused;
-	    var hasInputInvalid = self.state.hasInputInvalid;
-	    var hasInputValue = self.state.hasInputValue;
-	    var hasInput = itemInput || self.state.hasInput;
-	    var hasInlineLabel = inlineLabel || self.state.hasInlineLabel;
-	    var hasInputInfo = itemInputWithInfo || self.state.hasInputInfo;
-	    var hasInputErrorMessage = self.state.hasInputErrorMessage;
 	    var slotsContentStart = [];
 	    var slotsContent = [];
 	    var slotsContentEnd = [];
@@ -39820,23 +41121,6 @@
 
 	    flattenSlots.forEach(function (child) {
 	      if (typeof child === 'undefined') { return; }
-	      {
-	        var tag = child.type && (child.type.displayName || child.type.name);
-
-	        if (tag === 'F7Input' || tag === 'f7-input') {
-	          hasInput = true;
-	          if (child.props && child.props.info) { hasInputInfo = true; }
-	          if (child.props && child.props.errorMessage && child.props.errorMessageForce) { hasInputErrorMessage = true; }
-
-	          if (!hasInputValue) {
-	            if (child.props && (typeof child.props.value === 'undefined' ? child.props.defaultValue || child.props.defaultValue === 0 : child.props.value || child.props.value === 0)) { hasInputValue = true; }else { hasInputValue = false; }
-	          }
-	        }
-
-	        if (tag === 'F7Label' || tag === 'f7-label') {
-	          if (child.props && child.props.inline) { hasInlineLabel = true; }
-	        }
-	      }
 	      var slotName;
 	      slotName = child.props ? child.props.slot : undefined;
 	      if (!slotName || slotName === 'inner') { slotsInner.push(child); }
@@ -39964,14 +41248,7 @@
 	    var ItemContentTag = checkbox || radio ? 'label' : 'div';
 	    var classes = Utils$1.classNames(className, 'item-content', {
 	      'item-checkbox': checkbox,
-	      'item-radio': radio,
-	      'item-input': hasInput,
-	      'inline-label': hasInlineLabel,
-	      'item-input-with-info': hasInputInfo,
-	      'item-input-with-error-message': hasInputErrorMessage,
-	      'item-input-invalid': hasInputInvalid,
-	      'item-input-with-value': hasInputValue,
-	      'item-input-focused': hasInputFocused
+	      'item-radio': radio
 	    }, Mixins.colorClasses(props));
 	    return react.createElement(ItemContentTag, {
 	      ref: function (__reactNode) {
@@ -39988,55 +41265,6 @@
 	    var ref = self.refs;
 	    var el = ref.el;
 	    el.removeEventListener('click', self.onClick);
-	    el.removeEventListener('input:empty', self.onEmpty);
-	    el.removeEventListener('input:notempty', self.onNotEmpty);
-	    el.removeEventListener('focus', self.onFocus, true);
-	    el.removeEventListener('blur', self.onBlur, true);
-	  };
-
-	  F7ListItemContent.prototype.componentDidUpdate = function componentDidUpdate () {
-	    var self = this;
-	    var ref = self.refs;
-	    var innerEl = ref.innerEl;
-	    if (!innerEl) { return; }
-	    var $innerEl = self.$$(innerEl);
-	    var $labelEl = $innerEl.children('.item-title.item-label');
-	    var $inputWrapEl = $innerEl.children('.item-input-wrap');
-	    var hasInlineLabel = $labelEl.hasClass('item-label-inline');
-	    var hasInput = $inputWrapEl.length > 0;
-	    var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
-	    var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
-	    var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
-
-	    if (hasInlineLabel !== self.state.hasInlineLabel) {
-	      self.setState({
-	        hasInlineLabel: hasInlineLabel
-	      });
-	    }
-
-	    if (hasInput !== self.state.hasInput) {
-	      self.setState({
-	        hasInput: hasInput
-	      });
-	    }
-
-	    if (hasInputInfo !== self.state.hasInputInfo) {
-	      self.setState({
-	        hasInputInfo: hasInputInfo
-	      });
-	    }
-
-	    if (!self.hasInputErrorMessageSet && hasInputErrorMessage !== self.state.hasInputErrorMessage) {
-	      self.setState({
-	        hasInputErrorMessage: hasInputErrorMessage
-	      });
-	    }
-
-	    if (hasInputInvalid !== self.state.hasInputInvalid) {
-	      self.setState({
-	        hasInputInvalid: hasInputInvalid
-	      });
-	    }
 	  };
 
 	  F7ListItemContent.prototype.componentDidMount = function componentDidMount () {
@@ -40044,62 +41272,7 @@
 	    var ref = self.refs;
 	    var innerEl = ref.innerEl;
 	    var el = ref.el;
-	    var inputEl = ref.inputEl;
 	    el.addEventListener('click', self.onClick);
-	    if (!innerEl) { return; }
-	    var $innerEl = self.$$(innerEl);
-	    var $labelEl = $innerEl.children('.item-title.item-label');
-	    var $inputWrapEl = $innerEl.children('.item-input-wrap');
-	    var hasInlineLabel = $labelEl.hasClass('item-label-inline');
-	    var hasInput = $inputWrapEl.length > 0;
-	    var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
-	    var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
-	    var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
-
-	    if (hasInput) {
-	      el.addEventListener('focus', self.onFocus, true);
-	      el.addEventListener('blur', self.onBlur, true);
-	      el.addEventListener('input:empty', self.onEmpty);
-	      el.addEventListener('input:notempty', self.onNotEmpty);
-	    }
-
-	    if (!self.hasInlineLabelSet && hasInlineLabel !== self.state.hasInlineLabel) {
-	      self.setState({
-	        hasInlineLabel: hasInlineLabel
-	      });
-	    }
-
-	    if (!self.hasInputSet && hasInput !== self.state.hasInput) {
-	      self.setState({
-	        hasInput: hasInput
-	      });
-	    }
-
-	    if (!self.hasInputInfoSet && hasInputInfo !== self.state.hasInputInfo) {
-	      self.setState({
-	        hasInputInfo: hasInputInfo
-	      });
-	    }
-
-	    if (!self.hasInputErrorMessageSet && hasInputErrorMessage !== self.state.hasInputErrorMessage) {
-	      self.setState({
-	        hasInputErrorMessage: hasInputErrorMessage
-	      });
-	    }
-
-	    if (!self.hasInputInvalidSet && hasInputInvalid !== self.state.hasInputInvalid) {
-	      self.setState({
-	        hasInputInvalid: hasInputInvalid
-	      });
-	    }
-	  };
-
-	  F7ListItemContent.prototype.componentWillUpdate = function componentWillUpdate () {
-	    this.checkHasInputState();
-	  };
-
-	  F7ListItemContent.prototype.componentWillMount = function componentWillMount () {
-	    this.checkHasInputState();
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -40139,9 +41312,6 @@
 	  badgeColor: String,
 	  mediaList: Boolean,
 	  mediaItem: Boolean,
-	  itemInput: Boolean,
-	  itemInputWithInfo: Boolean,
-	  inlineLabel: Boolean,
 	  checkbox: Boolean,
 	  checked: Boolean,
 	  defaultChecked: Boolean,
@@ -40212,24 +41382,7 @@
 	    })();
 
 	    (function () {
-	      var self = this$1;
-	      self.onClick = self.onClick.bind(self);
-	      self.onChange = self.onChange.bind(self);
-	      self.onSwipeoutOpen = self.onSwipeoutOpen.bind(self);
-	      self.onSwipeoutOpened = self.onSwipeoutOpened.bind(self);
-	      self.onSwipeoutClose = self.onSwipeoutClose.bind(self);
-	      self.onSwipeoutClosed = self.onSwipeoutClosed.bind(self);
-	      self.onSwipeoutDelete = self.onSwipeoutDelete.bind(self);
-	      self.onSwipeoutDeleted = self.onSwipeoutDeleted.bind(self);
-	      self.onSwipeoutOverswipeEnter = self.onSwipeoutOverswipeEnter.bind(self);
-	      self.onSwipeoutOverswipeExit = self.onSwipeoutOverswipeExit.bind(self);
-	      self.onSwipeout = self.onSwipeout.bind(self);
-	      self.onAccBeforeOpen = self.onAccBeforeOpen.bind(self);
-	      self.onAccOpen = self.onAccOpen.bind(self);
-	      self.onAccOpened = self.onAccOpened.bind(self);
-	      self.onAccBeforeClose = self.onAccBeforeClose.bind(self);
-	      self.onAccClose = self.onAccClose.bind(self);
-	      self.onAccClosed = self.onAccClosed.bind(self);
+	      Utils$1.bindMethods(this$1, ['onClick', 'onChange', 'onSwipeoutOpen', 'onSwipeoutOpened', 'onSwipeoutClose', 'onSwipeoutClosed', 'onSwipeoutDelete', 'onSwipeoutDeleted', 'onSwipeoutOverswipeEnter', 'onSwipeoutOverswipeExit', 'onSwipeout', 'onAccBeforeOpen', 'onAccOpen', 'onAccOpened', 'onAccBeforeClose', 'onAccClose', 'onAccClosed']);
 	    })();
 	  }
 
@@ -40356,9 +41509,6 @@
 	    var readonly = props.readonly;
 	    var required = props.required;
 	    var disabled = props.disabled;
-	    var itemInput = props.itemInput;
-	    var itemInputWithInfo = props.itemInputWithInfo;
-	    var inlineLabel = props.inlineLabel;
 	    var sortable = props.sortable;
 	    var noChevron = props.noChevron;
 	    var chevronCenter = props.chevronCenter;
@@ -40390,9 +41540,6 @@
 	        readonly: readonly,
 	        required: required,
 	        disabled: disabled,
-	        itemInput: itemInput,
-	        itemInputWithInfo: itemInputWithInfo,
-	        inlineLabel: inlineLabel,
 	        onClick: needsEvents ? self.onClick : null,
 	        onChange: needsEvents ? self.onChange : null
 	      }, this.slots['content-start'], this.slots['content'], this.slots['content-end'], this.slots['media'], this.slots['inner-start'], this.slots['inner'], this.slots['inner-end'], this.slots['after-start'], this.slots['after'], this.slots['after-end'], this.slots['header'], this.slots['footer'], this.slots['before-title'], this.slots['title'], this.slots['after-title'], this.slots['subtitle'], this.slots['text'], swipeout || accordionItem ? null : self.slots.default);
@@ -40698,9 +41845,6 @@
 	  readonly: Boolean,
 	  required: Boolean,
 	  disabled: Boolean,
-	  itemInput: Boolean,
-	  itemInputWithInfo: Boolean,
-	  inlineLabel: Boolean,
 	  virtualListIndex: Number
 	}, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps));
 
@@ -40708,8 +41852,14 @@
 
 	var F7List = /*@__PURE__*/(function (superclass) {
 	  function F7List(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onSortableEnable', 'onSortableDisable', 'onSortableSort', 'onTabShow', 'onTabHide']);
+	    })();
 	  }
 
 	  if ( superclass ) F7List.__proto__ = superclass;
@@ -40848,6 +41998,22 @@
 	    }
 	  };
 
+	  F7List.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+	    var el = self.refs.el;
+
+	    if (el) {
+	      el.removeEventListener('sortable:enable', self.onSortableEnable);
+	      el.removeEventListener('sortable:disable', self.onSortableDisable);
+	      el.removeEventListener('sortable:sort', self.onSortableSort);
+	      el.removeEventListener('tab:show', self.onTabShow);
+	      el.removeEventListener('tab:hide', self.onTabHide);
+	    }
+
+	    if (!(self.virtualList && self.f7VirtualList)) { return; }
+	    if (self.f7VirtualList.destroy) { self.f7VirtualList.destroy(); }
+	  };
+
 	  F7List.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
@@ -40856,16 +42022,11 @@
 	    var virtualListParams = ref.virtualListParams;
 
 	    if (el) {
-	      self.onSortableEnableBound = self.onSortableEnable.bind(self);
-	      self.onSortableDisableBound = self.onSortableDisable.bind(self);
-	      self.onSortableSortBound = self.onSortableSort.bind(self);
-	      self.onTabShowBound = self.onTabShow.bind(self);
-	      self.onTabHideBound = self.onTabHide.bind(self);
-	      el.addEventListener('sortable:enable', self.onSortableEnableBound);
-	      el.addEventListener('sortable:disable', self.onSortableDisableBound);
-	      el.addEventListener('sortable:sort', self.onSortableSortBound);
-	      el.addEventListener('tab:show', self.onTabShowBound);
-	      el.addEventListener('tab:hide', self.onTabHideBound);
+	      el.addEventListener('sortable:enable', self.onSortableEnable);
+	      el.addEventListener('sortable:disable', self.onSortableDisable);
+	      el.addEventListener('sortable:sort', self.onSortableSort);
+	      el.addEventListener('tab:show', self.onTabShow);
+	      el.addEventListener('tab:hide', self.onTabHide);
 	    }
 
 	    if (!virtualList) { return; }
@@ -40910,22 +42071,6 @@
 	        }
 	      }, vlParams));
 	    });
-	  };
-
-	  F7List.prototype.componentWillUnmount = function componentWillUnmount () {
-	    var self = this;
-	    var el = self.refs.el;
-
-	    if (el) {
-	      el.removeEventListener('sortable:enable', self.onSortableEnableBound);
-	      el.removeEventListener('sortable:disable', self.onSortableDisableBound);
-	      el.removeEventListener('sortable:sort', self.onSortableSortBound);
-	      el.removeEventListener('tab:show', self.onTabShowBound);
-	      el.removeEventListener('tab:hide', self.onTabHideBound);
-	    }
-
-	    if (!(self.virtualList && self.f7VirtualList)) { return; }
-	    if (self.f7VirtualList.destroy) { self.f7VirtualList.destroy(); }
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -41025,8 +42170,14 @@
 
 	var F7LoginScreen = /*@__PURE__*/(function (superclass) {
 	  function F7LoginScreen(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	    })();
 	  }
 
 	  if ( superclass ) F7LoginScreen.__proto__ = superclass;
@@ -41089,24 +42240,20 @@
 	    var el = self.refs.el;
 	    if (self.f7LoginScreen) { self.f7LoginScreen.destroy(); }
 	    if (!el) { return; }
-	    el.removeEventListener('loginscreen:open', self.onOpenBound);
-	    el.removeEventListener('loginscreen:opened', self.onOpenedBound);
-	    el.removeEventListener('loginscreen:close', self.onCloseBound);
-	    el.removeEventListener('loginscreen:closed', self.onClosedBound);
+	    el.removeEventListener('loginscreen:open', self.onOpen);
+	    el.removeEventListener('loginscreen:opened', self.onOpened);
+	    el.removeEventListener('loginscreen:close', self.onClose);
+	    el.removeEventListener('loginscreen:closed', self.onClosed);
 	  };
 
 	  F7LoginScreen.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    self.onOpenBound = self.onOpen.bind(self);
-	    self.onOpenedBound = self.onOpened.bind(self);
-	    self.onCloseBound = self.onClose.bind(self);
-	    self.onClosedBound = self.onClosed.bind(self);
-	    el.addEventListener('loginscreen:open', self.onOpenBound);
-	    el.addEventListener('loginscreen:opened', self.onOpenedBound);
-	    el.addEventListener('loginscreen:close', self.onCloseBound);
-	    el.addEventListener('loginscreen:closed', self.onClosedBound);
+	    el.addEventListener('loginscreen:open', self.onOpen);
+	    el.addEventListener('loginscreen:opened', self.onOpened);
+	    el.addEventListener('loginscreen:close', self.onClose);
+	    el.addEventListener('loginscreen:closed', self.onClosed);
 	    self.$f7ready(function () {
 	      self.f7LoginScreen = self.$f7.loginScreen.create({
 	        el: el
@@ -41164,6 +42311,409 @@
 
 	F7LoginScreen.displayName = 'f7-login-screen';
 
+	var F7MenuDropdownItem = /*@__PURE__*/(function (superclass) {
+	  function F7MenuDropdownItem(props, context) {
+	    var this$1 = this;
+
+	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onClick']);
+	    })();
+	  }
+
+	  if ( superclass ) F7MenuDropdownItem.__proto__ = superclass;
+	  F7MenuDropdownItem.prototype = Object.create( superclass && superclass.prototype );
+	  F7MenuDropdownItem.prototype.constructor = F7MenuDropdownItem;
+
+	  var prototypeAccessors = { attrs: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
+
+	  F7MenuDropdownItem.prototype.onClick = function onClick (event) {
+	    this.dispatchEvent('click', event);
+	  };
+
+	  prototypeAccessors.attrs.get = function () {
+	    var self = this;
+	    var props = self.props;
+	    var link = props.link;
+	    var href = props.href;
+	    var target = props.target;
+	    var hrefComputed = href;
+	    if (typeof hrefComputed === 'undefined' && link) { hrefComputed = '#'; }
+	    return Utils$1.extend({
+	      href: hrefComputed,
+	      target: target
+	    }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
+	  };
+
+	  F7MenuDropdownItem.prototype.render = function render () {
+	    var this$1 = this;
+
+	    var self = this;
+	    var props = self.props;
+	    var id = props.id;
+	    var className = props.className;
+	    var style = props.style;
+	    var link = props.link;
+	    var href = props.href;
+	    var text = props.text;
+	    var divider = props.divider;
+	    var menuClose = props.menuClose;
+	    var isLink = link || href || href === '';
+	    var Tag = isLink ? 'a' : 'div';
+	    var classes = Utils$1.classNames({
+	      'menu-dropdown-link': isLink && !divider,
+	      'menu-dropdown-item': !isLink && !divider,
+	      'menu-dropdown-divider': divider
+	    }, className, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props), {
+	      'menu-close': typeof menuClose === 'undefined'
+	    });
+	    return react.createElement(Tag, Object.assign({
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
+	      className: classes,
+	      id: id,
+	      style: style
+	    }, self.attrs), text, this.slots['default']);
+	  };
+
+	  F7MenuDropdownItem.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    el.removeEventListener('click', self.onClick);
+	    delete el.f7RouteProps;
+	  };
+
+	  F7MenuDropdownItem.prototype.componentDidUpdate = function componentDidUpdate () {
+	    var self = this;
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    var ref = self.props;
+	    var routeProps = ref.routeProps;
+	    if (routeProps) { el.f7RouteProps = routeProps; }
+	  };
+
+	  F7MenuDropdownItem.prototype.componentDidMount = function componentDidMount () {
+	    var self = this;
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    el.addEventListener('click', self.onClick);
+	    var ref = self.props;
+	    var routeProps = ref.routeProps;
+	    if (routeProps) { el.f7RouteProps = routeProps; }
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  F7MenuDropdownItem.prototype.dispatchEvent = function dispatchEvent (events) {
+	    var args = [], len = arguments.length - 1;
+	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
+	  Object.defineProperties( F7MenuDropdownItem.prototype, prototypeAccessors );
+
+	  return F7MenuDropdownItem;
+	}(react.Component));
+
+	__reactComponentSetProps(F7MenuDropdownItem, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object,
+	  text: String,
+	  link: Boolean,
+	  href: String,
+	  target: String,
+	  divider: Boolean
+	}, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps));
+
+	F7MenuDropdownItem.displayName = 'f7-menu-dropdown-item';
+
+	var F7MenuDropdown = /*@__PURE__*/(function (superclass) {
+	  function F7MenuDropdown(props, context) {
+	    superclass.call(this, props, context);
+	  }
+
+	  if ( superclass ) F7MenuDropdown.__proto__ = superclass;
+	  F7MenuDropdown.prototype = Object.create( superclass && superclass.prototype );
+	  F7MenuDropdown.prototype.constructor = F7MenuDropdown;
+
+	  var prototypeAccessors = { slots: { configurable: true } };
+
+	  F7MenuDropdown.prototype.render = function render () {
+	    var self = this;
+	    var props = self.props;
+	    var id = props.id;
+	    var className = props.className;
+	    var style = props.style;
+	    var contentHeight = props.contentHeight;
+	    var position = props.position;
+	    var left = props.left;
+	    var center = props.center;
+	    var right = props.right;
+	    var positionComputed = position || 'left';
+	    if (left) { positionComputed = 'left'; }
+	    if (center) { positionComputed = 'center'; }
+	    if (right) { positionComputed = 'right'; }
+	    var classes = Utils$1.classNames('menu-dropdown', ("menu-dropdown-" + positionComputed), Mixins.colorClasses(props), className);
+	    return react.createElement('div', {
+	      className: classes,
+	      id: id,
+	      style: style
+	    }, react.createElement('div', {
+	      className: 'menu-dropdown-content',
+	      style: {
+	        height: contentHeight
+	      }
+	    }, this.slots['default']));
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  Object.defineProperties( F7MenuDropdown.prototype, prototypeAccessors );
+
+	  return F7MenuDropdown;
+	}(react.Component));
+
+	__reactComponentSetProps(F7MenuDropdown, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object,
+	  contentHeight: String,
+	  position: String,
+	  left: Boolean,
+	  center: Boolean,
+	  right: Boolean
+	}, Mixins.colorProps));
+
+	F7MenuDropdown.displayName = 'f7-menu-dropdown';
+
+	var F7MenuItem = /*@__PURE__*/(function (superclass) {
+	  function F7MenuItem(props, context) {
+	    var this$1 = this;
+
+	    superclass.call(this, props, context);
+	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onClick']);
+	    })();
+	  }
+
+	  if ( superclass ) F7MenuItem.__proto__ = superclass;
+	  F7MenuItem.prototype = Object.create( superclass && superclass.prototype );
+	  F7MenuItem.prototype.constructor = F7MenuItem;
+
+	  var prototypeAccessors = { attrs: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
+
+	  F7MenuItem.prototype.onClick = function onClick (event) {
+	    this.dispatchEvent('click', event);
+	  };
+
+	  prototypeAccessors.attrs.get = function () {
+	    var self = this;
+	    var props = self.props;
+	    var href = props.href;
+	    var link = props.link;
+	    var target = props.target;
+	    var hrefComputed = href;
+	    if (typeof hrefComputed === 'undefined' && link) { hrefComputed = '#'; }
+	    return Utils$1.extend({
+	      href: hrefComputed,
+	      target: target
+	    }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
+	  };
+
+	  F7MenuItem.prototype.render = function render () {
+	    var this$1 = this;
+
+	    var self = this;
+	    var props = self.props;
+	    var id = props.id;
+	    var className = props.className;
+	    var style = props.style;
+	    var link = props.link;
+	    var href = props.href;
+	    var text = props.text;
+	    var dropdown = props.dropdown;
+	    var iconOnly = props.iconOnly;
+	    var icon = props.icon;
+	    var iconColor = props.iconColor;
+	    var iconSize = props.iconSize;
+	    var iconMaterial = props.iconMaterial;
+	    var iconIon = props.iconIon;
+	    var iconFa = props.iconFa;
+	    var iconF7 = props.iconF7;
+	    var iconIfMd = props.iconIfMd;
+	    var iconIfIos = props.iconIfIos;
+	    var iconMd = props.iconMd;
+	    var iconIos = props.iconIos;
+	    var slots = self.slots;
+	    var iconEl;
+	    var iconOnlyComputed;
+	    var mdThemeIcon = iconIfMd || iconMd;
+	    var iosThemeIcon = iconIfIos || iconIos;
+
+	    if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
+	      iconEl = react.createElement(F7Icon, {
+	        material: iconMaterial,
+	        f7: iconF7,
+	        fa: iconFa,
+	        ion: iconIon,
+	        icon: icon,
+	        md: mdThemeIcon,
+	        ios: iosThemeIcon,
+	        color: iconColor,
+	        size: iconSize
+	      });
+	    }
+
+	    if (iconOnly || !text && slots.text && slots.text.length === 0 || !text && !slots.text) {
+	      iconOnlyComputed = true;
+	    } else {
+	      iconOnlyComputed = false;
+	    }
+
+	    var isLink = link || href || href === '';
+	    var Tag = isLink ? 'a' : 'div';
+	    var isDropdown = dropdown || dropdown === '';
+	    var classes = Utils$1.classNames({
+	      'menu-item': true,
+	      'menu-item-dropdown': isDropdown,
+	      'icon-only': iconOnlyComputed
+	    }, className, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
+	    return react.createElement(Tag, Object.assign({
+	      ref: function (__reactNode) {
+	        this$1.__reactRefs['el'] = __reactNode;
+	      },
+	      className: classes,
+	      id: id,
+	      style: style
+	    }, self.attrs), (text || slots.text && slots.text.length || iconEl) && react.createElement('div', {
+	      className: 'menu-item-content'
+	    }, text, iconEl, this.slots['text']), this.slots['default']);
+	  };
+
+	  F7MenuItem.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    el.removeEventListener('click', self.onClick);
+	    delete el.f7RouteProps;
+	  };
+
+	  F7MenuItem.prototype.componentDidUpdate = function componentDidUpdate () {
+	    var self = this;
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    var ref = self.props;
+	    var routeProps = ref.routeProps;
+	    if (routeProps) { el.f7RouteProps = routeProps; }
+	  };
+
+	  F7MenuItem.prototype.componentDidMount = function componentDidMount () {
+	    var self = this;
+	    var el = self.refs.el;
+	    if (!el) { return; }
+	    el.addEventListener('click', self.onClick);
+	    var ref = self.props;
+	    var routeProps = ref.routeProps;
+	    if (routeProps) { el.f7RouteProps = routeProps; }
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  F7MenuItem.prototype.dispatchEvent = function dispatchEvent (events) {
+	    var args = [], len = arguments.length - 1;
+	    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+	    return __reactComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+	  };
+
+	  prototypeAccessors.refs.get = function () {
+	    return this.__reactRefs;
+	  };
+
+	  prototypeAccessors.refs.set = function (refs) {};
+
+	  Object.defineProperties( F7MenuItem.prototype, prototypeAccessors );
+
+	  return F7MenuItem;
+	}(react.Component));
+
+	__reactComponentSetProps(F7MenuItem, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object,
+	  text: String,
+	  iconOnly: Boolean,
+	  href: String,
+	  link: Boolean,
+	  target: String,
+	  dropdown: Boolean
+	}, Mixins.colorProps, Mixins.linkIconProps, Mixins.linkRouterProps, Mixins.linkActionsProps));
+
+	F7MenuItem.displayName = 'f7-menu-item';
+
+	var F7Menu = /*@__PURE__*/(function (superclass) {
+	  function F7Menu(props, context) {
+	    superclass.call(this, props, context);
+	  }
+
+	  if ( superclass ) F7Menu.__proto__ = superclass;
+	  F7Menu.prototype = Object.create( superclass && superclass.prototype );
+	  F7Menu.prototype.constructor = F7Menu;
+
+	  var prototypeAccessors = { slots: { configurable: true } };
+
+	  F7Menu.prototype.render = function render () {
+	    var self = this;
+	    var props = self.props;
+	    var id = props.id;
+	    var className = props.className;
+	    var style = props.style;
+	    return react.createElement('div', {
+	      className: Utils$1.classNames('menu', Mixins.colorClasses(props), className),
+	      id: id,
+	      style: style
+	    }, react.createElement('div', {
+	      className: 'menu-inner'
+	    }, this.slots['default']));
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  Object.defineProperties( F7Menu.prototype, prototypeAccessors );
+
+	  return F7Menu;
+	}(react.Component));
+
+	__reactComponentSetProps(F7Menu, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object
+	}, Mixins.colorProps));
+
+	F7Menu.displayName = 'f7-menu';
+
 	var F7Message = /*@__PURE__*/(function (superclass) {
 	  function F7Message(props, context) {
 	    var this$1 = this;
@@ -41172,13 +42722,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
-	      this$1.onNameClick = this$1.onNameClick.bind(this$1);
-	      this$1.onTextClick = this$1.onTextClick.bind(this$1);
-	      this$1.onAvatarClick = this$1.onAvatarClick.bind(this$1);
-	      this$1.onHeaderClick = this$1.onHeaderClick.bind(this$1);
-	      this$1.onFooterClick = this$1.onFooterClick.bind(this$1);
-	      this$1.onBubbleClick = this$1.onBubbleClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick', 'onNameClick', 'onTextClick', 'onAvatarClick', 'onHeaderClick', 'onFooterClick', 'onBubbleClick']);
 	    })();
 	  }
 
@@ -41424,8 +42968,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
-	      this$1.onDeleteClick = this$1.onDeleteClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick', 'onDeleteClick']);
 	    })();
 	  }
 
@@ -41571,7 +43114,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onChange = this$1.onChange.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onChange']);
 	    })();
 	  }
 
@@ -41742,14 +43285,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onChange = this$1.onChange.bind(this$1);
-	      this$1.onInput = this$1.onInput.bind(this$1);
-	      this$1.onFocus = this$1.onFocus.bind(this$1);
-	      this$1.onBlur = this$1.onBlur.bind(this$1);
-	      this$1.onClick = this$1.onClick.bind(this$1);
-	      this$1.onDeleteAttachment = this$1.onDeleteAttachment.bind(this$1);
-	      this$1.onClickAttachment = this$1.onClickAttachment.bind(this$1);
-	      this$1.onResizePage = this$1.onResizePage.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onChange', 'onInput', 'onFocus', 'onBlur', 'onClick', 'onDeleteAttachment', 'onClickAttachment', 'onResizePage']);
 	    })();
 	  }
 
@@ -42422,7 +43958,13 @@
 
 	var F7NavLeft = /*@__PURE__*/(function (superclass) {
 	  function F7NavLeft(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onBackClick']);
+	    })();
 	  }
 
 	  if ( superclass ) F7NavLeft.__proto__ = superclass;
@@ -42454,18 +43996,27 @@
 	        force: backLinkForce || undefined,
 	        className: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
 	        text: backLink !== true && !this.$theme.md ? backLink : undefined,
-	        onClick: this.onBackClick.bind(this)
+	        onClick: this.onBackClick
 	      });
 	    }
 
 	    var classes = Utils$1.classNames(className, 'left', {
 	      sliding: sliding
 	    }, Mixins.colorClasses(props));
+	    var children = [];
+	    var slots = this.slots;
+
+	    if (slots && Object.keys(slots).length) {
+	      Object.keys(slots).forEach(function (key) {
+	        children.push.apply(children, slots[key]);
+	      });
+	    }
+
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
 	      className: classes
-	    }, linkEl, this.slots['default']);
+	    }, linkEl, children);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -42516,11 +44067,20 @@
 	    var classes = Utils$1.classNames(className, 'right', {
 	      sliding: sliding
 	    }, Mixins.colorClasses(props));
+	    var children = [];
+	    var slots = this.slots;
+
+	    if (slots && Object.keys(slots).length) {
+	      Object.keys(slots).forEach(function (key) {
+	        children.push.apply(children, slots[key]);
+	      });
+	    }
+
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
 	      className: classes
-	    }, this.slots['default']);
+	    }, children);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -42555,6 +44115,59 @@
 	  F7NavTitle.prototype.render = function render () {
 	    var self = this;
 	    var props = self.props;
+	    var id = props.id;
+	    var style = props.style;
+	    var className = props.className;
+	    var classes = Utils$1.classNames(className, 'title-large', Mixins.colorClasses(props));
+	    var children = [];
+	    var slots = self.slots;
+
+	    if (slots && Object.keys(slots).length) {
+	      Object.keys(slots).forEach(function (key) {
+	        children.push.apply(children, slots[key]);
+	      });
+	    }
+
+	    return react.createElement('div', {
+	      id: id,
+	      style: style,
+	      className: classes
+	    }, react.createElement('div', {
+	      className: 'title-large-text'
+	    }, children));
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  Object.defineProperties( F7NavTitle.prototype, prototypeAccessors );
+
+	  return F7NavTitle;
+	}(react.Component));
+
+	__reactComponentSetProps(F7NavTitle, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object
+	}, Mixins.colorProps));
+
+	F7NavTitle.displayName = 'f7-nav-title';
+
+	var F7NavTitle$1 = /*@__PURE__*/(function (superclass) {
+	  function F7NavTitle(props, context) {
+	    superclass.call(this, props, context);
+	  }
+
+	  if ( superclass ) F7NavTitle.__proto__ = superclass;
+	  F7NavTitle.prototype = Object.create( superclass && superclass.prototype );
+	  F7NavTitle.prototype.constructor = F7NavTitle;
+
+	  var prototypeAccessors = { slots: { configurable: true } };
+
+	  F7NavTitle.prototype.render = function render () {
+	    var self = this;
+	    var props = self.props;
 	    var title = props.title;
 	    var subtitle = props.subtitle;
 	    var id = props.id;
@@ -42572,11 +44185,21 @@
 	    var classes = Utils$1.classNames(className, 'title', {
 	      sliding: sliding
 	    }, Mixins.colorClasses(props));
+	    var children;
+	    var slots = self.slots;
+
+	    if (slots && Object.keys(slots).length) {
+	      children = [];
+	      Object.keys(slots).forEach(function (key) {
+	        children.push.apply(children, slots[key]);
+	      });
+	    }
+
 	    return react.createElement('div', {
 	      id: id,
 	      style: style,
 	      className: classes
-	    }, this.slots['default'], !this.slots.default && title, !this.slots.default && subtitleEl);
+	    }, children, !children && title, !children && subtitleEl);
 	  };
 
 	  prototypeAccessors.slots.get = function () {
@@ -42588,7 +44211,7 @@
 	  return F7NavTitle;
 	}(react.Component));
 
-	__reactComponentSetProps(F7NavTitle, Object.assign({
+	__reactComponentSetProps(F7NavTitle$1, Object.assign({
 	  id: [String, Number],
 	  className: String,
 	  style: Object,
@@ -42597,12 +44220,18 @@
 	  sliding: Boolean
 	}, Mixins.colorProps));
 
-	F7NavTitle.displayName = 'f7-nav-title';
+	F7NavTitle$1.displayName = 'f7-nav-title';
 
 	var F7Navbar = /*@__PURE__*/(function (superclass) {
 	  function F7Navbar(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onBackClick']);
+	    })();
 	  }
 
 	  if ( superclass ) F7Navbar.__proto__ = superclass;
@@ -42653,25 +44282,47 @@
 	    var hidden = props.hidden;
 	    var noShadow = props.noShadow;
 	    var noHairline = props.noHairline;
+	    var large = props.large;
+	    var titleLarge = props.titleLarge;
 	    var innerEl;
 	    var leftEl;
 	    var titleEl;
+	    var rightEl;
+	    var titleLargeEl;
+	    var iosLeftTitle = self.$theme && self.$theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
+	    var mdCenterTitle = self.$theme && self.$theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle;
+	    var slots = self.slots;
 
 	    if (inner) {
-	      if (backLink) {
+	      if (backLink || slots['nav-left']) {
 	        leftEl = react.createElement(F7NavLeft, {
 	          backLink: backLink,
 	          backLinkUrl: backLinkUrl,
 	          backLinkForce: backLinkForce,
-	          onBackClick: self.onBackClick.bind(self)
-	        });
+	          onBackClick: self.onBackClick
+	        }, slots['nav-left']);
 	      }
 
-	      if (title || subtitle) {
-	        titleEl = react.createElement(F7NavTitle, {
+	      if (title || subtitle || slots.title) {
+	        titleEl = react.createElement(F7NavTitle$1, {
 	          title: title,
 	          subtitle: subtitle
-	        });
+	        }, slots.title);
+	      }
+
+	      if (slots['nav-right']) {
+	        rightEl = react.createElement(F7NavRight, null, slots['nav-right']);
+	      }
+
+	      var largeTitle = titleLarge;
+	      if (!largeTitle && large && title) { largeTitle = title; }
+
+	      if (largeTitle) {
+	        titleLargeEl = react.createElement('div', {
+	          className: 'title-large'
+	        }, react.createElement('div', {
+	          className: 'title-large-text'
+	        }, largeTitle));
 	      }
 
 	      innerEl = react.createElement('div', {
@@ -42679,15 +44330,19 @@
 	          this$1.__reactRefs['inner'] = __reactNode;
 	        },
 	        className: Utils$1.classNames('navbar-inner', innerClass, innerClassName, {
-	          sliding: sliding
+	          sliding: sliding,
+	          'navbar-inner-left-title': iosLeftTitle,
+	          'navbar-inner-centered-title': mdCenterTitle,
+	          'navbar-inner-large': large
 	        })
-	      }, leftEl, titleEl, this.slots['default']);
+	      }, leftEl, titleEl, rightEl, titleLargeEl, this.slots['default']);
 	    }
 
 	    var classes = Utils$1.classNames(className, 'navbar', {
 	      'navbar-hidden': hidden,
 	      'no-shadow': noShadow,
-	      'no-hairline': noHairline
+	      'no-hairline': noHairline,
+	      'navbar-large': large
 	    }, Mixins.colorClasses(props));
 	    return react.createElement('div', {
 	      ref: function (__reactNode) {
@@ -42754,15 +44409,23 @@
 	    default: true
 	  },
 	  innerClass: String,
-	  innerClassName: String
+	  innerClassName: String,
+	  large: Boolean,
+	  titleLarge: String
 	}, Mixins.colorProps));
 
 	F7Navbar.displayName = 'f7-navbar';
 
 	var F7PageContent = /*@__PURE__*/(function (superclass) {
 	  function F7PageContent(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onTabShow', 'onTabHide']);
+	    })();
 	  }
 
 	  if ( superclass ) F7PageContent.__proto__ = superclass;
@@ -42811,6 +44474,7 @@
 	    var tab = props.tab;
 	    var tabActive = props.tabActive;
 	    var ptr = props.ptr;
+	    var ptrBottom = props.ptrBottom;
 	    var infinite = props.infinite;
 	    var infiniteTop = props.infiniteTop;
 	    var hideBarsOnScroll = props.hideBarsOnScroll;
@@ -42822,6 +44486,7 @@
 	      tab: tab,
 	      'tab-active': tabActive,
 	      'ptr-content': ptr,
+	      'ptr-bottom': ptrBottom,
 	      'infinite-scroll-content': infinite,
 	      'infinite-scroll-top': infiniteTop,
 	      'hide-bars-on-scroll': hideBarsOnScroll,
@@ -42839,11 +44504,12 @@
 	    var props = self.props;
 	    var ptr = props.ptr;
 	    var ptrPreloader = props.ptrPreloader;
+	    var ptrDistance = props.ptrDistance;
+	    var ptrBottom = props.ptrBottom;
 	    var infinite = props.infinite;
 	    var infinitePreloader = props.infinitePreloader;
 	    var id = props.id;
 	    var style = props.style;
-	    var ptrDistance = props.ptrDistance;
 	    var infiniteDistance = props.infiniteDistance;
 	    var infiniteTop = props.infiniteTop;
 	    var ptrEl;
@@ -42874,7 +44540,7 @@
 	      ref: function (__reactNode) {
 	        this$1.__reactRefs['el'] = __reactNode;
 	      }
-	    }, ptrEl, infiniteTop ? infiniteEl : self.slots.default, infiniteTop ? self.slots.default : infiniteEl);
+	    }, ptrBottom ? null : ptrEl, infiniteTop ? infiniteEl : null, self.slots.default, infiniteTop ? null : infiniteEl, ptrBottom ? ptrEl : null);
 	  };
 
 	  F7PageContent.prototype.componentWillUnmount = function componentWillUnmount () {
@@ -42897,14 +44563,6 @@
 	    var ptr = ref.ptr;
 	    var infinite = ref.infinite;
 	    var tab = ref.tab;
-	    self.onPtrPullStart = self.onPtrPullStart.bind(self);
-	    self.onPtrPullMove = self.onPtrPullMove.bind(self);
-	    self.onPtrPullEnd = self.onPtrPullEnd.bind(self);
-	    self.onPtrRefresh = self.onPtrRefresh.bind(self);
-	    self.onPtrDone = self.onPtrDone.bind(self);
-	    self.onInfinite = self.onInfinite.bind(self);
-	    self.onTabShow = self.onTabShow.bind(self);
-	    self.onTabHide = self.onTabHide.bind(self);
 
 	    if (ptr) {
 	      el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -42958,6 +44616,7 @@
 	    type: Boolean,
 	    default: true
 	  },
+	  ptrBottom: Boolean,
 	  infinite: Boolean,
 	  infiniteTop: Boolean,
 	  infiniteDistance: Number,
@@ -42976,15 +44635,22 @@
 
 	var F7Page = /*@__PURE__*/(function (superclass) {
 	  function F7Page(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
 
 	    this.state = (function () {
 	      return {
 	        hasSubnavbar: false,
+	        hasNavbarLarge: false,
 	        routerClass: '',
 	        routerForceUnstack: false
 	      };
+	    })();
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition']);
 	    })();
 	  }
 
@@ -43048,11 +44714,21 @@
 	    var ref = this.props;
 	    var withSubnavbar = ref.withSubnavbar;
 	    var subnavbar = ref.subnavbar;
+	    var withNavbarLarge = ref.withNavbarLarge;
+	    var navbarLarge = ref.navbarLarge;
 
 	    if (typeof withSubnavbar === 'undefined' && typeof subnavbar === 'undefined') {
 	      if (page.$navbarEl && page.$navbarEl.length && page.$navbarEl.find('.subnavbar').length || page.$el.children('.navbar').find('.subnavbar').length) {
 	        this.setState({
 	          hasSubnavbar: true
+	        });
+	      }
+	    }
+
+	    if (typeof withNavbarLarge === 'undefined' && typeof navbarLarge === 'undefined') {
+	      if (page.$navbarEl && page.$navbarEl.hasClass('navbar-inner-large')) {
+	        this.setState({
+	          hasNavbarLarge: true
 	        });
 	      }
 	    }
@@ -43132,6 +44808,7 @@
 	    var ptr = props.ptr;
 	    var ptrDistance = props.ptrDistance;
 	    var ptrPreloader = props.ptrPreloader;
+	    var ptrBottom = props.ptrBottom;
 	    var infinite = props.infinite;
 	    var infiniteDistance = props.infiniteDistance;
 	    var infinitePreloader = props.infinitePreloader;
@@ -43145,6 +44822,8 @@
 	    var tabs = props.tabs;
 	    var subnavbar = props.subnavbar;
 	    var withSubnavbar = props.withSubnavbar;
+	    var navbarLarge = props.navbarLarge;
+	    var withNavbarLarge = props.withNavbarLarge;
 	    var noNavbar = props.noNavbar;
 	    var noToolbar = props.noToolbar;
 	    var noSwipeback = props.noSwipeback;
@@ -43159,6 +44838,7 @@
 	    fixedTags = 'navbar toolbar tabbar subnavbar searchbar messagebar fab list-index'.split(' ').map(function (tagName) { return ("f7-" + tagName); });
 	    var hasSubnavbar;
 	    var hasMessages;
+	    var hasNavbarLarge;
 	    hasMessages = messagesContent;
 
 	    if (slotsDefault) {
@@ -43174,6 +44854,11 @@
 	          }
 
 	          if (tag === 'F7Subnavbar' || tag === 'f7-subnavbar') { hasSubnavbar = true; }
+
+	          if (tag === 'F7Navbar' || tag === 'f7-navbar') {
+	            if (child.props && child.props.large) { hasNavbarLarge = true; }
+	          }
+
 	          if (typeof hasMessages === 'undefined' && (tag === 'F7Messages' || tag === 'f7-messages')) { hasMessages = true; }
 
 	          if (fixedTags.indexOf(tag) >= 0) {
@@ -43188,10 +44873,12 @@
 	    }
 
 	    var forceSubnavbar = typeof subnavbar === 'undefined' && typeof withSubnavbar === 'undefined' ? hasSubnavbar || this.state.hasSubnavbar : false;
+	    var forceNavbarLarge = typeof navbarLarge === 'undefined' && typeof withNavbarLarge === 'undefined' ? hasNavbarLarge || this.state.hasNavbarLarge : false;
 	    var classes = Utils$1.classNames(className, 'page', this.state.routerClass, {
 	      stacked: stacked && !this.state.routerForceUnstack,
 	      tabs: tabs,
 	      'page-with-subnavbar': subnavbar || withSubnavbar || forceSubnavbar,
+	      'page-with-navbar-large': navbarLarge || withNavbarLarge || forceNavbarLarge,
 	      'no-navbar': noNavbar,
 	      'no-toolbar': noToolbar,
 	      'no-swipeback': noSwipeback
@@ -43213,6 +44900,7 @@
 	      ptr: ptr,
 	      ptrDistance: ptrDistance,
 	      ptrPreloader: ptrPreloader,
+	      ptrBottom: ptrBottom,
 	      infinite: infinite,
 	      infiniteTop: infiniteTop,
 	      infiniteDistance: infiniteDistance,
@@ -43262,23 +44950,6 @@
 	    var ref = self.props;
 	    var ptr = ref.ptr;
 	    var infinite = ref.infinite;
-	    self.onPtrPullStart = self.onPtrPullStart.bind(self);
-	    self.onPtrPullMove = self.onPtrPullMove.bind(self);
-	    self.onPtrPullEnd = self.onPtrPullEnd.bind(self);
-	    self.onPtrRefresh = self.onPtrRefresh.bind(self);
-	    self.onPtrDone = self.onPtrDone.bind(self);
-	    self.onInfinite = self.onInfinite.bind(self);
-	    self.onPageMounted = self.onPageMounted.bind(self);
-	    self.onPageInit = self.onPageInit.bind(self);
-	    self.onPageReinit = self.onPageReinit.bind(self);
-	    self.onPageBeforeIn = self.onPageBeforeIn.bind(self);
-	    self.onPageBeforeOut = self.onPageBeforeOut.bind(self);
-	    self.onPageAfterOut = self.onPageAfterOut.bind(self);
-	    self.onPageAfterIn = self.onPageAfterIn.bind(self);
-	    self.onPageBeforeRemove = self.onPageBeforeRemove.bind(self);
-	    self.onPageStack = self.onPageStack.bind(self);
-	    self.onPageUnstack = self.onPageUnstack.bind(self);
-	    self.onPagePosition = self.onPagePosition.bind(self);
 
 	    if (ptr) {
 	      el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -43341,6 +45012,14 @@
 	    type: Boolean,
 	    default: undefined
 	  },
+	  withNavbarLarge: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  navbarLarge: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  noNavbar: Boolean,
 	  noToolbar: Boolean,
 	  tabs: Boolean,
@@ -43355,6 +45034,7 @@
 	    type: Boolean,
 	    default: true
 	  },
+	  ptrBottom: Boolean,
 	  infinite: Boolean,
 	  infiniteTop: Boolean,
 	  infiniteDistance: Number,
@@ -43373,8 +45053,14 @@
 
 	var F7Panel = /*@__PURE__*/(function (superclass) {
 	  function F7Panel(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onPanelSwipe', 'onPanelSwipeOpen', 'onBreakpoint']);
+	    })();
 	  }
 
 	  if ( superclass ) F7Panel.__proto__ = superclass;
@@ -43468,14 +45154,14 @@
 	    if (self.f7Panel) { self.f7Panel.destroy(); }
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('panel:open', self.onOpenBound);
-	    el.removeEventListener('panel:opened', self.onOpenedBound);
-	    el.removeEventListener('panel:close', self.onCloseBound);
-	    el.removeEventListener('panel:closed', self.onClosedBound);
-	    el.removeEventListener('panel:backdrop-click', self.onBackdropClickBound);
-	    el.removeEventListener('panel:swipe', self.onPanelSwipeBound);
-	    el.removeEventListener('panel:swipeopen', self.onPanelSwipeOpenBound);
-	    el.removeEventListener('panel:breakpoint', self.onBreakpointBound);
+	    el.removeEventListener('panel:open', self.onOpen);
+	    el.removeEventListener('panel:opened', self.onOpened);
+	    el.removeEventListener('panel:close', self.onClose);
+	    el.removeEventListener('panel:closed', self.onClosed);
+	    el.removeEventListener('panel:backdrop-click', self.onBackdropClick);
+	    el.removeEventListener('panel:swipe', self.onPanelSwipe);
+	    el.removeEventListener('panel:swipeopen', self.onPanelSwipeOpen);
+	    el.removeEventListener('panel:breakpoint', self.onBreakpoint);
 	  };
 
 	  F7Panel.prototype.componentDidMount = function componentDidMount () {
@@ -43487,24 +45173,16 @@
 	    var opened = ref.opened;
 	    var left = ref.left;
 	    var reveal = ref.reveal;
-	    self.onOpenBound = self.onOpen.bind(self);
-	    self.onOpenedBound = self.onOpened.bind(self);
-	    self.onCloseBound = self.onClose.bind(self);
-	    self.onClosedBound = self.onClosed.bind(self);
-	    self.onBackdropClickBound = self.onBackdropClick.bind(self);
-	    self.onPanelSwipeBound = self.onPanelSwipe.bind(self);
-	    self.onPanelSwipeOpenBound = self.onPanelSwipeOpen.bind(self);
-	    self.onBreakpointBound = self.onBreakpoint.bind(self);
 
 	    if (el) {
-	      el.addEventListener('panel:open', self.onOpenBound);
-	      el.addEventListener('panel:opened', self.onOpenedBound);
-	      el.addEventListener('panel:close', self.onCloseBound);
-	      el.addEventListener('panel:closed', self.onClosedBound);
-	      el.addEventListener('panel:backdrop-click', self.onBackdropClickBound);
-	      el.addEventListener('panel:swipe', self.onPanelSwipeBound);
-	      el.addEventListener('panel:swipeopen', self.onPanelSwipeOpenBound);
-	      el.addEventListener('panel:breakpoint', self.onBreakpointBound);
+	      el.addEventListener('panel:open', self.onOpen);
+	      el.addEventListener('panel:opened', self.onOpened);
+	      el.addEventListener('panel:close', self.onClose);
+	      el.addEventListener('panel:closed', self.onClosed);
+	      el.addEventListener('panel:backdrop-click', self.onBackdropClick);
+	      el.addEventListener('panel:swipe', self.onPanelSwipe);
+	      el.addEventListener('panel:swipeopen', self.onPanelSwipeOpen);
+	      el.addEventListener('panel:breakpoint', self.onBreakpoint);
 	    }
 
 	    self.$f7ready(function () {
@@ -43765,8 +45443,14 @@
 
 	var F7Popover = /*@__PURE__*/(function (superclass) {
 	  function F7Popover(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	    })();
 	  }
 
 	  if ( superclass ) F7Popover.__proto__ = superclass;
@@ -43831,24 +45515,20 @@
 	    if (self.f7Popover) { self.f7Popover.destroy(); }
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('popover:open', self.onOpenBound);
-	    el.removeEventListener('popover:opened', self.onOpenedBound);
-	    el.removeEventListener('popover:close', self.onCloseBound);
-	    el.removeEventListener('popover:closed', self.onClosedBound);
+	    el.removeEventListener('popover:open', self.onOpen);
+	    el.removeEventListener('popover:opened', self.onOpened);
+	    el.removeEventListener('popover:close', self.onClose);
+	    el.removeEventListener('popover:closed', self.onClosed);
 	  };
 
 	  F7Popover.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    self.onOpenBound = self.onOpen.bind(self);
-	    self.onOpenedBound = self.onOpened.bind(self);
-	    self.onCloseBound = self.onClose.bind(self);
-	    self.onClosedBound = self.onClosed.bind(self);
-	    el.addEventListener('popover:open', self.onOpenBound);
-	    el.addEventListener('popover:opened', self.onOpenedBound);
-	    el.addEventListener('popover:close', self.onCloseBound);
-	    el.addEventListener('popover:closed', self.onClosedBound);
+	    el.addEventListener('popover:open', self.onOpen);
+	    el.addEventListener('popover:opened', self.onOpened);
+	    el.addEventListener('popover:close', self.onClose);
+	    el.addEventListener('popover:closed', self.onClosed);
 	    var props = self.props;
 	    var target = props.target;
 	    var opened = props.opened;
@@ -43922,8 +45602,14 @@
 
 	var F7Popup = /*@__PURE__*/(function (superclass) {
 	  function F7Popup(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	    })();
 	  }
 
 	  if ( superclass ) F7Popup.__proto__ = superclass;
@@ -43987,24 +45673,20 @@
 	    if (self.f7Popup) { self.f7Popup.destroy(); }
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('popup:open', self.onOpenBound);
-	    el.removeEventListener('popup:opened', self.onOpenedBound);
-	    el.removeEventListener('popup:close', self.onCloseBound);
-	    el.removeEventListener('popup:closed', self.onClosedBound);
+	    el.removeEventListener('popup:open', self.onOpen);
+	    el.removeEventListener('popup:opened', self.onOpened);
+	    el.removeEventListener('popup:close', self.onClose);
+	    el.removeEventListener('popup:closed', self.onClosed);
 	  };
 
 	  F7Popup.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    self.onOpenBound = self.onOpen.bind(self);
-	    self.onOpenedBound = self.onOpened.bind(self);
-	    self.onCloseBound = self.onClose.bind(self);
-	    self.onClosedBound = self.onClosed.bind(self);
-	    el.addEventListener('popup:open', self.onOpenBound);
-	    el.addEventListener('popup:opened', self.onOpenedBound);
-	    el.addEventListener('popup:close', self.onCloseBound);
-	    el.addEventListener('popup:closed', self.onClosedBound);
+	    el.addEventListener('popup:open', self.onOpen);
+	    el.addEventListener('popup:opened', self.onOpened);
+	    el.addEventListener('popup:close', self.onClose);
+	    el.addEventListener('popup:closed', self.onClosed);
 	    var props = self.props;
 	    var closeByBackdropClick = props.closeByBackdropClick;
 	    var backdrop = props.backdrop;
@@ -44128,6 +45810,34 @@
 	      }, react.createElement('span', {
 	        className: 'preloader-inner-half-circle'
 	      })));
+	    } else {
+	      innerEl = react.createElement('span', {
+	        className: 'preloader-inner'
+	      }, react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }), react.createElement('span', {
+	        className: 'preloader-inner-line'
+	      }));
 	    }
 
 	    var classes = Utils$1.classNames(className, 'preloader', Mixins.colorClasses(props));
@@ -44229,7 +45939,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onChange = this$1.onChange.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onChange']);
 	    })();
 	  }
 
@@ -44330,7 +46040,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -44419,13 +46129,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onChange = this$1.onChange.bind(this$1);
-	      this$1.onInput = this$1.onInput.bind(this$1);
-	      this$1.onFocus = this$1.onFocus.bind(this$1);
-	      this$1.onBlur = this$1.onBlur.bind(this$1);
-	      this$1.onSubmit = this$1.onSubmit.bind(this$1);
-	      this$1.onClearButtonClick = this$1.onClearButtonClick.bind(this$1);
-	      this$1.onDisableButtonClick = this$1.onDisableButtonClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onSubmit', 'onClearButtonClick', 'onDisableButtonClick', 'onInput', 'onChange', 'onFocus', 'onBlur']);
 	    })();
 	  }
 
@@ -44677,6 +46381,16 @@
 	    });
 	  };
 
+	  F7Searchbar.prototype.componentWillUnmount = function componentWillUnmount () {
+	    var self = this;
+
+	    if (self.props.form && self.refs.el) {
+	      self.refs.el.removeEventListener('submit', self.onSubmit, false);
+	    }
+
+	    if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
+	  };
+
 	  prototypeAccessors.slots.get = function () {
 	    return __reactComponentSlots(this.props);
 	  };
@@ -44813,14 +46527,22 @@
 	    var props = self.props;
 	    var className = props.className;
 	    var raised = props.raised;
+	    var raisedIos = props.raisedIos;
+	    var raisedMd = props.raisedMd;
 	    var round = props.round;
+	    var roundIos = props.roundIos;
+	    var roundMd = props.roundMd;
 	    var id = props.id;
 	    var style = props.style;
 	    var tag = props.tag;
 	    var classNames = Utils$1.classNames(className, {
 	      segmented: true,
 	      'segmented-raised': raised,
-	      'segmented-round': round
+	      'segmented-raised-ios': raisedIos,
+	      'segmented-raised-md': raisedMd,
+	      'segmented-round': round,
+	      'segmented-round-ios': roundIos,
+	      'segmented-round-md': roundMd
 	    }, Mixins.colorClasses(props));
 	    var SegmentedTag = tag;
 	    return react.createElement(SegmentedTag, {
@@ -44844,7 +46566,11 @@
 	  className: String,
 	  style: Object,
 	  raised: Boolean,
+	  raisedIos: Boolean,
+	  raisedMD: Boolean,
 	  round: Boolean,
+	  roundIos: Boolean,
+	  roundMd: Boolean,
 	  tag: {
 	    type: String,
 	    default: 'div'
@@ -44855,8 +46581,14 @@
 
 	var F7Sheet = /*@__PURE__*/(function (superclass) {
 	  function F7Sheet(props, context) {
+	    var this$1 = this;
+
 	    superclass.call(this, props, context);
 	    this.__reactRefs = {};
+
+	    (function () {
+	      Utils$1.bindMethods(this$1, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+	    })();
 	  }
 
 	  if ( superclass ) F7Sheet.__proto__ = superclass;
@@ -44945,24 +46677,20 @@
 	    if (self.f7Sheet) { self.f7Sheet.destroy(); }
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    el.removeEventListener('popup:open', self.onOpenBound);
-	    el.removeEventListener('popup:opened', self.onOpenedBound);
-	    el.removeEventListener('popup:close', self.onCloseBound);
-	    el.removeEventListener('popup:closed', self.onClosedBound);
+	    el.removeEventListener('popup:open', self.onOpen);
+	    el.removeEventListener('popup:opened', self.onOpened);
+	    el.removeEventListener('popup:close', self.onClose);
+	    el.removeEventListener('popup:closed', self.onClosed);
 	  };
 
 	  F7Sheet.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
 	    if (!el) { return; }
-	    self.onOpenBound = self.onOpen.bind(self);
-	    self.onOpenedBound = self.onOpened.bind(self);
-	    self.onCloseBound = self.onClose.bind(self);
-	    self.onClosedBound = self.onClosed.bind(self);
-	    el.addEventListener('sheet:open', self.onOpenBound);
-	    el.addEventListener('sheet:opened', self.onOpenedBound);
-	    el.addEventListener('sheet:close', self.onCloseBound);
-	    el.addEventListener('sheet:closed', self.onClosedBound);
+	    el.addEventListener('sheet:open', self.onOpen);
+	    el.addEventListener('sheet:opened', self.onOpened);
+	    el.addEventListener('sheet:close', self.onClose);
+	    el.addEventListener('sheet:closed', self.onClosed);
 	    var props = self.props;
 	    var opened = props.opened;
 	    var backdrop = props.backdrop;
@@ -45041,6 +46769,176 @@
 
 	F7Sheet.displayName = 'f7-sheet';
 
+	var F7SkeletonBlock = /*@__PURE__*/(function (superclass) {
+	  function F7SkeletonBlock(props, context) {
+	    superclass.call(this, props, context);
+	  }
+
+	  if ( superclass ) F7SkeletonBlock.__proto__ = superclass;
+	  F7SkeletonBlock.prototype = Object.create( superclass && superclass.prototype );
+	  F7SkeletonBlock.prototype.constructor = F7SkeletonBlock;
+
+	  var prototypeAccessors = { slots: { configurable: true } };
+
+	  F7SkeletonBlock.prototype.render = function render () {
+	    var props = this.props;
+	    var className = props.className;
+	    var id = props.id;
+	    var style = props.style;
+	    var width = props.width;
+	    var height = props.height;
+	    var tag = props.tag;
+	    var classes = Utils$1.classNames('skeleton-block', className, Mixins.colorClasses(props));
+	    var styleAttribute = style;
+
+	    if (width) {
+	      var widthValue = typeof width === 'number' ? (width + "px") : width;
+
+	      if (!styleAttribute) {
+	        styleAttribute = {
+	          width: widthValue
+	        };
+	      } else if (typeof styleAttribute === 'object') {
+	        styleAttribute = Object.assign({
+	          width: widthValue
+	        }, styleAttribute);
+	      } else if (typeof styleAttribute === 'string') {
+	        styleAttribute = "width: " + widthValue + "; " + styleAttribute;
+	      }
+	    }
+
+	    if (height) {
+	      var heightValue = typeof height === 'number' ? (height + "px") : height;
+
+	      if (!styleAttribute) {
+	        styleAttribute = {
+	          height: heightValue
+	        };
+	      } else if (typeof styleAttribute === 'object') {
+	        styleAttribute = Object.assign({
+	          height: heightValue
+	        }, styleAttribute);
+	      } else if (typeof styleAttribute === 'string') {
+	        styleAttribute = "height: " + heightValue + "; " + styleAttribute;
+	      }
+	    }
+
+	    var Tag = tag;
+	    return react.createElement(Tag, {
+	      id: id,
+	      style: styleAttribute,
+	      className: classes
+	    }, this.slots['default']);
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  Object.defineProperties( F7SkeletonBlock.prototype, prototypeAccessors );
+
+	  return F7SkeletonBlock;
+	}(react.Component));
+
+	__reactComponentSetProps(F7SkeletonBlock, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object,
+	  width: [Number, String],
+	  height: [Number, String],
+	  tag: {
+	    type: String,
+	    default: 'div'
+	  }
+	}, Mixins.colorProps));
+
+	F7SkeletonBlock.displayName = 'f7-skeleton-block';
+
+	var F7SkeletonText = /*@__PURE__*/(function (superclass) {
+	  function F7SkeletonText(props, context) {
+	    superclass.call(this, props, context);
+	  }
+
+	  if ( superclass ) F7SkeletonText.__proto__ = superclass;
+	  F7SkeletonText.prototype = Object.create( superclass && superclass.prototype );
+	  F7SkeletonText.prototype.constructor = F7SkeletonText;
+
+	  var prototypeAccessors = { slots: { configurable: true } };
+
+	  F7SkeletonText.prototype.render = function render () {
+	    var props = this.props;
+	    var className = props.className;
+	    var id = props.id;
+	    var style = props.style;
+	    var width = props.width;
+	    var height = props.height;
+	    var tag = props.tag;
+	    var classes = Utils$1.classNames('skeleton-text', className, Mixins.colorClasses(props));
+	    var styleAttribute = style;
+
+	    if (width) {
+	      var widthValue = typeof width === 'number' ? (width + "px") : width;
+
+	      if (!styleAttribute) {
+	        styleAttribute = {
+	          width: widthValue
+	        };
+	      } else if (typeof styleAttribute === 'object') {
+	        styleAttribute = Object.assign({
+	          width: widthValue
+	        }, styleAttribute);
+	      } else if (typeof styleAttribute === 'string') {
+	        styleAttribute = "width: " + widthValue + "; " + styleAttribute;
+	      }
+	    }
+
+	    if (height) {
+	      var heightValue = typeof height === 'number' ? (height + "px") : height;
+
+	      if (!styleAttribute) {
+	        styleAttribute = {
+	          height: heightValue
+	        };
+	      } else if (typeof styleAttribute === 'object') {
+	        styleAttribute = Object.assign({
+	          height: heightValue
+	        }, styleAttribute);
+	      } else if (typeof styleAttribute === 'string') {
+	        styleAttribute = "height: " + heightValue + "; " + styleAttribute;
+	      }
+	    }
+
+	    var Tag = tag;
+	    return react.createElement(Tag, {
+	      id: id,
+	      style: styleAttribute,
+	      className: classes
+	    }, this.slots['default']);
+	  };
+
+	  prototypeAccessors.slots.get = function () {
+	    return __reactComponentSlots(this.props);
+	  };
+
+	  Object.defineProperties( F7SkeletonText.prototype, prototypeAccessors );
+
+	  return F7SkeletonText;
+	}(react.Component));
+
+	__reactComponentSetProps(F7SkeletonText, Object.assign({
+	  id: [String, Number],
+	  className: String,
+	  style: Object,
+	  width: [Number, String],
+	  height: [Number, String],
+	  tag: {
+	    type: String,
+	    default: 'span'
+	  }
+	}, Mixins.colorProps));
+
+	F7SkeletonText.displayName = 'f7-skeleton-text';
+
 	var F7Statusbar = /*@__PURE__*/(function (superclass) {
 	  function F7Statusbar(props, context) {
 	    superclass.call(this, props, context);
@@ -45090,9 +46988,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onInput = this$1.onInput.bind(this$1);
-	      this$1.onMinusClick = this$1.onMinusClick.bind(this$1);
-	      this$1.onPlusClick = this$1.onPlusClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onInput', 'onMinusClick', 'onPlusClick']);
 	    })();
 	  }
 
@@ -45151,9 +47047,9 @@
 	    var fill = props.fill;
 	    var fillIos = props.fillIos;
 	    var fillMd = props.fillMd;
-	    var big = props.big;
-	    var bigIos = props.bigIos;
-	    var bigMd = props.bigMd;
+	    var large = props.large;
+	    var largeIos = props.largeIos;
+	    var largeMd = props.largeMd;
 	    var small = props.small;
 	    var smallIos = props.smallIos;
 	    var smallMd = props.smallMd;
@@ -45167,9 +47063,9 @@
 	      'stepper-fill': fill,
 	      'stepper-fill-ios': fillIos,
 	      'stepper-fill-md': fillMd,
-	      'stepper-big': big,
-	      'stepper-big-ios': bigIos,
-	      'stepper-big-md': bigMd,
+	      'stepper-large': large,
+	      'stepper-large-ios': largeIos,
+	      'stepper-large-md': largeMd,
 	      'stepper-small': small,
 	      'stepper-small-ios': smallIos,
 	      'stepper-small-md': smallMd,
@@ -45208,7 +47104,8 @@
 	          step: inputType === 'number' ? step : undefined,
 	          onInput: self.onInput,
 	          value: value,
-	          readOnly: inputReadonly
+	          readOnly: inputReadonly,
+	          onInput: self.onInput
 	        });
 	      }
 	      inputWrapEl = react.createElement('div', {
@@ -45403,9 +47300,9 @@
 	  fill: Boolean,
 	  fillMd: Boolean,
 	  fillIos: Boolean,
-	  big: Boolean,
-	  bigMd: Boolean,
-	  bigIos: Boolean,
+	  large: Boolean,
+	  largeMd: Boolean,
+	  largeIos: Boolean,
 	  small: Boolean,
 	  smallMd: Boolean,
 	  smallIos: Boolean,
@@ -45533,7 +47430,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      this$1.onClick = this$1.onClick.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onClick']);
 	    })();
 	  }
 
@@ -45865,8 +47762,7 @@
 	    })();
 
 	    (function () {
-	      this$1.onTabShowBound = this$1.onTabShow.bind(this$1);
-	      this$1.onTabHideBound = this$1.onTabHide.bind(this$1);
+	      Utils$1.bindMethods(this$1, ['onTabShow', 'onTabHide']);
 	    })();
 	  }
 
@@ -45923,8 +47819,8 @@
 	    var el = self.refs.el;
 
 	    if (el) {
-	      el.addEventListener('tab:show', self.onTabShowBound);
-	      el.addEventListener('tab:hide', self.onTabHideBound);
+	      el.addEventListener('tab:show', self.onTabShow);
+	      el.addEventListener('tab:hide', self.onTabHide);
 	    }
 
 	    self.setState({
@@ -45944,8 +47840,8 @@
 	    var el = self.refs.el;
 
 	    if (el) {
-	      el.removeEventListener('tab:show', self.onTabShowBound);
-	      el.removeEventListener('tab:hide', self.onTabHideBound);
+	      el.removeEventListener('tab:show', self.onTabShow);
+	      el.removeEventListener('tab:hide', self.onTabHide);
 	    }
 
 	    if (!self.routerData) { return; }
@@ -46091,21 +47987,29 @@
 	    var style = props.style;
 	    var className = props.className;
 	    var inner = props.inner;
-	    var bottomMd = props.bottomMd;
 	    var tabbar = props.tabbar;
 	    var labels = props.labels;
 	    var scrollable = props.scrollable;
 	    var hidden = props.hidden;
 	    var noShadow = props.noShadow;
 	    var noHairline = props.noHairline;
+	    var noBorder = props.noBorder;
+	    var topMd = props.topMd;
+	    var topIos = props.topIos;
+	    var top = props.top;
+	    var bottomMd = props.bottomMd;
+	    var bottomIos = props.bottomIos;
+	    var bottom = props.bottom;
+	    var position = props.position;
 	    var classes = Utils$1.classNames(className, 'toolbar', {
-	      'toolbar-bottom-md': bottomMd,
 	      tabbar: tabbar,
+	      'toolbar-bottom': self.$theme.md && bottomMd || self.$theme.ios && bottomIos || bottom || position === 'bottom',
+	      'toolbar-top': self.$theme.md && topMd || self.$theme.ios && topIos || top || position === 'top',
 	      'tabbar-labels': labels,
 	      'tabbar-scrollable': scrollable,
 	      'toolbar-hidden': hidden,
 	      'no-shadow': noShadow,
-	      'no-hairline': noHairline
+	      'no-hairline': noHairline || noBorder
 	    }, Mixins.colorClasses(props));
 	    return react.createElement('div', {
 	      id: id,
@@ -46153,13 +48057,41 @@
 	  id: [String, Number],
 	  className: String,
 	  style: Object,
-	  bottomMd: Boolean,
 	  tabbar: Boolean,
 	  labels: Boolean,
 	  scrollable: Boolean,
 	  hidden: Boolean,
 	  noShadow: Boolean,
 	  noHairline: Boolean,
+	  noBorder: Boolean,
+	  position: {
+	    type: String,
+	    default: undefined
+	  },
+	  topMd: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  topIos: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  top: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  bottomMd: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  bottomIos: {
+	    type: Boolean,
+	    default: undefined
+	  },
+	  bottom: {
+	    type: Boolean,
+	    default: undefined
+	  },
 	  inner: {
 	    type: Boolean,
 	    default: true
@@ -46182,15 +48114,7 @@
 	    })();
 
 	    (function () {
-	      var self = this$1;
-	      self.onSwipeBackMoveBound = self.onSwipeBackMove.bind(self);
-	      self.onSwipeBackBeforeChangeBound = self.onSwipeBackBeforeChange.bind(self);
-	      self.onSwipeBackAfterChangeBound = self.onSwipeBackAfterChange.bind(self);
-	      self.onSwipeBackBeforeResetBound = self.onSwipeBackBeforeReset.bind(self);
-	      self.onSwipeBackAfterResetBound = self.onSwipeBackAfterReset.bind(self);
-	      self.onTabShowBound = self.onTabShow.bind(self);
-	      self.onTabHideBound = self.onTabHide.bind(self);
-	      self.onViewInitBound = self.onViewInit.bind(self);
+	      Utils$1.bindMethods(this$1, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
 	    })();
 	  }
 
@@ -46286,14 +48210,14 @@
 	  F7View.prototype.componentWillUnmount = function componentWillUnmount () {
 	    var self = this;
 	    var el = self.refs.el;
-	    el.removeEventListener('swipeback:move', self.onSwipeBackMoveBound);
-	    el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChangeBound);
-	    el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChangeBound);
-	    el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeResetBound);
-	    el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterResetBound);
-	    el.removeEventListener('tab:show', self.onTabShowBound);
-	    el.removeEventListener('tab:hide', self.onTabHideBound);
-	    el.removeEventListener('view:init', self.onViewInitBound);
+	    el.removeEventListener('swipeback:move', self.onSwipeBackMove);
+	    el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
+	    el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
+	    el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
+	    el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
+	    el.removeEventListener('tab:show', self.onTabShow);
+	    el.removeEventListener('tab:hide', self.onTabHide);
+	    el.removeEventListener('view:init', self.onViewInit);
 	    if (!self.props.init) { return; }
 	    if (self.f7View && self.f7View.destroy) { self.f7View.destroy(); }
 	    f7.routers.views.splice(f7.routers.views.indexOf(self.routerData), 1);
@@ -46304,14 +48228,14 @@
 	  F7View.prototype.componentDidMount = function componentDidMount () {
 	    var self = this;
 	    var el = self.refs.el;
-	    el.addEventListener('swipeback:move', self.onSwipeBackMoveBound);
-	    el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChangeBound);
-	    el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChangeBound);
-	    el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeResetBound);
-	    el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterResetBound);
-	    el.addEventListener('tab:show', self.onTabShowBound);
-	    el.addEventListener('tab:hide', self.onTabHideBound);
-	    el.addEventListener('view:init', self.onViewInitBound);
+	    el.addEventListener('swipeback:move', self.onSwipeBackMove);
+	    el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
+	    el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
+	    el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
+	    el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
+	    el.addEventListener('tab:show', self.onTabShow);
+	    el.addEventListener('tab:hide', self.onTabHide);
+	    el.addEventListener('view:init', self.onViewInit);
 	    self.setState({
 	      pages: []
 	    });
@@ -46751,7 +48675,7 @@
 	};
 
 	/**
-	 * Framework7 React 3.6.5
+	 * Framework7 React 4.0.0-beta.14
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -46759,7 +48683,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: January 4, 2019
+	 * Released on: January 10, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -46788,8 +48712,6 @@
 	var Fab$2 = F7Fab;
 	var Gauge$2 = F7Gauge;
 	var Icon = F7Icon;
-	var Input$2 = F7Input;
-	var Label = F7Label;
 	var Link = F7Link;
 	var ListButton = F7ListButton;
 	var ListGroup = F7ListGroup;
@@ -46801,6 +48723,10 @@
 	var List = F7List;
 	var LoginScreenTitle = F7LoginScreenTitle;
 	var LoginScreen$2 = F7LoginScreen;
+	var MenuDropdownItem = F7MenuDropdownItem;
+	var MenuDropdown = F7MenuDropdown;
+	var MenuItem = F7MenuItem;
+	var Menu$1 = F7Menu;
 	var Message = F7Message;
 	var MessagebarAttachment = F7MessagebarAttachment;
 	var MessagebarAttachments = F7MessagebarAttachments;
@@ -46811,7 +48737,8 @@
 	var Messages$2 = F7Messages;
 	var NavLeft = F7NavLeft;
 	var NavRight = F7NavRight;
-	var NavTitle = F7NavTitle;
+	var NavTitleLarge = F7NavTitle;
+	var NavTitle = F7NavTitle$1;
 	var Navbar$2 = F7Navbar;
 	var PageContent = F7PageContent;
 	var Page = F7Page;
@@ -46827,6 +48754,7 @@
 	var Searchbar$2 = F7Searchbar;
 	var Segmented = F7Segmented;
 	var Sheet$2 = F7Sheet;
+	var SkeletonBlock = F7SkeletonBlock;
 	var Statusbar$2 = F7Statusbar;
 	var Stepper$2 = F7Stepper;
 	var Subnavbar$1 = F7Subnavbar;
@@ -46842,14 +48770,15 @@
 
 	function Home () { return (
 	  react.createElement( Page, null,
-	    react.createElement( Navbar$2, null,
+	    react.createElement( Navbar$2, { large: true, sliding: false },
 	      react.createElement( NavLeft, null,
 	        react.createElement( Link, { panelOpen: "left", iconIos: "f7:menu", iconMd: "material:menu" })
 	      ),
-	      react.createElement( NavTitle, null, "Framework7 React" ),
+	      react.createElement( NavTitle, { sliding: true }, "Framework7 React"),
 	      react.createElement( NavRight, null,
-	        react.createElement( Link, { searchbarEnable: ".searchbar-components", iconIos: "f7:search_strong", iconMd: "material:search" })
+	        react.createElement( Link, { searchbarEnable: ".searchbar-components", iconIos: "f7:search", iconMd: "material:search" })
 	      ),
+	      react.createElement( NavTitleLarge, null, "Framework7 React" ),
 	      react.createElement( Searchbar$2, { className: "searchbar-components", searchContainer: ".components-list", searchIn: "a", expandable: true })
 	    ),
 
@@ -46880,6 +48809,9 @@
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
 	      react.createElement( ListItem, { link: "/cards/", title: "Cards" },
+	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	      ),
+	      react.createElement( ListItem, { link: "/cards-expandable/", title: "Cards Expandable" },
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
 	      react.createElement( ListItem, { link: "/checkbox/", title: "Checkbox" },
@@ -46939,6 +48871,9 @@
 	      react.createElement( ListItem, { link: "/login-screen/", title: "Login Screen" },
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
+	      react.createElement( ListItem, { link: "/menu/", title: "Menu" },
+	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	      ),
 	      react.createElement( ListItem, { link: "/messages/", title: "Messages" },
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
@@ -46985,6 +48920,9 @@
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
 	      react.createElement( ListItem, { link: "/sheet-modal/", title: "Sheet Modal" },
+	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
+	      ),
+	      react.createElement( ListItem, { link: "/skeleton/", title: "Skeleton (Ghost) Elements" },
 	        react.createElement( Icon, { slot: "media", icon: "icon-f7" })
 	      ),
 	      react.createElement( ListItem, { link: "/smart-select/", title: "Smart Select" },
@@ -47089,7 +49027,7 @@
 
 	function About () { return (
 	  react.createElement( Page, null,
-	    react.createElement( Navbar$2, { title: "About Framework7", backLink: "Back" }),
+	    react.createElement( Navbar$2, { large: true, title: "About Framework7", 'title-large': "About", backLink: "Framework7" }),
 	    react.createElement( BlockTitle, null, "Welcome to Framework7" ),
 	    react.createElement( Block, { strong: true },
 	      react.createElement( 'p', null, "Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us)." ),
@@ -47195,13 +49133,13 @@
 	        react.createElement( Block, { strong: true },
 	          react.createElement( 'p', { className: "row" }
 	            /* One group, open by direct accessing instance .open() method */,
-	            react.createElement( Button, { className: "col", raised: true, onClick: function () { return this$1.refs.actionsOneGroup.open(); } }, "One group")
+	            react.createElement( Button, { className: "col", fill: true, onClick: function () { return this$1.refs.actionsOneGroup.open(); } }, "One group")
 	            /*  Two groups, open by "actionsOpen" attribute */,
-	            react.createElement( Button, { className: "col", raised: true, actionsOpen: "#actions-two-groups" }, "Two groups")
+	            react.createElement( Button, { className: "col", fill: true, actionsOpen: "#actions-two-groups" }, "Two groups")
 	          ),
 	          react.createElement( 'p', null
 	            /* Actions Grid, open by changing actionGridOpened state property */,
-	            react.createElement( Button, { raised: true, onClick: function () { return this$1.setActionsGridOpened(true); } }, "Action Grid")
+	            react.createElement( Button, { fill: true, onClick: function () { return this$1.setActionsGridOpened(true); } }, "Action Grid")
 	          )
 	        ),
 
@@ -47347,53 +49285,39 @@
 	        ),
 	        react.createElement( List, { noHairlinesMd: true },
 	          react.createElement( BlockHeader, null, "Simple Dropdown Autocomplete" ),
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, { inline: true }, "Fruit"),
-	            react.createElement( Input$2, { type: "text", placeholder: "Fruit", id: "autocomplete-dropdown" })
-	          )
+	          react.createElement( ListInput, {
+	            label: "Fruit", inlineLabel: true, type: "text", placeholder: "Fruit", inputId: "autocomplete-dropdown" })
 	        ),
 
 	        react.createElement( List, { noHairlinesMd: true },
 	          react.createElement( BlockHeader, null, "Dropdown With Input Expand" ),
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, { inline: true }, "Fruit"),
-	            react.createElement( Input$2, { type: "text", placeholder: "Fruit", id: "autocomplete-dropdown-expand" })
-	          )
+	          react.createElement( ListInput, {
+	            label: "Fruit", inlineLabel: true, type: "text", placeholder: "Fruit", inputId: "autocomplete-dropdown-expand" })
 	        ),
 	        react.createElement( List, { noHairlinesMd: true },
 	          react.createElement( BlockHeader, null, "Dropdown With All Values" ),
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, null, "Fruit" ),
-	            react.createElement( Input$2, { type: "text", placeholder: "Fruit", id: "autocomplete-dropdown-all" })
-	          )
+	          react.createElement( ListInput, {
+	            label: "Fruit", type: "text", placeholder: "Fruit", inputId: "autocomplete-dropdown-all" })
 	        ),
 	        react.createElement( List, { noHairlinesMd: true },
 	          react.createElement( BlockHeader, null, "Dropdown With Placeholder" ),
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, null, "Fruit" ),
-	            react.createElement( Input$2, { type: "text", placeholder: "Fruit", id: "autocomplete-dropdown-placeholder" })
-	          )
+	          react.createElement( ListInput, {
+	            label: "Fruit", type: "text", placeholder: "Fruit", inputId: "autocomplete-dropdown-placeholder" })
 	        ),
 	        react.createElement( List, { noHairlinesMd: true },
 	          react.createElement( BlockHeader, null, "Dropdown With Typeahead" ),
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, null, "Fruit" ),
-	            react.createElement( Input$2, { type: "text", placeholder: "Fruit", id: "autocomplete-dropdown-typeahead" })
-	          )
+	          react.createElement( ListInput, {
+	            label: "Fruit", type: "text", placeholder: "Fruit", inputId: "autocomplete-dropdown-typeahead" })
 	        ),
 	        react.createElement( List, { noHairlinesMd: true },
 	          react.createElement( BlockHeader, null, "Dropdown With Ajax-Data" ),
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, null, "Language" ),
-	            react.createElement( Input$2, { type: "text", placeholder: "Language", id: "autocomplete-dropdown-ajax" })
-	          )
+	          react.createElement( ListInput, {
+	            label: "Language", type: "text", placeholder: "Language", inputId: "autocomplete-dropdown-ajax" })
 	        ),
 	        react.createElement( List, { noHairlinesMd: true },
 	          react.createElement( BlockHeader, null, "Dropdown With Ajax-Data + Typeahead" ),
-	          react.createElement( ListItem, null,
-	            react.createElement( Label, null, "Language" ),
-	            react.createElement( Input$2, { type: "text", placeholder: "Language", id: "autocomplete-dropdown-ajax-typeahead" })
-	          )
+	          react.createElement( ListInput, {
+	            label: "Language", type: "text", placeholder: "Language", inputId: "autocomplete-dropdown-ajax-typeahead" })
 	        ),
 	        react.createElement( BlockTitle, null, "Standalone Autocomplete" ),
 	        react.createElement( Block, null,
@@ -47806,27 +49730,27 @@
 	    react.createElement( Navbar$2, { sliding: true, backLink: "Back", title: "Badge" },
 	      react.createElement( NavRight, null,
 	        react.createElement( Link, { iconOnly: true },
-	          react.createElement( Icon, { ios: "f7:person_fill", md: "material:person" },
+	          react.createElement( Icon, { ios: "f7:person_round_fill", md: "material:person" },
 	            react.createElement( Badge, { color: "red" }, "5")
 	          )
 	        )
 	      )
 	    ),
-	    react.createElement( Toolbar$2, { tabbar: true, labels: true },
+	    react.createElement( Toolbar$2, { bottom: true, tabbar: true, labels: true },
 	      react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true },
-	        react.createElement( Icon, { className: "icon-fill", ios: "f7:email_fill", md: "material:email" },
+	        react.createElement( Icon, { ios: "f7:email_fill", md: "material:email" },
 	          react.createElement( Badge, { color: "green" }, "5")
 	        ),
 	        react.createElement( 'span', { className: "tabbar-label" }, "Inbox")
 	      ),
 	      react.createElement( Link, { tabLink: "#tab-2" },
-	        react.createElement( Icon, { ios: "f7:today", md: "material:today" },
+	        react.createElement( Icon, { ios: "f7:calendar_fill", md: "material:today" },
 	          react.createElement( Badge, { color: "red" }, "7")
 	        ),
 	        react.createElement( 'span', { className: "tabbar-label" }, "Calendar")
 	      ),
 	      react.createElement( Link, { tabLink: "#tab-3" },
-	        react.createElement( Icon, { ios: "f7:cloud", md: "material:file_upload" },
+	        react.createElement( Icon, { ios: "f7:cloud_upload_fill", md: "material:file_upload" },
 	          react.createElement( Badge, { color: "red" }, "1")
 	        ),
 	        react.createElement( 'span', { className: "tabbar-label" }, "Upload")
@@ -47949,22 +49873,22 @@
 	      )
 	    ),
 
-	    react.createElement( BlockTitle, null, "Big Buttons" ),
+	    react.createElement( BlockTitle, null, "Large Buttons" ),
 	    react.createElement( Block, null,
 	      react.createElement( Row, { tag: "p" },
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true }, "Button")
+	          react.createElement( Button, { large: true }, "Button")
 	        ),
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, fill: true }, "Fill")
+	          react.createElement( Button, { large: true, fill: true }, "Fill")
 	        )
 	      ),
 	      react.createElement( Row, { tag: "p" },
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, raised: true }, "Raised")
+	          react.createElement( Button, { large: true, raised: true }, "Raised")
 	        ),
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, raised: true, fill: true }, "Raised Fill")
+	          react.createElement( Button, { large: true, raised: true, fill: true }, "Raised Fill")
 	        )
 	      )
 	    ),
@@ -47973,24 +49897,24 @@
 	    react.createElement( Block, null,
 	      react.createElement( Row, { tag: "p" },
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, small: true }, "Button")
+	          react.createElement( Button, { large: true, small: true }, "Button")
 	        ),
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, small: true, outline: true }, "Outline")
+	          react.createElement( Button, { large: true, small: true, outline: true }, "Outline")
 	        ),
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, small: true, fill: true }, "Fill")
+	          react.createElement( Button, { large: true, small: true, fill: true }, "Fill")
 	        )
 	      ),
 	      react.createElement( Row, { tag: "p" },
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, small: true, round: true }, "Button")
+	          react.createElement( Button, { large: true, small: true, round: true }, "Button")
 	        ),
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, small: true, outline: true, round: true }, "Outline")
+	          react.createElement( Button, { large: true, small: true, outline: true, round: true }, "Outline")
 	        ),
 	        react.createElement( Col, { tag: "span" },
-	          react.createElement( Button, { big: true, small: true, fill: true, round: true }, "Fill")
+	          react.createElement( Button, { large: true, small: true, fill: true, round: true }, "Fill")
 	        )
 	      )
 	    ),
@@ -48032,7 +49956,7 @@
 	      react.createElement( ListButton, { title: "List Button 3" })
 	    ),
 	    react.createElement( List, { inset: true },
-	      react.createElement( ListButton, { title: "Big Red Button", color: "red" })
+	      react.createElement( ListButton, { title: "Large Red Button", color: "red" })
 	    )
 	  )
 	); }
@@ -48056,37 +49980,27 @@
 
 	        react.createElement( BlockTitle, null, "Default setup" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Your birth date", readonly: true, inputId: "demo-calendar-default" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Your birth date", readonly: true, inputId: "demo-calendar-default" })
 	        ),
 
 	        react.createElement( BlockTitle, null, "Custom date format" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Select date", readonly: true, inputId: "demo-calendar-date-format" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Select date", readonly: true, inputId: "demo-calendar-date-format" })
 	        ),
 
 	        react.createElement( BlockTitle, null, "Multiple Values" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Select multiple dates", readonly: true, inputId: "demo-calendar-multiple" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Select multiple dates", readonly: true, inputId: "demo-calendar-multiple" })
 	        ),
 
 	        react.createElement( BlockTitle, null, "Range Picker" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Select date range", readonly: true, inputId: "demo-calendar-range" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Select date range", readonly: true, inputId: "demo-calendar-range" })
 	        ),
 
 	        react.createElement( BlockTitle, null, "Open in Modal" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Select date", readonly: true, inputId: "demo-calendar-modal" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Select date", readonly: true, inputId: "demo-calendar-modal" })
 	        ),
 
 	        react.createElement( BlockTitle, null, "Calendar Page" ),
@@ -48101,9 +50015,7 @@
 	        ),
 	        react.createElement( BlockTitle, null, "Jalali Calendar" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Your birth date in Jalali", readonly: true, inputId: "demo-jcalendar-default" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Your birth date in Jalali", readonly: true, inputId: "demo-jcalendar-default" })
 	        )
 	      )
 	    );
@@ -48152,7 +50064,7 @@
 	      containerEl: '#demo-calendar-inline-container',
 	      value: [new Date()],
 	      renderToolbar: function renderToolbar() {
-	        return ("\n          <div class=\"toolbar calendar-custom-toolbar no-shadow\">\n            <div class=\"toolbar-inner\">\n              <div class=\"left\">\n                <a href=\"#\" class=\"link icon-only\"><i class=\"icon icon-back " + (self.$theme.md ? 'color-black' : '') + "\"></i></a>\n              </div>\n              <div class=\"center\"></div>\n              <div class=\"right\">\n                <a href=\"#\" class=\"link icon-only\"><i class=\"icon icon-forward " + (self.$theme.md ? 'color-black' : '') + "\"></i></a>\n              </div>\n            </div>\n          </div>\n        ").trim();
+	        return "\n          <div class=\"toolbar calendar-custom-toolbar no-shadow\">\n            <div class=\"toolbar-inner\">\n              <div class=\"left\">\n                <a href=\"#\" class=\"link icon-only\"><i class=\"icon icon-back\"></i></a>\n              </div>\n              <div class=\"center\"></div>\n              <div class=\"right\">\n                <a href=\"#\" class=\"link icon-only\"><i class=\"icon icon-forward\"></i></a>\n              </div>\n            </div>\n          </div>\n        ".trim();
 	      },
 	      on: {
 	        init: function init(c) {
@@ -48241,7 +50153,7 @@
 	  defaultExport.prototype.render = function render () {
 	    return (
 	      react.createElement( Page, { onPageInit: this.onPageInit.bind(this), onPageBeforeRemove: this.onPageBeforeRemove.bind(this) },
-	        react.createElement( Navbar$2, { backLink: "Back" },
+	        react.createElement( Navbar$2, { backLink: "Back", noShadow: true },
 	          react.createElement( NavTitle, { className: "navbar-calendar-title" })
 	        ),
 	        react.createElement( Block, {
@@ -48438,6 +50350,89 @@
 	      react.createElement( CardFooter, null,
 	        react.createElement( 'span', null, "January 20, 2015" ),
 	        react.createElement( 'span', null, "5 comments" )
+	      )
+	    )
+	  )
+	); }
+
+	function CardsExpandable () { return (
+	  react.createElement( Page, null,
+	    react.createElement( Navbar$2, { title: "Cards Expandable", backLink: "Back" }),
+
+	    react.createElement( Block, null,
+	      react.createElement( 'p', null, "In addition to usual ", react.createElement( 'a', { href: "/cards/" }, "Cards"), " there are also Expandable Cards that allow to store more information and illustrations about particular subject" )
+	    ),
+
+	    react.createElement( 'div', { classNmae: "demo-expandable-cards" },
+	      react.createElement( Card$1, { expandable: true },
+	        react.createElement( CardContent, { padding: false },
+	          react.createElement( 'div', { className: "bg-color-red", style: {height: '300px'} },
+	            react.createElement( CardHeader, { textColor: "white", className: "display-block" }, "Framework7 ", react.createElement( 'br', null ),
+	              react.createElement( 'small', { style: {opacity: 0.7} }, "Build Mobile Apps")
+	            ),
+	            react.createElement( Link, { cardClose: true, color: "white", className: "card-opened-fade-in", style: {position: 'absolute', right: '15px', top: '15px'}, iconF7: "close_round_fill" })
+	          ),
+	          react.createElement( 'div', { className: "card-content-padding" },
+	            react.createElement( 'p', null, "Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us)." ),
+	            react.createElement( 'p', null, "The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!" ),
+	            react.createElement( 'p', null, "Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity." ),
+	            react.createElement( 'p', null, "Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps." ),
+	            react.createElement( 'p', null,
+	              react.createElement( Button, { fill: true, round: true, large: true, cardClose: true, color: "red" }, "Close")
+	            )
+	          )
+	        )
+	      ),
+
+	      react.createElement( Card$1, { expandable: true },
+	        react.createElement( CardContent, { padding: false },
+	          react.createElement( 'div', { className: "bg-color-yellow", style: {height: '300px'} },
+	            react.createElement( CardHeader, { textColor: "black", className: "display-block" }, "Framework7 ", react.createElement( 'br', null ),
+	              react.createElement( 'small', { style: {opacity: 0.7} }, "Build Mobile Apps")
+	            ),
+	            react.createElement( Link, { cardClose: true, color: "black", className: "card-opened-fade-in", style: {position: 'absolute', right: '15px', top: '15px'}, iconF7: "close_round_fill" })
+	          ),
+	          react.createElement( 'div', { className: "card-content-padding" },
+	            react.createElement( 'p', null, "Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us)." ),
+	            react.createElement( 'p', null, "The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!" ),
+	            react.createElement( 'p', null, "Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity." ),
+	            react.createElement( 'p', null, "Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps." ),
+	            react.createElement( 'p', null,
+	              react.createElement( Button, { fill: true, round: true, large: true, cardClose: true, color: "yellow", textColor: "black" }, "Close")
+	            )
+	          )
+	        )
+	      ),
+
+	      react.createElement( Card$1, { expandable: true },
+	        react.createElement( CardContent, { padding: false },
+	          react.createElement( 'div', { style: {background: 'url(./img/beach.jpg) no-repeat center bottom', 'background-size': 'cover', height: '240px'} }),
+	          react.createElement( Link, { cardClose: true, color: "white", className: "card-opened-fade-in", style: {position: 'absolute', right: '15px', top: '15px'}, iconF7: "close_round_fill" }),
+	          react.createElement( CardHeader, { textColor: "black", style: {height: '60px'} }, "Beach, Goa"),
+	          react.createElement( 'div', { className: "card-content-padding" },
+	            react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero." ),
+	            react.createElement( 'p', null, "Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie." ),
+	            react.createElement( 'p', null,
+	              react.createElement( Button, { fill: true, round: true, large: true, cardClose: true }, "Close")
+	            )
+	          )
+	        )
+	      ),
+
+	      react.createElement( Card$1, { expandable: true },
+	        react.createElement( CardContent, { padding: false },
+	          react.createElement( 'div', { style: {background: 'url(./img/monkey.jpg) no-repeat center top', 'background-size': 'cover', height: '400px'} },
+	            react.createElement( CardHeader, { textColor: "white" }, "Monkeys"),
+	            react.createElement( Link, { cardClose: true, color: "white", className: "card-opened-fade-in", style: {position: 'absolute', right: '15px', top: '15px'}, iconF7: "close_round_fill" })
+	          ),
+	          react.createElement( 'div', { className: "card-content-padding" },
+	            react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero." ),
+	            react.createElement( 'p', null, "Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie." ),
+	            react.createElement( 'p', null,
+	              react.createElement( Button, { fill: true, round: true, large: true, cardClose: true }, "Close")
+	            )
+	          )
+	        )
 	      )
 	    )
 	  )
@@ -48668,7 +50663,17 @@
 	    react.createElement( Block, { strong: true },
 	      react.createElement( 'p', null, "Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. " )
 	    ),
-	    react.createElement( BlockFooter, null, "Block Footer" )
+	    react.createElement( BlockFooter, null, "Block Footer" ),
+
+	    react.createElement( BlockTitle, { large: true }, "Block Title Large"),
+	    react.createElement( Block, { strong: true },
+	      react.createElement( 'p', null, "Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. " )
+	    ),
+
+	    react.createElement( BlockTitle, { medium: true }, "Block Title Medium"),
+	    react.createElement( Block, { strong: true },
+	      react.createElement( 'p', null, "Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. " )
+	    )
 	  )
 	); }
 
@@ -48855,7 +50860,7 @@
 	            react.createElement( 'th', { className: "numeric-cell" }, "Fat (g)"),
 	            react.createElement( 'th', { className: "numeric-cell" }, "Carbs"),
 	            react.createElement( 'th', { className: "numeric-cell" }, "Protein (g)"),
-	            react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:chat_fill", md: "material:message" }), " Comments")
+	            react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments")
 	          )
 	        ),
 	        react.createElement( 'tbody', null,
@@ -48992,7 +50997,7 @@
 	              react.createElement( 'th', { className: "numeric-cell" }, "Fat (g)"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Carbs"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Protein (g)"),
-	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:chat_fill", md: "material:message" }), " Comments")
+	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments")
 	            )
 	          ),
 	          react.createElement( 'tbody', null,
@@ -49066,7 +51071,7 @@
 	              react.createElement( 'th', { className: "numeric-cell sortable-cell" }, "Fat (g)"),
 	              react.createElement( 'th', { className: "numeric-cell sortable-cell" }, "Carbs"),
 	              react.createElement( 'th', { className: "numeric-cell sortable-cell" }, "Protein (g)"),
-	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:chat_fill", md: "material:message" }), " Comments")
+	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments")
 	            )
 	          ),
 	          react.createElement( 'tbody', null,
@@ -49148,7 +51153,7 @@
 	              react.createElement( 'th', { className: "numeric-cell" }, "Fat (g)"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Carbs"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Protein (g)"),
-	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:chat_fill", md: "material:message" }), " Comments")
+	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments")
 	            )
 	          ),
 	          react.createElement( 'tbody', null,
@@ -49204,7 +51209,7 @@
 	    react.createElement( BlockTitle, null, "Alternate header with actions" ),
 	    react.createElement( Card$1, { className: "data-table data-table-init" },
 	      react.createElement( CardHeader, null,
-	        react.createElement( 'div', { className: "data-table-links" }, react.createElement( 'a', { className: "link" }, "Add"), react.createElement( 'a', { className: "link" }, "Remove")),
+	        react.createElement( 'div', { className: "data-table-links" }, react.createElement( 'a', { className: "button" }, "Add"), react.createElement( 'a', { className: "button" }, "Remove")),
 	        react.createElement( 'div', { className: "data-table-actions" },
 	          react.createElement( Link, { iconIos: "f7:sort", iconMd: "material:sort" }),
 	          react.createElement( Link, { iconIos: "f7:more_vertical_round", iconMd: "material:more_vert" })
@@ -49222,7 +51227,7 @@
 	              react.createElement( 'th', { className: "numeric-cell" }, "Fat (g)"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Carbs"),
 	              react.createElement( 'th', { className: "numeric-cell" }, "Protein (g)"),
-	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:chat_fill", md: "material:message" }), " Comments"),
+	              react.createElement( 'th', { className: "tablet-only" }, react.createElement( Icon, { ios: "f7:message_fill", md: "material:message" }), " Comments"),
 	              react.createElement( 'th', null )
 	            )
 	          ),
@@ -49366,40 +51371,40 @@
 	        react.createElement( Block, { strong: true },
 	          react.createElement( 'p', null, "There are 1:1 replacements of native Alert, Prompt and Confirm modals. They support callbacks, have very easy api and can be combined with each other. Check these examples:" ),
 	          react.createElement( Row, { tag: "p" },
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openAlert.bind(this) }, "Alert"),
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openConfirm.bind(this) }, "Confirm"),
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openPrompt.bind(this) }, "Prompt")
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openAlert.bind(this) }, "Alert"),
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openConfirm.bind(this) }, "Confirm"),
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openPrompt.bind(this) }, "Prompt")
 	          ),
 	          react.createElement( Row, { tag: "p" },
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openLogin.bind(this) }, "Login"),
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openPassword.bind(this) }, "Password")
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openLogin.bind(this) }, "Login"),
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openPassword.bind(this) }, "Password")
 	          )
 	        ),
 	        react.createElement( BlockTitle, null, "Vertical Buttons" ),
 	        react.createElement( Block, { strong: true },
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.openVerticalButtons.bind(this) }, "Vertical Buttons")
+	            react.createElement( Button, { fill: true, onClick: this.openVerticalButtons.bind(this) }, "Vertical Buttons")
 	          )
 	        ),
 	        react.createElement( BlockTitle, null, "Preloader Dialog" ),
 	        react.createElement( Block, { strong: true },
 	          react.createElement( Row, { tag: "p" },
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openPreloader.bind(this) }, "Preloader"),
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openCustomPreloader.bind(this) }, "Custom Text")
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openPreloader.bind(this) }, "Preloader"),
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openCustomPreloader.bind(this) }, "Custom Text")
 	          )
 	        ),
 	        react.createElement( BlockTitle, null, "Progress Dialog" ),
 	        react.createElement( Block, { strong: true },
 	          react.createElement( Row, { tag: "p" },
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openInfiniteProgress.bind(this) }, "Infinite"),
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.openDeterminedProgress.bind(this) }, "Determined")
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openInfiniteProgress.bind(this) }, "Infinite"),
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.openDeterminedProgress.bind(this) }, "Determined")
 	          )
 	        ),
 	        react.createElement( BlockTitle, null, "Dialogs Stack" ),
 	        react.createElement( Block, { strong: true },
 	          react.createElement( 'p', null, "This feature doesn't allow to open multiple dialogs at the same time, and will automatically open next dialog when you close the current one. Such behavior is similar to browser native dialogs: " ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.openAlerts.bind(this) }, "Open Multiple Alerts")
+	            react.createElement( Button, { fill: true, onClick: this.openAlerts.bind(this) }, "Open Multiple Alerts")
 	          )
 	        )
 	      )
@@ -49688,10 +51693,10 @@
 	function FabMorph () { return (
 	  react.createElement( Page, null,
 	    react.createElement( Navbar$2, { title: "Floating Action Button Morph", backLink: "Back" }),
-	    react.createElement( Toolbar$2, { tabbar: true, labels: true, bottomMd: true, className: "fab-morph-target" },
+	    react.createElement( Toolbar$2, { tabbar: true, labels: true, bottom: true, className: "fab-morph-target" },
 	      react.createElement( Link, { tabLink: true, tabLinkActive: true, iconIos: "f7:email_fill", iconMd: "material:email", text: "Inbox" }),
-	      react.createElement( Link, { tabLink: true, iconIos: "f7:today", iconMd: "material:today", text: "Calendar" }),
-	      react.createElement( Link, { tabLink: true, iconIos: "f7:cloud", iconMd: "material:file_upload", text: "Upload" })
+	      react.createElement( Link, { tabLink: true, iconIos: "f7:calendar_fill", iconMd: "material:today", text: "Calendar" }),
+	      react.createElement( Link, { tabLink: true, iconIos: "f7:cloud_upload_fill", iconMd: "material:file_upload", text: "Upload" })
 	    ),
 	    react.createElement( Fab$2, { position: "right-bottom", morphTo: ".toolbar.fab-morph-target" },
 	      react.createElement( Icon, { ios: "f7:add", md: "material:add" })
@@ -49749,53 +51754,32 @@
 	      react.createElement( 'p', null, "Just try to fill the form below and then go to any other page, or even you may close this site, and when you return here form fields will have kept your data." )
 	    ),
 	    react.createElement( List, { form: true, formStoreData: true, id: "demo-form" },
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Name" ),
-	        react.createElement( Input$2, { name: "name", type: "text", clearButton: true, placeholder: "Your name" })
+	      react.createElement( ListInput, {
+	        label: "Name", name: "name", type: "text", clearButton: true, placeholder: "Your name" }),
+	      react.createElement( ListInput, {
+	        label: "Password", name: "password", type: "password", clearButton: true, placeholder: "Your password" }),
+	      react.createElement( ListInput, {
+	        label: "E-mail", name: "email", type: "email", clearButton: true, placeholder: "Your e-mail" }),
+	      react.createElement( ListInput, {
+	        label: "URL", name: "url", type: "url", clearButton: true, placeholder: "URL" }),
+	      react.createElement( ListInput, {
+	        label: "Phone", name: "phone", type: "tel", clearButton: true, placeholder: "Your phone number" }),
+	      react.createElement( ListInput, {
+	        label: "Gender", type: "select", name: "gender", placeholder: "Please choose..." },
+	        react.createElement( 'option', { value: "Male" }, "Male"),
+	        react.createElement( 'option', { value: "Female" }, "Female")
 	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Password" ),
-	        react.createElement( Input$2, { name: "password", type: "password", clearButton: true, placeholder: "Your password" })
+	      react.createElement( ListInput, {
+	        label: "Birthday", name: "birthday", type: "date", defaultValue: "2014-04-30", placeholder: "Please choose..." }),
+	      react.createElement( ListInput, {
+	        label: "Date time", name: "date", type: "datetime-local", placeholder: "Please choose..." }),
+	      react.createElement( ListInput, {
+	        label: "Range", input: false },
+	        react.createElement( Range$2, { name: "range", slot: "input", value: 50, min: 0, max: 100, step: 1 })
 	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "E-mail" ),
-	        react.createElement( Input$2, { name: "email", type: "email", clearButton: true, placeholder: "Your e-mail" })
-	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "URL" ),
-	        react.createElement( Input$2, { name: "url", type: "url", clearButton: true, placeholder: "URL" })
-	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Phone" ),
-	        react.createElement( Input$2, { name: "phone", type: "tel", clearButton: true, placeholder: "Your phone number" })
-	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Gender" ),
-	        react.createElement( Input$2, { type: "select", name: "gender", placeholder: "Please choose..." },
-	          react.createElement( 'option', { value: "Male" }, "Male"),
-	          react.createElement( 'option', { value: "Female" }, "Female")
-	        )
-	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Birthday" ),
-	        react.createElement( Input$2, { name: "birthday", type: "date", defaultValue: "2014-04-30", placeholder: "Please choose..." })
-	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Date time" ),
-	        react.createElement( Input$2, { name: "date", type: "datetime-local", placeholder: "Please choose..." })
-	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "Range" ),
-	        react.createElement( Input$2, null,
-	          react.createElement( 'div', { className: "range-slider range-slider-init", 'data-label': "true" },
-	            react.createElement( 'input', { name: "range", type: "range", defaultValue: "50", min: "0", max: "100", step: "1" })
-	          )
-	        )
-	      ),
-	      react.createElement( ListItem, null,
-	        react.createElement( Label, null, "About you" ),
-	        react.createElement( Input$2, { type: "textarea", name: "bio", resizable: true, placeholder: "Bio" })
-	      )
+
+	      react.createElement( ListInput, {
+	        label: "About you", type: "textarea", name: "bio", resizable: true, placeholder: "Bio" })
 	    )
 	  )
 	); }
@@ -50021,7 +52005,7 @@
 	  )
 	); }
 
-	var f7Icons = 'add add_round add_round_fill alarm alarm_fill albums albums_fill arrow_down arrow_down_fill arrow_left arrow_left_fill arrow_right arrow_right_fill arrow_up arrow_up_fill at at_fill bag bag_fill bars bell bell_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill calendar calendar_fill camera camera_fill card card_fill chat chat_fill chats chats_fill check check_round check_round_fill chevron_down chevron_left chevron_right chevron_up circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill document document_fill document_text document_text_fill down download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill email email_fill eye eye_fill fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_fill film film_fill filter filter-fill flag flag_fill folder folder_fill forward forward_fill gear gear_fill graph_round graph_round_fill graph_square graph_square_fill heart heart_fill help help_fill home home_fill images images_fill info info_fill keyboard keyboard_fill layers layers_fill left list list_fill lock lock_fill login login_fill logout logout_fill menu mic mic_fill money_dollar money_dollar_fill money_euro money_euro_fill money_pound money_pound_fill money_rubl money_rubl_fill money_yen money_yen_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill person person_fill persons persons_fill phone phone_fill phone_round phone_round_fill photos photos_fill pie pie_fill play play_fill play_round play_round_fill radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill right search search_strong settings settings_fill share share_fill social_facebook social_facebook_fill social_github social_github_fill social_googleplus social_instagram social_instagram_fill social_linkedin social_linkedin_fill social_rss social_rss_fill social_twitter social_twitter_fill sort sort_fill star star_fill star_half stopwatch stopwatch_fill tabs tabs_fill tags tags_fill tape tape_fill ticket ticket_fill time time_fill timer timer_fill today today_fill trash trash_fill tune tune_fill undo unlock unlock_fill up videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill world world_fill zoom_in zoom_out'.split(' ');
+	var f7Icons = 'add add_round add_round_fill alarm alarm_fill albums albums_fill alert alert_fill arrow_down arrow_down_round_fill arrow_left arrow_left_round_fill arrow_right arrow_right_round_fill arrow_up arrow_up_round_fill at at_round at_round_fill attachment bag bag_fill barcode barcode_fill bars bars_chart bars_chart_round bars_chart_round_fill bars_chart_square bars_chart_square_fill bell bell_fill bell_off bitcoin bitcoin_round bitcoin_round_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill bulb bulb_fill business business_fill calendar calendar_fill calendar_today calendar_today_fill camera camera_fill camera_round camera_round_fill card card_fill chat chat_bubble chat_bubble_fill chat_fill check check_round check_round_fill chevron_down chevron_down_round chevron_down_round_fill chevron_left chevron_left_round chevron_left_round_fill chevron_right chevron_right_round chevron_right_round_fill chevron_up chevron_up_round chevron_up_round_fill circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill color_filter color_filter_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill document document_chart document_chart_fill document_check document_check_fill document_fill document_person document_person_fill document_text document_text_fill download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill edit email email_fill enter enter_fill enter_round enter_round_fill exit exit_fill exit_round exit_round_fill eye eye_fill eye_off fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_alt favorites_alt_fill favorites_fill film film_fill filter fire fire_fill flag flag_fill folder folder_fill forward forward_fill gear gear_fill gift gift_fill graph_round graph_round_fill graph_square graph_square_fill heart heart_fill help help_round help_round_fill home home_fill images images_fill infinite info info_round info_round_fill keyboard keyboard_fill layers layers_alt layers_alt_fill layers_fill library library_fill link list list_fill lock lock_fill logo_facebook logo_github logo_googleplus logo_instagram logo_linkedin logo_rss logo_twitter menu message message_fill mic mic_fill mic_off mic_round mic_round_fill money_dollar money_dollar_round money_dollar_round_fill money_euro money_euro_round money_euro_round_fill money_pound money_pound_round money_pound_round_fill money_rubl money_rubl_round money_rubl_round_fill money_yen money_yen_round money_yen_round_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill navigation_round navigation_round_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill person person_round person_round_fill persons persons_round persons_round_fill phone phone_fill phone_round phone_round_fill photos photos_fill pie_chart pie_chart_fill placemark placemark_fill play play_fill play_round play_round_fill qrcode radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill rocket rocket_fill scissors search settings settings_fill share share_fill sort sort_down sort_down_round sort_down_round_fill sort_round sort_round_fill sort_up sort_up_round sort_up_round_fill star star_fill star_half star_round_fill stopwatch stopwatch_fill tabs tabs_fill tag tag_fill tags tags_fill tape tape_fill thumbs_down thumbs_up ticket ticket_fill tickets tickets_fill time time_fill timer timer_fill today today_fill trash trash_fill tune tune_fill undo unlock unlock_fill upload_round upload_round_fill videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill volume_off waterdrop waterdrop_fill world world_fill zoom_in zoom_out'.split(' ');
 
 	var mdIcons = '3d_rotation ac_unit access_alarm access_alarms access_time accessibility accessible account_balance account_balance_wallet account_box account_circle adb add add_a_photo add_alarm add_alert add_box add_circle add_circle_outline add_location add_shopping_cart add_to_photos add_to_queue adjust airline_seat_flat airline_seat_flat_angled airline_seat_individual_suite airline_seat_legroom_extra airline_seat_legroom_normal airline_seat_legroom_reduced airline_seat_recline_extra airline_seat_recline_normal airplanemode_active airplanemode_inactive airplay airport_shuttle alarm alarm_add alarm_off alarm_on album all_inclusive all_out android announcement apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_drop_up arrow_forward arrow_upward art_track aspect_ratio assessment assignment assignment_ind assignment_late assignment_return assignment_returned assignment_turned_in assistant assistant_photo attach_file attach_money attachment audiotrack autorenew av_timer backspace backup battery_alert battery_charging_full battery_full battery_std battery_unknown beach_access beenhere block bluetooth bluetooth_audio bluetooth_connected bluetooth_disabled bluetooth_searching blur_circular blur_linear blur_off blur_on book bookmark bookmark_border border_all border_bottom border_clear border_color border_horizontal border_inner border_left border_outer border_right border_style border_top border_vertical branding_watermark brightness_1 brightness_2 brightness_3 brightness_4 brightness_5 brightness_6 brightness_7 brightness_auto brightness_high brightness_low brightness_medium broken_image brush bubble_chart bug_report build burst_mode business business_center cached cake call call_end call_made call_merge call_missed call_missed_outgoing call_received call_split call_to_action camera camera_alt camera_enhance camera_front camera_rear camera_roll cancel card_giftcard card_membership card_travel casino cast cast_connected center_focus_strong center_focus_weak change_history chat chat_bubble chat_bubble_outline check check_box check_box_outline_blank check_circle chevron_left chevron_right child_care child_friendly chrome_reader_mode class clear clear_all close closed_caption cloud cloud_circle cloud_done cloud_download cloud_off cloud_queue cloud_upload code collections collections_bookmark color_lens colorize comment compare compare_arrows computer confirmation_number contact_mail contact_phone contacts content_copy content_cut content_paste control_point control_point_duplicate copyright create create_new_folder credit_card crop crop_16_9 crop_3_2 crop_5_4 crop_7_5 crop_din crop_free crop_landscape crop_original crop_portrait crop_rotate crop_square dashboard data_usage date_range dehaze delete delete_forever delete_sweep description desktop_mac desktop_windows details developer_board developer_mode device_hub devices devices_other dialer_sip dialpad directions directions_bike directions_boat directions_bus directions_car directions_railway directions_run directions_subway directions_transit directions_walk disc_full dns do_not_disturb do_not_disturb_alt do_not_disturb_off do_not_disturb_on dock domain done done_all donut_large donut_small drafts drag_handle drive_eta dvr edit edit_location eject email enhanced_encryption equalizer error error_outline euro_symbol ev_station event event_available event_busy event_note event_seat exit_to_app expand_less expand_more explicit explore exposure exposure_neg_1 exposure_neg_2 exposure_plus_1 exposure_plus_2 exposure_zero extension face fast_forward fast_rewind favorite favorite_border featured_play_list featured_video feedback fiber_dvr fiber_manual_record fiber_new fiber_pin fiber_smart_record file_download file_upload filter filter_1 filter_2 filter_3 filter_4 filter_5 filter_6 filter_7 filter_8 filter_9 filter_9_plus filter_b_and_w filter_center_focus filter_drama filter_frames filter_hdr filter_list filter_none filter_tilt_shift filter_vintage find_in_page find_replace fingerprint first_page fitness_center flag flare flash_auto flash_off flash_on flight flight_land flight_takeoff flip flip_to_back flip_to_front folder folder_open folder_shared folder_special font_download format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_fill format_color_reset format_color_text format_indent_decrease format_indent_increase format_italic format_line_spacing format_list_bulleted format_list_numbered format_paint format_quote format_shapes format_size format_strikethrough format_textdirection_l_to_r format_textdirection_r_to_l format_underlined forum forward forward_10 forward_30 forward_5 free_breakfast fullscreen fullscreen_exit functions g_translate gamepad games gavel gesture get_app gif golf_course gps_fixed gps_not_fixed gps_off grade gradient grain graphic_eq grid_off grid_on group group_add group_work hd hdr_off hdr_on hdr_strong hdr_weak headset headset_mic healing hearing help help_outline high_quality highlight highlight_off history home hot_tub hotel hourglass_empty hourglass_full http https image image_aspect_ratio import_contacts import_export important_devices inbox indeterminate_check_box info info_outline input insert_chart insert_comment insert_drive_file insert_emoticon insert_invitation insert_link insert_photo invert_colors invert_colors_off iso keyboard keyboard_arrow_down keyboard_arrow_left keyboard_arrow_right keyboard_arrow_up keyboard_backspace keyboard_capslock keyboard_hide keyboard_return keyboard_tab keyboard_voice kitchen label label_outline landscape language laptop laptop_chromebook laptop_mac laptop_windows last_page launch layers layers_clear leak_add leak_remove lens library_add library_books library_music lightbulb_outline line_style line_weight linear_scale link linked_camera list live_help live_tv local_activity local_airport local_atm local_bar local_cafe local_car_wash local_convenience_store local_dining local_drink local_florist local_gas_station local_grocery_store local_hospital local_hotel local_laundry_service local_library local_mall local_movies local_offer local_parking local_pharmacy local_phone local_pizza local_play local_post_office local_printshop local_see local_shipping local_taxi location_city location_disabled location_off location_on location_searching lock lock_open lock_outline looks looks_3 looks_4 looks_5 looks_6 looks_one looks_two loop loupe low_priority loyalty mail mail_outline map markunread markunread_mailbox memory menu merge_type message mic mic_none mic_off mms mode_comment mode_edit monetization_on money_off monochrome_photos mood mood_bad more more_horiz more_vert motorcycle mouse move_to_inbox movie movie_creation movie_filter multiline_chart music_note music_video my_location nature nature_people navigate_before navigate_next navigation near_me network_cell network_check network_locked network_wifi new_releases next_week nfc no_encryption no_sim not_interested note note_add notifications notifications_active notifications_none notifications_off notifications_paused offline_pin ondemand_video opacity open_in_browser open_in_new open_with pages pageview palette pan_tool panorama panorama_fish_eye panorama_horizontal panorama_vertical panorama_wide_angle party_mode pause pause_circle_filled pause_circle_outline payment people people_outline perm_camera_mic perm_contact_calendar perm_data_setting perm_device_information perm_identity perm_media perm_phone_msg perm_scan_wifi person person_add person_outline person_pin person_pin_circle personal_video pets phone phone_android phone_bluetooth_speaker phone_forwarded phone_in_talk phone_iphone phone_locked phone_missed phone_paused phonelink phonelink_erase phonelink_lock phonelink_off phonelink_ring phonelink_setup photo photo_album photo_camera photo_filter photo_library photo_size_select_actual photo_size_select_large photo_size_select_small picture_as_pdf picture_in_picture picture_in_picture_alt pie_chart pie_chart_outlined pin_drop place play_arrow play_circle_filled play_circle_outline play_for_work playlist_add playlist_add_check playlist_play plus_one poll polymer pool portable_wifi_off portrait power power_input power_settings_new pregnant_woman present_to_all print priority_high public publish query_builder question_answer queue queue_music queue_play_next radio radio_button_checked radio_button_unchecked rate_review receipt recent_actors record_voice_over redeem redo refresh remove remove_circle remove_circle_outline remove_from_queue remove_red_eye remove_shopping_cart reorder repeat repeat_one replay replay_10 replay_30 replay_5 reply reply_all report report_problem restaurant restaurant_menu restore restore_page ring_volume room room_service rotate_90_degrees_ccw rotate_left rotate_right rounded_corner router rowing rss_feed rv_hookup satellite save scanner schedule school screen_lock_landscape screen_lock_portrait screen_lock_rotation screen_rotation screen_share sd_card sd_storage search security select_all send sentiment_dissatisfied sentiment_neutral sentiment_satisfied sentiment_very_dissatisfied sentiment_very_satisfied settings settings_applications settings_backup_restore settings_bluetooth settings_brightness settings_cell settings_ethernet settings_input_antenna settings_input_component settings_input_composite settings_input_hdmi settings_input_svideo settings_overscan settings_phone settings_power settings_remote settings_system_daydream settings_voice share shop shop_two shopping_basket shopping_cart short_text show_chart shuffle signal_cellular_4_bar signal_cellular_connected_no_internet_4_bar signal_cellular_no_sim signal_cellular_null signal_cellular_off signal_wifi_4_bar signal_wifi_4_bar_lock signal_wifi_off sim_card sim_card_alert skip_next skip_previous slideshow slow_motion_video smartphone smoke_free smoking_rooms sms sms_failed snooze sort sort_by_alpha spa space_bar speaker speaker_group speaker_notes speaker_notes_off speaker_phone spellcheck star star_border star_half stars stay_current_landscape stay_current_portrait stay_primary_landscape stay_primary_portrait stop stop_screen_share storage store store_mall_directory straighten streetview strikethrough_s style subdirectory_arrow_left subdirectory_arrow_right subject subscriptions subtitles subway supervisor_account surround_sound swap_calls swap_horiz swap_vert swap_vertical_circle switch_camera switch_video sync sync_disabled sync_problem system_update system_update_alt tab tab_unselected tablet tablet_android tablet_mac tag_faces tap_and_play terrain text_fields text_format textsms texture theaters thumb_down thumb_up thumbs_up_down time_to_leave timelapse timeline timer timer_10 timer_3 timer_off title toc today toll tonality touch_app toys track_changes traffic train tram transfer_within_a_station transform translate trending_down trending_flat trending_up tune turned_in turned_in_not tv unarchive undo unfold_less unfold_more update usb verified_user vertical_align_bottom vertical_align_center vertical_align_top vibration video_call video_label video_library videocam videocam_off videogame_asset view_agenda view_array view_carousel view_column view_comfy view_compact view_day view_headline view_list view_module view_quilt view_stream view_week vignette visibility visibility_off voice_chat voicemail volume_down volume_mute volume_off volume_up vpn_key vpn_lock wallpaper warning watch watch_later wb_auto wb_cloudy wb_incandescent wb_iridescent wb_sunny wc web web_asset weekend whatshot widgets wifi wifi_lock wifi_tethering work wrap_text youtube_searched_for zoom_in zoom_out zoom_out_map'.split(' ');
 
@@ -50036,9 +52020,9 @@
 	      react.createElement( 'p', null, react.createElement( 'a', { href: "http://alistapart.com/article/the-era-of-symbol-fonts", className: "external", target: "_blank" }, "Ligatures"), " allow rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference." )
 	    ),
 	    react.createElement( BlockHeader, null,
-	      react.createElement( Segmented, { raised: true },
-	        react.createElement( Button, { tabLink: "#tab-f7", tabLinkActive: true }, "F7 Icons"),
-	        react.createElement( Button, { tabLink: "#tab-md" }, "Material Icons")
+	      react.createElement( Segmented, null,
+	        react.createElement( Button, { outline: true, tabLink: "#tab-f7", tabLinkActive: true }, "F7 Icons"),
+	        react.createElement( Button, { outline: true, tabLink: "#tab-md" }, "Material Icons")
 	      )
 	    ),
 	    react.createElement( Block, { strong: true, className: "tabs" },
@@ -50921,11 +52905,11 @@
 	        ),
 
 	        react.createElement( Block, null,
-	          react.createElement( Button, { raised: true, big: true, fill: true, loginScreenOpen: ".demo-login-screen" }, "As Overlay")
+	          react.createElement( Button, { raised: true, large: true, fill: true, loginScreenOpen: ".demo-login-screen" }, "As Overlay")
 	        ),
 
 	        react.createElement( Block, null,
-	          react.createElement( Button, { raised: true, big: true, fill: true, onClick: function () {this$1.setState({loginScreenOpened : true});} }, "Open Via Prop Change")
+	          react.createElement( Button, { raised: true, large: true, fill: true, onClick: function () {this$1.setState({loginScreenOpened : true});} }, "Open Via Prop Change")
 	        ),
 
 	        react.createElement( LoginScreen$2, { className: "demo-login-screen", opened: this.state.loginScreenOpened, onLoginScreenClosed: function () {this$1.setState({loginScreenOpened : false});} },
@@ -51012,6 +52996,165 @@
 	}(react.Component));
 
 	var defaultExport$b = /*@__PURE__*/(function (superclass) {
+	  function defaultExport() {
+	    superclass.call(this);
+	    this.state = {
+	      mapStyleLoaded: false,
+	      mapScriptLoaded: false,
+	      mapInitialized: false,
+	    };
+	  }
+
+	  if ( superclass ) defaultExport.__proto__ = superclass;
+	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
+	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.onPageAfterIn = function onPageAfterIn () {
+	    var self = this;
+	    if (self.state.mapInitialized) { return; }
+	    if (!window.L) {
+	      self.loadMapAssets();
+	      return;
+	    }
+	    self.initMap();
+	  };
+	  defaultExport.prototype.loadMapAssets = function loadMapAssets () {
+	    var self = this;
+	    var style = document.createElement('link');
+	    style.rel = 'stylesheet';
+	    style.href = 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.css';
+	    style.integrity='sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==';
+	    style.setAttribute('crossorigin', '');
+	    style.onload = function () {
+	      self.setState({ mapStyleLoaded: true });
+	      if (self.state.mapScriptLoaded) { self.initMap(); }
+	    };
+	    document.head.appendChild(style);
+
+	    var script = document.createElement('script');
+	    script.src = 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.js';
+	    script.integrity='sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==';
+	    script.setAttribute('crossorigin', '');
+	    script.onload = function () {
+	      self.setState({ mapScriptLoaded: true });
+	      if (self.state.mapStyleLoaded) { self.initMap(); }
+	    };
+	    document.head.appendChild(script);
+	  };
+	  defaultExport.prototype.initMap = function initMap () {
+	    var self = this;
+	    var mymap = L.map(self.mapEl, { zoomControl: false }).setView([51.505, -0.09], 10);
+	    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoibm9saW1pdHM0d2ViIiwiYSI6ImNqcXA4NTdmczBocm8zeG13Zm1zNTdyeDAifQ.HoJgmqQ_uH4zLyNJmiY98A', {
+	      maxZoom: 18,
+	      attribution: "Map data &copy; <a class=\"external\" target=\"_blank\" href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors,\n        <a class=\"external\" target=\"_blank\" href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>,\n        Imagery © <a class=\"external\" target=\"_blank\" href=\"https://www.mapbox.com/\">Mapbox</a>",
+	      id: 'mapbox.streets'
+	    }).addTo(mymap);
+	    self.setState({ mapInitialized: true });
+	  };
+	  defaultExport.prototype.render = function render () {
+	    var this$1 = this;
+
+	    return (
+	      react.createElement( Page, { onPageAfterIn: function () { return this$1.onPageAfterIn(); } },
+	        react.createElement( Navbar$2, { title: "Menu", backLink: "Back" }),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "Menu component is designed to be used as overlay control. It can be very helpful when you need controls on top of the map, images, some text/code editor, etc." )
+	        ),
+	        react.createElement( BlockTitle, null, "Links" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal" },
+	          react.createElement( Menu$1, null,
+	            react.createElement( MenuItem, { href: "#", text: "Item 1" }),
+	            react.createElement( MenuItem, { href: "#", text: "Item 2" }),
+	            react.createElement( MenuItem, { href: "#", iconF7: "edit" }),
+	            react.createElement( MenuItem, { href: "#", iconF7: "share" })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Dropdowns" ),
+	        react.createElement( Block, { strong: true, className: "no-padding-horizontal", style: {zIndex: 2000} },
+	          react.createElement( 'p', { className: "padding-horizontal" }, "Dropdown can be position on left, center or right of the menu item. It also can be scrollable."),
+	          react.createElement( Menu$1, null,
+	            react.createElement( MenuItem, { text: "Left", dropdown: true },
+	              react.createElement( MenuDropdown, { left: true },
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 1" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 2" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 3" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 4" }),
+	                react.createElement( MenuDropdownItem, { divider: true }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 5" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 6" })
+	              )
+	            ),
+
+	            react.createElement( MenuItem, { text: "Center", dropdown: true },
+	              react.createElement( MenuDropdown, { center: true, contentHeight: "200px" },
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 1" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 2" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 3" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 4" }),
+	                react.createElement( MenuDropdownItem, { divider: true }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 5" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 6" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 7" }),
+	                react.createElement( MenuDropdownItem, { divider: true }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 8" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 9" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 10" })
+	              )
+	            ),
+
+	            react.createElement( MenuItem, { text: "Right", dropdown: true },
+	              react.createElement( MenuDropdown, { right: true },
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 1" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 2" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 3" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 4" }),
+	                react.createElement( MenuDropdownItem, { divider: true }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 5" }),
+	                react.createElement( MenuDropdownItem, { href: "#", text: "Menu Item 6" })
+	              )
+	            ),
+
+	            react.createElement( MenuItem, { style: {marginLeft: 'auto'}, iconF7: "share", dropdown: true },
+	              react.createElement( MenuDropdown, { right: true },
+	                react.createElement( MenuDropdownItem, { href: "#" },
+	                  react.createElement( 'span', null, "Share on Facebook" ),
+	                  react.createElement( Icon, { className: "margin-left", f7: "logo_facebook" })
+	                ),
+	                react.createElement( MenuDropdownItem, { href: "#" },
+	                  react.createElement( 'span', null, "Share on Twitter" ),
+	                  react.createElement( Icon, { className: "margin-left", f7: "logo_twitter" })
+	                )
+	              )
+	            ),
+
+	            react.createElement( MenuItem, { href: "#", iconF7: "edit" })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "On Top Of Map" ),
+	        react.createElement( Card$1, null,
+	          react.createElement( CardContent, { padding: false },
+	            react.createElement( 'div', { ref: function (el) { return this$1.mapEl = el; }, style: {height: '240px'} }),
+	            react.createElement( Menu$1, { style: {position: 'absolute', left: '0px', top: '6px'} },
+	              react.createElement( MenuItem, { href: "#", iconF7: "zoom_in" }),
+	              react.createElement( MenuItem, { href: "#", iconF7: "zoom_out" }),
+	              react.createElement( MenuItem, { iconF7: "layers_fill", dropdown: true },
+	                react.createElement( MenuDropdown, { left: true },
+	                  react.createElement( MenuDropdownItem, { href: "#", text: "Terrain" }),
+	                  react.createElement( MenuDropdownItem, { href: "#", text: "Satellite" })
+	                )
+	              )
+	            )
+	          )
+	        )
+	      )
+	    );
+	  };
+
+	  return defaultExport;
+	}(react.Component));
+
+	var defaultExport$c = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -51126,7 +53269,7 @@
 	          react.createElement( Link, {
 	            iconIos: "f7:camera_fill", iconMd: "material:camera_alt", slot: "inner-start", onClick: function () {this$1.setState({sheetVisible: !this$1.state.sheetVisible});} }),
 	          react.createElement( Link, {
-	            iconIos: "f7:arrow_up_fill", iconMd: "material:send", slot: "inner-end", onClick: this.sendMessage.bind(this) }),
+	            iconIos: "f7:arrow_up_round_fill", iconMd: "material:send", slot: "inner-end", onClick: this.sendMessage.bind(this) }),
 	          react.createElement( MessagebarAttachments, null,
 	            this.state.attachments.map(function (image, index) { return (
 	              react.createElement( MessagebarAttachment, {
@@ -51342,7 +53485,7 @@
 	  )
 	); }
 
-	var defaultExport$c = /*@__PURE__*/(function (superclass) {
+	var defaultExport$d = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -51356,10 +53499,10 @@
 	        react.createElement( Navbar$2, { title: "Notifications", backLink: "Back" }),
 	        react.createElement( Block, null,
 	          react.createElement( 'p', null, "Framework7 comes with simple Notifications component that allows you to show some useful messages to user and request basic actions." ),
-	          react.createElement( 'p', null, react.createElement( Button, { raised: true, onClick: this.showNotificationFull.bind(this) }, "Full layout notification") ),
-	          react.createElement( 'p', null, react.createElement( Button, { raised: true, onClick: this.showNotificationWithButton.bind(this) }, "With close button") ),
-	          react.createElement( 'p', null, react.createElement( Button, { raised: true, onClick: this.showNotificationCloseOnClick.bind(this) }, "Click to close") ),
-	          react.createElement( 'p', null, react.createElement( Button, { raised: true, onClick: this.showNotificationCallbackOnClose.bind(this) }, "Callback on close") )
+	          react.createElement( 'p', null, react.createElement( Button, { fill: true, onClick: this.showNotificationFull.bind(this) }, "Full layout notification") ),
+	          react.createElement( 'p', null, react.createElement( Button, { fill: true, onClick: this.showNotificationWithButton.bind(this) }, "With close button") ),
+	          react.createElement( 'p', null, react.createElement( Button, { fill: true, onClick: this.showNotificationCloseOnClick.bind(this) }, "Click to close") ),
+	          react.createElement( 'p', null, react.createElement( Button, { fill: true, onClick: this.showNotificationCallbackOnClose.bind(this) }, "Callback on close") )
 	        )
 	      )
 	    )
@@ -51456,16 +53599,16 @@
 	    ),
 	    react.createElement( Block, { className: "row" },
 	      react.createElement( Col, null,
-	        react.createElement( Button, { raised: true, panelOpen: "left" }, "Open left panel")
+	        react.createElement( Button, { raised: true, fill: true, panelOpen: "left" }, "Open left panel")
 	      ),
 	      react.createElement( Col, null,
-	        react.createElement( Button, { raised: true, panelOpen: "right" }, "Open right panel")
+	        react.createElement( Button, { raised: true, fill: true, panelOpen: "right" }, "Open right panel")
 	      )
 	    )
 	  )
 	); }
 
-	var defaultExport$d = /*@__PURE__*/(function (superclass) {
+	var defaultExport$e = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
@@ -51510,15 +53653,15 @@
 	          react.createElement( Row, null,
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, ref: function (el) {this$1.standalone = el;} }),
-	              react.createElement( Button, { raised: true, onClick: function () { return this$1.standalone.open(); } }, "Standalone")
+	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.standalone.open(); } }, "Standalone")
 	            ),
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, type: "popup", ref: function (el) {this$1.popup = el;} }),
-	              react.createElement( Button, { raised: true, onClick: function () { return this$1.popup.open(); } }, "Popup")
+	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.popup.open(); } }, "Popup")
 	            ),
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, type: "page", backLinkText: "Back", ref: function (el) {this$1.page = el;} }),
-	              react.createElement( Button, { raised: true, onClick: function () { return this$1.page.open(); } }, "Page")
+	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.page.open(); } }, "Page")
 	            )
 	          )
 	        ),
@@ -51527,15 +53670,15 @@
 	          react.createElement( Row, null,
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, theme: "dark", ref: function (el) {this$1.standaloneDark = el;} }),
-	              react.createElement( Button, { raised: true, onClick: function () { return this$1.standaloneDark.open(); } }, "Standalone")
+	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.standaloneDark.open(); } }, "Standalone")
 	            ),
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, theme: "dark", type: "popup", ref: function (el) {this$1.popupDark = el;} }),
-	              react.createElement( Button, { raised: true, onClick: function () { return this$1.popupDark.open(); } }, "Popup")
+	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.popupDark.open(); } }, "Popup")
 	            ),
 	            react.createElement( Col, null,
 	              react.createElement( PhotoBrowser$2, { photos: this.state.photos, theme: "dark", type: "page", backLinkText: "Back", ref: function (el) {this$1.pageDark = el;} }),
-	              react.createElement( Button, { raised: true, onClick: function () { return this$1.pageDark.open(); } }, "Page")
+	              react.createElement( Button, { raisedMd: true, outlineIos: true, onClick: function () { return this$1.pageDark.open(); } }, "Page")
 	            )
 	          )
 	        )
@@ -51546,7 +53689,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$e = /*@__PURE__*/(function (superclass) {
+	var defaultExport$f = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -51564,34 +53707,24 @@
 	        ),
 	        react.createElement( BlockTitle, null, "Picker with single value" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Your iOS device", readonly: true, inputId: "demo-picker-device" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Your iOS device", readonly: true, inputId: "demo-picker-device" })
 	        ),
 	        react.createElement( BlockTitle, null, "2 values and 3d-rotate effect" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Describe yourself", readonly: true, inputId: "demo-picker-describe" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Describe yourself", readonly: true, inputId: "demo-picker-describe" })
 	        ),
 	        react.createElement( BlockTitle, null, "Dependent values" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Your car", readonly: true, inputId: "demo-picker-dependent" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Your car", readonly: true, inputId: "demo-picker-dependent" })
 	        ),
 
 	        react.createElement( BlockTitle, null, "Custom toolbar" ),
 	        react.createElement( List, { noHairlinesMd: true },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Describe yourself", readonly: true, inputId: "demo-picker-custom-toolbar" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Describe yourself", readonly: true, inputId: "demo-picker-custom-toolbar" })
 	        ),
 	        react.createElement( BlockTitle, null, "Inline Picker / Date-time" ),
 	        react.createElement( List, { className: "no-margin" },
-	          react.createElement( ListItem, null,
-	            react.createElement( Input$2, { type: "text", placeholder: "Date Time", readonly: true, inputId: "demo-picker-date" })
-	          )
+	          react.createElement( ListInput, { type: "text", placeholder: "Date Time", readonly: true, inputId: "demo-picker-date" })
 	        ),
 	        react.createElement( Block, { strong: true, className: "no-padding no-margin margin-bottom" },
 	          react.createElement( 'div', { id: "demo-picker-date-container" })
@@ -51780,7 +53913,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$f = /*@__PURE__*/(function (superclass) {
+	var defaultExport$g = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -51801,13 +53934,13 @@
 	        react.createElement( Block, null,
 	          react.createElement( 'p', null, "Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called \"Temporary Views\"." ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, popupOpen: ".demo-popup" }, "Open Popup")
+	            react.createElement( Button, { fill: true, popupOpen: ".demo-popup" }, "Open Popup")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: function () { return this$1.setState({ popupOpened : true }); } }, "Open Via Prop Change")
+	            react.createElement( Button, { fill: true, onClick: function () { return this$1.setState({ popupOpened : true }); } }, "Open Via Prop Change")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.createPopup.bind(this) }, "Create Dynamic Popup")
+	            react.createElement( Button, { fill: true, onClick: this.createPopup.bind(this) }, "Create Dynamic Popup")
 	          )
 	        ),
 	        react.createElement( Popup$2, { className: "demo-popup", opened: this.state.popupOpened, onPopupClosed: function () { return this$1.setState({popupOpened : false}); } },
@@ -51850,7 +53983,7 @@
 	function Popover$3 () { return (
 	  react.createElement( Page, null,
 	    react.createElement( Navbar$2, { title: "Popover", backLink: "Back" }),
-	    react.createElement( Toolbar$2, { bottomMd: true },
+	    react.createElement( Toolbar$2, { bottom: true },
 	      react.createElement( Link, null, "Dummy Link" ),
 	      react.createElement( Link, { popoverOpen: ".popover-menu" }, "Open Popover")
 	    ),
@@ -51873,7 +54006,7 @@
 	  )
 	); }
 
-	var defaultExport$g = /*@__PURE__*/(function (superclass) {
+	var defaultExport$h = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -51930,15 +54063,15 @@
 	        react.createElement( Block, null,
 	          react.createElement( 'p', null, "With ", react.createElement( 'b', null, "app.preloader.show()" ), " you can show small overlay with preloader indicator." ),
 	          react.createElement( 'p', null,
-	            react.createElement( 'a', { className: "button button-raised", onClick: this.openIndicator.bind(this) }, "Open Small Indicator")
+	            react.createElement( 'a', { className: "button button-fill", onClick: this.openIndicator.bind(this) }, "Open Small Indicator")
 	          ),
 	          react.createElement( 'p', null, "With ", react.createElement( 'b', null, "app.dialog.preloader()" ), " you can show dialog modal with preloader indicator." ),
 	          react.createElement( 'p', null,
-	            react.createElement( 'a', { className: "button button-raised", onClick: this.openDialog.bind(this) }, "Open Dialog Preloader")
+	            react.createElement( 'a', { className: "button button-fill", onClick: this.openDialog.bind(this) }, "Open Dialog Preloader")
 	          ),
 	          react.createElement( 'p', null, "With ", react.createElement( 'b', null, "app.dialog.preloader('My text...')" ), " you can show dialog preloader modal with custom title." ),
 	          react.createElement( 'p', null,
-	            react.createElement( 'a', { className: "button button-raised", onClick: this.openCustomDialog.bind(this) }, "Open Dialog Preloader")
+	            react.createElement( 'a', { className: "button button-fill", onClick: this.openCustomDialog.bind(this) }, "Open Dialog Preloader")
 	          )
 	        )
 	      )
@@ -51970,7 +54103,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$h = /*@__PURE__*/(function (superclass) {
+	var defaultExport$i = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -52008,13 +54141,13 @@
 	            react.createElement( 'p', null, "Inline determinate load & hide:" ),
 	            react.createElement( 'p', { id: "demo-determinate-container" }),
 	            react.createElement( 'p', null,
-	              react.createElement( Button, { raised: true, onClick: function (){this$1.showDeterminate(true);} }, "Start Loading")
+	              react.createElement( Button, { fill: true, onClick: function (){this$1.showDeterminate(true);} }, "Start Loading")
 	            )
 	          ),
 	          react.createElement( 'div', null,
 	            react.createElement( 'p', null, "Overlay with determinate progress bar on top of the app:" ),
 	            react.createElement( 'p', null,
-	              react.createElement( Button, { raised: true, onClick: function (){this$1.showDeterminate(false);} }, "Start Loading")
+	              react.createElement( Button, { fill: true, onClick: function (){this$1.showDeterminate(false);} }, "Start Loading")
 	            )
 	          )
 	        ),
@@ -52033,13 +54166,13 @@
 	            react.createElement( 'p', null, "Overlay with infinite progress bar on top of the app" ),
 	            react.createElement( 'p', { id: "demo-infinite-container" }),
 	            react.createElement( 'p', null,
-	              react.createElement( Button, { raised: true, onClick: function (){this$1.showInfinite(false);} }, "Start Loading")
+	              react.createElement( Button, { fill: true, onClick: function (){this$1.showInfinite(false);} }, "Start Loading")
 	            )
 	          ),
 	          react.createElement( 'div', null,
 	            react.createElement( 'p', null, "Overlay with infinite multi-color progress bar on top of the app" ),
 	            react.createElement( 'p', null,
-	              react.createElement( Button, { raised: true, onClick: function (){this$1.showInfinite(true);} }, "Start Loading")
+	              react.createElement( Button, { fill: true, onClick: function (){this$1.showInfinite(true);} }, "Start Loading")
 	            )
 	          )
 	        ),
@@ -52118,7 +54251,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$i = /*@__PURE__*/(function (superclass) {
+	var defaultExport$j = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -52221,7 +54354,7 @@
 	  )
 	); }
 
-	var defaultExport$j = /*@__PURE__*/(function (superclass) {
+	var defaultExport$k = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -52275,17 +54408,48 @@
 	        react.createElement( List, { simpleList: true },
 	          react.createElement( ListItem, null,
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:circle", md: "material:brightness_low" })
+	              react.createElement( Icon, { ios: "f7:money_dollar_round", md: "material:brightness_low" })
 	            ),
 	            react.createElement( ListItemCell, { className: "flex-shrink-3" },
 	              react.createElement( Range$2, {
 	                min: 0, max: 500, step: 1, value: [this.state.priceMin, this.state.priceMax], label: true, dual: true, color: "green", onRangeChange: this.onPriceChange.bind(this) })
 	            ),
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:circle_half", md: "material:brightness_high" })
+	              react.createElement( Icon, { ios: "f7:money_dollar_round_fill", md: "material:brightness_high" })
 	            )
 	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "With Scale" ),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( Range$2, {
+	            min: 0, max: 100, label: true, step: 5, value: 25, scale: true, scaleSteps: 5, scaleSubSteps: 4 })
+	        ),
+
+	        react.createElement( BlockTitle, null, "Vertical" ),
+	        react.createElement( Block, { strong: true, className: "display-flex justify-content-center" },
+	          react.createElement( Range$2, {
+	            className: "margin-right", style: {height: '160px'}, vertical: true, min: 0, max: 100, label: true, step: 1, value: 25 }),
+	          react.createElement( Range$2, {
+	            className: "margin-horizontal", style: {height: '160px'}, vertical: true, min: 0, max: 100, label: true, step: 1, value: 50 }),
+	          react.createElement( Range$2, {
+	            className: "margin-horizontal", style: {height: '160px'}, vertical: true, min: 0, max: 100, label: true, step: 1, value: 75 }),
+	          react.createElement( Range$2, {
+	            className: "margin-left", style: {height: '160px'}, dual: true, vertical: true, min: 0, max: 100, label: true, step: 1, value: [25, 75] })
+	        ),
+
+	        react.createElement( BlockTitle, null, "Vertical Reversed" ),
+	        react.createElement( Block, { strong: true, className: "display-flex justify-content-center" },
+	          react.createElement( Range$2, {
+	            className: "margin-right", color: "red", style: {height: '160px'}, vertical: true, verticalReversed: true, min: 0, max: 100, label: true, step: 1, value: 25 }),
+	          react.createElement( Range$2, {
+	            className: "margin-horizontal", color: "red", style: {height: '160px'}, vertical: true, verticalReversed: true, min: 0, max: 100, label: true, step: 1, value: 50 }),
+	          react.createElement( Range$2, {
+	            className: "margin-horizontal", color: "red", style: {height: '160px'}, vertical: true, verticalReversed: true, min: 0, max: 100, label: true, step: 1, value: 75 }),
+	          react.createElement( Range$2, {
+	            className: "margin-left", color: "red", style: {height: '160px'}, dual: true, vertical: true, verticalReversed: true, min: 0, max: 100, label: true, step: 1, value: [25, 75] })
 	        )
+
 	      )
 	    )
 	  };
@@ -52359,7 +54523,7 @@
 	  react.createElement( Page, null,
 	    react.createElement( Navbar$2, { backLink: "Back", title: "Searchbar" },
 	      react.createElement( NavRight, null,
-	        react.createElement( Link, { searchbarEnable: ".searchbar-demo", iconIos: "f7:search_strong", iconMd: "material:search" })
+	        react.createElement( Link, { searchbarEnable: ".searchbar-demo", iconIos: "f7:search", iconMd: "material:search" })
 	      ),
 	      react.createElement( Searchbar$2, {
 	        className: "searchbar-demo", expandable: true, searchContainer: ".search-list", searchIn: ".item-title" })
@@ -52412,7 +54576,7 @@
 	  )
 	); }
 
-	var defaultExport$k = /*@__PURE__*/(function (superclass) {
+	var defaultExport$l = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -52433,11 +54597,11 @@
 	        react.createElement( Block, null,
 	          react.createElement( 'p', null, "Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content." ),
 	          react.createElement( Row, { tag: "p" },
-	            react.createElement( Button, { className: "col", raised: true, sheetOpen: ".demo-sheet" }, "Open Sheet"),
-	            react.createElement( Button, { className: "col", raised: true, onClick: this.createSheet.bind(this) }, "Create Dynamic Sheet")
+	            react.createElement( Button, { className: "col", fill: true, sheetOpen: ".demo-sheet" }, "Open Sheet"),
+	            react.createElement( Button, { className: "col", fill: true, onClick: this.createSheet.bind(this) }, "Create Dynamic Sheet")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { className: "col", raised: true, onClick: function () {this$1.setState({sheetOpened: true});} }, "Open Via Prop Change")
+	            react.createElement( Button, { className: "col", fill: true, onClick: function () {this$1.setState({sheetOpened: true});} }, "Open Via Prop Change")
 	          )
 	        ),
 
@@ -52485,6 +54649,100 @@
 	    var self = this;
 	    // Destroy sheet modal when page removed
 	    if (self.sheet) { self.sheet.destroy(); }
+	  };
+
+	  return defaultExport;
+	}(react.Component));
+
+	var defaultExport$m = /*@__PURE__*/(function (superclass) {
+	  function defaultExport() {
+	    superclass.call(this);
+	    this.state = {
+	      loading: false,
+	      effect: null,
+	    };
+	  }
+
+	  if ( superclass ) defaultExport.__proto__ = superclass;
+	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
+	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.render = function render () {
+	    var this$1 = this;
+
+	    return (
+	      react.createElement( Page, null,
+	        react.createElement( Navbar$2, { title: "Skeleton Layouts", backLink: "Back" }),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "Skeleton (or Ghost) elements designed to improve perceived performance and make app feels faster." ),
+	          react.createElement( 'p', null, "Framework7 comes with two types of such elements: Skeleton Block and Skeleton Text. Skeleton block is a gray box that can be used as placeholder for any element. Skeleton text uses special built-in skeleton font to render each character of such text as gray rectangle. Skeleton text allows to make such elements responsive and feel more natural." ),
+	          react.createElement( 'p', null, "It can be used in any places and with any elements." )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Skeleton List" ),
+	        react.createElement( List, { mediaList: true, className: "skeleton-text" },
+	          react.createElement( ListItem, {
+	            title: "Title", subtitle: "Subtitle", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum." },
+	            react.createElement( SkeletonBlock, { style: { width: '40px', height: '40px', 'border-radius': '50%' }, slot: "media" })
+	          ),
+	          react.createElement( ListItem, {
+	            title: "Title", subtitle: "Subtitle", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum." },
+	            react.createElement( SkeletonBlock, { style: { width: '40px', height: '40px', 'border-radius': '50%' }, slot: "media" })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, null, "Skeleton Card" ),
+	        react.createElement( Card$1, {
+	          className: "skeleton-text", title: "Card Header", content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit.", footer: "Card Footer" }),
+
+	        react.createElement( BlockTitle, null, "Loading Effects" ),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "It supports few loading effects:" ),
+	          react.createElement( Row, { tag: "p" },
+	            react.createElement( Button, { fill: true, small: true, round: true, className: "col", onClick: function () { return this$1.load('fade'); } }, "Fade"),
+	            react.createElement( Button, { fill: true, small: true, round: true, className: "col", onClick: function () { return this$1.load('blink'); } }, "Blink"),
+	            react.createElement( Button, { fill: true, small: true, round: true, className: "col", onClick: function () { return this$1.load('pulse'); } }, "Pulse")
+	          )
+	        ),
+	        this.state.loading
+	          ? (
+	            react.createElement( List, { mediaList: true, 'v-if': "loading" },
+	              [1,2,3].map(function (n) { return (
+	                react.createElement( ListItem, {
+	                  key: n, className: ("skeleton-text skeleton-effect-" + (this$1.state.effect)), title: "Full Name", subtitle: "Position", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim." },
+	                  react.createElement( SkeletonBlock, { style: { width: '40px', height: '40px', 'border-radius': '50%' }, slot: "media" })
+	                )
+	              ); })
+	            )
+	          )
+	          : (
+	            react.createElement( List, { mediaList: true },
+	              react.createElement( ListItem, {
+	                title: "John Doe", subtitle: "CEO", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim." },
+	                react.createElement( 'img', { src: "https://placeimg.com/80/80/people/1", style: { width: '40px', height: '40px', 'border-radius': '50%' }, slot: "media" })
+	              ),
+	              react.createElement( ListItem, {
+	                title: "Jane Doe", subtitle: "Marketing", text: "Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim." },
+	                react.createElement( 'img', { src: "https://placeimg.com/80/80/people/2", style: { width: '40px', height: '40px', 'border-radius': '50%' }, slot: "media" })
+	              ),
+	              react.createElement( ListItem, {
+	                title: "Kate Johnson", subtitle: "Admin", text: "Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim." },
+	                react.createElement( 'img', { src: "https://placeimg.com/80/80/people/3", style: { width: '40px', height: '40px', 'border-radius': '50%' }, slot: "media" })
+	              )
+	            )
+	          )
+	      )
+	    );
+	  };
+	  defaultExport.prototype.load = function load (effect) {
+	    var self = this;
+	    if (self.state.loading) { return; }
+	    self.setState({
+	      effect: effect,
+	      loading: true,
+	    });
+	    setTimeout(function () {
+	      self.setState({ loading: false });
+	    }, 3000);
 	  };
 
 	  return defaultExport;
@@ -52609,7 +54867,7 @@
 	  )
 	); }
 
-	var defaultExport$l = /*@__PURE__*/(function (superclass) {
+	var defaultExport$n = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -52624,8 +54882,8 @@
 	        react.createElement( Block, { strong: true },
 	          react.createElement( 'p', null, "Framework7 automatically detects if your app in full screen mode, and automatically shows statusbar overlay if app is in full screen mode (or hides statusbar if app is not in full screen mode). Its visibility can be forced using app parameters or using API:" ),
 	          react.createElement( Row, { tag: "p" },
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.showStatusbar.bind(this) }, "Show Statusbar"),
-	            react.createElement( Button, { raised: true, className: "col", onClick: this.hideStatusbar.bind(this) }, "Hide Statusbar")
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.showStatusbar.bind(this) }, "Show Statusbar"),
+	            react.createElement( Button, { fill: true, className: "col", onClick: this.hideStatusbar.bind(this) }, "Hide Statusbar")
 	          )
 	        )
 	      )
@@ -52641,7 +54899,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$m = /*@__PURE__*/(function (superclass) {
+	var defaultExport$o = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -52709,23 +54967,23 @@
 
 	          react.createElement( Row, { className: "margin-top" },
 	            react.createElement( Col, null,
-	              react.createElement( 'small', { className: "display-block" }, "Big"),
-	              react.createElement( Stepper$2, { big: true })
+	              react.createElement( 'small', { className: "display-block" }, "Large"),
+	              react.createElement( Stepper$2, { large: true })
 	            ),
 	            react.createElement( Col, null,
-	              react.createElement( 'small', { className: "display-block" }, "Big Round"),
-	              react.createElement( Stepper$2, { big: true, round: true })
+	              react.createElement( 'small', { className: "display-block" }, "Large Round"),
+	              react.createElement( Stepper$2, { large: true, round: true })
 	            )
 	          ),
 
 	          react.createElement( Row, { className: "margin-top" },
 	            react.createElement( Col, null,
-	              react.createElement( 'small', { className: "display-block" }, "Big Fill"),
-	              react.createElement( Stepper$2, { big: true, fill: true })
+	              react.createElement( 'small', { className: "display-block" }, "Large Fill"),
+	              react.createElement( Stepper$2, { large: true, fill: true })
 	            ),
 	            react.createElement( Col, null,
-	              react.createElement( 'small', { className: "display-block" }, "Big Round Fill"),
-	              react.createElement( Stepper$2, { big: true, round: true, fill: true })
+	              react.createElement( 'small', { className: "display-block" }, "Large Round Fill"),
+	              react.createElement( Stepper$2, { large: true, round: true, fill: true })
 	            )
 	          )
 	        ),
@@ -52778,23 +55036,23 @@
 
 	          react.createElement( Row, { className: "margin-top" },
 	            react.createElement( Col, null,
-	              react.createElement( 'small', { className: "display-block" }, "Big"),
-	              react.createElement( Stepper$2, { raised: true, big: true })
+	              react.createElement( 'small', { className: "display-block" }, "Large"),
+	              react.createElement( Stepper$2, { raised: true, large: true })
 	            ),
 	            react.createElement( Col, null,
-	              react.createElement( 'small', { className: "display-block" }, "Big Round"),
-	              react.createElement( Stepper$2, { raised: true, big: true, round: true })
+	              react.createElement( 'small', { className: "display-block" }, "Large Round"),
+	              react.createElement( Stepper$2, { raised: true, large: true, round: true })
 	            )
 	          ),
 
 	          react.createElement( Row, { className: "margin-top" },
 	            react.createElement( Col, null,
-	              react.createElement( 'small', { className: "display-block" }, "Big Fill"),
-	              react.createElement( Stepper$2, { raised: true, big: true, fill: true })
+	              react.createElement( 'small', { className: "display-block" }, "Large Fill"),
+	              react.createElement( Stepper$2, { raised: true, large: true, fill: true })
 	            ),
 	            react.createElement( Col, null,
-	              react.createElement( 'small', { className: "display-block" }, "Big Round Fill"),
-	              react.createElement( Stepper$2, { raised: true, big: true, round: true, fill: true })
+	              react.createElement( 'small', { className: "display-block" }, "Large Round Fill"),
+	              react.createElement( Stepper$2, { raised: true, large: true, round: true, fill: true })
 	            )
 	          )
 	        ),
@@ -52948,10 +55206,10 @@
 	  react.createElement( Page, null,
 	    react.createElement( Navbar$2, { title: "Subnavbar", backLink: "Back" },
 	      react.createElement( Subnavbar$1, null,
-	        react.createElement( Segmented, { raised: true },
-	          react.createElement( Button, null, "Link 1" ),
-	          react.createElement( Button, null, "Link 2" ),
-	          react.createElement( Button, null, "Link 3" )
+	        react.createElement( Segmented, null,
+	          react.createElement( Button, { outline: true, active: true }, "Link 1"),
+	          react.createElement( Button, { outline: true }, "Link 2"),
+	          react.createElement( Button, { outline: true }, "Link 3")
 	        )
 	      )
 	    ),
@@ -53328,7 +55586,7 @@
 
 	); }
 
-	var defaultExport$n = /*@__PURE__*/(function (superclass) {
+	var defaultExport$p = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -53586,7 +55844,7 @@
 
 	); }
 
-	var defaultExport$o = /*@__PURE__*/(function (superclass) {
+	var defaultExport$q = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -53836,7 +56094,7 @@
 	function TabsStatic () { return (
 	  react.createElement( Page, { pageContent: false },
 	    react.createElement( Navbar$2, { title: "Static Tabs", backLink: "Back" }),
-	    react.createElement( Toolbar$2, { tabbar: true },
+	    react.createElement( Toolbar$2, { bottom: true, tabbar: true },
 	      react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true }, "Tab 1"),
 	      react.createElement( Link, { tabLink: "#tab-2" }, "Tab 2"),
 	      react.createElement( Link, { tabLink: "#tab-3" }, "Tab 3")
@@ -53885,7 +56143,7 @@
 	function TabsAnimated () { return (
 	  react.createElement( Page, { pageContent: false },
 	    react.createElement( Navbar$2, { title: "Animated Tabs", backLink: "Back" }),
-	    react.createElement( Toolbar$2, { tabbar: true },
+	    react.createElement( Toolbar$2, { bottom: true, tabbar: true },
 	      react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true }, "Tab 1"),
 	      react.createElement( Link, { tabLink: "#tab-2" }, "Tab 2"),
 	      react.createElement( Link, { tabLink: "#tab-3" }, "Tab 3")
@@ -53934,7 +56192,7 @@
 	function TabsSwipeable () { return (
 	  react.createElement( Page, { pageContent: false },
 	    react.createElement( Navbar$2, { title: "Swipeable Tabs", backLink: "Back" }),
-	    react.createElement( Toolbar$2, { tabbar: true },
+	    react.createElement( Toolbar$2, { bottom: true, tabbar: true },
 	      react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true }, "Tab 1"),
 	      react.createElement( Link, { tabLink: "#tab-2" }, "Tab 2"),
 	      react.createElement( Link, { tabLink: "#tab-3" }, "Tab 3")
@@ -53983,7 +56241,7 @@
 	function TabsRoutable () { return (
 	  react.createElement( Page, { pageContent: false },
 	    react.createElement( Navbar$2, { title: "Tabs Routable", backLink: "Back" }),
-	    react.createElement( Toolbar$2, { tabbar: true },
+	    react.createElement( Toolbar$2, { bottom: true, tabbar: true },
 	      react.createElement( Link, { tabLink: true, href: "./", routeTabId: "tab1" }, "Tab 1"),
 	      react.createElement( Link, { tabLink: true, href: "tab2/", routeTabId: "tab2" }, "Tab 2"),
 	      react.createElement( Link, { tabLink: true, href: "tab3/", routeTabId: "tab3" }, "Tab 3")
@@ -53996,7 +56254,7 @@
 	  )
 	); }
 
-	var defaultExport$p = /*@__PURE__*/(function (superclass) {
+	var defaultExport$r = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -54011,28 +56269,28 @@
 	        react.createElement( Block, null,
 	          react.createElement( 'p', null, "Toasts provide brief feedback about an operation through a message on the screen." ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.showToastBottom.bind(this) }, "Toast on Bottom")
+	            react.createElement( Button, { fill: true, onClick: this.showToastBottom.bind(this) }, "Toast on Bottom")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.showToastTop.bind(this) }, "Toast on Top")
+	            react.createElement( Button, { fill: true, onClick: this.showToastTop.bind(this) }, "Toast on Top")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.showToastCenter.bind(this) }, "Toast on Center")
+	            react.createElement( Button, { fill: true, onClick: this.showToastCenter.bind(this) }, "Toast on Center")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.showToastIcon.bind(this) }, "Toast with icon")
+	            react.createElement( Button, { fill: true, onClick: this.showToastIcon.bind(this) }, "Toast with icon")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.showToastLargeMessage.bind(this) }, "Toast with large message")
+	            react.createElement( Button, { fill: true, onClick: this.showToastLargeMessage.bind(this) }, "Toast with large message")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.showToastWithButton.bind(this) }, "Toast with close button")
+	            react.createElement( Button, { fill: true, onClick: this.showToastWithButton.bind(this) }, "Toast with close button")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.showToastWithCustomButton.bind(this) }, "Toast with custom button")
+	            react.createElement( Button, { fill: true, onClick: this.showToastWithCustomButton.bind(this) }, "Toast with custom button")
 	          ),
 	          react.createElement( 'p', null,
-	            react.createElement( Button, { raised: true, onClick: this.showToastWithCallback.bind(this) }, "Toast with callback on close")
+	            react.createElement( Button, { fill: true, onClick: this.showToastWithCallback.bind(this) }, "Toast with callback on close")
 	          )
 	        )
 	      )
@@ -54081,7 +56339,7 @@
 	    // Create toast
 	    if (!self.toastIcon) {
 	      self.toastIcon = self.$f7.toast.create({
-	        icon: self.$theme.ios ? '<i class="f7-icons">start</i>' : '<i class="material-icons">start</i>',
+	        icon: self.$theme.ios ? '<i class="f7-icons">star_fill</i>' : '<i class="material-icons">star</i>',
 	        text: 'I\'m on center',
 	        position: 'center',
 	        closeTimeout: 2000,
@@ -54206,24 +56464,29 @@
 	  )
 	); }
 
-	var defaultExport$q = /*@__PURE__*/(function (superclass) {
+	var defaultExport$s = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
-	      toolbarBottom: false,
+	      toolbarPosition: 'bottom',
 	    };
 	  }
 
 	  if ( superclass ) defaultExport.__proto__ = superclass;
 	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
 	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.toggleToolbarPosition = function toggleToolbarPosition () {
+	    this.setState({
+	      toolbarPosition: this.state.toolbarPosition === 'top' ? 'bottom' : 'top',
+	    });
+	  };
 	  defaultExport.prototype.render = function render () {
 	    var this$1 = this;
 
 	    return (
 	      react.createElement( Page, { ref: "el" },
 	        react.createElement( Navbar$2, { title: "Toolbar & Tabbar", backLink: "Back" }),
-	        react.createElement( Toolbar$2, { bottomMd: this.state.toolbarBottom },
+	        react.createElement( Toolbar$2, { position: this.state.toolbarPosition },
 	          react.createElement( Link, null, "Left Link" ),
 	          react.createElement( Link, null, "Right Link" )
 	        ),
@@ -54233,15 +56496,11 @@
 	          react.createElement( ListItem, { link: "./tabbar-scrollable/", title: "Tabbar Scrollable" }),
 	          react.createElement( ListItem, { link: "./toolbar-hide-scroll/", title: "Hide Toolbar On Scroll" })
 	        ),
-	        this.$theme.md && (
-	          react.createElement( BlockTitle, null, "Toolbar Position" )
-	        ),
-	        this.$theme.md && (
-	          react.createElement( Block, null,
-	            react.createElement( 'p', null, "Material (MD) theme toolbar supports both top and bottom positions. Click the following button to change its position." ),
-	            react.createElement( 'p', null,
-	              react.createElement( Button, { raised: true, onClick: function () {this$1.setState({ toolbarBottom: !this$1.state.toolbarBottom });} }, "Toggle Toolbar Position")
-	            )
+	        react.createElement( BlockTitle, null, "Toolbar Position" ),
+	        react.createElement( Block, null,
+	          react.createElement( 'p', null, "Toolbar supports both top and bottom positions. Click the following button to change its position." ),
+	          react.createElement( 'p', null,
+	            react.createElement( Button, { fill: true, onClick: function () {this$1.toggleToolbarPosition();} }, "Toggle Toolbar Position")
 	          )
 	        )
 	      )
@@ -54251,30 +56510,33 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$r = /*@__PURE__*/(function (superclass) {
+	var defaultExport$t = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
-	      toolbarBottom: false,
+	      toolbarPosition: 'bottom',
 	    };
 	  }
 
 	  if ( superclass ) defaultExport.__proto__ = superclass;
 	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
 	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.toggleToolbarPosition = function toggleToolbarPosition () {
+	    this.setState({
+	      toolbarPosition: this.state.toolbarPosition === 'top' ? 'bottom' : 'top',
+	    });
+	  };
 	  defaultExport.prototype.render = function render () {
 	    var this$1 = this;
 
 	    return (
 	      react.createElement( Page, { pageContent: false, ref: "el" },
 	        react.createElement( Navbar$2, { title: "Tabbar", backLink: "Back" },
-	          this.$theme.md && (
-	            react.createElement( NavRight, null,
-	              react.createElement( Link, { 'icon-material': "compare_arrows", onClick: function () {this$1.setState({ toolbarBottom: !this$1.state.toolbarBottom });} })
-	            )
+	          react.createElement( NavRight, null,
+	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
 	          )
 	        ),
-	        react.createElement( Toolbar$2, { tabbar: true, bottomMd: this.state.toolbarBottom },
+	        react.createElement( Toolbar$2, { tabbar: true, position: this.state.toolbarPosition },
 	          react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true }, "Tab 1"),
 	          react.createElement( Link, { tabLink: "#tab-2" }, "Tab 2"),
 	          react.createElement( Link, { tabLink: "#tab-3" }, "Tab 3")
@@ -54325,33 +56587,36 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$s = /*@__PURE__*/(function (superclass) {
+	var defaultExport$u = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
-	      toolbarBottom: false,
+	      toolbarPosition: 'bottom',
 	    };
 	  }
 
 	  if ( superclass ) defaultExport.__proto__ = superclass;
 	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
 	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.toggleToolbarPosition = function toggleToolbarPosition () {
+	    this.setState({
+	      toolbarPosition: this.state.toolbarPosition === 'top' ? 'bottom' : 'top',
+	    });
+	  };
 	  defaultExport.prototype.render = function render () {
 	    var this$1 = this;
 
 	    return (
 	      react.createElement( Page, { pageContent: false },
 	        react.createElement( Navbar$2, { title: "Tabbar Labels", backLink: "Back" },
-	          this.$theme.md && (
-	            react.createElement( NavRight, null,
-	              react.createElement( Link, { 'icon-material': "compare_arrows", onClick: function () {this$1.setState({ toolbarBottom: !this$1.state.toolbarBottom });} })
-	            )
+	          react.createElement( NavRight, null,
+	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
 	          )
 	        ),
-	        react.createElement( Toolbar$2, { tabbar: true, labels: true, bottomMd: this.state.toolbarBottom },
+	        react.createElement( Toolbar$2, { tabbar: true, labels: true, position: this.state.toolbarPosition },
 	          react.createElement( Link, { tabLink: "#tab-1", tabLinkActive: true, text: "Tab 1", iconIos: "f7:email_fill", iconMd: "material:email" }),
-	          react.createElement( Link, { tabLink: "#tab-2", text: "Tab 2", iconIos: "f7:today_fill", iconMd: "material:today" }),
-	          react.createElement( Link, { tabLink: "#tab-3", text: "Tab 3", iconIos: "f7:cloud_fill", iconMd: "material:file_upload" })
+	          react.createElement( Link, { tabLink: "#tab-2", text: "Tab 2", iconIos: "f7:calendar_fill", iconMd: "material:today" }),
+	          react.createElement( Link, { tabLink: "#tab-3", text: "Tab 3", iconIos: "f7:cloud_upload_fill", iconMd: "material:file_upload" })
 	        ),
 
 	        react.createElement( Tabs$1, null,
@@ -54399,17 +56664,22 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$t = /*@__PURE__*/(function (superclass) {
+	var defaultExport$v = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	    this.state = {
-	      toolbarBottom: false,
+	      toolbarPosition: 'bottom',
 	    };
 	  }
 
 	  if ( superclass ) defaultExport.__proto__ = superclass;
 	  defaultExport.prototype = Object.create( superclass && superclass.prototype );
 	  defaultExport.prototype.constructor = defaultExport;
+	  defaultExport.prototype.toggleToolbarPosition = function toggleToolbarPosition () {
+	    this.setState({
+	      toolbarPosition: this.state.toolbarPosition === 'top' ? 'bottom' : 'top',
+	    });
+	  };
 	  defaultExport.prototype.render = function render () {
 	    var this$1 = this;
 
@@ -54417,13 +56687,11 @@
 	    return (
 	      react.createElement( Page, { pageContent: false },
 	        react.createElement( Navbar$2, { title: "Tabbar Scrollable", backLink: "Back" },
-	          this.$theme.md && (
-	            react.createElement( NavRight, null,
-	              react.createElement( Link, { 'icon-material': "compare_arrows", onClick: function () {this$1.setState({ toolbarBottom: !this$1.state.toolbarBottom });} })
-	            )
+	          react.createElement( NavRight, null,
+	            react.createElement( Link, { iconMd: "material:compare_arrows", iconIos: "f7:reload", onClick: function () {this$1.toggleToolbarPosition();} })
 	          )
 	        ),
-	        react.createElement( Toolbar$2, { tabbar: true, scrollable: true, bottomMd: this.state.toolbarBottom },
+	        react.createElement( Toolbar$2, { tabbar: true, scrollable: true, position: this.state.toolbarPosition },
 	          tabs.map(function (tab, index) { return (
 	            react.createElement( Link, {
 	              key: tab, tabLink: ("#tab-" + tab), tabLinkActive: index === 0 }, "Tab ", tab)
@@ -54454,7 +56722,7 @@
 	function ToolbarHideScroll () { return (
 	  react.createElement( Page, { hideToolbarOnScroll: true },
 	    react.createElement( Navbar$2, { title: "Hide Toolbar On Scroll", backLink: "Back" }),
-	    react.createElement( Toolbar$2, { bottomMd: true },
+	    react.createElement( Toolbar$2, { bottom: true },
 	      react.createElement( Link, null, "Left Link" ),
 	      react.createElement( Link, null, "Right Link" )
 	    ),
@@ -54496,7 +56764,7 @@
 	  )
 	); }
 
-	var defaultExport$u = /*@__PURE__*/(function (superclass) {
+	var defaultExport$w = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 	  }
@@ -54510,7 +56778,7 @@
 	        react.createElement( Navbar$2, { title: "Action Sheet", backLink: "Back" },
 	          react.createElement( NavRight, null,
 	            react.createElement( Link, { className: "navbar-tooltip" },
-	              react.createElement( Icon, { ios: "f7:info", md: "material:info_outline" })
+	              react.createElement( Icon, { ios: "f7:info_round_fill", md: "material:info_outline" })
 	            )
 	          )
 	        ),
@@ -54519,9 +56787,9 @@
 	          react.createElement( 'p', null, "Tooltip can be positioned around any element with any HTML content inside." )
 	        ),
 	        react.createElement( Block, { strong: true },
-	          react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_fill", md: "material:info", color: "blue" }), " Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_fill", md: "material:info", color: "blue" }), " aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec." ),
-	          react.createElement( 'p', null, "Vestibulum ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_fill", md: "material:info", color: "blue" }), " gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_fill", md: "material:info", color: "blue" }), " felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt." ),
-	          react.createElement( 'p', null, "Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_fill", md: "material:info", color: "blue" }), " neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_fill", md: "material:info", color: "blue" }), " massa." )
+	          react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec." ),
+	          react.createElement( 'p', null, "Vestibulum ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt." ),
+	          react.createElement( 'p', null, "Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a ", react.createElement( Icon, { className: "icon-tooltip", ios: "f7:info_round_fill", md: "material:info", size: 20 }), " massa." )
 	        ),
 
 	        react.createElement( BlockTitle, null, "Auto Initialization" ),
@@ -55646,7 +57914,7 @@
 	  )
 	); }
 
-	var defaultExport$v = /*@__PURE__*/(function (superclass) {
+	var defaultExport$x = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -55712,7 +57980,7 @@
 	  return defaultExport;
 	}(react.Component));
 
-	var defaultExport$w = /*@__PURE__*/(function (superclass) {
+	var defaultExport$y = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
 
@@ -55739,7 +58007,7 @@
 
 	    return (
 	      react.createElement( Page, null,
-	        react.createElement( Navbar$2, { title: "Color Themes", backLink: "Back" }),
+	        react.createElement( Navbar$2, { large: true, title: "Color Themes", 'title-large': "Color Themes", backLink: "Back" }),
 	        react.createElement( BlockTitle, null, "Layout Themes" ),
 	        react.createElement( Block, null,
 	          react.createElement( 'p', null, "Framework7 comes with 2 main layout themes: Light (default) and Dark:" ),
@@ -55900,6 +58168,10 @@
 	    component: Cards,
 	  },
 	  {
+	    path: '/cards-expandable/',
+	    component: CardsExpandable,
+	  },
+	  {
 	    path: '/checkbox/',
 	    component: Checkbox$2,
 	  },
@@ -55980,8 +58252,12 @@
 	    component: defaultExport$a,
 	  },
 	  {
-	    path: '/messages/',
+	    path: '/menu/',
 	    component: defaultExport$b,
+	  },
+	  {
+	    path: '/messages/',
+	    component: defaultExport$c,
 	  },
 	  {
 	    path: '/navbar/',
@@ -55993,7 +58269,7 @@
 	  },
 	  {
 	    path: '/notifications/',
-	    component: defaultExport$c,
+	    component: defaultExport$d,
 	  },
 	  {
 	    path: '/panel/',
@@ -56001,15 +58277,15 @@
 	  },
 	  {
 	    path: '/photo-browser/',
-	    component: defaultExport$d,
-	  },
-	  {
-	    path: '/picker/',
 	    component: defaultExport$e,
 	  },
 	  {
-	    path: '/popup/',
+	    path: '/picker/',
 	    component: defaultExport$f,
+	  },
+	  {
+	    path: '/popup/',
+	    component: defaultExport$g,
 	  },
 	  {
 	    path: '/popover/',
@@ -56017,15 +58293,15 @@
 	  },
 	  {
 	    path: '/preloader/',
-	    component: defaultExport$g,
-	  },
-	  {
-	    path: '/progressbar/',
 	    component: defaultExport$h,
 	  },
 	  {
-	    path: '/pull-to-refresh/',
+	    path: '/progressbar/',
 	    component: defaultExport$i,
+	  },
+	  {
+	    path: '/pull-to-refresh/',
+	    component: defaultExport$j,
 	  },
 	  {
 	    path: '/radio/',
@@ -56033,7 +58309,7 @@
 	  },
 	  {
 	    path: '/range/',
-	    component: defaultExport$j,
+	    component: defaultExport$k,
 	  },
 	  {
 	    path: '/searchbar/',
@@ -56045,7 +58321,11 @@
 	  },
 	  {
 	    path: '/sheet-modal/',
-	    component: defaultExport$k,
+	    component: defaultExport$l,
+	  },
+	  {
+	    path: '/skeleton/',
+	    component: defaultExport$m,
 	  },
 	  {
 	    path: '/smart-select/',
@@ -56057,11 +58337,11 @@
 	  },
 	  {
 	    path: '/statusbar/',
-	    component: defaultExport$l,
+	    component: defaultExport$n,
 	  },
 	  {
 	    path: '/stepper/',
-	    component: defaultExport$m,
+	    component: defaultExport$o,
 	  },
 	  {
 	    path: '/subnavbar/',
@@ -56121,7 +58401,7 @@
 	      },
 	      {
 	        path: 'swiper-gallery/',
-	        component: defaultExport$n,
+	        component: defaultExport$p,
 	      },
 	      {
 	        path: 'swiper-custom-controls/',
@@ -56150,7 +58430,7 @@
 	  },
 	  {
 	    path: '/swipeout/',
-	    component: defaultExport$o,
+	    component: defaultExport$q,
 	  },
 	  {
 	    path: '/tabs/',
@@ -56190,7 +58470,7 @@
 	  },
 	  {
 	    path: '/toast/',
-	    component: defaultExport$p,
+	    component: defaultExport$r,
 	  },
 	  {
 	    path: '/toggle/',
@@ -56198,19 +58478,19 @@
 	  },
 	  {
 	    path: '/toolbar-tabbar/',
-	    component: defaultExport$q,
+	    component: defaultExport$s,
 	    routes: [
 	      {
 	        path: 'tabbar/',
-	        component: defaultExport$r,
+	        component: defaultExport$t,
 	      },
 	      {
 	        path: 'tabbar-labels/',
-	        component: defaultExport$s,
+	        component: defaultExport$u,
 	      },
 	      {
 	        path: 'tabbar-scrollable/',
-	        component: defaultExport$t,
+	        component: defaultExport$v,
 	      },
 	      {
 	        path: 'toolbar-hide-scroll/',
@@ -56219,7 +58499,7 @@
 	  },
 	  {
 	    path: '/tooltip/',
-	    component: defaultExport$u,
+	    component: defaultExport$w,
 	  },
 	  {
 	    path: '/timeline/',
@@ -56239,13 +58519,13 @@
 	  },
 	  {
 	    path: '/virtual-list/',
-	    component: defaultExport$v,
+	    component: defaultExport$x,
 	  },
 
 	  // Color Themes
 	  {
 	    path: '/color-themes/',
-	    component: defaultExport$w,
+	    component: defaultExport$y,
 	  },
 
 	  // Routable Modals
@@ -56293,7 +58573,7 @@
 
 	Framework7.use(Plugin);
 	// Mount React App
-	reactDom_production_min.render(
+	reactDom.render(
 	  react.createElement(App$1),
 	  document.getElementById('app')
 	);

@@ -95,6 +95,10 @@ var routes = [
     url: './pages/cards.html',
   },
   {
+    path: '/cards-expandable/',
+    url: './pages/cards-expandable.html',
+  },
+  {
     path: '/checkbox/',
     url: './pages/checkbox.html',
   },
@@ -175,6 +179,10 @@ var routes = [
     componentUrl: './pages/login-screen-page.html',
   },
   {
+    path: '/menu/',
+    componentUrl: './pages/menu.html',
+  },
+  {
     path: '/messages/',
     componentUrl: './pages/messages.html',
   },
@@ -241,6 +249,10 @@ var routes = [
   {
     path: '/sheet-modal/',
     componentUrl: './pages/sheet-modal.html',
+  },
+  {
+    path: '/skeleton/',
+    componentUrl: './pages/skeleton.html',
   },
   {
     path: '/smart-select/',

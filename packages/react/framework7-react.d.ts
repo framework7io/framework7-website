@@ -35,7 +35,6 @@ import F7Fab from './components/fab';
 import F7Gauge from './components/gauge';
 import F7Icon from './components/icon';
 import F7Input from './components/input';
-import F7Label from './components/label';
 import F7Link from './components/link';
 import F7ListButton from './components/list-button';
 import F7ListGroup from './components/list-group';
@@ -48,6 +47,10 @@ import F7ListItem from './components/list-item';
 import F7List from './components/list';
 import F7LoginScreenTitle from './components/login-screen-title';
 import F7LoginScreen from './components/login-screen';
+import F7MenuDropdownItem from './components/menu-dropdown-item';
+import F7MenuDropdown from './components/menu-dropdown';
+import F7MenuItem from './components/menu-item';
+import F7Menu from './components/menu';
 import F7Message from './components/message';
 import F7MessagebarAttachment from './components/messagebar-attachment';
 import F7MessagebarAttachments from './components/messagebar-attachments';
@@ -59,6 +62,7 @@ import F7MessagesTitle from './components/messages-title';
 import F7Messages from './components/messages';
 import F7NavLeft from './components/nav-left';
 import F7NavRight from './components/nav-right';
+import F7NavTitleLarge from './components/nav-title-large';
 import F7NavTitle from './components/nav-title';
 import F7Navbar from './components/navbar';
 import F7PageContent from './components/page-content';
@@ -76,6 +80,8 @@ import F7Row from './components/row';
 import F7Searchbar from './components/searchbar';
 import F7Segmented from './components/segmented';
 import F7Sheet from './components/sheet';
+import F7SkeletonBlock from './components/skeleton-block';
+import F7SkeletonText from './components/skeleton-text';
 import F7Statusbar from './components/statusbar';
 import F7Stepper from './components/stepper';
 import F7Subnavbar from './components/subnavbar';
@@ -177,8 +183,6 @@ export {
   F7Icon as Icon,
   F7Input,
   F7Input as Input,
-  F7Label,
-  F7Label as Label,
   F7Link,
   F7Link as Link,
   F7ListButton,
@@ -203,6 +207,14 @@ export {
   F7LoginScreenTitle as LoginScreenTitle,
   F7LoginScreen,
   F7LoginScreen as LoginScreen,
+  F7MenuDropdownItem,
+  F7MenuDropdownItem as MenuDropdownItem,
+  F7MenuDropdown,
+  F7MenuDropdown as MenuDropdown,
+  F7MenuItem,
+  F7MenuItem as MenuItem,
+  F7Menu,
+  F7Menu as Menu,
   F7Message,
   F7Message as Message,
   F7MessagebarAttachment,
@@ -225,6 +237,8 @@ export {
   F7NavLeft as NavLeft,
   F7NavRight,
   F7NavRight as NavRight,
+  F7NavTitleLarge,
+  F7NavTitleLarge as NavTitleLarge,
   F7NavTitle,
   F7NavTitle as NavTitle,
   F7Navbar,
@@ -259,6 +273,10 @@ export {
   F7Segmented as Segmented,
   F7Sheet,
   F7Sheet as Sheet,
+  F7SkeletonBlock,
+  F7SkeletonBlock as SkeletonBlock,
+  F7SkeletonText,
+  F7SkeletonText as SkeletonText,
   F7Statusbar,
   F7Statusbar as Statusbar,
   F7Stepper,

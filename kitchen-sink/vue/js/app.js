@@ -687,7 +687,7 @@
   Object.defineProperties( VNode.prototype, prototypeAccessors );
 
   var createEmptyVNode = function (text) {
-    if ( text === void 0 ) { text = ''; }
+    if ( text === void 0 ) text = '';
 
     var node = new VNode();
     node.text = text;
@@ -754,10 +754,8 @@
     // cache original method
     var original = arrayProto[method];
     def(arrayMethods, method, function mutator () {
-      var arguments$1 = arguments;
-
       var args = [], len = arguments.length;
-      while ( len-- ) { args[ len ] = arguments$1[ len ]; }
+      while ( len-- ) args[ len ] = arguments[ len ];
 
       var result = original.apply(this, args);
       var ob = this.__ob__;
@@ -1308,7 +1306,7 @@
     normalizeProps(child, vm);
     normalizeInject(child, vm);
     normalizeDirectives(child);
-
+    
     // Apply extends and mixins on the child options,
     // but only if it is a raw options object that isn't
     // the result of another mergeOptions call.
@@ -1581,7 +1579,7 @@
       try {
         return fn.apply(null, arguments)
       } finally {
-        useMacroTask = false;
+        useMacroTask = false;    
       }
     })
   }
@@ -2900,7 +2898,7 @@
       }
     };
 
-    for (var key in propsOptions) { loop( key ); }
+    for (var key in propsOptions) loop( key );
     toggleObserving(true);
   }
 
@@ -3300,7 +3298,7 @@
           }
         };
 
-        for (var key in value) { loop( key ); }
+        for (var key in value) loop( key );
       }
     }
     return data
@@ -3695,7 +3693,10 @@
     return vnode
   }
 
-  function createComponentInstanceForVnode (vnode, parent) {
+  function createComponentInstanceForVnode (
+    vnode, // we know it's MountedComponentVNode but flow doesn't
+    parent // activeInstance in lifecycle state
+  ) {
     var options = {
       _isComponent: true,
       _parentVnode: vnode,
@@ -9636,55 +9637,6 @@
     }
   }
 
-  var createPromise = function createPromise(handler) {
-    var resolved = false;
-    var rejected = false;
-    var resolveArgs;
-    var rejectArgs;
-    var promiseHandlers = {
-      then: undefined,
-      catch: undefined,
-    };
-    var promise = {
-      then: function then(thenHandler) {
-        if (resolved) {
-          thenHandler.apply(void 0, resolveArgs);
-        } else {
-          promiseHandlers.then = thenHandler;
-        }
-        return promise;
-      },
-      catch: function catch$1(catchHandler) {
-        if (rejected) {
-          catchHandler.apply(void 0, rejectArgs);
-        } else {
-          promiseHandlers.catch = catchHandler;
-        }
-        return promise;
-      },
-    };
-
-    function resolve() {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      resolved = true;
-      if (promiseHandlers.then) { promiseHandlers.then.apply(promiseHandlers, args); }
-      else { resolveArgs = args; }
-    }
-    function reject() {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      rejected = true;
-      if (promiseHandlers.catch) { promiseHandlers.catch.apply(promiseHandlers, args); }
-      else { rejectArgs = args; }
-    }
-    handler(resolve, reject);
-
-    return promise;
-  };
-
   var uniqueNumber = 1;
 
   var Utils = {
@@ -9700,6 +9652,7 @@
       return mask.replace(/x/g, function () { return map[Math.floor((Math.random() * length))]; });
     },
     mdPreloaderContent: "\n    <span class=\"preloader-inner\">\n      <span class=\"preloader-inner-gap\"></span>\n      <span class=\"preloader-inner-left\">\n          <span class=\"preloader-inner-half-circle\"></span>\n      </span>\n      <span class=\"preloader-inner-right\">\n          <span class=\"preloader-inner-half-circle\"></span>\n      </span>\n    </span>\n  ".trim(),
+    iosPreloaderContent: ("\n    <span class=\"preloader-inner\">\n      " + (Array.from({ length: 12 }).map(function () { return '<span class="preloader-inner-line"></span>'; }).join('')) + "\n    </span>\n  ").trim(),
     eventNameToColonCase: function eventNameToColonCase(eventName) {
       var hasColon;
       return eventName.split('').map(function (char, index) {
@@ -9743,9 +9696,6 @@
     },
     now: function now() {
       return Date.now();
-    },
-    promise: function promise(handler) {
-      return win.Promise ? new Promise(handler) : createPromise(handler);
     },
     requestAnimationFrame: function requestAnimationFrame(callback) {
       if (win.requestAnimationFrame) { return win.requestAnimationFrame(callback); }
@@ -9937,6 +9887,78 @@
       }
       return to;
     },
+    colorHexToRgb: function colorHexToRgb(hex) {
+      var h = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, function (m, r, g, b) { return r + r + g + g + b + b; });
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);
+      return result
+        ? result.slice(1).map(function (n) { return parseInt(n, 16); })
+        : null;
+    },
+    colorRgbToHex: function colorRgbToHex(r, g, b) {
+      var result = [r, g, b].map(function (n) {
+        var hex = n.toString(16);
+        return hex.length === 1 ? ("0" + hex) : hex;
+      }).join('');
+      return ("#" + result);
+    },
+    colorRgbToHsl: function colorRgbToHsl(r, g, b) {
+      r /= 255; // eslint-disable-line
+      g /= 255; // eslint-disable-line
+      b /= 255; // eslint-disable-line
+      var max = Math.max(r, g, b);
+      var min = Math.min(r, g, b);
+      var d = max - min;
+      var h;
+      if (d === 0) { h = 0; }
+      else if (max === r) { h = ((g - b) / d) % 6; }
+      else if (max === g) { h = (b - r) / d + 2; }
+      else if (max === b) { h = (r - g) / d + 4; }
+      var l = (min + max) / 2;
+      var s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+      return [h * 60, s, l];
+    },
+    colorHslToRgb: function colorHslToRgb(h, s, l) {
+      var c = (1 - Math.abs(2 * l - 1)) * s;
+      var hp = h / 60;
+      var x = c * (1 - Math.abs((hp % 2) - 1));
+      var rgb1;
+      if (Number.isNaN(h) || typeof h === 'undefined') {
+        rgb1 = [0, 0, 0];
+      } else if (hp <= 1) { rgb1 = [c, x, 0]; }
+      else if (hp <= 2) { rgb1 = [x, c, 0]; }
+      else if (hp <= 3) { rgb1 = [0, c, x]; }
+      else if (hp <= 4) { rgb1 = [0, x, c]; }
+      else if (hp <= 5) { rgb1 = [x, 0, c]; }
+      else if (hp <= 6) { rgb1 = [c, 0, x]; }
+      var m = l - (c / 2);
+      return rgb1.map(function (n) { return Math.max(0, Math.min(255, Math.round(255 * (n + m)))); });
+    },
+    colorThemeCSSProperties: function colorThemeCSSProperties() {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      var hex;
+      var rgb;
+      if (args.length === 1) {
+        hex = args[0];
+        rgb = Utils.colorHexToRgb(hex);
+      } else if (args.length === 3) {
+        rgb = args;
+        hex = Utils.colorRgbToHex.apply(Utils, rgb);
+      }
+      if (!rgb) { return {}; }
+      var hsl = Utils.colorRgbToHsl.apply(Utils, rgb);
+      var hslShade = [hsl[0], hsl[1], Math.max(0, (hsl[2] - 0.08))];
+      var hslTint = [hsl[0], hsl[1], Math.max(0, (hsl[2] + 0.08))];
+      var shade = Utils.colorRgbToHex.apply(Utils, Utils.colorHslToRgb.apply(Utils, hslShade));
+      var tint = Utils.colorRgbToHex.apply(Utils, Utils.colorHslToRgb.apply(Utils, hslTint));
+      return {
+        '--f7-theme-color': hex,
+        '--f7-theme-color-rgb': rgb.join(', '),
+        '--f7-theme-color-shade': shade,
+        '--f7-theme-color-tint': tint,
+      };
+    },
   };
 
   var Device = (function Device() {
@@ -10024,10 +10046,9 @@
 
     // Webview
     device.webView = !!((iphone || ipad || ipod) && (ua.match(/.*AppleWebKit(?!.*Safari)/i) || win.navigator.standalone))
-                       || (win.matchMedia && win.matchMedia('(display-mode: standalone)').matches);
+      || (win.matchMedia && win.matchMedia('(display-mode: standalone)').matches);
     device.webview = device.webView;
     device.standalone = device.webView;
-
 
     // Desktop
     device.desktop = !(device.os || device.android || device.webView);
@@ -10046,8 +10067,14 @@
         && metaViewport && metaViewport.getAttribute('content').indexOf('minimal-ui') >= 0;
     }
 
+    // Meta statusbar
+    var metaStatusbar = doc.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+
     // Check for status bar and fullscreen app mode
     device.needsStatusbarOverlay = function needsStatusbarOverlay() {
+      if (device.standalone && device.ios && metaStatusbar && metaStatusbar.content === 'black-translucent') {
+        return true;
+      }
       if ((device.webView || (device.android && device.cordova)) && (win.innerWidth * win.innerHeight === win.screen.width * win.screen.height)) {
         if (device.iphoneX && (win.orientation === 90 || win.orientation === -90)) {
           return false;
@@ -11060,23 +11087,9 @@
   };
 
   var Support = (function Support() {
-    var positionSticky = (function supportPositionSticky() {
-      var support = false;
-      var div = doc.createElement('div');
-      ('sticky -webkit-sticky -moz-sticky').split(' ').forEach(function (prop) {
-        if (support) { return; }
-        div.style.position = prop;
-        if (div.style.position === prop) {
-          support = true;
-        }
-      });
-      return support;
-    }());
-
     var testDiv = doc.createElement('div');
 
     return {
-      positionSticky: positionSticky,
       touch: (function checkTouch() {
         return !!((win.navigator.maxTouchPoints > 0) || ('ontouchstart' in win) || (win.DocumentTouch && doc instanceof win.DocumentTouch));
       }()),
@@ -11125,6 +11138,10 @@
       gestures: (function checkGestures() {
         return 'ongesturestart' in win;
       }()),
+
+      intersectionObserver: (function checkObserver() {
+        return ('IntersectionObserver' in win);
+      }()),
     };
   }());
 
@@ -11140,7 +11157,12 @@
       init: function init() {
         var classNames = [];
         var html = doc.querySelector('html');
+        var metaStatusbar = doc.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
         if (!html) { return; }
+        if (Device.standalone && Device.ios && metaStatusbar && metaStatusbar.content === 'black-translucent') {
+          classNames.push('device-full-viewport');
+        }
+
         // Pixel Ratio
         classNames.push(("device-pixel-ratio-" + (Math.floor(Device.pixelRatio))));
         if (Device.pixelRatio >= 2) {
@@ -11192,9 +11214,6 @@
         var html = doc.querySelector('html');
         if (!html) { return; }
         var classNames = [];
-        if (Support.positionSticky) {
-          classNames.push('support-position-sticky');
-        }
         // Add html classes
         classNames.forEach(function (className) {
           html.classList.add(className);
@@ -11286,7 +11305,7 @@
   function initTouch() {
     var app = this;
     var params = app.params.touch;
-    var useRipple = app.theme === 'md' && params.materialRipple;
+    var useRipple = params[((app.theme) + "TouchRipple")];
 
     if (Device.ios && Device.webView) {
       // Strange hack required for iOS 8 webview to work on inputs
@@ -11304,6 +11323,7 @@
     var isMoved;
     var tapHoldFired;
     var tapHoldTimeout;
+    var preventClick;
 
     var activableElement;
     var activeTimeout;
@@ -11328,8 +11348,12 @@
       return activable || target;
     }
 
+    function isInsideScrollableViewLight(el) {
+      var pageContent = el.parents('.page-content');
+      return pageContent.length > 0;
+    }
     function isInsideScrollableView(el) {
-      var pageContent = el.parents('.page-content, .panel');
+      var pageContent = el.parents('.page-content');
 
       if (pageContent.length === 0) {
         return false;
@@ -11422,7 +11446,7 @@
 
     // Ripple handlers
     function findRippleElement(el) {
-      var rippleElements = params.materialRippleElements;
+      var rippleElements = params.touchRippleElements;
       var $el = $(el);
       if ($el.is(rippleElements)) {
         if ($el.hasClass('no-ripple')) {
@@ -11456,7 +11480,11 @@
         rippleTarget = undefined;
         return;
       }
-      if (!isInsideScrollableView(rippleTarget)) {
+      var inScrollable = params.fastClicks
+        ? isInsideScrollableView(rippleTarget)
+        : isInsideScrollableViewLight(rippleTarget);
+
+      if (!inScrollable) {
         createRipple(rippleTarget, touchStartX, touchStartY);
       } else {
         rippleTimeout = setTimeout(function () {
@@ -11601,14 +11629,7 @@
 
       if (params.activeState) {
         activableElement = findActivableElement(targetElement);
-        // If it's inside a scrollable view, we don't trigger active-state yet,
-        // because it can be a scroll instead. Based on the link:
-        // http://labnote.beedesk.com/click-scroll-and-pseudo-active-on-mobile-webk
-        if (!isInsideScrollableView(activableElement)) {
-          addActive();
-        } else {
-          activeTimeout = setTimeout(addActive, 80);
-        }
+        activeTimeout = setTimeout(addActive, 0);
       }
       if (useRipple) {
         rippleTouchStart(targetElement, touchStartX, touchStartY);
@@ -11799,6 +11820,121 @@
       return allowClick;
     }
 
+    function handleTouchStartLight(e) {
+      isMoved = false;
+      tapHoldFired = false;
+      preventClick = false;
+      if (e.targetTouches.length > 1) {
+        if (activableElement) { removeActive(); }
+        return true;
+      }
+      if (e.touches.length > 1 && activableElement) {
+        removeActive();
+      }
+      if (params.tapHold) {
+        if (tapHoldTimeout) { clearTimeout(tapHoldTimeout); }
+        tapHoldTimeout = setTimeout(function () {
+          if (e && e.touches && e.touches.length > 1) { return; }
+          tapHoldFired = true;
+          e.preventDefault();
+          preventClick = true;
+          $(e.target).trigger('taphold');
+        }, params.tapHoldDelay);
+      }
+      targetElement = e.target;
+      touchStartX = e.targetTouches[0].pageX;
+      touchStartY = e.targetTouches[0].pageY;
+
+      if (params.activeState) {
+        activableElement = findActivableElement(targetElement);
+        if (!isInsideScrollableViewLight(activableElement)) {
+          addActive();
+        } else {
+          activeTimeout = setTimeout(addActive, 80);
+        }
+      }
+      if (useRipple) {
+        rippleTouchStart(targetElement, touchStartX, touchStartY);
+      }
+      return true;
+    }
+    function handleTouchMoveLight(e) {
+      var distance = params.fastClicks ? params.fastClicksDistanceThreshold : 0;
+      if (distance) {
+        var pageX = e.targetTouches[0].pageX;
+        var pageY = e.targetTouches[0].pageY;
+        if (Math.abs(pageX - touchStartX) > distance || Math.abs(pageY - touchStartY) > distance) {
+          isMoved = true;
+        }
+      } else {
+        isMoved = true;
+      }
+      if (isMoved) {
+        preventClick = true;
+        if (params.tapHold) {
+          clearTimeout(tapHoldTimeout);
+        }
+        if (params.activeState) {
+          clearTimeout(activeTimeout);
+          removeActive();
+        }
+        if (useRipple) {
+          rippleTouchMove();
+        }
+      }
+    }
+    function handleTouchEndLight(e) {
+      clearTimeout(activeTimeout);
+      clearTimeout(tapHoldTimeout);
+      if (doc.activeElement === e.target) {
+        if (params.activeState) { removeActive(); }
+        if (useRipple) {
+          rippleTouchEnd();
+        }
+        return true;
+      }
+      if (params.activeState) {
+        addActive();
+        setTimeout(removeActive, 0);
+      }
+      if (useRipple) {
+        rippleTouchEnd();
+      }
+      if ((params.tapHoldPreventClicks && tapHoldFired) || preventClick) {
+        if (e.cancelable) { e.preventDefault(); }
+        preventClick = true;
+        return false;
+      }
+      return true;
+    }
+    function handleClickLight(e) {
+      var localPreventClick = preventClick;
+      if (targetElement && e.target !== targetElement) {
+        localPreventClick = true;
+      }
+      if (params.tapHold && params.tapHoldPreventClicks && tapHoldFired) {
+        localPreventClick = true;
+      }
+      if (localPreventClick) {
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      if (params.tapHold) {
+        tapHoldTimeout = setTimeout(
+          function () {
+            tapHoldFired = false;
+          },
+          (Device.ios || Device.androidChrome ? 100 : 400)
+        );
+      }
+      preventClick = false;
+      targetElement = null;
+
+      return !localPreventClick;
+    }
+
     function emitAppTouchEvent(name, e) {
       app.emit({
         events: name,
@@ -11856,10 +11992,18 @@
     }
 
     if (Support.touch) {
-      app.on('click', handleClick);
-      app.on('touchstart', handleTouchStart);
-      app.on('touchmove', handleTouchMove);
-      app.on('touchend', handleTouchEnd);
+      if (params.fastClicks) {
+        app.on('click', handleClick);
+        app.on('touchstart', handleTouchStart);
+        app.on('touchmove', handleTouchMove);
+        app.on('touchend', handleTouchEnd);
+      } else {
+        app.on('click', handleClickLight);
+        app.on('touchstart', handleTouchStartLight);
+        app.on('touchmove', handleTouchMoveLight);
+        app.on('touchend', handleTouchEndLight);
+      }
+
       doc.addEventListener('touchcancel', handleTouchCancel, { passive: true });
     } else if (params.activeState) {
       app.on('touchstart', handleMouseDown);
@@ -11882,21 +12026,22 @@
     params: {
       touch: {
         // Fast clicks
-        fastClicks: true,
+        fastClicks: false,
         fastClicksDistanceThreshold: 10,
         fastClicksDelayBetweenClicks: 50,
         fastClicksExclude: '', // CSS selector
         // ContextMenu
-        disableContextMenu: true,
+        disableContextMenu: false,
         // Tap Hold
         tapHold: false,
         tapHoldDelay: 750,
         tapHoldPreventClicks: true,
         // Active State
         activeState: true,
-        activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus',
-        materialRipple: true,
-        materialRippleElements: '.ripple, .link, .item-link, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus',
+        activeStateElements: 'a, button, label, span, .actions-button, .stepper-button, .stepper-button-plus, .stepper-button-minus, .card-expandable, .menu-item',
+        mdTouchRipple: true,
+        iosTouchRipple: false,
+        touchRippleElements: '.ripple, .link, .item-link, .list-button, .links-list a, .button, button, .input-clear-button, .dialog-button, .tab-link, .item-radio, .item-checkbox, .actions-button, .searchbar-disable-button, .fab a, .checkbox, .radio, .data-table .sortable-cell:not(.input-cell), .notification-close-button, .stepper-button, .stepper-button-minus, .stepper-button-plus, .menu-item-content',
       },
     },
     instance: {
@@ -12442,24 +12587,236 @@
     var touchesDiff;
     var allowViewTouchMove = true;
     var touchStartTime;
-    var currentNavbar = [];
-    var previousNavbar = [];
-    var currentNavElements;
-    var previousNavElements;
-    var activeNavBackIcon;
-    var activeNavBackIconText;
-    var previousNavBackIcon;
-    // let previousNavBackIconText;
+    var $currentNavbarInner = [];
+    var $previousNavbarInner = [];
     var dynamicNavbar;
     var separateNavbar;
     var pageShadow;
     var pageOpacity;
-    var navbarWidth;
+
+    var animatableNavEls;
 
     var paramsSwipeBackAnimateShadow = params[((app.theme) + "SwipeBackAnimateShadow")];
     var paramsSwipeBackAnimateOpacity = params[((app.theme) + "SwipeBackAnimateOpacity")];
     var paramsSwipeBackActiveArea = params[((app.theme) + "SwipeBackActiveArea")];
     var paramsSwipeBackThreshold = params[((app.theme) + "SwipeBackThreshold")];
+
+    var transformOrigin = app.rtl ? 'right center' : 'left center';
+
+    function animatableNavElements() {
+      var els = [];
+      var inverter = app.rtl ? -1 : 1;
+      var currentNavIsLarge = $currentNavbarInner.hasClass('navbar-inner-large');
+      var previousNavIsLarge = $previousNavbarInner.hasClass('navbar-inner-large');
+      var fromLarge = currentNavIsLarge && !$currentNavbarInner.hasClass('navbar-inner-large-collapsed');
+      var toLarge = previousNavIsLarge && !$previousNavbarInner.hasClass('navbar-inner-large-collapsed');
+      var $currentNavElements = $currentNavbarInner.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+      var $previousNavElements = $previousNavbarInner.children('.left, .title, .right, .subnavbar, .fading, .title-large');
+      var activeNavBackIconText;
+      var previousNavBackIconText;
+
+      if (params.iosAnimateNavbarBackIcon) {
+        if ($currentNavbarInner.hasClass('sliding')) {
+          activeNavBackIconText = $currentNavbarInner.children('.left').find('.back .icon + span').eq(0);
+        } else {
+          activeNavBackIconText = $currentNavbarInner.children('.left.sliding').find('.back .icon + span').eq(0);
+        }
+        if ($previousNavbarInner.hasClass('sliding')) {
+          previousNavBackIconText = $previousNavbarInner.children('.left').find('.back .icon + span').eq(0);
+        } else {
+          previousNavBackIconText = $previousNavbarInner.children('.left.sliding').find('.back .icon + span').eq(0);
+        }
+        if (activeNavBackIconText.length) {
+          $previousNavElements.each(function (index, el) {
+            if (!$(el).hasClass('title')) { return; }
+            el.f7NavbarLeftOffset += activeNavBackIconText.prev('.icon')[0].offsetWidth;
+          });
+        }
+      }
+      $currentNavElements
+        .each(function (index, navEl) {
+          var $navEl = $(navEl);
+          var isSubnavbar = $navEl.hasClass('subnavbar');
+          var isLeft = $navEl.hasClass('left');
+          var isTitle = $navEl.hasClass('title');
+          if (!fromLarge && $navEl.hasClass('.title-large')) { return; }
+          var el = {
+            el: navEl,
+          };
+          if (fromLarge) {
+            if (isTitle) { return; }
+            if ($navEl.hasClass('title-large')) {
+              if (!separateNavbar) { return; }
+              if (toLarge) {
+                if (els.indexOf(el) < 0) { els.push(el); }
+                el.overflow = 'visible';
+                el.transform = 'translateX(100%)';
+                $navEl.find('.title-large-text, .title-large-inner').each(function (subIndex, subNavEl) {
+                  els.push({
+                    el: subNavEl,
+                    transform: function (progress) { return ("translateX(" + (-100 + progress * 100 * inverter) + "%)"); },
+                  });
+                });
+              } else {
+                if (els.indexOf(el) < 0) { els.push(el); }
+                el.overflow = 'visible';
+                el.transform = function (progress) { return ("translateY(calc(" + (-progress) + " * var(--f7-navbar-large-title-height)))"); };
+                $navEl.find('.title-large-text, .title-large-inner').each(function (subIndex, subNavEl) {
+                  els.push({
+                    el: subNavEl,
+                    transform: function (progress) { return ("translateX(" + (progress * 100 * inverter) + "%) translateY(calc(" + progress + " * var(--f7-navbar-large-title-height)))"); },
+                  });
+                });
+              }
+              return;
+            }
+          }
+          if (toLarge) {
+            if (!fromLarge) {
+              if ($navEl.hasClass('title-large')) {
+                if (!separateNavbar) { return; }
+                if (els.indexOf(el) < 0) { els.push(el); }
+                el.opacity = 0;
+              }
+            }
+            if (isLeft && separateNavbar) {
+              if (els.indexOf(el) < 0) { els.push(el); }
+              el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
+              $navEl.find('.back span').each(function (subIndex, subNavEl) {
+                els.push({
+                  el: subNavEl,
+                  'transform-origin': transformOrigin,
+                  transform: function (progress) { return ("translateY(calc(var(--f7-navbar-height) * " + progress + ")) scale(" + (1 + (1 * progress)) + ")"); },
+                });
+              });
+              return;
+            }
+          }
+          if ($navEl.hasClass('title-large')) { return; }
+          if (els.indexOf(el) < 0) { els.push(el); }
+          if (!isSubnavbar) {
+            el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
+          }
+          if ($navEl.hasClass('sliding') >= 0 || $currentNavbarInner.hasClass('sliding')) {
+            var transformTarget = el;
+            if (isLeft && activeNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
+              var textEl = { el: activeNavBackIconText[0] };
+              transformTarget = textEl;
+              els.push(textEl);
+            }
+            transformTarget.transform = function (progress) {
+              var activeNavTranslate = progress * transformTarget.el.f7NavbarRightOffset;
+              if (Device.pixelRatio === 1) { activeNavTranslate = Math.round(activeNavTranslate); }
+              if (isSubnavbar && currentNavIsLarge && separateNavbar) {
+                return ("translate3d(" + activeNavTranslate + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)");
+              }
+              return ("translate3d(" + activeNavTranslate + "px,0,0)");
+            };
+          }
+        });
+      $previousNavElements
+        .each(function (index, navEl) {
+          var $navEl = $(navEl);
+          var isSubnavbar = $navEl.hasClass('subnavbar');
+          var isLeft = $navEl.hasClass('left');
+          var isTitle = $navEl.hasClass('title');
+          var el = {
+            el: navEl,
+          };
+          if (toLarge) {
+            if (isTitle) { return; }
+            if (els.indexOf(el) < 0) { els.push(el); }
+
+            if ($navEl.hasClass('title-large')) {
+              if (!separateNavbar) { return; }
+              if (fromLarge) {
+                el.opacity = 1;
+                el.overflow = 'visible';
+                el.transform = 'translateY(0)';
+                $navEl.find('.title-large-text').each(function (subIndex, subNavEl) {
+                  els.push({
+                    el: subNavEl,
+                    'transform-origin': transformOrigin,
+                    opacity: function (progress) { return (Math.pow( progress, 3 )); },
+                    transform: function (progress) { return ("translateY(calc(" + (-1 + progress * 1) + " * var(--f7-navbar-large-title-height))) scale(" + (0.5 + progress * 0.5) + ")"); },
+                  });
+                });
+              } else {
+                el.transform = function (progress) { return ("translateY(calc(" + (progress - 1) + " * var(--f7-navbar-large-title-height)))"); };
+                el.opacity = 1;
+                el.overflow = 'hidden';
+                $navEl.find('.title-large-text').each(function (subIndex, subNavEl) {
+                  els.push({
+                    el: subNavEl,
+                    'transform-origin': transformOrigin,
+                    opacity: function (progress) { return (Math.pow( progress, 3 )); },
+                    transform: function (progress) { return ("scale(" + (0.5 + progress * 0.5) + ")"); },
+                  });
+                });
+              }
+              $navEl.find('.title-large-inner').each(function (subIndex, subNavEl) {
+                els.push({
+                  el: subNavEl,
+                  'transform-origin': transformOrigin,
+                  opacity: function (progress) { return (Math.pow( progress, 3 )); },
+                  transform: function (progress) { return ("translateX(" + (-100 * (1 - progress) * inverter) + "%)"); },
+                });
+              });
+              return;
+            }
+          }
+          if ($navEl.hasClass('title-large')) { return; }
+          if (els.indexOf(el) < 0) { els.push(el); }
+          if (!isSubnavbar) {
+            el.opacity = function (progress) { return (Math.pow( progress, 3 )); };
+          }
+          if ($navEl.hasClass('sliding') >= 0 || $previousNavbarInner.hasClass('sliding')) {
+            var transformTarget = el;
+            if (isLeft && previousNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
+              var textEl = { el: activeNavBackIconText[0] };
+              transformTarget = textEl;
+              els.push(textEl);
+            }
+            transformTarget.transform = function (progress) {
+              var previousNavTranslate = transformTarget.el.f7NavbarLeftOffset * (1 - progress);
+              if (Device.pixelRatio === 1) { previousNavTranslate = Math.round(previousNavTranslate); }
+              if (isSubnavbar && previousNavIsLarge && separateNavbar) {
+                return ("translate3d(" + previousNavTranslate + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)");
+              }
+              return ("translate3d(" + previousNavTranslate + "px,0,0)");
+            };
+          }
+        });
+      return els;
+    }
+
+    function setAnimatableNavElements(ref) {
+      if ( ref === void 0 ) ref = {};
+      var progress = ref.progress;
+      var reset = ref.reset;
+      var transition = ref.transition;
+
+      var styles = ['overflow', 'transform', 'transform-origin', 'opacity'];
+      for (var i = 0; i < animatableNavEls.length; i += 1) {
+        var el = animatableNavEls[i];
+        if (el && el.el) {
+          if (transition === true) { el.el.classList.add('navbar-page-transitioning'); }
+          if (transition === false) { el.el.classList.remove('navbar-page-transitioning'); }
+          for (var j = 0; j < styles.length; j += 1) {
+            var styleProp = styles[j];
+            if (el[styleProp]) {
+              if (reset) {
+                el.el.style[styleProp] = '';
+              } else if (typeof el[styleProp] === 'function') {
+                el.el.style[styleProp] = el[styleProp](progress);
+              } else {
+                el.el.style[styleProp] = el[styleProp];
+              }
+            }
+          }
+        }
+      }
+    }
 
     function handleTouchStart(e) {
       var swipeBackEnabled = params[((app.theme) + "SwipeBack")];
@@ -12497,7 +12854,7 @@
         }
 
         currentPage = target.closest('.page');
-        if (currentPage.hasClass('no-swipeback') || target.closest('.no-swipeback').length > 0) { cancel = true; }
+        if (currentPage.hasClass('no-swipeback') || target.closest('.no-swipeback, .card-opened').length > 0) { cancel = true; }
         previousPage = $el.find('.page-previous:not(.stacked)');
 
         var notFromBorder = touchesStart.x - $el.offset().left > paramsSwipeBackActiveArea;
@@ -12531,29 +12888,14 @@
 
         if (dynamicNavbar) {
           if (separateNavbar) {
-            currentNavbar = $navbarEl.find('.navbar-current:not(.stacked)');
-            previousNavbar = $navbarEl.find('.navbar-previous:not(.stacked)');
+            $currentNavbarInner = $navbarEl.find('.navbar-current:not(.stacked)');
+            $previousNavbarInner = $navbarEl.find('.navbar-previous:not(.stacked)');
           } else {
-            currentNavbar = currentPage.children('.navbar').children('.navbar-inner');
-            previousNavbar = previousPage.children('.navbar').children('.navbar-inner');
+            $currentNavbarInner = currentPage.children('.navbar').children('.navbar-inner');
+            $previousNavbarInner = previousPage.children('.navbar').children('.navbar-inner');
           }
-          navbarWidth = $navbarEl[0].offsetWidth;
-          currentNavElements = currentNavbar.children('.left, .title, .right, .subnavbar, .fading');
-          previousNavElements = previousNavbar.children('.left, .title, .right, .subnavbar, .fading');
-          if (params.iosAnimateNavbarBackIcon) {
-            if (currentNavbar.hasClass('sliding')) {
-              activeNavBackIcon = currentNavbar.children('.left').find('.back .icon');
-              activeNavBackIconText = currentNavbar.children('.left').find('.back span').eq(0);
-            } else {
-              activeNavBackIcon = currentNavbar.children('.left.sliding').find('.back .icon');
-              activeNavBackIconText = currentNavbar.children('.left.sliding').find('.back span').eq(0);
-            }
-            if (previousNavbar.hasClass('sliding')) {
-              previousNavBackIcon = previousNavbar.children('.left').find('.back .icon');
-            } else {
-              previousNavBackIcon = previousNavbar.children('.left.sliding').find('.back .icon');
-            }
-          }
+
+          animatableNavEls = animatableNavElements($previousNavbarInner, $currentNavbarInner);
         }
 
         // Close/Hide Any Picker
@@ -12572,15 +12914,16 @@
       // Touches diff
       touchesDiff = (pageX - touchesStart.x - paramsSwipeBackThreshold) * inverter;
       if (touchesDiff < 0) { touchesDiff = 0; }
-      var percentage = touchesDiff / viewContainerWidth;
+      var percentage = Math.min(Math.max(touchesDiff / viewContainerWidth, 0), 1);
 
       // Swipe Back Callback
       var callbackData = {
         percentage: percentage,
+        progress: percentage,
         currentPageEl: currentPage[0],
         previousPageEl: previousPage[0],
-        currentNavbarEl: currentNavbar[0],
-        previousNavbarEl: previousNavbar[0],
+        currentNavbarEl: $currentNavbarInner[0],
+        previousNavbarEl: $previousNavbarInner[0],
       };
       $el.trigger('swipeback:move', callbackData);
       router.emit('swipebackMove', callbackData);
@@ -12588,6 +12931,13 @@
       // Transform pages
       var currentPageTranslate = touchesDiff * inverter;
       var previousPageTranslate = ((touchesDiff / 5) - (viewContainerWidth / 5)) * inverter;
+      if (!app.rtl) {
+        currentPageTranslate = Math.min(currentPageTranslate, viewContainerWidth);
+        previousPageTranslate = Math.min(previousPageTranslate, 0);
+      } else {
+        currentPageTranslate = Math.max(currentPageTranslate, -viewContainerWidth);
+        previousPageTranslate = Math.max(previousPageTranslate, 0);
+      }
       if (Device.pixelRatio === 1) {
         currentPageTranslate = Math.round(currentPageTranslate);
         previousPageTranslate = Math.round(previousPageTranslate);
@@ -12605,49 +12955,9 @@
       if (paramsSwipeBackAnimateOpacity) { pageOpacity[0].style.opacity = 1 - (1 * percentage); }
 
       // Dynamic Navbars Animation
-      if (dynamicNavbar) {
-        currentNavElements.each(function (index, navEl) {
-          var $navEl = $(navEl);
-          if (!$navEl.is('.subnavbar')) { $navEl[0].style.opacity = (1 - (Math.pow( percentage, 0.33 ))); }
-          if ($navEl[0].className.indexOf('sliding') >= 0 || currentNavbar.hasClass('sliding')) {
-            var activeNavTranslate = percentage * $navEl[0].f7NavbarRightOffset;
-            if (Device.pixelRatio === 1) { activeNavTranslate = Math.round(activeNavTranslate); }
-            $navEl.transform(("translate3d(" + activeNavTranslate + "px,0,0)"));
-            if (params.iosAnimateNavbarBackIcon) {
-              if ($navEl[0].className.indexOf('left') >= 0 && activeNavBackIcon.length > 0) {
-                var iconTranslate = -activeNavTranslate;
-                if (!separateNavbar) {
-                  iconTranslate -= navbarWidth * percentage;
-                }
-                activeNavBackIcon.transform(("translate3d(" + iconTranslate + "px,0,0)"));
-              }
-            }
-          }
-        });
-        previousNavElements.each(function (index, navEl) {
-          var $navEl = $(navEl);
-          if (!$navEl.is('.subnavbar')) { $navEl[0].style.opacity = (Math.pow( percentage, 3 )); }
-          if ($navEl[0].className.indexOf('sliding') >= 0 || previousNavbar.hasClass('sliding')) {
-            var previousNavTranslate = $navEl[0].f7NavbarLeftOffset * (1 - percentage);
-            if ($navEl[0].className.indexOf('title') >= 0 && activeNavBackIcon && activeNavBackIcon.length && activeNavBackIconText.length) {
-              previousNavTranslate = ($navEl[0].f7NavbarLeftOffset + activeNavBackIconText[0].offsetLeft) * (1 - percentage);
-            } else {
-              previousNavTranslate = $navEl[0].f7NavbarLeftOffset * (1 - percentage);
-            }
-            if (Device.pixelRatio === 1) { previousNavTranslate = Math.round(previousNavTranslate); }
-            $navEl.transform(("translate3d(" + previousNavTranslate + "px,0,0)"));
-            if (params.iosAnimateNavbarBackIcon) {
-              if ($navEl[0].className.indexOf('left') >= 0 && previousNavBackIcon.length > 0) {
-                var iconTranslate = -previousNavTranslate;
-                if (!separateNavbar) {
-                  iconTranslate += (navbarWidth / 5) * (1 - percentage);
-                }
-                previousNavBackIcon.transform(("translate3d(" + iconTranslate + "px,0,0)"));
-              }
-            }
-          }
-        });
-      }
+      if (!dynamicNavbar) { return; }
+
+      setAnimatableNavElements({ progress: percentage });
     }
     function handleTouchEnd() {
       app.preventSwipePanelBySwipeBack = false;
@@ -12665,10 +12975,7 @@
         if (pageShadow && pageShadow.length > 0) { pageShadow.remove(); }
         if (pageOpacity && pageOpacity.length > 0) { pageOpacity.remove(); }
         if (dynamicNavbar) {
-          currentNavElements.transform('').css({ opacity: '' });
-          previousNavElements.transform('').css({ opacity: '' });
-          if (activeNavBackIcon && activeNavBackIcon.length > 0) { activeNavBackIcon.transform(''); }
-          if (previousNavBackIcon && activeNavBackIcon.length > 0) { previousNavBackIcon.transform(''); }
+          setAnimatableNavElements({ reset: true });
         }
         return;
       }
@@ -12684,8 +12991,8 @@
         if (pageShadow) { pageShadow[0].style.opacity = ''; }
         if (pageOpacity) { pageOpacity[0].style.opacity = ''; }
         if (dynamicNavbar) {
-          currentNavbar.removeClass('navbar-current').addClass('navbar-next');
-          previousNavbar.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
+          $currentNavbarInner.removeClass('navbar-current').addClass('navbar-next');
+          $previousNavbarInner.removeClass('navbar-previous').addClass('navbar-current').removeAttr('aria-hidden');
         }
         pageChanged = true;
       }
@@ -12694,32 +13001,7 @@
       $([currentPage[0], previousPage[0]]).addClass('page-transitioning page-transitioning-swipeback').transform('');
 
       if (dynamicNavbar) {
-        currentNavElements.css({ opacity: '' })
-          .each(function (navElIndex, navEl) {
-            var translate = pageChanged ? navEl.f7NavbarRightOffset : 0;
-            var sliding = $(navEl);
-            var iconTranslate = pageChanged ? -translate : 0;
-            if (!separateNavbar && pageChanged) { iconTranslate -= navbarWidth; }
-            sliding.transform(("translate3d(" + translate + "px,0,0)"));
-            if (params.iosAnimateNavbarBackIcon) {
-              if (sliding.hasClass('left') && activeNavBackIcon.length > 0) {
-                activeNavBackIcon.addClass('navbar-transitioning').transform(("translate3d(" + iconTranslate + "px,0,0)"));
-              }
-            }
-          }).addClass('navbar-transitioning');
-
-        previousNavElements.transform('').css({ opacity: '' }).each(function (navElIndex, navEl) {
-          var translate = pageChanged ? 0 : navEl.f7NavbarLeftOffset;
-          var sliding = $(navEl);
-          var iconTranslate = pageChanged ? 0 : -translate;
-          if (!separateNavbar && !pageChanged) { iconTranslate += navbarWidth / 5; }
-          sliding.transform(("translate3d(" + translate + "px,0,0)"));
-          if (params.iosAnimateNavbarBackIcon) {
-            if (sliding.hasClass('left') && previousNavBackIcon.length > 0) {
-              previousNavBackIcon.addClass('navbar-transitioning').transform(("translate3d(" + iconTranslate + "px,0,0)"));
-            }
-          }
-        }).addClass('navbar-transitioning');
+        setAnimatableNavElements({ progress: pageChanged ? 1 : 0, transition: true });
       }
       allowViewTouchMove = false;
       router.allowPageChange = false;
@@ -12728,8 +13010,8 @@
       var callbackData = {
         currentPageEl: currentPage[0],
         previousPageEl: previousPage[0],
-        currentNavbarEl: currentNavbar[0],
-        previousNavbarEl: previousNavbar[0],
+        currentNavbarEl: $currentNavbarInner[0],
+        previousNavbarEl: $previousNavbarInner[0],
       };
 
       if (pageChanged) {
@@ -12738,8 +13020,8 @@
         router.currentPage = previousPage[0];
 
         // Page before animation callback
-        router.pageCallback('beforeOut', currentPage, currentNavbar, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
-        router.pageCallback('beforeIn', previousPage, previousNavbar, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
+        router.pageCallback('beforeOut', currentPage, $currentNavbarInner, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
+        router.pageCallback('beforeIn', previousPage, $previousNavbarInner, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
 
         $el.trigger('swipeback:beforechange', callbackData);
         router.emit('swipebackBeforeChange', callbackData);
@@ -12750,12 +13032,8 @@
 
       currentPage.transitionEnd(function () {
         $([currentPage[0], previousPage[0]]).removeClass('page-transitioning page-transitioning-swipeback');
-
         if (dynamicNavbar) {
-          currentNavElements.removeClass('navbar-transitioning').css({ opacity: '' }).transform('');
-          previousNavElements.removeClass('navbar-transitioning').css({ opacity: '' }).transform('');
-          if (activeNavBackIcon && activeNavBackIcon.length > 0) { activeNavBackIcon.removeClass('navbar-transitioning'); }
-          if (previousNavBackIcon && previousNavBackIcon.length > 0) { previousNavBackIcon.removeClass('navbar-transitioning'); }
+          setAnimatableNavElements({ reset: true, transition: false });
         }
         allowViewTouchMove = true;
         router.allowPageChange = true;
@@ -12773,20 +13051,20 @@
           }
 
           // Page after animation callback
-          router.pageCallback('afterOut', currentPage, currentNavbar, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
-          router.pageCallback('afterIn', previousPage, previousNavbar, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
+          router.pageCallback('afterOut', currentPage, $currentNavbarInner, 'current', 'next', { route: currentPage[0].f7Page.route, swipeBack: true });
+          router.pageCallback('afterIn', previousPage, $previousNavbarInner, 'previous', 'current', { route: previousPage[0].f7Page.route, swipeBack: true });
 
           // Remove Old Page
           if (params.stackPages && router.initialPages.indexOf(currentPage[0]) >= 0) {
             currentPage.addClass('stacked');
             if (separateNavbar) {
-              currentNavbar.addClass('stacked');
+              $currentNavbarInner.addClass('stacked');
             }
           } else {
-            router.pageCallback('beforeRemove', currentPage, currentNavbar, 'next', { swipeBack: true });
+            router.pageCallback('beforeRemove', currentPage, $currentNavbarInner, 'next', { swipeBack: true });
             router.removePage(currentPage);
             if (separateNavbar) {
-              router.removeNavbar(currentNavbar);
+              router.removeNavbar($currentNavbarInner);
             }
           }
 
@@ -13192,6 +13470,9 @@
         $newPage.insertBefore($oldPage);
       }
       if (separateNavbar && $newNavbarInner.length) {
+        if ($newNavbarInner.children('.title-large').length) {
+          $newNavbarInner.addClass('navbar-inner-large');
+        }
         if ($oldNavbarInner.length) {
           $newNavbarInner.insertBefore($oldNavbarInner);
         } else {
@@ -13212,6 +13493,9 @@
         }
       }
       if (separateNavbar && $newNavbarInner.length) {
+        if ($newNavbarInner.children('.title-large').length) {
+          $newNavbarInner.addClass('navbar-inner-large');
+        }
         if (!router.$navbarEl.parents(doc).length) {
           router.$el.prepend(router.$navbarEl);
         }
@@ -13359,7 +13643,7 @@
       }
     }
     if (options.animate) {
-      var delay = router.app.theme === 'md' ? router.params.materialPageLoadDelay : router.params.iosPageLoadDelay;
+      var delay = router.app.theme === 'md' ? router.params.mdPageLoadDelay : router.params.iosPageLoadDelay;
       if (delay) {
         setTimeout(function () {
           setPositionClasses();
@@ -14232,6 +14516,9 @@
         }
       }
       if (separateNavbar && $newNavbarInner.length) {
+        if ($newNavbarInner.children('.title-large').length) {
+          $newNavbarInner.addClass('navbar-inner-large');
+        }
         $newNavbarInner.insertBefore($oldNavbarInner);
         if ($oldNavbarInner.length > 0) {
           $newNavbarInner.insertBefore($oldNavbarInner);
@@ -14863,25 +15150,27 @@
     Router.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
     Router.prototype.constructor = Router;
 
-    Router.prototype.animatableNavElements = function animatableNavElements (newNavbarInner, oldNavbarInner) {
+    Router.prototype.animatableNavElements = function animatableNavElements (newNavbarInner, oldNavbarInner, toLarge, fromLarge, direction) {
       var router = this;
       var dynamicNavbar = router.dynamicNavbar;
+      var separateNavbar = router.separateNavbar;
       var animateIcon = router.params.iosAnimateNavbarBackIcon;
 
       var newNavEls;
       var oldNavEls;
-      function animatableNavEl(el, navbarInner) {
-        var $el = $(el);
+      function animatableNavEl($el, navbarInner) {
         var isSliding = $el.hasClass('sliding') || navbarInner.hasClass('sliding');
         var isSubnavbar = $el.hasClass('subnavbar');
         var needsOpacityTransition = isSliding ? !isSubnavbar : true;
-        var hasIcon = isSliding && animateIcon && $el.hasClass('left') && $el.find('.back .icon').length > 0;
-        var $iconEl;
-        if (hasIcon) { $iconEl = $el.find('.back .icon'); }
+        var $iconEl = $el.find('.back .icon');
+        var isIconLabel;
+        if (isSliding && animateIcon && $el.hasClass('left') && $iconEl.length > 0 && $iconEl.next('span').length) {
+          $el = $iconEl.next('span'); // eslint-disable-line
+          isIconLabel = true;
+        }
         return {
           $el: $el,
-          $iconEl: $iconEl,
-          hasIcon: hasIcon,
+          isIconLabel: isIconLabel,
           leftOffset: $el[0].f7NavbarLeftOffset,
           rightOffset: $el[0].f7NavbarRightOffset,
           isSliding: isSliding,
@@ -14893,10 +15182,19 @@
         newNavEls = [];
         oldNavEls = [];
         newNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
-          newNavEls.push(animatableNavEl(navEl, newNavbarInner));
+          var $navEl = $(navEl);
+          if ($navEl.hasClass('left') && fromLarge && direction === 'forward' && separateNavbar) { return; }
+          if ($navEl.hasClass('title') && toLarge) { return; }
+          newNavEls.push(animatableNavEl($navEl, newNavbarInner));
         });
         oldNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
-          oldNavEls.push(animatableNavEl(navEl, oldNavbarInner));
+          var $navEl = $(navEl);
+          if ($navEl.hasClass('left') && toLarge && !fromLarge && direction === 'forward' && separateNavbar) { return; }
+          if ($navEl.hasClass('left') && toLarge && direction === 'backward' && separateNavbar) { return; }
+          if ($navEl.hasClass('title') && fromLarge) {
+            return;
+          }
+          oldNavEls.push(animatableNavEl($navEl, oldNavbarInner));
         });
         [oldNavEls, newNavEls].forEach(function (navEls) {
           navEls.forEach(function (navEl) {
@@ -14906,9 +15204,9 @@
             var otherEls = navEls === oldNavEls ? newNavEls : oldNavEls;
             if (!(isSliding && $el.hasClass('title') && otherEls)) { return; }
             otherEls.forEach(function (otherNavEl) {
-              if (otherNavEl.$el.hasClass('left') && otherNavEl.hasIcon) {
-                var iconTextEl = otherNavEl.$el.find('.back span')[0];
-                n.leftOffset += iconTextEl ? iconTextEl.offsetLeft : 0;
+              if (otherNavEl.isIconLabel) {
+                var iconTextEl = otherNavEl.$el[0];
+                n.leftOffset += iconTextEl ? (iconTextEl.offsetLeft || 0) : 0;
               }
             });
           });
@@ -14918,63 +15216,85 @@
       return { newNavEls: newNavEls, oldNavEls: oldNavEls };
     };
 
-    Router.prototype.animateWithCSS = function animateWithCSS (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
+    Router.prototype.animate = function animate (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
       var router = this;
+      if (router.params.animateCustom) {
+        router.params.animateCustom.apply(router, [oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback]);
+        return;
+      }
       var dynamicNavbar = router.dynamicNavbar;
-      var separateNavbar = router.separateNavbar;
       var ios = router.app.theme === 'ios';
       // Router Animation class
       var routerTransitionClass = "router-transition-" + direction + " router-transition-css-" + direction;
 
       var newNavEls;
       var oldNavEls;
-      var navbarWidth = 0;
+
+      var fromLarge;
+      var toLarge;
+
+      var oldIsLarge;
+      var newIsLarge;
 
       if (ios && dynamicNavbar) {
-        if (!separateNavbar) {
-          navbarWidth = newNavbarInner[0].offsetWidth;
-        }
-        var navEls = router.animatableNavElements(newNavbarInner, oldNavbarInner);
+        oldIsLarge = oldNavbarInner && oldNavbarInner.hasClass('navbar-inner-large');
+        newIsLarge = newNavbarInner && newNavbarInner.hasClass('navbar-inner-large');
+        fromLarge = oldIsLarge && !oldNavbarInner.hasClass('navbar-inner-large-collapsed');
+        toLarge = newIsLarge && !newNavbarInner.hasClass('navbar-inner-large-collapsed');
+        var navEls = router.animatableNavElements(newNavbarInner, oldNavbarInner, toLarge, fromLarge, direction);
         newNavEls = navEls.newNavEls;
         oldNavEls = navEls.oldNavEls;
       }
 
       function animateNavbars(progress) {
-        if (ios && dynamicNavbar) {
-          newNavEls.forEach(function (navEl) {
-            var $el = navEl.$el;
-            var offset = direction === 'forward' ? navEl.rightOffset : navEl.leftOffset;
-            if (navEl.isSliding) {
+        if (!(ios && dynamicNavbar)) { return; }
+        if (progress === 1) {
+          if (toLarge) {
+            newNavbarInner.addClass('router-navbar-transition-to-large');
+            oldNavbarInner.addClass('router-navbar-transition-to-large');
+          }
+          if (fromLarge) {
+            newNavbarInner.addClass('router-navbar-transition-from-large');
+            oldNavbarInner.addClass('router-navbar-transition-from-large');
+          }
+        }
+        newNavEls.forEach(function (navEl) {
+          var $el = navEl.$el;
+          var offset = direction === 'forward' ? navEl.rightOffset : navEl.leftOffset;
+          if (navEl.isSliding) {
+            if (navEl.isSubnavbar && newIsLarge) {
+              $el[0].style.setProperty('transform', ("translate3d(" + (offset * (1 - progress)) + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)"), 'important');
+            } else {
               $el.transform(("translate3d(" + (offset * (1 - progress)) + "px,0,0)"));
             }
-            if (navEl.hasIcon) {
-              if (direction === 'forward') {
-                navEl.$iconEl.transform(("translate3d(" + ((-offset - navbarWidth) * (1 - progress)) + "px,0,0)"));
-              } else {
-                navEl.$iconEl.transform(("translate3d(" + ((-offset + (navbarWidth / 5)) * (1 - progress)) + "px,0,0)"));
-              }
-            }
-          });
-          oldNavEls.forEach(function (navEl) {
-            var $el = navEl.$el;
-            var offset = direction === 'forward' ? navEl.leftOffset : navEl.rightOffset;
-            if (navEl.isSliding) {
+          }
+        });
+        oldNavEls.forEach(function (navEl) {
+          var $el = navEl.$el;
+          var offset = direction === 'forward' ? navEl.leftOffset : navEl.rightOffset;
+          if (navEl.isSliding) {
+            if (navEl.isSubnavbar && oldIsLarge) {
+              $el.transform(("translate3d(" + (offset * (progress)) + "px, calc(-1 * var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0)"));
+            } else {
               $el.transform(("translate3d(" + (offset * (progress)) + "px,0,0)"));
             }
-            if (navEl.hasIcon) {
-              if (direction === 'forward') {
-                navEl.$iconEl.transform(("translate3d(" + ((-offset + (navbarWidth / 5)) * (progress)) + "px,0,0)"));
-              } else {
-                navEl.$iconEl.transform(("translate3d(" + ((-offset - navbarWidth) * (progress)) + "px,0,0)"));
-              }
-            }
-          });
-        }
+          }
+        });
       }
 
       // AnimationEnd Callback
       function onDone() {
         if (router.dynamicNavbar) {
+          if (newNavbarInner) {
+            newNavbarInner.removeClass('router-navbar-transition-to-large router-navbar-transition-from-large');
+            newNavbarInner.addClass('navbar-no-title-large-transition');
+            Utils.nextFrame(function () {
+              newNavbarInner.removeClass('navbar-no-title-large-transition');
+            });
+          }
+          if (oldNavbarInner) {
+            oldNavbarInner.removeClass('router-navbar-transition-to-large router-navbar-transition-from-large');
+          }
           if (newNavbarInner.hasClass('sliding')) {
             newNavbarInner.find('.title, .left, .right, .left .icon, .subnavbar').transform('');
           } else {
@@ -15006,165 +15326,6 @@
       } else {
         // Add class, start animation
         router.$el.addClass(routerTransitionClass);
-      }
-    };
-
-    Router.prototype.animateWithJS = function animateWithJS (oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback) {
-      var router = this;
-      var dynamicNavbar = router.dynamicNavbar;
-      var separateNavbar = router.separateNavbar;
-      var ios = router.app.theme === 'ios';
-      var duration = ios ? 400 : 250;
-      var routerTransitionClass = "router-transition-" + direction + " router-transition-js-" + direction;
-
-      var startTime = null;
-      var done = false;
-
-      var newNavEls;
-      var oldNavEls;
-      var navbarWidth = 0;
-
-      if (ios && dynamicNavbar) {
-        if (!separateNavbar) {
-          navbarWidth = newNavbarInner[0].offsetWidth;
-        }
-        var navEls = router.animatableNavElements(newNavbarInner, oldNavbarInner);
-        newNavEls = navEls.newNavEls;
-        oldNavEls = navEls.oldNavEls;
-      }
-
-      var $shadowEl;
-      var $opacityEl;
-
-      if (ios) {
-        $shadowEl = $('<div class="page-shadow-effect"></div>');
-        $opacityEl = $('<div class="page-opacity-effect"></div>');
-
-        if (direction === 'forward') {
-          newPage.append($shadowEl);
-          oldPage.append($opacityEl);
-        } else {
-          newPage.append($opacityEl);
-          oldPage.append($shadowEl);
-        }
-      }
-      var easing = Utils.bezier(0.25, 0.1, 0.25, 1);
-
-      function onDone() {
-        newPage.transform('').css('opacity', '');
-        oldPage.transform('').css('opacity', '');
-        if (ios) {
-          $shadowEl.remove();
-          $opacityEl.remove();
-          if (dynamicNavbar) {
-            newNavEls.forEach(function (navEl) {
-              navEl.$el.transform('');
-              navEl.$el.css('opacity', '');
-            });
-            oldNavEls.forEach(function (navEl) {
-              navEl.$el.transform('');
-              navEl.$el.css('opacity', '');
-            });
-            newNavEls = [];
-            oldNavEls = [];
-          }
-        }
-
-        router.$el.removeClass(routerTransitionClass);
-
-        if (callback) { callback(); }
-      }
-
-      function render() {
-        var time = Utils.now();
-        if (!startTime) { startTime = time; }
-        var progress = Math.max(Math.min((time - startTime) / duration, 1), 0);
-        var easeProgress = easing(progress);
-
-        if (progress >= 1) {
-          done = true;
-        }
-        var inverter = router.app.rtl ? -1 : 1;
-        if (ios) {
-          if (direction === 'forward') {
-            newPage.transform(("translate3d(" + ((1 - easeProgress) * 100 * inverter) + "%,0,0)"));
-            oldPage.transform(("translate3d(" + (-easeProgress * 20 * inverter) + "%,0,0)"));
-            $shadowEl[0].style.opacity = easeProgress;
-            $opacityEl[0].style.opacity = easeProgress;
-          } else {
-            newPage.transform(("translate3d(" + (-(1 - easeProgress) * 20 * inverter) + "%,0,0)"));
-            oldPage.transform(("translate3d(" + (easeProgress * 100 * inverter) + "%,0,0)"));
-            $shadowEl[0].style.opacity = 1 - easeProgress;
-            $opacityEl[0].style.opacity = 1 - easeProgress;
-          }
-          if (dynamicNavbar) {
-            newNavEls.forEach(function (navEl) {
-              var $el = navEl.$el;
-              var offset = direction === 'forward' ? navEl.rightOffset : navEl.leftOffset;
-              if (navEl.needsOpacityTransition) {
-                $el[0].style.opacity = easeProgress;
-              }
-              if (navEl.isSliding) {
-                $el.transform(("translate3d(" + (offset * (1 - easeProgress)) + "px,0,0)"));
-              }
-              if (navEl.hasIcon) {
-                if (direction === 'forward') {
-                  navEl.$iconEl.transform(("translate3d(" + ((-offset - navbarWidth) * (1 - easeProgress)) + "px,0,0)"));
-                } else {
-                  navEl.$iconEl.transform(("translate3d(" + ((-offset + (navbarWidth / 5)) * (1 - easeProgress)) + "px,0,0)"));
-                }
-              }
-            });
-            oldNavEls.forEach(function (navEl) {
-              var $el = navEl.$el;
-              var offset = direction === 'forward' ? navEl.leftOffset : navEl.rightOffset;
-              if (navEl.needsOpacityTransition) {
-                $el[0].style.opacity = (1 - easeProgress);
-              }
-              if (navEl.isSliding) {
-                $el.transform(("translate3d(" + (offset * (easeProgress)) + "px,0,0)"));
-              }
-              if (navEl.hasIcon) {
-                if (direction === 'forward') {
-                  navEl.$iconEl.transform(("translate3d(" + ((-offset + (navbarWidth / 5)) * (easeProgress)) + "px,0,0)"));
-                } else {
-                  navEl.$iconEl.transform(("translate3d(" + ((-offset - navbarWidth) * (easeProgress)) + "px,0,0)"));
-                }
-              }
-            });
-          }
-        } else if (direction === 'forward') {
-          newPage.transform(("translate3d(0, " + ((1 - easeProgress) * 56) + "px,0)"));
-          newPage.css('opacity', easeProgress);
-        } else {
-          oldPage.transform(("translate3d(0, " + (easeProgress * 56) + "px,0)"));
-          oldPage.css('opacity', 1 - easeProgress);
-        }
-
-        if (done) {
-          onDone();
-          return;
-        }
-        Utils.requestAnimationFrame(render);
-      }
-
-      router.$el.addClass(routerTransitionClass);
-
-      Utils.requestAnimationFrame(render);
-    };
-
-    Router.prototype.animate = function animate () {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      // Args: oldPage, newPage, oldNavbarInner, newNavbarInner, direction, callback
-      var router = this;
-      if (router.params.animateCustom) {
-        router.params.animateCustom.apply(router, args);
-      } else if (router.params.animateWithJS) {
-        router.animateWithJS.apply(router, args);
-      } else {
-        router.animateWithCSS.apply(router, args);
       }
     };
 
@@ -15508,7 +15669,7 @@
       if (params.xhrCacheIgnoreGetParameters && url.indexOf('?') >= 0) {
         url = url.split('?')[0];
       }
-      return Utils.promise(function (resolve, reject) {
+      return new Promise(function (resolve, reject) {
         if (params.xhrCache && !ignoreCache && url.indexOf('nocache') < 0 && params.xhrCacheIgnore.indexOf(url) < 0) {
           for (var i = 0; i < router.cache.xhr.length; i += 1) {
             var cachedUrl = router.cache.xhr[i];
@@ -15584,7 +15745,9 @@
               $app: router.app,
               $root: Utils.extend({}, router.app.data, router.app.methods),
               $route: options.route,
+              $f7route: options.route,
               $router: router,
+              $f7router: router,
               $theme: {
                 ios: router.app.theme === 'ios',
                 md: router.app.theme === 'md',
@@ -15662,7 +15825,9 @@
           context,
           {
             $route: options.route,
+            $f7route: options.route,
             $router: router,
+            $f7router: router,
             $theme: {
               ios: app.theme === 'ios',
               md: app.theme === 'md',
@@ -16102,10 +16267,17 @@
               if (!router.$navbarEl.parents(doc).length) {
                 router.$el.prepend(router.$navbarEl);
               }
+              $navbarInnerEl.addClass('navbar-current');
               router.$navbarEl.append($navbarInnerEl);
+              if ($navbarInnerEl.children('.title-large').length) {
+                $navbarInnerEl.addClass('navbar-inner-large');
+              }
               $pageEl.children('.navbar').remove();
             } else {
               router.$navbarEl.addClass('navbar-hidden');
+              if ($navbarInnerEl.children('.title-large').length) {
+                router.$navbarEl.addClass('navbar-hidden navbar-large-hidden');
+              }
             }
           }
           var initOptions = {
@@ -16115,11 +16287,11 @@
             Utils.extend(initOptions, router.currentRoute.route.options);
           }
           router.currentPageEl = $pageEl[0];
-          if (router.dynamicNavbar && $navbarInnerEl.length) {
+          if (router.separateNavbar && $navbarInnerEl.length) {
             router.currentNavbarEl = $navbarInnerEl[0];
           }
           router.removeThemeElements($pageEl);
-          if (router.dynamicNavbar && $navbarInnerEl.length) {
+          if (router.separateNavbar && $navbarInnerEl.length) {
             router.removeThemeElements($navbarInnerEl);
           }
           if (initOptions.route.route.tab) {
@@ -16403,7 +16575,7 @@
         Object.keys(moduleClicks).forEach(function (clickSelector) {
           var matchingClickedElement = $clickedEl.closest(clickSelector).eq(0);
           if (matchingClickedElement.length > 0) {
-            moduleClicks[clickSelector].call(app, matchingClickedElement, matchingClickedElement.dataset());
+            moduleClicks[clickSelector].call(app, matchingClickedElement, matchingClickedElement.dataset(), e);
           }
         });
       });
@@ -16447,14 +16619,15 @@
 
     app.on('click', handleClicks);
 
+    // TODO: check if need this in iOS
     // Prevent scrolling on overlays
-    function preventScrolling(e) {
-      e.preventDefault();
-    }
-    if (Support.touch && !Device.android) {
-      var activeListener = Support.passiveListener ? { passive: false, capture: false } : false;
-      $(doc).on((app.params.touch.fastClicks ? 'touchstart' : 'touchmove'), '.panel-backdrop, .dialog-backdrop, .preloader-backdrop, .popup-backdrop, .searchbar-backdrop', preventScrolling, activeListener);
-    }
+    // function preventScrolling(e) {
+    //   e.preventDefault();
+    // }
+    // if (Support.touch && !Device.android) {
+    //   const activeListener = Support.passiveListener ? { passive: false, capture: false } : false;
+    //   $(document).on((app.params.touch.fastClicks ? 'touchstart' : 'touchmove'), '.panel-backdrop, .dialog-backdrop, .preloader-backdrop, .popup-backdrop, .searchbar-backdrop', preventScrolling, activeListener);
+    // }
   }
   var ClicksModule = {
     name: 'clicks',
@@ -16487,7 +16660,7 @@
   var keyPrefix = 'f7storage-';
   var Storage = {
     get: function get(key) {
-      return Utils.promise(function (resolve, reject) {
+      return new Promise(function (resolve, reject) {
         try {
           var value = JSON.parse(win.localStorage.getItem(("" + keyPrefix + key)));
           resolve(value);
@@ -16497,7 +16670,7 @@
       });
     },
     set: function set(key, value) {
-      return Utils.promise(function (resolve, reject) {
+      return new Promise(function (resolve, reject) {
         try {
           win.localStorage.setItem(("" + keyPrefix + key), JSON.stringify(value));
           resolve();
@@ -16507,7 +16680,7 @@
       });
     },
     remove: function remove(key) {
-      return Utils.promise(function (resolve, reject) {
+      return new Promise(function (resolve, reject) {
         try {
           win.localStorage.removeItem(("" + keyPrefix + key));
           resolve();
@@ -16523,7 +16696,7 @@
 
     },
     keys: function keys() {
-      return Utils.promise(function (resolve, reject) {
+      return new Promise(function (resolve, reject) {
         try {
           var keys = Object.keys(win.localStorage)
             .filter(function (keyName) { return keyName.indexOf(keyPrefix) === 0; })
@@ -16535,7 +16708,7 @@
       });
     },
     forEach: function forEach(callback) {
-      return Utils.promise(function (resolve, reject) {
+      return new Promise(function (resolve, reject) {
         try {
           Object.keys(win.localStorage)
             .filter(function (keyName) { return keyName.indexOf(keyPrefix) === 0; })
@@ -17521,6 +17694,7 @@
         $$: $,
         $dom7: $,
         $app: app,
+        $f7: app,
         $options: Utils.extend({ id: id }, options),
       }
     );
@@ -17834,6 +18008,90 @@
     },
   };
 
+  var SW = {
+    registrations: [],
+    register: function register(path, scope) {
+      var app = this;
+      if (!('serviceWorker' in window.navigator) || !app.serviceWorker.container) {
+        return new Promise(function (resolve, reject) {
+          reject(new Error('Service worker is not supported'));
+        });
+      }
+      return new Promise(function (resolve, reject) {
+        app.serviceWorker.container.register(path, (scope ? { scope: scope } : {}))
+          .then(function (reg) {
+            SW.registrations.push(reg);
+            app.emit('swRegisterSuccess', reg);
+            resolve(reg);
+          }).catch(function (error) {
+            app.emit('swRegisterError', error);
+            reject(error);
+          });
+      });
+    },
+    unregister: function unregister(registration) {
+      var app = this;
+      if (!('serviceWorker' in window.navigator) || !app.serviceWorker.container) {
+        return new Promise(function (resolve, reject) {
+          reject(new Error('Service worker is not supported'));
+        });
+      }
+      var registrations;
+      if (!registration) { registrations = SW.registrations; }
+      else if (Array.isArray(registration)) { registrations = registration; }
+      else { registrations = [registration]; }
+      return Promise.all(registrations.map(function (reg) { return new Promise(function (resolve, reject) {
+        reg.unregister()
+          .then(function () {
+            if (SW.registrations.indexOf(reg) >= 0) {
+              SW.registrations.splice(SW.registrations.indexOf(reg), 1);
+            }
+            app.emit('swUnregisterSuccess', true);
+            resolve();
+          })
+          .catch(function (error) {
+            app.emit('swUnregisterError', error);
+            reject(error);
+          });
+      }); }));
+    },
+  };
+
+  var ServiceWorkerModule = {
+    name: 'sw',
+    params: {
+      serviceWorker: {
+        path: undefined,
+        scope: undefined,
+      },
+    },
+    create: function create() {
+      var app = this;
+      Utils.extend(app, {
+        serviceWorker: {
+          container: ('serviceWorker' in window.navigator) ? window.navigator.serviceWorker : undefined,
+          registrations: SW.registrations,
+          register: SW.register.bind(app),
+          unregister: SW.unregister.bind(app),
+        },
+      });
+    },
+    on: {
+      init: function init() {
+        if (!('serviceWorker' in window.navigator)) { return; }
+        var app = this;
+        if (!app.serviceWorker.container) { return; }
+        var paths = app.params.serviceWorker.path;
+        var scope = app.params.serviceWorker.scope;
+        if (!paths || (Array.isArray(paths) && !paths.length)) { return; }
+        var toRegister = Array.isArray(paths) ? paths : [paths];
+        toRegister.forEach(function (path) {
+          app.serviceWorker.register(path, scope);
+        });
+      },
+    },
+  };
+
   var Statusbar = {
     hide: function hide() {
       $('html').removeClass('with-statusbar');
@@ -17915,10 +18173,6 @@
           $('html').removeClass('with-statusbar');
         }
       }
-    },
-    iosOverlaysWebView: function iosOverlaysWebView(overlays) {
-      if (!Device.ios) { return; }
-      Statusbar.overlaysWebView(overlays);
     },
     checkOverlay: function checkOverlay() {
       if (Device.needsStatusbarOverlay()) {
@@ -18027,9 +18281,6 @@
           setBackgroundColor: Statusbar.setBackgroundColor,
           isVisible: Statusbar.isVisible,
           init: Statusbar.init.bind(app),
-
-          iosOverlaysWebView: Statusbar.iosOverlaysWebView,
-          setIosTextColor: Statusbar.iosSetTextColor,
         },
       });
     },
@@ -18119,7 +18370,6 @@
         pushStateOnLoad: true,
         // Animate Pages
         animate: true,
-        animateWithJS: false,
         // iOS Dynamic Navbar
         iosDynamicNavbar: true,
         iosSeparateDynamicNavbar: true,
@@ -18127,7 +18377,7 @@
         iosAnimateNavbarBackIcon: true,
         // Delays
         iosPageLoadDelay: 0,
-        materialPageLoadDelay: 0,
+        mdPageLoadDelay: 0,
         // Routes hooks
         routesBeforeEnter: null,
         routesBeforeLeave: null,
@@ -18191,7 +18441,7 @@
   var Navbar = {
     size: function size(el) {
       var app = this;
-      if (app.theme !== 'ios') { return; }
+      if (app.theme === 'md' && !app.params.navbar.mdCenterTitle) { return; }
       var $el = $(el);
       if ($el.hasClass('navbar')) {
         $el = $el.children('.navbar-inner').each(function (index, navbarEl) {
@@ -18199,6 +18449,7 @@
         });
         return;
       }
+
       if (
         $el.hasClass('stacked')
         || $el.parents('.stacked').length > 0
@@ -18207,6 +18458,14 @@
       ) {
         return;
       }
+
+      if (app.theme === 'md' && app.params.navbar.mdCenterTitle) {
+        $el.addClass('navbar-inner-centered-title');
+      }
+      if (app.theme === 'ios' && !app.params.navbar.iosCenterTitle) {
+        $el.addClass('navbar-inner-left-title');
+      }
+
       var $viewEl = $el.parents('.view').eq(0);
       var left = app.rtl ? $el.children('.right') : $el.children('.left');
       var right = app.rtl ? $el.children('.left') : $el.children('.right');
@@ -18266,7 +18525,7 @@
       // RTL inverter
       var inverter = app.rtl ? -1 : 1;
 
-      if (dynamicNavbar) {
+      if (dynamicNavbar && app.theme === 'ios') {
         if (title.hasClass('sliding') || (title.length > 0 && sliding)) {
           var titleLeftOffset = (-(currLeft + diff) * inverter) + separateNavbarLeftOffset;
           var titleRightOffset = ((navbarInnerWidth - currLeft - diff - titleWidth) * inverter) - separateNavbarRightOffset;
@@ -18290,7 +18549,14 @@
             left[0].f7NavbarLeftOffset = -leftWidth + separateNavbarLeftOffset;
             left[0].f7NavbarRightOffset = ((navbarInnerWidth - left[0].offsetWidth) / 2) - separateNavbarRightOffset;
             if (router && router.params.iosAnimateNavbarBackIcon && left.find('.back .icon').length > 0) {
-              left[0].f7NavbarRightOffset -= left.find('.back .icon')[0].offsetWidth;
+              if (left.find('.back .icon ~ span').length) {
+                var leftOffset = left[0].f7NavbarLeftOffset;
+                var rightOffset = left[0].f7NavbarRightOffset;
+                left[0].f7NavbarLeftOffset = 0;
+                left[0].f7NavbarRightOffset = 0;
+                left.find('.back .icon ~ span')[0].f7NavbarLeftOffset = leftOffset;
+                left.find('.back .icon ~ span')[0].f7NavbarRightOffset = rightOffset - left.find('.back .icon')[0].offsetWidth;
+              }
             }
           }
         }
@@ -18309,8 +18575,11 @@
         }
       }
 
-      // Title left
-      if (app.params.navbar.iosCenterTitle) {
+      // Center title
+      if (
+        (app.theme === 'ios' && app.params.navbar.iosCenterTitle)
+        || (app.theme === 'md' && app.params.navbar.mdCenterTitle)
+      ) {
         var titleLeft = diff;
         if (app.rtl && noLeft && noRight && title.length > 0) { titleLeft = -titleLeft; }
         title.css({ left: (titleLeft + "px") });
@@ -18324,6 +18593,9 @@
       if (!$el.length) { return; }
       if ($el.hasClass('navbar-hidden')) { return; }
       var className = "navbar-hidden" + (animate ? ' navbar-transitioning' : '');
+      if ($el.find('.navbar-current .title-large').length) {
+        className += ' navbar-large-hidden';
+      }
       $el.transitionEnd(function () {
         $el.removeClass('navbar-transitioning');
       });
@@ -18343,11 +18615,11 @@
           $el.removeClass('navbar-transitioning');
         });
       }
-      $el.removeClass('navbar-hidden');
+      $el.removeClass('navbar-hidden navbar-large-hidden');
     },
     getElByPage: function getElByPage(page) {
       var $pageEl;
-      var $navbarEl;
+      var $navbarInnerEl;
       var pageData;
       if (page.$navbarEl || page.$el) {
         pageData = page;
@@ -18357,12 +18629,12 @@
         if ($pageEl.length > 0) { pageData = $pageEl[0].f7Page; }
       }
       if (pageData && pageData.$navbarEl && pageData.$navbarEl.length > 0) {
-        $navbarEl = pageData.$navbarEl;
+        $navbarInnerEl = pageData.$navbarEl;
       } else if ($pageEl) {
-        $navbarEl = $pageEl.children('.navbar').children('.navbar-inner');
+        $navbarInnerEl = $pageEl.children('.navbar').children('.navbar-inner');
       }
-      if (!$navbarEl || ($navbarEl && $navbarEl.length === 0)) { return undefined; }
-      return $navbarEl[0];
+      if (!$navbarInnerEl || ($navbarInnerEl && $navbarInnerEl.length === 0)) { return undefined; }
+      return $navbarInnerEl[0];
     },
     getPageByEl: function getPageByEl(navbarInnerEl) {
       var $navbarInnerEl = $(navbarInnerEl);
@@ -18381,10 +18653,68 @@
       });
       return pageEl;
     },
-    initHideNavbarOnScroll: function initHideNavbarOnScroll(pageEl, navbarInnerEl) {
+
+    collapseLargeTitle: function collapseLargeTitle(navbarInnerEl) {
+      var app = this;
+      var $navbarInnerEl = $(navbarInnerEl);
+      if ($navbarInnerEl.hasClass('navbar')) {
+        $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
+        if ($navbarInnerEl.length > 1) {
+          $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+        }
+        if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+          return;
+        }
+      }
+      $navbarInnerEl.addClass('navbar-inner-large-collapsed');
+      if (app.theme === 'md') {
+        $navbarInnerEl.parents('.navbar').addClass('navbar-large-collapsed');
+      }
+    },
+    expandLargeTitle: function expandLargeTitle(navbarInnerEl) {
+      var app = this;
+      var $navbarInnerEl = $(navbarInnerEl);
+      if ($navbarInnerEl.hasClass('navbar')) {
+        $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
+        if ($navbarInnerEl.length > 1) {
+          $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+        }
+        if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+          return;
+        }
+      }
+      $navbarInnerEl.removeClass('navbar-inner-large-collapsed');
+      if (app.theme === 'md') {
+        $navbarInnerEl.parents('.navbar').removeClass('navbar-large-collapsed');
+      }
+    },
+    toggleLargeTitle: function toggleLargeTitle(navbarInnerEl) {
+      var app = this;
+      var $navbarInnerEl = $(navbarInnerEl);
+      if ($navbarInnerEl.hasClass('navbar')) {
+        $navbarInnerEl = $navbarInnerEl.find('.navbar-inner-large');
+        if ($navbarInnerEl.length > 1) {
+          $navbarInnerEl = $(navbarInnerEl).find('.navbar-inner-large.navbar-current');
+        }
+        if ($navbarInnerEl.length > 1 || !$navbarInnerEl.length) {
+          return;
+        }
+      }
+      if ($navbarInnerEl.hasClass('navbar-inner-large-collapsed')) {
+        app.navbar.expandLargeTitle($navbarInnerEl);
+      } else {
+        app.navbar.collapseLargeTitle($navbarInnerEl);
+      }
+    },
+    initNavbarOnScroll: function initNavbarOnScroll(pageEl, navbarInnerEl, needHide, needCollapse) {
       var app = this;
       var $pageEl = $(pageEl);
-      var $navbarEl = $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
+      var $navbarInnerEl = $(navbarInnerEl);
+      var $navbarEl = app.theme === 'md'
+        ? $navbarInnerEl.parents('.navbar')
+        : $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
+      var navbarHideHeight = 44;
+      var snapPageScrollToLargeTitle = app.params.navbar.snapPageScrollToLargeTitle;
 
       var previousScrollTop;
       var currentScrollTop;
@@ -18394,10 +18724,87 @@
       var reachEnd;
       var action;
       var navbarHidden;
-      function handleScroll() {
-        var scrollContent = this;
-        if ($pageEl.hasClass('page-previous')) { return; }
-        currentScrollTop = scrollContent.scrollTop;
+
+      var navbarCollapsed;
+      var navbarTitleLargeHeight;
+      if (needCollapse) {
+        navbarTitleLargeHeight = $navbarInnerEl.css('--f7-navbar-large-title-height');
+        if (navbarTitleLargeHeight && navbarTitleLargeHeight.indexOf('px') >= 0) {
+          navbarTitleLargeHeight = parseInt(navbarTitleLargeHeight, 10);
+          if (Number.isNaN(navbarTitleLargeHeight)) {
+            navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
+          }
+        } else {
+          navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
+        }
+      }
+
+      var scrollChanged;
+      var scrollContent;
+      var scrollTimeoutId;
+      var touchEndTimeoutId;
+      var touchSnapTimeout = 70;
+      var desktopSnapTimeout = 300;
+
+      function snapLargeNavbar() {
+        var inSearchbarExpanded = $navbarInnerEl.hasClass('with-searchbar-expandable-enabled');
+        if (inSearchbarExpanded) { return; }
+        if (!scrollContent || currentScrollTop < 0) { return; }
+        if (currentScrollTop >= navbarTitleLargeHeight / 2 && currentScrollTop < navbarTitleLargeHeight) {
+          $(scrollContent).scrollTop(navbarTitleLargeHeight, 100);
+        } else if (currentScrollTop < navbarTitleLargeHeight) {
+          $(scrollContent).scrollTop(0, 200);
+        }
+      }
+
+      function handleLargeNavbarCollapse() {
+        var collapseProgress = Math.min(Math.max((currentScrollTop / navbarTitleLargeHeight), 0), 1);
+        var inSearchbarExpanded = $navbarInnerEl.hasClass('with-searchbar-expandable-enabled');
+        if (inSearchbarExpanded) { return; }
+        navbarCollapsed = $navbarInnerEl.hasClass('navbar-inner-large-collapsed');
+        if (collapseProgress === 0 && navbarCollapsed) {
+          app.navbar.expandLargeTitle($navbarInnerEl[0]);
+          $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          if (app.theme === 'md') {
+            $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          }
+        } else if (collapseProgress === 1 && !navbarCollapsed) {
+          app.navbar.collapseLargeTitle($navbarInnerEl[0]);
+          $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          if (app.theme === 'md') {
+            $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          }
+        } else if ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed)) {
+          $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          if (app.theme === 'md') {
+            $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          }
+        } else {
+          $navbarInnerEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
+          if (app.theme === 'md') {
+            $navbarEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
+          }
+        }
+
+        if (snapPageScrollToLargeTitle) {
+          if (!Support.touch) {
+            clearTimeout(scrollTimeoutId);
+            scrollTimeoutId = setTimeout(function () {
+              snapLargeNavbar();
+            }, desktopSnapTimeout);
+          } else if (touchEndTimeoutId) {
+            clearTimeout(touchEndTimeoutId);
+            touchEndTimeoutId = null;
+            touchEndTimeoutId = setTimeout(function () {
+              snapLargeNavbar();
+              clearTimeout(touchEndTimeoutId);
+              touchEndTimeoutId = null;
+            }, touchSnapTimeout);
+          }
+        }
+      }
+
+      function handleTitleHideShow() {
         scrollHeight = scrollContent.scrollHeight;
         offsetHeight = scrollContent.offsetHeight;
         reachEnd = currentScrollTop + offsetHeight >= scrollHeight;
@@ -18408,12 +18815,12 @@
             action = 'show';
           }
         } else if (previousScrollTop > currentScrollTop) {
-          if (app.params.navbar.showOnPageScrollTop || currentScrollTop <= 44) {
+          if (app.params.navbar.showOnPageScrollTop || currentScrollTop <= navbarHideHeight) {
             action = 'show';
           } else {
             action = 'hide';
           }
-        } else if (currentScrollTop > 44) {
+        } else if (currentScrollTop > navbarHideHeight) {
           action = 'hide';
         } else {
           action = 'show';
@@ -18426,11 +18833,49 @@
           app.navbar.hide($navbarEl);
           navbarHidden = true;
         }
-
         previousScrollTop = currentScrollTop;
       }
+
+      function handleScroll() {
+        scrollContent = this;
+        currentScrollTop = scrollContent.scrollTop;
+        scrollChanged = currentScrollTop;
+
+        if (needCollapse) {
+          handleLargeNavbarCollapse();
+        }
+        if ($pageEl.hasClass('page-previous')) { return; }
+        if (needHide) {
+          handleTitleHideShow();
+        }
+      }
+      function handeTouchStart() {
+        scrollChanged = false;
+      }
+      function handleTouchEnd() {
+        clearTimeout(touchEndTimeoutId);
+        touchEndTimeoutId = null;
+        touchEndTimeoutId = setTimeout(function () {
+          if (scrollChanged !== false) {
+            snapLargeNavbar();
+            clearTimeout(touchEndTimeoutId);
+            touchEndTimeoutId = null;
+          }
+        }, touchSnapTimeout);
+      }
       $pageEl.on('scroll', '.page-content', handleScroll, true);
-      $pageEl[0].f7ScrollNavbarHandler = handleScroll;
+      if (Support.touch && needCollapse && snapPageScrollToLargeTitle) {
+        app.on('touchstart:passive', handeTouchStart);
+        app.on('touchend:passive', handleTouchEnd);
+      }
+      $pageEl[0].f7DetachNavbarScrollHandlers = function f7DetachNavbarScrollHandlers() {
+        delete $pageEl[0].f7DetachNavbarScrollHandlers;
+        $pageEl.off('scroll', '.page-content', handleScroll, true);
+        if (Support.touch && needCollapse && snapPageScrollToLargeTitle) {
+          app.off('touchstart:passive', handeTouchStart);
+          app.off('touchend:passive', handleTouchEnd);
+        }
+      };
     },
   };
   var Navbar$1 = {
@@ -18444,7 +18889,10 @@
           show: Navbar.show.bind(app),
           getElByPage: Navbar.getElByPage.bind(app),
           getPageByEl: Navbar.getPageByEl.bind(app),
-          initHideNavbarOnScroll: Navbar.initHideNavbarOnScroll.bind(app),
+          collapseLargeTitle: Navbar.collapseLargeTitle.bind(app),
+          expandLargeTitle: Navbar.expandLargeTitle.bind(app),
+          toggleLargeTitle: Navbar.toggleLargeTitle.bind(app),
+          initNavbarOnScroll: Navbar.initNavbarOnScroll.bind(app),
         },
       });
     },
@@ -18452,22 +18900,24 @@
       navbar: {
         scrollTopOnTitleClick: true,
         iosCenterTitle: true,
+        mdCenterTitle: false,
         hideOnPageScroll: false,
         showOnPageScrollEnd: true,
         showOnPageScrollTop: true,
+        collapseLargeTitleOnScroll: true,
+        snapPageScrollToLargeTitle: true,
       },
     },
     on: {
       'panelBreakpoint resize': function onResize() {
         var app = this;
-        if (app.theme !== 'ios') { return; }
         $('.navbar').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
         });
       },
       pageBeforeRemove: function pageBeforeRemove(page) {
-        if (page.$el[0].f7ScrollNavbarHandler) {
-          page.$el.off('scroll', '.page-content', page.$el[0].f7ScrollNavbarHandler, true);
+        if (page.$el[0].f7DetachNavbarScrollHandlers) {
+          page.$el[0].f7DetachNavbarScrollHandlers();
         }
       },
       pageBeforeIn: function pageBeforeIn(page) {
@@ -18490,18 +18940,33 @@
       },
       pageReinit: function pageReinit(page) {
         var app = this;
-        if (app.theme !== 'ios') { return; }
-        var $navbarEl = $(app.navbar.getElByPage(page));
-        if (!$navbarEl || $navbarEl.length === 0) { return; }
-        app.navbar.size($navbarEl);
+        var $navbarInnerEl = $(app.navbar.getElByPage(page));
+        if (!$navbarInnerEl || $navbarInnerEl.length === 0) { return; }
+        app.navbar.size($navbarInnerEl);
       },
       pageInit: function pageInit(page) {
         var app = this;
-        var $navbarEl = $(app.navbar.getElByPage(page));
-        if (!$navbarEl || $navbarEl.length === 0) { return; }
-        if (app.theme === 'ios') {
-          app.navbar.size($navbarEl);
+        var $navbarInnerEl = $(app.navbar.getElByPage(page));
+        if (!$navbarInnerEl || $navbarInnerEl.length === 0) { return; }
+
+        // Size
+        app.navbar.size($navbarInnerEl);
+
+        // Need Collapse On Scroll
+        var needCollapseOnScrollHandler;
+        if ($navbarInnerEl.children('.title-large').length > 0) {
+          $navbarInnerEl.addClass('navbar-inner-large');
         }
+        if ($navbarInnerEl.hasClass('navbar-inner-large')) {
+          if (app.params.navbar.collapseLargeTitleOnScroll) { needCollapseOnScrollHandler = true; }
+          if (app.theme === 'md') {
+            $navbarInnerEl.parents('.navbar').addClass('navbar-large');
+          }
+          page.$el.addClass('page-with-navbar-large');
+        }
+
+        // Need Hide On Scroll
+        var needHideOnScrollHandler;
         if (
           app.params.navbar.hideOnPageScroll
           || page.$el.find('.hide-navbar-on-scroll').length
@@ -18515,34 +18980,60 @@
             || page.$el.find('.keep-bars-on-scroll').length
             || page.$el.hasClass('keep-bars-on-scroll')
           ) {
-            return;
+            needHideOnScrollHandler = false;
+          } else {
+            needHideOnScrollHandler = true;
           }
-          app.navbar.initHideNavbarOnScroll(page.el, $navbarEl[0]);
+        }
+
+        if (needCollapseOnScrollHandler || needHideOnScrollHandler) {
+          app.navbar.initNavbarOnScroll(page.el, $navbarInnerEl[0], needHideOnScrollHandler, needCollapseOnScrollHandler);
         }
       },
       modalOpen: function modalOpen(modal) {
         var app = this;
-        if (app.theme !== 'ios') { return; }
+        if (
+          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+        ) {
+          return;
+        }
         modal.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
         });
       },
       panelOpen: function panelOpen(panel) {
         var app = this;
-        if (app.theme !== 'ios') { return; }
+        if (
+          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+        ) {
+          return;
+        }
         panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
         });
       },
       panelSwipeOpen: function panelSwipeOpen(panel) {
         var app = this;
-        if (app.theme !== 'ios') { return; }
+        if (
+          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+        ) {
+          return;
+        }
         panel.$el.find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
         });
       },
       tabShow: function tabShow(tabEl) {
         var app = this;
+        if (
+          (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+          || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+        ) {
+          return;
+        }
         $(tabEl).find('.navbar:not(.navbar-previous):not(.stacked)').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
         });
@@ -18587,7 +19078,12 @@
       'navbar-inner': {
         postpatch: function postpatch(vnode) {
           var app = this;
-          if (app.theme !== 'ios') { return; }
+          if (
+            (app.theme === 'ios' && !app.params.navbar.iosCenterTitle)
+            || (app.theme === 'md' && !app.params.navbar.mdCenterTitle)
+          ) {
+            return;
+          }
           app.navbar.size(vnode.elm);
         },
       },
@@ -19527,11 +20023,11 @@
             if (typeof args[1] === 'function') {
               (assign = args, text = assign[0], callbackOk = assign[1], callbackCancel = assign[2], defaultValue = assign[3], title = assign[4]);
             }
-            defaultValue = typeof defaultValue === 'undefined' ? '' : defaultValue;
+            defaultValue = typeof defaultValue === 'undefined' || defaultValue === null ? '' : defaultValue;
             return new Dialog(app, {
               title: typeof title === 'undefined' ? defaultDialogTitle() : title,
               text: text,
-              content: ("<div class=\"dialog-input-field item-input\"><div class=\"item-input-wrap\"><input type=\"text\" value=\"" + defaultValue + "\" class=\"dialog-input\"></div></div>"),
+              content: ("<div class=\"dialog-input-field input\"><input type=\"text\" class=\"dialog-input\" value=\"" + defaultValue + "\"></div>"),
               buttons: [
                 {
                   text: app.params.dialog.buttonCancel,
@@ -19595,7 +20091,7 @@
             return new Dialog(app, {
               title: typeof title === 'undefined' ? defaultDialogTitle() : title,
               text: text,
-              content: ("\n              <div class=\"dialog-input-field dialog-input-double item-input\">\n                <div class=\"item-input-wrap\">\n                  <input type=\"text\" name=\"dialog-username\" placeholder=\"" + (app.params.dialog.usernamePlaceholder) + "\" class=\"dialog-input\">\n                </div>\n              </div>\n              <div class=\"dialog-input-field dialog-input-double item-input\">\n                <div class=\"item-input-wrap\">\n                  <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n                </div>\n              </div>"),
+              content: ("\n              <div class=\"dialog-input-field dialog-input-double input\">\n                <input type=\"text\" name=\"dialog-username\" placeholder=\"" + (app.params.dialog.usernamePlaceholder) + "\" class=\"dialog-input\">\n              </div>\n              <div class=\"dialog-input-field dialog-input-double input\">\n                <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n              </div>"),
               buttons: [
                 {
                   text: app.params.dialog.buttonCancel,
@@ -19630,7 +20126,7 @@
             return new Dialog(app, {
               title: typeof title === 'undefined' ? defaultDialogTitle() : title,
               text: text,
-              content: ("\n              <div class=\"dialog-input-field item-input\">\n                <div class=\"item-input-wrap\">\n                  <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n                </div>\n              </div>"),
+              content: ("\n              <div class=\"dialog-input-field input\">\n                <input type=\"password\" name=\"dialog-password\" placeholder=\"" + (app.params.dialog.passwordPlaceholder) + "\" class=\"dialog-input\">\n              </div>"),
               buttons: [
                 {
                   text: app.params.dialog.buttonCancel,
@@ -19650,7 +20146,7 @@
             }).open();
           },
           preloader: function preloader(title, color) {
-            var preloaderInner = app.theme !== 'md' ? '' : Utils.mdPreloaderContent;
+            var preloaderInner = Utils[((app.theme) + "PreloaderContent")] || '';
             return new Dialog(app, {
               title: typeof title === 'undefined' || title === null ? app.params.dialog.preloaderTitle : title,
               content: ("<div class=\"preloader" + (color ? (" color-" + color) : '') + "\">" + preloaderInner + "</div>"),
@@ -20293,7 +20789,7 @@
         var buttonEl = this;
         var buttonIndex;
         var groupIndex;
-        if ($(buttonEl).hasClass('item-link')) {
+        if ($(buttonEl).hasClass('list-button')) {
           buttonIndex = $(buttonEl).parents('li').index();
           groupIndex = $(buttonEl).parents('.list').index();
         } else {
@@ -20337,12 +20833,12 @@
           });
           popover.open(animate);
           popover.once('popoverOpened', function () {
-            popover.$el.find('.item-link').each(function (groupIndex, buttonEl) {
+            popover.$el.find('.list-button').each(function (groupIndex, buttonEl) {
               $(buttonEl).on('click', buttonOnClick);
             });
           });
           popover.once('popoverClosed', function () {
-            popover.$el.find('.item-link').each(function (groupIndex, buttonEl) {
+            popover.$el.find('.list-button').each(function (groupIndex, buttonEl) {
               $(buttonEl).off('click', buttonOnClick);
             });
             Utils.nextTick(function () {
@@ -20471,13 +20967,12 @@
                       itemClasses.push('popover-from-actions-label');
                       return ("<li class=\"" + (itemClasses.join(' ')) + "\">" + text + "</li>");
                     }
-                    itemClasses.push('item-link');
                     if (icon) {
-                      itemClasses.push('item-content');
+                      itemClasses.push('item-link item-content');
                       return ("\n                      <li>\n                        <a class=\"" + (itemClasses.join(' ')) + "\">\n                          <div class=\"item-media\">\n                            " + icon + "\n                          </div>\n                          <div class=\"item-inner\">\n                            <div class=\"item-title\">\n                              " + text + "\n                            </div>\n                          </div>\n                        </a>\n                      </li>\n                    ");
                     }
                     itemClasses.push('list-button');
-                    return ("\n                    <li>\n                      <a href=\"#\" class=\"list-button " + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
+                    return ("\n                    <li>\n                      <a href=\"#\" class=\"" + (itemClasses.join(' ')) + "\">" + text + "</a>\n                    </li>\n                  ");
                   }).join('')) + "\n              </ul>\n            </div>\n          "); }).join('')) + "\n        </div>\n      </div>\n    ").trim();
     };
 
@@ -20792,7 +21287,6 @@
 
     Toast.prototype.render = function render () {
       var toast = this;
-      var app = toast.app;
       if (toast.params.render) { return toast.params.render.call(toast, toast); }
       var ref = toast.params;
       var position = ref.position;
@@ -20802,7 +21296,7 @@
       var closeButton = ref.closeButton;
       var closeButtonColor = ref.closeButtonColor;
       var closeButtonText = ref.closeButtonText;
-      return ("\n      <div class=\"toast toast-" + position + " " + (cssClass || '') + " " + (icon ? 'toast-with-icon' : '') + "\">\n        <div class=\"toast-content\">\n          " + (icon ? ("<div class=\"toast-icon\">" + icon + "</div>") : '') + "\n          <div class=\"toast-text\">" + text + "</div>\n          " + (closeButton && !icon ? ("\n          <a class=\"toast-button " + (app.theme === 'md' ? 'button' : 'link') + " " + (closeButtonColor ? ("color-" + closeButtonColor) : '') + "\">" + closeButtonText + "</a>\n          ").trim() : '') + "\n        </div>\n      </div>\n    ").trim();
+      return ("\n      <div class=\"toast toast-" + position + " " + (cssClass || '') + " " + (icon ? 'toast-with-icon' : '') + "\">\n        <div class=\"toast-content\">\n          " + (icon ? ("<div class=\"toast-icon\">" + icon + "</div>") : '') + "\n          <div class=\"toast-text\">" + text + "</div>\n          " + (closeButton && !icon ? ("\n          <a class=\"toast-button button " + (closeButtonColor ? ("color-" + closeButtonColor) : '') + "\">" + closeButtonText + "</a>\n          ").trim() : '') + "\n        </div>\n      </div>\n    ").trim();
     };
 
     return Toast;
@@ -20851,10 +21345,9 @@
   var Preloader = {
     init: function init(el) {
       var app = this;
-      if (app.theme !== 'md') { return; }
       var $el = $(el);
-      if ($el.length === 0 || $el.children('.preloader-inner').length > 0) { return; }
-      $el.append(Utils.mdPreloaderContent);
+      if ($el.length === 0 || $el.children('.preloader-inner').length > 0 || $el.children('.preloader-inner-line').length > 0) { return; }
+      $el.append(Utils[((app.theme) + "PreloaderContent")]);
     },
     // Modal
     visible: false,
@@ -20863,7 +21356,7 @@
 
       var app = this;
       if (Preloader.visible) { return; }
-      var preloaderInner = app.theme !== 'md' ? '' : Utils.mdPreloaderContent;
+      var preloaderInner = Utils[((app.theme) + "PreloaderContent")] || '';
       $('html').addClass('with-modal-preloader');
       app.root.append(("\n      <div class=\"preloader-backdrop\"></div>\n      <div class=\"preloader-modal\">\n        <div class=\"preloader color-" + color + "\">" + preloaderInner + "</div>\n      </div>\n    "));
       Preloader.visible = true;
@@ -20891,14 +21384,12 @@
     on: {
       photoBrowserOpen: function photoBrowserOpen(pb) {
         var app = this;
-        if (app.theme !== 'md') { return; }
         pb.$el.find('.preloader').each(function (index, preloaderEl) {
           app.preloader.init(preloaderEl);
         });
       },
       pageInit: function pageInit(page) {
         var app = this;
-        if (app.theme !== 'md') { return; }
         page.$el.find('.preloader').each(function (index, preloaderEl) {
           app.preloader.init(preloaderEl);
         });
@@ -20909,7 +21400,6 @@
         insert: function insert(vnode) {
           var app = this;
           var preloaderEl = vnode.elm;
-          if (app.theme !== 'md') { return; }
           app.preloader.init(preloaderEl);
         },
       },
@@ -23277,7 +23767,7 @@
         if (otherPanel.opened) { return; }
       }
       if (e.target && e.target.nodeName.toLowerCase() === 'input' && e.target.type === 'range') { return; }
-      if ($(e.target).closest('.range-slider, .tabs-swipeable-wrap, .calendar-months, .no-swipe-panel').length > 0) { return; }
+      if ($(e.target).closest('.range-slider, .tabs-swipeable-wrap, .calendar-months, .no-swipe-panel, .card-opened').length > 0) { return; }
       touchesStart.x = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
       touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
       if (params.swipeOnlyClose && !panel.opened) {
@@ -24084,8 +24574,428 @@
     },
   };
 
+  var CardExpandable = {
+    open: function open(cardEl, animate) {
+      var assign;
+
+      if ( cardEl === void 0 ) cardEl = '.card-expandable';
+      if ( animate === void 0 ) animate = true;
+      var app = this;
+      if ($('.card-opened').length) { return; }
+      var $cardEl = $(cardEl).eq(0);
+
+      if (!$cardEl || !$cardEl.length) { return; }
+      if ($cardEl.hasClass('card-opened') || $cardEl.hasClass('card-opening') || $cardEl.hasClass('card-closing')) { return; }
+
+      var $pageEl = $cardEl.parents('.page').eq(0);
+      if (!$pageEl.length) { return; }
+
+      var prevented;
+
+      function prevent() {
+        prevented = true;
+      }
+
+      $cardEl.trigger('card:beforeopen', { prevent: prevent });
+      app.emit('cardBeforeOpen', $cardEl[0], prevent);
+
+      if (prevented) { return; }
+
+      var $backropEl;
+      if (app.params.card.backrop) {
+        $backropEl = $cardEl.parents('.page-content').find('.card-backdrop');
+        if (!$backropEl.length) {
+          $backropEl = $('<div class="card-backdrop"></div>');
+          $cardEl.parents('.page-content').append($backropEl);
+        }
+      }
+
+      var $navbarEl;
+      var $toolbarEl;
+      if (app.params.card.hideNavbarOnOpen) {
+        $navbarEl = $pageEl.children('.navbar');
+        if (!$navbarEl.length) {
+          if ($pageEl[0].f7Page) { $navbarEl = $pageEl[0].f7Page.$navbarEl; }
+        }
+      }
+      if (app.params.card.hideToolbarOnOpen) {
+        $toolbarEl = $pageEl.children('.toolbar');
+        if (!$toolbarEl.length) {
+          $toolbarEl = $pageEl.parents('.view').children('.toolbar');
+        }
+        if (!$toolbarEl.length) {
+          $toolbarEl = $pageEl.parents('.views').children('.toolbar');
+        }
+      }
+
+      var currTransform = $cardEl.css('transform');
+      var hasTransform;
+      if (currTransform && currTransform.match(/[2-9]/)) {
+        hasTransform = true;
+      }
+      var $cardContentEl = $cardEl.children('.card-content');
+
+      var $cardSizeEl = $(document.createElement('div')).addClass('card-expandable-size');
+      $cardEl.append($cardSizeEl);
+
+      var cardWidth = $cardEl[0].offsetWidth;
+      var cardHeight = $cardEl[0].offsetHeight;
+      var pageWidth = $pageEl[0].offsetWidth;
+      var pageHeight = $pageEl[0].offsetHeight;
+
+      var maxWidth = $cardSizeEl[0].offsetWidth || pageWidth;
+      var maxHeight = $cardSizeEl[0].offsetHeight || pageHeight;
+
+      var scaleX = maxWidth / cardWidth;
+      var scaleY = maxHeight / cardHeight;
+
+      var offset = $cardEl.offset();
+
+      var cardLeftOffset;
+      var cardTopOffset;
+
+      if (hasTransform) {
+        cardLeftOffset = $cardEl[0].offsetLeft;
+        cardTopOffset = $cardEl[0].offsetTop - $cardEl.parents('.page-content')[0].scrollTop;
+      } else {
+        cardLeftOffset = offset.left;
+        cardTopOffset = offset.top - $pageEl.offset().top;
+        if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
+      }
+
+      cardLeftOffset -= (pageWidth - maxWidth) / 2;
+      cardTopOffset -= (pageHeight - maxHeight) / 2;
+
+      var cardRightOffset = maxWidth - cardWidth - cardLeftOffset;
+      if (app.rtl) {
+        (assign = [cardRightOffset, cardLeftOffset], cardLeftOffset = assign[0], cardRightOffset = assign[1]);
+      }
+      var cardBottomOffset = maxHeight - cardHeight - cardTopOffset;
+      var translateX = (cardRightOffset - cardLeftOffset) / 2;
+      var translateY = (cardBottomOffset - cardTopOffset) / 2;
+      if (app.params.card.hideNavbarOnOpen && $navbarEl && $navbarEl.length) {
+        app.navbar.hide($navbarEl, animate);
+      }
+      if (app.params.card.hideToolbarOnOpen && $toolbarEl && $toolbarEl.length) {
+        app.toolbar.hide($toolbarEl, animate);
+      }
+      if ($backropEl) {
+        $backropEl.removeClass('card-backdrop-out').addClass('card-backdrop-in');
+      }
+      $cardEl.removeClass('card-transitioning');
+      if (animate) {
+        $cardEl.addClass('card-opening');
+      }
+      $cardEl.trigger('card:open');
+      app.emit('cardOpen', $cardEl[0]);
+      function transitionEnd() {
+        $cardEl.addClass('card-opened');
+        $cardEl.removeClass('card-opening');
+        $cardEl.trigger('card:opened');
+        app.emit('cardOpened', $cardEl[0]);
+      }
+      $cardContentEl
+        .css({
+          width: (maxWidth + "px"),
+          height: (maxHeight + "px"),
+        })
+        .transform(("translate3d(" + (app.rtl ? (cardLeftOffset + translateX) : (-cardLeftOffset - translateX)) + "px, 0px, 0) scale(" + (1 / scaleX) + ", " + (1 / scaleY) + ")"));
+
+      $cardEl
+        .transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+      if (animate) {
+        $cardEl.transitionEnd(function () {
+          transitionEnd();
+        });
+      } else {
+        transitionEnd();
+      }
+
+      $pageEl.addClass('page-with-card-opened');
+
+      function onResize() {
+        var assign;
+
+        $cardEl.removeClass('card-transitioning');
+        cardWidth = $cardEl[0].offsetWidth;
+        cardHeight = $cardEl[0].offsetHeight;
+        pageWidth = $pageEl[0].offsetWidth;
+        pageHeight = $pageEl[0].offsetHeight;
+        maxWidth = $cardSizeEl[0].offsetWidth || pageWidth;
+        maxHeight = $cardSizeEl[0].offsetHeight || pageHeight;
+
+        scaleX = maxWidth / cardWidth;
+        scaleY = maxHeight / cardHeight;
+
+        $cardEl.transform('translate3d(0px, 0px, 0) scale(1)');
+        offset = $cardEl.offset();
+
+        cardLeftOffset = offset.left - (pageWidth - maxWidth) / 2;
+        if (app.rtl) { cardLeftOffset -= $cardEl[0].scrollLeft; }
+        cardTopOffset = offset.top - (pageHeight - maxHeight) / 2;
+
+        cardRightOffset = maxWidth - cardWidth - cardLeftOffset;
+        cardBottomOffset = maxHeight - cardHeight - cardTopOffset;
+        if (app.rtl) {
+          (assign = [cardRightOffset, cardLeftOffset], cardLeftOffset = assign[0], cardRightOffset = assign[1]);
+        }
+        translateX = (cardRightOffset - cardLeftOffset) / 2;
+        translateY = (cardBottomOffset - cardTopOffset) / 2;
+
+        $cardEl.transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+        $cardContentEl
+          .css({
+            width: (maxWidth + "px"),
+            height: (maxHeight + "px"),
+          })
+          .transform(("translate3d(" + (app.rtl ? (cardLeftOffset + translateX) : (-cardLeftOffset - translateX)) + "px, 0px, 0) scale(" + (1 / scaleX) + ", " + (1 / scaleY) + ")"));
+      }
+
+      var cardScrollTop;
+      var isTouched;
+      var isMoved;
+      var touchStartX;
+      var touchStartY;
+      var touchEndX;
+      var touchEndY;
+      var isScrolling;
+      var progress;
+      var isV;
+      var isH;
+      function onTouchStart(e) {
+        if (!$(e.target).closest($cardEl).length) { return; }
+        if (!$cardEl.hasClass('card-opened')) { return; }
+        cardScrollTop = $cardContentEl.scrollTop();
+        isTouched = true;
+        touchStartX = e.targetTouches[0].pageX;
+        touchStartY = e.targetTouches[0].pageY;
+        isScrolling = undefined;
+        isV = false;
+        isH = false;
+      }
+      function onTouchMove(e) {
+        if (!isTouched) { return; }
+        touchEndX = e.targetTouches[0].pageX;
+        touchEndY = e.targetTouches[0].pageY;
+        if (typeof isScrolling === 'undefined') {
+          isScrolling = !!(isScrolling || Math.abs(touchEndY - touchStartY) > Math.abs(touchEndX - touchStartX));
+        }
+        if (!isH && !isV) {
+          if (!isScrolling && e.targetTouches[0].clientX <= 50) {
+            isH = true;
+          } else {
+            isV = true;
+          }
+        }
+
+        if (!(isH || isV) || (isV && cardScrollTop !== 0)) {
+          isTouched = true;
+          isMoved = true;
+          return;
+        }
+        if (!isMoved) {
+          $cardEl.removeClass('card-transitioning');
+        }
+
+        isMoved = true;
+        progress = isV ? Math.max((touchEndY - touchStartY) / 150, 0) : Math.max((touchEndX - touchStartX) / (cardWidth / 2), 0);
+        if ((progress > 0 && isV) || isH) {
+          if (isV && app.device.ios) {
+            $cardContentEl.css('-webkit-overflow-scrolling', 'auto');
+            $cardContentEl.scrollTop(0);
+          }
+          e.preventDefault();
+        }
+
+        if (progress > 1) { progress = Math.pow( progress, 0.3 ); }
+        if (progress > (isV ? 1.3 : 1.1)) {
+          isTouched = false;
+          isMoved = false;
+          app.card.close($cardEl);
+        } else {
+          $cardEl.transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + (scaleX * (1 - progress * 0.2)) + ", " + (scaleY * (1 - progress * 0.2)) + ")"));
+        }
+      }
+      function onTouchEnd() {
+        if (!isTouched || !isMoved) { return; }
+        isTouched = false;
+        isMoved = false;
+        if (app.device.ios) {
+          $cardContentEl.css('-webkit-overflow-scrolling', '');
+        }
+        if (progress >= 0.8) {
+          app.card.close($cardEl);
+        } else {
+          $cardEl
+            .addClass('card-transitioning')
+            .transform(("translate3d(" + translateX + "px, " + translateY + "px, 0) scale(" + scaleX + ", " + scaleY + ")"));
+        }
+      }
+
+      $cardEl[0].detachEventHandlers = function detachEventHandlers() {
+        app.off('resize', onResize);
+        if (Support.touch && app.params.card.swipeToClose) {
+          app.off('touchstart:passive', onTouchStart);
+          app.off('touchmove:active', onTouchMove);
+          app.off('touchend:passive', onTouchEnd);
+        }
+      };
+
+      app.on('resize', onResize);
+      if (Support.touch && app.params.card.swipeToClose) {
+        app.on('touchstart:passive', onTouchStart);
+        app.on('touchmove:active', onTouchMove);
+        app.on('touchend:passive', onTouchEnd);
+      }
+    },
+    close: function close(cardEl, animate) {
+      if ( cardEl === void 0 ) cardEl = '.card-expandable.card-opened';
+      if ( animate === void 0 ) animate = true;
+
+      var app = this;
+      var $cardEl = $(cardEl).eq(0);
+      if (!$cardEl || !$cardEl.length) { return; }
+      if (!$cardEl.hasClass('card-opened') || $cardEl.hasClass('card-opening') || $cardEl.hasClass('card-closing')) { return; }
+
+      var $cardContentEl = $cardEl.children('.card-content');
+
+      var $pageEl = $cardEl.parents('.page').eq(0);
+      if (!$pageEl.length) { return; }
+      var $navbarEl;
+      var $toolbarEl;
+
+      var $backropEl;
+      if (app.params.card.backrop) {
+        $backropEl = $cardEl.parents('.page-content').find('.card-backdrop');
+      }
+
+      if (app.params.card.hideNavbarOnOpen) {
+        $navbarEl = $pageEl.children('.navbar');
+        if (!$navbarEl.length) {
+          if ($pageEl[0].f7Page) { $navbarEl = $pageEl[0].f7Page.$navbarEl; }
+        }
+        if ($navbarEl && $navbarEl.length) {
+          app.navbar.show($navbarEl, animate);
+        }
+      }
+      if (app.params.card.hideToolbarOnOpen) {
+        $toolbarEl = $pageEl.children('.toolbar');
+        if (!$toolbarEl.length) {
+          $toolbarEl = $pageEl.parents('.view').children('.toolbar');
+        }
+        if (!$toolbarEl.length) {
+          $toolbarEl = $pageEl.parents('.views').children('.toolbar');
+        }
+        if ($toolbarEl && $toolbarEl.length) {
+          app.toolbar.show($toolbarEl, animate);
+        }
+      }
+      $pageEl.removeClass('page-with-card-opened');
+
+
+      if ($backropEl && $backropEl.length) {
+        $backropEl.removeClass('card-backdrop-in').addClass('card-backdrop-out');
+      }
+
+      $cardEl.removeClass('card-opened card-transitioning');
+      if (animate) {
+        $cardEl.addClass('card-closing');
+      } else {
+        $cardEl.addClass('card-no-transition');
+      }
+      $cardEl.transform('');
+      $cardEl.trigger('card:close');
+      app.emit('cardClose', $cardEl[0]);
+
+      function transitionEnd() {
+        $cardEl.removeClass('card-closing card-no-transition');
+        $cardEl.trigger('card:closed');
+        $cardEl.find('.card-expandable-size').remove();
+        app.emit('cardClosed', $cardEl[0]);
+      }
+      $cardContentEl
+        .css({
+          width: '',
+          height: '',
+        })
+        .transform('')
+        .scrollTop(0, animate ? 300 : 0);
+      if (animate) {
+        $cardContentEl.transitionEnd(function () {
+          transitionEnd();
+        });
+      } else {
+        transitionEnd();
+      }
+
+      if ($cardEl[0].detachEventHandlers) {
+        $cardEl[0].detachEventHandlers();
+        delete $cardEl[0].detachEventHandlers;
+      }
+    },
+    toggle: function toggle(cardEl, animate) {
+      if ( cardEl === void 0 ) cardEl = '.card-expandable';
+
+      var app = this;
+      var $cardEl = $(cardEl).eq(0);
+      if (!$cardEl.length) { return; }
+      if ($cardEl.hasClass('card-opened')) {
+        app.card.close($cardEl, animate);
+      } else {
+        app.card.open($cardEl, animate);
+      }
+    },
+  };
+
   var Card = {
     name: 'card',
+    params: {
+      card: {
+        hideNavbarOnOpen: true,
+        hideToolbarOnOpen: true,
+        swipeToClose: true,
+        closeByBackdropClick: true,
+        backrop: true,
+      },
+    },
+    create: function create() {
+      var app = this;
+      Utils.extend(app, {
+        card: {
+          open: CardExpandable.open.bind(app),
+          close: CardExpandable.close.bind(app),
+          toggle: CardExpandable.toggle.bind(app),
+        },
+      });
+    },
+    clicks: {
+      '.card-close': function closeCard($clickedEl, data) {
+        var app = this;
+        app.card.close(data.card);
+      },
+      '.card-open': function closeCard($clickedEl, data) {
+        var app = this;
+        app.card.open(data.card);
+      },
+      '.card-expandable': function toggleExpandableCard($clickedEl) {
+        var app = this;
+        if ($clickedEl.hasClass('card-opened') || $clickedEl.hasClass('card-opening') || $clickedEl.hasClass('card-closing')) { return; }
+        app.card.open($clickedEl);
+      },
+      '.card-backdrop-in': function onBackdropClick() {
+        var app = this;
+        var needToClose = false;
+        if (app.params.card.closeByBackdropClick) { needToClose = true; }
+        var $openedCardEl = $('.card-opened');
+        if (!$openedCardEl.length) { return; }
+        if ($openedCardEl.attr('data-close-on-backdrop-click') === 'true') {
+          needToClose = true;
+        } else if ($openedCardEl.attr('data-close-on-backdrop-click') === 'false') {
+          needToClose = false;
+        }
+        if (needToClose) { app.card.close($openedCardEl); }
+      },
+    },
   };
 
   var Chip = {
@@ -24609,7 +25519,7 @@
         app.input.checkEmptyState($inputEl);
 
         // Check validation
-        if ($inputEl.dataset().validate || $inputEl.attr('validate') !== null) {
+        if ($inputEl.attr('data-validate-on-blur') === null && ($inputEl.dataset().validate || $inputEl.attr('validate') !== null)) {
           app.input.validate($inputEl);
         }
 
@@ -24620,7 +25530,7 @@
       }
       function onInvalid(e) {
         var $inputEl = $(this);
-        if ($inputEl.dataset().validate || $inputEl.attr('validate') !== null) {
+        if ($inputEl.attr('data-validate-on-blur') === null && ($inputEl.dataset().validate || $inputEl.attr('validate') !== null)) {
           e.preventDefault();
           app.input.validate($inputEl);
         }
@@ -24965,7 +25875,13 @@
         max: 100,
         value: 0,
         draggableBar: true,
+        vertical: false,
+        verticalReversed: false,
         formatLabel: null,
+        scale: false,
+        scaleSteps: 5,
+        scaleSubSteps: 0,
+        formatScaleLabel: null,
       };
 
       // Extend defaults with modules params
@@ -24983,12 +25899,12 @@
 
       var dataset = $el.dataset();
 
-      ('step min max value').split(' ').forEach(function (paramName) {
+      ('step min max value scaleSteps scaleSubSteps').split(' ').forEach(function (paramName) {
         if (typeof params[paramName] === 'undefined' && typeof dataset[paramName] !== 'undefined') {
           range.params[paramName] = parseFloat(dataset[paramName]);
         }
       });
-      ('dual label').split(' ').forEach(function (paramName) {
+      ('dual label vertical verticalReversed scale').split(' ').forEach(function (paramName) {
         if (typeof params[paramName] === 'undefined' && typeof dataset[paramName] !== 'undefined') {
           range.params[paramName] = dataset[paramName];
         }
@@ -25017,7 +25933,14 @@
       var min = ref.min;
       var max = ref.max;
       var value = ref.value;
+      var vertical = ref.vertical;
+      var verticalReversed = ref.verticalReversed;
+      var scale = ref.scale;
+      var scaleSteps = ref.scaleSteps;
+      var scaleSubSteps = ref.scaleSubSteps;
+
       Utils.extend(range, {
+        app: app,
         $el: $el,
         el: $el[0],
         $inputEl: $inputEl,
@@ -25029,6 +25952,11 @@
         max: max,
         value: value,
         previousValue: value,
+        vertical: vertical,
+        verticalReversed: verticalReversed,
+        scale: scale,
+        scaleSteps: scaleSteps,
+        scaleSubSteps: scaleSubSteps,
       });
 
       if ($inputEl) {
@@ -25052,6 +25980,16 @@
         $el.addClass('range-slider-label');
       }
 
+      // Vertical
+      if (range.vertical) {
+        $el.addClass('range-slider-vertical');
+        if (range.verticalReversed) {
+          $el.addClass('range-slider-vertical-reversed');
+        }
+      } else {
+        $el.addClass('range-slider-horizontal');
+      }
+
       // Check for layout
       var $barEl = $('<div class="range-bar"></div>');
       var $barActiveEl = $('<div class="range-bar-active"></div>');
@@ -25060,7 +25998,6 @@
       // Create Knobs
       var knobHTML = "\n      <div class=\"range-knob-wrap\">\n        <div class=\"range-knob\"></div>\n        " + (range.label ? '<div class="range-knob-label"></div>' : '') + "\n      </div>\n    ";
       var knobs = [$(knobHTML)];
-      var labels = [];
 
       if (range.dual) {
         knobs.push($(knobHTML));
@@ -25072,6 +26009,7 @@
       });
 
       // Labels
+      var labels = [];
       if (range.label) {
         labels.push(knobs[0].find('.range-knob-label'));
         if (range.dual) {
@@ -25079,12 +26017,19 @@
         }
       }
 
+      // Scale
+      var $scaleEl;
+      if (range.scale && range.scaleSteps > 1) {
+        $scaleEl = $(("\n        <div class=\"range-scale\">\n          " + (range.renderScale()) + "\n        </div>\n      "));
+        $el.append($scaleEl);
+      }
+
       Utils.extend(range, {
-        app: app,
         knobs: knobs,
         labels: labels,
         $barEl: $barEl,
         $barActiveEl: $barActiveEl,
+        $scaleEl: $scaleEl,
       });
 
       $el[0].f7Range = range;
@@ -25093,7 +26038,9 @@
       var isTouched;
       var touchesStart = {};
       var isScrolling;
+      var rangeOffset;
       var rangeOffsetLeft;
+      var rangeOffsetTop;
       var $touchedKnobEl;
       var dualValueIndex;
       var valueChangedByTouch;
@@ -25113,10 +26060,15 @@
 
         isTouched = true;
         isScrolling = undefined;
-        rangeOffsetLeft = $el.offset().left;
+        rangeOffset = $el.offset();
+        rangeOffsetLeft = rangeOffset.left;
+        rangeOffsetTop = rangeOffset.top;
 
         var progress;
-        if (range.app.rtl) {
+        if (range.vertical) {
+          progress = (touchesStart.y - rangeOffsetTop) / range.rangeHeight;
+          if (!range.verticalReversed) { progress = 1 - progress; }
+        } else if (range.app.rtl) {
           progress = ((rangeOffsetLeft + range.rangeWidth) - touchesStart.x) / range.rangeWidth;
         } else {
           progress = (touchesStart.x - rangeOffsetLeft) / range.rangeWidth;
@@ -25149,7 +26101,11 @@
         var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
 
         if (typeof isScrolling === 'undefined') {
-          isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
+          if (range.vertical) {
+            isScrolling = !(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
+          } else {
+            isScrolling = !!(isScrolling || Math.abs(pageY - touchesStart.y) > Math.abs(pageX - touchesStart.x));
+          }
         }
         if (isScrolling) {
           isTouched = false;
@@ -25158,7 +26114,10 @@
         e.preventDefault();
 
         var progress;
-        if (range.app.rtl) {
+        if (range.vertical) {
+          progress = (pageY - rangeOffsetTop) / range.rangeHeight;
+          if (!range.verticalReversed) { progress = 1 - progress; }
+        } else if (range.app.rtl) {
           progress = ((rangeOffsetLeft + range.rangeWidth) - pageX) / range.rangeWidth;
         } else {
           progress = (pageX - rangeOffsetLeft) / range.rangeWidth;
@@ -25275,10 +26234,17 @@
 
     Range.prototype.calcSize = function calcSize () {
       var range = this;
-      var width = range.$el.outerWidth();
-      if (width === 0) { return; }
-      range.rangeWidth = width;
-      range.knobWidth = range.knobs[0].outerWidth();
+      if (range.vertical) {
+        var height = range.$el.outerHeight();
+        if (height === 0) { return; }
+        range.rangeHeight = height;
+        range.knobHeight = range.knobs[0].outerHeight();
+      } else {
+        var width = range.$el.outerWidth();
+        if (width === 0) { return; }
+        range.rangeWidth = width;
+        range.knobWidth = range.knobs[0].outerWidth();
+      }
     };
 
     Range.prototype.layout = function layout () {
@@ -25287,7 +26253,9 @@
       var range = this;
       var app = range.app;
       var knobWidth = range.knobWidth;
+      var knobHeight = range.knobHeight;
       var rangeWidth = range.rangeWidth;
+      var rangeHeight = range.rangeHeight;
       var min = range.min;
       var max = range.max;
       var knobs = range.knobs;
@@ -25295,27 +26263,38 @@
       var value = range.value;
       var label = range.label;
       var labels = range.labels;
-      var positionProperty = app.rtl ? 'right' : 'left';
+      var vertical = range.vertical;
+      var verticalReversed = range.verticalReversed;
+      var knobSize = vertical ? knobHeight : knobWidth;
+      var rangeSize = vertical ? rangeHeight : rangeWidth;
+      // eslint-disable-next-line
+      var positionProperty = vertical
+        ? (verticalReversed ? 'top' : 'bottom')
+        : (app.rtl ? 'right' : 'left');
       if (range.dual) {
         var progress = [((value[0] - min) / (max - min)), ((value[1] - min) / (max - min))];
-        $barActiveEl.css(( obj = {}, obj[positionProperty] = ((progress[0] * 100) + "%"), obj.width = (((progress[1] - progress[0]) * 100) + "%"), obj ));
+        $barActiveEl.css(( obj = {}, obj[positionProperty] = ((progress[0] * 100) + "%"), obj[vertical ? 'height' : 'width'] = (((progress[1] - progress[0]) * 100) + "%"), obj ));
         knobs.forEach(function ($knobEl, knobIndex) {
-          var leftPos = rangeWidth * progress[knobIndex];
-          var realLeft = (rangeWidth * progress[knobIndex]) - (knobWidth / 2);
-          if (realLeft < 0) { leftPos = knobWidth / 2; }
-          if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
-          $knobEl.css(positionProperty, (leftPos + "px"));
+          var startPos = rangeSize * progress[knobIndex];
+          if (app.theme === 'ios') {
+            var realStartPos = (rangeSize * progress[knobIndex]) - (knobSize / 2);
+            if (realStartPos < 0) { startPos = knobSize / 2; }
+            if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
+          }
+          $knobEl.css(positionProperty, (startPos + "px"));
           if (label) { labels[knobIndex].text(range.formatLabel(value[knobIndex], labels[knobIndex][0])); }
         });
       } else {
         var progress$1 = ((value - min) / (max - min));
-        $barActiveEl.css('width', ((progress$1 * 100) + "%"));
+        $barActiveEl.css(vertical ? 'height' : 'width', ((progress$1 * 100) + "%"));
 
-        var leftPos = rangeWidth * progress$1;
-        var realLeft = (rangeWidth * progress$1) - (knobWidth / 2);
-        if (realLeft < 0) { leftPos = knobWidth / 2; }
-        if ((realLeft + knobWidth) > rangeWidth) { leftPos = rangeWidth - (knobWidth / 2); }
-        knobs[0].css(positionProperty, (leftPos + "px"));
+        var startPos = rangeSize * progress$1;
+        if (app.theme === 'ios') {
+          var realStartPos = (rangeSize * progress$1) - (knobSize / 2);
+          if (realStartPos < 0) { startPos = knobSize / 2; }
+          if ((realStartPos + knobSize) > rangeSize) { startPos = rangeSize - (knobSize / 2); }
+        }
+        knobs[0].css(positionProperty, (startPos + "px"));
         if (label) { labels[0].text(range.formatLabel(value, labels[0][0])); }
       }
       if ((range.dual && value.indexOf(min) >= 0) || (!range.dual && value === min)) {
@@ -25391,6 +26370,63 @@
       var range = this;
       if (range.params.formatLabel) { return range.params.formatLabel.call(range, value, labelEl); }
       return value;
+    };
+
+    Range.prototype.formatScaleLabel = function formatScaleLabel (value) {
+      var range = this;
+      if (range.params.formatScaleLabel) { return range.params.formatScaleLabel.call(range, value); }
+      return value;
+    };
+
+    Range.prototype.renderScale = function renderScale () {
+      var range = this;
+      var app = range.app;
+      var verticalReversed = range.verticalReversed;
+      var vertical = range.vertical;
+
+      // eslint-disable-next-line
+      var positionProperty = vertical
+        ? (verticalReversed ? 'top' : 'bottom')
+        : (app.rtl ? 'right' : 'left');
+
+      var html = '';
+
+      Array
+        .from({ length: range.scaleSteps + 1 })
+        .forEach(function (scaleEl, index) {
+          var scaleStepValue = (range.max - range.min) / range.scaleSteps;
+          var scaleValue = range.min + scaleStepValue * index;
+          var progress = ((scaleValue - range.min) / (range.max - range.min));
+          html += "<div class=\"range-scale-step\" style=\"" + positionProperty + ": " + (progress * 100) + "%\">" + (range.formatScaleLabel(scaleValue)) + "</div>";
+
+          if (range.scaleSubSteps && range.scaleSubSteps > 1 && index < range.scaleSteps) {
+            Array
+              .from({ length: range.scaleSubSteps - 1 })
+              .forEach(function (subStepEl, subIndex) {
+                var subStep = scaleStepValue / range.scaleSubSteps;
+                var scaleSubValue = scaleValue + subStep * (subIndex + 1);
+                var subProgress = ((scaleSubValue - range.min) / (range.max - range.min));
+                html += "<div class=\"range-scale-step range-scale-substep\" style=\"" + positionProperty + ": " + (subProgress * 100) + "%\"></div>";
+              });
+          }
+        });
+
+      return html;
+    };
+
+    Range.prototype.updateScale = function updateScale () {
+      var range = this;
+      if (!range.scale || range.scaleSteps < 2) {
+        if (range.$scaleEl) { range.$scaleEl.remove(); }
+        delete range.$scaleEl;
+        return;
+      }
+      if (!range.$scaleEl) {
+        range.$scaleEl = $('<div class="range-scale"></div>');
+        range.$el.append(range.$scaleEl);
+      }
+
+      range.$scaleEl.html(range.renderScale());
     };
 
     Range.prototype.init = function init () {
@@ -26070,7 +27106,7 @@
         var value = ss.$selectEl.val();
         ss.$el.trigger('smartselect:change', ss, value);
         ss.emit('local::change smartSelectChange', ss, value);
-        ss.setValue();
+        ss.setTextValue();
       }
       ss.attachEvents = function attachEvents() {
         $el.on('click', onClick);
@@ -26138,6 +27174,43 @@
     SmartSelect.prototype = Object.create( Framework7Class$$1 && Framework7Class$$1.prototype );
     SmartSelect.prototype.constructor = SmartSelect;
 
+    SmartSelect.prototype.setValue = function setValue (value) {
+      var ss = this;
+      var newValue = value;
+      var optionText = [];
+      var optionEl;
+      var displayAs;
+      var text;
+      if (ss.multiple) {
+        if (!Array.isArray(newValue)) { newValue = [newValue]; }
+        for (var i = 0; i < ss.selectEl.options.length; i += 1) {
+          optionEl = ss.selectEl.options[i];
+          if (newValue.indexOf(optionEl.value) >= 0) {
+            optionEl.selected = true;
+          } else {
+            optionEl.selected = false;
+          }
+          if (optionEl.selected) {
+            displayAs = optionEl.dataset ? optionEl.dataset.displayAs : $(optionEl).data('display-value-as');
+            text = displayAs && typeof displayAs !== 'undefined' ? displayAs : optionEl.textContent;
+            optionText.push(text.trim());
+          }
+        }
+      } else {
+        optionEl = ss.$selectEl.find(("option[value=\"" + newValue + "\"]"))[0];
+        displayAs = optionEl.dataset ? optionEl.dataset.displayAs : $(optionEl).data('display-as');
+        text = displayAs && typeof displayAs !== 'undefined' ? displayAs : optionEl.textContent;
+        optionText = [text];
+        ss.selectEl.value = newValue;
+      }
+      ss.$valueEl.text(optionText.join(', '));
+    };
+
+    SmartSelect.prototype.getValue = function getValue () {
+      var ss = this;
+      return ss.$selectEl.val();
+    };
+
     SmartSelect.prototype.getView = function getView () {
       var ss = this;
       var view = ss.view || ss.params.view;
@@ -26167,7 +27240,7 @@
       }
     };
 
-    SmartSelect.prototype.setValue = function setValue (value) {
+    SmartSelect.prototype.setTextValue = function setTextValue (value) {
       var ss = this;
       var valueArray = [];
       if (typeof value !== 'undefined') {
@@ -26277,7 +27350,7 @@
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
       var cssClass = ss.params.cssClass;
-      var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+      var pageHtml = "\n      <div class=\"page smart-select-page " + cssClass + "\" data-name=\"smart-select-page\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n          <div class=\"navbar-inner sliding " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n            <div class=\"left\">\n              <a href=\"#\" class=\"link back\">\n                <i class=\"icon icon-back\"></i>\n                <span class=\"ios-only\">" + (ss.params.pageBackLinkText) + "</span>\n              </a>\n            </div>\n            " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n            " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n          </div>\n        </div>\n        " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n        <div class=\"page-content\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
       return pageHtml;
     };
 
@@ -26290,7 +27363,7 @@
         pageTitle = $itemTitleEl.length ? $itemTitleEl.text().trim() : '';
       }
       var cssClass = ss.params.cssClass || '';
-      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-theme-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+      var popupHtml = "\n      <div class=\"popup smart-select-popup " + cssClass + " " + (ss.params.popupTabletFullscreen ? 'popup-tablet-fullscreen' : '') + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"view\">\n          <div class=\"page smart-select-page " + (ss.params.searchbar ? 'page-with-subnavbar' : '') + "\" data-name=\"smart-select-page\">\n            <div class=\"navbar " + (ss.params.navbarColorTheme ? ("color-" + (ss.params.navbarColorTheme)) : '') + "\">\n              <div class=\"navbar-inner sliding\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link popup-close\" data-popup=\".smart-select-popup[data-select-name='" + (ss.selectName) + "']\">\n                    <i class=\"icon icon-back\"></i>\n                    <span class=\"ios-only\">" + (ss.params.popupCloseLinkText) + "</span>\n                  </a>\n                </div>\n                " + (pageTitle ? ("<div class=\"title\">" + pageTitle + "</div>") : '') + "\n                " + (ss.params.searchbar ? ("<div class=\"subnavbar\">" + (ss.renderSearchbar()) + "</div>") : '') + "\n              </div>\n            </div>\n            " + (ss.params.searchbar ? '<div class="searchbar-backdrop"></div>' : '') + "\n            <div class=\"page-content\">\n              <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n                <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
       return popupHtml;
     };
 
@@ -26298,7 +27371,7 @@
       var ss = this;
       if (ss.params.renderSheet) { return ss.params.renderSheet.call(ss, ss.items); }
       var cssClass = ss.params.cssClass;
-      var sheetHtml = "\n      <div class=\"sheet-modal smart-select-sheet " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"toolbar " + (ss.params.toolbarColorTheme ? ("theme-" + (ss.params.toolbarColorTheme)) : '') + "\">\n          <div class=\"toolbar-inner\">\n            <div class=\"left\"></div>\n            <div class=\"right\">\n              <a class=\"link sheet-close\">" + (ss.params.sheetCloseLinkText) + "</a>\n            </div>\n          </div>\n        </div>\n        <div class=\"sheet-modal-inner\">\n          <div class=\"page-content\">\n            <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n              <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
+      var sheetHtml = "\n      <div class=\"sheet-modal smart-select-sheet " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"toolbar toolbar-top " + (ss.params.toolbarColorTheme ? ("color-" + (ss.params.toolbarColorTheme)) : '') + "\">\n          <div class=\"toolbar-inner\">\n            <div class=\"left\"></div>\n            <div class=\"right\">\n              <a class=\"link sheet-close\">" + (ss.params.sheetCloseLinkText) + "</a>\n            </div>\n          </div>\n        </div>\n        <div class=\"sheet-modal-inner\">\n          <div class=\"page-content\">\n            <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n              <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n            </div>\n          </div>\n        </div>\n      </div>\n    ";
       return sheetHtml;
     };
 
@@ -26306,7 +27379,7 @@
       var ss = this;
       if (ss.params.renderPopover) { return ss.params.renderPopover.call(ss, ss.items); }
       var cssClass = ss.params.cssClass;
-      var popoverHtml = "\n      <div class=\"popover smart-select-popover " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-theme-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
+      var popoverHtml = "\n      <div class=\"popover smart-select-popover " + cssClass + "\" data-select-name=\"" + (ss.selectName) + "\">\n        <div class=\"popover-inner\">\n          <div class=\"list smart-select-list-" + (ss.id) + " " + (ss.params.virtualList ? ' virtual-list' : '') + " " + (ss.params.formColorTheme ? ("color-" + (ss.params.formColorTheme)) : '') + "\">\n            <ul>" + (!ss.params.virtualList && ss.renderItems(ss.items)) + "</ul>\n          </div>\n        </div>\n      </div>\n    ";
       return popoverHtml;
     };
 
@@ -26608,7 +27681,7 @@
     SmartSelect.prototype.init = function init () {
       var ss = this;
       ss.attachEvents();
-      ss.setValue();
+      ss.setTextValue();
     };
 
     SmartSelect.prototype.destroy = function destroy () {
@@ -28178,43 +29251,24 @@
         var dayName = params.dayNamesShort[dayIndex];
         weekDaysHtml += "<div class=\"calendar-week-day\">" + dayName + "</div>";
       }
-      return ("\n    <div class=\"calendar-week-header\">\n    " + weekDaysHtml + "\n    </div>\n  ").trim();
+      return ("\n    <div class=\"calendar-week-header\">\n      " + weekDaysHtml + "\n    </div>\n  ").trim();
     };
 
     Calendar.prototype.renderMonthSelector = function renderMonthSelector () {
       var calendar = this;
-      var app = calendar.app;
       if (calendar.params.renderMonthSelector) {
         return calendar.params.renderMonthSelector.call(calendar);
       }
 
-      var needsBlackIcon;
-      if (calendar.inline && calendar.$containerEl.closest('.theme-dark').length === 0) {
-        needsBlackIcon = true;
-      } else if (app.root.closest('.theme-dark').length === 0) {
-        needsBlackIcon = true;
-      }
-
-      var iconColor = app.theme === 'md' && needsBlackIcon ? 'color-black' : '';
-      return ("\n    <div class=\"calendar-month-selector\">\n    <a href=\"#\" class=\"link icon-only calendar-prev-month-button\">\n      <i class=\"icon icon-prev " + iconColor + "\"></i>\n    </a>\n    <span class=\"current-month-value\"></span>\n    <a href=\"#\" class=\"link icon-only calendar-next-month-button\">\n      <i class=\"icon icon-next " + iconColor + "\"></i>\n    </a>\n    </div>\n  ").trim();
+      return "\n    <div class=\"calendar-month-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-month-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-month-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-month-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
     };
 
     Calendar.prototype.renderYearSelector = function renderYearSelector () {
       var calendar = this;
-      var app = calendar.app;
       if (calendar.params.renderYearSelector) {
         return calendar.params.renderYearSelector.call(calendar);
       }
-
-      var needsBlackIcon;
-      if (calendar.inline && calendar.$containerEl.closest('.theme-dark').length === 0) {
-        needsBlackIcon = true;
-      } else if (app.root.closest('.theme-dark').length === 0) {
-        needsBlackIcon = true;
-      }
-
-      var iconColor = app.theme === 'md' && needsBlackIcon ? 'color-black' : '';
-      return ("\n    <div class=\"calendar-year-selector\">\n    <a href=\"#\" class=\"link icon-only calendar-prev-year-button\">\n      <i class=\"icon icon-prev " + iconColor + "\"></i>\n    </a>\n    <span class=\"current-year-value\"></span>\n    <a href=\"#\" class=\"link icon-only calendar-next-year-button\">\n      <i class=\"icon icon-next " + iconColor + "\"></i>\n    </a>\n    </div>\n  ").trim();
+      return "\n    <div class=\"calendar-year-selector\">\n      <a href=\"#\" class=\"link icon-only calendar-prev-year-button\">\n        <i class=\"icon icon-prev\"></i>\n      </a>\n      <span class=\"current-year-value\"></span>\n      <a href=\"#\" class=\"link icon-only calendar-next-year-button\">\n        <i class=\"icon icon-next\"></i>\n      </a>\n    </div>\n  ".trim();
     };
 
     Calendar.prototype.renderHeader = function renderHeader () {
@@ -28222,7 +29276,7 @@
       if (calendar.params.renderHeader) {
         return calendar.params.renderHeader.call(calendar);
       }
-      return ("\n    <div class=\"calendar-header\">\n    <div class=\"calendar-selected-date\">" + (calendar.params.headerPlaceholder) + "</div>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"calendar-header\">\n      <div class=\"calendar-selected-date\">" + (calendar.params.headerPlaceholder) + "</div>\n    </div>\n  ").trim();
     };
 
     Calendar.prototype.renderFooter = function renderFooter () {
@@ -28231,7 +29285,7 @@
       if (calendar.params.renderFooter) {
         return calendar.params.renderFooter.call(calendar);
       }
-      return ("\n    <div class=\"calendar-footer\">\n    <a href=\"#\" class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"calendar-footer\">\n      <a href=\"#\" class=\"" + (app.theme === 'md' ? 'button' : 'link') + " calendar-close sheet-close popover-close\">" + (calendar.params.toolbarCloseText) + "</a>\n    </div>\n  ").trim();
     };
 
     Calendar.prototype.renderToolbar = function renderToolbar () {
@@ -28239,7 +29293,7 @@
       if (calendar.params.renderToolbar) {
         return calendar.params.renderToolbar.call(calendar, calendar);
       }
-      return ("\n    <div class=\"toolbar no-shadow\">\n    <div class=\"toolbar-inner\">\n      " + (calendar.renderMonthSelector()) + "\n      " + (calendar.renderYearSelector()) + "\n    </div>\n    </div>\n  ").trim();
+      return ("\n    <div class=\"toolbar toolbar-top no-shadow\">\n      <div class=\"toolbar-inner\">\n        " + (calendar.renderMonthSelector()) + "\n        " + (calendar.renderYearSelector()) + "\n      </div>\n    </div>\n  ").trim();
     };
     // eslint-disable-next-line
     Calendar.prototype.renderInline = function renderInline () {
@@ -28253,7 +29307,7 @@
       var weekHeader = ref.weekHeader;
       var value = calendar.value;
       var date = value && value.length ? value[0] : new calendar.DateHandleClass().setHours(0, 0, 0);
-      var inlineHtml = ("\n    <div class=\"calendar calendar-inline " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n    " + (header ? calendar.renderHeader() : '') + "\n    " + (toolbar ? calendar.renderToolbar() : '') + "\n    " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n    <div class=\"calendar-months\">\n      " + (calendar.renderMonths(date)) + "\n    </div>\n    " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
+      var inlineHtml = ("\n    <div class=\"calendar calendar-inline " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n      " + (header ? calendar.renderHeader() : '') + "\n      " + (toolbar ? calendar.renderToolbar() : '') + "\n      " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n      <div class=\"calendar-months\">\n        " + (calendar.renderMonths(date)) + "\n      </div>\n      " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
 
       return inlineHtml;
     };
@@ -28269,7 +29323,7 @@
       var weekHeader = ref.weekHeader;
       var value = calendar.value;
       var date = value && value.length ? value[0] : new calendar.DateHandleClass().setHours(0, 0, 0);
-      var sheetHtml = ("\n    <div class=\"calendar calendar-modal " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n    " + (header ? calendar.renderHeader() : '') + "\n    " + (toolbar ? calendar.renderToolbar() : '') + "\n    " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n    <div class=\"calendar-months\">\n      " + (calendar.renderMonths(date)) + "\n    </div>\n    " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
+      var sheetHtml = ("\n    <div class=\"calendar calendar-modal " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n      " + (header ? calendar.renderHeader() : '') + "\n      " + (toolbar ? calendar.renderToolbar() : '') + "\n      " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n      <div class=\"calendar-months\">\n        " + (calendar.renderMonths(date)) + "\n      </div>\n      " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
 
       return sheetHtml;
     };
@@ -28285,7 +29339,7 @@
       var weekHeader = ref.weekHeader;
       var value = calendar.value;
       var date = value && value.length ? value[0] : new calendar.DateHandleClass().setHours(0, 0, 0);
-      var sheetHtml = ("\n    <div class=\"sheet-modal calendar calendar-sheet " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n    " + (header ? calendar.renderHeader() : '') + "\n    " + (toolbar ? calendar.renderToolbar() : '') + "\n    " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n    <div class=\"sheet-modal-inner calendar-months\">\n      " + (calendar.renderMonths(date)) + "\n    </div>\n    " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
+      var sheetHtml = ("\n    <div class=\"sheet-modal calendar calendar-sheet " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n      " + (header ? calendar.renderHeader() : '') + "\n      " + (toolbar ? calendar.renderToolbar() : '') + "\n      " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n      <div class=\"sheet-modal-inner calendar-months\">\n        " + (calendar.renderMonths(date)) + "\n      </div>\n      " + (footer ? calendar.renderFooter() : '') + "\n    </div>\n  ").trim();
 
       return sheetHtml;
     };
@@ -28301,7 +29355,7 @@
       var weekHeader = ref.weekHeader;
       var value = calendar.value;
       var date = value && value.length ? value[0] : new calendar.DateHandleClass().setHours(0, 0, 0);
-      var popoverHtml = ("\n    <div class=\"popover calendar-popover\">\n    <div class=\"popover-inner\">\n      <div class=\"calendar " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n      " + (header ? calendar.renderHeader() : '') + "\n      " + (toolbar ? calendar.renderToolbar() : '') + "\n      " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n      <div class=\"calendar-months\">\n        " + (calendar.renderMonths(date)) + "\n      </div>\n      " + (footer ? calendar.renderFooter() : '') + "\n      </div>\n    </div>\n    </div>\n  ").trim();
+      var popoverHtml = ("\n    <div class=\"popover calendar-popover\">\n      <div class=\"popover-inner\">\n        <div class=\"calendar " + (rangePicker ? 'calendar-range' : '') + " " + (cssClass || '') + "\">\n        " + (header ? calendar.renderHeader() : '') + "\n        " + (toolbar ? calendar.renderToolbar() : '') + "\n        " + (weekHeader ? calendar.renderWeekHeader() : '') + "\n        <div class=\"calendar-months\">\n          " + (calendar.renderMonths(date)) + "\n        </div>\n        " + (footer ? calendar.renderFooter() : '') + "\n        </div>\n      </div>\n    </div>\n  ").trim();
 
       return popoverHtml;
     };
@@ -29183,7 +30237,7 @@
     Picker.prototype.renderToolbar = function renderToolbar () {
       var picker = this;
       if (picker.params.renderToolbar) { return picker.params.renderToolbar.call(picker, picker); }
-      return ("\n      <div class=\"toolbar no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a href=\"#\" class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
+      return ("\n      <div class=\"toolbar toolbar-top no-shadow\">\n        <div class=\"toolbar-inner\">\n          <div class=\"left\"></div>\n          <div class=\"right\">\n            <a href=\"#\" class=\"link sheet-close popover-close\">" + (picker.params.toolbarCloseText) + "</a>\n          </div>\n        </div>\n      </div>\n    ").trim();
     };
     // eslint-disable-next-line
     Picker.prototype.renderColumn = function renderColumn (col, onlyItems) {
@@ -29636,6 +30690,8 @@
       ptr.el = $el[0];
       ptr.app = app;
 
+      ptr.bottom = ptr.$el.hasClass('ptr-bottom');
+
       // Extend defaults with modules params
       ptr.useModulesParams({});
 
@@ -29670,6 +30726,7 @@
       var touchesDiff;
       var refresh = false;
       var useTranslate = false;
+      var forceUseTranslate = false;
       var startTranslate = 0;
       var translate;
       var scrollTop;
@@ -29678,11 +30735,14 @@
       var dynamicTriggerDistance;
       var pullStarted;
       var hasNavbar = false;
+      var scrollHeight;
+      var offsetHeight;
+      var maxScrollTop;
       var $pageEl = $el.parents('.page');
 
       if ($pageEl.find('.navbar').length > 0 || $pageEl.parents('.view').children('.navbar').length > 0) { hasNavbar = true; }
       if ($pageEl.hasClass('no-navbar')) { hasNavbar = false; }
-      if (!hasNavbar) { $el.addClass('ptr-no-navbar'); }
+      if (!hasNavbar && !ptr.bottom) { $el.addClass('ptr-no-navbar'); }
 
       // Define trigger distance
       if ($el.attr('data-ptr-distance')) {
@@ -29745,12 +30805,16 @@
         }
 
         scrollTop = $el[0].scrollTop;
-        if (typeof wasScrolled === 'undefined' && scrollTop !== 0) { wasScrolled = true; }
 
         if (!isMoved) {
           $el.removeClass('ptr-transitioning');
           var targetIsEl;
           var targetIsScrollable;
+          scrollHeight = $el[0].scrollHeight;
+          offsetHeight = $el[0].offsetHeight;
+          if (ptr.bottom) {
+            maxScrollTop = scrollHeight - offsetHeight;
+          }
           $(e.target).parents().each(function (index, targetEl) {
             if (targetEl === el) {
               targetIsEl = true;
@@ -29761,39 +30825,63 @@
             }
           });
 
-          if (targetIsScrollable || scrollTop > $el[0].offsetHeight) {
+          if (targetIsScrollable || scrollTop > scrollHeight) {
             isTouched = false;
             return;
           }
           if (dynamicTriggerDistance) {
             triggerDistance = $el.attr('data-ptr-distance');
-            if (triggerDistance.indexOf('%') >= 0) { triggerDistance = ($el[0].offsetHeight * parseInt(triggerDistance, 10)) / 100; }
+            if (triggerDistance.indexOf('%') >= 0) { triggerDistance = (scrollHeight * parseInt(triggerDistance, 10)) / 100; }
           }
           startTranslate = $el.hasClass('ptr-refreshing') ? triggerDistance : 0;
-          if ($el[0].scrollHeight === $el[0].offsetHeight || Device.os !== 'ios' || isMaterial) {
+          if (scrollHeight === offsetHeight || Device.os !== 'ios' || isMaterial) {
             useTranslate = true;
           } else {
             useTranslate = false;
           }
+          forceUseTranslate = false;
         }
         isMoved = true;
         touchesDiff = pageY - touchesStart.y;
 
-        if ((touchesDiff > 0 && scrollTop <= 0) || scrollTop < 0) {
-          // iOS 8 fix
-          if (Device.os === 'ios' && parseInt(Device.osVersion.split('.')[0], 10) > 7 && scrollTop === 0 && !wasScrolled) { useTranslate = true; }
+        if (typeof wasScrolled === 'undefined' && (ptr.bottom ? scrollTop !== maxScrollTop : scrollTop !== 0)) { wasScrolled = true; }
 
-          if (useTranslate) {
-            e.preventDefault();
-            translate = (Math.pow( touchesDiff, 0.85 )) + startTranslate;
+        var ptrStarted = ptr.bottom
+          ? (touchesDiff < 0 && scrollTop >= maxScrollTop) || scrollTop > maxScrollTop
+          : (touchesDiff > 0 && scrollTop <= 0) || scrollTop < 0;
+
+        if (ptrStarted) {
+          // iOS 8 fix
+          if (Device.os === 'ios' && parseInt(Device.osVersion.split('.')[0], 10) > 7) {
+            if (!ptr.bottom && scrollTop === 0 && !wasScrolled) { useTranslate = true; }
+            if (ptr.bottom && scrollTop === maxScrollTop && !wasScrolled) { useTranslate = true; }
+          }
+
+          if (!useTranslate && ptr.bottom && !isMaterial) {
+            $el.css('-webkit-overflow-scrolling', 'auto');
+            $el.scrollTop(maxScrollTop);
+            forceUseTranslate = true;
+          }
+
+          if (useTranslate || forceUseTranslate) {
+            if (e.cancelable) {
+              e.preventDefault();
+            }
+            translate = (ptr.bottom ? -1 * (Math.pow( Math.abs(touchesDiff), 0.85 )) : Math.pow( touchesDiff, 0.85 )) + startTranslate;
             if (isMaterial) {
               $preloaderEl.transform(("translate3d(0," + translate + "px,0)"))
-                .find('.ptr-arrow').transform(("rotate(" + ((180 * (touchesDiff / 66)) + 100) + "deg)"));
+                .find('.ptr-arrow').transform(("rotate(" + ((180 * (Math.abs(touchesDiff) / 66)) + 100) + "deg)"));
             } else {
-              $el.transform(("translate3d(0," + translate + "px,0)"));
+              // eslint-disable-next-line
+              if (ptr.bottom) {
+                $el.children().transform(("translate3d(0," + translate + "px,0)"));
+              } else {
+                $el.transform(("translate3d(0," + translate + "px,0)"));
+              }
             }
           }
-          if ((useTranslate && (Math.pow( touchesDiff, 0.85 )) > triggerDistance) || (!useTranslate && touchesDiff >= triggerDistance * 2)) {
+
+          if (((useTranslate || forceUseTranslate) && (Math.pow( Math.abs(touchesDiff), 0.85 )) > triggerDistance) || (!useTranslate && Math.abs(touchesDiff) >= triggerDistance * 2)) {
             refresh = true;
             $el.addClass('ptr-pull-up').removeClass('ptr-pull-down');
           } else {
@@ -29846,7 +30934,16 @@
           $preloaderEl.transform('')
             .find('.ptr-arrow').transform('');
         } else {
-          $el.transform('');
+          // eslint-disable-next-line
+          if (ptr.bottom) {
+            $el.children().transform('');
+          } else {
+            $el.transform('');
+          }
+        }
+
+        if (!useTranslate && ptr.bottom && !isMaterial) {
+          $el.css('-webkit-overflow-scrolling', '');
         }
 
         if (refresh) {
@@ -29872,13 +30969,13 @@
       ptr.attachEvents = function attachEvents() {
         var passive = Support.passiveListener ? { passive: true } : false;
         $el.on(app.touchEvents.start, handleTouchStart, passive);
-        app.on('touchmove', handleTouchMove);
+        app.on('touchmove:active', handleTouchMove);
         app.on('touchend:passive', handleTouchEnd);
       };
       ptr.detachEvents = function detachEvents() {
         var passive = Support.passiveListener ? { passive: true } : false;
         $el.off(app.touchEvents.start, handleTouchStart, passive);
-        app.off('touchmove', handleTouchMove);
+        app.off('touchmove:active', handleTouchMove);
         app.off('touchend:passive', handleTouchEnd);
       };
 
@@ -29984,14 +31081,14 @@
       var $pageEl = $(pageEl).closest('.page').eq(0);
 
       // Lazy images
-      var lazyLoadImages = $pageEl.find('.lazy');
-      if (lazyLoadImages.length === 0 && !$pageEl.hasClass('lazy')) { return; }
+      var $lazyLoadImages = $pageEl.find('.lazy');
+      if ($lazyLoadImages.length === 0 && !$pageEl.hasClass('lazy')) { return; }
 
       // Placeholder
       var placeholderSrc = app.params.lazy.placeholder;
 
       if (placeholderSrc !== false) {
-        lazyLoadImages.each(function (index, lazyEl) {
+        $lazyLoadImages.each(function (index, lazyEl) {
           if ($(lazyEl).attr('data-src') && !$(lazyEl).attr('src')) { $(lazyEl).attr('src', placeholderSrc); }
         });
       }
@@ -30009,6 +31106,43 @@
           imageIsLoading = true;
           app.lazy.loadImage(imagesSequence[0], onImageComplete);
         }
+      }
+
+      function observerCallback(entries, observer) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            if (app.params.lazy.sequential && imageIsLoading) {
+              if (imagesSequence.indexOf(entry.target) < 0) { imagesSequence.push(entry.target); }
+              return;
+            }
+            // Load image
+            imageIsLoading = true;
+            app.lazy.loadImage(entry.target, onImageComplete);
+            // Detach
+            observer.unobserve(entry.target);
+          }
+        });
+      }
+      if (app.params.lazy.observer && Support.intersectionObserver) {
+        var observer = $pageEl[0].f7LazyObserver;
+        if (!observer) {
+          observer = new win.IntersectionObserver(observerCallback, {
+            root: $pageEl[0],
+          });
+        }
+        $lazyLoadImages.each(function (index, el) {
+          if (el.f7LazyObserverAdded) { return; }
+          el.f7LazyObserverAdded = true;
+          observer.observe(el);
+        });
+        if (!$pageEl[0].f7LazyDestroy) {
+          $pageEl[0].f7LazyDestroy = function () {
+            observer.disconnect();
+            delete $pageEl[0].f7LazyDestroy;
+            delete $pageEl[0].f7LazyObserver;
+          };
+        }
+        return;
       }
 
       function lazyHandler() {
@@ -30131,6 +31265,7 @@
         placeholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEXCwsK592mkAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==',
         threshold: 0,
         sequential: true,
+        observer: true,
       },
     },
     create: function create() {
@@ -30154,6 +31289,7 @@
       },
       pageAfterIn: function pageAfterIn(page) {
         var app = this;
+        if (app.params.lazy.observer && Support.intersectionObserver) { return; }
         if (page.$el.find('.lazy').length > 0 || page.$el.hasClass('lazy')) {
           app.lazy.create(page.$el);
         }
@@ -30173,6 +31309,7 @@
       },
       tabBeforeRemove: function tabBeforeRemove(tabEl) {
         var app = this;
+        if (app.params.lazy.observer && Support.intersectionObserver) { return; }
         var $tabEl = $(tabEl);
         if ($tabEl.find('.lazy').length > 0 || $tabEl.hasClass('lazy')) {
           app.lazy.destroy($tabEl);
@@ -30808,12 +31945,18 @@
         if (!sb || (sb && !sb.$el)) { return; }
         if (sb.enabled) {
           sb.$el.removeClass('searchbar-enabled');
+          if (sb.expandable) {
+            sb.$el.parents('.navbar-inner').removeClass('with-searchbar-expandable-enabled');
+          }
         }
       }
       function onPageBeforeIn() {
         if (!sb || (sb && !sb.$el)) { return; }
         if (sb.enabled) {
           sb.$el.addClass('searchbar-enabled');
+          if (sb.expandable) {
+            sb.$el.parents('.navbar-inner').addClass('with-searchbar-expandable-enabled');
+          }
         }
       }
       sb.attachEvents = function attachEvents() {
@@ -30908,6 +32051,17 @@
           }
           sb.$disableButtonEl.css(("margin-" + (app.rtl ? 'left' : 'right')), '0px');
         }
+        if (sb.expandable) {
+          if (sb.$el.parents('.navbar-inner').hasClass('navbar-inner-large') && sb.$pageEl) {
+            sb.$pageEl.find('.page-content').addClass('with-searchbar-expandable-enabled');
+          }
+          if (app.theme === 'md' && sb.$el.parent('.navbar-inner').parent('.navbar').length) {
+            sb.$el.parent('.navbar-inner').parent('.navbar').addClass('with-searchbar-expandable-enabled');
+          } else {
+            sb.$el.parent('.navbar-inner').addClass('with-searchbar-expandable-enabled');
+            sb.$el.parent('.navbar-inner-large').addClass('navbar-inner-large-collapsed');
+          }
+        }
         if (sb.$hideOnEnableEl) { sb.$hideOnEnableEl.addClass('hidden-by-searchbar'); }
         sb.$el.trigger('searchbar:enable');
         sb.emit('local::enable searchbarEnable', sb);
@@ -30949,10 +32103,22 @@
       var app = sb.app;
       sb.$inputEl.val('').trigger('change');
       sb.$el.removeClass('searchbar-enabled searchbar-focused searchbar-enabled-no-disable-button');
+      if (sb.expandable) {
+        if (sb.$el.parents('.navbar-inner').hasClass('navbar-inner-large') && sb.$pageEl) {
+          sb.$pageEl.find('.page-content').removeClass('with-searchbar-expandable-enabled');
+        }
+        if (app.theme === 'md' && sb.$el.parent('.navbar-inner').parent('.navbar').length) {
+          sb.$el.parent('.navbar-inner').parent('.navbar').removeClass('with-searchbar-expandable-enabled');
+        } else {
+          sb.$el.parent('.navbar-inner').removeClass('with-searchbar-expandable-enabled');
+          if (sb.$pageEl) {
+            sb.$pageEl.find('.page-content').trigger('scroll');
+          }
+        }
+      }
       if (!sb.expandable && sb.$disableButtonEl && sb.$disableButtonEl.length > 0 && app.theme === 'ios') {
         sb.$disableButtonEl.css(("margin-" + (app.rtl ? 'left' : 'right')), ((-sb.disableButtonEl.offsetWidth) + "px"));
       }
-
       if (sb.$backdropEl && ((sb.$searchContainer && sb.$searchContainer.length) || sb.params.customSearch)) {
         sb.backdropHide();
       }
@@ -38689,7 +39855,7 @@
       var iconsColor = pb.params.iconsColor;
       if (!pb.params.iconsColor && pb.params.theme === 'dark') { iconsColor = 'white'; }
 
-      var toolbarHtml = ("\n      <div class=\"toolbar tabbar toolbar-bottom-md\">\n        <div class=\"toolbar-inner\">\n          <a href=\"#\" class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a href=\"#\" class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
+      var toolbarHtml = ("\n      <div class=\"toolbar toolbar-bottom tabbar\">\n        <div class=\"toolbar-inner\">\n          <a href=\"#\" class=\"link photo-browser-prev\">\n            <i class=\"icon icon-back " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n          <a href=\"#\" class=\"link photo-browser-next\">\n            <i class=\"icon icon-forward " + (iconsColor ? ("color-" + iconsColor) : '') + "\"></i>\n          </a>\n        </div>\n      </div>\n    ").trim();
       return toolbarHtml;
     };
 
@@ -38710,7 +39876,7 @@
     PhotoBrowser.prototype.renderLazyPhoto = function renderLazyPhoto (photo, index) {
       var pb = this;
       if (pb.params.renderLazyPhoto) { return pb.params.renderLazyPhoto.call(pb, photo, index); }
-      var photoHtml = ("\n      <div class=\"photo-browser-slide photo-browser-slide-lazy swiper-slide\" data-swiper-slide-index=\"" + index + "\">\n          <div class=\"preloader swiper-lazy-preloader " + (pb.params.theme === 'dark' ? 'color-white' : '') + "\">" + (pb.app.theme === 'md' ? Utils.mdPreloaderContent : '') + "</div>\n          <span class=\"swiper-zoom-container\">\n              <img data-src=\"" + (photo.url ? photo.url : photo) + "\" class=\"swiper-lazy\">\n          </span>\n      </div>\n    ").trim();
+      var photoHtml = ("\n      <div class=\"photo-browser-slide photo-browser-slide-lazy swiper-slide\" data-swiper-slide-index=\"" + index + "\">\n          <div class=\"preloader swiper-lazy-preloader " + (pb.params.theme === 'dark' ? 'color-white' : '') + "\">" + (Utils[((pb.app.theme) + "PreloaderContent")] || '') + "</div>\n          <span class=\"swiper-zoom-container\">\n              <img data-src=\"" + (photo.url ? photo.url : photo) + "\" class=\"swiper-lazy\">\n          </span>\n      </div>\n    ").trim();
       return photoHtml;
     };
 
@@ -39869,7 +41035,7 @@
 
     Autocomplete.prototype.renderPreloader = function renderPreloader () {
       var ac = this;
-      return ("\n      <div class=\"autocomplete-preloader preloader " + (ac.params.preloaderColor ? ("color-" + (ac.params.preloaderColor)) : '') + "\">" + (ac.app.theme === 'md' ? Utils.mdPreloaderContent : '') + "</div>\n    ").trim();
+      return ("\n      <div class=\"autocomplete-preloader preloader " + (ac.params.preloaderColor ? ("color-" + (ac.params.preloaderColor)) : '') + "\">" + (Utils[((ac.app.theme) + "PreloaderContent")] || '') + "</div>\n    ").trim();
     };
 
     Autocomplete.prototype.renderSearchbar = function renderSearchbar () {
@@ -39903,7 +41069,7 @@
       if (typeof pageTitle === 'undefined' && ac.$openerEl && ac.$openerEl.length) {
         pageTitle = ac.$openerEl.find('.item-title').text().trim();
       }
-      var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-theme-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-theme-" + (ac.params.navbarColorTheme)) : '') + "\">\n          <div class=\"left sliding\">\n            <a href=\"#\" class=\"link " + (ac.params.openIn === 'page' ? 'back' : 'popup-close') + "\" " + (ac.params.openIn === 'popup' ? 'data-popup=".autocomplete-popup"' : '') + ">\n              <i class=\"icon icon-back\"></i>\n              <span class=\"ios-only\">" + (ac.params.openIn === 'page' ? ac.params.pageBackLinkText : ac.params.popupCloseLinkText) + "</span>\n            </a>\n          </div>\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + (ac.params.preloader ? ("\n          <div class=\"right\">\n            " + (ac.renderPreloader()) + "\n          </div>\n          ") : '') + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
+      var navbarHtml = ("\n      <div class=\"navbar " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n        <div class=\"navbar-inner " + (ac.params.navbarColorTheme ? ("color-" + (ac.params.navbarColorTheme)) : '') + "\">\n          <div class=\"left sliding\">\n            <a href=\"#\" class=\"link " + (ac.params.openIn === 'page' ? 'back' : 'popup-close') + "\" " + (ac.params.openIn === 'popup' ? 'data-popup=".autocomplete-popup"' : '') + ">\n              <i class=\"icon icon-back\"></i>\n              <span class=\"ios-only\">" + (ac.params.openIn === 'page' ? ac.params.pageBackLinkText : ac.params.popupCloseLinkText) + "</span>\n            </a>\n          </div>\n          " + (pageTitle ? ("<div class=\"title sliding\">" + pageTitle + "</div>") : '') + "\n          " + (ac.params.preloader ? ("\n          <div class=\"right\">\n            " + (ac.renderPreloader()) + "\n          </div>\n          ") : '') + "\n          <div class=\"subnavbar sliding\">" + (ac.renderSearchbar()) + "</div>\n        </div>\n      </div>\n    ").trim();
       return navbarHtml;
     };
 
@@ -39918,7 +41084,7 @@
       var ac = this;
       if (ac.params.renderPage) { return ac.params.renderPage.call(ac, ac.items); }
 
-      var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar()) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-theme-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
+      var pageHtml = ("\n      <div class=\"page page-with-subnavbar autocomplete-page\" data-name=\"autocomplete-page\">\n        " + (ac.renderNavbar()) + "\n        <div class=\"searchbar-backdrop\"></div>\n        <div class=\"page-content\">\n          <div class=\"list autocomplete-list autocomplete-found autocomplete-list-" + (ac.id) + " " + (ac.params.formColorTheme ? ("color-" + (ac.params.formColorTheme)) : '') + "\">\n            <ul></ul>\n          </div>\n          <div class=\"list autocomplete-not-found\">\n            <ul>\n              <li class=\"item-content\"><div class=\"item-inner\"><div class=\"item-title\">" + (ac.params.notFoundText) + "</div></div></li>\n            </ul>\n          </div>\n          <div class=\"list autocomplete-values\">\n            <ul></ul>\n          </div>\n        </div>\n      </div>\n    ").trim();
       return pageHtml;
     };
 
@@ -40951,6 +42117,38 @@
     },
   };
 
+  var Skeleton = {
+    name: 'skeleton',
+  };
+
+  var Menu = {
+    name: 'menu',
+    on: {
+      click: function click(e) {
+        var openedMenus = $('.menu-item-dropdown-opened');
+        if (!openedMenus.length) { return; }
+        openedMenus.each(function (index, el) {
+          if (!$(e.target).closest('.menu-item-dropdown-opened').length) {
+            $(el).removeClass('menu-item-dropdown-opened');
+          }
+        });
+      },
+    },
+    clicks: {
+      '.menu-item-dropdown': function onClick($clickedEl, dataset, e) {
+        if ($clickedEl.hasClass('menu-item-dropdown-opened')) {
+          if ($(e.target).closest('.menu-dropdown').length) { return; }
+          $clickedEl.removeClass('menu-item-dropdown-opened');
+        } else {
+          $clickedEl.addClass('menu-item-dropdown-opened');
+        }
+      },
+      '.menu-close': function onClick() {
+        $('.menu-item-dropdown-opened').removeClass('menu-item-dropdown-opened');
+      },
+    },
+  };
+
   var ViAd = /*@__PURE__*/(function (Framework7Class$$1) {
     function ViAd(app, params) {
       if ( params === void 0 ) params = {};
@@ -41210,7 +42408,7 @@
   };
 
   /**
-   * Framework7 3.6.5
+   * Framework7 4.0.0-beta.14
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -41218,7 +42416,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 4, 2019
+   * Released on: January 10, 2019
    */
 
   // Install Core Modules & Components
@@ -41234,6 +42432,7 @@
     HistoryModule,
     StorageModule,
     ComponentModule,
+    ServiceWorkerModule,
     Statusbar$1,
     View$1,
     Navbar$1,
@@ -41286,6 +42485,8 @@
     Autocomplete$1,
     Tooltip$1,
     Gauge$1,
+    Skeleton,
+    Menu,
     Vi,
     Elevation,
     Typography
@@ -41375,7 +42576,18 @@
           });
         } else if (arg) { classes.push(arg); }
       });
-      return classes.join(' ');
+      var uniqueClasses = [];
+      classes.forEach(function (c) {
+        if (uniqueClasses.indexOf(c) < 0) { uniqueClasses.push(c); }
+      });
+      return uniqueClasses.join(' ');
+    },
+    bindMethods: function bindMethods(context, methods) {
+      if ( methods === void 0 ) methods = [];
+
+      for (var i = 0; i < methods.length; i += 1) {
+        if (context[methods[i]]) { context[methods[i]] = context[methods[i]].bind(context); }
+      }
     },
   };
 
@@ -41504,6 +42716,16 @@
       sortableEnable: [Boolean, String],
       sortableDisable: [Boolean, String],
       sortableToggle: [Boolean, String],
+
+      // Card
+      cardOpen: [Boolean, String],
+      cardClose: [Boolean, String],
+
+      // Menu
+      menuClose: {
+        type: [Boolean, String],
+        default: undefined,
+      },
     },
     linkActionsAttrs: function linkActionsAttrs(props) {
       var searchbarEnable = props.searchbarEnable;
@@ -41525,6 +42747,8 @@
       var sortableEnable = props.sortableEnable;
       var sortableDisable = props.sortableDisable;
       var sortableToggle = props.sortableToggle;
+      var cardOpen = props.cardOpen;
+      var cardClose = props.cardClose;
 
       return {
         'data-searchbar': (Utils$1.isStringProp(searchbarEnable) && searchbarEnable)
@@ -41546,6 +42770,8 @@
         'data-sortable': (Utils$1.isStringProp(sortableEnable) && sortableEnable)
                          || (Utils$1.isStringProp(sortableDisable) && sortableDisable)
                          || (Utils$1.isStringProp(sortableToggle) && sortableToggle) || undefined,
+        'data-card': (Utils$1.isStringProp(cardOpen) && cardOpen)
+                      || (Utils$1.isStringProp(cardClose) && cardClose) || undefined,
       };
     },
     linkActionsClasses: function linkActionsClasses(props) {
@@ -41568,27 +42794,33 @@
       var sortableEnable = props.sortableEnable;
       var sortableDisable = props.sortableDisable;
       var sortableToggle = props.sortableToggle;
+      var cardOpen = props.cardOpen;
+      var cardClose = props.cardClose;
+      var menuClose = props.menuClose;
 
       return {
         'searchbar-enable': searchbarEnable || searchbarEnable === '',
         'searchbar-disable': searchbarDisable || searchbarDisable === '',
         'searchbar-clear': searchbarClear || searchbarClear === '',
         'searchbar-toggle': searchbarToggle || searchbarToggle === '',
-        'panel-close': Utils$1.isTrueProp(panelClose) || panelClose,
+        'panel-close': panelClose || panelClose === '',
         'panel-open': panelOpen || panelOpen === '',
-        'popup-close': Utils$1.isTrueProp(popupClose) || popupClose,
+        'popup-close': popupClose || popupClose === '',
         'popup-open': popupOpen || popupOpen === '',
-        'actions-close': Utils$1.isTrueProp(actionsClose) || actionsClose,
+        'actions-close': actionsClose || actionsClose === '',
         'actions-open': actionsOpen || actionsOpen === '',
-        'popover-close': Utils$1.isTrueProp(popoverClose) || popoverClose,
+        'popover-close': popoverClose || popoverClose === '',
         'popover-open': popoverOpen || popoverOpen === '',
-        'sheet-close': Utils$1.isTrueProp(sheetClose) || sheetClose,
+        'sheet-close': sheetClose || sheetClose === '',
         'sheet-open': sheetOpen || sheetOpen === '',
-        'login-screen-close': Utils$1.isTrueProp(loginScreenClose) || loginScreenClose,
+        'login-screen-close': loginScreenClose || loginScreenClose === '',
         'login-screen-open': loginScreenOpen || loginScreenOpen === '',
-        'sortable-enable': Utils$1.isTrueProp(sortableEnable) || sortableEnable,
-        'sortable-disable': Utils$1.isTrueProp(sortableDisable) || sortableDisable,
-        'sortable-toggle': sortableToggle === true || (typeof sortableToggle === 'string' && sortableToggle.length),
+        'sortable-enable': sortableEnable || sortableEnable === '',
+        'sortable-disable': sortableDisable || sortableDisable === '',
+        'sortable-toggle': sortableToggle || sortableToggle === '',
+        'card-close': cardClose || cardClose === '',
+        'card-open': cardOpen || cardOpen === '',
+        'menu-close': menuClose || menuClose === '',
       };
     },
   };
@@ -41657,37 +42889,31 @@
     }, Mixins.colorProps),
 
     created: function created() {
-      var self = this;
-      self.onBeforeOpenBound = self.onBeforeOpen.bind(self);
-      self.onOpenBound = self.onOpen.bind(self);
-      self.onOpenedBound = self.onOpened.bind(self);
-      self.onBeforeCloseBound = self.onBeforeClose.bind(self);
-      self.onCloseBound = self.onClose.bind(self);
-      self.onClosedBound = self.onClosed.bind(self);
+      Utils$1.bindMethods(this, 'onBeforeOpen onOpen onOpened onBeforeClose onClose onClosed'.split(' '));
     },
 
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      el.addEventListener('accordion:beforeopen', self.onBeforeOpenBound);
-      el.addEventListener('accordion:open', self.onOpenBound);
-      el.addEventListener('accordion:opened', self.onOpenedBound);
-      el.addEventListener('accordion:beforeclose', self.onBeforeCloseBound);
-      el.addEventListener('accordion:close', self.onCloseBound);
-      el.addEventListener('accordion:closed', self.onClosedBound);
+      el.addEventListener('accordion:beforeopen', self.onBeforeOpen);
+      el.addEventListener('accordion:open', self.onOpen);
+      el.addEventListener('accordion:opened', self.onOpened);
+      el.addEventListener('accordion:beforeclose', self.onBeforeClose);
+      el.addEventListener('accordion:close', self.onClose);
+      el.addEventListener('accordion:closed', self.onClosed);
     },
 
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('accordion:beforeopen', self.onBeforeOpenBound);
-      el.removeEventListener('accordion:open', self.onOpenBound);
-      el.removeEventListener('accordion:opened', self.onOpenedBound);
-      el.removeEventListener('accordion:beforeclose', self.onBeforeCloseBound);
-      el.removeEventListener('accordion:close', self.onCloseBound);
-      el.removeEventListener('accordion:closed', self.onClosedBound);
+      el.removeEventListener('accordion:beforeopen', self.onBeforeOpen);
+      el.removeEventListener('accordion:open', self.onOpen);
+      el.removeEventListener('accordion:opened', self.onOpened);
+      el.removeEventListener('accordion:beforeclose', self.onBeforeClose);
+      el.removeEventListener('accordion:close', self.onClose);
+      el.removeEventListener('accordion:closed', self.onClosed);
     },
 
     render: function render() {
@@ -41855,7 +43081,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
@@ -41955,7 +43181,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
@@ -42034,18 +43260,18 @@
       }
     },
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      self.onOpenBound = self.onOpen.bind(self);
-      self.onOpenedBound = self.onOpened.bind(self);
-      self.onCloseBound = self.onClose.bind(self);
-      self.onClosedBound = self.onClosed.bind(self);
-      el.addEventListener('actions:open', self.onOpenBound);
-      el.addEventListener('actions:opened', self.onOpenedBound);
-      el.addEventListener('actions:close', self.onCloseBound);
-      el.addEventListener('actions:closed', self.onClosedBound);
+      el.addEventListener('actions:open', self.onOpen);
+      el.addEventListener('actions:opened', self.onOpened);
+      el.addEventListener('actions:close', self.onClose);
+      el.addEventListener('actions:closed', self.onClosed);
       var props = self.props;
       var grid = props.grid;
       var target = props.target;
@@ -42079,10 +43305,10 @@
       if (self.f7Actions) { self.f7Actions.destroy(); }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('actions:open', self.onOpenBound);
-      el.removeEventListener('actions:opened', self.onOpenedBound);
-      el.removeEventListener('actions:close', self.onCloseBound);
-      el.removeEventListener('actions:closed', self.onClosedBound);
+      el.removeEventListener('actions:open', self.onOpen);
+      el.removeEventListener('actions:opened', self.onOpened);
+      el.removeEventListener('actions:close', self.onClose);
+      el.removeEventListener('actions:closed', self.onClosed);
     },
 
     methods: {
@@ -42451,7 +43677,9 @@
   var f7BlockTitle = {
     name: 'f7-block-title',
     props: Object.assign({
-      id: [String, Number]
+      id: [String, Number],
+      large: Boolean,
+      medium: Boolean
     }, Mixins.colorProps),
 
     render: function render() {
@@ -42460,7 +43688,12 @@
       var className = props.className;
       var id = props.id;
       var style = props.style;
-      var classes = Utils$1.classNames(className, 'block-title', Mixins.colorClasses(props));
+      var large = props.large;
+      var medium = props.medium;
+      var classes = Utils$1.classNames(className, 'block-title', {
+        'block-title-large': large,
+        'block-title-medium': medium
+      }, Mixins.colorClasses(props));
       return _h('div', {
         style: style,
         class: classes,
@@ -42494,20 +43727,22 @@
       noHairlinesIos: Boolean
     }, Mixins.colorProps),
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onTabShow', 'onTabHide']);
+    },
+
     mounted: function mounted() {
       var el = this.$refs.el;
       if (!el) { return; }
-      this.onTabShowBound = this.onTabShow.bind(this);
-      this.onTabHideBound = this.onTabHide.bind(this);
-      el.addEventListener('tab:show', this.onTabShowBound);
-      el.addEventListener('tab:hide', this.onTabHideBound);
+      el.addEventListener('tab:show', this.onTabShow);
+      el.addEventListener('tab:hide', this.onTabHide);
     },
 
     beforeDestroy: function beforeDestroy() {
       var el = this.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('tab:show', this.onTabShowBound);
-      el.removeEventListener('tab:hide', this.onTabHideBound);
+      el.removeEventListener('tab:show', this.onTabShow);
+      el.removeEventListener('tab:hide', this.onTabHide);
     },
 
     render: function render() {
@@ -42793,14 +44028,18 @@
       fill: Boolean,
       fillMd: Boolean,
       fillIos: Boolean,
-      big: Boolean,
-      bigMd: Boolean,
-      bigIos: Boolean,
+      large: Boolean,
+      largeMd: Boolean,
+      largeIos: Boolean,
       small: Boolean,
       smallMd: Boolean,
       smallIos: Boolean,
       raised: Boolean,
+      raisedMd: Boolean,
+      raisedIos: Boolean,
       outline: Boolean,
+      outlineMd: Boolean,
+      outlineIos: Boolean,
       active: Boolean,
       disabled: Boolean,
       tooltip: String
@@ -42891,15 +44130,19 @@
         var fill = props.fill;
         var fillIos = props.fillIos;
         var fillMd = props.fillMd;
-        var big = props.big;
-        var bigIos = props.bigIos;
-        var bigMd = props.bigMd;
+        var large = props.large;
+        var largeIos = props.largeIos;
+        var largeMd = props.largeMd;
         var small = props.small;
         var smallIos = props.smallIos;
         var smallMd = props.smallMd;
         var raised = props.raised;
+        var raisedIos = props.raisedIos;
+        var raisedMd = props.raisedMd;
         var active = props.active;
         var outline = props.outline;
+        var outlineIos = props.outlineIos;
+        var outlineMd = props.outlineMd;
         var disabled = props.disabled;
         var className = props.className;
         return Utils$1.classNames(className, 'button', {
@@ -42912,15 +44155,19 @@
           'button-fill': fill,
           'button-fill-ios': fillIos,
           'button-fill-md': fillMd,
-          'button-big': big,
-          'button-big-ios': bigIos,
-          'button-big-md': bigMd,
+          'button-large': large,
+          'button-large-ios': largeIos,
+          'button-large-md': largeMd,
           'button-small': small,
           'button-small-ios': smallIos,
           'button-small-md': smallMd,
           'button-raised': raised,
+          'button-raised-ios': raisedIos,
+          'button-raised-md': raisedMd,
           'button-active': active,
           'button-outline': outline,
+          'button-outline-ios': outlineIos,
+          'button-outline-md': outlineMd,
           disabled: disabled
         }, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
       },
@@ -42952,14 +44199,13 @@
     },
 
     created: function created() {
-      var self = this;
-      self.onClickBound = self.onClick.bind(self);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      el.addEventListener('click', self.onClickBound);
+      el.addEventListener('click', self.onClick);
       var ref = self.props;
       var tooltip = ref.tooltip;
       var routeProps = ref.routeProps;
@@ -42991,7 +44237,7 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
-      el.removeEventListener('click', self.onClickBound);
+      el.removeEventListener('click', self.onClick);
       delete el.f7RouteProps;
 
       if (self.f7Tooltip && self.f7Tooltip.destroy) {
@@ -43108,11 +44354,61 @@
       content: [String, Number],
       footer: [String, Number],
       outline: Boolean,
+      expandable: Boolean,
+      expandableAnimateWidth: Boolean,
+      expandableOpened: Boolean,
+      noShadow: Boolean,
+      noBorder: Boolean,
       padding: {
         type: Boolean,
         default: true
       }
     }, Mixins.colorProps),
+    watch: {
+      'props.expandableOpened': function watchOpened(expandableOpened) {
+        var self = this;
+
+        if (opened) {
+          self.open();
+        } else {
+          self.close();
+        }
+      }
+    },
+
+    created: function created() {
+      Utils$1.bindMethods(this, 'onBeforeOpen onOpen onOpened onClose onClosed'.split(' '));
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      if (!self.props.expandable) { return; }
+      var el = self.$refs.el;
+      if (!el) { return; }
+      el.addEventListener('card:beforeopen', self.onBeforeOpen);
+      el.addEventListener('card:open', self.onOpen);
+      el.addEventListener('card:opened', self.onOpened);
+      el.addEventListener('card:close', self.onClose);
+      el.addEventListener('card:closed', self.onClosed);
+
+      if (self.props.expandable && self.props.expandableOpened) {
+        self.$f7ready(function () {
+          self.$f7.card.open(el, false);
+        });
+      }
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      if (!self.props.expandable) { return; }
+      var el = self.$refs.el;
+      if (!el) { return; }
+      el.removeEventListener('card:beforeopen', self.onBeforeOpen);
+      el.removeEventListener('card:open', self.onOpen);
+      el.removeEventListener('card:opened', self.onOpened);
+      el.removeEventListener('card:close', self.onClose);
+      el.removeEventListener('card:closed', self.onClosed);
+    },
 
     render: function render() {
       var _h = this.$createElement;
@@ -43126,11 +44422,19 @@
       var footer = props.footer;
       var padding = props.padding;
       var outline = props.outline;
+      var expandable = props.expandable;
+      var expandableAnimateWidth = props.expandableAnimateWidth;
+      var noShadow = props.noShadow;
+      var noBorder = props.noBorder;
       var headerEl;
       var contentEl;
       var footerEl;
       var classes = Utils$1.classNames(className, 'card', {
-        'card-outline': outline
+        'card-outline': outline,
+        'card-expandable': expandable,
+        'card-expandable-animate-width': expandableAnimateWidth,
+        'no-shadow': noShadow,
+        'no-border': noBorder
       }, Mixins.colorClasses(props));
 
       if (title || self.$slots && self.$slots.header) {
@@ -43152,12 +44456,54 @@
       return _h('div', {
         style: style,
         class: classes,
+        ref: 'el',
         attrs: {
           id: id
         }
       }, [headerEl, contentEl, footerEl, this.$slots['default']]);
     },
 
+    methods: {
+      open: function open() {
+        var self = this;
+        if (!self.$refs.el) { return; }
+        self.$f7.card.open(self.$refs.el);
+      },
+
+      close: function close() {
+        var self = this;
+        if (!self.$refs.el) { return; }
+        self.$f7.card.close(self.$refs.el);
+      },
+
+      onBeforeOpen: function onBeforeOpen(e) {
+        this.dispatchEvent('cardBeforeOpen card:beforeopen', e.target, e.detail.prevent);
+      },
+
+      onOpen: function onOpen(e) {
+        this.dispatchEvent('cardOpen card:open', e.target);
+      },
+
+      onOpened: function onOpened(e) {
+        this.dispatchEvent('cardOpened card:opened', e.target);
+      },
+
+      onClose: function onClose(e) {
+        this.dispatchEvent('cardClose card:close', e.target);
+      },
+
+      onClosed: function onClosed(e) {
+        this.dispatchEvent('cardClosed card:closed', e.target);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      }
+
+    },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
@@ -43242,7 +44588,7 @@
     },
 
     created: function created() {
-      this.onChange = this.onChange.bind(this);
+      Utils$1.bindMethods(this, ['onChange']);
     },
 
     methods: {
@@ -43326,8 +44672,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
-      this.onDeleteClick = this.onDeleteClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick', 'onDeleteClick']);
     },
 
     mounted: function mounted() {
@@ -43419,7 +44764,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
@@ -43493,25 +44838,8 @@
       }, [this.$slots['default'], labelEl]);
     },
 
-    methods: {
-      onClick: function onClick(event) {
-        this.dispatchEvent('click', event);
-      },
-
-      dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
-
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
-      }
-
-    },
-    watch: {
-      'props.tooltip': function watchTooltip(newText) {
-        var self = this;
-        if (!newText || !self.f7Tooltip) { return; }
-        self.f7Tooltip.setText(newText);
-      }
+    created: function created() {
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     created: function created() {
@@ -43543,6 +44871,26 @@
       }
     },
 
+    methods: {
+      onClick: function onClick(event) {
+        this.dispatchEvent('click', event);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      }
+
+    },
+    watch: {
+      'props.tooltip': function watchTooltip(newText) {
+        var self = this;
+        if (!newText || !self.f7Tooltip) { return; }
+        self.f7Tooltip.setText(newText);
+      }
+    },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
@@ -43670,20 +45018,6 @@
       }, [linkEl, rootChildren, rootSlots]);
     },
 
-    methods: {
-      onClick: function onClick(event) {
-        var self = this;
-        self.dispatchEvent('click', event);
-      },
-
-      dispatchEvent: function dispatchEvent(events) {
-        var args = [], len = arguments.length - 1;
-        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
-
-        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
-      }
-
-    },
     watch: {
       'props.tooltip': function watchTooltip(newText) {
         var self = this;
@@ -43693,7 +45027,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
@@ -43728,6 +45062,20 @@
       }
     },
 
+    methods: {
+      onClick: function onClick(event) {
+        var self = this;
+        self.dispatchEvent('click', event);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      }
+
+    },
     computed: {
       props: function props() {
         return __vueComponentProps(this);
@@ -43983,7 +45331,7 @@
     },
 
     created: function created() {
-      this.onChange = this.onChange.bind(this);
+      Utils$1.bindMethods(this, ['onChange']);
     },
 
     mounted: function mounted() {
@@ -44067,15 +45415,36 @@
         type: Boolean,
         default: false
       },
-      name: String,
-      inputId: String,
-      input: Boolean,
-      disabled: Boolean,
+      vertical: {
+        type: Boolean,
+        default: false
+      },
+      verticalReversed: {
+        type: Boolean,
+        default: false
+      },
       draggableBar: {
         type: Boolean,
         default: true
       },
-      formatLabel: Function
+      formatLabel: Function,
+      scale: {
+        type: Boolean,
+        default: false
+      },
+      scaleSteps: {
+        type: Number,
+        default: 5
+      },
+      scaleSubSteps: {
+        type: Number,
+        default: 0
+      },
+      formatScaleLabel: Function,
+      name: String,
+      input: Boolean,
+      inputId: String,
+      disabled: Boolean
     }, Mixins.colorProps),
 
     render: function render() {
@@ -44090,7 +45459,12 @@
       var input = ref.input;
       var inputId = ref.inputId;
       var name = ref.name;
+      var vertical = ref.vertical;
+      var verticalReversed = ref.verticalReversed;
       var classes = Utils$1.classNames(className, 'range-slider', {
+        'range-slider-horizontal': !vertical,
+        'range-slider-vertical': vertical,
+        'range-slider-vertical-reversed': vertical && verticalReversed,
         disabled: disabled
       }, Mixins.colorClasses(props));
       return _h('div', {
@@ -44129,7 +45503,13 @@
         var label = props.label;
         var dual = props.dual;
         var draggableBar = props.draggableBar;
+        var vertical = props.vertical;
+        var verticalReversed = props.verticalReversed;
         var formatLabel = props.formatLabel;
+        var scale = props.scale;
+        var scaleSteps = props.scaleSteps;
+        var scaleSubSteps = props.scaleSubSteps;
+        var formatScaleLabel = props.formatScaleLabel;
         self.f7Range = f7.range.create(Utils$1.noUndefinedProps({
           el: self.$refs.el,
           value: value,
@@ -44139,7 +45519,13 @@
           label: label,
           dual: dual,
           draggableBar: draggableBar,
+          vertical: vertical,
+          verticalReversed: verticalReversed,
           formatLabel: formatLabel,
+          scale: scale,
+          scaleSteps: scaleSteps,
+          scaleSubSteps: scaleSubSteps,
+          formatScaleLabel: formatScaleLabel,
           on: {
             change: function change(range, val) {
               self.dispatchEvent('range:change rangeChange', val);
@@ -44222,6 +45608,7 @@
       inputStyle: [String, Object],
       pattern: String,
       validate: [Boolean, String],
+      validateOnBlur: Boolean,
       tabindex: [String, Number],
       resizable: Boolean,
       clearButton: Boolean,
@@ -44234,6 +45621,10 @@
       wrap: {
         type: Boolean,
         default: true
+      },
+      dropdown: {
+        type: [String, Boolean],
+        default: 'auto'
       }
     }, Mixins.colorProps),
 
@@ -44284,6 +45675,7 @@
       var inputStyle = props.inputStyle;
       var pattern = props.pattern;
       var validate = props.validate;
+      var validateOnBlur = props.validateOnBlur;
       var tabindex = props.tabindex;
       var resizable = props.resizable;
       var clearButton = props.clearButton;
@@ -44291,6 +45683,7 @@
       var errorMessageForce = props.errorMessageForce;
       var info = props.info;
       var wrap = props.wrap;
+      var dropdown = props.dropdown;
       var style = props.style;
       var className = props.className;
       var noStoreData = props.noStoreData;
@@ -44358,7 +45751,8 @@
               step: step,
               pattern: pattern,
               validate: typeof validate === 'string' && validate.length ? validate : undefined,
-              'data-validate': validate === true || validate === '' ? true : undefined,
+              'data-validate': validate === true || validate === '' || validateOnBlur === true || validateOnBlur === '' ? true : undefined,
+              'data-validate-on-blur': validateOnBlur === true || validateOnBlur === '' ? true : undefined,
               tabindex: tabindex,
               'data-error-message': errorMessageForce ? undefined : errorMessage
             }
@@ -44416,7 +45810,9 @@
       }
 
       if (wrap) {
-        var wrapClasses = Utils$1.classNames(className, 'item-input-wrap', Mixins.colorClasses(props));
+        var wrapClasses = Utils$1.classNames(className, 'input', {
+          'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
+        }, Mixins.colorClasses(props));
         return _h('div', {
           ref: 'wrapEl',
           class: wrapClasses,
@@ -44425,11 +45821,11 @@
             id: id
           }
         }, [inputEl, errorMessage && errorMessageForce && _h('div', {
-          class: 'item-input-error-message'
+          class: 'input-error-message'
         }, [errorMessage]), clearButton && _h('span', {
           class: 'input-clear-button'
         }), (info || slotsInfo && slotsInfo.length) && _h('div', {
-          class: 'item-input-info'
+          class: 'input-info'
         }, [info, this.$slots['info']])]);
       }
 
@@ -44448,15 +45844,7 @@
     },
 
     created: function created() {
-      var self = this;
-      self.onFocus = self.onFocus.bind(self);
-      self.onBlur = self.onBlur.bind(self);
-      self.onInput = self.onInput.bind(self);
-      self.onChange = self.onChange.bind(self);
-      self.onTextareaResize = self.onTextareaResize.bind(self);
-      self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
-      self.onInputEmpty = self.onInputEmpty.bind(self);
-      self.onInputClear = self.onInputClear.bind(self);
+      Utils$1.bindMethods(this, 'onFocus onBlur onInput onChange onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
     },
 
     mounted: function mounted() {
@@ -44464,6 +45852,7 @@
       self.$f7ready(function (f7) {
         var ref = self.props;
         var validate = ref.validate;
+        var validateOnBlur = ref.validateOnBlur;
         var resizable = ref.resizable;
         var type = ref.type;
         var clearButton = ref.clearButton;
@@ -44485,7 +45874,7 @@
 
         f7.input.checkEmptyState(inputEl);
 
-        if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
+        if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
           setTimeout(function () {
             self.validateInput(inputEl);
           }, 0);
@@ -44501,6 +45890,7 @@
       var self = this;
       var ref = self.props;
       var validate = ref.validate;
+      var validateOnBlur = ref.validateOnBlur;
       var resizable = ref.resizable;
       var f7 = self.$f7;
       if (!f7) { return; }
@@ -44511,7 +45901,7 @@
         self.updateInputOnDidUpdate = false;
         f7.input.checkEmptyState(inputEl);
 
-        if (validate) {
+        if (validate && !validateOnBlur) {
           self.validateInput(inputEl);
         }
 
@@ -44599,9 +45989,10 @@
         var self = this;
         var ref = self.props;
         var validate = ref.validate;
+        var validateOnBlur = ref.validateOnBlur;
         self.dispatchEvent('input', event);
 
-        if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
+        if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
       },
@@ -44617,9 +46008,10 @@
         var self = this;
         var ref = self.props;
         var validate = ref.validate;
+        var validateOnBlur = ref.validateOnBlur;
         self.dispatchEvent('blur', event);
 
-        if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
+        if ((validate || validate === '' || validateOnBlur || validateOnBlur === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
 
@@ -44651,45 +46043,6 @@
 
     }
   };
-
-  ({
-    name: 'f7-label',
-    props: Object.assign({
-      id: [String, Number],
-      floating: Boolean,
-      inline: Boolean
-    }, Mixins.colorProps),
-
-    render: function render() {
-      var _h = this.$createElement;
-      var self = this;
-      var props = self.props;
-      var inline = props.inline;
-      var id = props.id;
-      var style = props.style;
-      var className = props.className;
-      var floating = props.floating;
-      var classes = Utils$1.classNames(className, 'item-title', {
-        'item-label-inline': inline,
-        'item-label': !floating,
-        'item-floating-label': floating
-      }, Mixins.colorClasses(props));
-      return _h('div', {
-        style: style,
-        class: classes,
-        attrs: {
-          id: id
-        }
-      }, [this.$slots['default']]);
-    },
-
-    computed: {
-      props: function props() {
-        return __vueComponentProps(this);
-      }
-
-    }
-  });
 
   var F7Link = {
     name: 'f7-link',
@@ -44822,8 +46175,7 @@
     },
 
     created: function created() {
-      var self = this;
-      self.onClick = self.onClick.bind(self);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
@@ -45013,7 +46365,6 @@
         var tabLink = props.tabLink;
         var tabLinkActive = props.tabLinkActive;
         return Utils$1.classNames({
-          'item-link': true,
           'list-button': true,
           'tab-link': tabLink || tabLink === '',
           'tab-link-active': tabLinkActive,
@@ -45028,7 +46379,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
@@ -45241,9 +46592,13 @@
       id: [String, Number],
       sortable: Boolean,
       media: String,
-      tag: {
-        type: String,
-        default: 'li'
+      dropdown: {
+        type: [String, Boolean],
+        default: 'auto'
+      },
+      wrap: {
+        type: Boolean,
+        default: true
       },
       input: {
         type: Boolean,
@@ -45278,6 +46633,7 @@
       inputStyle: [String, Object],
       pattern: String,
       validate: [Boolean, String],
+      validateOnBlur: Boolean,
       tabindex: [String, Number],
       resizable: Boolean,
       clearButton: Boolean,
@@ -45320,8 +46676,9 @@
       var className = props.className;
       var sortable = props.sortable;
       var media = props.media;
+      var dropdown = props.dropdown;
       var renderInput = props.input;
-      var tag = props.tag;
+      var wrap = props.wrap;
       var type = props.type;
       var name = props.name;
       var value = props.value;
@@ -45348,6 +46705,7 @@
       var inputStyle = props.inputStyle;
       var pattern = props.pattern;
       var validate = props.validate;
+      var validateOnBlur = props.validateOnBlur;
       var tabindex = props.tabindex;
       var resizable = props.resizable;
       var clearButton = props.clearButton;
@@ -45421,7 +46779,8 @@
               step: step,
               pattern: pattern,
               validate: typeof validate === 'string' && validate.length ? validate : undefined,
-              'data-validate': validate === true || validate === '' ? true : undefined,
+              'data-validate': validate === true || validate === '' || validateOnBlur === true || validateOnBlur === '' ? true : undefined,
+              'data-validate-on-blur': validateOnBlur === true || validateOnBlur === '' ? true : undefined,
               tabindex: tabindex,
               'data-error-message': errorMessageForce ? undefined : errorMessage
             }
@@ -45447,18 +46806,12 @@
       }
 
       var hasErrorMessage = !!errorMessage || self.$slots['error-message'] && self.$slots['error-message'].length;
-      var ItemTag = tag;
-      return _h(ItemTag, {
-        ref: 'el',
-        style: style,
-        class: Utils$1.classNames(className, {
+
+      var ItemContent = _h('div', {
+        ref: 'itemContentEl',
+        class: Utils$1.classNames('item-content item-input', !wrap && className, !wrap && {
           disabled: disabled
-        }, Mixins.colorClasses(props)),
-        attrs: {
-          id: id
-        }
-      }, [this.$slots['root-start'], _h('div', {
-        class: Utils$1.classNames('item-content item-input', {
+        }, !wrap && Mixins.colorClasses(props), {
           'inline-label': inlineLabel,
           'item-input-focused': inputFocused,
           'item-input-with-info': !!info || self.$slots.info && self.$slots.info.length,
@@ -45480,7 +46833,7 @@
         })
       }, [label, this.$slots['label']]), _h('div', {
         class: Utils$1.classNames('item-input-wrap', {
-          'input-dropdown': type === 'select'
+          'input-dropdown': dropdown === 'auto' ? type === 'select' : dropdown
         })
       }, [inputEl, this.$slots['input'], hasErrorMessage && errorMessageForce && _h('div', {
         class: 'item-input-error-message'
@@ -45488,7 +46841,22 @@
         class: 'input-clear-button'
       }), (info || self.$slots.info) && _h('div', {
         class: 'item-input-info'
-      }, [info, this.$slots['info']])]), this.$slots['inner'], this.$slots['inner-end']]), this.$slots['content'], this.$slots['content-end']]), isSortable && _h('div', {
+      }, [info, this.$slots['info']])]), this.$slots['inner'], this.$slots['inner-end']]), this.$slots['content'], this.$slots['content-end']]);
+
+      if (!wrap) {
+        return ItemContent;
+      }
+
+      return _h('li', {
+        ref: 'el',
+        style: style,
+        class: Utils$1.classNames(className, {
+          disabled: disabled
+        }, Mixins.colorClasses(props)),
+        attrs: {
+          id: id
+        }
+      }, [this.$slots['root-start'], ItemContent, isSortable && _h('div', {
         class: 'sortable-handler'
       }), this.$slots['root'], this.$slots['root-end']]);
     },
@@ -45502,24 +46870,18 @@
     },
 
     created: function created() {
-      var self = this;
-      self.onChange = self.onChange.bind(self);
-      self.onInput = self.onInput.bind(self);
-      self.onFocus = self.onFocus.bind(self);
-      self.onBlur = self.onBlur.bind(self);
-      self.onTextareaResize = self.onTextareaResize.bind(self);
-      self.onInputNotEmpty = self.onInputNotEmpty.bind(self);
-      self.onInputEmpty = self.onInputEmpty.bind(self);
-      self.onInputClear = self.onInputClear.bind(self);
+      Utils$1.bindMethods(this, 'onChange onInput onFocus onBlur onTextareaResize onInputNotEmpty onInputEmpty onInputClear'.split(' '));
     },
 
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      if (!el) { return; }
+      var itemContentEl = self.$refs.itemContentEl;
+      if (!el && !itemContentEl) { return; }
       self.$f7ready(function (f7) {
         var ref = self.props;
         var validate = ref.validate;
+        var validateOnBlur = ref.validateOnBlur;
         var resizable = ref.resizable;
         var value = ref.value;
         var defaultValue = ref.defaultValue;
@@ -45531,7 +46893,7 @@
         inputEl.addEventListener('input:empty', self.onInputEmpty, false);
         inputEl.addEventListener('input:clear', self.onInputClear, false);
 
-        if ((validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
+        if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && (typeof value !== 'undefined' && value !== null && value !== '' || typeof defaultValue !== 'undefined' && defaultValue !== null && defaultValue !== '')) {
           setTimeout(function () {
             self.validateInput(inputEl);
           }, 0);
@@ -45541,7 +46903,7 @@
           f7.input.resizeTextarea(inputEl);
         }
       });
-      self.$listEl = self.$$(el).parents('.list, .list-group').eq(0);
+      self.$listEl = self.$$(el || itemContentEl).parents('.list, .list-group').eq(0);
 
       if (self.$listEl.length) {
         self.setState({
@@ -45564,6 +46926,7 @@
 
       var ref = self.props;
       var validate = ref.validate;
+      var validateOnBlur = ref.validateOnBlur;
       var resizable = ref.resizable;
       var type = ref.type;
       var f7 = self.$f7;
@@ -45574,7 +46937,7 @@
         if (!inputEl) { return; }
         self.updateInputOnDidUpdate = false;
 
-        if (validate) {
+        if (validate && !validateOnBlur) {
           self.validateInput(inputEl);
         }
 
@@ -45651,9 +47014,10 @@
         var self = this;
         var ref = self.props;
         var validate = ref.validate;
+        var validateOnBlur = ref.validateOnBlur;
         self.dispatchEvent('input', event);
 
-        if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
+        if (!(validateOnBlur || validateOnBlur === '') && (validate || validate === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
       },
@@ -45669,9 +47033,10 @@
         var self = this;
         var ref = self.props;
         var validate = ref.validate;
+        var validateOnBlur = ref.validateOnBlur;
         self.dispatchEvent('blur', event);
 
-        if ((validate || validate === '') && self.$refs && self.$refs.inputEl) {
+        if ((validate || validate === '' || validateOnBlur || validateOnBlur === '') && self.$refs && self.$refs.inputEl) {
           self.validateInput(self.$refs.inputEl);
         }
 
@@ -45749,9 +47114,6 @@
       badgeColor: String,
       mediaList: Boolean,
       mediaItem: Boolean,
-      itemInput: Boolean,
-      itemInputWithInfo: Boolean,
-      inlineLabel: Boolean,
       checkbox: Boolean,
       checked: Boolean,
       defaultChecked: Boolean,
@@ -45762,26 +47124,6 @@
       required: Boolean,
       disabled: Boolean
     }, Mixins.colorProps),
-
-    data: function data() {
-      var props = __vueComponentProps(this);
-
-      var state = (function () {
-        return {
-          hasInput: false,
-          hasInlineLabel: false,
-          hasInputInfo: false,
-          hasInputErrorMessage: false,
-          hasInputValue: false,
-          hasInputFocused: false,
-          hasInputInvalid: false
-        };
-      })();
-
-      return {
-        state: state
-      };
-    },
 
     render: function render() {
       var _h = this.$createElement;
@@ -45810,16 +47152,6 @@
       var mediaList = props.mediaList;
       var mediaItem = props.mediaItem;
       var badgeColor = props.badgeColor;
-      var itemInput = props.itemInput;
-      var inlineLabel = props.inlineLabel;
-      var itemInputWithInfo = props.itemInputWithInfo;
-      var hasInputFocused = self.state.hasInputFocused;
-      var hasInputInvalid = self.state.hasInputInvalid;
-      var hasInputValue = self.state.hasInputValue;
-      var hasInput = itemInput || self.state.hasInput;
-      var hasInlineLabel = inlineLabel || self.state.hasInlineLabel;
-      var hasInputInfo = itemInputWithInfo || self.state.hasInputInfo;
-      var hasInputErrorMessage = self.state.hasInputErrorMessage;
       var slotsContentStart = [];
       var slotsContent = [];
       var slotsContentEnd = [];
@@ -45861,27 +47193,6 @@
 
       flattenSlots.forEach(function (child) {
         if (typeof child === 'undefined') { return; }
-        {
-          var tag = child.tag;
-
-          if (tag && tag.indexOf('f7-input') >= 0) {
-            hasInput = true;
-            if (child.data && child.data.info) { hasInputInfo = true; }
-            if (child.data && child.data.errorMessage && child.data.errorMessageForce) { hasInputErrorMessage = true; }
-
-            if (!hasInputValue) {
-              if (child.data && (typeof child.data.value === 'undefined' ? child.data.defaultValue || child.data.defaultValue === 0 : child.data.value || child.data.value === 0)) {
-                hasInputValue = true;
-              } else if (child.componentOptions && child.componentOptions.propsData && (typeof child.componentOptions.propsData.value === 'undefined' ? child.componentOptions.propsData.defaultValue || child.componentOptions.propsData.defaultValue === 0 : child.componentOptions.propsData.value || child.componentOptions.propsData.value === 0)) {
-                hasInputValue = true;
-              }
-            }
-          }
-
-          if (tag && tag.indexOf('f7-label') >= 0) {
-            if (child.data && child.data.inline) { hasInlineLabel = true; }
-          }
-        }
         var slotName;
         slotName = child.data ? child.data.slot : undefined;
         if (!slotName || slotName === 'inner') { slotsInner.push(child); }
@@ -46012,14 +47323,7 @@
       var ItemContentTag = checkbox || radio ? 'label' : 'div';
       var classes = Utils$1.classNames(className, 'item-content', {
         'item-checkbox': checkbox,
-        'item-radio': radio,
-        'item-input': hasInput,
-        'inline-label': hasInlineLabel,
-        'item-input-with-info': hasInputInfo,
-        'item-input-with-error-message': hasInputErrorMessage,
-        'item-input-invalid': hasInputInvalid,
-        'item-input-with-value': hasInputValue,
-        'item-input-focused': hasInputFocused
+        'item-radio': radio
       }, Mixins.colorClasses(props));
       return _h(ItemContentTag, {
         ref: 'el',
@@ -46032,21 +47336,7 @@
     },
 
     created: function created() {
-      var self = this;
-      self.onClick = self.onClick.bind(self);
-      self.onChange = self.onChange.bind(self);
-      self.onFocus = self.onFocus.bind(self);
-      self.onBlur = self.onBlur.bind(self);
-      self.onEmpty = self.onEmpty.bind(self);
-      self.onNotEmpty = self.onNotEmpty.bind(self);
-    },
-
-    beforeMount: function beforeMount() {
-      this.checkHasInputState();
-    },
-
-    beforeUpdate: function beforeUpdate() {
-      this.checkHasInputState();
+      Utils$1.bindMethods(this, 'onClick onChange'.split(' '));
     },
 
     mounted: function mounted() {
@@ -46054,99 +47344,7 @@
       var ref = self.$refs;
       var innerEl = ref.innerEl;
       var el = ref.el;
-      var inputEl = ref.inputEl;
       el.addEventListener('click', self.onClick);
-      if (!innerEl) { return; }
-      var $innerEl = self.$$(innerEl);
-      var $labelEl = $innerEl.children('.item-title.item-label');
-      var $inputWrapEl = $innerEl.children('.item-input-wrap');
-      var hasInlineLabel = $labelEl.hasClass('item-label-inline');
-      var hasInput = $inputWrapEl.length > 0;
-      var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
-      var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
-      var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
-
-      if (hasInput) {
-        el.addEventListener('focus', self.onFocus, true);
-        el.addEventListener('blur', self.onBlur, true);
-        el.addEventListener('input:empty', self.onEmpty);
-        el.addEventListener('input:notempty', self.onNotEmpty);
-      }
-
-      if (!self.hasInlineLabelSet && hasInlineLabel !== self.state.hasInlineLabel) {
-        self.setState({
-          hasInlineLabel: hasInlineLabel
-        });
-      }
-
-      if (!self.hasInputSet && hasInput !== self.state.hasInput) {
-        self.setState({
-          hasInput: hasInput
-        });
-      }
-
-      if (!self.hasInputInfoSet && hasInputInfo !== self.state.hasInputInfo) {
-        self.setState({
-          hasInputInfo: hasInputInfo
-        });
-      }
-
-      if (!self.hasInputErrorMessageSet && hasInputErrorMessage !== self.state.hasInputErrorMessage) {
-        self.setState({
-          hasInputErrorMessage: hasInputErrorMessage
-        });
-      }
-
-      if (!self.hasInputInvalidSet && hasInputInvalid !== self.state.hasInputInvalid) {
-        self.setState({
-          hasInputInvalid: hasInputInvalid
-        });
-      }
-    },
-
-    updated: function updated() {
-      var self = this;
-      var ref = self.$refs;
-      var innerEl = ref.innerEl;
-      if (!innerEl) { return; }
-      var $innerEl = self.$$(innerEl);
-      var $labelEl = $innerEl.children('.item-title.item-label');
-      var $inputWrapEl = $innerEl.children('.item-input-wrap');
-      var hasInlineLabel = $labelEl.hasClass('item-label-inline');
-      var hasInput = $inputWrapEl.length > 0;
-      var hasInputInfo = $inputWrapEl.children('.item-input-info').length > 0;
-      var hasInputErrorMessage = $inputWrapEl.children('.item-input-error-message').length > 0;
-      var hasInputInvalid = $inputWrapEl.children('.input-invalid').length > 0;
-
-      if (hasInlineLabel !== self.state.hasInlineLabel) {
-        self.setState({
-          hasInlineLabel: hasInlineLabel
-        });
-      }
-
-      if (hasInput !== self.state.hasInput) {
-        self.setState({
-          hasInput: hasInput
-        });
-      }
-
-      if (hasInputInfo !== self.state.hasInputInfo) {
-        self.setState({
-          hasInputInfo: hasInputInfo
-        });
-      }
-
-      if (!self.hasInputErrorMessageSet && hasInputErrorMessage !== self.state.hasInputErrorMessage) {
-        self.setState({
-          hasInputErrorMessage: hasInputErrorMessage
-        });
-      }
-
-      if (hasInputInvalid !== self.state.hasInputInvalid) {
-        self.setState({
-          hasInputInvalid: hasInputInvalid
-        });
-      }
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -46154,61 +47352,9 @@
       var ref = self.$refs;
       var el = ref.el;
       el.removeEventListener('click', self.onClick);
-      el.removeEventListener('input:empty', self.onEmpty);
-      el.removeEventListener('input:notempty', self.onNotEmpty);
-      el.removeEventListener('focus', self.onFocus, true);
-      el.removeEventListener('blur', self.onBlur, true);
     },
 
     methods: {
-      checkHasInputState: function checkHasInputState() {
-        var self = this;
-        var props = self.props;
-        var itemInput = props.itemInput;
-        var inlineLabel = props.inlineLabel;
-        var itemInputWithInfo = props.itemInputWithInfo;
-        var hasInput = itemInput || self.state.hasInput;
-        var hasInlineLabel = inlineLabel || self.state.hasInlineLabel;
-        var hasInputInfo = itemInputWithInfo || self.state.hasInputInfo;
-        var hasInputErrorMessage = self.state.hasInputErrorMessage;
-
-        if (hasInput && !self.state.hasInput) {
-          self.hasInputSet = true;
-          self.setState({
-            hasInput: hasInput
-          });
-        } else if (!hasInput) {
-          self.hasInputSet = false;
-        }
-
-        if (hasInputInfo && !self.state.hasInputInfo) {
-          self.hasInputInfoSet = true;
-          self.setState({
-            hasInputInfo: hasInputInfo
-          });
-        } else if (!hasInputInfo) {
-          self.hasInputInfoSet = false;
-        }
-
-        if (hasInputErrorMessage && !self.state.hasInputErrorMessage) {
-          self.hasInputErrorMessageSet = true;
-          self.setState({
-            hasInputErrorMessage: hasInputErrorMessage
-          });
-        } else if (!hasInputInfo) {
-          self.hasInputErrorMessageSet = false;
-        }
-
-        if (hasInlineLabel && !self.state.hasInlineLabel) {
-          self.hasInlineLabelSet = true;
-          self.setState({
-            hasInlineLabel: hasInlineLabel
-          });
-        } else if (!hasInlineLabel) {
-          self.hasInlineLabelSet = false;
-        }
-      },
-
       onClick: function onClick(event) {
         this.dispatchEvent('click', event);
       },
@@ -46217,39 +47363,11 @@
         this.dispatchEvent('change', event);
       },
 
-      onFocus: function onFocus() {
-        this.setState({
-          hasInputFocused: true
-        });
-      },
-
-      onBlur: function onBlur() {
-        this.setState({
-          hasInputFocused: false
-        });
-      },
-
-      onEmpty: function onEmpty() {
-        this.setState({
-          hasInputValue: false
-        });
-      },
-
-      onNotEmpty: function onNotEmpty() {
-        this.setState({
-          hasInputValue: true
-        });
-      },
-
       dispatchEvent: function dispatchEvent(events) {
         var args = [], len = arguments.length - 1;
         while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
         __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
-      },
-
-      setState: function setState(updater, callback) {
-        __vueComponentSetState(this, updater, callback);
       }
 
     },
@@ -46330,9 +47448,6 @@
       readonly: Boolean,
       required: Boolean,
       disabled: Boolean,
-      itemInput: Boolean,
-      itemInputWithInfo: Boolean,
-      inlineLabel: Boolean,
       virtualListIndex: Number
     }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
 
@@ -46392,9 +47507,6 @@
       var readonly = props.readonly;
       var required = props.required;
       var disabled = props.disabled;
-      var itemInput = props.itemInput;
-      var itemInputWithInfo = props.itemInputWithInfo;
-      var inlineLabel = props.inlineLabel;
       var sortable = props.sortable;
       var noChevron = props.noChevron;
       var chevronCenter = props.chevronCenter;
@@ -46430,10 +47542,7 @@
             value: value,
             readonly: readonly,
             required: required,
-            disabled: disabled,
-            itemInput: itemInput,
-            itemInputWithInfo: itemInputWithInfo,
-            inlineLabel: inlineLabel
+            disabled: disabled
           }
         }, [this.$slots['content-start'], this.$slots['content'], this.$slots['content-end'], this.$slots['media'], this.$slots['inner-start'], this.$slots['inner'], this.$slots['inner-end'], this.$slots['after-start'], this.$slots['after'], this.$slots['after-end'], this.$slots['header'], this.$slots['footer'], this.$slots['before-title'], this.$slots['title'], this.$slots['after-title'], this.$slots['subtitle'], this.$slots['text'], swipeout || accordionItem ? null : self.$slots.default]);
 
@@ -46521,24 +47630,7 @@
     },
 
     created: function created() {
-      var self = this;
-      self.onClick = self.onClick.bind(self);
-      self.onChange = self.onChange.bind(self);
-      self.onSwipeoutOpen = self.onSwipeoutOpen.bind(self);
-      self.onSwipeoutOpened = self.onSwipeoutOpened.bind(self);
-      self.onSwipeoutClose = self.onSwipeoutClose.bind(self);
-      self.onSwipeoutClosed = self.onSwipeoutClosed.bind(self);
-      self.onSwipeoutDelete = self.onSwipeoutDelete.bind(self);
-      self.onSwipeoutDeleted = self.onSwipeoutDeleted.bind(self);
-      self.onSwipeoutOverswipeEnter = self.onSwipeoutOverswipeEnter.bind(self);
-      self.onSwipeoutOverswipeExit = self.onSwipeoutOverswipeExit.bind(self);
-      self.onSwipeout = self.onSwipeout.bind(self);
-      self.onAccBeforeOpen = self.onAccBeforeOpen.bind(self);
-      self.onAccOpen = self.onAccOpen.bind(self);
-      self.onAccOpened = self.onAccOpened.bind(self);
-      self.onAccBeforeClose = self.onAccBeforeClose.bind(self);
-      self.onAccClose = self.onAccClose.bind(self);
-      self.onAccClosed = self.onAccClosed.bind(self);
+      Utils$1.bindMethods(this, ['onClick', 'onChange', 'onSwipeoutOpen', 'onSwipeoutOpened', 'onSwipeoutClose', 'onSwipeoutClosed', 'onSwipeoutDelete', 'onSwipeoutDeleted', 'onSwipeoutOverswipeEnter', 'onSwipeoutOverswipeExit', 'onSwipeout', 'onAccBeforeOpen', 'onAccOpen', 'onAccOpened', 'onAccBeforeClose', 'onAccClose', 'onAccClosed']);
     },
 
     mounted: function mounted() {
@@ -46934,20 +48026,8 @@
 
     },
 
-    beforeDestroy: function beforeDestroy() {
-      var self = this;
-      var el = self.$refs.el;
-
-      if (el) {
-        el.removeEventListener('sortable:enable', self.onSortableEnableBound);
-        el.removeEventListener('sortable:disable', self.onSortableDisableBound);
-        el.removeEventListener('sortable:sort', self.onSortableSortBound);
-        el.removeEventListener('tab:show', self.onTabShowBound);
-        el.removeEventListener('tab:hide', self.onTabHideBound);
-      }
-
-      if (!(self.virtualList && self.f7VirtualList)) { return; }
-      if (self.f7VirtualList.destroy) { self.f7VirtualList.destroy(); }
+    created: function created() {
+      Utils$1.bindMethods(this, ['onSortableEnable', 'onSortableDisable', 'onSortableSort', 'onTabShow', 'onTabHide']);
     },
 
     mounted: function mounted() {
@@ -46958,16 +48038,11 @@
       var virtualListParams = ref.virtualListParams;
 
       if (el) {
-        self.onSortableEnableBound = self.onSortableEnable.bind(self);
-        self.onSortableDisableBound = self.onSortableDisable.bind(self);
-        self.onSortableSortBound = self.onSortableSort.bind(self);
-        self.onTabShowBound = self.onTabShow.bind(self);
-        self.onTabHideBound = self.onTabHide.bind(self);
-        el.addEventListener('sortable:enable', self.onSortableEnableBound);
-        el.addEventListener('sortable:disable', self.onSortableDisableBound);
-        el.addEventListener('sortable:sort', self.onSortableSortBound);
-        el.addEventListener('tab:show', self.onTabShowBound);
-        el.addEventListener('tab:hide', self.onTabHideBound);
+        el.addEventListener('sortable:enable', self.onSortableEnable);
+        el.addEventListener('sortable:disable', self.onSortableDisable);
+        el.addEventListener('sortable:sort', self.onSortableSort);
+        el.addEventListener('tab:show', self.onTabShow);
+        el.addEventListener('tab:hide', self.onTabHide);
       }
 
       if (!virtualList) { return; }
@@ -47012,6 +48087,22 @@
           }
         }, vlParams));
       });
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      var el = self.$refs.el;
+
+      if (el) {
+        el.removeEventListener('sortable:enable', self.onSortableEnable);
+        el.removeEventListener('sortable:disable', self.onSortableDisable);
+        el.removeEventListener('sortable:sort', self.onSortableSort);
+        el.removeEventListener('tab:show', self.onTabShow);
+        el.removeEventListener('tab:hide', self.onTabHide);
+      }
+
+      if (!(self.virtualList && self.f7VirtualList)) { return; }
+      if (self.f7VirtualList.destroy) { self.f7VirtualList.destroy(); }
     },
 
     methods: {
@@ -47114,18 +48205,18 @@
       }
     },
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      self.onOpenBound = self.onOpen.bind(self);
-      self.onOpenedBound = self.onOpened.bind(self);
-      self.onCloseBound = self.onClose.bind(self);
-      self.onClosedBound = self.onClosed.bind(self);
-      el.addEventListener('loginscreen:open', self.onOpenBound);
-      el.addEventListener('loginscreen:opened', self.onOpenedBound);
-      el.addEventListener('loginscreen:close', self.onCloseBound);
-      el.addEventListener('loginscreen:closed', self.onClosedBound);
+      el.addEventListener('loginscreen:open', self.onOpen);
+      el.addEventListener('loginscreen:opened', self.onOpened);
+      el.addEventListener('loginscreen:close', self.onClose);
+      el.addEventListener('loginscreen:closed', self.onClosed);
       self.$f7ready(function () {
         self.f7LoginScreen = self.$f7.loginScreen.create({
           el: el
@@ -47142,10 +48233,10 @@
       var el = self.$refs.el;
       if (self.f7LoginScreen) { self.f7LoginScreen.destroy(); }
       if (!el) { return; }
-      el.removeEventListener('loginscreen:open', self.onOpenBound);
-      el.removeEventListener('loginscreen:opened', self.onOpenedBound);
-      el.removeEventListener('loginscreen:close', self.onCloseBound);
-      el.removeEventListener('loginscreen:closed', self.onClosedBound);
+      el.removeEventListener('loginscreen:open', self.onOpen);
+      el.removeEventListener('loginscreen:opened', self.onOpened);
+      el.removeEventListener('loginscreen:close', self.onClose);
+      el.removeEventListener('loginscreen:closed', self.onClosed);
     },
 
     methods: {
@@ -47187,6 +48278,347 @@
       }
 
     },
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
+  var f7MenuDropdownItem = {
+    name: 'f7-menu-dropdown-item',
+    props: Object.assign({
+      id: [String, Number],
+      text: String,
+      link: Boolean,
+      href: String,
+      target: String,
+      divider: Boolean
+    }, Mixins.colorProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var props = self.props;
+      var id = props.id;
+      var className = props.className;
+      var style = props.style;
+      var link = props.link;
+      var href = props.href;
+      var text = props.text;
+      var divider = props.divider;
+      var menuClose = props.menuClose;
+      var isLink = link || href || href === '';
+      var Tag = isLink ? 'a' : 'div';
+      var classes = Utils$1.classNames({
+        'menu-dropdown-link': isLink && !divider,
+        'menu-dropdown-item': !isLink && !divider,
+        'menu-dropdown-divider': divider
+      }, className, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props), {
+        'menu-close': typeof menuClose === 'undefined'
+      });
+      return _h(Tag, __vueComponentTransformJSXProps(Object.assign({
+        ref: 'el',
+        class: classes,
+        style: style
+      }, self.attrs, {
+        attrs: {
+          id: id
+        }
+      })), [text, this.$slots['default']]);
+    },
+
+    created: function created() {
+      Utils$1.bindMethods(this, ['onClick']);
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      el.addEventListener('click', self.onClick);
+      var ref = self.props;
+      var routeProps = ref.routeProps;
+      if (routeProps) { el.f7RouteProps = routeProps; }
+    },
+
+    updated: function updated() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      var ref = self.props;
+      var routeProps = ref.routeProps;
+      if (routeProps) { el.f7RouteProps = routeProps; }
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      el.removeEventListener('click', self.onClick);
+      delete el.f7RouteProps;
+    },
+
+    computed: {
+      attrs: function attrs() {
+        var self = this;
+        var props = self.props;
+        var link = props.link;
+        var href = props.href;
+        var target = props.target;
+        var hrefComputed = href;
+        if (typeof hrefComputed === 'undefined' && link) { hrefComputed = '#'; }
+        return Utils$1.extend({
+          href: hrefComputed,
+          target: target
+        }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
+      },
+
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    },
+    methods: {
+      onClick: function onClick(event) {
+        this.dispatchEvent('click', event);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      }
+
+    }
+  };
+
+  var f7MenuDropdown = {
+    name: 'f7-menu-dropdown',
+    props: Object.assign({
+      id: [String, Number],
+      contentHeight: String,
+      position: String,
+      left: Boolean,
+      center: Boolean,
+      right: Boolean
+    }, Mixins.colorProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var props = self.props;
+      var id = props.id;
+      var className = props.className;
+      var style = props.style;
+      var contentHeight = props.contentHeight;
+      var position = props.position;
+      var left = props.left;
+      var center = props.center;
+      var right = props.right;
+      var positionComputed = position || 'left';
+      if (left) { positionComputed = 'left'; }
+      if (center) { positionComputed = 'center'; }
+      if (right) { positionComputed = 'right'; }
+      var classes = Utils$1.classNames('menu-dropdown', ("menu-dropdown-" + positionComputed), Mixins.colorClasses(props), className);
+      return _h('div', {
+        class: classes,
+        style: style,
+        attrs: {
+          id: id
+        }
+      }, [_h('div', {
+        class: 'menu-dropdown-content',
+        style: {
+          height: contentHeight
+        }
+      }, [this.$slots['default']])]);
+    },
+
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
+  var f7MenuItem = {
+    name: 'f7-menu-item',
+    props: Object.assign({
+      id: [String, Number],
+      text: String,
+      iconOnly: Boolean,
+      href: String,
+      link: Boolean,
+      target: String,
+      dropdown: Boolean
+    }, Mixins.colorProps, Mixins.linkIconProps, Mixins.linkRouterProps, Mixins.linkActionsProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var props = self.props;
+      var id = props.id;
+      var className = props.className;
+      var style = props.style;
+      var link = props.link;
+      var href = props.href;
+      var text = props.text;
+      var dropdown = props.dropdown;
+      var iconOnly = props.iconOnly;
+      var icon = props.icon;
+      var iconColor = props.iconColor;
+      var iconSize = props.iconSize;
+      var iconMaterial = props.iconMaterial;
+      var iconIon = props.iconIon;
+      var iconFa = props.iconFa;
+      var iconF7 = props.iconF7;
+      var iconIfMd = props.iconIfMd;
+      var iconIfIos = props.iconIfIos;
+      var iconMd = props.iconMd;
+      var iconIos = props.iconIos;
+      var slots = self.$slots;
+      var iconEl;
+      var iconOnlyComputed;
+      var mdThemeIcon = iconIfMd || iconMd;
+      var iosThemeIcon = iconIfIos || iconIos;
+
+      if (icon || iconMaterial || iconIon || iconFa || iconF7 || mdThemeIcon || iosThemeIcon) {
+        iconEl = _h(F7Icon, {
+          attrs: {
+            material: iconMaterial,
+            f7: iconF7,
+            fa: iconFa,
+            ion: iconIon,
+            icon: icon,
+            md: mdThemeIcon,
+            ios: iosThemeIcon,
+            color: iconColor,
+            size: iconSize
+          }
+        });
+      }
+
+      if (iconOnly || !text && slots.text && slots.text.length === 0 || !text && !slots.text) {
+        iconOnlyComputed = true;
+      } else {
+        iconOnlyComputed = false;
+      }
+
+      var isLink = link || href || href === '';
+      var Tag = isLink ? 'a' : 'div';
+      var isDropdown = dropdown || dropdown === '';
+      var classes = Utils$1.classNames({
+        'menu-item': true,
+        'menu-item-dropdown': isDropdown,
+        'icon-only': iconOnlyComputed
+      }, className, Mixins.colorClasses(props), Mixins.linkRouterClasses(props), Mixins.linkActionsClasses(props));
+      return _h(Tag, __vueComponentTransformJSXProps(Object.assign({
+        ref: 'el',
+        class: classes,
+        style: style
+      }, self.attrs, {
+        attrs: {
+          id: id
+        }
+      })), [(text || slots.text && slots.text.length || iconEl) && _h('div', {
+        class: 'menu-item-content'
+      }, [text, iconEl, this.$slots['text']]), this.$slots['default']]);
+    },
+
+    created: function created() {
+      Utils$1.bindMethods(this, ['onClick']);
+    },
+
+    mounted: function mounted() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      el.addEventListener('click', self.onClick);
+      var ref = self.props;
+      var routeProps = ref.routeProps;
+      if (routeProps) { el.f7RouteProps = routeProps; }
+    },
+
+    updated: function updated() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      var ref = self.props;
+      var routeProps = ref.routeProps;
+      if (routeProps) { el.f7RouteProps = routeProps; }
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+      var el = self.$refs.el;
+      if (!el) { return; }
+      el.removeEventListener('click', self.onClick);
+      delete el.f7RouteProps;
+    },
+
+    computed: {
+      attrs: function attrs() {
+        var self = this;
+        var props = self.props;
+        var href = props.href;
+        var link = props.link;
+        var target = props.target;
+        var hrefComputed = href;
+        if (typeof hrefComputed === 'undefined' && link) { hrefComputed = '#'; }
+        return Utils$1.extend({
+          href: hrefComputed,
+          target: target
+        }, Mixins.linkRouterAttrs(props), Mixins.linkActionsAttrs(props));
+      },
+
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    },
+    methods: {
+      onClick: function onClick(event) {
+        this.dispatchEvent('click', event);
+      },
+
+      dispatchEvent: function dispatchEvent(events) {
+        var args = [], len = arguments.length - 1;
+        while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+        __vueComponentDispatchEvent.apply(void 0, [ this, events ].concat( args ));
+      }
+
+    }
+  };
+
+  var f7Menu = {
+    name: 'f7-menu',
+    props: Object.assign({
+      id: [String, Number]
+    }, Mixins.colorProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var props = self.props;
+      var id = props.id;
+      var className = props.className;
+      var style = props.style;
+      return _h('div', {
+        class: Utils$1.classNames('menu', Mixins.colorClasses(props), className),
+        style: style,
+        attrs: {
+          id: id
+        }
+      }, [_h('div', {
+        class: 'menu-inner'
+      }, [this.$slots['default']])]);
+    },
+
     computed: {
       props: function props() {
         return __vueComponentProps(this);
@@ -47332,13 +48764,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
-      this.onNameClick = this.onNameClick.bind(this);
-      this.onTextClick = this.onTextClick.bind(this);
-      this.onAvatarClick = this.onAvatarClick.bind(this);
-      this.onHeaderClick = this.onHeaderClick.bind(this);
-      this.onFooterClick = this.onFooterClick.bind(this);
-      this.onBubbleClick = this.onBubbleClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick', 'onNameClick', 'onTextClick', 'onAvatarClick', 'onHeaderClick', 'onFooterClick', 'onBubbleClick']);
     },
 
     mounted: function mounted() {
@@ -47455,8 +48881,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
-      this.onDeleteClick = this.onDeleteClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick', 'onDeleteClick']);
     },
 
     mounted: function mounted() {
@@ -47578,7 +49003,7 @@
     },
 
     created: function created() {
-      this.onChange = this.onChange.bind(this);
+      Utils$1.bindMethods(this, ['onChange']);
     },
 
     methods: {
@@ -47704,14 +49129,7 @@
     }, Mixins.colorProps),
 
     created: function created() {
-      this.onChange = this.onChange.bind(this);
-      this.onInput = this.onInput.bind(this);
-      this.onFocus = this.onFocus.bind(this);
-      this.onBlur = this.onBlur.bind(this);
-      this.onClick = this.onClick.bind(this);
-      this.onDeleteAttachment = this.onDeleteAttachment.bind(this);
-      this.onClickAttachment = this.onClickAttachment.bind(this);
-      this.onResizePage = this.onResizePage.bind(this);
+      Utils$1.bindMethods(this, ['onChange', 'onInput', 'onFocus', 'onBlur', 'onClick', 'onDeleteAttachment', 'onClickAttachment', 'onResizePage']);
     },
 
     render: function render() {
@@ -48325,7 +49743,7 @@
         linkEl = _h(F7Link, {
           class: backLink === true || backLink && this.$theme.md ? 'icon-only' : undefined,
           on: {
-            click: this.onBackClick.bind(this)
+            click: this.onBackClick
           },
           attrs: {
             href: backLinkUrl || '#',
@@ -48340,13 +49758,26 @@
       var classes = Utils$1.classNames(className, 'left', {
         sliding: sliding
       }, Mixins.colorClasses(props));
+      var children = [];
+      var slots = this.$slots;
+
+      if (slots && Object.keys(slots).length) {
+        Object.keys(slots).forEach(function (key) {
+          children.push.apply(children, slots[key]);
+        });
+      }
+
       return _h('div', {
         style: style,
         class: classes,
         attrs: {
           id: id
         }
-      }, [linkEl, this.$slots['default']]);
+      }, [linkEl, children]);
+    },
+
+    created: function created() {
+      Utils$1.bindMethods(this, ['onBackClick']);
     },
 
     methods: {
@@ -48370,7 +49801,7 @@
     }
   };
 
-  var f7NavRight = {
+  var F7NavRight = {
     name: 'f7-nav-right',
     props: Object.assign({
       id: [String, Number],
@@ -48387,13 +49818,64 @@
       var classes = Utils$1.classNames(className, 'right', {
         sliding: sliding
       }, Mixins.colorClasses(props));
+      var children = [];
+      var slots = this.$slots;
+
+      if (slots && Object.keys(slots).length) {
+        Object.keys(slots).forEach(function (key) {
+          children.push.apply(children, slots[key]);
+        });
+      }
+
       return _h('div', {
         style: style,
         class: classes,
         attrs: {
           id: id
         }
-      }, [this.$slots['default']]);
+      }, [children]);
+    },
+
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
+  var f7NavTitleLarge = {
+    name: 'f7-nav-title',
+    props: Object.assign({
+      id: [String, Number]
+    }, Mixins.colorProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var self = this;
+      var props = self.props;
+      var id = props.id;
+      var style = props.style;
+      var className = props.className;
+      var classes = Utils$1.classNames(className, 'title-large', Mixins.colorClasses(props));
+      var children = [];
+      var slots = self.$slots;
+
+      if (slots && Object.keys(slots).length) {
+        Object.keys(slots).forEach(function (key) {
+          children.push.apply(children, slots[key]);
+        });
+      }
+
+      return _h('div', {
+        style: style,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [_h('div', {
+        class: 'title-large-text'
+      }, [children])]);
     },
 
     computed: {
@@ -48434,13 +49916,23 @@
       var classes = Utils$1.classNames(className, 'title', {
         sliding: sliding
       }, Mixins.colorClasses(props));
+      var children;
+      var slots = self.$slots;
+
+      if (slots && Object.keys(slots).length) {
+        children = [];
+        Object.keys(slots).forEach(function (key) {
+          children.push.apply(children, slots[key]);
+        });
+      }
+
       return _h('div', {
         style: style,
         class: classes,
         attrs: {
           id: id
         }
-      }, [this.$slots['default'] || [title, subtitleEl]]);
+      }, [children, !children && title, !children && subtitleEl]);
     },
 
     computed: {
@@ -48472,7 +49964,9 @@
         default: true
       },
       innerClass: String,
-      innerClassName: String
+      innerClassName: String,
+      large: Boolean,
+      titleLarge: String
     }, Mixins.colorProps),
 
     render: function render() {
@@ -48494,45 +49988,71 @@
       var hidden = props.hidden;
       var noShadow = props.noShadow;
       var noHairline = props.noHairline;
+      var large = props.large;
+      var titleLarge = props.titleLarge;
       var innerEl;
       var leftEl;
       var titleEl;
+      var rightEl;
+      var titleLargeEl;
+      var iosLeftTitle = self.$theme && self.$theme.ios && self.$f7 && !self.$f7.params.navbar.iosCenterTitle;
+      var mdCenterTitle = self.$theme && self.$theme.md && self.$f7 && self.$f7.params.navbar.mdCenterTitle;
+      var slots = self.$slots;
 
       if (inner) {
-        if (backLink) {
+        if (backLink || slots['nav-left']) {
           leftEl = _h(F7NavLeft, {
             on: {
-              backClick: self.onBackClick.bind(self)
+              backClick: self.onBackClick
             },
             attrs: {
               backLink: backLink,
               backLinkUrl: backLinkUrl,
               backLinkForce: backLinkForce
             }
-          });
+          }, [slots['nav-left']]);
         }
 
-        if (title || subtitle) {
+        if (title || subtitle || slots.title) {
           titleEl = _h(F7NavTitle, {
             attrs: {
               title: title,
               subtitle: subtitle
             }
-          });
+          }, [slots.title]);
+        }
+
+        if (slots['nav-right']) {
+          rightEl = _h(F7NavRight, [slots['nav-right']]);
+        }
+
+        var largeTitle = titleLarge;
+        if (!largeTitle && large && title) { largeTitle = title; }
+
+        if (largeTitle) {
+          titleLargeEl = _h('div', {
+            class: 'title-large'
+          }, [_h('div', {
+            class: 'title-large-text'
+          }, [largeTitle])]);
         }
 
         innerEl = _h('div', {
           ref: 'inner',
           class: Utils$1.classNames('navbar-inner', innerClass, innerClassName, {
-            sliding: sliding
+            sliding: sliding,
+            'navbar-inner-left-title': iosLeftTitle,
+            'navbar-inner-centered-title': mdCenterTitle,
+            'navbar-inner-large': large
           })
-        }, [leftEl, titleEl, this.$slots['default']]);
+        }, [leftEl, titleEl, rightEl, titleLargeEl, this.$slots['default']]);
       }
 
       var classes = Utils$1.classNames(className, 'navbar', {
         'navbar-hidden': hidden,
         'no-shadow': noShadow,
-        'no-hairline': noHairline
+        'no-hairline': noHairline,
+        'navbar-large': large
       }, Mixins.colorClasses(props));
       return _h('div', {
         ref: 'el',
@@ -48542,6 +50062,10 @@
           id: id
         }
       }, [this.$slots['before-inner'], innerEl, this.$slots['after-inner']]);
+    },
+
+    created: function created() {
+      Utils$1.bindMethods(this, ['onBackClick']);
     },
 
     updated: function updated() {
@@ -48607,6 +50131,7 @@
         type: Boolean,
         default: true
       },
+      ptrBottom: Boolean,
       infinite: Boolean,
       infiniteTop: Boolean,
       infiniteDistance: Number,
@@ -48627,11 +50152,12 @@
       var props = self.props;
       var ptr = props.ptr;
       var ptrPreloader = props.ptrPreloader;
+      var ptrDistance = props.ptrDistance;
+      var ptrBottom = props.ptrBottom;
       var infinite = props.infinite;
       var infinitePreloader = props.infinitePreloader;
       var id = props.id;
       var style = props.style;
-      var ptrDistance = props.ptrDistance;
       var infiniteDistance = props.infiniteDistance;
       var infiniteTop = props.infiniteTop;
       var ptrEl;
@@ -48662,7 +50188,7 @@
           'data-ptr-distance': ptrDistance || undefined,
           'data-infinite-distance': infiniteDistance || undefined
         }
-      }, [ptrEl, infiniteTop ? infiniteEl : self.$slots.default, infiniteTop ? self.$slots.default : infiniteEl]);
+      }, [ptrBottom ? null : ptrEl, infiniteTop ? infiniteEl : null, self.$slots.default, infiniteTop ? null : infiniteEl, ptrBottom ? ptrEl : null]);
     },
 
     computed: {
@@ -48673,6 +50199,7 @@
         var tab = props.tab;
         var tabActive = props.tabActive;
         var ptr = props.ptr;
+        var ptrBottom = props.ptrBottom;
         var infinite = props.infinite;
         var infiniteTop = props.infiniteTop;
         var hideBarsOnScroll = props.hideBarsOnScroll;
@@ -48684,6 +50211,7 @@
           tab: tab,
           'tab-active': tabActive,
           'ptr-content': ptr,
+          'ptr-bottom': ptrBottom,
           'infinite-scroll-content': infinite,
           'infinite-scroll-top': infiniteTop,
           'hide-bars-on-scroll': hideBarsOnScroll,
@@ -48700,6 +50228,10 @@
 
     },
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onTabShow', 'onTabHide']);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -48707,14 +50239,6 @@
       var ptr = ref.ptr;
       var infinite = ref.infinite;
       var tab = ref.tab;
-      self.onPtrPullStart = self.onPtrPullStart.bind(self);
-      self.onPtrPullMove = self.onPtrPullMove.bind(self);
-      self.onPtrPullEnd = self.onPtrPullEnd.bind(self);
-      self.onPtrRefresh = self.onPtrRefresh.bind(self);
-      self.onPtrDone = self.onPtrDone.bind(self);
-      self.onInfinite = self.onInfinite.bind(self);
-      self.onTabShow = self.onTabShow.bind(self);
-      self.onTabHide = self.onTabHide.bind(self);
 
       if (ptr) {
         el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -48805,6 +50329,14 @@
         type: Boolean,
         default: undefined
       },
+      withNavbarLarge: {
+        type: Boolean,
+        default: undefined
+      },
+      navbarLarge: {
+        type: Boolean,
+        default: undefined
+      },
       noNavbar: Boolean,
       noToolbar: Boolean,
       tabs: Boolean,
@@ -48819,6 +50351,7 @@
         type: Boolean,
         default: true
       },
+      ptrBottom: Boolean,
       infinite: Boolean,
       infiniteTop: Boolean,
       infiniteDistance: Number,
@@ -48839,6 +50372,7 @@
       var state = (function () {
         return {
           hasSubnavbar: false,
+          hasNavbarLarge: false,
           routerClass: '',
           routerForceUnstack: false
         };
@@ -48861,6 +50395,7 @@
       var ptr = props.ptr;
       var ptrDistance = props.ptrDistance;
       var ptrPreloader = props.ptrPreloader;
+      var ptrBottom = props.ptrBottom;
       var infinite = props.infinite;
       var infiniteDistance = props.infiniteDistance;
       var infinitePreloader = props.infinitePreloader;
@@ -48874,6 +50409,8 @@
       var tabs = props.tabs;
       var subnavbar = props.subnavbar;
       var withSubnavbar = props.withSubnavbar;
+      var navbarLarge = props.navbarLarge;
+      var withNavbarLarge = props.withNavbarLarge;
       var noNavbar = props.noNavbar;
       var noToolbar = props.noToolbar;
       var noSwipeback = props.noSwipeback;
@@ -48888,6 +50425,7 @@
       fixedTags = 'navbar toolbar tabbar subnavbar searchbar messagebar fab list-index'.split(' ');
       var hasSubnavbar;
       var hasMessages;
+      var hasNavbarLarge;
       hasMessages = self.$options.propsData.messagesContent;
 
       if (slotsDefault) {
@@ -48903,6 +50441,11 @@
             }
 
             if (tag.indexOf('subnavbar') >= 0) { hasSubnavbar = true; }
+
+            if (tag.indexOf('navbar') >= 0) {
+              if (child.componentOptions && child.componentOptions.propsData && 'large' in child.componentOptions.propsData && child.componentOptions.propsData !== false) { hasNavbarLarge = true; }
+            }
+
             if (typeof hasMessages === 'undefined' && tag.indexOf('messages') >= 0) { hasMessages = true; }
 
             for (var j = 0; j < fixedTags.length; j += 1) {
@@ -48919,10 +50462,12 @@
       }
 
       var forceSubnavbar = typeof subnavbar === 'undefined' && typeof withSubnavbar === 'undefined' ? hasSubnavbar || this.state.hasSubnavbar : false;
+      var forceNavbarLarge = typeof navbarLarge === 'undefined' && typeof withNavbarLarge === 'undefined' ? hasNavbarLarge || this.state.hasNavbarLarge : false;
       var classes = Utils$1.classNames(className, 'page', this.state.routerClass, {
         stacked: stacked && !this.state.routerForceUnstack,
         tabs: tabs,
         'page-with-subnavbar': subnavbar || withSubnavbar || forceSubnavbar,
+        'page-with-navbar-large': navbarLarge || withNavbarLarge || forceNavbarLarge,
         'no-navbar': noNavbar,
         'no-toolbar': noToolbar,
         'no-swipeback': noSwipeback
@@ -48945,6 +50490,7 @@
           ptr: ptr,
           ptrDistance: ptrDistance,
           ptrPreloader: ptrPreloader,
+          ptrBottom: ptrBottom,
           infinite: infinite,
           infiniteTop: infiniteTop,
           infiniteDistance: infiniteDistance,
@@ -48968,29 +50514,16 @@
       }, [fixedList, slotsFixed, pageContentEl]);
     },
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition']);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       var ref = self.props;
       var ptr = ref.ptr;
       var infinite = ref.infinite;
-      self.onPtrPullStart = self.onPtrPullStart.bind(self);
-      self.onPtrPullMove = self.onPtrPullMove.bind(self);
-      self.onPtrPullEnd = self.onPtrPullEnd.bind(self);
-      self.onPtrRefresh = self.onPtrRefresh.bind(self);
-      self.onPtrDone = self.onPtrDone.bind(self);
-      self.onInfinite = self.onInfinite.bind(self);
-      self.onPageMounted = self.onPageMounted.bind(self);
-      self.onPageInit = self.onPageInit.bind(self);
-      self.onPageReinit = self.onPageReinit.bind(self);
-      self.onPageBeforeIn = self.onPageBeforeIn.bind(self);
-      self.onPageBeforeOut = self.onPageBeforeOut.bind(self);
-      self.onPageAfterOut = self.onPageAfterOut.bind(self);
-      self.onPageAfterIn = self.onPageAfterIn.bind(self);
-      self.onPageBeforeRemove = self.onPageBeforeRemove.bind(self);
-      self.onPageStack = self.onPageStack.bind(self);
-      self.onPageUnstack = self.onPageUnstack.bind(self);
-      self.onPagePosition = self.onPagePosition.bind(self);
 
       if (ptr) {
         el.addEventListener('ptr:pullstart', self.onPtrPullStart);
@@ -49094,11 +50627,21 @@
         var ref = this.props;
         var withSubnavbar = ref.withSubnavbar;
         var subnavbar = ref.subnavbar;
+        var withNavbarLarge = ref.withNavbarLarge;
+        var navbarLarge = ref.navbarLarge;
 
         if (typeof withSubnavbar === 'undefined' && typeof subnavbar === 'undefined') {
           if (page.$navbarEl && page.$navbarEl.length && page.$navbarEl.find('.subnavbar').length || page.$el.children('.navbar').find('.subnavbar').length) {
             this.setState({
               hasSubnavbar: true
+            });
+          }
+        }
+
+        if (typeof withNavbarLarge === 'undefined' && typeof navbarLarge === 'undefined') {
+          if (page.$navbarEl && page.$navbarEl.hasClass('navbar-inner-large')) {
+            this.setState({
+              hasNavbarLarge: true
             });
           }
         }
@@ -49251,6 +50794,10 @@
       }
     },
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed', 'onBackdropClick', 'onPanelSwipe', 'onPanelSwipeOpen', 'onBreakpoint']);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
@@ -49260,24 +50807,16 @@
       var opened = ref.opened;
       var left = ref.left;
       var reveal = ref.reveal;
-      self.onOpenBound = self.onOpen.bind(self);
-      self.onOpenedBound = self.onOpened.bind(self);
-      self.onCloseBound = self.onClose.bind(self);
-      self.onClosedBound = self.onClosed.bind(self);
-      self.onBackdropClickBound = self.onBackdropClick.bind(self);
-      self.onPanelSwipeBound = self.onPanelSwipe.bind(self);
-      self.onPanelSwipeOpenBound = self.onPanelSwipeOpen.bind(self);
-      self.onBreakpointBound = self.onBreakpoint.bind(self);
 
       if (el) {
-        el.addEventListener('panel:open', self.onOpenBound);
-        el.addEventListener('panel:opened', self.onOpenedBound);
-        el.addEventListener('panel:close', self.onCloseBound);
-        el.addEventListener('panel:closed', self.onClosedBound);
-        el.addEventListener('panel:backdrop-click', self.onBackdropClickBound);
-        el.addEventListener('panel:swipe', self.onPanelSwipeBound);
-        el.addEventListener('panel:swipeopen', self.onPanelSwipeOpenBound);
-        el.addEventListener('panel:breakpoint', self.onBreakpointBound);
+        el.addEventListener('panel:open', self.onOpen);
+        el.addEventListener('panel:opened', self.onOpened);
+        el.addEventListener('panel:close', self.onClose);
+        el.addEventListener('panel:closed', self.onClosed);
+        el.addEventListener('panel:backdrop-click', self.onBackdropClick);
+        el.addEventListener('panel:swipe', self.onPanelSwipe);
+        el.addEventListener('panel:swipeopen', self.onPanelSwipeOpen);
+        el.addEventListener('panel:breakpoint', self.onBreakpoint);
       }
 
       self.$f7ready(function () {
@@ -49312,14 +50851,14 @@
       if (self.f7Panel) { self.f7Panel.destroy(); }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('panel:open', self.onOpenBound);
-      el.removeEventListener('panel:opened', self.onOpenedBound);
-      el.removeEventListener('panel:close', self.onCloseBound);
-      el.removeEventListener('panel:closed', self.onClosedBound);
-      el.removeEventListener('panel:backdrop-click', self.onBackdropClickBound);
-      el.removeEventListener('panel:swipe', self.onPanelSwipeBound);
-      el.removeEventListener('panel:swipeopen', self.onPanelSwipeOpenBound);
-      el.removeEventListener('panel:breakpoint', self.onBreakpointBound);
+      el.removeEventListener('panel:open', self.onOpen);
+      el.removeEventListener('panel:opened', self.onOpened);
+      el.removeEventListener('panel:close', self.onClose);
+      el.removeEventListener('panel:closed', self.onClosed);
+      el.removeEventListener('panel:backdrop-click', self.onBackdropClick);
+      el.removeEventListener('panel:swipe', self.onPanelSwipe);
+      el.removeEventListener('panel:swipeopen', self.onPanelSwipeOpen);
+      el.removeEventListener('panel:breakpoint', self.onBreakpoint);
     },
 
     methods: {
@@ -49595,18 +51134,18 @@
       }
     },
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      self.onOpenBound = self.onOpen.bind(self);
-      self.onOpenedBound = self.onOpened.bind(self);
-      self.onCloseBound = self.onClose.bind(self);
-      self.onClosedBound = self.onClosed.bind(self);
-      el.addEventListener('popover:open', self.onOpenBound);
-      el.addEventListener('popover:opened', self.onOpenedBound);
-      el.addEventListener('popover:close', self.onCloseBound);
-      el.addEventListener('popover:closed', self.onClosedBound);
+      el.addEventListener('popover:open', self.onOpen);
+      el.addEventListener('popover:opened', self.onOpened);
+      el.addEventListener('popover:close', self.onClose);
+      el.addEventListener('popover:closed', self.onClosed);
       var props = self.props;
       var target = props.target;
       var opened = props.opened;
@@ -49634,10 +51173,10 @@
       if (self.f7Popover) { self.f7Popover.destroy(); }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('popover:open', self.onOpenBound);
-      el.removeEventListener('popover:opened', self.onOpenedBound);
-      el.removeEventListener('popover:close', self.onCloseBound);
-      el.removeEventListener('popover:closed', self.onClosedBound);
+      el.removeEventListener('popover:open', self.onOpen);
+      el.removeEventListener('popover:opened', self.onOpened);
+      el.removeEventListener('popover:close', self.onClose);
+      el.removeEventListener('popover:closed', self.onClosed);
     },
 
     methods: {
@@ -49730,18 +51269,18 @@
       }
     },
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      self.onOpenBound = self.onOpen.bind(self);
-      self.onOpenedBound = self.onOpened.bind(self);
-      self.onCloseBound = self.onClose.bind(self);
-      self.onClosedBound = self.onClosed.bind(self);
-      el.addEventListener('popup:open', self.onOpenBound);
-      el.addEventListener('popup:opened', self.onOpenedBound);
-      el.addEventListener('popup:close', self.onCloseBound);
-      el.addEventListener('popup:closed', self.onClosedBound);
+      el.addEventListener('popup:open', self.onOpen);
+      el.addEventListener('popup:opened', self.onOpened);
+      el.addEventListener('popup:close', self.onClose);
+      el.addEventListener('popup:closed', self.onClosed);
       var props = self.props;
       var closeByBackdropClick = props.closeByBackdropClick;
       var backdrop = props.backdrop;
@@ -49768,10 +51307,10 @@
       if (self.f7Popup) { self.f7Popup.destroy(); }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('popup:open', self.onOpenBound);
-      el.removeEventListener('popup:opened', self.onOpenedBound);
-      el.removeEventListener('popup:close', self.onCloseBound);
-      el.removeEventListener('popup:closed', self.onClosedBound);
+      el.removeEventListener('popup:open', self.onOpen);
+      el.removeEventListener('popup:opened', self.onOpened);
+      el.removeEventListener('popup:close', self.onClose);
+      el.removeEventListener('popup:closed', self.onClosed);
     },
 
     methods: {
@@ -49858,6 +51397,34 @@
         }, [_h('span', {
           class: 'preloader-inner-half-circle'
         })])]);
+      } else {
+        innerEl = _h('span', {
+          class: 'preloader-inner'
+        }, [_h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        }), _h('span', {
+          class: 'preloader-inner-line'
+        })]);
       }
 
       var classes = Utils$1.classNames(className, 'preloader', Mixins.colorClasses(props));
@@ -50003,7 +51570,7 @@
     },
 
     created: function created() {
-      this.onChange = this.onChange.bind(this);
+      Utils$1.bindMethods(this, ['onChange']);
     },
 
     methods: {
@@ -50062,7 +51629,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
@@ -50265,13 +51832,17 @@
     },
 
     created: function created() {
-      this.onChange = this.onChange.bind(this);
-      this.onInput = this.onInput.bind(this);
-      this.onFocus = this.onFocus.bind(this);
-      this.onBlur = this.onBlur.bind(this);
-      this.onSubmit = this.onSubmit.bind(this);
-      this.onClearButtonClick = this.onClearButtonClick.bind(this);
-      this.onDisableButtonClick = this.onDisableButtonClick.bind(this);
+      Utils$1.bindMethods(this, ['onSubmit', 'onClearButtonClick', 'onDisableButtonClick', 'onInput', 'onChange', 'onFocus', 'onBlur']);
+    },
+
+    beforeDestroy: function beforeDestroy() {
+      var self = this;
+
+      if (self.props.form && self.$refs.el) {
+        self.$refs.el.removeEventListener('submit', self.onSubmit, false);
+      }
+
+      if (self.f7Searchbar && self.f7Searchbar.destroy) { self.f7Searchbar.destroy(); }
     },
 
     mounted: function mounted() {
@@ -50463,7 +52034,11 @@
     props: Object.assign({
       id: [String, Number],
       raised: Boolean,
+      raisedIos: Boolean,
+      raisedMD: Boolean,
       round: Boolean,
+      roundIos: Boolean,
+      roundMd: Boolean,
       tag: {
         type: String,
         default: 'div'
@@ -50476,14 +52051,22 @@
       var props = self.props;
       var className = props.className;
       var raised = props.raised;
+      var raisedIos = props.raisedIos;
+      var raisedMd = props.raisedMd;
       var round = props.round;
+      var roundIos = props.roundIos;
+      var roundMd = props.roundMd;
       var id = props.id;
       var style = props.style;
       var tag = props.tag;
       var classNames = Utils$1.classNames(className, {
         segmented: true,
         'segmented-raised': raised,
-        'segmented-round': round
+        'segmented-raised-ios': raisedIos,
+        'segmented-raised-md': raisedMd,
+        'segmented-round': round,
+        'segmented-round-ios': roundIos,
+        'segmented-round-md': roundMd
       }, Mixins.colorClasses(props));
       var SegmentedTag = tag;
       return _h(SegmentedTag, {
@@ -50575,18 +52158,18 @@
       }
     },
 
+    created: function created() {
+      Utils$1.bindMethods(this, ['onOpen', 'onOpened', 'onClose', 'onClosed']);
+    },
+
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
       if (!el) { return; }
-      self.onOpenBound = self.onOpen.bind(self);
-      self.onOpenedBound = self.onOpened.bind(self);
-      self.onCloseBound = self.onClose.bind(self);
-      self.onClosedBound = self.onClosed.bind(self);
-      el.addEventListener('sheet:open', self.onOpenBound);
-      el.addEventListener('sheet:opened', self.onOpenedBound);
-      el.addEventListener('sheet:close', self.onCloseBound);
-      el.addEventListener('sheet:closed', self.onClosedBound);
+      el.addEventListener('sheet:open', self.onOpen);
+      el.addEventListener('sheet:opened', self.onOpened);
+      el.addEventListener('sheet:close', self.onClose);
+      el.addEventListener('sheet:closed', self.onClosed);
       var props = self.props;
       var opened = props.opened;
       var backdrop = props.backdrop;
@@ -50621,10 +52204,10 @@
       if (self.f7Sheet) { self.f7Sheet.destroy(); }
       var el = self.$refs.el;
       if (!el) { return; }
-      el.removeEventListener('popup:open', self.onOpenBound);
-      el.removeEventListener('popup:opened', self.onOpenedBound);
-      el.removeEventListener('popup:close', self.onCloseBound);
-      el.removeEventListener('popup:closed', self.onClosedBound);
+      el.removeEventListener('popup:open', self.onOpen);
+      el.removeEventListener('popup:opened', self.onOpened);
+      el.removeEventListener('popup:close', self.onClose);
+      el.removeEventListener('popup:closed', self.onClosed);
     },
 
     methods: {
@@ -50671,6 +52254,154 @@
 
     }
   };
+
+  var f7SkeletonBlock = {
+    name: 'f7-skeleton-block',
+    props: Object.assign({
+      id: [String, Number],
+      width: [Number, String],
+      height: [Number, String],
+      tag: {
+        type: String,
+        default: 'div'
+      }
+    }, Mixins.colorProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var props = this.props;
+      var className = props.className;
+      var id = props.id;
+      var style = props.style;
+      var width = props.width;
+      var height = props.height;
+      var tag = props.tag;
+      var classes = Utils$1.classNames('skeleton-block', className, Mixins.colorClasses(props));
+      var styleAttribute = style;
+
+      if (width) {
+        var widthValue = typeof width === 'number' ? (width + "px") : width;
+
+        if (!styleAttribute) {
+          styleAttribute = {
+            width: widthValue
+          };
+        } else if (typeof styleAttribute === 'object') {
+          styleAttribute = Object.assign({
+            width: widthValue
+          }, styleAttribute);
+        } else if (typeof styleAttribute === 'string') {
+          styleAttribute = "width: " + widthValue + "; " + styleAttribute;
+        }
+      }
+
+      if (height) {
+        var heightValue = typeof height === 'number' ? (height + "px") : height;
+
+        if (!styleAttribute) {
+          styleAttribute = {
+            height: heightValue
+          };
+        } else if (typeof styleAttribute === 'object') {
+          styleAttribute = Object.assign({
+            height: heightValue
+          }, styleAttribute);
+        } else if (typeof styleAttribute === 'string') {
+          styleAttribute = "height: " + heightValue + "; " + styleAttribute;
+        }
+      }
+
+      var Tag = tag;
+      return _h(Tag, {
+        style: styleAttribute,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [this.$slots['default']]);
+    },
+
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  };
+
+  ({
+    name: 'f7-skeleton-text',
+    props: Object.assign({
+      id: [String, Number],
+      width: [Number, String],
+      height: [Number, String],
+      tag: {
+        type: String,
+        default: 'span'
+      }
+    }, Mixins.colorProps),
+
+    render: function render() {
+      var _h = this.$createElement;
+      var props = this.props;
+      var className = props.className;
+      var id = props.id;
+      var style = props.style;
+      var width = props.width;
+      var height = props.height;
+      var tag = props.tag;
+      var classes = Utils$1.classNames('skeleton-text', className, Mixins.colorClasses(props));
+      var styleAttribute = style;
+
+      if (width) {
+        var widthValue = typeof width === 'number' ? (width + "px") : width;
+
+        if (!styleAttribute) {
+          styleAttribute = {
+            width: widthValue
+          };
+        } else if (typeof styleAttribute === 'object') {
+          styleAttribute = Object.assign({
+            width: widthValue
+          }, styleAttribute);
+        } else if (typeof styleAttribute === 'string') {
+          styleAttribute = "width: " + widthValue + "; " + styleAttribute;
+        }
+      }
+
+      if (height) {
+        var heightValue = typeof height === 'number' ? (height + "px") : height;
+
+        if (!styleAttribute) {
+          styleAttribute = {
+            height: heightValue
+          };
+        } else if (typeof styleAttribute === 'object') {
+          styleAttribute = Object.assign({
+            height: heightValue
+          }, styleAttribute);
+        } else if (typeof styleAttribute === 'string') {
+          styleAttribute = "height: " + heightValue + "; " + styleAttribute;
+        }
+      }
+
+      var Tag = tag;
+      return _h(Tag, {
+        style: styleAttribute,
+        class: classes,
+        attrs: {
+          id: id
+        }
+      }, [this.$slots['default']]);
+    },
+
+    computed: {
+      props: function props() {
+        return __vueComponentProps(this);
+      }
+
+    }
+  });
 
   var f7Statusbar = {
     name: 'f7-statusbar',
@@ -50771,9 +52502,9 @@
       fill: Boolean,
       fillMd: Boolean,
       fillIos: Boolean,
-      big: Boolean,
-      bigMd: Boolean,
-      bigIos: Boolean,
+      large: Boolean,
+      largeMd: Boolean,
+      largeIos: Boolean,
       small: Boolean,
       smallMd: Boolean,
       smallIos: Boolean,
@@ -50854,9 +52585,9 @@
         var fill = props.fill;
         var fillIos = props.fillIos;
         var fillMd = props.fillMd;
-        var big = props.big;
-        var bigIos = props.bigIos;
-        var bigMd = props.bigMd;
+        var large = props.large;
+        var largeIos = props.largeIos;
+        var largeMd = props.largeMd;
         var small = props.small;
         var smallIos = props.smallIos;
         var smallMd = props.smallMd;
@@ -50870,9 +52601,9 @@
           'stepper-fill': fill,
           'stepper-fill-ios': fillIos,
           'stepper-fill-md': fillMd,
-          'stepper-big': big,
-          'stepper-big-ios': bigIos,
-          'stepper-big-md': bigMd,
+          'stepper-large': large,
+          'stepper-large-ios': largeIos,
+          'stepper-large-md': largeMd,
           'stepper-small': small,
           'stepper-small-ios': smallIos,
           'stepper-small-md': smallMd,
@@ -50887,9 +52618,7 @@
     },
 
     created: function created() {
-      this.onInput = this.onInput.bind(this);
-      this.onMinusClick = this.onMinusClick.bind(this);
-      this.onPlusClick = this.onPlusClick.bind(this);
+      Utils$1.bindMethods(this, ['onInput', 'onMinusClick', 'onPlusClick']);
     },
 
     mounted: function mounted() {
@@ -51148,7 +52877,7 @@
     },
 
     created: function created() {
-      this.onClick = this.onClick.bind(this);
+      Utils$1.bindMethods(this, ['onClick']);
     },
 
     mounted: function mounted() {
@@ -51387,8 +53116,7 @@
     },
 
     created: function created() {
-      this.onTabShowBound = this.onTabShow.bind(this);
-      this.onTabHideBound = this.onTabHide.bind(this);
+      Utils$1.bindMethods(this, ['onTabShow', 'onTabHide']);
     },
 
     updated: function updated() {
@@ -51402,8 +53130,8 @@
       var el = self.$refs.el;
 
       if (el) {
-        el.removeEventListener('tab:show', self.onTabShowBound);
-        el.removeEventListener('tab:hide', self.onTabHideBound);
+        el.removeEventListener('tab:show', self.onTabShow);
+        el.removeEventListener('tab:hide', self.onTabHide);
       }
 
       if (!self.routerData) { return; }
@@ -51417,8 +53145,8 @@
       var el = self.$refs.el;
 
       if (el) {
-        el.addEventListener('tab:show', self.onTabShowBound);
-        el.addEventListener('tab:hide', self.onTabHideBound);
+        el.addEventListener('tab:show', self.onTabShow);
+        el.addEventListener('tab:hide', self.onTabHide);
       }
 
       self.setState({
@@ -51529,13 +53257,41 @@
     name: 'f7-toolbar',
     props: Object.assign({
       id: [String, Number],
-      bottomMd: Boolean,
       tabbar: Boolean,
       labels: Boolean,
       scrollable: Boolean,
       hidden: Boolean,
       noShadow: Boolean,
       noHairline: Boolean,
+      noBorder: Boolean,
+      position: {
+        type: String,
+        default: undefined
+      },
+      topMd: {
+        type: Boolean,
+        default: undefined
+      },
+      topIos: {
+        type: Boolean,
+        default: undefined
+      },
+      top: {
+        type: Boolean,
+        default: undefined
+      },
+      bottomMd: {
+        type: Boolean,
+        default: undefined
+      },
+      bottomIos: {
+        type: Boolean,
+        default: undefined
+      },
+      bottom: {
+        type: Boolean,
+        default: undefined
+      },
       inner: {
         type: Boolean,
         default: true
@@ -51550,21 +53306,29 @@
       var style = props.style;
       var className = props.className;
       var inner = props.inner;
-      var bottomMd = props.bottomMd;
       var tabbar = props.tabbar;
       var labels = props.labels;
       var scrollable = props.scrollable;
       var hidden = props.hidden;
       var noShadow = props.noShadow;
       var noHairline = props.noHairline;
+      var noBorder = props.noBorder;
+      var topMd = props.topMd;
+      var topIos = props.topIos;
+      var top = props.top;
+      var bottomMd = props.bottomMd;
+      var bottomIos = props.bottomIos;
+      var bottom = props.bottom;
+      var position = props.position;
       var classes = Utils$1.classNames(className, 'toolbar', {
-        'toolbar-bottom-md': bottomMd,
         tabbar: tabbar,
+        'toolbar-bottom': self.$theme.md && bottomMd || self.$theme.ios && bottomIos || bottom || position === 'bottom',
+        'toolbar-top': self.$theme.md && topMd || self.$theme.ios && topIos || top || position === 'top',
         'tabbar-labels': labels,
         'tabbar-scrollable': scrollable,
         'toolbar-hidden': hidden,
         'no-shadow': noShadow,
-        'no-hairline': noHairline
+        'no-hairline': noHairline || noBorder
       }, Mixins.colorClasses(props));
       return _h('div', {
         style: style,
@@ -51719,28 +53483,20 @@
     },
 
     created: function created() {
-      var self = this;
-      self.onSwipeBackMoveBound = self.onSwipeBackMove.bind(self);
-      self.onSwipeBackBeforeChangeBound = self.onSwipeBackBeforeChange.bind(self);
-      self.onSwipeBackAfterChangeBound = self.onSwipeBackAfterChange.bind(self);
-      self.onSwipeBackBeforeResetBound = self.onSwipeBackBeforeReset.bind(self);
-      self.onSwipeBackAfterResetBound = self.onSwipeBackAfterReset.bind(self);
-      self.onTabShowBound = self.onTabShow.bind(self);
-      self.onTabHideBound = self.onTabHide.bind(self);
-      self.onViewInitBound = self.onViewInit.bind(self);
+      Utils$1.bindMethods(this, ['onSwipeBackMove', 'onSwipeBackBeforeChange', 'onSwipeBackAfterChange', 'onSwipeBackBeforeReset', 'onSwipeBackAfterReset', 'onTabShow', 'onTabHide', 'onViewInit']);
     },
 
     mounted: function mounted() {
       var self = this;
       var el = self.$refs.el;
-      el.addEventListener('swipeback:move', self.onSwipeBackMoveBound);
-      el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChangeBound);
-      el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChangeBound);
-      el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeResetBound);
-      el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterResetBound);
-      el.addEventListener('tab:show', self.onTabShowBound);
-      el.addEventListener('tab:hide', self.onTabHideBound);
-      el.addEventListener('view:init', self.onViewInitBound);
+      el.addEventListener('swipeback:move', self.onSwipeBackMove);
+      el.addEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
+      el.addEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
+      el.addEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
+      el.addEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
+      el.addEventListener('tab:show', self.onTabShow);
+      el.addEventListener('tab:hide', self.onTabHide);
+      el.addEventListener('view:init', self.onViewInit);
       self.setState({
         pages: []
       });
@@ -51760,14 +53516,14 @@
     beforeDestroy: function beforeDestroy() {
       var self = this;
       var el = self.$refs.el;
-      el.removeEventListener('swipeback:move', self.onSwipeBackMoveBound);
-      el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChangeBound);
-      el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChangeBound);
-      el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeResetBound);
-      el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterResetBound);
-      el.removeEventListener('tab:show', self.onTabShowBound);
-      el.removeEventListener('tab:hide', self.onTabHideBound);
-      el.removeEventListener('view:init', self.onViewInitBound);
+      el.removeEventListener('swipeback:move', self.onSwipeBackMove);
+      el.removeEventListener('swipeback:beforechange', self.onSwipeBackBeforeChange);
+      el.removeEventListener('swipeback:afterchange', self.onSwipeBackAfterChange);
+      el.removeEventListener('swipeback:beforereset', self.onSwipeBackBeforeReset);
+      el.removeEventListener('swipeback:afterreset', self.onSwipeBackAfterReset);
+      el.removeEventListener('tab:show', self.onTabShow);
+      el.removeEventListener('tab:hide', self.onTabHide);
+      el.removeEventListener('view:init', self.onViewInit);
       if (!self.props.init) { return; }
       if (self.f7View && self.f7View.destroy) { self.f7View.destroy(); }
       f7.routers.views.splice(f7.routers.views.indexOf(self.routerData), 1);
@@ -52205,7 +53961,7 @@
   };
 
   /**
-   * Framework7 Vue 3.6.5
+   * Framework7 Vue 4.0.0-beta.14
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -52213,16 +53969,17 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 4, 2019
+   * Released on: January 10, 2019
    */
 
-  var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
+  var Home = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7NavLeft: F7NavLeft,
       f7NavTitle: F7NavTitle,
-      f7NavRight: f7NavRight,
+      f7NavTitleLarge: f7NavTitleLarge,
+      f7NavRight: F7NavRight,
       f7BlockTitle: f7BlockTitle,
       f7List: f7List,
       f7ListItem: f7ListItem,
@@ -52255,7 +54012,7 @@
     },
   };
 
-  var About = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"About Framework7","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Welcome to Framework7")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")])])],1)},staticRenderFns: [],
+  var About = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"About Framework7","title-large":"About","back-link":"Framework7"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Welcome to Framework7")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")])])],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
@@ -52278,7 +54035,7 @@
     }
   };
 
-  var ActionSheet = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',{staticClass:"row"},[_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":function($event){_vm.$refs.actionsOneGroup.open();}}},[_vm._v("One group")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"raised":"","actions-open":"#actions-two-groups"}},[_vm._v("Two groups")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.actionGridOpened = true;}}},[_vm._v("Action Grid")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Action Sheet To Popover")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Action Sheet can be automatically converted to Popover (for tablets). This button will open Popover on tablets and Action Sheet on phones: "),_c('f7-button',{staticClass:"button-to-popover",staticStyle:{"display":"inline-block"},on:{"click":_vm.openActionsPopover}},[_vm._v("Actions")])],1)]),_vm._v(" "),_c('f7-actions',{ref:"actionsOneGroup"},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"id":"actions-two-groups"}},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"grid":true,"opened":_vm.actionGridOpened},on:{"actions:closed":function($event){_vm.actionGridOpened = false;}}},[_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/1","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 1")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/2","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 2")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/3","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 3")])])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/4","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 4")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/5","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 5")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/6","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 6")])])],1)],1)],1)},staticRenderFns: [],
+  var ActionSheet = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',{staticClass:"row"},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){_vm.$refs.actionsOneGroup.open();}}},[_vm._v("One group")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","actions-open":"#actions-two-groups"}},[_vm._v("Two groups")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.actionGridOpened = true;}}},[_vm._v("Action Grid")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Action Sheet To Popover")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Action Sheet can be automatically converted to Popover (for tablets). This button will open Popover on tablets and Action Sheet on phones: "),_c('f7-button',{staticClass:"button-to-popover",staticStyle:{"display":"inline-block"},on:{"click":_vm.openActionsPopover}},[_vm._v("Actions")])],1)]),_vm._v(" "),_c('f7-actions',{ref:"actionsOneGroup"},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"id":"actions-two-groups"}},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"grid":true,"opened":_vm.actionGridOpened},on:{"actions:closed":function($event){_vm.actionGridOpened = false;}}},[_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/1","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 1")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/2","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 2")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/3","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 3")])])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/4","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 4")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/5","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 5")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/6","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 6")])])],1)],1)],1)},staticRenderFns: [],
     props: {
       id: String,
     },
@@ -52725,11 +54482,11 @@
     },
   };
 
-  var Badge = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"sliding":"","back-link":"Back","title":"Badge"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-only":""}},[_c('f7-icon',{attrs:{"ios":"f7:person_fill","md":"material:person"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("5")])],1)],1)],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_c('f7-icon',{staticClass:"icon-fill",attrs:{"ios":"f7:email_fill","md":"material:email"}},[_c('f7-badge',{attrs:{"color":"green"}},[_vm._v("5")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Inbox")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_c('f7-icon',{attrs:{"ios":"f7:today","md":"material:today"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("7")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Calendar")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_c('f7-icon',{attrs:{"ios":"f7:cloud","md":"material:file_upload"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("1")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Upload")])],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Foo Bar","badge":"0"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ivan Petrov","badge":"CEO","badge-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5","badge-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","badge":"NEW","badge-color":"orange"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1)],1)},staticRenderFns: [],
+  var Badge = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"sliding":"","back-link":"Back","title":"Badge"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-only":""}},[_c('f7-icon',{attrs:{"ios":"f7:person_round_fill","md":"material:person"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("5")])],1)],1)],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_c('f7-icon',{attrs:{"ios":"f7:email_fill","md":"material:email"}},[_c('f7-badge',{attrs:{"color":"green"}},[_vm._v("5")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Inbox")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_c('f7-icon',{attrs:{"ios":"f7:calendar_fill","md":"material:today"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("7")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Calendar")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_c('f7-icon',{attrs:{"ios":"f7:cloud_upload_fill","md":"material:file_upload"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("1")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Upload")])],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Foo Bar","badge":"0"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ivan Petrov","badge":"CEO","badge-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5","badge-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","badge":"NEW","badge-color":"orange"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
-      f7NavRight: f7NavRight,
+      f7NavRight: F7NavRight,
       f7Toolbar: f7Toolbar,
       f7Link: F7Link,
       f7Badge: F7Badge,
@@ -52739,7 +54496,7 @@
     },
   };
 
-  var Buttons = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Buttons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Usual Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Buttons (MD-theme only)")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised Buttons (MD-theme only)")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":""}},[_vm._v("Outline")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","round":""}},[_vm._v("Round")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":"","round":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":"","round":""}},[_vm._v("Outline")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Segmented")]),_vm._v(" "),_c('f7-block',[_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":"","active":""}},[_vm._v("Active")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Big Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","raised":""}},[_vm._v("Raised")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","raised":"","fill":""}},[_vm._v("Raised Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Small Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","small":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","small":"","outline":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","small":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","small":"","round":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","small":"","outline":"","round":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"big":"","small":"","fill":"","round":""}},[_vm._v("Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("List-Block Buttons")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"List Button 1"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 2"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 3"}})],1),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"Big Red Button","color":"red"}})],1)],1)},staticRenderFns: [],
+  var Buttons = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Buttons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Usual Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Buttons (MD-theme only)")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised Buttons (MD-theme only)")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":""}},[_vm._v("Outline")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","round":""}},[_vm._v("Round")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":"","round":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":"","round":""}},[_vm._v("Outline")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Segmented")]),_vm._v(" "),_c('f7-block',[_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":"","active":""}},[_vm._v("Active")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Large Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":""}},[_vm._v("Raised")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":"","fill":""}},[_vm._v("Raised Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Small Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","round":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":"","round":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":"","round":""}},[_vm._v("Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("List-Block Buttons")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"List Button 1"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 2"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 3"}})],1),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"Large Red Button","color":"red"}})],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -52804,17 +54561,7 @@
           containerEl: '#demo-calendar-inline-container',
           value: [new Date()],
           renderToolbar: function renderToolbar() {
-            return "" + ('<div class="toolbar calendar-custom-toolbar no-shadow">' +
-        '<div class="toolbar-inner">' +
-          '<div class="left">' +
-            '<a href="#" class="link icon-only"><i class="icon icon-back ') + (self.$theme.md ? 'color-black' : '') + "\"></i></a>" +
-          '</div>' +
-          '<div class="center"></div>' +
-          '<div class="right">' +
-            "<a href=\"#\" class=\"link icon-only\"><i class=\"icon icon-forward " + (self.$theme.md ? 'color-black' : '') + "\"></i></a>" +
-          '</div>' +
-        '</div>' +
-      '</div>';
+            return "\n            <div class=\"toolbar calendar-custom-toolbar no-shadow\">\n              <div class=\"toolbar-inner\">\n                <div class=\"left\">\n                  <a href=\"#\" class=\"link icon-only\"><i class=\"icon icon-back\"></i></a>\n                </div>\n                <div class=\"center\"></div>\n                <div class=\"right\">\n                  <a href=\"#\" class=\"link icon-only\"><i class=\"icon icon-forward\"></i></a>\n                </div>\n              </div>\n            </div>\n          ".trim();
           },
           on: {
             init: function init(c) {
@@ -52845,7 +54592,7 @@
     },
   };
 
-  var CalendarPage = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"back-link":"Back"}},[_c('f7-nav-title',{staticClass:"navbar-calendar-title"})],1),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block block-strong no-padding no-margin no-hairline-top",attrs:{"id":"calendar"}}),_vm._v(" "),_c('f7-list',{staticClass:"no-margin no-hairlines no-ios-left-edge",attrs:{"id":"calendar-events"}},[_vm._l((_vm.eventItems),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"after":item.time}},[_c('div',{staticClass:"event-color",style:({'background-color': item.color}),attrs:{"slot":"root-start"},slot:"root-start"})])}),_vm._v(" "),(_vm.eventItems.length === 0)?_c('f7-list-item',[_c('span',{staticClass:"text-color-gray",attrs:{"slot":"title"},slot:"title"},[_vm._v("No events for this day")])]):_vm._e()],2)],1)],1)},staticRenderFns: [],
+  var CalendarPage = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"back-link":"Back","no-shadow":""}},[_c('f7-nav-title',{staticClass:"navbar-calendar-title"})],1),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block block-strong no-padding no-margin no-hairline-top",attrs:{"id":"calendar"}}),_vm._v(" "),_c('f7-list',{staticClass:"no-margin no-hairlines no-ios-left-edge",attrs:{"id":"calendar-events"}},[_vm._l((_vm.eventItems),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"after":item.time}},[_c('div',{staticClass:"event-color",style:({'background-color': item.color}),attrs:{"slot":"root-start"},slot:"root-start"})])}),_vm._v(" "),(_vm.eventItems.length === 0)?_c('f7-list-item',[_c('span',{staticClass:"text-color-gray",attrs:{"slot":"title"},slot:"title"},[_vm._v("No events for this day")])]):_vm._e()],2)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -52974,6 +54721,19 @@
     },
   };
 
+  var CardsExpandable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Cards Expandable","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to usual "),_c('a',{attrs:{"href":"/cards/"}},[_vm._v("Cards")]),_vm._v(" there are also Expandable Cards that allow to store more information and illustrations about particular subject")])]),_vm._v(" "),_c('div',{staticClass:"demo-expandable-cards"},[_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{staticClass:"bg-color-red",style:({height: '300px'})},[_c('f7-card-header',{staticClass:"display-block",attrs:{"text-color":"white"}},[_vm._v(" Framework7 "),_c('br'),_vm._v(" "),_c('small',{style:({opacity: 0.7})},[_vm._v("Build Mobile Apps")])]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":"","color":"red"}},[_vm._v("Close")])],1)])])],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{staticClass:"bg-color-yellow",style:({height: '300px'})},[_c('f7-card-header',{staticClass:"display-block",attrs:{"text-color":"black"}},[_vm._v(" Framework7 "),_c('br'),_vm._v(" "),_c('small',{style:({opacity: 0.7})},[_vm._v("Build Mobile Apps")])]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"black","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":"","color":"yellow","text-color":"black"}},[_vm._v("Close")])],1)])])],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{style:({background: 'url(./img/beach.jpg) no-repeat center bottom', 'background-size': 'cover', height: '240px'})}),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}}),_vm._v(" "),_c('f7-card-header',{style:({height: '60px'}),attrs:{"text-color":"black"}},[_vm._v("Beach, Goa")]),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero.")]),_vm._v(" "),_c('p',[_vm._v("Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":""}},[_vm._v("Close")])],1)])],1)],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{style:({background: 'url(./img/monkey.jpg) no-repeat center top', 'background-size': 'cover', height: '400px'})},[_c('f7-card-header',{attrs:{"text-color":"white"}},[_vm._v("Monkeys")]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero.")]),_vm._v(" "),_c('p',[_vm._v("Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":""}},[_vm._v("Close")])],1)])])],1)],1)],1)},staticRenderFns: [],
+    components: {
+      f7Navbar: f7Navbar,
+      f7Page: f7Page,
+      f7Block: f7Block,
+      f7Card: f7Card,
+      f7CardHeader: F7CardHeader,
+      f7CardContent: F7CardContent,
+      f7Link: F7Link,
+      f7Button: f7Button,
+    },
+  };
+
   var Checkbox$1 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Checkbox","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-checkbox',{attrs:{"name":"checkbox-1"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-checkbox',{attrs:{"name":"checkbox-2","checked":"checked"}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Checkbox Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"checkbox":"","title":"Books","name":"demo-checkbox","checked":"checked"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Movies","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Food","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Drinks","name":"demo-checkbox"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"checkbox":"","checked":"checked","name":"demo-media-checkbox","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
@@ -53017,7 +54777,7 @@
     },
   };
 
-  var ContentBlock = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Content Block","back-link":"Back"}}),_vm._v(" "),_c('p',[_vm._v("This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Here comes another text block with additional \"block-strong\" class. Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Block title")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Another ultra long content block title")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":"","inset":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet Inset")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":"","tablet-inset":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With Header & Footer")]),_vm._v(" "),_c('f7-block',[_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1),_vm._v(" "),_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1),_vm._v(" "),_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1)},staticRenderFns: [],
+  var ContentBlock = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Content Block","back-link":"Back"}}),_vm._v(" "),_c('p',[_vm._v("This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Here comes another text block with additional \"block-strong\" class. Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Block title")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Another ultra long content block title")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":"","inset":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet Inset")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":"","tablet-inset":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With Header & Footer")]),_vm._v(" "),_c('f7-block',[_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1),_vm._v(" "),_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1),_vm._v(" "),_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")]),_vm._v(" "),_c('f7-block-title',{attrs:{"large":""}},[_vm._v("Block Title Large")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Block Title Medium")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53028,7 +54788,7 @@
     },
   };
 
-  var DataTable$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Data Table","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Plain table")]),_vm._v(" "),_c('div',{staticClass:"data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Within card")]),_vm._v(" "),_c('div',{staticClass:"card data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Selectable rows")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})]),_vm._v(" "),_c('span',[_vm._v("In Stock")])])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet-only columns")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_c('p',[_vm._v("\"Comments\" column will be visible only on large screen devices (tablets)")])]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:chat_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With inputs")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_vm._v("Such tables are widely used in admin interfaces for filtering or search data")]),_vm._v(" "),_c('div',{staticClass:"card data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("ID")]),_vm._v(" "),_c('div',{staticClass:"input",staticStyle:{"width":"50px"}},[_c('input',{attrs:{"type":"number","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Name")]),_vm._v(" "),_c('div',{staticClass:"input"},[_c('input',{attrs:{"type":"text","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Email")]),_vm._v(" "),_c('div',{staticClass:"input"},[_c('input',{attrs:{"type":"email","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Gender")]),_vm._v(" "),_c('div',{staticClass:"input input-dropdown"},[_c('select',[_c('option',{attrs:{"value":"All"}},[_vm._v("All")]),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])])])])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',[_vm._v("1")]),_vm._v(" "),_c('td',[_vm._v("John Doe")]),_vm._v(" "),_c('td',[_vm._v("john@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Male")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("2")]),_vm._v(" "),_c('td',[_vm._v("Jane Doe")]),_vm._v(" "),_c('td',[_vm._v("jane@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Female")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("3")]),_vm._v(" "),_c('td',[_vm._v("Vladimir Kharlampidi")]),_vm._v(" "),_c('td',[_vm._v("vladimir@google.com")]),_vm._v(" "),_c('td',[_vm._v("Male")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("4")]),_vm._v(" "),_c('td',[_vm._v("Jennifer Doe")]),_vm._v(" "),_c('td',[_vm._v("jennifer@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Female")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Within card with title and actions")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:chat_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Sortable columns")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell sortable-cell sortable-cell-active"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:chat_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With title and different actions on select")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"data-table-header-selected"},[_c('div',{staticClass:"data-table-title-selected"},[_c('span',{staticClass:"data-table-selected-count"}),_vm._v(" items selected")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)])]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:chat_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Alternate header with actions")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-links"},[_c('a',{staticClass:"link"},[_vm._v("Add")]),_c('a',{staticClass:"link"},[_vm._v("Remove")])]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:chat_fill","md":"material:message"}}),_vm._v(" Comments")],1),_vm._v(" "),_c('th')])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Collapsible")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_c('p',[_vm._v("The following table will be collapsed to kind of List View on small screens:")])]),_vm._v(" "),_c('div',{staticClass:"card data-table data-table-collapsible data-table-init"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])])])],1)},staticRenderFns: [],
+  var DataTable$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Data Table","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Plain table")]),_vm._v(" "),_c('div',{staticClass:"data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Within card")]),_vm._v(" "),_c('div',{staticClass:"card data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Selectable rows")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})]),_vm._v(" "),_c('span',[_vm._v("In Stock")])])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet-only columns")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_c('p',[_vm._v("\"Comments\" column will be visible only on large screen devices (tablets)")])]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With inputs")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_vm._v("Such tables are widely used in admin interfaces for filtering or search data")]),_vm._v(" "),_c('div',{staticClass:"card data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("ID")]),_vm._v(" "),_c('div',{staticClass:"input",staticStyle:{"width":"50px"}},[_c('input',{attrs:{"type":"number","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Name")]),_vm._v(" "),_c('div',{staticClass:"input"},[_c('input',{attrs:{"type":"text","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Email")]),_vm._v(" "),_c('div',{staticClass:"input"},[_c('input',{attrs:{"type":"email","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Gender")]),_vm._v(" "),_c('div',{staticClass:"input input-dropdown"},[_c('select',[_c('option',{attrs:{"value":"All"}},[_vm._v("All")]),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])])])])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',[_vm._v("1")]),_vm._v(" "),_c('td',[_vm._v("John Doe")]),_vm._v(" "),_c('td',[_vm._v("john@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Male")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("2")]),_vm._v(" "),_c('td',[_vm._v("Jane Doe")]),_vm._v(" "),_c('td',[_vm._v("jane@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Female")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("3")]),_vm._v(" "),_c('td',[_vm._v("Vladimir Kharlampidi")]),_vm._v(" "),_c('td',[_vm._v("vladimir@google.com")]),_vm._v(" "),_c('td',[_vm._v("Male")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("4")]),_vm._v(" "),_c('td',[_vm._v("Jennifer Doe")]),_vm._v(" "),_c('td',[_vm._v("jennifer@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Female")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Within card with title and actions")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Sortable columns")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell sortable-cell sortable-cell-active"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With title and different actions on select")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"data-table-header-selected"},[_c('div',{staticClass:"data-table-title-selected"},[_c('span',{staticClass:"data-table-selected-count"}),_vm._v(" items selected")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)])]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Alternate header with actions")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-links"},[_c('a',{staticClass:"button"},[_vm._v("Add")]),_c('a',{staticClass:"button"},[_vm._v("Remove")])]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1),_vm._v(" "),_c('th')])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Collapsible")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_c('p',[_vm._v("The following table will be collapsed to kind of List View on small screens:")])]),_vm._v(" "),_c('div',{staticClass:"card data-table data-table-collapsible data-table-init"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])])])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53038,7 +54798,7 @@
     },
   };
 
-  var Dialog$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Dialog","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("There are 1:1 replacements of native Alert, Prompt and Confirm modals. They support callbacks, have very easy api and can be combined with each other. Check these examples:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openAlert}},[_vm._v("Alert")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openConfirm}},[_vm._v("Confirm")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openPrompt}},[_vm._v("Prompt")])],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openLogin}},[_vm._v("Login")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openPassword}},[_vm._v("Password")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.openVerticalButtons}},[_vm._v("Vertical Buttons")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Dialog")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openPreloader}},[_vm._v("Preloader")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openCustomPreloader}},[_vm._v("Custom Text")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Progress Dialog")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openInfiniteProgress}},[_vm._v("Infinite")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.openDeterminedProgress}},[_vm._v("Determined")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Dialogs Stack")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This feature doesn't allow to open multiple dialogs at the same time, and will automatically open next dialog when you close the current one. Such behavior is similar to browser native dialogs: ")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.openAlerts}},[_vm._v("Open Multiple Alerts")])],1)])],1)},staticRenderFns: [],
+  var Dialog$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Dialog","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("There are 1:1 replacements of native Alert, Prompt and Confirm modals. They support callbacks, have very easy api and can be combined with each other. Check these examples:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openAlert}},[_vm._v("Alert")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openConfirm}},[_vm._v("Confirm")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPrompt}},[_vm._v("Prompt")])],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openLogin}},[_vm._v("Login")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPassword}},[_vm._v("Password")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.openVerticalButtons}},[_vm._v("Vertical Buttons")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Dialog")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPreloader}},[_vm._v("Preloader")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openCustomPreloader}},[_vm._v("Custom Text")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Progress Dialog")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openInfiniteProgress}},[_vm._v("Infinite")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openDeterminedProgress}},[_vm._v("Determined")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Dialogs Stack")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This feature doesn't allow to open multiple dialogs at the same time, and will automatically open next dialog when you close the current one. Such behavior is similar to browser native dialogs: ")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.openAlerts}},[_vm._v("Open Multiple Alerts")])],1)])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53159,7 +54919,7 @@
     },
   };
 
-  var FabMorph = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button Morph","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{staticClass:"fab-morph-target",attrs:{"tabbar":"","labels":"","bottom-md":""}},[_c('f7-link',{attrs:{"tab-link":"","tab-link-active":"","icon-ios":"f7:email_fill","icon-md":"material:email","text":"Inbox"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:today","icon-md":"material:today","text":"Calendar"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:cloud","icon-md":"material:file_upload","text":"Upload"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"right-bottom","morph-to":".toolbar.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"left-bottom","morph-to":".demo-fab-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"center-bottom","morph-to":".demo-fab-fullscreen-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('div',{staticClass:"list links-list demo-fab-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])]),_vm._v(" "),_c('div',{staticClass:"demo-fab-fullscreen-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('f7-block-title',[_vm._v("Choose Something")]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])])],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)},staticRenderFns: [],
+  var FabMorph = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button Morph","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{staticClass:"fab-morph-target",attrs:{"tabbar":"","labels":"","bottom":""}},[_c('f7-link',{attrs:{"tab-link":"","tab-link-active":"","icon-ios":"f7:email_fill","icon-md":"material:email","text":"Inbox"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:calendar_fill","icon-md":"material:today","text":"Calendar"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:cloud_upload_fill","icon-md":"material:file_upload","text":"Upload"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"right-bottom","morph-to":".toolbar.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"left-bottom","morph-to":".demo-fab-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"center-bottom","morph-to":".demo-fab-fullscreen-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('div',{staticClass:"list links-list demo-fab-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])]),_vm._v(" "),_c('div',{staticClass:"demo-fab-fullscreen-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('f7-block-title',[_vm._v("Choose Something")]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])])],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7Toolbar: f7Toolbar, f7Fab: f7Fab, f7Icon: F7Icon, f7Link: F7Link,
     },
@@ -53203,10 +54963,10 @@
     },
   };
 
-  var f7Icons = 'add add_round add_round_fill alarm alarm_fill albums albums_fill arrow_down arrow_down_fill arrow_left arrow_left_fill arrow_right arrow_right_fill arrow_up arrow_up_fill at at_fill bag bag_fill bars bell bell_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill calendar calendar_fill camera camera_fill card card_fill chat chat_fill chats chats_fill check check_round check_round_fill chevron_down chevron_left chevron_right chevron_up circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill document document_fill document_text document_text_fill down download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill email email_fill eye eye_fill fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_fill film film_fill filter filter-fill flag flag_fill folder folder_fill forward forward_fill gear gear_fill graph_round graph_round_fill graph_square graph_square_fill heart heart_fill help help_fill home home_fill images images_fill info info_fill keyboard keyboard_fill layers layers_fill left list list_fill lock lock_fill login login_fill logout logout_fill menu mic mic_fill money_dollar money_dollar_fill money_euro money_euro_fill money_pound money_pound_fill money_rubl money_rubl_fill money_yen money_yen_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill person person_fill persons persons_fill phone phone_fill phone_round phone_round_fill photos photos_fill pie pie_fill play play_fill play_round play_round_fill radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill right search search_strong settings settings_fill share share_fill social_facebook social_facebook_fill social_github social_github_fill social_googleplus social_instagram social_instagram_fill social_linkedin social_linkedin_fill social_rss social_rss_fill social_twitter social_twitter_fill sort sort_fill star star_fill star_half stopwatch stopwatch_fill tabs tabs_fill tags tags_fill tape tape_fill ticket ticket_fill time time_fill timer timer_fill today today_fill trash trash_fill tune tune_fill undo unlock unlock_fill up videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill world world_fill zoom_in zoom_out';
+  var f7Icons = 'add add_round add_round_fill alarm alarm_fill albums albums_fill alert alert_fill arrow_down arrow_down_round_fill arrow_left arrow_left_round_fill arrow_right arrow_right_round_fill arrow_up arrow_up_round_fill at at_round at_round_fill attachment bag bag_fill barcode barcode_fill bars bars_chart bars_chart_round bars_chart_round_fill bars_chart_square bars_chart_square_fill bell bell_fill bell_off bitcoin bitcoin_round bitcoin_round_fill bolt bolt_fill bolt_round bolt_round_fill book book_fill bookmark bookmark_fill box box_fill briefcase briefcase_fill bulb bulb_fill business business_fill calendar calendar_fill calendar_today calendar_today_fill camera camera_fill camera_round camera_round_fill card card_fill chat chat_bubble chat_bubble_fill chat_fill check check_round check_round_fill chevron_down chevron_down_round chevron_down_round_fill chevron_left chevron_left_round chevron_left_round_fill chevron_right chevron_right_round chevron_right_round_fill chevron_up chevron_up_round chevron_up_round_fill circle circle_fill circle_half close close_round close_round_fill cloud cloud_download cloud_download_fill cloud_fill cloud_upload cloud_upload_fill collection collection_fill color_filter color_filter_fill compass compass_fill compose compose_fill data data_fill delete delete_round delete_round_fill document document_chart document_chart_fill document_check document_check_fill document_fill document_person document_person_fill document_text document_text_fill download download_fill download_round download_round_fill drawer drawer_fill drawers drawers_fill edit email email_fill enter enter_fill enter_round enter_round_fill exit exit_fill exit_round exit_round_fill eye eye_fill eye_off fastforward fastforward_fill fastforward_round fastforward_round_fill favorites favorites_alt favorites_alt_fill favorites_fill film film_fill filter fire fire_fill flag flag_fill folder folder_fill forward forward_fill gear gear_fill gift gift_fill graph_round graph_round_fill graph_square graph_square_fill heart heart_fill help help_round help_round_fill home home_fill images images_fill infinite info info_round info_round_fill keyboard keyboard_fill layers layers_alt layers_alt_fill layers_fill library library_fill link list list_fill lock lock_fill logo_facebook logo_github logo_googleplus logo_instagram logo_linkedin logo_rss logo_twitter menu message message_fill mic mic_fill mic_off mic_round mic_round_fill money_dollar money_dollar_round money_dollar_round_fill money_euro money_euro_round money_euro_round_fill money_pound money_pound_round money_pound_round_fill money_rubl money_rubl_round money_rubl_round_fill money_yen money_yen_round money_yen_round_fill more more_fill more_round more_round_fill more_vertical more_vertical_fill more_vertical_round more_vertical_round_fill navigation navigation_fill navigation_round navigation_round_fill paper_plane paper_plane_fill pause pause_fill pause_round pause_round_fill person person_round person_round_fill persons persons_round persons_round_fill phone phone_fill phone_round phone_round_fill photos photos_fill pie_chart pie_chart_fill placemark placemark_fill play play_fill play_round play_round_fill qrcode radio redo refresh refresh_round refresh_round_fill reload reload_round reload_round_fill reply reply_fill rewind rewind_fill rewind_round rewind_round_fill rocket rocket_fill scissors search settings settings_fill share share_fill sort sort_down sort_down_round sort_down_round_fill sort_round sort_round_fill sort_up sort_up_round sort_up_round_fill star star_fill star_half star_round_fill stopwatch stopwatch_fill tabs tabs_fill tag tag_fill tags tags_fill tape tape_fill thumbs_down thumbs_up ticket ticket_fill tickets tickets_fill time time_fill timer timer_fill today today_fill trash trash_fill tune tune_fill undo unlock unlock_fill upload_round upload_round_fill videocam videocam_fill videocam_round videocam_round_fill volume volume_fill volume_low volume_low_fill volume_mute volume_mute_fill volume_off waterdrop waterdrop_fill world world_fill zoom_in zoom_out';
   var mdIcons = '3d_rotation ac_unit access_alarm access_alarms access_time accessibility accessible account_balance account_balance_wallet account_box account_circle adb add add_a_photo add_alarm add_alert add_box add_circle add_circle_outline add_location add_shopping_cart add_to_photos add_to_queue adjust airline_seat_flat airline_seat_flat_angled airline_seat_individual_suite airline_seat_legroom_extra airline_seat_legroom_normal airline_seat_legroom_reduced airline_seat_recline_extra airline_seat_recline_normal airplanemode_active airplanemode_inactive airplay airport_shuttle alarm alarm_add alarm_off alarm_on album all_inclusive all_out android announcement apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_drop_up arrow_forward arrow_upward art_track aspect_ratio assessment assignment assignment_ind assignment_late assignment_return assignment_returned assignment_turned_in assistant assistant_photo attach_file attach_money attachment audiotrack autorenew av_timer backspace backup battery_alert battery_charging_full battery_full battery_std battery_unknown beach_access beenhere block bluetooth bluetooth_audio bluetooth_connected bluetooth_disabled bluetooth_searching blur_circular blur_linear blur_off blur_on book bookmark bookmark_border border_all border_bottom border_clear border_color border_horizontal border_inner border_left border_outer border_right border_style border_top border_vertical branding_watermark brightness_1 brightness_2 brightness_3 brightness_4 brightness_5 brightness_6 brightness_7 brightness_auto brightness_high brightness_low brightness_medium broken_image brush bubble_chart bug_report build burst_mode business business_center cached cake call call_end call_made call_merge call_missed call_missed_outgoing call_received call_split call_to_action camera camera_alt camera_enhance camera_front camera_rear camera_roll cancel card_giftcard card_membership card_travel casino cast cast_connected center_focus_strong center_focus_weak change_history chat chat_bubble chat_bubble_outline check check_box check_box_outline_blank check_circle chevron_left chevron_right child_care child_friendly chrome_reader_mode class clear clear_all close closed_caption cloud cloud_circle cloud_done cloud_download cloud_off cloud_queue cloud_upload code collections collections_bookmark color_lens colorize comment compare compare_arrows computer confirmation_number contact_mail contact_phone contacts content_copy content_cut content_paste control_point control_point_duplicate copyright create create_new_folder credit_card crop crop_16_9 crop_3_2 crop_5_4 crop_7_5 crop_din crop_free crop_landscape crop_original crop_portrait crop_rotate crop_square dashboard data_usage date_range dehaze delete delete_forever delete_sweep description desktop_mac desktop_windows details developer_board developer_mode device_hub devices devices_other dialer_sip dialpad directions directions_bike directions_boat directions_bus directions_car directions_railway directions_run directions_subway directions_transit directions_walk disc_full dns do_not_disturb do_not_disturb_alt do_not_disturb_off do_not_disturb_on dock domain done done_all donut_large donut_small drafts drag_handle drive_eta dvr edit edit_location eject email enhanced_encryption equalizer error error_outline euro_symbol ev_station event event_available event_busy event_note event_seat exit_to_app expand_less expand_more explicit explore exposure exposure_neg_1 exposure_neg_2 exposure_plus_1 exposure_plus_2 exposure_zero extension face fast_forward fast_rewind favorite favorite_border featured_play_list featured_video feedback fiber_dvr fiber_manual_record fiber_new fiber_pin fiber_smart_record file_download file_upload filter filter_1 filter_2 filter_3 filter_4 filter_5 filter_6 filter_7 filter_8 filter_9 filter_9_plus filter_b_and_w filter_center_focus filter_drama filter_frames filter_hdr filter_list filter_none filter_tilt_shift filter_vintage find_in_page find_replace fingerprint first_page fitness_center flag flare flash_auto flash_off flash_on flight flight_land flight_takeoff flip flip_to_back flip_to_front folder folder_open folder_shared folder_special font_download format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_fill format_color_reset format_color_text format_indent_decrease format_indent_increase format_italic format_line_spacing format_list_bulleted format_list_numbered format_paint format_quote format_shapes format_size format_strikethrough format_textdirection_l_to_r format_textdirection_r_to_l format_underlined forum forward forward_10 forward_30 forward_5 free_breakfast fullscreen fullscreen_exit functions g_translate gamepad games gavel gesture get_app gif golf_course gps_fixed gps_not_fixed gps_off grade gradient grain graphic_eq grid_off grid_on group group_add group_work hd hdr_off hdr_on hdr_strong hdr_weak headset headset_mic healing hearing help help_outline high_quality highlight highlight_off history home hot_tub hotel hourglass_empty hourglass_full http https image image_aspect_ratio import_contacts import_export important_devices inbox indeterminate_check_box info info_outline input insert_chart insert_comment insert_drive_file insert_emoticon insert_invitation insert_link insert_photo invert_colors invert_colors_off iso keyboard keyboard_arrow_down keyboard_arrow_left keyboard_arrow_right keyboard_arrow_up keyboard_backspace keyboard_capslock keyboard_hide keyboard_return keyboard_tab keyboard_voice kitchen label label_outline landscape language laptop laptop_chromebook laptop_mac laptop_windows last_page launch layers layers_clear leak_add leak_remove lens library_add library_books library_music lightbulb_outline line_style line_weight linear_scale link linked_camera list live_help live_tv local_activity local_airport local_atm local_bar local_cafe local_car_wash local_convenience_store local_dining local_drink local_florist local_gas_station local_grocery_store local_hospital local_hotel local_laundry_service local_library local_mall local_movies local_offer local_parking local_pharmacy local_phone local_pizza local_play local_post_office local_printshop local_see local_shipping local_taxi location_city location_disabled location_off location_on location_searching lock lock_open lock_outline looks looks_3 looks_4 looks_5 looks_6 looks_one looks_two loop loupe low_priority loyalty mail mail_outline map markunread markunread_mailbox memory menu merge_type message mic mic_none mic_off mms mode_comment mode_edit monetization_on money_off monochrome_photos mood mood_bad more more_horiz more_vert motorcycle mouse move_to_inbox movie movie_creation movie_filter multiline_chart music_note music_video my_location nature nature_people navigate_before navigate_next navigation near_me network_cell network_check network_locked network_wifi new_releases next_week nfc no_encryption no_sim not_interested note note_add notifications notifications_active notifications_none notifications_off notifications_paused offline_pin ondemand_video opacity open_in_browser open_in_new open_with pages pageview palette pan_tool panorama panorama_fish_eye panorama_horizontal panorama_vertical panorama_wide_angle party_mode pause pause_circle_filled pause_circle_outline payment people people_outline perm_camera_mic perm_contact_calendar perm_data_setting perm_device_information perm_identity perm_media perm_phone_msg perm_scan_wifi person person_add person_outline person_pin person_pin_circle personal_video pets phone phone_android phone_bluetooth_speaker phone_forwarded phone_in_talk phone_iphone phone_locked phone_missed phone_paused phonelink phonelink_erase phonelink_lock phonelink_off phonelink_ring phonelink_setup photo photo_album photo_camera photo_filter photo_library photo_size_select_actual photo_size_select_large photo_size_select_small picture_as_pdf picture_in_picture picture_in_picture_alt pie_chart pie_chart_outlined pin_drop place play_arrow play_circle_filled play_circle_outline play_for_work playlist_add playlist_add_check playlist_play plus_one poll polymer pool portable_wifi_off portrait power power_input power_settings_new pregnant_woman present_to_all print priority_high public publish query_builder question_answer queue queue_music queue_play_next radio radio_button_checked radio_button_unchecked rate_review receipt recent_actors record_voice_over redeem redo refresh remove remove_circle remove_circle_outline remove_from_queue remove_red_eye remove_shopping_cart reorder repeat repeat_one replay replay_10 replay_30 replay_5 reply reply_all report report_problem restaurant restaurant_menu restore restore_page ring_volume room room_service rotate_90_degrees_ccw rotate_left rotate_right rounded_corner router rowing rss_feed rv_hookup satellite save scanner schedule school screen_lock_landscape screen_lock_portrait screen_lock_rotation screen_rotation screen_share sd_card sd_storage search security select_all send sentiment_dissatisfied sentiment_neutral sentiment_satisfied sentiment_very_dissatisfied sentiment_very_satisfied settings settings_applications settings_backup_restore settings_bluetooth settings_brightness settings_cell settings_ethernet settings_input_antenna settings_input_component settings_input_composite settings_input_hdmi settings_input_svideo settings_overscan settings_phone settings_power settings_remote settings_system_daydream settings_voice share shop shop_two shopping_basket shopping_cart short_text show_chart shuffle signal_cellular_4_bar signal_cellular_connected_no_internet_4_bar signal_cellular_no_sim signal_cellular_null signal_cellular_off signal_wifi_4_bar signal_wifi_4_bar_lock signal_wifi_off sim_card sim_card_alert skip_next skip_previous slideshow slow_motion_video smartphone smoke_free smoking_rooms sms sms_failed snooze sort sort_by_alpha spa space_bar speaker speaker_group speaker_notes speaker_notes_off speaker_phone spellcheck star star_border star_half stars stay_current_landscape stay_current_portrait stay_primary_landscape stay_primary_portrait stop stop_screen_share storage store store_mall_directory straighten streetview strikethrough_s style subdirectory_arrow_left subdirectory_arrow_right subject subscriptions subtitles subway supervisor_account surround_sound swap_calls swap_horiz swap_vert swap_vertical_circle switch_camera switch_video sync sync_disabled sync_problem system_update system_update_alt tab tab_unselected tablet tablet_android tablet_mac tag_faces tap_and_play terrain text_fields text_format textsms texture theaters thumb_down thumb_up thumbs_up_down time_to_leave timelapse timeline timer timer_10 timer_3 timer_off title toc today toll tonality touch_app toys track_changes traffic train tram transfer_within_a_station transform translate trending_down trending_flat trending_up tune turned_in turned_in_not tv unarchive undo unfold_less unfold_more update usb verified_user vertical_align_bottom vertical_align_center vertical_align_top vibration video_call video_label video_library videocam videocam_off videogame_asset view_agenda view_array view_carousel view_column view_comfy view_compact view_day view_headline view_list view_module view_quilt view_stream view_week vignette visibility visibility_off voice_chat voicemail volume_down volume_mute volume_off volume_up vpn_key vpn_lock wallpaper warning watch watch_later wb_auto wb_cloudy wb_incandescent wb_iridescent wb_sunny wc web web_asset weekend whatshot widgets wifi wifi_lock wifi_tethering work wrap_text youtube_searched_for zoom_in zoom_out zoom_out_map';
 
-  var Icons = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Icons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with the premium and free "),_c('a',{staticClass:"external",attrs:{"href":"https://github.com/nolimits4web/Framework7-Icons","target":"_blank"}},[_vm._v("Framework7 Icons")]),_vm._v(" iOS-icons font developed specially to be used with iOS theme of Framework7. As for Material theme we recommend to use great-designed "),_c('a',{staticClass:"external",attrs:{"href":"https://material.io/icons/","target":"_blank"}},[_vm._v("Material Icons")]),_vm._v(" font. Both of these fonts use a typographic feature called "),_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("ligatures")]),_vm._v(". It’s easy to incorporate icons into your app. Here’s a small example:")]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"f7-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"f7-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"material-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"material-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("Ligatures")]),_vm._v(" allow rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.")])]),_vm._v(" "),_c('f7-block-header',[_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',{attrs:{"tab-link":"#tab-f7","tab-link-active":""}},[_vm._v("F7 Icons")]),_vm._v(" "),_c('f7-button',{attrs:{"tab-link":"#tab-md"}},[_vm._v("Material Icons")])],1)],1),_vm._v(" "),_c('f7-block',{staticClass:"tabs",attrs:{"strong":""}},[_c('f7-tab',{attrs:{"id":"tab-f7","tab-active":""}},[_c('f7-row',_vm._l((_vm.f7Icons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"f7-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1),_vm._v(" "),_c('f7-tab',{attrs:{"id":"tab-md"}},[_c('f7-row',_vm._l((_vm.mdIcons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"material-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1)],1)],1)},staticRenderFns: [],
+  var Icons = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Icons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with the premium and free "),_c('a',{staticClass:"external",attrs:{"href":"https://github.com/nolimits4web/Framework7-Icons","target":"_blank"}},[_vm._v("Framework7 Icons")]),_vm._v(" iOS-icons font developed specially to be used with iOS theme of Framework7. As for Material theme we recommend to use great-designed "),_c('a',{staticClass:"external",attrs:{"href":"https://material.io/icons/","target":"_blank"}},[_vm._v("Material Icons")]),_vm._v(" font. Both of these fonts use a typographic feature called "),_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("ligatures")]),_vm._v(". It’s easy to incorporate icons into your app. Here’s a small example:")]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"f7-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"f7-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"material-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"material-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("Ligatures")]),_vm._v(" allow rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.")])]),_vm._v(" "),_c('f7-block-header',[_c('f7-segmented',[_c('f7-button',{attrs:{"outline":"","tab-link":"#tab-f7","tab-link-active":""}},[_vm._v("F7 Icons")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","tab-link":"#tab-md"}},[_vm._v("Material Icons")])],1)],1),_vm._v(" "),_c('f7-block',{staticClass:"tabs",attrs:{"strong":""}},[_c('f7-tab',{attrs:{"id":"tab-f7","tab-active":""}},[_c('f7-row',_vm._l((_vm.f7Icons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"f7-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1),_vm._v(" "),_c('f7-tab',{attrs:{"id":"tab-md"}},[_c('f7-row',_vm._l((_vm.mdIcons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"material-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
@@ -53315,7 +55075,7 @@
     },
   };
 
-  var LoginScreen$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Login Screen","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with ready to use Login Screen layout. It could be used inside of page or inside of popup (Embedded) or as a standalone overlay:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/login-screen-page/","title":"As Separate Page"}})],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":"","login-screen-open":".demo-login-screen"}},[_vm._v("As Overlay")])],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","big":"","fill":""},on:{"click":function($event){_vm.loginScreenOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('f7-login-screen',{staticClass:"demo-login-screen",attrs:{"opened":_vm.loginScreenOpened},on:{"loginscreen:closed":function($event){_vm.loginScreenOpened = false;}}},[_c('f7-page',{attrs:{"login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-input',{attrs:{"label":"Username","type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)],1)],1)},staticRenderFns: [],
+  var LoginScreen$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Login Screen","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with ready to use Login Screen layout. It could be used inside of page or inside of popup (Embedded) or as a standalone overlay:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/login-screen-page/","title":"As Separate Page"}})],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","large":"","fill":"","login-screen-open":".demo-login-screen"}},[_vm._v("As Overlay")])],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","large":"","fill":""},on:{"click":function($event){_vm.loginScreenOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('f7-login-screen',{staticClass:"demo-login-screen",attrs:{"opened":_vm.loginScreenOpened},on:{"loginscreen:closed":function($event){_vm.loginScreenOpened = false;}}},[_c('f7-page',{attrs:{"login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-input',{attrs:{"label":"Username","type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53377,7 +55137,74 @@
     },
   };
 
-  var Messages$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible,"value":_vm.messageText},on:{"input":function($event){_vm.messageText = $event.target.value;}}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){_vm.deleteAttachment(image);}}})}),1),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}),1)],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)},staticRenderFns: [],
+  var Menu$1 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:afterin":_vm.onPageAfterIn}},[_c('f7-navbar',{attrs:{"title":"Menu","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Menu component is designed to be used as overlay control. It can be very helpful when you need controls on top of the map, images, some text/code editor, etc.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Links")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-menu',[_c('f7-menu-item',{attrs:{"href":"#","text":"Item 1"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","text":"Item 2"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"edit"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"share"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Dropdowns")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",staticStyle:{"z-index":"2000"},attrs:{"strong":""}},[_c('p',{staticClass:"padding-horizontal"},[_vm._v("Dropdown can be position on left, center or right of the menu item. It also can be scrollable.")]),_vm._v(" "),_c('f7-menu',[_c('f7-menu-item',{attrs:{"text":"Left","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"left":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"text":"Center","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"center":"","content-height":"200px"}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 7"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 8"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 9"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 10"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"text":"Right","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"right":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{staticStyle:{"margin-left":"auto"},attrs:{"icon-f7":"share","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"right":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#"}},[_c('span',[_vm._v("Share on Facebook")]),_vm._v(" "),_c('f7-icon',{staticClass:"margin-left",attrs:{"f7":"logo_facebook"}})],1),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#"}},[_c('span',[_vm._v("Share on Twitter")]),_vm._v(" "),_c('f7-icon',{staticClass:"margin-left",attrs:{"f7":"logo_twitter"}})],1)],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"edit"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On Top Of Map")]),_vm._v(" "),_c('f7-card',[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{ref:"map",staticStyle:{"height":"240px"}}),_vm._v(" "),_c('f7-menu',{staticStyle:{"position":"absolute","left":"0px","top":"6px"}},[_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"zoom_in"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"zoom_out"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"icon-f7":"layers_fill","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"left":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Terrain"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Satellite"}})],1)],1)],1)],1)],1)],1)},staticRenderFns: [],
+    components: {
+      f7Page: f7Page,
+      f7Navbar: f7Navbar,
+      f7BlockTitle: f7BlockTitle,
+      f7Block: f7Block,
+      f7Menu: f7Menu,
+      f7MenuItem: f7MenuItem,
+      f7MenuDropdown: f7MenuDropdown,
+      f7MenuDropdownItem: f7MenuDropdownItem,
+      f7Card: f7Card,
+      f7CardContent: F7CardContent,
+      f7Icon: F7Icon,
+    },
+    data: function data() {
+      return {
+        mapStyleLoaded: false,
+        mapScriptLoaded: false,
+        mapInitialized: false,
+      }
+    },
+    methods: {
+      onPageAfterIn: function onPageAfterIn() {
+        var self = this;
+        if (self.mapInitialized) { return; }
+        if (!window.L) {
+          self.loadMapAssets();
+          return;
+        }
+        self.initMap();
+      },
+      loadMapAssets: function () {
+        var self = this;
+        var style = document.createElement('link');
+        style.rel = 'stylesheet';
+        style.href = 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.css';
+        style.integrity='sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==';
+        style.setAttribute('crossorigin', '');
+        style.onload = function () {
+          self.mapStyleLoaded = true;
+          if (self.mapScriptLoaded) { self.initMap(); }
+        };
+        document.head.appendChild(style);
+
+        var script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.js';
+        script.integrity='sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==';
+        script.setAttribute('crossorigin', '');
+        script.onload = function () {
+          self.mapScriptLoaded = true;
+          if (self.mapStyleLoaded) { self.initMap(); }
+        };
+        document.head.appendChild(script);
+      },
+      initMap: function () {
+        var self = this;
+        var mymap = L.map(self.$refs.map, { zoomControl: false }).setView([51.505, -0.09], 10);
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoibm9saW1pdHM0d2ViIiwiYSI6ImNqcXA4NTdmczBocm8zeG13Zm1zNTdyeDAifQ.HoJgmqQ_uH4zLyNJmiY98A', {
+          maxZoom: 18,
+          attribution: "Map data &copy; <a class=\"external\" target=\"_blank\" href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors,\n          <a class=\"external\" target=\"_blank\" href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>,\n          Imagery © <a class=\"external\" target=\"_blank\" href=\"https://www.mapbox.com/\">Mapbox</a>",
+          id: 'mapbox.streets'
+        }).addTo(mymap);
+        self.mapInitialized = true;
+      },
+    },
+  };
+
+  var Messages$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible,"value":_vm.messageText},on:{"input":function($event){_vm.messageText = $event.target.value;}}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_round_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){_vm.deleteAttachment(image);}}})}),1),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}),1)],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53604,7 +55431,7 @@
       f7Block: f7Block,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7NavRight: f7NavRight,
+      f7NavRight: F7NavRight,
       f7Link: F7Link,
     },
   };
@@ -53617,7 +55444,7 @@
     },
   };
 
-  var Notifications = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Notifications","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with simple Notifications component that allows you to show some useful messages to user and request basic actions.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showNotificationFull}},[_vm._v("Full layout notification")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showNotificationWithButton}},[_vm._v("With close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showNotificationCloseOnClick}},[_vm._v("Click to close")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showNotificationCallbackOnClose}},[_vm._v("Callback on close")])],1)])],1)},staticRenderFns: [],
+  var Notifications = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Notifications","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with simple Notifications component that allows you to show some useful messages to user and request basic actions.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationFull}},[_vm._v("Full layout notification")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationWithButton}},[_vm._v("With close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationCloseOnClick}},[_vm._v("Click to close")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationCallbackOnClose}},[_vm._v("Callback on close")])],1)])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53708,7 +55535,7 @@
     },
   };
 
-  var Panel$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Panel / Side panels","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with 2 panels (on left and on right), both are optional. They have two different layouts/effects - "),_c('b',[_vm._v("cover")]),_vm._v(" above the content (like left panel here) and "),_c('b',[_vm._v("reveal")]),_vm._v(" (like right panel). You can put absolutely anything inside: data lists, forms, custom content, and even other isolated app view (like in right panel now) with its own dynamic navbar. Checkout panels:")])]),_vm._v(" "),_c('f7-block',{staticClass:"row"},[_c('f7-col',[_c('f7-button',{attrs:{"raised":"","panel-open":"left"}},[_vm._v("Open left panel")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"raised":"","panel-open":"right"}},[_vm._v("Open right panel")])],1)],1)],1)},staticRenderFns: [],
+  var Panel$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Panel / Side panels","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with 2 panels (on left and on right), both are optional. They have two different layouts/effects - "),_c('b',[_vm._v("cover")]),_vm._v(" above the content (like left panel here) and "),_c('b',[_vm._v("reveal")]),_vm._v(" (like right panel). You can put absolutely anything inside: data lists, forms, custom content, and even other isolated app view (like in right panel now) with its own dynamic navbar. Checkout panels:")])]),_vm._v(" "),_c('f7-block',{staticClass:"row"},[_c('f7-col',[_c('f7-button',{attrs:{"raised":"","fill":"","panel-open":"left"}},[_vm._v("Open left panel")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"raised":"","fill":"","panel-open":"right"}},[_vm._v("Open right panel")])],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53718,7 +55545,7 @@
     },
   };
 
-  var PhotoBrowser$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.$refs.standalone.open();}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.$refs.popup.open();}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.$refs.page.open();}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.$refs.standaloneDark.open();}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.$refs.popupDark.open();}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.$refs.pageDark.open();}}},[_vm._v("Page")])],1)],1)],1)],1)},staticRenderFns: [],
+  var PhotoBrowser$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.standalone.open();}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.popup.open();}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.page.open();}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.standaloneDark.open();}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.popupDark.open();}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.pageDark.open();}}},[_vm._v("Page")])],1)],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53935,13 +55762,13 @@
     },
   };
 
-  var Popup$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Popup","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called \"Temporary Views\".")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":"","popup-open":".demo-popup"}},[_vm._v("Open Popup")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.popupOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.createPopup}},[_vm._v("Create Dynamic Popup")])],1)]),_vm._v(" "),_c('f7-popup',{staticClass:"demo-popup",attrs:{"opened":_vm.popupOpened},on:{"popup:closed":function($event){_vm.popupOpened = false;}}},[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popup Title"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)],1)],1)},staticRenderFns: [],
+  var Popup$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Popup","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called \"Temporary Views\".")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","popup-open":".demo-popup"}},[_vm._v("Open Popup")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.popupOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.createPopup}},[_vm._v("Create Dynamic Popup")])],1)]),_vm._v(" "),_c('f7-popup',{staticClass:"demo-popup",attrs:{"opened":_vm.popupOpened},on:{"popup:closed":function($event){_vm.popupOpened = false;}}},[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popup Title"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
       f7Popup: f7Popup,
       f7Block: f7Block,
-      f7NavRight: f7NavRight,
+      f7NavRight: F7NavRight,
       f7Link: F7Link,
       f7Button: f7Button,
     },
@@ -53970,7 +55797,7 @@
     },
   };
 
-  var Popover$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popover","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom-md":""}},[_c('f7-link',[_vm._v("Dummy Link")]),_vm._v(" "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("Open Popover")])],1),_vm._v(" "),_c('f7-block',[_c('p',[_c('f7-button',{attrs:{"raised":"","popover-open":".popover-menu"}},[_vm._v("Open popover on me")])],1),_vm._v(" "),_c('p',[_vm._v("Mauris fermentum neque et luctus venenatis. Vivamus a sem rhoncus, ornare tellus eu, euismod mauris. In porta turpis at semper convallis. Duis adipiscing leo eu nulla lacinia, quis rhoncus metus condimentum. Etiam nec malesuada nibh. Maecenas quis lacinia nisl, vel posuere dolor. Vestibulum condimentum, nisl ac vulputate egestas, neque enim dignissim elit, rhoncus volutpat magna enim a est. Aenean sit amet ligula neque. Cras suscipit rutrum enim. Nam a odio facilisis, elementum tellus non, "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("popover")]),_vm._v(" tortor. Pellentesque felis eros, dictum vitae lacinia quis, lobortis vitae ipsum. Cras vehicula bibendum lorem quis imperdiet.")],1),_vm._v(" "),_c('p',[_vm._v("In hac habitasse platea dictumst. Etiam varius, ante vel ornare facilisis, velit massa rutrum dolor, ac porta magna magna lacinia nunc. Curabitur "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("popover!")]),_vm._v(" cursus laoreet. Aenean vel tempus augue. Pellentesque in imperdiet nibh. Mauris rhoncus nulla id sem suscipit volutpat. Pellentesque ac arcu in nisi viverra pulvinar. Nullam nulla orci, bibendum sed ligula non, ullamcorper iaculis mi. In hac habitasse platea dictumst. Praesent varius at nisl eu luctus. Cras aliquet porta est. Quisque elementum quis dui et consectetur. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sed laoreet purus. Pellentesque eget ante ante.")],1),_vm._v(" "),_c('p',[_vm._v("Duis et ultricies nibh. Sed facilisis turpis urna, ac imperdiet erat venenatis eu. Proin sit amet faucibus tortor, et varius sem. Etiam vitae lacinia neque. Aliquam nisi purus, interdum in arcu sed, ultrices rutrum arcu. Nulla mi turpis, consectetur vel enim quis, facilisis viverra dui. Aliquam quis convallis tortor, quis semper ligula. Morbi ullamcorper "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("one more popover")]),_vm._v(" massa at accumsan. Etiam purus odio, posuere in ligula vitae, viverra ultricies justo. Vestibulum nec interdum nisi. Aenean ac consectetur velit, non malesuada magna. Sed pharetra vehicula augue, vel venenatis lectus gravida eget. Curabitur lacus tellus, venenatis eu arcu in, interdum auctor nunc. Nunc non metus neque. Suspendisse viverra lectus sed risus aliquet, vel accumsan dolor feugiat.")],1)]),_vm._v(" "),_c('f7-popover',{staticClass:"popover-menu"},[_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/dialog/","popover-close":"","title":"Dialog"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","popover-close":"","title":"Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","popover-close":"","title":"Side Panels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","popover-close":"","title":"List View"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","popover-close":"","title":"Form Inputs"}})],1)],1)],1)},staticRenderFns: [],
+  var Popover$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popover","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Dummy Link")]),_vm._v(" "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("Open Popover")])],1),_vm._v(" "),_c('f7-block',[_c('p',[_c('f7-button',{attrs:{"raised":"","popover-open":".popover-menu"}},[_vm._v("Open popover on me")])],1),_vm._v(" "),_c('p',[_vm._v("Mauris fermentum neque et luctus venenatis. Vivamus a sem rhoncus, ornare tellus eu, euismod mauris. In porta turpis at semper convallis. Duis adipiscing leo eu nulla lacinia, quis rhoncus metus condimentum. Etiam nec malesuada nibh. Maecenas quis lacinia nisl, vel posuere dolor. Vestibulum condimentum, nisl ac vulputate egestas, neque enim dignissim elit, rhoncus volutpat magna enim a est. Aenean sit amet ligula neque. Cras suscipit rutrum enim. Nam a odio facilisis, elementum tellus non, "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("popover")]),_vm._v(" tortor. Pellentesque felis eros, dictum vitae lacinia quis, lobortis vitae ipsum. Cras vehicula bibendum lorem quis imperdiet.")],1),_vm._v(" "),_c('p',[_vm._v("In hac habitasse platea dictumst. Etiam varius, ante vel ornare facilisis, velit massa rutrum dolor, ac porta magna magna lacinia nunc. Curabitur "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("popover!")]),_vm._v(" cursus laoreet. Aenean vel tempus augue. Pellentesque in imperdiet nibh. Mauris rhoncus nulla id sem suscipit volutpat. Pellentesque ac arcu in nisi viverra pulvinar. Nullam nulla orci, bibendum sed ligula non, ullamcorper iaculis mi. In hac habitasse platea dictumst. Praesent varius at nisl eu luctus. Cras aliquet porta est. Quisque elementum quis dui et consectetur. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sed laoreet purus. Pellentesque eget ante ante.")],1),_vm._v(" "),_c('p',[_vm._v("Duis et ultricies nibh. Sed facilisis turpis urna, ac imperdiet erat venenatis eu. Proin sit amet faucibus tortor, et varius sem. Etiam vitae lacinia neque. Aliquam nisi purus, interdum in arcu sed, ultrices rutrum arcu. Nulla mi turpis, consectetur vel enim quis, facilisis viverra dui. Aliquam quis convallis tortor, quis semper ligula. Morbi ullamcorper "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("one more popover")]),_vm._v(" massa at accumsan. Etiam purus odio, posuere in ligula vitae, viverra ultricies justo. Vestibulum nec interdum nisi. Aenean ac consectetur velit, non malesuada magna. Sed pharetra vehicula augue, vel venenatis lectus gravida eget. Curabitur lacus tellus, venenatis eu arcu in, interdum auctor nunc. Nunc non metus neque. Suspendisse viverra lectus sed risus aliquet, vel accumsan dolor feugiat.")],1)]),_vm._v(" "),_c('f7-popover',{staticClass:"popover-menu"},[_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/dialog/","popover-close":"","title":"Dialog"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","popover-close":"","title":"Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","popover-close":"","title":"Side Panels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","popover-close":"","title":"List View"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","popover-close":"","title":"Form Inputs"}})],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -53984,7 +55811,7 @@
     },
   };
 
-  var Preloader$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Preloader","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("How about an activity indicator? Framework 7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('f7-block',{staticClass:"row demo-preloaders align-items-stretch text-align-center"},[_c('f7-col',[_c('f7-preloader')],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"color":"white"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"size":42}})],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"size":42,"color":"white"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Preloaders")]),_vm._v(" "),_c('f7-block',{staticClass:"row text-align-center"},[_c('f7-col',[_c('f7-preloader',{attrs:{"color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"orange"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"blue"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multi-color (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center"},[_c('f7-preloader',{attrs:{"color":"multi"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Modals")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("With "),_c('b',[_vm._v("app.preloader.show()")]),_vm._v(" you can show small overlay with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-raised",on:{"click":_vm.openIndicator}},[_vm._v("Open Small Indicator")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader()")]),_vm._v(" you can show dialog modal with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-raised",on:{"click":_vm.openDialog}},[_vm._v("Open Dialog Preloader")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader('My text...')")]),_vm._v(" you can show dialog preloader modal with custom title.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-raised",on:{"click":_vm.openCustomDialog}},[_vm._v("Open Dialog Preloader")])])])],1)},staticRenderFns: [],
+  var Preloader$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Preloader","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("How about an activity indicator? Framework 7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('f7-block',{staticClass:"row demo-preloaders align-items-stretch text-align-center"},[_c('f7-col',[_c('f7-preloader')],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"color":"white"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"size":42}})],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"size":42,"color":"white"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Preloaders")]),_vm._v(" "),_c('f7-block',{staticClass:"row text-align-center"},[_c('f7-col',[_c('f7-preloader',{attrs:{"color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"orange"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"blue"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multi-color (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center"},[_c('f7-preloader',{attrs:{"color":"multi"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Modals")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("With "),_c('b',[_vm._v("app.preloader.show()")]),_vm._v(" you can show small overlay with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openIndicator}},[_vm._v("Open Small Indicator")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader()")]),_vm._v(" you can show dialog modal with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openDialog}},[_vm._v("Open Dialog Preloader")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader('My text...')")]),_vm._v(" you can show dialog preloader modal with custom title.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openCustomDialog}},[_vm._v("Open Dialog Preloader")])])])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -54018,7 +55845,7 @@
     },
   };
 
-  var Progressbar$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Bar","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to "),_c('a',{attrs:{"href":"/preloader/"}},[_vm._v("Preloader")]),_vm._v(", Framework7 also comes with fancy animated determinate and infinite/indeterminate progress bars to indicate some activity.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Determinate Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is determinate it indicates how long an operation will take when the percentage complete is detectable.")]),_vm._v(" "),_c('p',[_vm._v("Inline determinate progress bar:")]),_vm._v(" "),_c('div',[_c('p',[_c('f7-progressbar',{attrs:{"progress":10,"id":"demo-inline-progressbar"}})],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(10);}}},[_vm._v("10%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(30);}}},[_vm._v("30%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(50);}}},[_vm._v("50%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(100);}}},[_vm._v("100%")])],1)],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Inline determinate load & hide:")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-determinate-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.showDeterminate(true);}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with determinate progress bar on top of the app:")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.showDeterminate(false);}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Infinite Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is infinite/indeterminate it requests that the user wait while something finishes when it’s not necessary to indicate how long it will take.")]),_vm._v(" "),_c('p',[_vm._v("Inline infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":""}})],1),_vm._v(" "),_c('p',[_vm._v("Multi-color infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":"","color":"multi"}})],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite progress bar on top of the app")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-infinite-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.showInfinite(false);}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite multi-color progress bar on top of the app")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":function($event){_vm.showInfinite(true);}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('div',{staticClass:"list simple-list"},[_c('ul',[_c('li',[_c('f7-progressbar',{attrs:{"color":"blue","progress":10}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"red","progress":20}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"pink","progress":30}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"green","progress":80}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"yellow","progress":90}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"orange","progress":100}})],1)])])],1)},staticRenderFns: [],
+  var Progressbar$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Bar","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to "),_c('a',{attrs:{"href":"/preloader/"}},[_vm._v("Preloader")]),_vm._v(", Framework7 also comes with fancy animated determinate and infinite/indeterminate progress bars to indicate some activity.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Determinate Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is determinate it indicates how long an operation will take when the percentage complete is detectable.")]),_vm._v(" "),_c('p',[_vm._v("Inline determinate progress bar:")]),_vm._v(" "),_c('div',[_c('p',[_c('f7-progressbar',{attrs:{"progress":10,"id":"demo-inline-progressbar"}})],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(10);}}},[_vm._v("10%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(30);}}},[_vm._v("30%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(50);}}},[_vm._v("50%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(100);}}},[_vm._v("100%")])],1)],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Inline determinate load & hide:")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-determinate-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showDeterminate(true);}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with determinate progress bar on top of the app:")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showDeterminate(false);}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Infinite Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is infinite/indeterminate it requests that the user wait while something finishes when it’s not necessary to indicate how long it will take.")]),_vm._v(" "),_c('p',[_vm._v("Inline infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":""}})],1),_vm._v(" "),_c('p',[_vm._v("Multi-color infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":"","color":"multi"}})],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite progress bar on top of the app")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-infinite-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showInfinite(false);}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite multi-color progress bar on top of the app")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showInfinite(true);}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('div',{staticClass:"list simple-list"},[_c('ul',[_c('li',[_c('f7-progressbar',{attrs:{"color":"blue","progress":10}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"red","progress":20}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"pink","progress":30}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"green","progress":80}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"yellow","progress":90}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"orange","progress":100}})],1)])])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -54142,7 +55969,7 @@
     },
   };
 
-  var Range$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Range Slider","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Volume")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:volume_mute_fill","md":"material:volume_mute"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":100,"step":1,"value":10}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:volume_fill","md":"material:volume_up"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Brightness")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle","md":"material:brightness_low"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":100,"step":1,"value":50,"label":true,"color":"orange"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle_half","md":"material:brightness_high"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"display-flex justify-content-space-between"},[_vm._v("Price Filter "),_c('span',[_vm._v("$"+_vm._s(_vm.priceMin)+" - $"+_vm._s(_vm.priceMax))])]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle","md":"material:brightness_low"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":500,"step":1,"value":[_vm.priceMin, _vm.priceMax],"label":true,"dual":true,"color":"green"},on:{"range:change":_vm.onPriceChange}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle_half","md":"material:brightness_high"}})],1)],1)],1)],1)},staticRenderFns: [],
+  var Range$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Range Slider","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Volume")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:volume_mute_fill","md":"material:volume_mute"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":100,"step":1,"value":10}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:volume_fill","md":"material:volume_up"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Brightness")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle","md":"material:brightness_low"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":100,"step":1,"value":50,"label":true,"color":"orange"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle_half","md":"material:brightness_high"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"display-flex justify-content-space-between"},[_vm._v("Price Filter "),_c('span',[_vm._v("$"+_vm._s(_vm.priceMin)+" - $"+_vm._s(_vm.priceMax))])]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:money_dollar_round","md":"material:brightness_low"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":500,"step":1,"value":[_vm.priceMin, _vm.priceMax],"label":true,"dual":true,"color":"green"},on:{"range:change":_vm.onPriceChange}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:money_dollar_round_fill","md":"material:brightness_high"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Scale")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-range',{attrs:{"min":0,"max":100,"label":true,"step":5,"value":25,"scale":true,"scale-steps":5,"scale-sub-steps":4}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical")]),_vm._v(" "),_c('f7-block',{staticClass:"display-flex justify-content-center",attrs:{"strong":""}},[_c('f7-range',{staticClass:"margin-right",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":25}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":50}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":75}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-left",staticStyle:{"height":"160px"},attrs:{"dual":true,"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":[25, 75]}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical Reversed")]),_vm._v(" "),_c('f7-block',{staticClass:"display-flex justify-content-center",attrs:{"strong":""}},[_c('f7-range',{staticClass:"margin-right",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":25}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":50}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":75}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-left",staticStyle:{"height":"160px"},attrs:{"color":"red","dual":true,"vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":[25, 75]}})],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -54152,6 +55979,7 @@
       f7ListItem: f7ListItem,
       f7ListItemCell: f7ListItemCell,
       f7Icon: F7Icon,
+      f7Block: f7Block,
     },
     data: function data() {
       return {
@@ -54178,7 +56006,7 @@
     },
   };
 
-  var SearchbarExpandable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back","title":"Searchbar"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-demo","icon-ios":"f7:search_strong","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-demo",attrs:{"expandable":"","search-container":".search-list","search-in":".item-title"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"search-list searchbar-found"},[_c('f7-list-item',{attrs:{"title":"Acura"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Audi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"BMW"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cadillac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chevrolet "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chrysler "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dodge "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ferrari "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ford "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"GMC "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Honda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hummer"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hyundai"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Infiniti "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Isuzu "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jaguar "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jeep "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kia"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lamborghini "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Land Rover"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lexus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lincoln "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lotus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mazda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercedes-Benz"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercury "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mitsubishi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Nissan "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oldsmobile "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Peugeot "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Pontiac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Porsche"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Regal"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saab "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saturn "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Subaru "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Suzuki "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Toyota"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volkswagen"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volvo"}})],1)],1)},staticRenderFns: [],
+  var SearchbarExpandable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back","title":"Searchbar"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-demo","icon-ios":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-demo",attrs:{"expandable":"","search-container":".search-list","search-in":".item-title"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"search-list searchbar-found"},[_c('f7-list-item',{attrs:{"title":"Acura"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Audi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"BMW"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cadillac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chevrolet "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chrysler "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dodge "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ferrari "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ford "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"GMC "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Honda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hummer"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hyundai"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Infiniti "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Isuzu "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jaguar "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jeep "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kia"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lamborghini "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Land Rover"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lexus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lincoln "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lotus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mazda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercedes-Benz"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercury "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mitsubishi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Nissan "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oldsmobile "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Peugeot "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Pontiac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Porsche"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Regal"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saab "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saturn "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Subaru "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Suzuki "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Toyota"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volkswagen"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volvo"}})],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -54187,11 +56015,11 @@
       f7List: f7List,
       f7ListItem: f7ListItem,
       f7Link: F7Link,
-      f7NavRight: f7NavRight,
+      f7NavRight: F7NavRight,
     },
   };
 
-  var SheetModal = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Sheet Modal","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content.")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"raised":"","sheet-open":".demo-sheet"}},[_vm._v("Open Sheet")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.createSheet}},[_vm._v("Create Dynamic Sheet")])],1),_vm._v(" "),_c('p',[_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":function($event){_vm.sheetOpened = true;}}},[_vm._v("Open Via Prop Change")])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet",attrs:{"opened":_vm.sheetOpened},on:{"sheet:closed":function($event){_vm.sheetOpened = false;}}},[_c('f7-toolbar',[_c('div',{staticClass:"left"}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('f7-link',{attrs:{"sheet-close":""}},[_vm._v("Close")])],1)]),_vm._v(" "),_c('f7-page-content',[_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.")]),_vm._v(" "),_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")]),_vm._v(" "),_c('p',[_vm._v("Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.")])])],1)],1)],1)},staticRenderFns: [],
+  var SheetModal = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Sheet Modal","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content.")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","sheet-open":".demo-sheet"}},[_vm._v("Open Sheet")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.createSheet}},[_vm._v("Create Dynamic Sheet")])],1),_vm._v(" "),_c('p',[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){_vm.sheetOpened = true;}}},[_vm._v("Open Via Prop Change")])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet",attrs:{"opened":_vm.sheetOpened},on:{"sheet:closed":function($event){_vm.sheetOpened = false;}}},[_c('f7-toolbar',[_c('div',{staticClass:"left"}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('f7-link',{attrs:{"sheet-close":""}},[_vm._v("Close")])],1)]),_vm._v(" "),_c('f7-page-content',[_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.")]),_vm._v(" "),_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")]),_vm._v(" "),_c('p',[_vm._v("Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
@@ -54236,6 +56064,38 @@
     },
   };
 
+  var Skeleton$1 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Skeleton Layouts","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Skeleton (or Ghost) elements designed to improve perceived performance and make app feels faster.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 comes with two types of such elements: Skeleton Block and Skeleton Text. Skeleton block is a gray box that can be used as placeholder for any element. Skeleton text uses special built-in skeleton font to render each character of such text as gray rectangle. Skeleton text allows to make such elements responsive and feel more natural.")]),_vm._v(" "),_c('p',[_vm._v("It can be used in any places and with any elements.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Skeleton List")]),_vm._v(" "),_c('f7-list',{staticClass:"skeleton-text",attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"Title","subtitle":"Subtitle","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Title","subtitle":"Subtitle","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Skeleton Card")]),_vm._v(" "),_c('f7-card',{staticClass:"skeleton-text",attrs:{"title":"Card Header","content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit.","footer":"Card Footer"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Loading Effects")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("It supports few loading effects:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('fade');}}},[_vm._v("Fade")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('blink');}}},[_vm._v("Blink")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('pulse');}}},[_vm._v("Pulse")])],1)],1),_vm._v(" "),(_vm.loading)?_c('f7-list',{attrs:{"media-list":""}},_vm._l((3),function(n){return (_vm.loading)?_c('f7-list-item',{key:n,class:("skeleton-text skeleton-effect-" + (_vm.effect)),attrs:{"title":"Full Name","subtitle":"Position","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1):_vm._e()}),1):_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"John Doe","subtitle":"CEO","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/1"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","subtitle":"Marketing","text":"Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/2"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kate Johnson","subtitle":"Admin","text":"Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/3"},slot:"media"})])],1)],1)},staticRenderFns: [],
+    components: {
+      f7Page: f7Page,
+      f7Navbar: f7Navbar,
+      f7BlockTitle: f7BlockTitle,
+      f7Block: f7Block,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
+      f7Button: f7Button,
+      f7Row: f7Row,
+      f7SkeletonBlock: f7SkeletonBlock,
+      f7Card: f7Card,
+    },
+    data: function () {
+      return {
+        loading: false,
+        effect: null,
+      }
+    },
+    methods: {
+      load: function load(effect) {
+        var self = this;
+        if (self.loading) { return; }
+        self.effect = effect;
+        self.loading = true;
+        setTimeout(function () {
+          self.loading = false;
+        }, 3000);
+      }
+    }
+  };
+
   var SmartSelect$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Smart Select","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_vm._v(" Framework7 allows you to easily convert your usual form selects to dynamic pages with radios: ")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Fruit","smart-select":""}},[_c('select',{attrs:{"name":"fruits"}},[_c('option',{attrs:{"value":"apple","selected":"selected"}},[_vm._v("Apple")]),_vm._v(" "),_c('option',{attrs:{"value":"pineapple"}},[_vm._v("Pineapple")]),_vm._v(" "),_c('option',{attrs:{"value":"pear"}},[_vm._v("Pear")]),_vm._v(" "),_c('option',{attrs:{"value":"orange"}},[_vm._v("Orange")]),_vm._v(" "),_c('option',{attrs:{"value":"melon"}},[_vm._v("Melon")]),_vm._v(" "),_c('option',{attrs:{"value":"peach"}},[_vm._v("Peach")]),_vm._v(" "),_c('option',{attrs:{"value":"banana"}},[_vm._v("Banana")])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Car","smart-select":"","smart-select-params":{openIn: 'popup', searchbar: true, searchbarPlaceholder: 'Search car'}}},[_c('select',{attrs:{"name":"car","multiple":"multiple"}},[_c('optgroup',{attrs:{"label":"Japanese"}},[_c('option',{attrs:{"value":"honda","selected":"selected"}},[_vm._v("Honda")]),_vm._v(" "),_c('option',{attrs:{"value":"lexus"}},[_vm._v("Lexus")]),_vm._v(" "),_c('option',{attrs:{"value":"mazda"}},[_vm._v("Mazda")]),_vm._v(" "),_c('option',{attrs:{"value":"nissan"}},[_vm._v("Nissan")]),_vm._v(" "),_c('option',{attrs:{"value":"toyota"}},[_vm._v("Toyota")])]),_vm._v(" "),_c('optgroup',{attrs:{"label":"German"}},[_c('option',{attrs:{"value":"audi","selected":"selected"}},[_vm._v("Audi")]),_vm._v(" "),_c('option',{attrs:{"value":"bmw"}},[_vm._v("BMW")]),_vm._v(" "),_c('option',{attrs:{"value":"mercedes"}},[_vm._v("Mercedes")]),_vm._v(" "),_c('option',{attrs:{"value":"vw"}},[_vm._v("Volkswagen")]),_vm._v(" "),_c('option',{attrs:{"value":"volvo"}},[_vm._v("Volvo")])]),_vm._v(" "),_c('optgroup',{attrs:{"label":"American"}},[_c('option',{attrs:{"value":"cadillac"}},[_vm._v("Cadillac")]),_vm._v(" "),_c('option',{attrs:{"value":"chrysler"}},[_vm._v("Chrysler")]),_vm._v(" "),_c('option',{attrs:{"value":"dodge"}},[_vm._v("Dodge")]),_vm._v(" "),_c('option',{attrs:{"value":"ford","selected":"selected"}},[_vm._v("Ford")])])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mac or Windows","smart-select":"","smart-select-params":{openIn: 'sheet'}}},[_c('select',{attrs:{"name":"mac-windows"}},[_c('option',{attrs:{"value":"mac","selected":"selected"}},[_vm._v("Mac")]),_vm._v(" "),_c('option',{attrs:{"value":"windows"}},[_vm._v("Windows")])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Super Hero","smart-select":"","smart-select-params":{openIn: 'popover'}}},[_c('select',{attrs:{"name":"superhero","multiple":"multiple"}},[_c('option',{attrs:{"value":"Batman","selected":"selected"}},[_vm._v("Batman")]),_vm._v(" "),_c('option',{attrs:{"value":"Superman"}},[_vm._v("Superman")]),_vm._v(" "),_c('option',{attrs:{"value":"Hulk"}},[_vm._v("Hulk")]),_vm._v(" "),_c('option',{attrs:{"value":"Spiderman"}},[_vm._v("Spiderman")]),_vm._v(" "),_c('option',{attrs:{"value":"Ironman"}},[_vm._v("Ironman")]),_vm._v(" "),_c('option',{attrs:{"value":"Thor"}},[_vm._v("Thor")]),_vm._v(" "),_c('option',{attrs:{"value":"Wonder Woman"}},[_vm._v("Wonder Woman")])])])],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
@@ -54253,13 +56113,13 @@
       f7Block: f7Block,
       f7List: f7List,
       f7ListItem: f7ListItem,
-      f7NavRight: f7NavRight,
+      f7NavRight: F7NavRight,
       f7Link: F7Link,
       f7Icon: F7Icon,
     },
   };
 
-  var Statusbar$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Statusbar Overlay","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 automatically detects if your app in full screen mode, and automatically shows statusbar overlay if app is in full screen mode (or hides statusbar if app is not in full screen mode). Its visibility can be forced using app parameters or using API:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.showStatusbar}},[_vm._v("Show Statusbar")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"raised":""},on:{"click":_vm.hideStatusbar}},[_vm._v("Hide Statusbar")])],1)],1)],1)},staticRenderFns: [],
+  var Statusbar$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Statusbar Overlay","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 automatically detects if your app in full screen mode, and automatically shows statusbar overlay if app is in full screen mode (or hides statusbar if app is not in full screen mode). Its visibility can be forced using app parameters or using API:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.showStatusbar}},[_vm._v("Show Statusbar")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.hideStatusbar}},[_vm._v("Hide Statusbar")])],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -54277,7 +56137,7 @@
     },
   };
 
-  var Stepper$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Stepper","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Shape and size")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper')],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Big")]),_vm._v(" "),_c('f7-stepper',{attrs:{"big":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Big Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"big":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Big Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"big":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Big Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"big":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Big")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","big":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Big Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","big":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Big Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","big":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Big Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","big":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"green"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"blue"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"pink"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"yellow"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"orange"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"gray"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"black"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Without input element")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"input":false}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"input":false,"round":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Min, max, step")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":100,"min":0,"max":1000,"step":100}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","input":false,"value":5,"min":0,"max":10,"step":0.5}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Autorepeat (Tap & hold)")]),_vm._v(" "),_c('f7-block-header',[_vm._v("Pressing and holding one of its buttons increments or decrements the stepper’s value repeatedly. With dynamic autorepeat, the rate of change depends on how long the user continues pressing the control.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Dynamic")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true,"autorepeat-dynamic":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Wraps")]),_vm._v(" "),_c('f7-block-header',[_vm._v("In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":10,"step":1,"autorepeat":true,"wraps":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value element")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":("Apples " + (_vm.applesCount))}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setApples},slot:"after"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":("Oranges " + (_vm.orangesCount))}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setOranges},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value format")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"header":"Meeting starts in","title":_vm.meetingTimeComputed}},[_c('f7-stepper',{attrs:{"slot":"after","min":15,"max":240,"step":15,"value":_vm.meetingTime,"buttons-only":true,"small":"","fill":"","raised":""},on:{"stepper:change":_vm.setMeetingTime},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Manual input")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":1000,"step":1,"autorepeat":true,"wraps":true,"manual-input-mode":true,"decimal-point":2}})],1)],1)],1)],1)},staticRenderFns: [],
+  var Stepper$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Stepper","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Shape and size")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper')],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"green"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"blue"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"pink"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"yellow"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"orange"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"gray"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"black"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Without input element")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"input":false}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"input":false,"round":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Min, max, step")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":100,"min":0,"max":1000,"step":100}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","input":false,"value":5,"min":0,"max":10,"step":0.5}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Autorepeat (Tap & hold)")]),_vm._v(" "),_c('f7-block-header',[_vm._v("Pressing and holding one of its buttons increments or decrements the stepper’s value repeatedly. With dynamic autorepeat, the rate of change depends on how long the user continues pressing the control.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Dynamic")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true,"autorepeat-dynamic":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Wraps")]),_vm._v(" "),_c('f7-block-header',[_vm._v("In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":10,"step":1,"autorepeat":true,"wraps":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value element")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":("Apples " + (_vm.applesCount))}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setApples},slot:"after"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":("Oranges " + (_vm.orangesCount))}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setOranges},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value format")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"header":"Meeting starts in","title":_vm.meetingTimeComputed}},[_c('f7-stepper',{attrs:{"slot":"after","min":15,"max":240,"step":15,"value":_vm.meetingTime,"buttons-only":true,"small":"","fill":"","raised":""},on:{"stepper:change":_vm.setMeetingTime},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Manual input")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":1000,"step":1,"autorepeat":true,"wraps":true,"manual-input-mode":true,"decimal-point":2}})],1)],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page, f7Navbar: f7Navbar, f7BlockTitle: f7BlockTitle, f7Block: f7Block, f7BlockHeader: f7BlockHeader, f7Row: f7Row, f7Col: f7Col, f7List: f7List, f7ListItem: f7ListItem, f7Stepper: f7Stepper
     },
@@ -54318,7 +56178,7 @@
     },
   };
 
-  var Subnavbar$1 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Subnavbar","back-link":"Back"}},[_c('f7-subnavbar',[_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',[_vm._v("Link 1")]),_vm._v(" "),_c('f7-button',[_vm._v("Link 2")]),_vm._v(" "),_c('f7-button',[_vm._v("Link 3")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/subnavbar-title/","title":"Subnavbar Title"}})],1)],1)},staticRenderFns: [],
+  var Subnavbar$1 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Subnavbar","back-link":"Back"}},[_c('f7-subnavbar',[_c('f7-segmented',[_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Link 1")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Link 2")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Link 3")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/subnavbar-title/","title":"Subnavbar Title"}})],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Subnavbar: f7Subnavbar, f7Segmented: f7Segmented, f7Button: f7Button, f7Block: f7Block, f7List: f7List, f7ListItem: f7ListItem,
     },
@@ -54566,31 +56426,31 @@
     },
   };
 
-  var TabsStatic = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
+  var TabsStatic = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
     },
   };
 
-  var TabsAnimated = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
+  var TabsAnimated = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
     },
   };
 
-  var TabsSwipeable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
+  var TabsSwipeable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
     },
   };
 
-  var TabsRoutable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)},staticRenderFns: [],
+  var TabsRoutable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar,
     },
   };
 
-  var Toast$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)},staticRenderFns: [],
+  var Toast$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Button: f7Button,
     },
@@ -54638,7 +56498,7 @@
         // Create toast
         if (!self.toastIcon) {
           self.toastIcon = self.$f7.toast.create({
-            icon: self.$theme.ios ? '<i class="f7-icons">start</i>' : '<i class="material-icons">start</i>',
+            icon: self.$theme.ios ? '<i class="f7-icons">star_fill</i>' : '<i class="material-icons">star</i>',
             text: 'I\'m on center',
             position: 'center',
             closeTimeout: 2000,
@@ -54732,66 +56592,82 @@
     },
   };
 
-  var ToolbarTabbar = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),(_vm.$theme.md)?_c('f7-block-title',[_vm._v("Toolbar Position")]):_vm._e(),_vm._v(" "),(_vm.$theme.md)?_c('f7-block',[_c('p',[_vm._v("Material (MD) theme toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"raised":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)]):_vm._e()],1)},staticRenderFns: [],
+  var ToolbarTabbar = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Toolbar Position")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7List: f7List, f7ListItem: f7ListItem, f7Button: f7Button, f7Link: F7Link, f7BlockTitle: f7BlockTitle, f7Block: f7Block,
     },
+    data: function data() {
+      return {
+        toolbarPosition: 'bottom',
+      }
+    },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
-        this.$$(this.$el).find('.toolbar, .tabbar').toggleClass('toolbar-bottom-md');
+        this.toolbarPosition = this.toolbarPosition === 'top' ? 'bottom' : 'top';
       },
     },
   };
 
-  var Tabbar = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
+  var Tabbar = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: F7NavRight,
+    },
+    data: function data() {
+      return {
+        toolbarPosition: 'bottom',
+      }
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
-        this.$$(this.$el).find('.toolbar, .tabbar').toggleClass('toolbar-bottom-md');
+        this.toolbarPosition = this.toolbarPosition === 'top' ? 'bottom' : 'top';
       },
     },
   };
 
-  var TabbarLabels = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:email_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:today_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
+  var TabbarLabels = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:email_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:calendar_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_upload_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: F7NavRight,
+    },
+    data: function data() {
+      return {
+        toolbarPosition: 'bottom',
+      }
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
-        this.$$(this.$el).find('.toolbar, .tabbar').toggleClass('toolbar-bottom-md');
+        this.toolbarPosition = this.toolbarPosition === 'top' ? 'bottom' : 'top';
       },
     },
   };
 
-  var TabbarScrollable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[(_vm.$theme.md)?_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-material":"compare_arrows"},on:{"click":_vm.toggleToolbarPosition}})],1):_vm._e()],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)},staticRenderFns: [],
+  var TabbarScrollable = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)},staticRenderFns: [],
     components: {
-      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: f7NavRight,
+      f7Navbar: f7Navbar, f7Page: f7Page, f7Block: f7Block, f7Tabs: f7Tabs, f7Tab: f7Tab, f7Link: F7Link, f7Toolbar: f7Toolbar, f7NavRight: F7NavRight,
     },
     data: function data() {
       return {
         tabs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        toolbarPosition: 'bottom',
       };
     },
     methods: {
       toggleToolbarPosition: function toggleToolbarPosition() {
-        this.$$(this.$el).find('.toolbar, .tabbar').toggleClass('toolbar-bottom-md');
+        this.toolbarPosition = this.position === 'top' ? 'bottom' : 'top';
       },
     },
   };
 
-  var ToolbarHideScroll = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom-md":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)},staticRenderFns: [],
+  var ToolbarHideScroll = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar, f7Page: f7Page, f7Toolbar: f7Toolbar, f7Link: F7Link, f7Block: f7Block,
     },
   };
 
-  var Tooltip$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_fill","md":"material:info","color":"blue"}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_fill","md":"material:info","color":"blue"}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_fill","md":"material:info","color":"blue"}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_fill","md":"material:info","color":"blue"}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_fill","md":"material:info","color":"blue"}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_fill","md":"material:info","color":"blue"}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)},staticRenderFns: [],
+  var Tooltip$2 = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)},staticRenderFns: [],
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
-      f7NavRight: f7NavRight,
+      f7NavRight: F7NavRight,
       f7Link: F7Link,
       f7Icon: F7Icon,
       f7Block: f7Block,
@@ -54882,7 +56758,7 @@
     },
   };
 
-  var ColorThemes = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white",staticStyle:{"cursor":"pointer","padding":"30px","border":"1px solid rgba(0,0,0,0.1)"},attrs:{"width":"50"},nativeOn:{"click":function($event){_vm.setLayoutTheme('light');}}}),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black",staticStyle:{"cursor":"pointer","padding":"30px","border":"1px solid rgba(255,255,255,0.1)"},attrs:{"width":"50"},nativeOn:{"click":function($event){_vm.setLayoutTheme('dark');}}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Choose Color Theme")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colorsAmount)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color){return _c('f7-col',{key:color,attrs:{"width":"33"}},[_c('f7-button',{staticStyle:{"margin-bottom":"1em","text-transform":"capitalize"},attrs:{"fill":"","round":"","raised":"","color":color},on:{"click":function($event){_vm.setColorTheme(color);}}},[_vm._v(" "+_vm._s(color)+" ")])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33"}})],2)],1)],1)},staticRenderFns: [],
+  var ColorThemes = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","title-large":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white",staticStyle:{"cursor":"pointer","padding":"30px","border":"1px solid rgba(0,0,0,0.1)"},attrs:{"width":"50"},nativeOn:{"click":function($event){_vm.setLayoutTheme('light');}}}),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black",staticStyle:{"cursor":"pointer","padding":"30px","border":"1px solid rgba(255,255,255,0.1)"},attrs:{"width":"50"},nativeOn:{"click":function($event){_vm.setLayoutTheme('dark');}}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Choose Color Theme")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colorsAmount)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color){return _c('f7-col',{key:color,attrs:{"width":"33"}},[_c('f7-button',{staticStyle:{"margin-bottom":"1em","text-transform":"capitalize"},attrs:{"fill":"","round":"","raised":"","color":color},on:{"click":function($event){_vm.setColorTheme(color);}}},[_vm._v(" "+_vm._s(color)+" ")])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33"}})],2)],1)],1)},staticRenderFns: [],
     components: {
       f7Navbar: f7Navbar,
       f7Page: f7Page,
@@ -54931,7 +56807,7 @@
 
   var RoutablePopup = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)},staticRenderFns: [],
     components: {
-      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: f7NavRight, f7Link: F7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
+      f7Popup: f7Popup, f7Navbar: f7Navbar, f7NavRight: F7NavRight, f7Link: F7Link, f7Page: f7Page, f7List: f7List, f7ListItem: f7ListItem, f7Block: f7Block,
     },
   };
 
@@ -55015,6 +56891,10 @@
       component: Cards,
     },
     {
+      path: '/cards-expandable/',
+      component: CardsExpandable,
+    },
+    {
       path: '/checkbox/',
       component: Checkbox$1,
     },
@@ -55095,6 +56975,10 @@
       component: LoginScreenPage,
     },
     {
+      path: '/menu/',
+      component: Menu$1,
+    },
+    {
       path: '/messages/',
       component: Messages$2,
     },
@@ -55161,6 +57045,10 @@
     {
       path: '/sheet-modal/',
       component: SheetModal,
+    },
+    {
+      path: '/skeleton/',
+      component: Skeleton$1,
     },
     {
       path: '/smart-select/',

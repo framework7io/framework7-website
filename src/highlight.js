@@ -1,7 +1,7 @@
 const Prism = require('prismjs');
 const loadLanguages = require('prismjs/components/index');
 
-loadLanguages(['jsx', 'bash']);
+loadLanguages(['jsx', 'bash', 'css', 'less']);
 
 function extendLanguage(lang) {
   Prism.languages[lang].function = /[a-z0-9_$]+(?=\()/i;
@@ -30,7 +30,17 @@ function highlight(code, lang) {
       // No lang
     }
   }
-  return Prism.highlight(code, Prism.languages[lang], lang)
+  let highlighted = Prism.highlight(code, Prism.languages[lang], lang);
+  if (lang === 'css' || lang === 'less') {
+    highlighted = highlighted
+      .replace(/#[a-fA-F0-9]{3,6}/g, (color) => {
+        return `<span style="background-color: ${color}" class="code-color"></span>${color}`;
+      })
+      .replace(/(<span class="token function">rgba<\/span><span class="token punctuation">\(<\/span>)([0-9]{1,3}[ ]{0,},[ ]{0,}[0-9]{1,3}[ ]{0,},[ ]{0,}[0-9]{1,3}[ ]{0,},[ ]{0,}[0-9.]*)(<span class="token punctuation">\)<\/span>)/g, (text, pre, color, post) => {
+        return `<span style="background-color: rgba(${color})" class="code-color"></span>${pre}${color}${post}`;
+      });
+  }
+  return highlighted;
 }
 
 module.exports = highlight;
