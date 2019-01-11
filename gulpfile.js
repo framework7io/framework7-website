@@ -2,7 +2,8 @@ var gulp = require('gulp');
 var gulpData = require('gulp-data');
 var connect = require('gulp-connect');
 var open = require('gulp-open');
-var less = require('gulp-less');
+var gulpLess = require('gulp-less');
+var less = require('less');
 var gulpPug = require('gulp-pug');
 var pug = require('pug');
 var path = require('path');
@@ -31,7 +32,6 @@ function getSrcFileUrl(file) {
 
 // Pug Filter
 function codeFilter(code, { lang } = {}) {
-  console.log(lang);
   code = code
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>');
@@ -55,8 +55,25 @@ function getFileContent(path) {
 }
 
 function cssVarsCode(component) {
+  const file = `./packages/core/components/${component}/${component}-vars.less`;
+  if (!fs.existsSync(file)) return '';
   const content = fs.readFileSync(`./packages/core/components/${component}/${component}-vars.less`, 'utf8');
-  return codeFilter(content, { lang: 'less' });
+  if (!content || !content.trim().length) return '';
+  let css;
+  less.render(content, (err, output) => {
+    css = output.css;
+  });
+  if (!css || !css.trim().length) return '';
+  return `
+    <h2>CSS Variables</h2>
+    <p>Below is the list of related <a href="https://developer.mozilla.org/docs/Web/CSS/Using_CSS_variables" target="_blank" rel="nofollow">CSS variables</a> (CSS custom properties).</p>
+    ${css.indexOf('/*') >= 0 ? `
+    <div class="important-note">
+      <p>Note that commented variables are not specified by default and their values is what they fallback to in this case.</p>
+    </div>
+    ` : ''}
+    ${codeFilter(css, { lang: 'css' })}
+  `;
 }
 
 /* ==================================================================
@@ -89,7 +106,7 @@ Build Styles
 gulp.task('less', function (cb) {
   var cbs = 0;
   gulp.src(['./src/less/main.less'])
-    .pipe(less({
+    .pipe(gulpLess({
       paths: [ path.join(__dirname, 'less', 'includes') ]
     }))
     .pipe(gulp.dest('./css/'))

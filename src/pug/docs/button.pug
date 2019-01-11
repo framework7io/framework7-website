@@ -66,12 +66,22 @@ block content
           td Button will be big only in MD theme
         tr
           td button-raised
-          td Raised button&nbsp;
-            b.md-only This will have effect only in MD theme
+          td Raised button
+        tr
+          td button-raised-ios
+          td Raised button in iOS theme only
+        tr
+          td button-raised-md
+          td Raised button in MD theme only
         tr
           td button-outline
-          td Outline button&nbsp;
-            b.md-only This will have effect only in MD theme
+          td Outline button
+        tr
+          td button-outline-ios
+          td Outline button in iOS theme only
+        tr
+          td button-outline-md
+          td Outline button in MD theme only
         tr
           td button-active
           td Active/selected button state. For use inside of Segmented
@@ -108,9 +118,23 @@ block content
           td segmented-round
           td Rounded segmented
         tr
+          td segmented-round-ios
+          td Rounded segmented in iOS theme
+        tr
+          td segmented-round-md
+          td Rounded segmented in MD theme
+        tr
           td segmented-raised
-          td Raised segmented &nbsp;
-            b.md-only This will have effect only in MD theme
+          td Raised segmented
+        tr
+          td segmented-raised-ios
+          td Raised segmented in iOS theme
+        tr
+          td segmented-raised-md
+          td Raised segmented in MD theme
+
+    +cssVars('button')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/button.html") Examples
       h4 Usual Buttons

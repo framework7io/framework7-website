@@ -75,18 +75,23 @@ block content
           td stepper-small-md
           td Stepper will be small only in MD theme
         tr
-          td stepper-big
-          td Big stepper
+          td stepper-large
+          td Large stepper
         tr
-          td stepper-big-ios
-          td Stepper will be big only in iOS theme
+          td stepper-large-ios
+          td Stepper will be large only in iOS theme
         tr
-          td stepper-big-md
-          td Stepper will be big only in MD theme
+          td stepper-large-md
+          td Stepper will be large only in MD theme
         tr
           td stepper-raised
-          td Raised stepper&nbsp;
-            b.md-only This will have effect only in MD theme
+          td Raised stepper
+        tr
+          td stepper-raised-ios
+          td Raised stepper only in iOS theme
+        tr
+          td stepper-raised-md
+          td Raised stepper only in MD theme
         tr
           td color-[color]
           td Color button, where <b>[color]</b> is one of the <a href="color-themes.html">default colors</a>
@@ -409,6 +414,8 @@ block content
                 <div class="stepper-value"></div>
                 <div class="stepper-button-plus"></div>
               </div>
+
+    +cssVars('stepper')
 
     .with-device
       h2(data-device-preview="../docs-demos/core/stepper.html") Examples

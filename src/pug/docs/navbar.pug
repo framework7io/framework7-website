@@ -254,12 +254,12 @@ block content
               li <span class="parameter">animated</span> - <span class="parameter-type">Boolean</span> - wheter it should be shown with animation or not. By default is <code>true</code>
         tr
           td app.navbar.size(<span>navbarEl</span>)
-          td Recalculate positional styles for Navbar elements. It could be useful after you change some of Navbar elements dynamically. <span class="ios-only">This will have effect only in iOS theme</span>
+          td Recalculate positional styles for Navbar elements. It could be useful after you change some of Navbar elements dynamically.
             ul.method-parameters
               li <span class="parameter">navbarEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of required navbar. Required.
         tr
           td app.navbar.getElByPage(<span>pageEl</span>)
-          td Get navbar HTML element by specified page element. Useful only when dynamic navbar is enabled. In this case it is out of the page container. <span class="ios-only">This will have effect only in iOS theme</span>
+          td Get navbar HTML element by specified page element. Useful only when dynamic navbar is enabled. In this case it is out of the page container.
             ul.method-parameters
               li <span class="parameter">pageEl</span> - <span class="parameter-type">HTMLElement</span> or <span class="parameter-type">string</span> (with CSS Selector) of page where to look for navbar. Required.
     h2 Navbar App Parameters
@@ -347,6 +347,9 @@ block content
                 ...
             &lt;/div&gt;
           &lt;/div&gt;
+
+    +cssVars('navbar')
+
     .with-device
       h2(data-device-preview="../docs-demos/core/navbar.html") Examples
       h3 Static Navbar
