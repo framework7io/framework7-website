@@ -1,6 +1,27 @@
 
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/adlister.jpg"
+  iconRounded: true
+  title: "Ad-Lister"
+  author:
+    url: https://itunes.apple.com/us/developer/just-applications/id1361942681?mt=8
+    name: Just Applications
+  links:
+    appstore: https://itunes.apple.com/us/app/ad-lister/id1361942682?mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.justapplications.adlister
+  description: |
+    Ad-Lister is an eBay listing software built in 2006 by Just Applications Ltd to enable professional eBay listing templates to be listed without requiring any knowledge of HTML.
+
+    The software currently manages over 2823 eBay stores from small to large scale eBay business sellers and focuses on driving more sales for each customer as well as saving the user time on listing in bulk.
+
+  screenshots:
+  - "#{cdn}/i/showcase/adlister-1.jpg"
+  - "#{cdn}/i/showcase/adlister-2.jpg"
+  - "#{cdn}/i/showcase/adlister-3.jpg"
+  - "#{cdn}/i/showcase/adlister-4.jpg"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/cuentos.png"
   iconRounded: true
   title: "Cuentos con Juegos"
