@@ -1,3 +1,36 @@
+
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/cuentos.png"
+  iconRounded: true
+  title: "Cuentos con Juegos"
+  author:
+    url: https://play.google.com/store/apps/developer?id=openWorks
+    name: openWorks
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=ar.com.owsoft.cuentos
+  description: |
+    Una colección de Cuentos Infantiles para leer, aprender y jugar con ellos.
+    Todas las semanas nuevos cuentos y juegos educativos.
+
+    - Cenicienta
+    - El Gigante Egoísta
+    - El Patito Feo
+    - Aladino y la Lámpara Mágica
+    - Caperucita Roja
+    - Blancanieves
+    - Los Músicos de Bremen
+    - Hansel y Gretel
+    - La Reina de las Abejas
+    - El Sastrecillo Valeroso
+    - Pulgarcito
+
+  screenshots:
+  - "#{cdn}/i/showcase/cuentos-1.png"
+  - "#{cdn}/i/showcase/cuentos-2.png"
+  - "#{cdn}/i/showcase/cuentos-3.png"
+  - "#{cdn}/i/showcase/cuentos-4.png"
+  - "#{cdn}/i/showcase/cuentos-5.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/youbeep.png"
