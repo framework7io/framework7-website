@@ -1,4 +1,23 @@
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/b2b-liga.png"
+  iconRounded: true
+  title: "B2B-Liga"
+  author:
+    url: https://play.google.com/store/apps/developer?id=Mohammad+Elzahaby
+    name: Mohammad Elzahaby
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=at.b2bliga.app
+  description: |
+    Die B2B-Liga ist die Fußball-Liga für Unternehmen in Wien. Von September bis Juni findet die Saison statt. Bei einer Spieldauer von 50 Minuten (2 x 25min) treffen jeweils zwei Teams aufeinander.
 
+    Verfolge mit der App den Fortschritt deines Teams, analysiere deinen Gegner und bereite dich für das nächste Match vor.
+
+  screenshots:
+  - "#{cdn}/i/showcase/b2b-liga-1.png"
+  - "#{cdn}/i/showcase/b2b-liga-2.png"
+  - "#{cdn}/i/showcase/b2b-liga-3.png"
+  - "#{cdn}/i/showcase/b2b-liga-4.png"
 ##########
 -
   iconUrl: "#{cdn}/i/showcase/adlister.jpg"
