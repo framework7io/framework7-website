@@ -508,62 +508,62 @@ block content
       li And the last but not least, when using routable tabs you can load tabs content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     p First of all we need to specify tabs routes in app routes. Lets assume we have a page with routable tabs on /tabs/ route:
     :code(lang="js")
-          routes = [
+      routes = [
+        {
+          path: '/about-me/',
+          url: './pages/about-me/index.html',
+          // Pass "tabs" property to route
+          tabs: [
+            // First (default) tab has the same url as the page itself
             {
-              path: '/about-me/',
-              url: './pages/about-me/index.html',
-              // Pass "tabs" property to route
-              tabs: [
-                // First (default) tab has the same url as the page itself
-                {
-                  path: '/',
-                  id: 'about',
-                  // Fill this tab content from content string
-                  content: `
-                    <div class="block">
-                      <h3>About Me</h3>
-                      <p>...</p>
-                    </div>
-                  `
-                },
-                // Second tab
-                {
-                  path: '/contacts/',
-                  id: 'contacts',
-                  // Fill this tab content via Ajax request
-                  url: './pages/about-me/contacts.html',
-                },
-                // Third tab
-                {
-                  path: '/cv/',
-                  id: 'cv',
-                  // Load this tab content as a component via Ajax request
-                  componentUrl: './pages/about-me/cv.html',
-                },
-              ],
-            }
-          ]
+              path: '/',
+              id: 'about',
+              // Fill this tab content from content string
+              content: `
+                <div class="block">
+                  <h3>About Me</h3>
+                  <p>...</p>
+                </div>
+              `
+            },
+            // Second tab
+            {
+              path: '/contacts/',
+              id: 'contacts',
+              // Fill this tab content via Ajax request
+              url: './pages/about-me/contacts.html',
+            },
+            // Third tab
+            {
+              path: '/cv/',
+              id: 'cv',
+              // Load this tab content as a component via Ajax request
+              componentUrl: './pages/about-me/cv.html',
+            },
+          ],
+        }
+      ]
     p On the <code>/about-me/</code> page we may have the following structure for example:
     :code(lang="html")
-          <div class="page">
-            <div class="navbar">
-              <div class="navbar-inner">
-                <div class="title">About Me</div>
-              </div>
-            </div>
-            <div class="toolbar tabbar">
-              <div class="toolbar-inner">
-                <a href="./" class="tab-link" data-route-tab-id="about">About</a>
-                <a href="./contacts/" class="tab-link" data-route-tab-id="contacts">>Contacts</a>
-                <a href="./cv/" class="tab-link" data-route-tab-id="cv">>CV</a>
-              </div>
-            </div>
-            <div class="tabs tabs-routable">
-              <div class="tab page-content" id="about"></div>
-              <div class="tab page-content" id="contacts"></div>
-              <div class="tab page-content" id="cv"></div>
-            </div>
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="title">About Me</div>
           </div>
+        </div>
+        <div class="toolbar tabbar toolbar-bottom">
+          <div class="toolbar-inner">
+            <a href="./" class="tab-link" data-route-tab-id="about">About</a>
+            <a href="./contacts/" class="tab-link" data-route-tab-id="contacts">>Contacts</a>
+            <a href="./cv/" class="tab-link" data-route-tab-id="cv">>CV</a>
+          </div>
+        </div>
+        <div class="tabs tabs-routable">
+          <div class="tab page-content" id="about"></div>
+          <div class="tab page-content" id="contacts"></div>
+          <div class="tab page-content" id="cv"></div>
+        </div>
+      </div>
     p Almost the same as with usual <a href="tabs.html">Tabs</a> but with the difference that there is no more <code>tab-link-active</code> and <code>tab-active</code> classes on tab links and tabs. These classes and tabs will be switched by router. And there is a new <code>data-route-tab-id</code> attribute, it is required for tabs switcher to understand which link related to the selected route.
     p You can learn more about Routable Tabs and their additional events in appropriate sections of <a href="tabs.html#routable-tabs">Tabs</a> component page.
 
@@ -575,77 +575,77 @@ block content
       li with enabled Push State, the same modal will be opened when you refresh browser, navigate back and forward in history,
       li with routable modals you can load modal itself and its content in the same ways as for pages, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     :code(lang="js")
-          routes = [
-            ...
-            // Creates popup from passed HTML string
-            {
-              path: '/popup-content/',
-              popup: {
-                content: `
-                  <div class="popup">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
+      routes = [
+        ...
+        // Creates popup from passed HTML string
+        {
+          path: '/popup-content/',
+          popup: {
+            content: `
+              <div class="popup">
+                <div class="view">
+                  <div class="page">
+                    ...
+                  </div>
+                </div>
+              </div>
+            `
+          }
+        },
+        // Load Login Screen from file via Ajax
+        {
+          path: '/login-screen-ajax/',
+          loginScreen: {
+            url: './login-screen.html',
+            /* login-screen.html contains:
+              <div class="login-screen">
+                <div class="view">
+                  <div class="page">
+                    ...
+                  </div>
+                </div>
+              </div>
+            */
+          },
+        },
+        // Load Popup from component file
+        {
+          path: '/popup-component/',
+          loginScreen: {
+            componentUrl: './popup-component.html',
+            /* popup-component.html contains:
+              <template>
+                <div class="popup-screen">
+                  <div class="view">
+                    <div class="page">
+                      ...
                     </div>
                   </div>
-                `
-              }
-            },
-            // Load Login Screen from file via Ajax
-            {
-              path: '/login-screen-ajax/',
-              loginScreen: {
-                url: './login-screen.html',
-                /* login-screen.html contains:
-                  <div class="login-screen">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
-                    </div>
-                  </div>
-                */
-              },
-            },
-            // Load Popup from component file
-            {
-              path: '/popup-component/',
-              loginScreen: {
-                componentUrl: './popup-component.html',
-                /* popup-component.html contains:
-                  <template>
-                    <div class="popup-screen">
-                      <div class="view">
-                        <div class="page">
-                          ...
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                  <style>...</style>
-                  <script>...</script>
-                */
-              },
-            },
-            // Use async route to check if the user is logged in:
-            {
-              path: '/secured-page/',
-              async(routeTo, routeFrom, resolve, reject) {
-                if (userIsLoggedIn) {
-                  resolve({
-                    url: 'secured-page.html',
-                  });
-                } else {
-                  resolve({
-                    loginScreen: {
-                      url: 'login-screen.html'
-                    } ,
-                  });
-                }
-              },
+                </div>
+              </template>
+              <style>...</style>
+              <script>...</script>
+            */
+          },
+        },
+        // Use async route to check if the user is logged in:
+        {
+          path: '/secured-page/',
+          async(routeTo, routeFrom, resolve, reject) {
+            if (userIsLoggedIn) {
+              resolve({
+                url: 'secured-page.html',
+              });
+            } else {
+              resolve({
+                loginScreen: {
+                  url: 'login-screen.html'
+                } ,
+              });
             }
-          ]
+          },
+        }
+      ]
     p According to example above:
     ul
       li when you click on link with <code>/popup-content/</code> href attribute it will open Popup from specified string content,
@@ -663,60 +663,60 @@ block content
       li with enabled Push State, the same Panel will be opened when you refresh browser, navigate back and forward in history,
       li with routable Panels you can load Panel itself and its content in the same ways as for pages and modals, i.e. using <code>url</code>, <code>content</code>, <code>template</code>, <code>templateUrl</code>, <code>component</code> or <code>componentUrl</code>
     :code(lang="js")
-          routes = [
-            ...
-            // Creates Panel from passed HTML string
-            {
-              path: '/left-panel/',
-              panel: {
-                content: `
-                  <div class="panel panel-left panel-cover">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
-                    </div>
-                  </div>
-                `
-              }
-            },
-            // Load Panel from file via Ajax
-            {
-              path: '/right-panel-ajax/',
-              panel: {
-                url: './right-panel.html',
-                /* right-panel.html contains:
-                <div class="panel panel-right panel-reveal">
-                  <div class="view">
-                    <div class="page">
-                      ...
-                    </div>
+      routes = [
+        ...
+        // Creates Panel from passed HTML string
+        {
+          path: '/left-panel/',
+          panel: {
+            content: `
+              <div class="panel panel-left panel-cover">
+                <div class="view">
+                  <div class="page">
+                    ...
                   </div>
                 </div>
-                */
-              },
-            },
-            // Load Panel from component file
-            {
-              path: '/panel-component/',
-              panel: {
-                componentUrl: './panel-component.html',
-                /* panel-component.html contains:
-                <template>
-                  <div class="panel panel-left panel-cover">
-                    <div class="view">
-                      <div class="page">
-                        ...
-                      </div>
-                    </div>
+              </div>
+            `
+          }
+        },
+        // Load Panel from file via Ajax
+        {
+          path: '/right-panel-ajax/',
+          panel: {
+            url: './right-panel.html',
+            /* right-panel.html contains:
+            <div class="panel panel-right panel-reveal">
+              <div class="view">
+                <div class="page">
+                  ...
+                </div>
+              </div>
+            </div>
+            */
+          },
+        },
+        // Load Panel from component file
+        {
+          path: '/panel-component/',
+          panel: {
+            componentUrl: './panel-component.html',
+            /* panel-component.html contains:
+            <template>
+              <div class="panel panel-left panel-cover">
+                <div class="view">
+                  <div class="page">
+                    ...
                   </div>
-                </template>
-                <style>...</style>
-                <script>...</script>
-                */
-              },
-            },
-          ]
+                </div>
+              </div>
+            </template>
+            <style>...</style>
+            <script>...</script>
+            */
+          },
+        },
+      ]
     p According to example above:
     ul
       li when you click on link with <code>/left-panel/</code> href attribute it will open Panel from specified string content,
@@ -728,91 +728,91 @@ block content
     h2 Route Before Enter/Leave
     p <code>beforeEnter</code> and <code>beforeLeave</code> route hooks can be very useful if you need to do additional checks, execute additional actions or load/send something before route load (enter) and unload (leave). It can be single method or array of methods to be executed. For example:
     :code(lang="js")
-          routes = [
-            {
-              path: 'profile',
-              url: 'profile.html',
-              beforeEnter: function (routeTo, routeFrom, resolve, reject) {
-                if (/* some condition to check user is logged in */) {
-                  resolve();
-                } else {
-                  // don't allow to visit this page for unauthenticated users
-                  reject();
-                }
-              },
-
-            },
-            {
-              path: 'profile-edit',
-              url: 'profile.html',
-              beforeLeave: function (routeTo, routeFrom, resolve, reject) {
-                if (/* user didn't save edited form */) {
-                  app.dialog.confirm(
-                    'Are you sure you want to leave this page without saving data?',
-                    function () {
-                      // proceed navigation
-                      resolve();
-                    },
-                    function () {
-                      // stay on page
-                      reject();
-                    }
-                  )
-                } else {
-                  resolve();
-                }
-              }
-            }
-          ]
-    p And of course there are multiple hooks are supported when passed as array of functions:
-    :code(lang="js")
-          function checkAuth(to, from, resolve, reject) {
+      routes = [
+        {
+          path: 'profile',
+          url: 'profile.html',
+          beforeEnter: function (routeTo, routeFrom, resolve, reject) {
             if (/* some condition to check user is logged in */) {
               resolve();
             } else {
+              // don't allow to visit this page for unauthenticated users
               reject();
             }
-          }
-          function checkPermission(to, from, resolve, reject) {
-            if (/* some condition to check user edit permission */) {
-              resolve();
-            } else {
-              reject();
-            }
-          }
+          },
 
-          routes = [
-            {
-              path: '/profile/',
-              url: 'profile.html',
-              // check if the user is logged in
-              beforeEnter: checkAuth,
-            },
-            {
-              path: '/profile-edit/',
-              url: 'profile-edit.html',
-              // check if the user is logged in and has required permission
-              beforeEnter: [checkAuth, checkPermission],
+        },
+        {
+          path: 'profile-edit',
+          url: 'profile.html',
+          beforeLeave: function (routeTo, routeFrom, resolve, reject) {
+            if (/* user didn't save edited form */) {
+              app.dialog.confirm(
+                'Are you sure you want to leave this page without saving data?',
+                function () {
+                  // proceed navigation
+                  resolve();
+                },
+                function () {
+                  // stay on page
+                  reject();
+                }
+              )
+            } else {
+              resolve();
             }
-          ]
+          }
+        }
+      ]
+    p And of course there are multiple hooks are supported when passed as array of functions:
+    :code(lang="js")
+      function checkAuth(to, from, resolve, reject) {
+        if (/* some condition to check user is logged in */) {
+          resolve();
+        } else {
+          reject();
+        }
+      }
+      function checkPermission(to, from, resolve, reject) {
+        if (/* some condition to check user edit permission */) {
+          resolve();
+        } else {
+          reject();
+        }
+      }
+
+      routes = [
+        {
+          path: '/profile/',
+          url: 'profile.html',
+          // check if the user is logged in
+          beforeEnter: checkAuth,
+        },
+        {
+          path: '/profile-edit/',
+          url: 'profile-edit.html',
+          // check if the user is logged in and has required permission
+          beforeEnter: [checkAuth, checkPermission],
+        }
+      ]
 
 
     h2 Redirect & Alias
     h4 Alias
     p We can pass route alias using route <code>alias</code> property. Alias in this case basically means that same route can have multiple <b>paths</b> to access:
     :code(lang="js")
-          routes = [
-            {
-              path: '/foo/',
-              url: 'somepage.html',
-              alias: '/bar/',
-            },
-            {
-              path: '/foo2/',
-              url: 'anotherpage.html',
-              alias: ['/bar2/', '/baz/', '/baz2/'],
-            }
-          ]
+      routes = [
+        {
+          path: '/foo/',
+          url: 'somepage.html',
+          alias: '/bar/',
+        },
+        {
+          path: '/foo2/',
+          url: 'anotherpage.html',
+          alias: ['/bar2/', '/baz/', '/baz2/'],
+        }
+      ]
     p According to the example above:
     ul
       li if we request page by <code>/foo/</code> or <code>/bar/</code> URL then first route will match and we get the page loaded from <code>somepage.html</code>
@@ -824,28 +824,28 @@ block content
       li if we pass <code>redirect</code> as a <code>function</code>, we need to call function's resolve parameter with redirect url
     p For example:
     :code(lang="js")
-          routes = [
-            {
-              path: '/foo/',
-              url: 'somepage.html',
-            },
-            {
-              path: '/bar/',
-              redirect: '/foo/',
-            },
-            {
-              path: '/baz/',
-              redirect: function (route, resolve, reject) {
-                // if we have "user" query parameter
-                if (route.query.user) {
-                  // redirect to such url
-                  resolve('/foo/?user=' + route.query.user);
-                }
-                // otherwise do nothing
-                else reject();
-              }
+      routes = [
+        {
+          path: '/foo/',
+          url: 'somepage.html',
+        },
+        {
+          path: '/bar/',
+          redirect: '/foo/',
+        },
+        {
+          path: '/baz/',
+          redirect: function (route, resolve, reject) {
+            // if we have "user" query parameter
+            if (route.query.user) {
+              // redirect to such url
+              resolve('/foo/?user=' + route.query.user);
             }
-          ]
+            // otherwise do nothing
+            else reject();
+          }
+        }
+      ]
     p Above example means:
     ul
       li when we request <code>/bar/</code> URL then router will redirect to <code>/foo/</code> URL and then search for route that match to this new URL. In this case it will match to the first route with path <code>/foo/</code> and load the page from <code>somepage.html</code>

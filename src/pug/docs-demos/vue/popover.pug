@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - includeF7Icons = true
-  - includeMaterialIcons = true
 
 block content
   template#app-template.
@@ -9,7 +6,7 @@ block content
       <f7-view main>
         <f7-page>
           <f7-navbar title="Popover"></f7-navbar>
-          <f7-toolbar bottom-md>
+          <f7-toolbar bottom>
             <f7-link>Dummy Link</f7-link>
             <f7-link popover-open=".popover-menu">Open Popover</f7-link>
           </f7-toolbar>

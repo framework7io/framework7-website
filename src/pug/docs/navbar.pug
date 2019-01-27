@@ -126,17 +126,17 @@ block content
     h3 Fixed Navbar
     p Fixed navbar is also part of the page but it is always visible on screen not depending on page scroll. In this case it must be a direct child of page and if page has also fixed toolbar then it must be BEFORE the toolbar:
     :code(lang="html")
-          <div class="page">
-            <!-- Fixed navbar goes ALWAYS FIRST -->
-            <div class="navbar">...</div>
-            <!-- Fixed toolbar goes ALWAYS AFTER navbar -->
-            <div class="toolbar">...</div>
+      <div class="page">
+        <!-- Fixed navbar goes ALWAYS FIRST -->
+        <div class="navbar">...</div>
+        <!-- Fixed toolbar goes ALWAYS AFTER navbar -->
+        <div class="toolbar toolbar-bottom">...</div>
 
-            <!-- Scrollable page content -->
-            <div class="page-content">
-              ...
-            </div>
-          </div>
+        <!-- Scrollable page content -->
+        <div class="page-content">
+          ...
+        </div>
+      </div>
     .important-note
       p
         strong Fixed Navbar must always be a direct child of a page and BEFORE the toolbar (if fixed toolbar is used on this page)
@@ -302,6 +302,17 @@ block content
           td boolean
           td false
           td When enabled then it will try to position title at the center in MD theme. Sometime (with some custom design) it may not needed.
+        tr
+          td collapseLargeTitleOnScroll
+          td boolean
+          td true
+          td When enabled large title will be collapsed on page scroll top, and expanded again on top of the page.
+        tr
+          td snapPageScrollToLargeTitle
+          td boolean
+          td true
+          td When enabled it will snap page scroll to large title collapse/expand positions, so it will make impossible to leave page scroll in the middle of large title position. Has effect only when #[code collapseLargeTitleOnScroll] is enabled.
+
 
     p For example:
     :code(lang="js")

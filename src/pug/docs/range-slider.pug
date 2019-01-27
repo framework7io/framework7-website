@@ -120,6 +120,11 @@ block content
           td false
           td Enables additional label around range slider knob
         tr
+          td formatLabel
+          td function(<span>value</span>)
+          td
+          td Method must return formatted range knob label text. As an argument it receives label value
+        tr
           td min
           td number
           td
@@ -140,10 +145,35 @@ block content
           td true
           td When enabled it is also possible to interact with range slider (change value) on range bar click and swipe.
         tr
-          td formatLabel
-          td function(<span>value</span>)
+          td vertical
+          td boolean
+          td false
+          td Enables vertical range slider
+        tr
+          td verticalReversed
+          td boolean
+          td false
+          td Makes vertical range slider reversed (#[code vertical] must be also enabled)
+        tr
+          td scale
+          td boolean
+          td false
+          td Enables range slider scale
+        tr
+          td scaleSteps
+          td number
+          td 5
+          td Number of scale steps
+        tr
+          td scaleSubSteps
+          td number
+          td 0
+          td Number of scale sub steps (each step will be divided by this value)
+        tr
+          td formatScaleLabel
+          td function (<span>value</span>)
           td
-          td Method must return formatted range knob label text. As an argument it receives label value
+          td Method must return formatted scale value. As an argument it receives currect scale step value. This method will be called as for each scale step.
         tr
           td on
           td object
@@ -199,6 +229,18 @@ block content
           td range.value
           td Range value
         tr
+          td range.scale
+          td Boolean property indicating whether #[code scale] is enabled or not
+        tr
+          td range.scaleSteps
+          td Number of scale steps
+        tr
+          td range.scaleSubSteps
+          td Number of scale sub steps
+        tr
+          td range.$scaleEl
+          td Dom7 instance with generated scale HTML element
+        tr
           td range.knobs
           td Array where each element represents HTMLElement of created range knob (2 knobs in case of dual slider)
         tr
@@ -215,6 +257,9 @@ block content
         tr
           td range.setValue(<span>value</span>)
           td Set new range slider value
+        tr
+          td range.updateScale()
+          td Re-calculate and re-render slider scale
         tr
           td range.destroy()
           td Destroys range slider instance
@@ -268,21 +313,21 @@ block content
       tbody
         tr
           td change
-          td <span>(range)</span>
+          td <span>(range, value)</span>
           td range
           td(rowspan="2") Event will be triggered when range value has been changed. As an argument event handler receives range instance
         tr
           td rangeChange
-          td <span>(range)</span>
+          td <span>(range, value)</span>
           td app
         tr
           td changed
-          td <span>(range)</span>
+          td <span>(range, value)</span>
           td range
           td(rowspan="2") Event will be triggered on slider knob release after value change. As an argument event handler receives range instance
         tr
           td rangeChanged
-          td <span>(range)</span>
+          td <span>(range, value)</span>
           td app
         tr
           td beforeDestroy
@@ -397,7 +442,7 @@ block content
               <ul>
                 <li class="item-row">
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons ios-only">money_dollar</i>
+                    <i class="icon f7-icons ios-only">money_dollar_round</i>
                     <i class="icon material-icons md-only">attach_money</i>
                   </div>
                   <div class="item-cell item-cell-shrink-3">
@@ -415,11 +460,111 @@ block content
                     ></div>
                   </div>
                   <div class="item-cell width-auto flex-shrink-0">
-                    <i class="icon f7-icons ios-only">money_dollar_fill</i>
+                    <i class="icon f7-icons ios-only">money_dollar_round_fill</i>
                     <i class="icon material-icons md-only">monetization_on</i>
                   </div>
                 </li>
               </ul>
+            </div>
+
+            <div class="block-title">With Scale</div>
+            <div class="block block-strong">
+              <div class="range-slider range-slider-init"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="5"
+                data-value="25"
+                data-scale="true"
+                data-scale-steps="5"
+                data-scale-sub-steps="4"
+              ></div>
+            </div>
+            <div class="block-title">Vertical</div>
+            <div class="block block-strong display-flex justify-content-center">
+              <div class="range-slider range-slider-init margin-right"
+                data-vertical="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="25"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init margin-horizontal"
+                data-vertical="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="50"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init margin-horizontal"
+                data-vertical="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="75"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init margin-left"
+                data-dual="true"
+                data-vertical="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value-left="25"
+                data-value-right="75"
+                style="height: 160px"
+              ></div>
+            </div>
+            <div class="block-title">Vertical Reversed</div>
+            <div class="block block-strong display-flex justify-content-center">
+              <div class="range-slider range-slider-init color-red margin-right"
+                data-vertical="true"
+                data-vertical-reversed="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="25"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init color-red margin-horizontal"
+                data-vertical="true"
+                data-vertical-reversed="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="50"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init color-red margin-horizontal"
+                data-vertical="true"
+                data-vertical-reversed="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value="75"
+                style="height: 160px"
+              ></div>
+              <div class="range-slider range-slider-init color-red margin-left"
+                data-dual="true"
+                data-vertical="true"
+                data-vertical-reversed="true"
+                data-min="0"
+                data-max="100"
+                data-label="true"
+                data-step="1"
+                data-value-left="25"
+                data-value-right="75"
+                style="height: 160px"
+              ></div>
             </div>
       p Handle price change:
       :code(lang="js")

@@ -46,6 +46,7 @@ import {Link as LinkNamespace} from './components/link/link';
 import {List as ListNamespace} from './components/list/list';
 import {ListIndex as ListIndexNamespace} from './components/list-index/list-index';
 import {LoginScreen as LoginScreenNamespace} from './components/login-screen/login-screen';
+import {Menu as MenuNamespace} from './components/menu/menu';
 import {Messagebar as MessagebarNamespace} from './components/messagebar/messagebar';
 import {Messages as MessagesNamespace} from './components/messages/messages';
 import {Modal as ModalNamespace} from './components/modal/modal';
@@ -190,6 +191,9 @@ declare module './components/app/app-class' {
   interface Framework7Class<Events> extends LoginScreenNamespace.AppMethods{}
   interface Framework7Params extends LoginScreenNamespace.AppParams{}
   interface Framework7Events extends LoginScreenNamespace.AppEvents{}
+  interface Framework7Class<Events> extends MenuNamespace.AppMethods{}
+  interface Framework7Params extends MenuNamespace.AppParams{}
+  interface Framework7Events extends MenuNamespace.AppEvents{}
   interface Framework7Class<Events> extends MessagebarNamespace.AppMethods{}
   interface Framework7Params extends MessagebarNamespace.AppParams{}
   interface Framework7Events extends MessagebarNamespace.AppEvents{}

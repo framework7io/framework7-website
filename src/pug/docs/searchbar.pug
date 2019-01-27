@@ -42,17 +42,17 @@ block content
     ul
       li It can be a direct child of page and if page has also fixed Navbar and/or Toolbar then it must be AFTER Navbar and Toolbar:
         :code(lang="html")
-              <div class="page">
-                <div class="navbar">...</div>
-                <div class="toolbar">...</div>
-                <!-- Searchbar goes after Navbar and Toolbar -->
-                <form class="searchbar">...</form>
-                <div class="page-content">
-                  <!-- Searchbar backdrop layer -->
-                  <div class="searchbar-backdrop"></div>
-                  <!-- page content here -->
-                </div>
-              </div>
+          <div class="page">
+            <div class="navbar">...</div>
+            <div class="toolbar toolbar-bottom">...</div>
+            <!-- Searchbar goes after Navbar and Toolbar -->
+            <form class="searchbar">...</form>
+            <div class="page-content">
+              <!-- Searchbar backdrop layer -->
+              <div class="searchbar-backdrop"></div>
+              <!-- page content here -->
+            </div>
+          </div>
       li It can be placed inside of Subnavbar which is inside of the Navbar (recommended way):
         :code(lang="html")
               <div class="page page-with-subnavbar">

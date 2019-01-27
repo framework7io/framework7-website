@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - includeF7Icons = true
-  - includeMaterialIcons = true
 
 block content
   script(type="text/babel").
@@ -19,7 +16,7 @@ block content
             <View main>
               <Page>
                 <Navbar title="Popover"></Navbar>
-                <Toolbar bottomMd>
+                <Toolbar bottom>
                   <Link>Dummy Link</Link>
                   <Link popoverOpen=".popover-menu">Open Popover</Link>
                 </Toolbar>

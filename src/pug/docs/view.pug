@@ -631,37 +631,42 @@ block content
     h2 Linking Between Pages & Views
     p It may be not very comfortable to use router methods all the time to navigate between pages. In many cases we can just use <a href="link.html">links</a> to navigate between pages. And we can pass additional navigation parameters using <code>data-</code> attributes:
     :code(lang="html")
-          <!-- same as router.navigate('/somepage/'); -->
-          <a href="/somepage/">Some Page</a>
+      <!-- same as router.navigate('/somepage/'); -->
+      <a href="/somepage/">Some Page</a>
 
-          <!-- same as router.navigate('/somepage/', {reloadCurrent: true, animate: false}); -->
-          <a href="/somepage/" data-animate="false" data-reload-current="true">Some Page</a>
+      <!-- same as router.navigate('/somepage/', {reloadCurrent: true, animate: false}); -->
+      <a href="/somepage/" data-animate="false" data-reload-current="true">Some Page</a>
 
-          <!-- same as router.back(); -->
-          <a href="#" class="back">Go back</a>
+      <!-- same as router.back(); -->
+      <a href="#" class="back">Go back</a>
 
-          <!-- same as router.back('/home/', {force: true, ignoreCache: true}); -->
-          <a href="/home/" data-force="true" data-ignore-cache="true" class="back">Go back</a>
+      <!-- same as router.back('/home/', {force: true, ignoreCache: true}); -->
+      <a href="/home/" data-force="true" data-ignore-cache="true" class="back">Go back</a>
     p Links default behavior:
     ul
       li If link is in inside of not initialized view then it will load page in main view
       li If link is in inside of initialized view then it will load page in this view (if other view is not specified in view's <code>linksView</code> parameter)
     p But if we need to load page in another view we can specify this view's CSS selector in link's <code>data-view</code> attribute
     :code(lang="html")
-          <!-- left view -->
-          <div class="view view-init view-left" data-name="left">
-            ...
-            <!-- will load "some-page" to main view -->
-            <a href="/some-page/" data-view=".view-main">Some Page</a>
-            ...
-          </div>
-          <!-- main view -->
-          <div class="view view-init view-main">
-            ...
-            <!-- will load "another-page" to left view -->
-            <a href="/another-page/" data-view=".view-left">Another Page</a>
-            ...
-          </div>
+      <!-- left view -->
+      <div class="view view-init view-left" data-name="left">
+        ...
+        <!-- will load "some-page" to main view -->
+        <a href="/some-page/" data-view=".view-main">Some Page</a>
+        ...
+      </div>
+      <!-- main view -->
+      <div class="view view-init view-main">
+        ...
+        <!-- will load "another-page" to left view -->
+        <a href="/another-page/" data-view=".view-left">Another Page</a>
+        ...
+      </div>
+    p If we need to prevent router from handling specific links, we can add #[code prevent-router] class to such links:
+    :code(lang="html")
+      <!-- This link will be ignored by router -->
+      <a href="/some-page/" class="prevent-router">Some Page</a>
+
     h2 Router Events
     p Router has a lot of useful events.
     h3 Router Dom Events

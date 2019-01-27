@@ -323,6 +323,24 @@ block content
           td boolean
           td
           td Defines whether it should be rendered as a message or as a messages title
+        tr
+          td cssClass
+          td string
+          td
+          td Additional CSS class to set on message HTML element
+        tr
+          td attrs
+          td object
+          td
+          td Object with additional HTML attributes to be set on message HTML element. For example to set extra <code>data</code> attributes it should look like:
+            :code(lang="js")
+              var message = {
+                text: 'Hello!',
+                attrs: {
+                  'data-id': 1,
+                  'data-author-id': 150
+                }
+              }
     h2 Messages Methods & Properties
     p So to create Messages we have to call:
     :code(lang="js")

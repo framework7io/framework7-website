@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - includeF7Icons = true
-  - includeMaterialIcons = true
 
 block content
   script(type="text/babel").
@@ -20,7 +17,7 @@ block content
               <Page>
                 <Navbar title="Floating Action Button" />
 
-                <Toolbar bottomMd className="fab-morph-target">
+                <Toolbar bottom className="fab-morph-target">
                   <Link>Link 1</Link>
                   <Link>Link 2</Link>
                   <Link>Link 3</Link>

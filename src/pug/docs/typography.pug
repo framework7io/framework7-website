@@ -55,6 +55,12 @@ block content
         tr
           td no-margin-bottom
           td Removes bottom margin
+        tr
+          td no-margin-horizontal
+          td Removes left and right margins
+        tr
+          td no-margin-horizontal
+          td Removes top and bottom margins
     p For example:
     :code(lang="html")
           <p class="margin-left">Text with left margin</p>
@@ -100,10 +106,16 @@ block content
         tr
           td no-padding-bottom
           td Removes bottom padding
+        tr
+          td no-padding-horizontal
+          td Removes left and right paddings
+        tr
+          td no-padding-horizontal
+          td Removes top and bottom paddings
     p For example:
     :code(lang="html")
-          <p class="padding-left">Text with left padding</p>
-          <p class="padding-right">Text with right padding</p>
+      <p class="padding-left">Text with left padding</p>
+      <p class="padding-right">Text with right padding</p>
 
     h2 Float Elements
     table.methods-table
@@ -119,12 +131,12 @@ block content
           td Disable floating
     p For example
     :code(lang="html")
-          <div class="float-left">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda earum tempora, voluptatem quas? Beatae cumque, ea porro, eius sed nemo impedit tempora nesciunt, nam necessitatibus quis animi. Nobis, dicta, sit!</p>
-          </div>
-          <div class="float-right">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda earum tempora, voluptatem quas? Beatae cumque, ea porro, eius sed nemo impedit tempora nesciunt, nam necessitatibus quis animi. Nobis, dicta, sit!</p>
-          </div>
+      <div class="float-left">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda earum tempora, voluptatem quas? Beatae cumque, ea porro, eius sed nemo impedit tempora nesciunt, nam necessitatibus quis animi. Nobis, dicta, sit!</p>
+      </div>
+      <div class="float-right">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda earum tempora, voluptatem quas? Beatae cumque, ea porro, eius sed nemo impedit tempora nesciunt, nam necessitatibus quis animi. Nobis, dicta, sit!</p>
+      </div>
     h2 Text Alignment
     table.methods-table
       tbody
@@ -142,8 +154,8 @@ block content
           td The inline contents are justified
     p For example:
     :code(lang="html")
-          <p class="text-align-center">Center aligned text</p>
-          <p class="text-align-right">Right aligned text</p>
+      <p class="text-align-center">Center aligned text</p>
+      <p class="text-align-right">Right aligned text</p>
 
     h2 Element Display
     table.methods-table
@@ -168,10 +180,10 @@ block content
           td Element will be hidden
     p For example:
     :code(lang="html")
-          <div class="display-flex">
-            <div>Hello</div>
-            <div>World!</div>
-          </div>
+      <div class="display-flex">
+        <div>Hello</div>
+        <div>World!</div>
+      </div>
     h2 Flexbox
     p There are several helper classes to control flex model:
     h3 Justify Content
@@ -276,9 +288,9 @@ block content
             td Sets CSS property <code>flex-shrink: #{flexShrink}</code>
     p For example:
     :code(lang="html")
-          <div class="display-flex justify-content-space-between align-items-flex-start">
-            <div class="flex-shrink-0">Item 1</div>
-            <div class="align-self-center">Item 2</div>
-            <div class="align-self-flex-end">Item 3</div>
-          </div>
+      <div class="display-flex justify-content-space-between align-items-flex-start">
+        <div class="flex-shrink-0">Item 1</div>
+        <div class="align-self-center">Item 2</div>
+        <div class="align-self-flex-end">Item 3</div>
+      </div>
     +cssVars('typography')

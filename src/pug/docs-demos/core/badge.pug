@@ -1,7 +1,4 @@
 extends _layout
-block vars
-  - var includeF7Icons = true;
-  - var includeMaterialIcons = true;
 block content
   .view.view-main.view-init
     .page
@@ -13,7 +10,7 @@ block content
             a.link.icon-only
               <i class="icon f7-icons ios-only">person_fill<span class="badge color-red">5</span></i>
               <i class="icon material-icons md-only">person<span class="badge color-red">5</span></i>
-      .toolbar.tabbar.tabbar-labels
+      .toolbar.tabbar.tabbar-labels.toolbar-bottom
         .toolbar-inner
           <a href="#tab-1" class="tab-link tab-link-active">
             <i class="icon icon-fill f7-icons ios-only">email_fill<span class="badge color-green">5</span></i>

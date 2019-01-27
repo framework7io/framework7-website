@@ -21,7 +21,7 @@ body.body-docs {
   }
 
   .with-device {
-    padding-right: 360px;
+    padding-right: 340px;
     .device-spacer {
       height: 400px;
     }
@@ -74,120 +74,31 @@ span.ios-only, span.md-only, b.md-only, b.ios-only {
   position: absolute;
   right: 20px;
   top: 0;
-  background: #111;
+  background: @darkBrownColor;
   z-index: 1000;
   margin-top: 40px;
+  padding: 10px 8px;
+  border-radius: 20px;
+  @media (max-width: 800px) {
+    right: 10px;
+  }
+  iframe {
+    width: 320px;
+    height: 600px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    background: @darkBrownColor;
+  }
   &:not(.docs-inline-device) {
     display: none;
     &.visible {
       display: block;
-    }
-  }
-  &.docs-demo-device-ios {
-    padding: 80px 15px;
-    border-radius: 55px;
-    box-shadow: 0px 0px 0px 5px #aaa;
-    iframe {
-      width: 320px;
-      height: 548px;
-    }
-    &:after {
-      content: '';
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      left: 50%;
-      margin-left: -25px;
-      bottom: 20px;
-      border-radius: 100%;
-      box-sizing: border-box;
-      border: 3px solid #333;
-    }
-    &:before {
-      content: '';
-      width: 60px;
-      height: 10px;
-      border-radius: 10px;
-      position: absolute;
-      left: 50%;
-      margin-left: -30px;
-      background: #333;
-      top: 50px;
-    }
-  }
-  &.docs-demo-device-android {
-    padding: 30px 10px 60px;
-    border-radius: 30px;
-    box-shadow: 0px 0px 0px 2px #aaa;
-    .docs-demo-device-iframe {
-      border-radius: 12px;
-    }
-    iframe {
-      width: 330px;
-      height: 600px;
-    }
-    &:before {
-      content: '';
-      width: 60px;
-      height: 5px;
-      border-radius: 10px;
-      position: absolute;
-      left: 50%;
-      margin-left: -30px;
-      background: #333;
-      top: 12px;
-    }
-    .docs-demo-device-android-buttons {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 60px;
-      line-height: 60px;
-      text-align: center;
-      font-size: 0;
-      > div {
-        margin: 0 30px;
-      }
-    }
-    .circle, .square, .triangle {
-      display: inline-block;
-      vertical-align: middle;
-    }
-    .circle, .square {
-      width: 20px;
-      height: 20px;
-      border: 2px solid #666;
-    }
-    .circle {
-      border-radius: 50%;
-    }
-    .square {
-      border-radius: 2px;
-    }
-    .triangle {
-      width: 0;
-      height: 0;
-      display: inline-block;
-      border-left: 12px solid transparent;
-      border-right: 12px solid transparent;
-      border-bottom: 20px solid #666;
-      position: relative;
-      transform: rotate(-90deg);
-      border-radius: 2px;
-      &:after {
-        content: '';
-        width: 0;
-        height: 0;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-bottom: 14px solid #000;
-        position: absolute;
-        left: 0px;
-        top: 4px;
-        transform: translate(-50%, 0%);
-        border-radius: 2px;
-      }
     }
   }
 
@@ -205,10 +116,10 @@ span.ios-only, span.md-only, b.md-only, b.ios-only {
       width: 80px;
       text-align: center;
       background: #f3f3f3;
-      color: #555;
+      color: #777;
+      font-weight: bold;
       display: inline-block;
       font-size: 13px;
-      font-weight: 500;
       text-align: center;
       transition: 200ms;
       cursor: pointer;
@@ -231,17 +142,10 @@ span.ios-only, span.md-only, b.md-only, b.ios-only {
   .docs-demo-device-iframe {
     position: relative;
     overflow: hidden;
-  }
-  iframe {
-    border: none;
-    margin: 0;
-    padding: 0;
-    display: block;
-    border-radius: 4px;
-    overflow: hidden;
+    border-radius: 12px;
   }
   .fade-overlay {
-    background: #fff;
+    background: #000;
     position: absolute;
     left: 0;
     top: 0;
@@ -317,13 +221,12 @@ ul.method-parameters {
 }
 
 .docs-index {
-  font-size: 14px;
   border-left: 2px solid #000;
   margin: 1em 0;
   padding: 0;
   padding-left: 20px;
   list-style: none;
-  font-weight: 500;
+  font-weight: bold;
   &:empty {
     padding: 0;
     border: none;
@@ -358,10 +261,8 @@ ul.method-parameters {
     list-style: none;
     margin: 0;
     padding: 0;
-    font-size: 13px;
+    font-size: 14px;
     margin-left: 20px;
-    li {
-    }
   }
 }
 .docs-nav {
@@ -388,8 +289,8 @@ ul.method-parameters {
     }
   }
   @media (max-width: 800px) {
-    margin-left: -220px;
-    margin-right: 20px;
+    margin-left: -200px - 15px;
+    margin-right: 15px;
   }
   .title {
     color: #000;

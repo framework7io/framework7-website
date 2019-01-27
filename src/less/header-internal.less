@@ -6,6 +6,7 @@
   background: linear-gradient(to bottom, @pinkColor 20%, @redColor);
   padding-top: 40px;
   padding-bottom: 40px;
+
   > .center {
     display: flex;
     align-items: flex-start;
@@ -180,7 +181,7 @@
 }
 
 .bsa-cpc {
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(0,0,0,0.1);
   background: @redColor;
   height: 30px;
   position: relative;
@@ -280,10 +281,10 @@
   .internal-header {
     .patreon-github {
       display: block;
-      .github-buttons {
-        margin-left: 0;
-        margin-top: 5px;
-      }
+    }
+    .github-buttons {
+      margin-left: 0 !important;
+      margin-top: 5px;
     }
   }
   .bsa-cpc {
@@ -297,8 +298,13 @@
 }
 @media (max-width: 800px) {
   .internal-header {
+    padding-top: 30px;
+    padding-bottom: 20px;
     .logo-holder {
       margin-right: 20px;
+    }
+    .github-buttons {
+      margin-top: 10px;
     }
     .logo {
       width: 100px;

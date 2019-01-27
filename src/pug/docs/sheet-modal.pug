@@ -16,29 +16,29 @@ block content
     h2 Sheet Layout
     p Sheet layout is pretty simple:
     :code(lang="html")
-          &lt;body&gt;
-            ...
-            &lt;!-- Sheet Modal Container --&gt;
-            &lt;div class="sheet-modal"&gt;
-              &lt;!-- Sheet Modal Toolbar, optional --&gt;
-              &lt;div class="toolbar"&gt;
-                &lt;div class="toolbar-inner"&gt;
-                  &lt;div class="left"&gt;&lt;/div&gt;
-                  &lt;div class="right"&gt;
-                    &lt;a href="#" class="link sheet-close"&gt;Done&lt;/a&gt;
-                  &lt;/div&gt;
-                &lt;/div&gt;
-              &lt;/div&gt;
-              &lt;!-- Sheet Modal Inner --&gt;
-              &lt;div class="sheet-modal-inner"&gt;
-                &lt;!-- Sheet Modal content --&gt;
-                &lt;div class="block"&gt;
-                  &lt;p&gt;Integer mollis nulla id nibh elementum finibus...&lt;/p&gt;
-                &lt;/div&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
+      <body>
+        ...
+        <!-- Sheet Modal Container -->
+        <div class="sheet-modal">
+          <!-- Sheet Modal Toolbar, optional -->
+          <div class="toolbar">
+            <div class="toolbar-inner">
+              <div class="left"></div>
+              <div class="right">
+                <a href="#" class="link sheet-close">Done</a>
+              </div>
+            </div>
+          </div>
+          <!-- Sheet Modal Inner -->
+          <div class="sheet-modal-inner">
+            <!-- Sheet Modal content -->
+            <div class="block">
+              <p>Integer mollis nulla id nibh elementum finibus...</p>
+            </div>
+          </div>
+        </div>
 
-          &lt;/body&gt;
+      </body>
     h2 Sheet App Methods
     p Let's look at related App methods to work with Sheet:
     .method-wrap
@@ -144,14 +144,14 @@ block content
           td
           td Object with events handlers. For example:
             :code(lang="js")
-                  var sheet = app.sheet.create({
-                    content: '<div class="sheet-modal">...</div>',
-                    on: {
-                      opened: function () {
-                        console.log('Sheet opened')
-                      }
-                    }
-                  })
+              var sheet = app.sheet.create({
+                content: '<div class="sheet-modal">...</div>',
+                on: {
+                  opened: function () {
+                    console.log('Sheet opened')
+                  }
+                }
+              })
     .important-note
       p Note that all following parameters can be used in global app parameters under <code>sheet</code> property to set defaults for all sheets. For example:
       :code(lang="js")
@@ -236,17 +236,16 @@ block content
           p If you have more than one sheet in DOM, you need to specify appropriate sheet via additional <b>data-sheet=".my-sheet"</b> attribute on this HTML element
     p According to above note:
     :code(lang="html")
-          <!-- In data-sheet attribute we specify CSS selector of sheet we need to open -->
-          <p><a href="#" data-sheet=".my-sheet" class="sheet-open">Open Sheet</a></p>
+      <!-- In data-sheet attribute we specify CSS selector of sheet we need to open -->
+      <p><a href="#" data-sheet=".my-sheet" class="sheet-open">Open Sheet</a></p>
 
-          <!-- And somewhere in DOM -->
-          <div class="sheet-modal my-sheet">
-            <div class="sheet-modal-inner">
-              <!-- Link to close sheet -->
-              <a class="link sheet-close">Close</a>
-            </div>
-          </div>
-
+      <!-- And somewhere in DOM -->
+      <div class="sheet-modal my-sheet">
+        <div class="sheet-modal-inner">
+          <!-- Link to close sheet -->
+          <a class="link sheet-close">Close</a>
+        </div>
+      </div>
 
     h2 Sheet Events
     p Sheet will fire the following DOM events on sheet element and events on app and sheet instance:
@@ -335,97 +334,97 @@ block content
     .with-device
       h2(data-device-preview="../docs-demos/core/sheet-modal.html") Examples
       :code(lang="html")
-            <body>
-              ...
-                <div class="page">
-                  <div class="navbar">
-                    <div class="navbar-inner">
-                      <!-- In data-sheet attribute we specify CSS selector of sheet we need to open-->
-                      <div class="title">Sheet Modal</div>
-                      <div class="right"><a class="link sheet-open" href="#" data-sheet=".my-sheet">Open Sheet</a></div>
-                    </div>
-                  </div>
-                  <div class="page-content">
-                    <div class="block">
-                      <!-- In data-sheet attribute we specify CSS selector of sheet we need to open-->
-                      <p><a class="link sheet-open" href="#" data-sheet=".my-sheet">Open Sheet</a></p>
-                      <!-- Link to close sheet-->
-                      <p><a class="link sheet-close" href="#" data-sheet=".my-sheet">Close Sheet</a></p>
-                      <p><a class="link dynamic-sheet" href="#">Create Dynamic Sheet</a></p>
-                    </div>
-                  </div>
-                </div>
-              ...
-
-              <div class="sheet-modal my-sheet">
-                <div class="toolbar">
-                  <div class="toolbar-inner">
-                    <div class="left"></div>
-                    <div class="right"><a class="link sheet-close" href="#">Done</a></div>
-                  </div>
-                </div>
-                <div class="sheet-modal-inner">
-                  <div class="block">
-                    <h4>Info</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>
-                  </div>
+        <body>
+          ...
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <!-- In data-sheet attribute we specify CSS selector of sheet we need to open-->
+                  <div class="title">Sheet Modal</div>
+                  <div class="right"><a class="link sheet-open" href="#" data-sheet=".my-sheet">Open Sheet</a></div>
                 </div>
               </div>
-            </body>
+              <div class="page-content">
+                <div class="block">
+                  <!-- In data-sheet attribute we specify CSS selector of sheet we need to open-->
+                  <p><a class="link sheet-open" href="#" data-sheet=".my-sheet">Open Sheet</a></p>
+                  <!-- Link to close sheet-->
+                  <p><a class="link sheet-close" href="#" data-sheet=".my-sheet">Close Sheet</a></p>
+                  <p><a class="link dynamic-sheet" href="#">Create Dynamic Sheet</a></p>
+                </div>
+              </div>
+            </div>
+          ...
+
+          <div class="sheet-modal my-sheet">
+            <div class="toolbar">
+              <div class="toolbar-inner">
+                <div class="left"></div>
+                <div class="right"><a class="link sheet-close" href="#">Done</a></div>
+              </div>
+            </div>
+            <div class="sheet-modal-inner">
+              <div class="block">
+                <h4>Info</h4>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam ac quam euismod porta vel a nunc. Quisque sodales scelerisque est, at porta justo cursus ac.</p>
+              </div>
+            </div>
+          </div>
+        </body>
       :code(lang="js")
-            var app = new Framework7();
+        var app = new Framework7();
 
-            var $$ = Dom7;
+        var $$ = Dom7;
 
-            // DOM events for my-sheet sheet
-            $$('.my-sheet').on('sheet:open', function (e, sheet) {
-              console.log('my-sheet open');
-            });
-            $$('.my-sheet').on('sheet:opened', function (e, sheet) {
-              console.log('my-sheet opened');
-            });
+        // DOM events for my-sheet sheet
+        $$('.my-sheet').on('sheet:open', function (e, sheet) {
+          console.log('my-sheet open');
+        });
+        $$('.my-sheet').on('sheet:opened', function (e, sheet) {
+          console.log('my-sheet opened');
+        });
 
-            // Create dynamic Sheet
-            var dynamicSheet = app.sheet.create({
-              content: '<div class="sheet-modal">'+
-                          '<div class="toolbar">'+
-                            '<div class="toolbar-inner">'+
-                              '<div class="left"></div>'+
-                              '<div class="right">'+
-                                '<a class="link sheet-close">Done</a>'+
-                              '</div>'+
-                            '</div>'+
+        // Create dynamic Sheet
+        var dynamicSheet = app.sheet.create({
+          content: '<div class="sheet-modal">'+
+                      '<div class="toolbar">'+
+                        '<div class="toolbar-inner">'+
+                          '<div class="left"></div>'+
+                          '<div class="right">'+
+                            '<a class="link sheet-close">Done</a>'+
                           '</div>'+
-                          '<div class="sheet-modal-inner">'+
-                            '<div class="block">'+
-                              '<p>Sheet created dynamically.</p>'+
-                              '<p><a href="#" class="link sheet-close">Close me</a></p>'+
-                            '</div>'+
-                          '</div>'+
-                        '</div>',
-              // Events
-              on: {
-                open: function (sheet) {
-                  console.log('Sheet open');
-                },
-                opened: function (sheet) {
-                  console.log('Sheet opened');
-                },
-              }
-            });
-            // Events also can be assigned on instance later
-            dynamicSheet.on('close', function (sheet) {
-              console.log('Sheet close');
-            });
-            dynamicSheet.on('closed', function (sheet) {
-              console.log('Sheet closed');
-            });
+                        '</div>'+
+                      '</div>'+
+                      '<div class="sheet-modal-inner">'+
+                        '<div class="block">'+
+                          '<p>Sheet created dynamically.</p>'+
+                          '<p><a href="#" class="link sheet-close">Close me</a></p>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>',
+          // Events
+          on: {
+            open: function (sheet) {
+              console.log('Sheet open');
+            },
+            opened: function (sheet) {
+              console.log('Sheet opened');
+            },
+          }
+        });
+        // Events also can be assigned on instance later
+        dynamicSheet.on('close', function (sheet) {
+          console.log('Sheet close');
+        });
+        dynamicSheet.on('closed', function (sheet) {
+          console.log('Sheet closed');
+        });
 
-            // Open dynamic sheet
-            $$('.dynamic-sheet').on('click', function () {
-              // Close inline sheet before
-              app.sheet.close('.my-sheet');
+        // Open dynamic sheet
+        $$('.dynamic-sheet').on('click', function () {
+          // Close inline sheet before
+          app.sheet.close('.my-sheet');
 
-              // Open dynamic sheet
-              dynamicSheet.open();
-            });
+          // Open dynamic sheet
+          dynamicSheet.open();
+        });

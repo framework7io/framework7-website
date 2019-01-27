@@ -13,7 +13,7 @@ function extendLanguage(lang) {
   Prism.languages[lang]['template-string'].inside.interpolation.inside.context = Prism.languages[lang].context;
   if (Prism.languages[lang].script) {
     Prism.languages[lang].script.inside.context = Prism.languages[lang].context;
-    Prism.languages[lang].script.inside['keyword-block'] = Prism.languages[lang]['keyword-block']
+    Prism.languages[lang].script.inside['keyword-block'] = Prism.languages[lang]['keyword-block'];
   }
 }
 extendLanguage('javascript');

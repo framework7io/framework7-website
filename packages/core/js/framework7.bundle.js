@@ -1,5 +1,5 @@
 /**
- * Framework7 4.0.0-beta.14
+ * Framework7 4.0.0-beta.25
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: January 10, 2019
+ * Released on: January 18, 2019
  */
 
 (function (global, factory) {
@@ -2938,27 +2938,15 @@
     return device;
   }());
 
-  var Framework7Class = function Framework7Class(params, parents) {
-    if ( params === void 0 ) params = {};
+  var EventsClass = function EventsClass(parents) {
     if ( parents === void 0 ) parents = [];
 
     var self = this;
-    self.params = params;
-
-    // Events
     self.eventsParents = parents;
     self.eventsListeners = {};
-
-    if (self.params && self.params.on) {
-      Object.keys(self.params.on).forEach(function (eventName) {
-        self.on(eventName, self.params.on[eventName]);
-      });
-    }
   };
 
-  var staticAccessors$1 = { components: { configurable: true } };
-
-  Framework7Class.prototype.on = function on (events, handler, priority) {
+  EventsClass.prototype.on = function on (events, handler, priority) {
     var self = this;
     if (typeof handler !== 'function') { return self; }
     var method = priority ? 'unshift' : 'push';
@@ -2969,7 +2957,7 @@
     return self;
   };
 
-  Framework7Class.prototype.once = function once (events, handler, priority) {
+  EventsClass.prototype.once = function once (events, handler, priority) {
     var self = this;
     if (typeof handler !== 'function') { return self; }
     function onceHandler() {
@@ -2982,7 +2970,7 @@
     return self.on(events, onceHandler, priority);
   };
 
-  Framework7Class.prototype.off = function off (events, handler) {
+  EventsClass.prototype.off = function off (events, handler) {
     var self = this;
     if (!self.eventsListeners) { return self; }
     events.split(' ').forEach(function (event) {
@@ -2999,7 +2987,7 @@
     return self;
   };
 
-  Framework7Class.prototype.emit = function emit () {
+  EventsClass.prototype.emit = function emit () {
       var args = [], len = arguments.length;
       while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -3043,134 +3031,159 @@
     return self;
   };
 
-  // eslint-disable-next-line
-  Framework7Class.prototype.useModuleParams = function useModuleParams (module, instanceParams) {
-    if (module.params) {
-      var originalParams = {};
-      Object.keys(module.params).forEach(function (paramKey) {
-        if (typeof instanceParams[paramKey] === 'undefined') { return; }
-        originalParams[paramKey] = Utils.extend({}, instanceParams[paramKey]);
-      });
-      Utils.extend(instanceParams, module.params);
-      Object.keys(originalParams).forEach(function (paramKey) {
-        Utils.extend(instanceParams[paramKey], originalParams[paramKey]);
-      });
-    }
-  };
+  var Framework7Class = /*@__PURE__*/(function (EventsClass$$1) {
+    function Framework7Class(params, parents) {
+      if ( params === void 0 ) params = {};
+      if ( parents === void 0 ) parents = [];
 
-  Framework7Class.prototype.useModulesParams = function useModulesParams (instanceParams) {
-    var instance = this;
-    if (!instance.modules) { return; }
-    Object.keys(instance.modules).forEach(function (moduleName) {
-      var module = instance.modules[moduleName];
-      // Extend params
-      if (module.params) {
-        Utils.extend(instanceParams, module.params);
+      EventsClass$$1.call(this, parents);
+      var self = this;
+      self.params = params;
+
+      if (self.params && self.params.on) {
+        Object.keys(self.params.on).forEach(function (eventName) {
+          self.on(eventName, self.params.on[eventName]);
+        });
       }
-    });
-  };
+    }
 
-  Framework7Class.prototype.useModule = function useModule (moduleName, moduleParams) {
+    if ( EventsClass$$1 ) Framework7Class.__proto__ = EventsClass$$1;
+    Framework7Class.prototype = Object.create( EventsClass$$1 && EventsClass$$1.prototype );
+    Framework7Class.prototype.constructor = Framework7Class;
+
+    var staticAccessors = { components: { configurable: true } };
+
+    // eslint-disable-next-line
+    Framework7Class.prototype.useModuleParams = function useModuleParams (module, instanceParams) {
+      if (module.params) {
+        var originalParams = {};
+        Object.keys(module.params).forEach(function (paramKey) {
+          if (typeof instanceParams[paramKey] === 'undefined') { return; }
+          originalParams[paramKey] = Utils.extend({}, instanceParams[paramKey]);
+        });
+        Utils.extend(instanceParams, module.params);
+        Object.keys(originalParams).forEach(function (paramKey) {
+          Utils.extend(instanceParams[paramKey], originalParams[paramKey]);
+        });
+      }
+    };
+
+    Framework7Class.prototype.useModulesParams = function useModulesParams (instanceParams) {
+      var instance = this;
+      if (!instance.modules) { return; }
+      Object.keys(instance.modules).forEach(function (moduleName) {
+        var module = instance.modules[moduleName];
+        // Extend params
+        if (module.params) {
+          Utils.extend(instanceParams, module.params);
+        }
+      });
+    };
+
+    Framework7Class.prototype.useModule = function useModule (moduleName, moduleParams) {
       if ( moduleName === void 0 ) moduleName = '';
       if ( moduleParams === void 0 ) moduleParams = {};
 
-    var instance = this;
-    if (!instance.modules) { return; }
-    var module = typeof moduleName === 'string' ? instance.modules[moduleName] : moduleName;
-    if (!module) { return; }
+      var instance = this;
+      if (!instance.modules) { return; }
+      var module = typeof moduleName === 'string' ? instance.modules[moduleName] : moduleName;
+      if (!module) { return; }
 
-    // Extend instance methods and props
-    if (module.instance) {
-      Object.keys(module.instance).forEach(function (modulePropName) {
-        var moduleProp = module.instance[modulePropName];
-        if (typeof moduleProp === 'function') {
-          instance[modulePropName] = moduleProp.bind(instance);
-        } else {
-          instance[modulePropName] = moduleProp;
-        }
-      });
-    }
-    // Add event listeners
-    if (module.on && instance.on) {
-      Object.keys(module.on).forEach(function (moduleEventName) {
-        instance.on(moduleEventName, module.on[moduleEventName]);
-      });
-    }
-    // Add vnode hooks
-    if (module.vnode) {
-      if (!instance.vnodeHooks) { instance.vnodeHooks = {}; }
-      Object.keys(module.vnode).forEach(function (vnodeId) {
-        Object.keys(module.vnode[vnodeId]).forEach(function (hookName) {
-          var handler = module.vnode[vnodeId][hookName];
-          if (!instance.vnodeHooks[hookName]) { instance.vnodeHooks[hookName] = {}; }
-          if (!instance.vnodeHooks[hookName][vnodeId]) { instance.vnodeHooks[hookName][vnodeId] = []; }
-          instance.vnodeHooks[hookName][vnodeId].push(handler.bind(instance));
+      // Extend instance methods and props
+      if (module.instance) {
+        Object.keys(module.instance).forEach(function (modulePropName) {
+          var moduleProp = module.instance[modulePropName];
+          if (typeof moduleProp === 'function') {
+            instance[modulePropName] = moduleProp.bind(instance);
+          } else {
+            instance[modulePropName] = moduleProp;
+          }
         });
-      });
-    }
-    // Module create callback
-    if (module.create) {
-      module.create.bind(instance)(moduleParams);
-    }
-  };
+      }
+      // Add event listeners
+      if (module.on && instance.on) {
+        Object.keys(module.on).forEach(function (moduleEventName) {
+          instance.on(moduleEventName, module.on[moduleEventName]);
+        });
+      }
+      // Add vnode hooks
+      if (module.vnode) {
+        if (!instance.vnodeHooks) { instance.vnodeHooks = {}; }
+        Object.keys(module.vnode).forEach(function (vnodeId) {
+          Object.keys(module.vnode[vnodeId]).forEach(function (hookName) {
+            var handler = module.vnode[vnodeId][hookName];
+            if (!instance.vnodeHooks[hookName]) { instance.vnodeHooks[hookName] = {}; }
+            if (!instance.vnodeHooks[hookName][vnodeId]) { instance.vnodeHooks[hookName][vnodeId] = []; }
+            instance.vnodeHooks[hookName][vnodeId].push(handler.bind(instance));
+          });
+        });
+      }
+      // Module create callback
+      if (module.create) {
+        module.create.bind(instance)(moduleParams);
+      }
+    };
 
-  Framework7Class.prototype.useModules = function useModules (modulesParams) {
+    Framework7Class.prototype.useModules = function useModules (modulesParams) {
       if ( modulesParams === void 0 ) modulesParams = {};
 
-    var instance = this;
-    if (!instance.modules) { return; }
-    Object.keys(instance.modules).forEach(function (moduleName) {
-      var moduleParams = modulesParams[moduleName] || {};
-      instance.useModule(moduleName, moduleParams);
-    });
-  };
+      var instance = this;
+      if (!instance.modules) { return; }
+      Object.keys(instance.modules).forEach(function (moduleName) {
+        var moduleParams = modulesParams[moduleName] || {};
+        instance.useModule(moduleName, moduleParams);
+      });
+    };
 
-  staticAccessors$1.components.set = function (components) {
-    var Class = this;
-    if (!Class.use) { return; }
-    Class.use(components);
-  };
+    staticAccessors.components.set = function (components) {
+      var Class = this;
+      if (!Class.use) { return; }
+      Class.use(components);
+    };
 
-  Framework7Class.installModule = function installModule (module) {
+    Framework7Class.installModule = function installModule (module) {
       var params = [], len = arguments.length - 1;
       while ( len-- > 0 ) params[ len ] = arguments[ len + 1 ];
 
-    var Class = this;
-    if (!Class.prototype.modules) { Class.prototype.modules = {}; }
-    var name = module.name || (((Object.keys(Class.prototype.modules).length) + "_" + (Utils.now())));
-    Class.prototype.modules[name] = module;
-    // Prototype
-    if (module.proto) {
-      Object.keys(module.proto).forEach(function (key) {
-        Class.prototype[key] = module.proto[key];
-      });
-    }
-    // Class
-    if (module.static) {
-      Object.keys(module.static).forEach(function (key) {
-        Class[key] = module.static[key];
-      });
-    }
-    // Callback
-    if (module.install) {
-      module.install.apply(Class, params);
-    }
-    return Class;
-  };
-
-  Framework7Class.use = function use (module) {
-      var params = [], len = arguments.length - 1;
-      while ( len-- > 0 ) params[ len ] = arguments[ len + 1 ];
-
-    var Class = this;
-    if (Array.isArray(module)) {
-      module.forEach(function (m) { return Class.installModule(m); });
+      var Class = this;
+      if (!Class.prototype.modules) { Class.prototype.modules = {}; }
+      var name = module.name || (((Object.keys(Class.prototype.modules).length) + "_" + (Utils.now())));
+      Class.prototype.modules[name] = module;
+      // Prototype
+      if (module.proto) {
+        Object.keys(module.proto).forEach(function (key) {
+          Class.prototype[key] = module.proto[key];
+        });
+      }
+      // Class
+      if (module.static) {
+        Object.keys(module.static).forEach(function (key) {
+          Class[key] = module.static[key];
+        });
+      }
+      // Callback
+      if (module.install) {
+        module.install.apply(Class, params);
+      }
       return Class;
-    }
-    return Class.installModule.apply(Class, [ module ].concat( params ));
-  };
+    };
 
-  Object.defineProperties( Framework7Class, staticAccessors$1 );
+    Framework7Class.use = function use (module) {
+      var params = [], len = arguments.length - 1;
+      while ( len-- > 0 ) params[ len ] = arguments[ len + 1 ];
+
+      var Class = this;
+      if (Array.isArray(module)) {
+        module.forEach(function (m) { return Class.installModule(m); });
+        return Class;
+      }
+      return Class.installModule.apply(Class, [ module ].concat( params ));
+    };
+
+    Object.defineProperties( Framework7Class, staticAccessors );
+
+    return Framework7Class;
+  }(EventsClass));
 
   function ConstructorMethods (parameters) {
     if ( parameters === void 0 ) parameters = {};
@@ -3460,6 +3473,9 @@
       // Install Modules
       app.useModules();
 
+      // Init Data & Methods
+      app.initData();
+
       // Init
       if (app.params.init) {
         if (Device.cordova && app.params.initOnDeviceReady) {
@@ -3479,24 +3495,10 @@
     Framework7.prototype.constructor = Framework7;
 
     var prototypeAccessors = { $: { configurable: true },t7: { configurable: true } };
-    var staticAccessors = { Dom7: { configurable: true },$: { configurable: true },Template7: { configurable: true },Class: { configurable: true } };
+    var staticAccessors = { Dom7: { configurable: true },$: { configurable: true },Template7: { configurable: true },Class: { configurable: true },Events: { configurable: true } };
 
-    Framework7.prototype.init = function init () {
+    Framework7.prototype.initData = function initData () {
       var app = this;
-      if (app.initialized) { return app; }
-
-      app.root.addClass('framework7-initializing');
-
-      // RTL attr
-      if (app.rtl) {
-        $('html').attr('dir', 'rtl');
-      }
-
-      // Root class
-      app.root.addClass('framework7-root');
-
-      // Theme class
-      $('html').removeClass('ios md').addClass(app.theme);
 
       // Data
       app.data = {};
@@ -3516,6 +3518,25 @@
           }
         });
       }
+    };
+
+    Framework7.prototype.init = function init () {
+      var app = this;
+      if (app.initialized) { return app; }
+
+      app.root.addClass('framework7-initializing');
+
+      // RTL attr
+      if (app.rtl) {
+        $('html').attr('dir', 'rtl');
+      }
+
+      // Root class
+      app.root.addClass('framework7-root');
+
+      // Theme class
+      $('html').removeClass('ios md').addClass(app.theme);
+
       // Init class
       Utils.nextFrame(function () {
         app.root.removeClass('framework7-initializing');
@@ -3572,6 +3593,10 @@
 
     staticAccessors.Class.get = function () {
       return Framework7Class$$1;
+    };
+
+    staticAccessors.Events.get = function () {
+      return EventsClass;
     };
 
     Object.defineProperties( Framework7.prototype, prototypeAccessors );
@@ -4104,31 +4129,106 @@
     }
     return Request(requestOptions);
   }
-  Request.get = function get() {
-    var args = [], len = arguments.length;
-    while ( len-- ) args[ len ] = arguments[ len ];
+  function RequestShortcutPromise(method) {
+    var args = [], len = arguments.length - 1;
+    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
-    return RequestShortcut.apply(void 0, [ 'get' ].concat( args ));
-  };
-  Request.post = function post() {
-    var args = [], len = arguments.length;
-    while ( len-- ) args[ len ] = arguments[ len ];
+    var url = args[0];
+    var data = args[1];
+    var dataType = args[2];
+    return new Promise(function (resolve, reject) {
+      RequestShortcut(
+        method,
+        url,
+        data,
+        function (response) {
+          resolve(response);
+        },
+        function (xhr, status) {
+          reject(status);
+        },
+        dataType
+      );
+    });
+  }
+  Object.assign(Request, {
+    get: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
 
-    return RequestShortcut.apply(void 0, [ 'post' ].concat( args ));
-  };
-  Request.json = function json() {
-    var args = [], len = arguments.length;
-    while ( len-- ) args[ len ] = arguments[ len ];
+      return RequestShortcut.apply(void 0, [ 'get' ].concat( args ));
+  },
+    post: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
 
-    return RequestShortcut.apply(void 0, [ 'json' ].concat( args ));
-  };
-  Request.getJSON = Request.json;
-  Request.postJSON = function postJSON() {
-    var args = [], len = arguments.length;
-    while ( len-- ) args[ len ] = arguments[ len ];
+      return RequestShortcut.apply(void 0, [ 'post' ].concat( args ));
+  },
+    json: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
 
-    return RequestShortcut.apply(void 0, [ 'postJSON' ].concat( args ));
+      return RequestShortcut.apply(void 0, [ 'json' ].concat( args ));
+  },
+    getJSON: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      return RequestShortcut.apply(void 0, [ 'json' ].concat( args ));
+  },
+    postJSON: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      return RequestShortcut.apply(void 0, [ 'postJSON' ].concat( args ));
+  },
+  });
+
+  Request.promise = function requestPromise(requestOptions) {
+    return new Promise(function (resolve, reject) {
+      Request(Object.assign(requestOptions, {
+        success: function success(data) {
+          resolve(data);
+        },
+        error: function error(xhr, status) {
+          reject(status);
+        },
+      }));
+    });
   };
+  Object.assign(Request.promise, {
+    get: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      return RequestShortcutPromise.apply(void 0, [ 'get' ].concat( args ));
+  },
+    post: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      return RequestShortcutPromise.apply(void 0, [ 'post' ].concat( args ));
+  },
+    json: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      return RequestShortcutPromise.apply(void 0, [ 'json' ].concat( args ));
+  },
+    getJSON: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      return RequestShortcutPromise.apply(void 0, [ 'json' ].concat( args ));
+  },
+    postJSON: function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      return RequestShortcutPromise.apply(void 0, [ 'postJSON' ].concat( args ));
+  },
+  });
+
   Request.setup = function setup(options) {
     if (options.type && !options.method) {
       Utils.extend(options, { method: options.type });
@@ -9426,12 +9526,17 @@
         });
       });
 
+
       // Load Page
       var clickedLinkData = {};
       if (isLink) {
         e.preventDefault();
         clickedLinkData = $clickedLinkEl.dataset();
       }
+
+      // Prevent Router
+      if ($clickedLinkEl.hasClass('prevent-router') || $clickedLinkEl.hasClass('router-prevent')) { return; }
+
       var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
       if (validUrl || $clickedLinkEl.hasClass('back')) {
         var view;
@@ -10867,10 +10972,10 @@
         app.serviceWorker.container.register(path, (scope ? { scope: scope } : {}))
           .then(function (reg) {
             SW.registrations.push(reg);
-            app.emit('swRegisterSuccess', reg);
+            app.emit('serviceWorkerRegisterSuccess', reg);
             resolve(reg);
           }).catch(function (error) {
-            app.emit('swRegisterError', error);
+            app.emit('serviceWorkerRegisterError', error);
             reject(error);
           });
       });
@@ -10892,11 +10997,11 @@
             if (SW.registrations.indexOf(reg) >= 0) {
               SW.registrations.splice(SW.registrations.indexOf(reg), 1);
             }
-            app.emit('swUnregisterSuccess', true);
+            app.emit('serviceWorkerUnregisterSuccess', true);
             resolve();
           })
           .catch(function (error) {
-            app.emit('swUnregisterError', error);
+            app.emit('serviceWorkerUnregisterError', error);
             reject(error);
           });
       }); }));
@@ -11434,12 +11539,14 @@
     hide: function hide(el, animate) {
       if ( animate === void 0 ) animate = true;
 
+      var app = this;
       var $el = $(el);
       if ($el.hasClass('navbar-inner')) { $el = $el.parents('.navbar'); }
       if (!$el.length) { return; }
       if ($el.hasClass('navbar-hidden')) { return; }
       var className = "navbar-hidden" + (animate ? ' navbar-transitioning' : '');
-      if ($el.find('.navbar-current .title-large').length) {
+      var currentIsLarge = app.theme === 'ios' ? $el.find('.navbar-current .title-large').length : $el.find('.title-large').length;
+      if (currentIsLarge) {
         className += ' navbar-large-hidden';
       }
       $el.transitionEnd(function () {
@@ -11559,6 +11666,7 @@
       var $navbarEl = app.theme === 'md'
         ? $navbarInnerEl.parents('.navbar')
         : $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
+      var isLarge = $navbarInnerEl.find('.title-large').length || $navbarInnerEl.hasClass('.navbar-inner-large');
       var navbarHideHeight = 44;
       var snapPageScrollToLargeTitle = app.params.navbar.snapPageScrollToLargeTitle;
 
@@ -11573,7 +11681,7 @@
 
       var navbarCollapsed;
       var navbarTitleLargeHeight;
-      if (needCollapse) {
+      if (needCollapse || (needHide && isLarge)) {
         navbarTitleLargeHeight = $navbarInnerEl.css('--f7-navbar-large-title-height');
         if (navbarTitleLargeHeight && navbarTitleLargeHeight.indexOf('px') >= 0) {
           navbarTitleLargeHeight = parseInt(navbarTitleLargeHeight, 10);
@@ -11583,6 +11691,9 @@
         } else {
           navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
         }
+      }
+      if (needHide && isLarge) {
+        navbarHideHeight += navbarTitleLargeHeight;
       }
 
       var scrollChanged;
@@ -12357,14 +12468,6 @@
       }
       // Show Modal
       $el.show();
-
-      // Set Dialog offset
-      if (type === 'dialog') {
-        $el.css({
-          marginTop: ((-Math.round($el.outerHeight() / 2)) + "px"),
-        });
-      }
-
 
       /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
       modal._clientLeft = $el[0].clientLeft;
@@ -25388,6 +25491,7 @@
       var m = this;
       var message = Utils.extend({
         type: 'sent',
+        attrs: {},
       }, messageToRender);
       if (m.params.renderMessage) {
         return m.params.renderMessage.call(m, message);
@@ -25395,7 +25499,8 @@
       if (message.isTitle) {
         return ("<div class=\"messages-title\">" + (message.text) + "</div>");
       }
-      return ("\n      <div class=\"message message-" + (message.type) + " " + (message.isTyping ? 'message-typing' : '') + "\">\n        " + (message.avatar ? ("\n        <div class=\"message-avatar\" style=\"background-image:url(" + (message.avatar) + ")\"></div>\n        ") : '') + "\n        <div class=\"message-content\">\n          " + (message.name ? ("<div class=\"message-name\">" + (message.name) + "</div>") : '') + "\n          " + (message.header ? ("<div class=\"message-header\">" + (message.header) + "</div>") : '') + "\n          <div class=\"message-bubble\">\n            " + (message.textHeader ? ("<div class=\"message-text-header\">" + (message.textHeader) + "</div>") : '') + "\n            " + (message.image ? ("<div class=\"message-image\">" + (message.image) + "</div>") : '') + "\n            " + (message.imageSrc && !message.image ? ("<div class=\"message-image\"><img src=\"" + (message.imageSrc) + "\"></div>") : '') + "\n            " + (message.text || message.isTyping ? ("<div class=\"message-text\">" + (message.text || '') + (message.isTyping ? '<div class="message-typing-indicator"><div></div><div></div><div></div></div>' : '') + "</div>") : '') + "\n            " + (message.textFooter ? ("<div class=\"message-text-footer\">" + (message.textFooter) + "</div>") : '') + "\n          </div>\n          " + (message.footer ? ("<div class=\"message-footer\">" + (message.footer) + "</div>") : '') + "\n        </div>\n      </div>\n    ");
+      var attrs = Object.keys(message.attrs).map(function (attr) { return (attr + "=\"" + (message.attrs[attr]) + "\""); }).join(' ');
+      return ("\n      <div class=\"message message-" + (message.type) + " " + (message.isTyping ? 'message-typing' : '') + " " + (message.cssClass || '') + "\" " + attrs + ">\n        " + (message.avatar ? ("\n        <div class=\"message-avatar\" style=\"background-image:url(" + (message.avatar) + ")\"></div>\n        ") : '') + "\n        <div class=\"message-content\">\n          " + (message.name ? ("<div class=\"message-name\">" + (message.name) + "</div>") : '') + "\n          " + (message.header ? ("<div class=\"message-header\">" + (message.header) + "</div>") : '') + "\n          <div class=\"message-bubble\">\n            " + (message.textHeader ? ("<div class=\"message-text-header\">" + (message.textHeader) + "</div>") : '') + "\n            " + (message.image ? ("<div class=\"message-image\">" + (message.image) + "</div>") : '') + "\n            " + (message.imageSrc && !message.image ? ("<div class=\"message-image\"><img src=\"" + (message.imageSrc) + "\"></div>") : '') + "\n            " + (message.text || message.isTyping ? ("<div class=\"message-text\">" + (message.text || '') + (message.isTyping ? '<div class="message-typing-indicator"><div></div><div></div><div></div></div>' : '') + "</div>") : '') + "\n            " + (message.textFooter ? ("<div class=\"message-text-footer\">" + (message.textFooter) + "</div>") : '') + "\n          </div>\n          " + (message.footer ? ("<div class=\"message-footer\">" + (message.footer) + "</div>") : '') + "\n        </div>\n      </div>\n    ");
     };
 
     Messages.prototype.renderMessages = function renderMessages (messagesToRender, method) {

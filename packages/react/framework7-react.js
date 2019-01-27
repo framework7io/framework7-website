@@ -1,5 +1,5 @@
 /**
- * Framework7 React 4.0.0-beta.14
+ * Framework7 React 4.0.0-beta.25
  * Build full featured iOS & Android apps using Framework7 & React
  * http://framework7.io/react/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: January 10, 2019
+ * Released on: January 18, 2019
  */
 
 (function (global, factory) {
@@ -170,6 +170,7 @@
       routeTabId: String,
       view: String,
       routeProps: Object,
+      preventRouter: Boolean,
     },
     linkRouterAttrs: function linkRouterAttrs(props) {
       var force = props.force;
@@ -201,10 +202,12 @@
       var back = props.back;
       var linkBack = props.linkBack;
       var external = props.external;
+      var preventRouter = props.preventRouter;
 
       return {
         back: back || linkBack,
         external: external,
+        'prevent-router': preventRouter,
       };
     },
     linkActionsProps: {
@@ -12854,7 +12857,7 @@
   };
 
   /**
-   * Framework7 React 4.0.0-beta.14
+   * Framework7 React 4.0.0-beta.25
    * Build full featured iOS & Android apps using Framework7 & React
    * http://framework7.io/react/
    *
@@ -12862,7 +12865,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 10, 2019
+   * Released on: January 18, 2019
    */
 
   var Plugin = {

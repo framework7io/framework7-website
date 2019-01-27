@@ -123,57 +123,12 @@
   });
 
   // Clickable titles
-  if ($('.docs-content').length > 0) {
-    $('.docs-content').find('h2, h3').each(function () {
-      var h = $(this);
-      if (!h.attr('id')) {
-        var id = h.text().trim()
-        .replace(/\ /g, '-')
-        .replace(/\//g, '-')
-        .replace(/"/g, '')
-        .replace(/'/g, '-')
-        .replace(/:/g, '')
-        .replace(/,/g, '')
-        .replace(/\./g, '')
-        .replace(/\+/g, '')
-        .replace(/---/g, '-')
-        .replace(/--/g, '-')
-        .toLowerCase().replace(/\-&-/g,'-');
-        h.attr('id', id);
-      }
-      if (h.attr('id')) {
-        h.click(function(){
-          document.location.hash = h.attr('id');
-        });
-      }
-    });
-  }
+  $('.docs-content').find('h2, h3').on('click', function () {
+    var $h = $(this);
+    if (!$h.attr('id')) return;
+    document.location.hash = $h.attr('id');
+  })
 
-  // Index
-  function buildDocsIndex() {
-    var indexHtml = '';
-    var hasNested = false;
-    var headings = $('.docs-content').find('h2, h3');
-    headings.each(function (index, el) {
-      var tag = el.nodeName.toLowerCase();
-      if (tag === 'h3' && !hasNested) {
-        indexHtml += '<ul>';
-        hasNested = true;
-      }
-      if (tag === 'h2' && hasNested) {
-        indexHtml += '</ul>';
-        hasNested = false;
-      }
-      indexHtml += '<li><a href="#' + $(this).attr('id') + '">' + $(this).text().replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</a></li>'
-      if (hasNested && index === headings.length - 1) {
-        indexHtml += '</ul>';
-      }
-    });
-    $('.docs-index').html(indexHtml);
-  }
-  if ($('.docs-index').length > 0) {
-    buildDocsIndex();
-  }
 
   if ($('.docs-nav').length > 0) {
     var loc = document.location.href;

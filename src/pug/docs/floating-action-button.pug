@@ -128,23 +128,23 @@ block content
     h2 FAB Morph
     p There is also ability for FAB to morph to any visible element on page.
     :code(lang="html")
-          <div class="page">
-            <div class="navbar">...</div>
+      <div class="page">
+        <div class="navbar">...</div>
 
-            <!-- Toolbar has additional required "fab-morph-target" class -->
-            <div class="toolbar fab-morph-target">
-              ...
-            </div>
+        <!-- Toolbar has additional required "fab-morph-target" class -->
+        <div class="toolbar toolbar-bottom fab-morph-target">
+          ...
+        </div>
 
-            <!-- FAB will morph to toolbar -->
-            <div class="fab fab-morph" data-morph-to=".toolbar">
-              <i class="icon f7-icons">add</i>
-            </div>
+        <!-- FAB will morph to toolbar -->
+        <div class="fab fab-morph" data-morph-to=".toolbar">
+          <i class="icon f7-icons">add</i>
+        </div>
 
-            <div class="page-content">
-              ...
-            </div>
-          </div>
+        <div class="page-content">
+          ...
+        </div>
+      </div>
     p Where
     ul
       li <code>data-morph-to</code> - additional attribute on FAB where target element's CSS selector must be specified. In this example it points to Toolbar
@@ -208,7 +208,7 @@ block content
                 </div>
               </div>
               <!-- Toolbar FAB Morph Target -->
-              <div class="toolbar toolbar-bottom-md fab-morph-target">
+              <div class="toolbar toolbar-bottom fab-morph-target">
                 <div class="toolbar-inner">
                   <!-- Each Toolbar link will close FAB (morph back) on click -->
                   <a class="link fab-close">Link 1</a>

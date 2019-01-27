@@ -135,9 +135,9 @@
     box-shadow: 0px 0px 20px 10px rgba(0,0,0,0.2);
     width: 375px;
     height: 667px;
-    padding: 10px;
+    padding: 10px 7px;
     border-radius: 20px;
-    background: @brownColor;
+    background: @darkBrownColor;
     align-self: center;
     margin-left: 60px;
     position: relative;
@@ -158,7 +158,7 @@
       white-space: nowrap;
       a {
         text-align: center;
-        background: @brownColor;
+        background: @darkBrownColor;
         text-decoration: none;
         color:#fff;
         padding: 5px 5px 5px 15px;
@@ -196,13 +196,16 @@
         position: absolute;
         right: 0;
         top: 0;
-        width: 58px;
+        width: 100%;
         height: 100%;
         box-sizing: border-box;
-        padding: 15px 5px 5px 20px;
         font-size: 10px;
         line-height: 1;
         opacity: 0;
+        display: flex;
+        align-content: center;
+        align-items: center;
+        justify-content: center;
         i {
           width: 30px;
           height: 30px;
@@ -228,13 +231,6 @@
       .logo-android {
         background-image: url(../i/logo-android.png);
       }
-    }
-  }
-  .phone-android {
-    width: 360px;
-    height: 640px;
-    .theme-switch {
-      margin-top: -9px;
     }
   }
   @media (max-width: 959px) {

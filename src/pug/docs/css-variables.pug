@@ -1,0 +1,85 @@
+extends ../_docs-template
+
+block vars
+  - var title = 'CSS Variables Reference | Framework7 Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu
+  .docs-content
+    +improveDocsLink
+    h1 CSS Variables Reference
+    ul.docs-index
+
+    p This page contains reference to all CSS variables defined in all components.
+    .important-note
+      p Note that commented variables are not specified by default and their values is what they fallback to in this case.
+
+    +cssVars('accordion', false, 'Accordion')
+    +cssVars('actions', false, 'Action Sheet')
+    +cssVars('autocomplete', false, 'Autocomplete')
+    +cssVars('badge', false, 'Badge')
+    +cssVars('block', false, 'Block')
+    +cssVars('button', false, 'Button')
+    +cssVars('calendar', false, 'Calendar')
+    +cssVars('card', false, 'Card')
+    +cssVars('checkbox', false, 'Checkbox')
+    +cssVars('chip', false, 'Chip')
+    +cssVars('contacts-list', false, 'Contacts List')
+    +cssVars('data-table', false, 'Data Table')
+    +cssVars('dialog', false, 'Dialog')
+    +cssVars('elevation', false, 'Elevation')
+    +cssVars('fab', false, 'Fab')
+    +cssVars('form', false, 'Form')
+    +cssVars('gauge', false, 'Gauge')
+    +cssVars('grid', false, 'Grid')
+    +cssVars('icon', false, 'Icon')
+    +cssVars('infinite-scroll', false, 'Infinite Scroll')
+    +cssVars('input', false, 'Input')
+    +cssVars('lazy', false, 'Lazy')
+    +cssVars('link', false, 'Link')
+    +cssVars('list', false, 'List')
+    +cssVars('list-index', false, 'List Index')
+    +cssVars('login-screen', false, 'Login Screen')
+    +cssVars('menu', false, 'Menu')
+    +cssVars('messagebar', false, 'Messagebar')
+    +cssVars('messages', false, 'Messages')
+    +cssVars('modal', false, 'Modal')
+    +cssVars('navbar', false, 'Navbar')
+    +cssVars('notification', false, 'Notification')
+    +cssVars('page', false, 'Page')
+    +cssVars('panel', false, 'Panel')
+    +cssVars('photo-browser', false, 'Photo Browser')
+    +cssVars('picker', false, 'Picker')
+    +cssVars('popover', false, 'Popover')
+    +cssVars('popup', false, 'Popup')
+    +cssVars('preloader', false, 'Preloader')
+    +cssVars('progressbar', false, 'Progressbar')
+    +cssVars('pull-to-refresh', false, 'Pull To Refresh')
+    +cssVars('radio', false, 'Radio')
+    +cssVars('range', false, 'Range Slider')
+    +cssVars('searchbar', false, 'Searchbar')
+    +cssVars('sheet', false, 'Sheet')
+    +cssVars('skeleton', false, 'Skeleton')
+    +cssVars('smart-select', false, 'Smart Select')
+    +cssVars('sortable', false, 'Sortable List')
+    +cssVars('statusbar', false, 'Statusbar')
+    +cssVars('stepper', false, 'Stepper')
+    +cssVars('subnavbar', false, 'Subnavbar')
+    +cssVars('swipeout', false, 'Swipeout')
+    +cssVars('swiper', false, 'Swiper')
+    +cssVars('tabs', false, 'Tabs')
+    +cssVars('timeline', false, 'Timeline')
+    +cssVars('toast', false, 'Toast')
+    +cssVars('toggle', false, 'Toggle')
+    +cssVars('toolbar', false, 'Toolbar')
+    +cssVars('tooltip', false, 'Tooltip')
+    +cssVars('touch-ripple', false, 'Touch Ripple')
+    +cssVars('typography', false, 'Typography')
+    +cssVars('vi', false, 'Vi')
+    +cssVars('view', false, 'View')
+    +cssVars('virtual-list', false, 'Virtual List')
+
+

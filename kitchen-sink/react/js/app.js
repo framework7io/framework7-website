@@ -3361,27 +3361,15 @@
 	  return device;
 	}());
 
-	var Framework7Class = function Framework7Class(params, parents) {
-	  if ( params === void 0 ) params = {};
+	var EventsClass = function EventsClass(parents) {
 	  if ( parents === void 0 ) parents = [];
 
 	  var self = this;
-	  self.params = params;
-
-	  // Events
 	  self.eventsParents = parents;
 	  self.eventsListeners = {};
-
-	  if (self.params && self.params.on) {
-	    Object.keys(self.params.on).forEach(function (eventName) {
-	      self.on(eventName, self.params.on[eventName]);
-	    });
-	  }
 	};
 
-	var staticAccessors$1 = { components: { configurable: true } };
-
-	Framework7Class.prototype.on = function on (events, handler, priority) {
+	EventsClass.prototype.on = function on (events, handler, priority) {
 	  var self = this;
 	  if (typeof handler !== 'function') { return self; }
 	  var method = priority ? 'unshift' : 'push';
@@ -3392,7 +3380,7 @@
 	  return self;
 	};
 
-	Framework7Class.prototype.once = function once (events, handler, priority) {
+	EventsClass.prototype.once = function once (events, handler, priority) {
 	  var self = this;
 	  if (typeof handler !== 'function') { return self; }
 	  function onceHandler() {
@@ -3405,7 +3393,7 @@
 	  return self.on(events, onceHandler, priority);
 	};
 
-	Framework7Class.prototype.off = function off (events, handler) {
+	EventsClass.prototype.off = function off (events, handler) {
 	  var self = this;
 	  if (!self.eventsListeners) { return self; }
 	  events.split(' ').forEach(function (event) {
@@ -3422,7 +3410,7 @@
 	  return self;
 	};
 
-	Framework7Class.prototype.emit = function emit () {
+	EventsClass.prototype.emit = function emit () {
 	    var args = [], len = arguments.length;
 	    while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -3466,134 +3454,159 @@
 	  return self;
 	};
 
-	// eslint-disable-next-line
-	Framework7Class.prototype.useModuleParams = function useModuleParams (module, instanceParams) {
-	  if (module.params) {
-	    var originalParams = {};
-	    Object.keys(module.params).forEach(function (paramKey) {
-	      if (typeof instanceParams[paramKey] === 'undefined') { return; }
-	      originalParams[paramKey] = Utils.extend({}, instanceParams[paramKey]);
-	    });
-	    Utils.extend(instanceParams, module.params);
-	    Object.keys(originalParams).forEach(function (paramKey) {
-	      Utils.extend(instanceParams[paramKey], originalParams[paramKey]);
-	    });
-	  }
-	};
+	var Framework7Class = /*@__PURE__*/(function (EventsClass$$1) {
+	  function Framework7Class(params, parents) {
+	    if ( params === void 0 ) params = {};
+	    if ( parents === void 0 ) parents = [];
 
-	Framework7Class.prototype.useModulesParams = function useModulesParams (instanceParams) {
-	  var instance = this;
-	  if (!instance.modules) { return; }
-	  Object.keys(instance.modules).forEach(function (moduleName) {
-	    var module = instance.modules[moduleName];
-	    // Extend params
-	    if (module.params) {
-	      Utils.extend(instanceParams, module.params);
+	    EventsClass$$1.call(this, parents);
+	    var self = this;
+	    self.params = params;
+
+	    if (self.params && self.params.on) {
+	      Object.keys(self.params.on).forEach(function (eventName) {
+	        self.on(eventName, self.params.on[eventName]);
+	      });
 	    }
-	  });
-	};
+	  }
 
-	Framework7Class.prototype.useModule = function useModule (moduleName, moduleParams) {
+	  if ( EventsClass$$1 ) Framework7Class.__proto__ = EventsClass$$1;
+	  Framework7Class.prototype = Object.create( EventsClass$$1 && EventsClass$$1.prototype );
+	  Framework7Class.prototype.constructor = Framework7Class;
+
+	  var staticAccessors = { components: { configurable: true } };
+
+	  // eslint-disable-next-line
+	  Framework7Class.prototype.useModuleParams = function useModuleParams (module, instanceParams) {
+	    if (module.params) {
+	      var originalParams = {};
+	      Object.keys(module.params).forEach(function (paramKey) {
+	        if (typeof instanceParams[paramKey] === 'undefined') { return; }
+	        originalParams[paramKey] = Utils.extend({}, instanceParams[paramKey]);
+	      });
+	      Utils.extend(instanceParams, module.params);
+	      Object.keys(originalParams).forEach(function (paramKey) {
+	        Utils.extend(instanceParams[paramKey], originalParams[paramKey]);
+	      });
+	    }
+	  };
+
+	  Framework7Class.prototype.useModulesParams = function useModulesParams (instanceParams) {
+	    var instance = this;
+	    if (!instance.modules) { return; }
+	    Object.keys(instance.modules).forEach(function (moduleName) {
+	      var module = instance.modules[moduleName];
+	      // Extend params
+	      if (module.params) {
+	        Utils.extend(instanceParams, module.params);
+	      }
+	    });
+	  };
+
+	  Framework7Class.prototype.useModule = function useModule (moduleName, moduleParams) {
 	    if ( moduleName === void 0 ) moduleName = '';
 	    if ( moduleParams === void 0 ) moduleParams = {};
 
-	  var instance = this;
-	  if (!instance.modules) { return; }
-	  var module = typeof moduleName === 'string' ? instance.modules[moduleName] : moduleName;
-	  if (!module) { return; }
+	    var instance = this;
+	    if (!instance.modules) { return; }
+	    var module = typeof moduleName === 'string' ? instance.modules[moduleName] : moduleName;
+	    if (!module) { return; }
 
-	  // Extend instance methods and props
-	  if (module.instance) {
-	    Object.keys(module.instance).forEach(function (modulePropName) {
-	      var moduleProp = module.instance[modulePropName];
-	      if (typeof moduleProp === 'function') {
-	        instance[modulePropName] = moduleProp.bind(instance);
-	      } else {
-	        instance[modulePropName] = moduleProp;
-	      }
-	    });
-	  }
-	  // Add event listeners
-	  if (module.on && instance.on) {
-	    Object.keys(module.on).forEach(function (moduleEventName) {
-	      instance.on(moduleEventName, module.on[moduleEventName]);
-	    });
-	  }
-	  // Add vnode hooks
-	  if (module.vnode) {
-	    if (!instance.vnodeHooks) { instance.vnodeHooks = {}; }
-	    Object.keys(module.vnode).forEach(function (vnodeId) {
-	      Object.keys(module.vnode[vnodeId]).forEach(function (hookName) {
-	        var handler = module.vnode[vnodeId][hookName];
-	        if (!instance.vnodeHooks[hookName]) { instance.vnodeHooks[hookName] = {}; }
-	        if (!instance.vnodeHooks[hookName][vnodeId]) { instance.vnodeHooks[hookName][vnodeId] = []; }
-	        instance.vnodeHooks[hookName][vnodeId].push(handler.bind(instance));
+	    // Extend instance methods and props
+	    if (module.instance) {
+	      Object.keys(module.instance).forEach(function (modulePropName) {
+	        var moduleProp = module.instance[modulePropName];
+	        if (typeof moduleProp === 'function') {
+	          instance[modulePropName] = moduleProp.bind(instance);
+	        } else {
+	          instance[modulePropName] = moduleProp;
+	        }
 	      });
-	    });
-	  }
-	  // Module create callback
-	  if (module.create) {
-	    module.create.bind(instance)(moduleParams);
-	  }
-	};
+	    }
+	    // Add event listeners
+	    if (module.on && instance.on) {
+	      Object.keys(module.on).forEach(function (moduleEventName) {
+	        instance.on(moduleEventName, module.on[moduleEventName]);
+	      });
+	    }
+	    // Add vnode hooks
+	    if (module.vnode) {
+	      if (!instance.vnodeHooks) { instance.vnodeHooks = {}; }
+	      Object.keys(module.vnode).forEach(function (vnodeId) {
+	        Object.keys(module.vnode[vnodeId]).forEach(function (hookName) {
+	          var handler = module.vnode[vnodeId][hookName];
+	          if (!instance.vnodeHooks[hookName]) { instance.vnodeHooks[hookName] = {}; }
+	          if (!instance.vnodeHooks[hookName][vnodeId]) { instance.vnodeHooks[hookName][vnodeId] = []; }
+	          instance.vnodeHooks[hookName][vnodeId].push(handler.bind(instance));
+	        });
+	      });
+	    }
+	    // Module create callback
+	    if (module.create) {
+	      module.create.bind(instance)(moduleParams);
+	    }
+	  };
 
-	Framework7Class.prototype.useModules = function useModules (modulesParams) {
+	  Framework7Class.prototype.useModules = function useModules (modulesParams) {
 	    if ( modulesParams === void 0 ) modulesParams = {};
 
-	  var instance = this;
-	  if (!instance.modules) { return; }
-	  Object.keys(instance.modules).forEach(function (moduleName) {
-	    var moduleParams = modulesParams[moduleName] || {};
-	    instance.useModule(moduleName, moduleParams);
-	  });
-	};
+	    var instance = this;
+	    if (!instance.modules) { return; }
+	    Object.keys(instance.modules).forEach(function (moduleName) {
+	      var moduleParams = modulesParams[moduleName] || {};
+	      instance.useModule(moduleName, moduleParams);
+	    });
+	  };
 
-	staticAccessors$1.components.set = function (components) {
-	  var Class = this;
-	  if (!Class.use) { return; }
-	  Class.use(components);
-	};
+	  staticAccessors.components.set = function (components) {
+	    var Class = this;
+	    if (!Class.use) { return; }
+	    Class.use(components);
+	  };
 
-	Framework7Class.installModule = function installModule (module) {
+	  Framework7Class.installModule = function installModule (module) {
 	    var params = [], len = arguments.length - 1;
 	    while ( len-- > 0 ) params[ len ] = arguments[ len + 1 ];
 
-	  var Class = this;
-	  if (!Class.prototype.modules) { Class.prototype.modules = {}; }
-	  var name = module.name || (((Object.keys(Class.prototype.modules).length) + "_" + (Utils.now())));
-	  Class.prototype.modules[name] = module;
-	  // Prototype
-	  if (module.proto) {
-	    Object.keys(module.proto).forEach(function (key) {
-	      Class.prototype[key] = module.proto[key];
-	    });
-	  }
-	  // Class
-	  if (module.static) {
-	    Object.keys(module.static).forEach(function (key) {
-	      Class[key] = module.static[key];
-	    });
-	  }
-	  // Callback
-	  if (module.install) {
-	    module.install.apply(Class, params);
-	  }
-	  return Class;
-	};
-
-	Framework7Class.use = function use (module) {
-	    var params = [], len = arguments.length - 1;
-	    while ( len-- > 0 ) params[ len ] = arguments[ len + 1 ];
-
-	  var Class = this;
-	  if (Array.isArray(module)) {
-	    module.forEach(function (m) { return Class.installModule(m); });
+	    var Class = this;
+	    if (!Class.prototype.modules) { Class.prototype.modules = {}; }
+	    var name = module.name || (((Object.keys(Class.prototype.modules).length) + "_" + (Utils.now())));
+	    Class.prototype.modules[name] = module;
+	    // Prototype
+	    if (module.proto) {
+	      Object.keys(module.proto).forEach(function (key) {
+	        Class.prototype[key] = module.proto[key];
+	      });
+	    }
+	    // Class
+	    if (module.static) {
+	      Object.keys(module.static).forEach(function (key) {
+	        Class[key] = module.static[key];
+	      });
+	    }
+	    // Callback
+	    if (module.install) {
+	      module.install.apply(Class, params);
+	    }
 	    return Class;
-	  }
-	  return Class.installModule.apply(Class, [ module ].concat( params ));
-	};
+	  };
 
-	Object.defineProperties( Framework7Class, staticAccessors$1 );
+	  Framework7Class.use = function use (module) {
+	    var params = [], len = arguments.length - 1;
+	    while ( len-- > 0 ) params[ len ] = arguments[ len + 1 ];
+
+	    var Class = this;
+	    if (Array.isArray(module)) {
+	      module.forEach(function (m) { return Class.installModule(m); });
+	      return Class;
+	    }
+	    return Class.installModule.apply(Class, [ module ].concat( params ));
+	  };
+
+	  Object.defineProperties( Framework7Class, staticAccessors );
+
+	  return Framework7Class;
+	}(EventsClass));
 
 	function ConstructorMethods (parameters) {
 	  if ( parameters === void 0 ) parameters = {};
@@ -3883,6 +3896,9 @@
 	    // Install Modules
 	    app.useModules();
 
+	    // Init Data & Methods
+	    app.initData();
+
 	    // Init
 	    if (app.params.init) {
 	      if (Device.cordova && app.params.initOnDeviceReady) {
@@ -3902,24 +3918,10 @@
 	  Framework7.prototype.constructor = Framework7;
 
 	  var prototypeAccessors = { $: { configurable: true },t7: { configurable: true } };
-	  var staticAccessors = { Dom7: { configurable: true },$: { configurable: true },Template7: { configurable: true },Class: { configurable: true } };
+	  var staticAccessors = { Dom7: { configurable: true },$: { configurable: true },Template7: { configurable: true },Class: { configurable: true },Events: { configurable: true } };
 
-	  Framework7.prototype.init = function init () {
+	  Framework7.prototype.initData = function initData () {
 	    var app = this;
-	    if (app.initialized) { return app; }
-
-	    app.root.addClass('framework7-initializing');
-
-	    // RTL attr
-	    if (app.rtl) {
-	      $('html').attr('dir', 'rtl');
-	    }
-
-	    // Root class
-	    app.root.addClass('framework7-root');
-
-	    // Theme class
-	    $('html').removeClass('ios md').addClass(app.theme);
 
 	    // Data
 	    app.data = {};
@@ -3939,6 +3941,25 @@
 	        }
 	      });
 	    }
+	  };
+
+	  Framework7.prototype.init = function init () {
+	    var app = this;
+	    if (app.initialized) { return app; }
+
+	    app.root.addClass('framework7-initializing');
+
+	    // RTL attr
+	    if (app.rtl) {
+	      $('html').attr('dir', 'rtl');
+	    }
+
+	    // Root class
+	    app.root.addClass('framework7-root');
+
+	    // Theme class
+	    $('html').removeClass('ios md').addClass(app.theme);
+
 	    // Init class
 	    Utils.nextFrame(function () {
 	      app.root.removeClass('framework7-initializing');
@@ -3995,6 +4016,10 @@
 
 	  staticAccessors.Class.get = function () {
 	    return Framework7Class$$1;
+	  };
+
+	  staticAccessors.Events.get = function () {
+	    return EventsClass;
 	  };
 
 	  Object.defineProperties( Framework7.prototype, prototypeAccessors );
@@ -4323,31 +4348,106 @@
 	  }
 	  return Request(requestOptions);
 	}
-	Request.get = function get() {
-	  var args = [], len = arguments.length;
-	  while ( len-- ) args[ len ] = arguments[ len ];
+	function RequestShortcutPromise(method) {
+	  var args = [], len = arguments.length - 1;
+	  while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
 
-	  return RequestShortcut.apply(void 0, [ 'get' ].concat( args ));
-	};
-	Request.post = function post() {
-	  var args = [], len = arguments.length;
-	  while ( len-- ) args[ len ] = arguments[ len ];
+	  var url = args[0];
+	  var data = args[1];
+	  var dataType = args[2];
+	  return new Promise(function (resolve, reject) {
+	    RequestShortcut(
+	      method,
+	      url,
+	      data,
+	      function (response) {
+	        resolve(response);
+	      },
+	      function (xhr, status) {
+	        reject(status);
+	      },
+	      dataType
+	    );
+	  });
+	}
+	Object.assign(Request, {
+	  get: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
 
-	  return RequestShortcut.apply(void 0, [ 'post' ].concat( args ));
-	};
-	Request.json = function json() {
-	  var args = [], len = arguments.length;
-	  while ( len-- ) args[ len ] = arguments[ len ];
+	    return RequestShortcut.apply(void 0, [ 'get' ].concat( args ));
+	},
+	  post: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
 
-	  return RequestShortcut.apply(void 0, [ 'json' ].concat( args ));
-	};
-	Request.getJSON = Request.json;
-	Request.postJSON = function postJSON() {
-	  var args = [], len = arguments.length;
-	  while ( len-- ) args[ len ] = arguments[ len ];
+	    return RequestShortcut.apply(void 0, [ 'post' ].concat( args ));
+	},
+	  json: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
 
-	  return RequestShortcut.apply(void 0, [ 'postJSON' ].concat( args ));
+	    return RequestShortcut.apply(void 0, [ 'json' ].concat( args ));
+	},
+	  getJSON: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
+
+	    return RequestShortcut.apply(void 0, [ 'json' ].concat( args ));
+	},
+	  postJSON: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
+
+	    return RequestShortcut.apply(void 0, [ 'postJSON' ].concat( args ));
+	},
+	});
+
+	Request.promise = function requestPromise(requestOptions) {
+	  return new Promise(function (resolve, reject) {
+	    Request(Object.assign(requestOptions, {
+	      success: function success(data) {
+	        resolve(data);
+	      },
+	      error: function error(xhr, status) {
+	        reject(status);
+	      },
+	    }));
+	  });
 	};
+	Object.assign(Request.promise, {
+	  get: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
+
+	    return RequestShortcutPromise.apply(void 0, [ 'get' ].concat( args ));
+	},
+	  post: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
+
+	    return RequestShortcutPromise.apply(void 0, [ 'post' ].concat( args ));
+	},
+	  json: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
+
+	    return RequestShortcutPromise.apply(void 0, [ 'json' ].concat( args ));
+	},
+	  getJSON: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
+
+	    return RequestShortcutPromise.apply(void 0, [ 'json' ].concat( args ));
+	},
+	  postJSON: function () {
+	    var args = [], len = arguments.length;
+	    while ( len-- ) args[ len ] = arguments[ len ];
+
+	    return RequestShortcutPromise.apply(void 0, [ 'postJSON' ].concat( args ));
+	},
+	});
+
 	Request.setup = function setup(options) {
 	  if (options.type && !options.method) {
 	    Utils.extend(options, { method: options.type });
@@ -9849,12 +9949,17 @@
 	      });
 	    });
 
+
 	    // Load Page
 	    var clickedLinkData = {};
 	    if (isLink) {
 	      e.preventDefault();
 	      clickedLinkData = $clickedLinkEl.dataset();
 	    }
+
+	    // Prevent Router
+	    if ($clickedLinkEl.hasClass('prevent-router') || $clickedLinkEl.hasClass('router-prevent')) { return; }
+
 	    var validUrl = url && url.length > 0 && url !== '#' && !isTabLink;
 	    if (validUrl || $clickedLinkEl.hasClass('back')) {
 	      var view;
@@ -11290,10 +11395,10 @@
 	      app.serviceWorker.container.register(path, (scope ? { scope: scope } : {}))
 	        .then(function (reg) {
 	          SW.registrations.push(reg);
-	          app.emit('swRegisterSuccess', reg);
+	          app.emit('serviceWorkerRegisterSuccess', reg);
 	          resolve(reg);
 	        }).catch(function (error) {
-	          app.emit('swRegisterError', error);
+	          app.emit('serviceWorkerRegisterError', error);
 	          reject(error);
 	        });
 	    });
@@ -11315,11 +11420,11 @@
 	          if (SW.registrations.indexOf(reg) >= 0) {
 	            SW.registrations.splice(SW.registrations.indexOf(reg), 1);
 	          }
-	          app.emit('swUnregisterSuccess', true);
+	          app.emit('serviceWorkerUnregisterSuccess', true);
 	          resolve();
 	        })
 	        .catch(function (error) {
-	          app.emit('swUnregisterError', error);
+	          app.emit('serviceWorkerUnregisterError', error);
 	          reject(error);
 	        });
 	    }); }));
@@ -11857,12 +11962,14 @@
 	  hide: function hide(el, animate) {
 	    if ( animate === void 0 ) animate = true;
 
+	    var app = this;
 	    var $el = $(el);
 	    if ($el.hasClass('navbar-inner')) { $el = $el.parents('.navbar'); }
 	    if (!$el.length) { return; }
 	    if ($el.hasClass('navbar-hidden')) { return; }
 	    var className = "navbar-hidden" + (animate ? ' navbar-transitioning' : '');
-	    if ($el.find('.navbar-current .title-large').length) {
+	    var currentIsLarge = app.theme === 'ios' ? $el.find('.navbar-current .title-large').length : $el.find('.title-large').length;
+	    if (currentIsLarge) {
 	      className += ' navbar-large-hidden';
 	    }
 	    $el.transitionEnd(function () {
@@ -11982,6 +12089,7 @@
 	    var $navbarEl = app.theme === 'md'
 	      ? $navbarInnerEl.parents('.navbar')
 	      : $(navbarInnerEl || app.navbar.getElByPage(pageEl)).closest('.navbar');
+	    var isLarge = $navbarInnerEl.find('.title-large').length || $navbarInnerEl.hasClass('.navbar-inner-large');
 	    var navbarHideHeight = 44;
 	    var snapPageScrollToLargeTitle = app.params.navbar.snapPageScrollToLargeTitle;
 
@@ -11996,7 +12104,7 @@
 
 	    var navbarCollapsed;
 	    var navbarTitleLargeHeight;
-	    if (needCollapse) {
+	    if (needCollapse || (needHide && isLarge)) {
 	      navbarTitleLargeHeight = $navbarInnerEl.css('--f7-navbar-large-title-height');
 	      if (navbarTitleLargeHeight && navbarTitleLargeHeight.indexOf('px') >= 0) {
 	        navbarTitleLargeHeight = parseInt(navbarTitleLargeHeight, 10);
@@ -12006,6 +12114,9 @@
 	      } else {
 	        navbarTitleLargeHeight = app.theme === 'ios' ? 52 : 48;
 	      }
+	    }
+	    if (needHide && isLarge) {
+	      navbarHideHeight += navbarTitleLargeHeight;
 	    }
 
 	    var scrollChanged;
@@ -12780,14 +12891,6 @@
 	    }
 	    // Show Modal
 	    $el.show();
-
-	    // Set Dialog offset
-	    if (type === 'dialog') {
-	      $el.css({
-	        marginTop: ((-Math.round($el.outerHeight() / 2)) + "px"),
-	      });
-	    }
-
 
 	    /* eslint no-underscore-dangle: ["error", { "allow": ["_clientLeft"] }] */
 	    modal._clientLeft = $el[0].clientLeft;
@@ -25811,6 +25914,7 @@
 	    var m = this;
 	    var message = Utils.extend({
 	      type: 'sent',
+	      attrs: {},
 	    }, messageToRender);
 	    if (m.params.renderMessage) {
 	      return m.params.renderMessage.call(m, message);
@@ -25818,7 +25922,8 @@
 	    if (message.isTitle) {
 	      return ("<div class=\"messages-title\">" + (message.text) + "</div>");
 	    }
-	    return ("\n      <div class=\"message message-" + (message.type) + " " + (message.isTyping ? 'message-typing' : '') + "\">\n        " + (message.avatar ? ("\n        <div class=\"message-avatar\" style=\"background-image:url(" + (message.avatar) + ")\"></div>\n        ") : '') + "\n        <div class=\"message-content\">\n          " + (message.name ? ("<div class=\"message-name\">" + (message.name) + "</div>") : '') + "\n          " + (message.header ? ("<div class=\"message-header\">" + (message.header) + "</div>") : '') + "\n          <div class=\"message-bubble\">\n            " + (message.textHeader ? ("<div class=\"message-text-header\">" + (message.textHeader) + "</div>") : '') + "\n            " + (message.image ? ("<div class=\"message-image\">" + (message.image) + "</div>") : '') + "\n            " + (message.imageSrc && !message.image ? ("<div class=\"message-image\"><img src=\"" + (message.imageSrc) + "\"></div>") : '') + "\n            " + (message.text || message.isTyping ? ("<div class=\"message-text\">" + (message.text || '') + (message.isTyping ? '<div class="message-typing-indicator"><div></div><div></div><div></div></div>' : '') + "</div>") : '') + "\n            " + (message.textFooter ? ("<div class=\"message-text-footer\">" + (message.textFooter) + "</div>") : '') + "\n          </div>\n          " + (message.footer ? ("<div class=\"message-footer\">" + (message.footer) + "</div>") : '') + "\n        </div>\n      </div>\n    ");
+	    var attrs = Object.keys(message.attrs).map(function (attr) { return (attr + "=\"" + (message.attrs[attr]) + "\""); }).join(' ');
+	    return ("\n      <div class=\"message message-" + (message.type) + " " + (message.isTyping ? 'message-typing' : '') + " " + (message.cssClass || '') + "\" " + attrs + ">\n        " + (message.avatar ? ("\n        <div class=\"message-avatar\" style=\"background-image:url(" + (message.avatar) + ")\"></div>\n        ") : '') + "\n        <div class=\"message-content\">\n          " + (message.name ? ("<div class=\"message-name\">" + (message.name) + "</div>") : '') + "\n          " + (message.header ? ("<div class=\"message-header\">" + (message.header) + "</div>") : '') + "\n          <div class=\"message-bubble\">\n            " + (message.textHeader ? ("<div class=\"message-text-header\">" + (message.textHeader) + "</div>") : '') + "\n            " + (message.image ? ("<div class=\"message-image\">" + (message.image) + "</div>") : '') + "\n            " + (message.imageSrc && !message.image ? ("<div class=\"message-image\"><img src=\"" + (message.imageSrc) + "\"></div>") : '') + "\n            " + (message.text || message.isTyping ? ("<div class=\"message-text\">" + (message.text || '') + (message.isTyping ? '<div class="message-typing-indicator"><div></div><div></div><div></div></div>' : '') + "</div>") : '') + "\n            " + (message.textFooter ? ("<div class=\"message-text-footer\">" + (message.textFooter) + "</div>") : '') + "\n          </div>\n          " + (message.footer ? ("<div class=\"message-footer\">" + (message.footer) + "</div>") : '') + "\n        </div>\n      </div>\n    ");
 	  };
 
 	  Messages.prototype.renderMessages = function renderMessages (messagesToRender, method) {
@@ -35677,7 +35782,7 @@
 	};
 
 	/**
-	 * Framework7 4.0.0-beta.14
+	 * Framework7 4.0.0-beta.25
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -35685,7 +35790,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: January 10, 2019
+	 * Released on: January 18, 2019
 	 */
 
 	// Install Core Modules & Components
@@ -35913,6 +36018,7 @@
 	    routeTabId: String,
 	    view: String,
 	    routeProps: Object,
+	    preventRouter: Boolean,
 	  },
 	  linkRouterAttrs: function linkRouterAttrs(props) {
 	    var force = props.force;
@@ -35944,10 +36050,12 @@
 	    var back = props.back;
 	    var linkBack = props.linkBack;
 	    var external = props.external;
+	    var preventRouter = props.preventRouter;
 
 	    return {
 	      back: back || linkBack,
 	      external: external,
+	      'prevent-router': preventRouter,
 	    };
 	  },
 	  linkActionsProps: {
@@ -48675,7 +48783,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.0.0-beta.14
+	 * Framework7 React 4.0.0-beta.25
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -48683,7 +48791,7 @@
 	 *
 	 * Released under the MIT License
 	 *
-	 * Released on: January 10, 2019
+	 * Released on: January 18, 2019
 	 */
 
 	var AccordionContent = F7AccordionContent;
@@ -49027,7 +49135,7 @@
 
 	function About () { return (
 	  react.createElement( Page, null,
-	    react.createElement( Navbar$2, { large: true, title: "About Framework7", 'title-large': "About", backLink: "Framework7" }),
+	    react.createElement( Navbar$2, { large: true, title: "About", 'title-large': "About", backLink: "Framework7" }),
 	    react.createElement( BlockTitle, null, "Welcome to Framework7" ),
 	    react.createElement( Block, { strong: true },
 	      react.createElement( 'p', null, "Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us)." ),
@@ -49808,7 +49916,7 @@
 	      )
 	    ),
 
-	    react.createElement( BlockTitle, null, "Outline Buttons (MD-theme only)" ),
+	    react.createElement( BlockTitle, null, "Outline Buttons" ),
 	    react.createElement( Block, null,
 	      react.createElement( Row, null,
 	        react.createElement( Col, null,
@@ -49823,7 +49931,7 @@
 	      )
 	    ),
 
-	    react.createElement( BlockTitle, null, "Raised Buttons (MD-theme only)" ),
+	    react.createElement( BlockTitle, null, "Raised Buttons" ),
 	    react.createElement( Block, null,
 	      react.createElement( Row, { tag: "p" },
 	        react.createElement( Col, { tag: "span" },
@@ -51810,11 +51918,11 @@
 	          react.createElement( Gauge$2, {
 	            type: "circle", value: this.state.gaugeValue, size: 250, borderColor: "#2196f3", borderWidth: 10, valueText: ((this.state.gaugeValue * 100) + "%"), valueFontSize: 41, valueTextColor: "#2196f3", labelText: "amount of something" }),
 	          react.createElement( Segmented, { tag: "p", raised: true },
-	            react.createElement( Button, { onClick: function () { return this$1.setState({ gaugeValue: 0 }); } }, "0%"),
-	            react.createElement( Button, { onClick: function () { return this$1.setState({ gaugeValue: 0.25 }); } }, "25%"),
-	            react.createElement( Button, { onClick: function () { return this$1.setState({ gaugeValue: 0.5 }); } }, "50%"),
-	            react.createElement( Button, { onClick: function () { return this$1.setState({ gaugeValue: 0.75 }); } }, "75%"),
-	            react.createElement( Button, { onClick: function () { return this$1.setState({ gaugeValue: 1 }); } }, "100%")
+	            react.createElement( Button, { active: this.state.gaugeValue === 0, onClick: function () { return this$1.setState({ gaugeValue: 0 }); } }, "0%"),
+	            react.createElement( Button, { active: this.state.gaugeValue === 0.25, onClick: function () { return this$1.setState({ gaugeValue: 0.25 }); } }, "25%"),
+	            react.createElement( Button, { active: this.state.gaugeValue === 0.5, onClick: function () { return this$1.setState({ gaugeValue: 0.5 }); } }, "50%"),
+	            react.createElement( Button, { active: this.state.gaugeValue === 0.75, onClick: function () { return this$1.setState({ gaugeValue: 0.75 }); } }, "75%"),
+	            react.createElement( Button, { active: this.state.gaugeValue === 1, onClick: function () { return this$1.setState({ gaugeValue: 1 }); } }, "100%")
 	          )
 	        ),
 
@@ -52236,7 +52344,7 @@
 	      )
 	    ),
 
-	    react.createElement( BlockTitle, null, "Floating Labels (MD-theme only)" ),
+	    react.createElement( BlockTitle, null, "Floating Labels" ),
 	    react.createElement( List, { noHairlinesMd: true },
 	      react.createElement( ListInput, {
 	        label: "Name", floatingLabel: true, type: "text", placeholder: "Your name", clearButton: true },
@@ -53989,7 +54097,7 @@
 	    ),
 
 	    react.createElement( Block, null,
-	      react.createElement( 'p', null, react.createElement( Button, { raised: true, popoverOpen: ".popover-menu" }, "Open popover on me") ),
+	      react.createElement( 'p', null, react.createElement( Button, { fill: true, popoverOpen: ".popover-menu" }, "Open popover on me") ),
 	      react.createElement( 'p', null, "Mauris fermentum neque et luctus venenatis. Vivamus a sem rhoncus, ornare tellus eu, euismod mauris. In porta turpis at semper convallis. Duis adipiscing leo eu nulla lacinia, quis rhoncus metus condimentum. Etiam nec malesuada nibh. Maecenas quis lacinia nisl, vel posuere dolor. Vestibulum condimentum, nisl ac vulputate egestas, neque enim dignissim elit, rhoncus volutpat magna enim a est. Aenean sit amet ligula neque. Cras suscipit rutrum enim. Nam a odio facilisis, elementum tellus non, ", react.createElement( Link, { popoverOpen: ".popover-menu" }, "popover"), " tortor. Pellentesque felis eros, dictum vitae lacinia quis, lobortis vitae ipsum. Cras vehicula bibendum lorem quis imperdiet." ),
 	      react.createElement( 'p', null, "In hac habitasse platea dictumst. Etiam varius, ante vel ornare facilisis, velit massa rutrum dolor, ac porta magna magna lacinia nunc. Curabitur ", react.createElement( Link, { popoverOpen: ".popover-menu" }, "popover!"), " cursus laoreet. Aenean vel tempus augue. Pellentesque in imperdiet nibh. Mauris rhoncus nulla id sem suscipit volutpat. Pellentesque ac arcu in nisi viverra pulvinar. Nullam nulla orci, bibendum sed ligula non, ullamcorper iaculis mi. In hac habitasse platea dictumst. Praesent varius at nisl eu luctus. Cras aliquet porta est. Quisque elementum quis dui et consectetur. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sed laoreet purus. Pellentesque eget ante ante." ),
 	      react.createElement( 'p', null, "Duis et ultricies nibh. Sed facilisis turpis urna, ac imperdiet erat venenatis eu. Proin sit amet faucibus tortor, et varius sem. Etiam vitae lacinia neque. Aliquam nisi purus, interdum in arcu sed, ultrices rutrum arcu. Nulla mi turpis, consectetur vel enim quis, facilisis viverra dui. Aliquam quis convallis tortor, quis semper ligula. Morbi ullamcorper ", react.createElement( Link, { popoverOpen: ".popover-menu" }, "one more popover"), " massa at accumsan. Etiam purus odio, posuere in ligula vitae, viverra ultricies justo. Vestibulum nec interdum nisi. Aenean ac consectetur velit, non malesuada magna. Sed pharetra vehicula augue, vel venenatis lectus gravida eget. Curabitur lacus tellus, venenatis eu arcu in, interdum auctor nunc. Nunc non metus neque. Suspendisse viverra lectus sed risus aliquet, vel accumsan dolor feugiat." )
@@ -54988,7 +55096,7 @@
 	          )
 	        ),
 
-	        react.createElement( BlockTitle, null, "Raised (MD-theme only)" ),
+	        react.createElement( BlockTitle, null, "Raised" ),
 	        react.createElement( Block, { strong: true, className: "text-align-center" },
 	          react.createElement( Row, null,
 	            react.createElement( Col, null,
@@ -57980,6 +58088,12 @@
 	  return defaultExport;
 	}(react.Component));
 
+	var stylesheet;
+	var globalTheme = 'light';
+	var globalBarsStyle = 'empty';
+	var globalCustomColor = '';
+	var globalCustomProperties = '';
+
 	var defaultExport$y = /*@__PURE__*/(function (superclass) {
 	  function defaultExport(props) {
 	    superclass.call(this, props);
@@ -57991,11 +58105,20 @@
 	      'pink',
 	      'yellow',
 	      'orange',
+	      'purple',
+	      'deeppurple',
+	      'lightblue',
+	      'teal',
+	      'lime',
+	      'deeporange',
 	      'gray',
 	      'black' ];
 	    this.state = {
+	      theme: globalTheme,
+	      barsStyle: globalBarsStyle,
+	      customColor: globalCustomColor,
+	      customProperties: globalCustomProperties,
 	      colors: colors,
-	      colorsAmount: colors.length,
 	    };
 	  }
 
@@ -58007,44 +58130,157 @@
 
 	    return (
 	      react.createElement( Page, null,
-	        react.createElement( Navbar$2, { large: true, title: "Color Themes", 'title-large': "Color Themes", backLink: "Back" }),
-	        react.createElement( BlockTitle, null, "Layout Themes" ),
-	        react.createElement( Block, null,
+	        react.createElement( Navbar$2, { large: true, title: "Color Themes", backLink: "Back" }),
+	        react.createElement( BlockTitle, { medium: true }, "Layout Themes"),
+	        react.createElement( Block, { strong: true },
 	          react.createElement( 'p', null, "Framework7 comes with 2 main layout themes: Light (default) and Dark:" ),
 	          react.createElement( Row, null,
-	            react.createElement( Col, { width: "50", className: "bg-color-white", onClick: function () { return this$1.setLayoutTheme('light'); }, style: {cursor: 'pointer', padding: '30px', border: '1px solid rgba(0,0,0,0.1)'} }),
-	            react.createElement( Col, { width: "50", className: "bg-color-black", onClick: function () { return this$1.setLayoutTheme('dark'); }, style: {cursor: 'pointer', padding: '30px', border: '1px solid rgba(255,255,255,0.1)'} })
+	            react.createElement( Col, { width: "50", className: "bg-color-white demo-theme-picker", onClick: function () { return this$1.setLayoutTheme('light'); } },
+	              this.state.theme === 'light' && (
+	                react.createElement( Checkbox$1, { checked: true, disabled: true })
+	              )
+	            ),
+	            react.createElement( Col, { width: "50", className: "bg-color-black demo-theme-picker", onClick: function () { return this$1.setLayoutTheme('dark'); } },
+	              this.state.theme === 'dark' && (
+	                react.createElement( Checkbox$1, { checked: true, disabled: true })
+	              )
+	            )
 	          )
 	        ),
-	        react.createElement( BlockTitle, null, "Choose Color Theme" ),
-	        react.createElement( Block, null,
-	          react.createElement( 'p', null, "Framework7 comes with ", this.state.colorsAmount, " color themes set." ),
+	        react.createElement( BlockTitle, { medium: true }, "Navigation Bars Style"),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "Switch navigation bars to filled style:" ),
+	          react.createElement( Row, null,
+	            react.createElement( Col, { width: "50", className: "demo-bars-picker demo-bars-picker-empty", onClick: function () { return this$1.setBarsStyle('empty'); } },
+	              react.createElement( 'div', { className: "demo-navbar" }),
+	              this.state.barsStyle === 'empty' && (
+	                react.createElement( Checkbox$1, { checked: true, disabled: true })
+	              )
+	            ),
+	            react.createElement( Col, { width: "50", className: "demo-bars-picker demo-bars-picker-fill", onClick: function () { return this$1.setBarsStyle('fill'); } },
+	              react.createElement( 'div', { className: "demo-navbar" }),
+	              this.state.barsStyle === 'fill' && (
+	                react.createElement( Checkbox$1, { checked: true, disabled: true })
+	              )
+	            )
+	          )
+	        ),
+	        react.createElement( BlockTitle, { medium: true }, "Default Color Themes"),
+	        react.createElement( Block, { strong: true },
+	          react.createElement( 'p', null, "Framework7 comes with ", this.state.colors.length, " color themes set." ),
 	          react.createElement( Row, null,
 	            this.state.colors.map(function (color, index) { return (
-	              react.createElement( Col, { width: "33", key: index },
-	                react.createElement( Button, {
-	                  style: {marginBottom:'1em', textTransform: 'capitalize'}, fill: true, round: true, raised: true, color: color, onClick: function () { return this$1.setColorTheme(color); } },
-	                  color
-	                )
+	              react.createElement( Col, { width: "33", tabletWidth: "25", desktopWidth: "20", key: index },
+	                react.createElement( Button, { fill: true, round: true, small: true, className: "demo-color-picker-button", color: color, onClick: function () { return this$1.setColorTheme(color); } }, color)
 	              )
 	            ); }),
-	            react.createElement( Col, { width: "33" })
+
+	            react.createElement( Col, { width: "33", tabletWidth: "25", desktopWidth: "20" }),
+	            react.createElement( Col, { width: "33", tabletWidth: "25", desktopWidth: "20" }),
+	            react.createElement( Col, { width: "33", tabletWidth: "25", desktopWidth: "20" })
+	          )
+	        ),
+	        react.createElement( BlockTitle, { medium: true }, "Custom Color Theme"),
+	        react.createElement( List, null,
+	          react.createElement( ListInput, {
+	            type: "text", label: "HEX Color", value: this.state.customColor, placeholder: "e.g. #ff0000", onInput: function (e) { return this$1.setCustomColor(e); } },
+	            react.createElement( 'div', { slot: "media", style: {width: '28px', height: '28px', borderRadius: '4px', background: 'var(--f7-theme-color)'} })
+	          )
+	        ),
+
+	        react.createElement( BlockTitle, { medium: true }, "Generated CSS Variables"),
+	        react.createElement( Block, { strong: true },
+	          this.state.customProperties && (
+	            react.createElement( 'p', null, "Add this code block to your custom stylesheet:" )
+	          ),
+	          this.state.customProperties && (
+	            react.createElement( 'pre', { style: {overflow: 'auto', WebkitOverflowScrolling: 'touch', margin: 0, fontSize: '12px'} }, this.state.customProperties)
+	          ),
+	          !this.state.customProperties && (
+	            react.createElement( 'p', null, "Change navigation bars styles or specify custom color to see custom CSS variables here" )
 	          )
 	        )
 	      )
-	    )
+	    );
 	  };
+
+	  defaultExport.prototype.generateStylesheet = function generateStylesheet () {
+	    var self = this;
+	    var styles = '';
+	    if (self.state.customColor) {
+	      var colorThemeProperties = self.$f7.utils.colorThemeCSSProperties(self.state.customColor);
+	      if (Object.keys(colorThemeProperties).length) {
+	        styles += "\n/* Custom color theme */\n:root {\n  " + (Object.keys(colorThemeProperties)
+	  .map(function (key) { return (key + ": " + (colorThemeProperties[key]) + ";"); })
+	  .join('\n  ')) + "\n}";
+	      }
+	    }
+	    if (self.state.barsStyle === 'fill') {
+	      styles += "\n/* Invert navigation bars to fill style */\n:root,\n:root.theme-dark,\n:root .theme-dark {\n--f7-bars-bg-color: var(--f7-theme-color);\n--f7-bars-text-color: #fff;\n--f7-bars-link-color: #fff;\n--f7-navbar-subtitle-text-color: rgba(255,255,255,0.85);\n--f7-bars-border-color: transparent;\n--f7-tabbar-link-active-color: #fff;\n--f7-tabbar-link-inactive-color: rgba(255,255,255,0.54);\n--f7-searchbar-input-bg-color: #fff;\n--f7-sheet-border-color: transparent;\n--f7-tabbar-link-active-border-color: #fff;\n}\n.navbar,\n.toolbar,\n.subnavbar,\n.calendar-header,\n.calendar-footer {\n--f7-touch-ripple-color: var(--f7-touch-ripple-white);\n--f7-link-highlight-color: var(--f7-link-highlight-white);\n--f7-button-text-color: #fff;\n--f7-button-pressed-bg-color: rgba(255,255,255,0.1);\n}\n      ";
+	    }
+	    return styles.trim();
+	  };
+
+	  defaultExport.prototype.componentDidMount = function componentDidMount () {
+	    if (!stylesheet) {
+	      stylesheet = document.createElement('style');
+	      document.head.appendChild(stylesheet);
+	    }
+	  };
+
 	  defaultExport.prototype.setLayoutTheme = function setLayoutTheme (theme) {
 	    var self = this;
-	    var app = self.$f7;
-	    app.root.removeClass('theme-dark theme-light').addClass(("theme-" + theme));
+	    var $html = self.$$('html');
+	    globalTheme = theme;
+	    $html.removeClass('theme-dark theme-light').addClass('theme-' + globalTheme);
+	    self.setState({ theme: globalTheme });
 	  };
+
 	  defaultExport.prototype.setColorTheme = function setColorTheme (color) {
 	    var self = this;
-	    var app = self.$f7;
-	    var currentColorClass = app.root[0].className.match(/color-theme-([a-z]*)/);
-	    if (currentColorClass) { app.root.removeClass(currentColorClass[0]); }
-	    app.root.addClass(("color-theme-" + color));
+	    var $html = self.$$('html');
+	    var currentColorClass = $html[0].className.match(/color-theme-([a-z]*)/);
+	    if (currentColorClass) { $html.removeClass(currentColorClass[0]); }
+	    $html.addClass('color-theme-' + color);
+	    self.unsetCustomColor();
+	  };
+
+	  defaultExport.prototype.setBarsStyle = function setBarsStyle (barsStyle) {
+	    var self = this;
+	    globalBarsStyle = barsStyle;
+	    self.setState({barsStyle: globalBarsStyle});
+	    globalCustomProperties = self.generateStylesheet();
+	    stylesheet.innerHTML = globalCustomProperties;
+	    self.setState({customProperties: globalCustomProperties});
+	  };
+
+	  defaultExport.prototype.unsetCustomColor = function unsetCustomColor () {
+	    var self = this;
+	    globalCustomColor = '';
+	    self.setState({customColor: ''});
+	    globalCustomProperties = self.generateStylesheet();
+	    stylesheet.innerHTML = globalCustomProperties;
+	    self.setState({customProperties: globalCustomProperties});
+	  };
+
+	  defaultExport.prototype.setCustomColor = function setCustomColor (e) {
+	    var self = this;
+	    var value = e.target.value;
+	    var hex = value.replace(/#/g, '');
+	    globalCustomColor = "#" + hex;
+	    self.setState({customColor: globalCustomColor}, function () {
+	      if (hex && (hex.length === 3 || hex.length === 6) && hex.match(/[a-fA-F0-9#]*/g)[0] === hex) {
+	        globalCustomProperties = self.generateStylesheet();
+	        stylesheet.innerHTML = globalCustomProperties;
+	        self.setState({customProperties: globalCustomProperties});
+	      } else if (!hex) {
+	        self.unsetCustomColor();
+	      } else {
+	        globalCustomProperties = self.generateStylesheet();
+	        stylesheet.innerHTML = globalCustomProperties;
+	        self.setState({customProperties: globalCustomProperties});
+	      }
+	    });
 	  };
 
 	  return defaultExport;

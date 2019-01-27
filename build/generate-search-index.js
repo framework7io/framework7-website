@@ -1,11 +1,12 @@
 const jsdom = require('jsdom').jsdom;
 const jQuery = require('jquery');
 const fs = require('fs');
+
 const searchData = [];
 
 let currentData = [];
 try {
-  currentData = require('../search-index.json') || [];
+  currentData = require('./search-index.json') || [];
 } catch (e) {
   // no index
 }
@@ -22,7 +23,8 @@ function generateTitleHash(title) {
     .replace(/\+/g, '')
     .replace(/---/g, '-')
     .replace(/--/g, '-')
-    .toLowerCase().replace(/\-&-/g,'-');
+    .toLowerCase()
+    .replace(/\-&-/g, '-');
 }
 
 function addSection(section) {
@@ -66,7 +68,7 @@ function parseFolder(folder, docs) {
         };
         section.section = $el.text().trim();
         section.pageUrl = url;
-        section.sectionUrl = `${url}#${generateTitleHash(section.section)}`
+        section.sectionUrl = `${url}#${generateTitleHash(section.section)}`;
       } else if (section) {
         if (!section.text) section.text = [];
         let text = '';
@@ -76,11 +78,12 @@ function parseFolder(folder, docs) {
         if ($el.is('table')) {
           text += $.makeArray($el.find('tr'))
             .map((row) => {
-              return $.makeArray($(row).find('td')).map(cell => $(cell).text().trim()).join(' | ')
+              return $.makeArray($(row).find('td')).map(cell => $(cell).text().trim()).join(' | ');
             })
-            .join('\n')
+            .join('\n');
+        } else {
+          text += $el.text().trim();
         }
-        else text += $el.text().trim();
         section.text.push(text);
       }
     }
@@ -94,9 +97,8 @@ parseFolder('docs', 'Framework7 API');
 parseFolder('vue', 'Framework7 Vue');
 parseFolder('react', 'Framework7 React');
 
-fs.writeFileSync('./search-index.json', JSON.stringify(searchData, null, 2))
+fs.writeFileSync('./search-index.json', JSON.stringify(searchData, null, 2));
 
 console.log('Done!');
 console.log(`Entries before: ${currentData.length}`);
 console.log(`Entries after: ${searchData.length}`);
-

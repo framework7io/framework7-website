@@ -16,21 +16,21 @@ block content
     h2 Inputs Layout
     p It is recommended to use inputs with <a href="list-view.html">List View</a>:
     :code(lang="html")
-          <div class="list">
-            <ul>
-              ...
-              <li class="item-content item-input">
-                <div class="item-media">... icon/image here ...</div>
-                <div class="item-inner">
-                  <div class="item-input-wrap">
-                    <input type="text" name="name">
-                    <span class="input-clear-button"></span>
-                  </div>
-                </div>
-              </li>
-              ...
-            </ul>
-          </div>
+      <div class="list">
+        <ul>
+          ...
+          <li class="item-content item-input">
+            <div class="item-media">... icon/image here ...</div>
+            <div class="item-inner">
+              <div class="item-input-wrap">
+                <input type="text" name="name">
+                <span class="input-clear-button"></span>
+              </div>
+            </div>
+          </li>
+          ...
+        </ul>
+      </div>
     p Where:
     ul
       li
@@ -44,22 +44,22 @@ block content
     h3 Stacked Labels
     p By default inputs list is displayed with stacked labels. Stacked labels always appear on top of the input:
     :code(lang="html")
-          <div class="list">
-            <ul>
-              ...
-              <li class="item-content item-input">
-                <div class="item-media">... icon/image here ...</div>
-                <div class="item-inner">
-                  <div class="item-title item-label">Name</div>
-                  <div class="item-input-wrap">
-                    <input type="text" name="name">
-                    <span class="input-clear-button"></span>
-                  </div>
-                </div>
-              </li>
-              ...
-            </ul>
-          </div>
+      <div class="list">
+        <ul>
+          ...
+          <li class="item-content item-input">
+            <div class="item-media">... icon/image here ...</div>
+            <div class="item-inner">
+              <div class="item-title item-label">Name</div>
+              <div class="item-input-wrap">
+                <input type="text" name="name">
+                <span class="input-clear-button"></span>
+              </div>
+            </div>
+          </li>
+          ...
+        </ul>
+      </div>
     p Where:
     ul
       li
@@ -67,75 +67,75 @@ block content
     h3 Inline Labels
     p If you want to use inline labels then you can additional <code>inline-labels</code> class to the whole list or <code>inline-label</code> class to the single item:
     :code(lang="html")
-          <div class="list inline-labels">
-            <ul>
-              ...
-              <li class="item-content item-input">
-                <div class="item-media">... icon/image here ...</div>
-                <div class="item-inner">
-                  <div class="item-title item-label">Name</div>
-                  <div class="item-input-wrap">
-                    <input type="text" name="name">
-                    <span class="input-clear-button"></span>
-                  </div>
-                </div>
-              </li>
-              ...
-            </ul>
-          </div>
-          <!-- or just to single item -->
-          <div class="list">
-            <ul>
-              ...
-              <!-- additional "inline-label" class -->
-              <li class="item-content item-input inline-label">
-                ...
-              </li>
-              ...
-            </ul>
-          </div>
+      <div class="list inline-labels">
+        <ul>
+          ...
+          <li class="item-content item-input">
+            <div class="item-media">... icon/image here ...</div>
+            <div class="item-inner">
+              <div class="item-title item-label">Name</div>
+              <div class="item-input-wrap">
+                <input type="text" name="name">
+                <span class="input-clear-button"></span>
+              </div>
+            </div>
+          </li>
+          ...
+        </ul>
+      </div>
+      <!-- or just to single item -->
+      <div class="list">
+        <ul>
+          ...
+          <!-- additional "inline-label" class -->
+          <li class="item-content item-input inline-label">
+            ...
+          </li>
+          ...
+        </ul>
+      </div>
     h3 Floating Labels
-    p To add floating label, we need to use <code>item-floating-label</code> class instead of item-label. In iOS theme it will be displayed as default stacked label.
+    p To add floating label, we need to use <code>item-floating-label</code> class instead of item-label.
     :code(lang="html")
-          <div class="list">
-            <ul>
-              ...
-              <li class="item-content item-input">
-                <div class="item-media">... icon/image here ...</div>
-                <div class="item-inner">
-                  <!-- "item-floating-label" class on item title -->
-                  <div class="item-title item-floating-label">Name</div>
-                  <div class="item-input-wrap">
-                    <input type="text" name="name">
-                    <span class="input-clear-button"></span>
-                  </div>
-                </div>
-              </li>
-              ...
-            </ul>
-          </div>
+      <div class="list">
+        <ul>
+          ...
+          <li class="item-content item-input">
+            <div class="item-media">... icon/image here ...</div>
+            <div class="item-inner">
+              <!-- "item-floating-label" class on item title -->
+              <div class="item-title item-floating-label">Name</div>
+              <div class="item-input-wrap">
+                <input type="text" name="name">
+                <span class="input-clear-button"></span>
+              </div>
+            </div>
+          </li>
+          ...
+        </ul>
+      </div>
     h3 Item Info
     p It is also possible to additional information about form input:
     :code(lang="html")
-          <div class="list">
-            <ul>
-              ...
-              <!-- additional "item-input-with-info" class on item -->
-              <li class="item-content item-input item-input-with-info">
-                <div class="item-media">... icon/image here ...</div>
-                <div class="item-inner">
-                  <div class="item-title item-label">Name</div>
-                  <div class="item-input-wrap">
-                    <input type="text" name="name">
-                    <span class="input-clear-button"></span>
-                    <!-- element with additional information -->
-                    <div class="item-input-info">Some information about input field</div>
-                  </div>
-                </div>
-              </li>
-              ...
-            </ul>
-          </div>
+      <div class="list">
+        <ul>
+          ...
+          <!-- additional "item-input-with-info" class on item -->
+          <li class="item-content item-input item-input-with-info">
+            <div class="item-media">... icon/image here ...</div>
+            <div class="item-inner">
+              <div class="item-title item-label">Name</div>
+              <div class="item-input-wrap">
+                <input type="text" name="name">
+                <span class="input-clear-button"></span>
+                <!-- element with additional information -->
+                <div class="item-input-info">Some information about input field</div>
+              </div>
+            </div>
+          </li>
+          ...
+        </ul>
+      </div>
     p Where:
     ul
       li
@@ -172,48 +172,48 @@ block content
             b All text inputs
           td Supported types: <code><b>text</code></b>, <code><b>password</code></b>, <code><b>email</code></b>, <code><b>tel</code></b>, <code><b>url</code></b>, <code><b>date</code></b>, <code><b>number</code></b>, <code><b>datetime-local</code></b>
             :code(lang="html")
-                  ...
-                    <div class="item-input-wrap">
-                      <input type="text">
-                    </div>
-                  ...
-                  ...
-                    <div class="item-input-wrap">
-                      <input type="email">
-                    </div>
-                  ...
+              ...
+                <div class="item-input-wrap">
+                  <input type="text">
+                </div>
+              ...
+              ...
+                <div class="item-input-wrap">
+                  <input type="email">
+                </div>
+              ...
         tr
           td(valign="top")
             b Select
           td
             :code(lang="html")
-                  ...
-                    &lt;div class="item-input-wrap"&gt;
-                      &lt;select&gt;...&lt;/select"&gt;
-                    &lt;/div&gt;
-                  ...
+              ...
+                &lt;div class="item-input-wrap"&gt;
+                  &lt;select&gt;...&lt;/select"&gt;
+                &lt;/div&gt;
+              ...
         tr
           td(valign="top")
             b Textarea
           td
             :code(lang="html")
-                  ...
-                    &lt;div class="item-input-wrap"&gt;
-                      &lt;textarea&gt;&lt;/textarea&gt;
-                    &lt;/div&gt;
-                  ...
+              ...
+                &lt;div class="item-input-wrap"&gt;
+                  &lt;textarea&gt;&lt;/textarea&gt;
+                &lt;/div&gt;
+              ...
         tr
           td(valign="top")
             b Range Slider
           td
             :code(lang="html")
-                  ...
-                    &lt;div class="item-input-wrap"&gt;
-                      &lt;div class="range-slider"&gt;
-                        &lt;input type="range" min="0" max="100" step="0.1"&gt;
-                      &lt;/div&gt;
-                    &lt;/div&gt;
-                  ...
+              ...
+                &lt;div class="item-input-wrap"&gt;
+                  &lt;div class="range-slider"&gt;
+                    &lt;input type="range" min="0" max="100" step="0.1"&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              ...
     h2 Resizable Textarea
     p To make textarea automatically resize based on its content we may just add <code>resizable</code> class:
     :code(lang="html")
@@ -221,23 +221,26 @@ block content
     h2 Validation
     p Framework7 supports <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation" target="_blank">HTML5 validation</a> based on <code>validity</code> input property. With enabled validation, there will appear validation error messages in case of input has invalid value.
     p To enable validation we must add: <code>required</code> and <code>validate</code> attributes to the input element.
+    p If we need input validation #[b only] on #[code blur] event, then we need to add #[code data-validate-on-blur="true"] attribute.
     p Value validation depends on input <code>type</code>. For example <code>input type="email"</code> will be validated to match email pattern, etc. It is default browser behavior. In case you want to add custom rule to validate input value, then it must be done using <code>pattern</code> input attribute:
     :code(lang="html")
-          <!-- default validation, check for value is not empty -->
-          <input type="text" placeholder="Your name" required validate>
+      <!-- default validation, check for value is not empty -->
+      <input type="text" placeholder="Your name" required validate>
 
-          <!-- default email validation, value must be email -->
-          <input type="email" placeholder="Your e-mail" required validate>
+      <!-- default email validation, value must be email -->
+      <input type="email" placeholder="Your e-mail" required validate>
 
-          <!-- default url validation -->
-          <input type="url" placeholder="Your URL" required validate>
+      <!-- default url validation -->
+      <input type="url" placeholder="Your URL" required validate>
 
-          <!-- pattern validation, value must be "apple" or "banana" -->
-          <input type="text" required validate pattern="apple|banana" placeholder="Type 'apple' or 'banana'" >
+      <!-- pattern validation, value must be "apple" or "banana" -->
+      <input type="text" required validate pattern="apple|banana" placeholder="Type 'apple' or 'banana'" >
 
-          <!-- pattern validation with custom error message, value must be numbers only -->
-          <input type="text" placeholder="Enter number" required validate pattern="[0-9]*" data-error-message="Only numbers please!">
+      <!-- pattern validation with custom error message, value must be numbers only -->
+      <input type="text" placeholder="Enter number" required validate pattern="[0-9]*" data-error-message="Only numbers please!">
 
+      <!-- this input will be validated only on blur -->
+      <input type="text" placeholder="Your name" required validate data-vaildate-on-blur="true">
 
     h2 Input State Classes
     p There are several classes that can be added to input element depending on its state and content:
@@ -283,12 +286,12 @@ block content
           td When enabled will scroll input into view no matter is it outside of view or not
     p For example:
     :code(lang="js")
-          var app = new Framework7({
-            input: {
-              scrollIntoViewOnFocus: true,
-              scrollIntoViewCentered: true,
-            }
-          });
+      var app = new Framework7({
+        input: {
+          scrollIntoViewOnFocus: true,
+          scrollIntoViewCentered: true,
+        }
+      });
 
     h2 Input App Methods
     p We can use following app methods available to control Inputs:
@@ -638,7 +641,7 @@ block content
           </ul>
         </div>
 
-        <div class="block-title">Floating Labels (MD-theme only)</div>
+        <div class="block-title">Floating Labels</div>
         <div class="list no-hairlines-md">
           <ul>
             <li class="item-content item-input">
