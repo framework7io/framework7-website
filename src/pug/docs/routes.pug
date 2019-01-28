@@ -110,6 +110,16 @@ block content
           td array
           td Array with nested routes
         tr
+          th(colspan="4") Master Detail
+        tr
+          td master
+          td boolean
+          td Enables this route as Master route
+        tr
+          td detailRoutes
+          td array
+          td Array with detail routes
+        tr
           th(colspan="4") Lazy Modules
         tr
           td modules
@@ -498,6 +508,27 @@ block content
       li
         p <code>&lt;a href="/computers/"&gt;Computers&lt;/a&gt;</code> - <b>won't work</b> as expected because <code>/</code> (slash) in the beginning means root. And we don't have such <code>/computers/</code> root route in our routes.
 
+    h2 Detail Routes
+    p For Master Detail view, it is also possible to specify #[code detailRoutes] in addition to #[code master: true] on master route.
+    p When #[code detailRoutes] are specified then navigating to detail route will also preload its master route.
+    p But unlike nested routes (specified in #[code routes] parameters), detail routes #[code path]s don't merged with master route #[code path].
+
+    :code(lang="js")
+      routes = [
+        {
+          path: '/blog/',
+          url: './news.html',
+          master: true,
+          detailRoutes: [
+            {
+              /* We need to specify detail route path from root */
+              path: '/blog/:postId/',
+              url: './post.html',
+            },
+          ],
+        },
+        // ...
+      ]
 
     h2 Routable Tabs
     p What routable tabs means and why is it good?

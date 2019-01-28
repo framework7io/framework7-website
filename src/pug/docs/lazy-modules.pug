@@ -35,7 +35,7 @@ block content
           br
           |  - <span class="parameter-type">string</span> with module name to load (e.g. <code>'searchbar'</code>)
           br
-          |  - <span class="parameter-type">string</span> with module path to load (e.g. <code>'path/to/lazy-components/searchbar.js'</code>)
+          |  - <span class="parameter-type">string</span> with module path to load (e.g. <code>'path/to/components/searchbar.js'</code>)
       p.method-returns Method returns Promise
     .method-wrap
       p
@@ -271,6 +271,12 @@ block content
           td Gauge
           td <code>framework7/components/gauge/gauge.js</code>
         tr
+          td Skeleton
+          td <code>framework7/components/skeleton/skeleton.js</code>
+        tr
+          td Menu
+          td <code>framework7/components/menu/menu.js</code>
+        tr
           td Vi
           td <code>framework7/components/vi/vi.js</code>
         tr
@@ -278,14 +284,14 @@ block content
           td <code>framework7/components/typography/typography.js</code>
     h2 Browser Modules
     p Browser modules are intended to be used in development setup without bundlers (like Webpack or Rollup).
-    p First of all, in our main <a href="app-layout.html">app layout</a> we need to use so called "framework7-lazy" library instead of <code>framework7.js</code> and <code>framework7.css</code> scripts and styles that contains whole framework.
+    p First of all, in our main <a href="app-layout.html">app layout</a> we need to use so called minimal core Framework7 library instead of <code>framework7.bundle.js</code> and <code>framework7.bundle.css</code> scripts and styles that contains whole framework.
     :code(lang="html")
       <!DOCTYPE html>
       <html>
         <head>
           ...
-          <!-- Path to Framework7 Lazy Library CSS -->
-          <link rel="stylesheet" href="path/to/framework7/css/framework7-lazy.min.css">
+          <!-- Path to Framework7 Core Library CSS -->
+          <link rel="stylesheet" href="path/to/framework7/css/framework7.min.css">
           <!-- Path to your custom app styles-->
           <link rel="stylesheet" href="path/to/my-app.css">
         </head>
@@ -293,23 +299,23 @@ block content
           <div id="app">
             ...
           </div>
-          <!-- Path to Framework7 Lazy Library JS-->
-          <script type="text/javascript" src="path/to/framework7/js/framework7-lazy.min.js"></script>
+          <!-- Path to Framework7 Core Library JS-->
+          <script type="text/javascript" src="path/to/framework7/js/framework7.min.js"></script>
           <!-- Path to your app js-->
           <script type="text/javascript" src="path/to/my-app.js"></script>
         </body>
       </html>
-    p We also need to inclued modules/components that we need on initial page after <code>framework7-lazy</code> styles and script. If we need Searchbar and Accordion then we need to include them in app layout:
+    p We also need to inclued modules/components that we need on initial page after <code>framework7</code> styles and script. If we need Searchbar and Accordion then we need to include them in app layout:
     :code(lang="html")
       <!DOCTYPE html>
       <html>
         <head>
           ...
-          <!-- Path to Framework7 Lazy Library CSS -->
-          <link rel="stylesheet" href="path/to/framework7/css/framework7-lazy.min.css">
+          <!-- Path to Framework7 Core Library CSS -->
+          <link rel="stylesheet" href="path/to/framework7/css/framework7.min.css">
           <!-- Include modules required for initial page -->
-          <link rel="stylesheet" href="path/to/framework7/lazy-components/accordion.css">
-          <link rel="stylesheet" href="path/to/framework7/lazy-components/searchbar.css">
+          <link rel="stylesheet" href="path/to/framework7/components/accordion.css">
+          <link rel="stylesheet" href="path/to/framework7/components/searchbar.css">
           <!-- Path to your custom app styles-->
           <link rel="stylesheet" href="path/to/my-app.css">
         </head>
@@ -317,20 +323,20 @@ block content
           <div id="app">
             ...
           </div>
-          <!-- Path to Framework7 Lazy Library JS-->
-          <script type="text/javascript" src="path/to/framework7/js/framework7-lazy.min.js"></script>
+          <!-- Path to Framework7 Core Library JS-->
+          <script type="text/javascript" src="path/to/framework7/js/framework7.min.js"></script>
           <!-- Include modules required for initial page -->
-          <script type="text/javascript" src="path/to/framework7/lazy-components/accordion.js"></script>
-          <script type="text/javascript" src="path/to/framework7/lazy-components/searchbar.js"></script>
+          <script type="text/javascript" src="path/to/framework7/components/accordion.js"></script>
+          <script type="text/javascript" src="path/to/framework7/components/searchbar.js"></script>
           <!-- Path to your app js-->
           <script type="text/javascript" src="path/to/my-app.js"></script>
         </body>
       </html>
-    p Now when we init Framework7 app we need to specify where is the rest of modules in <code>lazyModulesPath</code> parameter (path to <code>/lazy-components/</code> folder):
+    p Now when we init Framework7 app we need to specify where is the rest of modules in <code>lazyModulesPath</code> parameter (path to <code>/components/</code> folder):
     :code(lang="js")
       var app = new Framework7({
         // ...
-        lazyModulesPath: 'path/to/framework7/lazy-components',
+        lazyModulesPath: 'path/to/framework7/components',
       });
     p Now we can just load module by its name (it will automatically fetch file with such file name in specified <code>lazyModulesPath</code> location):
     :code(lang="js")
@@ -343,10 +349,10 @@ block content
       p Note, that browser modules also load modules styles automatically. So loading <code>gauge.js</code> will also automatically load <code>gauge.css</code> stylesheet.
     p So the above expression <code>app.loadModules(['calendar', 'gauge'])</code> will load the following files:
     ul
-      li path/to/framework7/lazy-components/calendar.js
-      li path/to/framework7/lazy-components/calendar.css
-      li path/to/framework7/lazy-components/gauge.js
-      li path/to/framework7/lazy-components/gauge.css
+      li path/to/framework7/components/calendar.js
+      li path/to/framework7/components/calendar.css
+      li path/to/framework7/components/gauge.js
+      li path/to/framework7/components/gauge.css
     p When we need to preload modules for specific route and we use browser modules, then we can just use route's <code>modules</code> property:
     :code(lang="js")
       var routes = [
@@ -392,191 +398,199 @@ block content
         tr
           td Dialog
           td <code>dialog</code>
-          td <code>framework7/lazy-components/dialog.js</code>
+          td <code>framework7/components/dialog.js</code>
         tr
           td Popup
           td <code>popup</code>
-          td <code>framework7/lazy-components/popup.js</code>
+          td <code>framework7/components/popup.js</code>
         tr
           td LoginScreen
           td <code>login-screen</code>
-          td <code>framework7/lazy-components/login-screen.js</code>
+          td <code>framework7/components/login-screen.js</code>
         tr
           td Popover
           td <code>popover</code>
-          td <code>framework7/lazy-components/popover.js</code>
+          td <code>framework7/components/popover.js</code>
         tr
           td Actions
           td <code>actions</code>
-          td <code>framework7/lazy-components/actions.js</code>
+          td <code>framework7/components/actions.js</code>
         tr
           td Sheet
           td <code>sheet</code>
-          td <code>framework7/lazy-components/sheet.js</code>
+          td <code>framework7/components/sheet.js</code>
         tr
           td Toast
           td <code>toast</code>
-          td <code>framework7/lazy-components/toast.js</code>
+          td <code>framework7/components/toast.js</code>
         tr
           td Preloader
           td <code>preloader</code>
-          td <code>framework7/lazy-components/preloader.js</code>
+          td <code>framework7/components/preloader.js</code>
         tr
           td Progressbar
           td <code>progressbar</code>
-          td <code>framework7/lazy-components/progressbar.js</code>
+          td <code>framework7/components/progressbar.js</code>
         tr
           td Sortable
           td <code>sortable</code>
-          td <code>framework7/lazy-components/sortable.js</code>
+          td <code>framework7/components/sortable.js</code>
         tr
           td Swipeout
           td <code>swipeout</code>
-          td <code>framework7/lazy-components/swipeout.js</code>
+          td <code>framework7/components/swipeout.js</code>
         tr
           td Accordion
           td <code>accordion</code>
-          td <code>framework7/lazy-components/accordion.js</code>
+          td <code>framework7/components/accordion.js</code>
         tr
           td ContactsList
           td <code>contacts-list</code>
-          td <code>framework7/lazy-components/contacts-list.js</code>
+          td <code>framework7/components/contacts-list.js</code>
         tr
           td VirtualList
           td <code>virtual-list</code>
-          td <code>framework7/lazy-components/virtual-list.js</code>
+          td <code>framework7/components/virtual-list.js</code>
         tr
           td ListIndex
           td <code>list-index</code>
-          td <code>framework7/lazy-components/list-index.js</code>
+          td <code>framework7/components/list-index.js</code>
         tr
           td Timeline
           td <code>timeline</code>
-          td <code>framework7/lazy-components/timeline.js</code>
+          td <code>framework7/components/timeline.js</code>
         tr
           td Tabs
           td <code>tabs</code>
-          td <code>framework7/lazy-components/tabs.js</code>
+          td <code>framework7/components/tabs.js</code>
         tr
           td Panel
           td <code>panel</code>
-          td <code>framework7/lazy-components/panel.js</code>
+          td <code>framework7/components/panel.js</code>
         tr
           td Card
           td <code>card</code>
-          td <code>framework7/lazy-components/card.js</code>
+          td <code>framework7/components/card.js</code>
         tr
           td Chip
           td <code>chip</code>
-          td <code>framework7/lazy-components/chip.js</code>
+          td <code>framework7/components/chip.js</code>
         tr
           td Form
           td <code>form</code>
-          td <code>framework7/lazy-components/form.js</code>
+          td <code>framework7/components/form.js</code>
         tr
           td Input
           td <code>input</code>
-          td <code>framework7/lazy-components/input.js</code>
+          td <code>framework7/components/input.js</code>
         tr
           td Checkbox
           td <code>checkbox</code>
-          td <code>framework7/lazy-components/checkbox.js</code>
+          td <code>framework7/components/checkbox.js</code>
         tr
           td Radio
           td <code>radio</code>
-          td <code>framework7/lazy-components/radio.js</code>
+          td <code>framework7/components/radio.js</code>
         tr
           td Toggle
           td <code>toggle</code>
-          td <code>framework7/lazy-components/toggle.js</code>
+          td <code>framework7/components/toggle.js</code>
         tr
           td Range
           td <code>range</code>
-          td <code>framework7/lazy-components/range.js</code>
+          td <code>framework7/components/range.js</code>
         tr
           td Stepper
           td <code>stepper</code>
-          td <code>framework7/lazy-components/stepper.js</code>
+          td <code>framework7/components/stepper.js</code>
         tr
           td SmartSelect
           td <code>smart-select</code>
-          td <code>framework7/lazy-components/smart-select.js</code>
+          td <code>framework7/components/smart-select.js</code>
         tr
           td Grid
           td <code>grid</code>
-          td <code>framework7/lazy-components/grid.js</code>
+          td <code>framework7/components/grid.js</code>
         tr
           td Calendar
           td <code>calendar</code>
-          td <code>framework7/lazy-components/calendar.js</code>
+          td <code>framework7/components/calendar.js</code>
         tr
           td Picker
           td <code>picker</code>
-          td <code>framework7/lazy-components/picker.js</code>
+          td <code>framework7/components/picker.js</code>
         tr
           td InfiniteScroll
           td <code>infinite-scroll</code>
-          td <code>framework7/lazy-components/infinite-scroll.js</code>
+          td <code>framework7/components/infinite-scroll.js</code>
         tr
           td PullToRefresh
           td <code>pull-to-refresh</code>
-          td <code>framework7/lazy-components/pull-to-refresh.js</code>
+          td <code>framework7/components/pull-to-refresh.js</code>
         tr
           td Lazy
           td <code>lazy</code>
-          td <code>framework7/lazy-components/lazy.js</code>
+          td <code>framework7/components/lazy.js</code>
         tr
           td DataTable
           td <code>data-table</code>
-          td <code>framework7/lazy-components/data-table.js</code>
+          td <code>framework7/components/data-table.js</code>
         tr
           td Fab
           td <code>fab</code>
-          td <code>framework7/lazy-components/fab.js</code>
+          td <code>framework7/components/fab.js</code>
         tr
           td Searchbar
           td <code>searchbar</code>
-          td <code>framework7/lazy-components/searchbar.js</code>
+          td <code>framework7/components/searchbar.js</code>
         tr
           td Messages
           td <code>messages</code>
-          td <code>framework7/lazy-components/messages.js</code>
+          td <code>framework7/components/messages.js</code>
         tr
           td Messagebar
           td <code>messagebar</code>
-          td <code>framework7/lazy-components/messagebar.js</code>
+          td <code>framework7/components/messagebar.js</code>
         tr
           td Swiper
           td <code>swiper</code>
-          td <code>framework7/lazy-components/swiper.js</code>
+          td <code>framework7/components/swiper.js</code>
         tr
           td PhotoBrowser
           td <code>photo</code>
-          td <code>framework7/lazy-components/browser/photo-browser.js</code>
+          td <code>framework7/components/browser/photo-browser.js</code>
         tr
           td Notification
           td <code>notification</code>
-          td <code>framework7/lazy-components/notification.js</code>
+          td <code>framework7/components/notification.js</code>
         tr
           td Autocomplete
           td <code>autocomplete</code>
-          td <code>framework7/lazy-components/autocomplete.js</code>
+          td <code>framework7/components/autocomplete.js</code>
         tr
           td Tooltip
           td <code>tooltip</code>
-          td <code>framework7/lazy-components/tooltip.js</code>
+          td <code>framework7/components/tooltip.js</code>
         tr
           td Gauge
           td <code>gauge</code>
-          td <code>framework7/lazy-components/gauge.js</code>
+          td <code>framework7/components/gauge.js</code>
+        tr
+          td Skeleton
+          td <code>skeleton</code>
+          td <code>framework7/components/skeleton.js</code>
+        tr
+          td Menu
+          td <code>menu</code>
+          td <code>framework7/components/menu.js</code>
         tr
           td Vi
           td <code>vi</code>
-          td <code>framework7/lazy-components/vi.js</code>
+          td <code>framework7/components/vi.js</code>
         tr
           td Typography
           td <code>typography</code>
-          td <code>framework7/lazy-components/typography.js</code>
+          td <code>framework7/components/typography.js</code>
 
 
 

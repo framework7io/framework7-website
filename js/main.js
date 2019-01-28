@@ -1,3 +1,4 @@
+/* eslint-disable */
 ;(function(){
   // init search
   var algoliaClient;
@@ -65,6 +66,7 @@
       }
     )
   }
+
   $(document).on('input', '.docs-nav-searchbar input', function (e) {
     var query = e.target.value.trim().toLowerCase();
     clearTimeout(searchTimeout);
@@ -92,6 +94,7 @@
       }
     });
   }
+
   if ($('img.lazy').length > 0) {
     $(window).scroll(function(){
       handleLazyScroll();
@@ -108,18 +111,6 @@
     $('.theme-switch a').toggleClass('active');
     $('header .phone').toggleClass('phone-android');
     $('header .phone .fullscreen').attr('href', url);
-  });
-
-  $('.home-killer .tab-links a').click(function (e) {
-    e.preventDefault();
-    var index = $(this).index();
-    $('.home-killer .active').removeClass('active');
-    $('.home-killer video').each(function () {
-      this.pause();
-    });
-    var newVideo = $('.home-killer .tab').eq(index).addClass('active').find('video');
-    if (!Modernizr.touch) newVideo[0].play();
-    $('.home-killer .tab-links a').eq(index).addClass('active');
   });
 
   // Clickable titles
@@ -149,6 +140,7 @@
       $('.docs-nav').toggleClass('docs-nav-visible');
     });
   }
+
   // Docs scroll spy
   var demoDevicePreviewLink;
   function handleDeviceScroll() {

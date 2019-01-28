@@ -234,6 +234,32 @@ block content
           td CSS selector of elements to apply touch ripple effect on click
         tr.subparam-close-row
           td(colspan="4") }
+        tr
+          td serviceWorker
+          td object
+          td
+          td Object with service worker module parameters:
+            :code(lang="js")
+              var app = new Framework7({
+                serviceWorker: {
+                  path: './service-worker.js',
+                  scope: '/',
+                }
+              })
+        tr.subparam-open-row
+          td(colspan="4") {
+        tr.subparam-row
+          td path
+          td string
+          td
+          td Path to service worker file
+        tr.subparam-row
+          td scope
+          td string
+          td
+          td Path to service worker scope
+        tr.subparam-close-row
+          td(colspan="4") }
     p These are default app parameters for app core module.
     p Most of components that has JavaScript API may extend this list of parameters with the property named as component. For example <a href="#">Panel</a> component extends app parameters with <code>panel</code> property that accepts Panel specific parameters.
     p Example:
@@ -327,7 +353,9 @@ block content
         tr
           td app.request
           td Contains methods to work with XHR requests. Check the <a href="request.html">Request</a> utilities section
-
+        tr
+          td app.serviceWorker.registration
+          td Array with registered service workers
         tr
           th(colspan="2") Methods
         tr
@@ -348,6 +376,12 @@ block content
         tr
           td app.init()
           td Initialize app. In case you disabled auto initialization with <code>init: false</code> parameter
+        tr
+          td app.serviceWorker.register(<span>path</span>, <span>scope</span>)
+          td Register service worker. It returns promise that will be resolved with #[a(href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration", target="_blank") ServiceWorkerRegistration]
+        tr
+          td app.serviceWorker.unregister(<span>registration</span>)
+          td Unregister service worker. It returns promise that will be resolved when service worker unregistered.
     p Same as with app parameters most of components that has JavaScript API may extend this list of properties with the property named as component. For example Panel component extends app instance properties with <code>panel</code> property that accepts Panel specific properties and methods.
     p Example:
     :code(lang="js")
@@ -379,32 +413,48 @@ block content
           td Event will be fired on app orientation change (window orientantion change).
         tr
           td click
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on app click
         tr
           td touchstart:active
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch start (mousedown) event added as active listener (possible to prevent default)
         tr
           td touchmove:active
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch move (mousemove) event added as active listener (possible to prevent default)
         tr
           td touchend:active
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch end (mouseup) event added as active listener (possible to prevent default)
         tr
           td touchstart:passive
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch start (mousedown) event added as passive listener (impossible to prevent default)
         tr
           td touchmove:passive
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch move (mousemove) event added as passive listener (impossible to prevent default)
         tr
           td touchend:passive
-          td <span>event</span>
+          td <span>(event)</span>
           td Event will be fired on touch end (mouseup) event added as passive listener (impossible to prevent default)
+        tr
+          td serviceWorkerRegisterSuccess
+          td <span>(registration)</span>
+          td Event will be triggered when service worker successfully registered
+        tr
+          td serviceWorkerRegisterError
+          td <span>(error)</span>
+          td Event will be triggered when service worker registration failed
+        tr
+          td serviceWorkerUnregisterSuccess
+          td <span>(registration)</span>
+          td Event will be triggered when service worker successfully unregistered
+        tr
+          td serviceWorkerUnregisterError
+          td <span>(registration, error)</span>
+          td Event will be triggered when service worker unregister failed
     p And again, most of components that has JavaScript API may extend this list of events like Panel component will also trigger additional events on app instance.
     p Example:
     :code(lang="js")

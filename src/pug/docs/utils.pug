@@ -24,7 +24,7 @@ block content
 
     h2 Utils Methods
 
-    h3 parseUrlQuery
+    h3 #[code parseUrlQuery()]
     .method-wrap
       p
         span.method app.utils.parseUrlQuery(<span>url</span>)
@@ -38,7 +38,7 @@ block content
           var query = app.utils.parseUrlQuery('http://google.com/?id=5&foo=bar');
           console.log(query); // { id: 5, foo: 'bar' }
 
-    h3 serializeObject
+    h3 #[code serializeObject()]
     .method-wrap
       p
         span.method app.utils.serializeObject(<span>object</span>)
@@ -52,7 +52,7 @@ block content
           var params = { foo: 'bar', id: 5 };
           console.log(app.utils.serializeObject(params)); // 'foo=bar&id=5'
 
-    h3 requestAnimationFrame
+    h3 #[code requestAnimationFrame()]
     .method-wrap
       p
         span.method app.utils.requestAnimationFrame(<span>callback</span>)
@@ -71,7 +71,7 @@ block content
           }
           animId = app.utils.requestAnimationFrame(anim);
 
-    h3 cancelAnimationFrame
+    h3 #[code cancelAnimationFrame()]
     .method-wrap
       p
         span.method app.utils.cancelAnimationFrame(<span>requestID</span>)
@@ -83,7 +83,7 @@ block content
     :code(lang="js")
           app.utils.cancelAnimationFrame(animId);
 
-    h3 removeDiacritics
+    h3 #[code removeDiacritics()]
     .method-wrap
       p
         span.method app.utils.removeDiacritics(<span>text</span>)
@@ -97,7 +97,7 @@ block content
           var text = app.utils.removeDiacritics('ÁÓL');
           console.log(text); //-&gt; 'AOL'
 
-    h3 nextFrame
+    h3 #[code nextFrame()]
     .method-wrap
       p
         span.method app.utils.nextFrame(<span>callback</span>)
@@ -112,7 +112,7 @@ block content
             // do something on next frame
           });
 
-    h3 nextTick
+    h3 #[code nextTick()]
     .method-wrap
       p
         span.method app.utils.nextTick(<span>callback</span>, <span>delay</span>)
@@ -130,7 +130,7 @@ block content
             // do something on next tick
           });
 
-    h3 now
+    h3 #[code now()]
     .method-wrap
       p
         span.method app.utils.now()
@@ -141,7 +141,7 @@ block content
             var timeDiff = app.utils.now() - now;
             console.log(timeDiff + 'ms past');
           }, 2000);
-    h3 extend
+    h3 #[code extend()]
     .method-wrap
       p
         span.method app.utils.extend(<span>target</span>, <span>...from</span>)
@@ -208,7 +208,7 @@ block content
 
           console.log(a); // { apple: 10, cherry: 97, pineapple: 20 }
 
-    h3 uniqueNumber
+    h3 #[code uniqueNumber()]
     .method-wrap
       p
         span.method app.utils.uniqueNumber()
@@ -220,7 +220,7 @@ block content
 
       app.utils.uniqueNumber(); // -> 4
 
-    h3 id
+    h3 #[code id()]
     .method-wrap
       p
         span.method app.utils.id(<span>mask</span>, <span>map</span>)

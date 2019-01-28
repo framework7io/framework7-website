@@ -2,6 +2,7 @@ const fs = require('fs');
 const less = require('less');
 
 const codeFilter = require('./code-filter');
+const makeId = require('./make-id');
 
 module.exports = (component, info = true, title = 'CSS Variables') => {
   const file = `./packages/core/components/${component}/${component}-vars.less`;
@@ -15,7 +16,7 @@ module.exports = (component, info = true, title = 'CSS Variables') => {
   if (!css || !css.trim().length) return '';
   return `
     ${info || title ? `
-    <h2>${title}</h2>
+    <h2 id="${makeId(title)}">${title}</h2>
     ` : ''}
     ${info ? `
     <p>Below is the list of related <a href="https://developer.mozilla.org/docs/Web/CSS/Using_CSS_variables" target="_blank" rel="nofollow">CSS variables</a> (CSS custom properties).</p>
