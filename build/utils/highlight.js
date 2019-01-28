@@ -22,7 +22,6 @@ extendLanguage('jsx');
 function highlight(code, lang) {
   if (lang === 'js') lang = 'javascript';
   if (!lang) lang = 'html';
-  if (!lang) return code;
   if (!Prism.languages[lang]) {
     try {
       loadLanguages([lang]);

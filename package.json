@@ -1,7 +1,7 @@
 {
   "name": "framework7-website",
   "releaseVersion": "3.6.5",
-  "releaseData": "January 4, 2018",
+  "releaseDate": "January 4, 2018",
   "description": "Framework7 Website",
   "cdn": "//cdn.framework7.io",
   "keywords": [
@@ -14,6 +14,7 @@
     "url": "https://github.com/framework7io/framework7-website"
   },
   "devDependencies": {
+    "dom7": "^2.1.2",
     "eslint": "^5.12.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",

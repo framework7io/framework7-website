@@ -13,6 +13,13 @@
 @codePink: #FF506E;
 @codeGray: #B1CCD7;
 
+:root {
+  --pre-code-padding: 20px;
+  --pre-code-line-height: 20px;
+  --pre-code-font-size: 13.5px;
+  --pre-code-border-radius: 4px;
+}
+
 pre, code {
   .monospace();
 }
@@ -43,15 +50,15 @@ pre {
   word-wrap: break-word;
   white-space: pre-wrap;
   code {
-    padding: 20px;
+    padding: var(--pre-code-padding);
     background: @codeBg;
     display: block;
     color: @codeMain;
     display: block;
     overflow-x: auto;
-    border-radius: 6px;
-    font-size: 13.5px;
-    line-height: 20px;
+    border-radius: var(--pre-code-border-radius);
+    font-size: var(--pre-code-font-size);
+    line-height: var(--pre-code-line-height);
     font-weight: normal;
   }
 }
@@ -69,8 +76,8 @@ pre {
 }
 .important-note pre code,
 table pre code {
-  padding: 8px;
-  border-radius: 4px;
+  --pre-code-padding: 8px;
+  --pre-code-border-radius: 4px;
 }
 table pre {
   &:first-child {
