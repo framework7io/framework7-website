@@ -21,6 +21,7 @@ block content
       li <code><b>NavLeft</b></code> / <code><b>F7NavLeft</b></code>
       li <code><b>NavRight</b></code> / <code><b>F7NavRight</b></code>
       li <code><b>NavTitle</b></code> / <code><b>F7NavTitle</b></code>
+      li <code><b>NavTitleLarge</b></code> / <code><b>F7NavTitleLarge</b></code>
     h2 Navbar Properties
     table.params-table
       thead
@@ -82,6 +83,16 @@ block content
           td string
           td
           td Adds additional class to <code>navbar-inner</code> element
+        tr
+          td large
+          td boolean
+          td
+          td Enables navbar with large title
+        tr
+          td titleLarge
+          td string
+          td
+          td Navbar large title text. If not specified then will be equal to <code>title</code> prop
         tr
           th(colspan="4") &lt;NavLeft&gt; properties
         tr
@@ -161,23 +172,34 @@ block content
       li <code><b>default</b></code> - element will be inserted as a child of <code>&lt;div class="navbar-inner"&gt;</code> element
       li <code><b>before-inner</b></code> - element will be inserted right before <code>&lt;div class="navbar-inner"&gt;</code> element
       li <code><b>after-inner</b></code> - element will be inserted right after <code>&lt;div class="navbar-inner"&gt;</code> element
+      li <code><b>nav-left</b></code> - element will be inserted in navbar's left element
+      li <code><b>nav-right</b></code> - element will be inserted in navbar's right element
+      li <code><b>title</b></code> - element will be inserted in navbar's title element
     :code(lang="jsx")
-          <Navbar title="My App">
-            <div slot="before-inner">Before Inner</div>
-            <div slot="after-inner">After Inner</div>
-            <div>Default slot</div>
-          </Navbar>
+      <Navbar title="My App">
+        <a href="#" slot="nav-left">Left Link</a>
+        <a href="#" slot="nav-right">Right Link</a>
+        <div slot="before-inner">Before Inner</div>
+        <div slot="after-inner">After Inner</div>
+        <div>Default slot</div>
+      </Navbar>
 
-          {/* Renders to: */}
+      {/* Renders to: */}
 
-          <div class="navbar">
-            <div>Before Inner</div>
-            <div class="navbar-inner">
-              <div class="title">My App</div>
-              <div>Default slot</div>
-            </div>
-            <div>After Inner</div>
+      <div class="navbar">
+        <div>Before Inner</div>
+        <div class="navbar-inner">
+          <div class="left">
+            <a href="#">Left Link</a>
           </div>
+          <div class="title">My App</div>
+          <div class="right">
+            <a href="#">Right Link</a>
+          </div>
+          <div>Default slot</div>
+        </div>
+        <div>After Inner</div>
+      </div>
 
     h2 Examples
     h4 Minimal layout
@@ -194,30 +216,44 @@ block content
 
     h4 With additional right link to open right panel
     :code(lang="jsx")
-          <Navbar title="My App" backLink="Back">
-            <NavRight>
-              <Link icon="icon-bars" panelOpen="right"></Link>
-            </NavRight>
-          </Navbar>
+      <Navbar title="My App" backLink="Back">
+        <NavRight>
+          <Link icon="icon-bars" panelOpen="right"></Link>
+        </NavRight>
+      </Navbar>
+
+      {/* or */}
+
+      <Navbar title="My App" backLink="Back">
+        <Link slot="nav-right" icon="icon-bars" panelOpen="right"></Link>
+      </Navbar>
+
+    h4 With large title
+    :code(lang="jsx")
+      <Navbar title="My App" backLink="Back" large></Navbar>
+
+      {/* with different large title text */}
+
+      <Navbar title="My App" backLink="Back" large titleLarge="Large Title"></Navbar>
 
     h4 All three parts
     :code(lang="jsx")
-          <Navbar>
-            <NavLeft backLink="Back"></NavLeft>
-            <NavTitle>My App</NavTitle>
-            <NavRight>
-              <Link icon="icon-bars" panelOpen="right"></Link>
-            </NavRight>
-          </Navbar>
+      <Navbar>
+        <NavLeft backLink="Back"></NavLeft>
+        <NavTitle>My App</NavTitle>
+        <NavRight>
+          <Link icon="icon-bars" panelOpen="right"></Link>
+        </NavRight>
+      </Navbar>
 
     h4 Full custom layout
     :code(lang="jsx")
-          <Navbar>
-            <NavLeft>
-              <Link>Left Link</Link>
-            </NavLeft>
-            <NavTitle>My App</NavTitle>
-            <NavRight>
-              <Link>Right Link</Link>
-            </NavRight>
-          </Navbar>
+      <Navbar>
+        <NavLeft>
+          <Link>Left Link</Link>
+        </NavLeft>
+        <NavTitle>My App</NavTitle>
+        <NavRight>
+          <Link>Right Link</Link>
+        </NavRight>
+      </Navbar>

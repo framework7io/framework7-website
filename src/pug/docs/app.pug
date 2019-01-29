@@ -463,3 +463,118 @@ block content
           });
 
     h2 CSS Variables
+    :code(lang="css")
+      :root {
+        --f7-theme-color: #007aff;
+        --f7-theme-color-rgb: 0, 122, 255;
+        --f7-theme-color-shade: #0066d6;
+        --f7-theme-color-tint: #298fff;
+        --f7-safe-area-left: 0px;
+        --f7-safe-area-right: 0px;
+        --f7-safe-area-top: 0px;
+        --f7-safe-area-bottom: 0px;
+        --f7-safe-area-outer-left: 0px;
+        --f7-safe-area-outer-right: 0px;
+        --f7-device-pixel-ratio: 1;
+      }
+      @supports (left: env(safe-area-inset-left)) {
+        :root {
+          --f7-safe-area-top: env(safe-area-inset-top);
+          --f7-safe-area-bottom: env(safe-area-inset-bottom);
+        }
+        :root .ios-left-edge,
+        :root .ios-edges,
+        :root .safe-area-left,
+        :root .safe-areas,
+        :root .popup,
+        :root .sheet-modal,
+        :root .panel-left {
+          --f7-safe-area-left: env(safe-area-inset-left);
+          --f7-safe-area-outer-left: env(safe-area-inset-left);
+        }
+        :root .ios-right-edge,
+        :root .ios-edges,
+        :root .safe-area-right,
+        :root .safe-areas,
+        :root .popup,
+        :root .sheet-modal,
+        :root .panel-right {
+          --f7-safe-area-right: env(safe-area-inset-right);
+          --f7-safe-area-outer-right: env(safe-area-inset-right);
+        }
+        :root .no-safe-areas,
+        :root .no-safe-area-left,
+        :root .no-ios-edges,
+        :root .no-ios-left-edge {
+          --f7-safe-area-left: 0px;
+          --f7-safe-area-outer-left: 0px;
+        }
+        :root .no-safe-areas,
+        :root .no-safe-area-right,
+        :root .no-ios-edges,
+        :root .no-ios-right-edge {
+          --f7-safe-area-right: 0px;
+          --f7-safe-area-outer-right: 0px;
+        }
+      }
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+        :root {
+          --f7-device-pixel-ratio: 2;
+        }
+      }
+      @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 3dppx) {
+        :root {
+          --f7-device-pixel-ratio: 3;
+        }
+      }
+      /*====================
+        Fonts
+        ==================== */
+      .ios {
+        --f7-font-family: -apple-system, SF Pro Text, SF UI Text, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
+        --f7-text-color: #000;
+        --f7-font-size: 14px;
+        --f7-line-height: 1.4;
+      }
+      .ios .theme-dark,
+      .ios.theme-dark {
+        --f7-text-color: #fff;
+      }
+      .md {
+        --f7-font-family: Roboto, system-ui, Noto, Helvetica, Arial, sans-serif;
+        --f7-text-color: #212121;
+        --f7-font-size: 14px;
+        --f7-line-height: 1.5;
+      }
+      .md .theme-dark,
+      .md.theme-dark {
+        --f7-text-color: rgba(255, 255, 255, 0.87);
+      }
+      /*====================
+        Bars
+        ==================== */
+      :root {
+        /*
+        --f7-bars-link-color: var(--f7-theme-color);
+        */
+        --f7-bars-bg-image: none;
+        --f7-bars-bg-color: #f7f7f8;
+        --f7-bars-bg-color-rgb: 247, 247, 248;
+        --f7-bars-text-color: #000;
+        --f7-bars-shadow-bottom-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 0) 100%);
+        --f7-bars-shadow-top-image: linear-gradient(to top, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 0) 100%);
+      }
+      .theme-dark {
+        --f7-bars-bg-color: #1b1b1b;
+        --f7-bars-text-color: #fff;
+      }
+      .ios {
+        --f7-bars-border-color: #c4c4c4;
+      }
+      .ios .theme-dark,
+      .ios.theme-dark {
+        --f7-bars-border-color: #282829;
+      }
+      .md {
+        --f7-bars-border-color: transparent;
+      }

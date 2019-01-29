@@ -9,5 +9,15 @@ module.exports = {
     "global-require": "off",
     "no-useless-escape": "off",
     "no-continue": "off",
-  }
+    "no-underscore-dangle": "off",
+  },
+  'globals': {
+    "localStorage": true,
+    "window": true,
+    "document": true,
+    "XMLHttpRequest": true,
+    "Blob": true,
+    "Document": true,
+    "FormData": true,
+  },
 };

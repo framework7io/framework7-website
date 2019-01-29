@@ -239,3 +239,121 @@ block content
       app.utils.id('xxxx-xxxx-xxxx-xxxx') // -> 1ea3-f127-dc67-627d
 
       app.utils.id('xxxx-xxxx', 'abcd') // -> aabc-ccda
+
+    h3 #[code colorHexToRgb()]
+    .method-wrap
+      p
+        span.method app.utils.colorHexToRgb(<span>hexColor</span>)
+        span - converts HEX color to RGB color
+      ul.method-parameters
+        li
+          span.parameter hexColor
+          |  - <span class="parameter-type">string</span> - HEX color string
+      p.method-returns returns <code>[R, G, B]</code> array
+    :code(lang="js")
+      app.utils.colorHexToRgb('#f00') // -> [255, 0, 0]
+
+    h3 #[code colorRgbToHex()]
+    .method-wrap
+      p
+        span.method app.utils.colorRgbToHex(<span>R</span>, <span>G</span>, <span>B</span>)
+        span - converts RGB color to HEX color
+      ul.method-parameters
+        li
+          span.parameter R
+          |  - <span class="parameter-type">number</span> - red value
+        li
+          span.parameter G
+          |  - <span class="parameter-type">number</span> - green value
+        li
+          span.parameter B
+          |  - <span class="parameter-type">number</span> - blue value
+      p.method-returns returns HEX color string
+    :code(lang="js")
+      app.utils.colorHexToRgb(255, 0, 0) // -> '#ff0000'
+
+    h3 #[code colorRgbToHsl()]
+    .method-wrap
+      p
+        span.method app.utils.colorRgbToHsl(<span>R</span>, <span>G</span>, <span>B</span>)
+        span - converts RGB color to HSL color
+      ul.method-parameters
+        li
+          span.parameter R
+          |  - <span class="parameter-type">number</span> - red value
+        li
+          span.parameter G
+          |  - <span class="parameter-type">number</span> - green value
+        li
+          span.parameter B
+          |  - <span class="parameter-type">number</span> - blue value
+      p.method-returns returns <code>[H, S, L]</code> array
+    :code(lang="js")
+      app.utils.colorRgbToHsl(255, 0, 0) // -> [0, 1, 0.5]
+
+    h3 #[code colorHslToRgb()]
+    .method-wrap
+      p
+        span.method app.utils.colorHslToRgb(<span>H</span>, <span>S</span>, <span>L</span>)
+        span - converts HSL color to RGB color
+      ul.method-parameters
+        li
+          span.parameter H
+          |  - <span class="parameter-type">number</span> - hue value
+        li
+          span.parameter S
+          |  - <span class="parameter-type">number</span> - saturation value
+        li
+          span.parameter L
+          |  - <span class="parameter-type">number</span> - lightness value
+      p.method-returns returns <code>[R, G, B]</code> array
+    :code(lang="js")
+      app.utils.colorHslToRgb(0, 1, 0.5) // -> [255, 0, 0]
+
+    h3 #[code colorThemeCSSProperties()]
+    .method-wrap
+      p
+        span.method app.utils.colorThemeCSSProperties(<span>hexColor</span>)
+        span - returns object with generate CSS variables required to set specified theme color
+      ul.method-parameters
+        li
+          span.parameter hexColor
+          |  - <span class="parameter-type">string</span> - HEX color string
+      p.method-returns returns object with required CSS variables and their values.
+
+    .method-wrap
+      p
+        span.method app.utils.colorThemeCSSProperties(<span>R</span>, <span>G</span>, <span>B</span>)
+        span - returns object with generate CSS variables required to set specified theme color
+      ul.method-parameters
+        li
+          span.parameter R
+          |  - <span class="parameter-type">number</span> - red value
+        li
+          span.parameter G
+          |  - <span class="parameter-type">number</span> - green value
+        li
+          span.parameter B
+          |  - <span class="parameter-type">number</span> - blue value
+      p.method-returns returns object with required CSS variables and their values.
+
+    :code(lang="js")
+      app.utils.colorThemeCSSProperties('#f00')
+      /* returns the following object:
+      {
+        "--f7-theme-color": "#f00",
+        "--f7-theme-color-rgb": "255, 0, 0",
+        "--f7-theme-color-shade": "#d60000",
+        "--f7-theme-color-tint": "#ff2929"
+      }
+      */
+    :code(lang="js")
+      app.utils.colorThemeCSSProperties(255, 0, 0)
+      /* returns the following object:
+      {
+        "--f7-theme-color": "#f00",
+        "--f7-theme-color-rgb": "255, 0, 0",
+        "--f7-theme-color-shade": "#d60000",
+        "--f7-theme-color-tint": "#ff2929"
+      }
+      */

@@ -109,7 +109,8 @@ module.exports = (content = '') => {
       indexHtml += '</ul>';
     }
   });
-  content = content.replace(/\n([ ]*)ul.docs-index\n/g, `\n$1ul.docs-index\n$1  ${indexHtml}\n`);
+
+  content = content.replace(/\n([ ]*)ul.docs-index([^\n]*)\n/g, `\n$1ul.docs-index$2\n$1  ${indexHtml}\n`);
 
   return content;
 };

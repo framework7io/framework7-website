@@ -11,11 +11,11 @@ block content
   .docs-content
     +improveDocsLink
     h1 CSS Variables Reference
-    ul.docs-index
+    ul.docs-index.docs-index-multicolumn(style="height: 700px")
     p This page contains reference to all CSS variables defined in all components.
     .important-note
       p Note that commented variables are not specified by default and their values is what they fallback to in this case.
-    h2 App
+    h2 App / Core
     :code(lang="css")
       :root {
         --f7-theme-color: #007aff;
@@ -131,8 +131,10 @@ block content
       .md {
         --f7-bars-border-color: transparent;
       }
+    h2 Color Theme Variables
+    :code(lang="css")
       /*====================
-        Color Themes
+        Primary Theme
         ==================== */
       .text-color-primary {
         --f7-theme-color-text-color: var(--f7-theme-color);
@@ -146,6 +148,9 @@ block content
       .ripple-color-primary {
         --f7-theme-color-ripple-color: rgba(var(--f7-theme-color-rgb), 0.3);
       }
+      /*====================
+        Colors List
+        ==================== */
       :root {
         --f7-color-red: #ff3b30;
         --f7-color-red-rgb: 255, 59, 48;
@@ -208,6 +213,9 @@ block content
         --f7-color-black-shade: #000000;
         --f7-color-black-tint: #141414;
       }
+      /*====================
+        Color Themes
+        ==================== */
       .color-theme-red {
         --f7-theme-color: #ff3b30;
         --f7-theme-color-rgb: 255, 59, 48;
@@ -298,6 +306,9 @@ block content
         --f7-theme-color-shade: #000000;
         --f7-theme-color-tint: #141414;
       }
+      /*====================
+        Color Overrides
+        ==================== */
       .color-red {
         --f7-theme-color: #ff3b30;
         --f7-theme-color-rgb: 255, 59, 48;

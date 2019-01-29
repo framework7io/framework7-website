@@ -5,18 +5,21 @@ const path = require('path');
 
 const buildStyles = require('./build/build-styles');
 const buildPages = require('./build/build-pages');
+const buildScript = require('./build/build-script');
 
 /* ==================================================================
 Build Styles
 ================================================================== */
 gulp.task('less', buildStyles);
 gulp.task('pug', buildPages);
-gulp.task('build', gulp.series(['pug', 'less']));
+gulp.task('js', buildScript);
+gulp.task('build', gulp.series(['pug', 'less', 'js']));
 
 /* =================================
 Watch
 ================================= */
 gulp.task('watch', () => {
+  gulp.watch('./src/js/**/*.*', gulp.series(['js']));
   gulp.watch('./src/less/**/*.*', gulp.series(['less']));
   gulp.watch('./src/pug/**/*.pug', { events: ['change'] }).on('change', (changedPath) => {
     const filePath = changedPath.split('src/pug/')[1];

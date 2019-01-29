@@ -176,9 +176,8 @@ block content
     h2 Trigger Lazy Load Manually
     p It is possible to force lazy handler to check lazy images by triggering <code><b>lazy</b></code> event on lazy image/element. It is useful in case you have added lazy elements dynamically and want to check should them be loaded or not without scrolling the page. For example:
     :code(lang="js")
-          $$('img.lazy').trigger('lazy');
-
-          $$('div.lazy').trigger('lazy');
+      $$('img.lazy').trigger('lazy');
+      $$('div.lazy').trigger('lazy');
     .with-device
       h2(data-device-preview="../docs-demos/core/lazy-load.html") Examples
       :code(lang="css")

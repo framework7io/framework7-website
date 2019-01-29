@@ -255,6 +255,14 @@ ul.method-parameters {
     padding: 0;
     margin-left: 20px;
   }
+  &.docs-index-multicolumn {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    > li {
+      width: calc(100% / 3);
+    }
+  }
 }
 .docs-nav {
   width: 200px;
