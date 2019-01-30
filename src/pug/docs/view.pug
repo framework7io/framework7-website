@@ -192,6 +192,18 @@ block content
             p <code>{ path: '/user/:userId/posts/:postId/', url: 'http://myserver/userpost/' }</code>
             p and you will click link with <b>/user/11/posts/12/</b> url then it will load page from <b>http://myserver/userpost/?userId=11&postId=12</b> url
         tr
+          th(colspan="4") Master Detail
+        tr
+          td masterDetailBreakpoint
+          td number
+          td 0
+          td Minimum app width to enable Master Detail view for master routes (routes with #[code master: true] parameter)
+        tr
+          td reloadDetail
+          td boolean
+          td false
+          td When enabled it will reload every detail page when navigating
+        tr
           th(colspan="4") Routes
         tr
           td routes
@@ -889,4 +901,41 @@ block content
           })
     p That is all, now on app load, home page content will be loaded from "home.html" file.
 
-    +cssVars('view')
+    h2 Master Detail
+    p Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views:
+    ul
+      li Master - is the area in the UI where you have a list of something.
+      li Detail - is the area that shows the relevant information of a selection in the master.
+    p When collapsed (on narrow screen) navigation between such pages will behave as usual routing.
+    .important-note
+      p Navigation to/from Master-Detail view happens without transition.
+      p When Master page is loaded all other pages will be loaded as Detail pages. To "navigate away" from Master Detail view it is recommended to use #[code reloadAll] navigation parameter.
+    p To enable Master Detail:
+    ul
+      li you need to specify #[code masterDetailBreakpoint] View's parameter
+      li set <a href="routes.html#route-properties">#[code master: true] property</a> on Master route
+      li in addition we can put all detail routes in <a href="routes.html#detail-routes">#[code detailRoutes] property</a> of master route
+    p For example:
+    :code(lang="js")
+      const mainView = app.views.create('.view-main', {
+        // enable master detail
+        masterDetailBreakpoint: 800,
+        routes: [
+          {
+            path: '/',
+            url: './pages/master.html',
+            // specify home route as master route
+            master: true,
+            // detail routes
+            detailRoutes: [
+              {
+                path: '/detail/:id/',
+                url: './pages/detail.html',
+              },
+            ]
+          },
+        ]
+      });
+    p And we should have something like below:
+    p
+      img(src=cdn + "/i/docs/master-detail.gif", style="max-width: 1000px; width: 100%")
