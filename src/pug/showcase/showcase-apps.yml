@@ -1,5 +1,78 @@
 ##########
 -
+  iconUrl: "#{cdn}/i/showcase/b2b-liga.png"
+  iconRounded: true
+  title: "B2B-Liga"
+  author:
+    url: https://play.google.com/store/apps/developer?id=Mohammad+Elzahaby
+    name: Mohammad Elzahaby
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=at.b2bliga.app
+  description: |
+    Die B2B-Liga ist die Fußball-Liga für Unternehmen in Wien. Von September bis Juni findet die Saison statt. Bei einer Spieldauer von 50 Minuten (2 x 25min) treffen jeweils zwei Teams aufeinander.
+
+    Verfolge mit der App den Fortschritt deines Teams, analysiere deinen Gegner und bereite dich für das nächste Match vor.
+
+  screenshots:
+  - "#{cdn}/i/showcase/b2b-liga-1.png"
+  - "#{cdn}/i/showcase/b2b-liga-2.png"
+  - "#{cdn}/i/showcase/b2b-liga-3.png"
+  - "#{cdn}/i/showcase/b2b-liga-4.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/adlister.jpg"
+  iconRounded: true
+  title: "Ad-Lister"
+  author:
+    url: https://itunes.apple.com/us/developer/just-applications/id1361942681?mt=8
+    name: Just Applications
+  links:
+    appstore: https://itunes.apple.com/us/app/ad-lister/id1361942682?mt=8
+    googleplay: https://play.google.com/store/apps/details?id=com.justapplications.adlister
+  description: |
+    Ad-Lister is an eBay listing software built in 2006 by Just Applications Ltd to enable professional eBay listing templates to be listed without requiring any knowledge of HTML.
+
+    The software currently manages over 2823 eBay stores from small to large scale eBay business sellers and focuses on driving more sales for each customer as well as saving the user time on listing in bulk.
+
+  screenshots:
+  - "#{cdn}/i/showcase/adlister-1.jpg"
+  - "#{cdn}/i/showcase/adlister-2.jpg"
+  - "#{cdn}/i/showcase/adlister-3.jpg"
+  - "#{cdn}/i/showcase/adlister-4.jpg"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/cuentos.png"
+  iconRounded: true
+  title: "Cuentos con Juegos"
+  author:
+    url: https://play.google.com/store/apps/developer?id=openWorks
+    name: openWorks
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=ar.com.owsoft.cuentos
+  description: |
+    Una colección de Cuentos Infantiles para leer, aprender y jugar con ellos.
+    Todas las semanas nuevos cuentos y juegos educativos.
+
+    - Cenicienta
+    - El Gigante Egoísta
+    - El Patito Feo
+    - Aladino y la Lámpara Mágica
+    - Caperucita Roja
+    - Blancanieves
+    - Los Músicos de Bremen
+    - Hansel y Gretel
+    - La Reina de las Abejas
+    - El Sastrecillo Valeroso
+    - Pulgarcito
+
+  screenshots:
+  - "#{cdn}/i/showcase/cuentos-1.png"
+  - "#{cdn}/i/showcase/cuentos-2.png"
+  - "#{cdn}/i/showcase/cuentos-3.png"
+  - "#{cdn}/i/showcase/cuentos-4.png"
+  - "#{cdn}/i/showcase/cuentos-5.png"
+##########
+-
   iconUrl: "#{cdn}/i/showcase/youbeep.png"
   iconRounded: true
   title: "YouBeep"
@@ -2780,4 +2853,29 @@
   - "#{cdn}/i/showcase/gunluc1.png"
   - "#{cdn}/i/showcase/gunluc2.png"
   - "#{cdn}/i/showcase/gunluc3.png"
+##########
+-
+  iconUrl: "#{cdn}/i/showcase/tanahalhaperek.png"
+  iconRounded: true
+  title: "929 - תנ\"ך על הפרק"
+  author:
+    url: https://play.google.com/store/apps/developer?id=DoradSoft
+    name: DoradSoft
+  links:
+    googleplay: https://play.google.com/store/apps/details?id=com.tanah.daily929
+    website: http://www.xn--febl3a.co.il/
+  description: |
+    Bible learning program
+  features:
+  - Bible text
+  - Commentary
+  - Articles
+  - Video and audio leasons
+  - Reading recordings
+  screenshots:
+  - "#{cdn}/i/showcase/tanahalhaperek1.png"
+  - "#{cdn}/i/showcase/tanahalhaperek2.png"
+  - "#{cdn}/i/showcase/tanahalhaperek3.png"
+  - "#{cdn}/i/showcase/tanahalhaperek4.png"
+  - "#{cdn}/i/showcase/tanahalhaperek5.png"
 

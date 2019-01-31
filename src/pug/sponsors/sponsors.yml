@@ -15,3 +15,7 @@ silver:
   link: https://www.securcom.me/
   imageUrl: "#{cdn}/i/sponsors/securcom.png"
 topSupporter:
+-
+  title: Wappler - The Visual Web App Creator
+  link: https://wappler.io/
+  imageUrl: "#{cdn}/i/sponsors/wappler.png"
