@@ -3,9 +3,9 @@
   box-sizing: border-box;
   position: relative;
   z-index: 500;
-  background: linear-gradient(to bottom, @pinkColor 20%, @redColor);
-  padding-top: 40px;
-  padding-bottom: 40px;
+  background: linear-gradient(to bottom, @pinkColor 0%, @redColor 40%);
+  padding-top: 30px;
+  padding-bottom: 30px;
 
   > .center {
     display: flex;
@@ -16,13 +16,16 @@
   .logo-holder {
     margin-right: 30px;
     margin-bottom: -30px;
+    width: 160px;
+    height: 140px;
+    flex-shrink: 0;
   }
   .logo {
     background: url('../i/logo.svg') no-repeat center;
     background-size: contain;
     display: block;
-    width: 160px;
-    height: 160px;
+    width: 140px;
+    height: 140px;
     margin-left: auto;
     margin-right: auto;
     border-radius: 50%;
@@ -132,6 +135,7 @@
           color: @redColor;
         }
       }
+
     }
     > li + li {
       margin-left: 5px;
@@ -162,22 +166,22 @@
     display: flex;
     margin-top: 20px;
     margin-bottom: -10px;
-    .patreon-button {
-      margin-left: -10px;
-      font-weight: bold;
-      &:not(:hover) {
-        background: none;
-      }
-    }
-    .github-buttons {
-      margin-left: 20px;
-      line-height: 22px;
-      a span {
-        font-size: 12px;
-      }
+
+  }
+  .patreon-button {
+    margin-left: -10px;
+    font-weight: bold;
+    &:not(:hover) {
+      background: none;
     }
   }
-
+  .github-buttons {
+    margin-left: 20px;
+    line-height: 22px;
+    a span {
+      font-size: 12px;
+    }
+  }
 }
 
 .bsa-cpc {
@@ -255,6 +259,10 @@
       min-width: 0;
       width: auto;
     }
+    .logo-holder {
+      width: 120px;
+      height: 120px;
+    }
     .logo {
       width: 120px;
       height: 120px;
@@ -279,12 +287,16 @@
 }
 @media (max-width: 900px) {
   .internal-header {
+    .header-content {
+      width: 100%;
+      margin-right: 0;
+    }
     .patreon-github {
       display: block;
     }
     .github-buttons {
-      margin-left: 0 !important;
-      margin-top: 5px;
+      margin-left: 0;
+      margin-top: 10px;
     }
   }
   .bsa-cpc {
@@ -296,7 +308,7 @@
     }
   }
 }
-@media (max-width: 800px) {
+@media (max-width: 850px) {
   .internal-header {
     padding-top: 30px;
     padding-bottom: 20px;
@@ -306,10 +318,93 @@
     .github-buttons {
       margin-top: 10px;
     }
-    .logo {
+    .logo, .logo-holder {
       width: 100px;
       height: 100px;
     }
+    ul.nav {
+      font-size: 14px;
+    }
   }
+}
+@media (max-width: 800px) {
+  .internal-header {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    .logo, .logo-holder {
+      width: 40px;
+      height: 40px;
+    }
+    .logo {
+      border-width: 1px;
+    }
+    .title img {
+      width: 150px;
+    }
+  }
+}
 
+@media (max-width: 700px) {
+  .internal-header {
+    .center {
+      flex-direction: column;
+    }
+    .logo-holder {
+      margin: 0;
+      margin-bottom: -40px;
+    }
+    .carbon {
+      margin: 0;
+      max-width: 100%;
+      margin-top: 20px;
+      box-sizing: border-box;
+      min-height: 119px;
+    }
+    .title {
+      margin-left: 50px;
+      margin-top: 5px;
+    }
+    ul.nav {
+      margin-left: 0;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      >li:hover>a {
+        background: none;
+        opacity: 0.7;
+      }
+      >li>a {
+        padding: 0;
+
+      }
+      >li + li {
+        margin-left: 20px;
+      }
+      >li:first-child ul {
+        left: 0;
+        margin-left: 0;
+        transform: translateX(0%) translateY(10px);
+        &:after {
+          left: 20px;
+        }
+      }
+      >li:first-child:hover ul {
+        transform: translateX(0%) translateY(0px);
+      }
+    }
+    .patreon-button:hover {
+      background: none;
+      opacity: 0.7;
+    }
+    .patreon-button .patreon-text {
+      font-weight: 500;
+      font-size: 13px;
+    }
+    .github-buttons {
+      display: none;
+    }
+  }
+  .bsa-cpc {
+    min-height: 30px;
+    height: auto;
+  }
 }

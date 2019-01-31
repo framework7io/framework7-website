@@ -1,5 +1,5 @@
 /**
- * Framework7 React 4.0.0-beta.32
+ * Framework7 React 4.0.0-beta.34
  * Build full featured iOS & Android apps using Framework7 & React
  * http://framework7.io/react/
  *
@@ -2344,23 +2344,23 @@
     };
 
     F7Card.prototype.onBeforeOpen = function onBeforeOpen (e) {
-      this.dispatchEvent('cardBeforeOpen card:beforeopen', e.target, e.detail.prevent);
+      this.dispatchEvent('cardBeforeOpen card:beforeopen', e, e.detail.prevent);
     };
 
     F7Card.prototype.onOpen = function onOpen (e) {
-      this.dispatchEvent('cardOpen card:open', e.target);
+      this.dispatchEvent('cardOpen card:open', e);
     };
 
     F7Card.prototype.onOpened = function onOpened (e) {
-      this.dispatchEvent('cardOpened card:opened', e.target);
+      this.dispatchEvent('cardOpened card:opened', e);
     };
 
     F7Card.prototype.onClose = function onClose (e) {
-      this.dispatchEvent('cardClose card:close', e.target);
+      this.dispatchEvent('cardClose card:close', e);
     };
 
     F7Card.prototype.onClosed = function onClosed (e) {
-      this.dispatchEvent('cardClosed card:closed', e.target);
+      this.dispatchEvent('cardClosed card:closed', e);
     };
 
     F7Card.prototype.render = function render () {
@@ -2468,7 +2468,7 @@
       __reactComponentWatch(this, 'props.expandableOpened', prevProps, prevState, function (expandableOpened) {
         var self = this$1;
 
-        if (opened) {
+        if (expandableOpened) {
           self.open();
         } else {
           self.close();
@@ -6787,7 +6787,7 @@
       this.__reactRefs = {};
 
       (function () {
-        Utils.bindMethods(this$1, ['onClick']);
+        Utils.bindMethods(this$1, ['onClick', 'onOpened', 'onClosed']);
       })();
     }
 
@@ -6797,8 +6797,16 @@
 
     var prototypeAccessors = { attrs: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
-    F7MenuItem.prototype.onClick = function onClick (event) {
-      this.dispatchEvent('click', event);
+    F7MenuItem.prototype.onClick = function onClick (e) {
+      this.dispatchEvent('click', e);
+    };
+
+    F7MenuItem.prototype.onOpened = function onOpened (e) {
+      this.dispatchEvent('menuOpened menu:opened', e);
+    };
+
+    F7MenuItem.prototype.onClosed = function onClosed (e) {
+      this.dispatchEvent('menuClosed menu:closed', e);
     };
 
     prototypeAccessors.attrs.get = function () {
@@ -6890,6 +6898,8 @@
       var el = self.refs.el;
       if (!el) { return; }
       el.removeEventListener('click', self.onClick);
+      el.removeEventListener('menu:opened', self.onOpened);
+      el.removeEventListener('menu:closed', self.onClosed);
       delete el.f7RouteProps;
     };
 
@@ -6907,6 +6917,8 @@
       var el = self.refs.el;
       if (!el) { return; }
       el.addEventListener('click', self.onClick);
+      el.addEventListener('menu:opened', self.onOpened);
+      el.addEventListener('menu:closed', self.onClosed);
       var ref = self.props;
       var routeProps = ref.routeProps;
       if (routeProps) { el.f7RouteProps = routeProps; }
@@ -12901,7 +12913,7 @@
   };
 
   /**
-   * Framework7 React 4.0.0-beta.32
+   * Framework7 React 4.0.0-beta.34
    * Build full featured iOS & Android apps using Framework7 & React
    * http://framework7.io/react/
    *

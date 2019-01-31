@@ -36087,7 +36087,7 @@
 	};
 
 	/**
-	 * Framework7 4.0.0-beta.32
+	 * Framework7 4.0.0-beta.34
 	 * Full featured mobile HTML framework for building iOS & Android apps
 	 * http://framework7.io/
 	 *
@@ -38493,23 +38493,23 @@
 	  };
 
 	  F7Card.prototype.onBeforeOpen = function onBeforeOpen (e) {
-	    this.dispatchEvent('cardBeforeOpen card:beforeopen', e.target, e.detail.prevent);
+	    this.dispatchEvent('cardBeforeOpen card:beforeopen', e, e.detail.prevent);
 	  };
 
 	  F7Card.prototype.onOpen = function onOpen (e) {
-	    this.dispatchEvent('cardOpen card:open', e.target);
+	    this.dispatchEvent('cardOpen card:open', e);
 	  };
 
 	  F7Card.prototype.onOpened = function onOpened (e) {
-	    this.dispatchEvent('cardOpened card:opened', e.target);
+	    this.dispatchEvent('cardOpened card:opened', e);
 	  };
 
 	  F7Card.prototype.onClose = function onClose (e) {
-	    this.dispatchEvent('cardClose card:close', e.target);
+	    this.dispatchEvent('cardClose card:close', e);
 	  };
 
 	  F7Card.prototype.onClosed = function onClosed (e) {
-	    this.dispatchEvent('cardClosed card:closed', e.target);
+	    this.dispatchEvent('cardClosed card:closed', e);
 	  };
 
 	  F7Card.prototype.render = function render () {
@@ -38617,7 +38617,7 @@
 	    __reactComponentWatch(this, 'props.expandableOpened', prevProps, prevState, function (expandableOpened) {
 	      var self = this$1;
 
-	      if (opened) {
+	      if (expandableOpened) {
 	        self.open();
 	      } else {
 	        self.close();
@@ -42936,7 +42936,7 @@
 	    this.__reactRefs = {};
 
 	    (function () {
-	      Utils$1.bindMethods(this$1, ['onClick']);
+	      Utils$1.bindMethods(this$1, ['onClick', 'onOpened', 'onClosed']);
 	    })();
 	  }
 
@@ -42946,8 +42946,16 @@
 
 	  var prototypeAccessors = { attrs: { configurable: true },slots: { configurable: true },refs: { configurable: true } };
 
-	  F7MenuItem.prototype.onClick = function onClick (event) {
-	    this.dispatchEvent('click', event);
+	  F7MenuItem.prototype.onClick = function onClick (e) {
+	    this.dispatchEvent('click', e);
+	  };
+
+	  F7MenuItem.prototype.onOpened = function onOpened (e) {
+	    this.dispatchEvent('menuOpened menu:opened', e);
+	  };
+
+	  F7MenuItem.prototype.onClosed = function onClosed (e) {
+	    this.dispatchEvent('menuClosed menu:closed', e);
 	  };
 
 	  prototypeAccessors.attrs.get = function () {
@@ -43039,6 +43047,8 @@
 	    var el = self.refs.el;
 	    if (!el) { return; }
 	    el.removeEventListener('click', self.onClick);
+	    el.removeEventListener('menu:opened', self.onOpened);
+	    el.removeEventListener('menu:closed', self.onClosed);
 	    delete el.f7RouteProps;
 	  };
 
@@ -43056,6 +43066,8 @@
 	    var el = self.refs.el;
 	    if (!el) { return; }
 	    el.addEventListener('click', self.onClick);
+	    el.addEventListener('menu:opened', self.onOpened);
+	    el.addEventListener('menu:closed', self.onClosed);
 	    var ref = self.props;
 	    var routeProps = ref.routeProps;
 	    if (routeProps) { el.f7RouteProps = routeProps; }
@@ -49132,7 +49144,7 @@
 	};
 
 	/**
-	 * Framework7 React 4.0.0-beta.32
+	 * Framework7 React 4.0.0-beta.34
 	 * Build full featured iOS & Android apps using Framework7 & React
 	 * http://framework7.io/react/
 	 *
@@ -49634,29 +49646,29 @@
 	        react.createElement( Actions$2, { grid: true, opened: this.state.actionGridOpened, onActionsClosed: function () { return this$1.setActionsGridOpened(false); } },
 	          react.createElement( ActionsGroup, null,
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/96/96/people/1", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-1.jpg", width: "48" }),
 	              react.createElement( 'span', null, "Button 1" )
 	            ),
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/96/96/people/2", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-2.jpg", width: "48" }),
 	              react.createElement( 'span', null, "Button 2" )
 	            ),
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/96/96/people/3", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-96x96-3.jpg", width: "48" }),
 	              react.createElement( 'span', null, "Button 3" )
 	            )
 	          ),
 	          react.createElement( ActionsGroup, null,
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/96/96/fashion/4", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-4.jpg", width: "48" }),
 	              react.createElement( 'span', null, "Button 4" )
 	            ),
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/96/96/fashion/5", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-5.jpg", width: "48" }),
 	              react.createElement( 'span', null, "Button 5" )
 	            ),
 	            react.createElement( ActionsButton, null,
-	              react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/96/96/fashion/6", width: "48" }),
+	              react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-96x96-6.jpg", width: "48" }),
 	              react.createElement( 'span', null, "Button 6" )
 	            )
 	          )
@@ -50720,7 +50732,7 @@
 	    react.createElement( BlockTitle, null, "Styled Cards" ),
 	    react.createElement( Card$1, { className: "demo-card-header-pic" },
 	      react.createElement( CardHeader, {
-	        className: "no-border", valign: "bottom", style: { backgroundImage: 'url(http://lorempixel.com/1000/600/nature/3/)' } }, "Journey To Mountains"),
+	        className: "no-border", valign: "bottom", style: { backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-1000x600-3.jpg/)' } }, "Journey To Mountains"),
 	      react.createElement( CardContent, null,
 	        react.createElement( 'p', { className: "date" }, "Posted on January 21, 2015"),
 	        react.createElement( 'p', null, "Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit..." )
@@ -50732,7 +50744,7 @@
 	    ),
 	    react.createElement( Card$1, { className: "demo-card-header-pic" },
 	      react.createElement( CardHeader, {
-	        className: "no-border", valign: "bottom", style: { backgroundImage: 'url(http://lorempixel.com/1000/600/people/6/)' } }, "Journey To Mountains"),
+	        className: "no-border", valign: "bottom", style: { backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-1000x600-6.jpg/)' } }, "Journey To Mountains"),
 	      react.createElement( CardContent, null,
 	        react.createElement( 'p', { className: "date" }, "Posted on January 21, 2015"),
 	        react.createElement( 'p', null, "Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit..." )
@@ -50746,12 +50758,12 @@
 	    react.createElement( BlockTitle, null, "Facebook Cards" ),
 	    react.createElement( Card$1, { className: "demo-facebook-card" },
 	      react.createElement( CardHeader, { className: "no-border" },
-	        react.createElement( 'div', { className: "demo-facebook-avatar" }, react.createElement( 'img', { src: "http://lorempixel.com/68/68/people/1/", width: "34", height: "34" })),
+	        react.createElement( 'div', { className: "demo-facebook-avatar" }, react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/people-68x68-1.jpg/", width: "34", height: "34" })),
 	        react.createElement( 'div', { className: "demo-facebook-name" }, "John Doe"),
 	        react.createElement( 'div', { className: "demo-facebook-date" }, "Monday at 3:47 PM")
 	      ),
 	      react.createElement( CardContent, { padding: false },
-	        react.createElement( 'img', { src: "http://lorempixel.com/1000/700/nature/8/", width: "100%" })
+	        react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg/", width: "100%" })
 	      ),
 	      react.createElement( CardFooter, { className: "no-border" },
 	        react.createElement( Link, null, "Like" ),
@@ -50761,12 +50773,12 @@
 	    ),
 	    react.createElement( Card$1, { className: "demo-facebook-card" },
 	      react.createElement( CardHeader, { className: "no-border" },
-	        react.createElement( 'div', { className: "demo-facebook-avatar" }, react.createElement( 'img', { src: "http://lorempixel.com/68/68/people/1/", width: "34", height: "34" })),
+	        react.createElement( 'div', { className: "demo-facebook-avatar" }, react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/people-68x68-1.jpg/", width: "34", height: "34" })),
 	        react.createElement( 'div', { className: "demo-facebook-name" }, "John Doe"),
 	        react.createElement( 'div', { className: "demo-facebook-date" }, "Monday at 2:15 PM")
 	      ),
 	      react.createElement( CardContent, null,
-	        react.createElement( 'p', null, "What a nice photo i took yesterday!" ), react.createElement( 'img', { src: "http://lorempixel.com/1000/700/nature/8/", width: "100%" }),
+	        react.createElement( 'p', null, "What a nice photo i took yesterday!" ), react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/nature-1000x700-8.jpg/", width: "100%" }),
 	        react.createElement( 'p', { className: "likes" }, "Likes: 112 &nbsp;&nbsp; Comments: 43")
 	      ),
 	      react.createElement( CardFooter, { className: "no-border" },
@@ -50793,15 +50805,15 @@
 	        react.createElement( List, { 'medial-list': true },
 	          react.createElement( ListItem, {
 	            title: "Yellow Submarine", subtitle: "Beatles" },
-	            react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/4", width: "44" })
+	            react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg", width: "44" })
 	          ),
 	          react.createElement( ListItem, {
 	            title: "Don't Stop Me Now", subtitle: "Queen" },
-	            react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/5", width: "44" })
+	            react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg", width: "44" })
 	          ),
 	          react.createElement( ListItem, {
 	            title: "Billie Jean", subtitle: "Michael Jackson" },
-	            react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/6", width: "44" })
+	            react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg", width: "44" })
 	          )
 	        )
 	      ),
@@ -50970,13 +50982,13 @@
 	        react.createElement( BlockTitle, null, "Contact Chips" ),
 	        react.createElement( Block, { strong: true },
 	          react.createElement( Chip$1, { text: "Jane Doe" },
-	            react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/100/100/people/9/" })
+	            react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-100x100-9.jpg/" })
 	          ),
 	          react.createElement( Chip$1, { text: "John Doe" },
-	            react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/100/100/people/3/" })
+	            react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-100x100-3.jpg/" })
 	          ),
 	          react.createElement( Chip$1, { text: "Adam Smith" },
-	            react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/100/100/people/7/" })
+	            react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-100x100-7.jpg/" })
 	          ),
 	          react.createElement( Chip$1, { text: "Jennifer", mediaBgColor: "pink", media: "J" }),
 	          react.createElement( Chip$1, { text: "Chris", mediaBgColor: "yellow", mediaTextColor: "black", media: "C" }),
@@ -50987,12 +50999,12 @@
 	          react.createElement( Chip$1, { text: "Example Chip", deleteable: true, onClick: this.deleteChipBound }),
 	          react.createElement( Chip$1, { text: "Chris", media: "C", mediaBgColor: "orange", textColor: "black", deleteable: true, onClick: this.deleteChipBound }),
 	          react.createElement( Chip$1, { text: "Jane Doe", deleteable: true, onClick: this.deleteChipBound },
-	            react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/100/100/people/9/" })
+	            react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-100x100-9.jpg/" })
 	          ),
 	          react.createElement( Chip$1, { text: "One More Chip", deleteable: true, onClick: this.deleteChipBound }),
 	          react.createElement( Chip$1, { text: "Jennifer", mediaBgColor: "pink", media: "J", deleteable: true, onClick: this.deleteChipBound }),
 	          react.createElement( Chip$1, { text: "Adam Smith", deleteable: true, onClick: this.deleteChipBound },
-	            react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/100/100/people/7/" })
+	            react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-100x100-7.jpg/" })
 	          )
 	        ),
 	        react.createElement( BlockTitle, null, "Color Chips" ),
@@ -52851,28 +52863,28 @@
 	      react.createElement( 'p', null, "It will make the page load faster, improve scrolling performance and also save traffic." )
 	    ),
 	    react.createElement( Block, { strong: true },
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/1", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-1.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tempus viverra lectus sit amet lobortis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque faucibus consectetur mauris eget lobortis. Maecenas efficitur efficitur mauris ac vehicula. Sed ut lectus laoreet, semper nisi vel, maximus massa. Duis at lorem vitae sem auctor condimentum a at neque. Phasellus vel scelerisque dui. Morbi varius nibh eu finibus rutrum." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/2", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-2.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Aenean id congue orci. Aliquam gravida nulla nec sollicitudin consectetur. Donec iaculis ipsum in purus tincidunt sagittis quis vehicula sapien. Vestibulum quis consectetur nibh. Pellentesque vehicula ligula sit amet commodo malesuada. Proin eget dolor sodales, egestas sapien sed, consectetur ante. Vivamus imperdiet porttitor condimentum. Aliquam sit amet tellus quis mauris dapibus convallis eu in nulla. Aliquam erat volutpat." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/3", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-3.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Pellentesque aliquam maximus libero a tincidunt. Nunc rhoncus tellus ac congue commodo. Aenean malesuada ante sit amet erat efficitur vehicula ac id ipsum. Suspendisse sed purus vel nisl rhoncus feugiat et ut ante. Mauris vehicula ligula sed nisl vulputate, nec ullamcorper quam vehicula. Etiam eu turpis eget sem luctus rutrum at porta nulla. Ut posuere lorem et nisi faucibus molestie." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/4", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-4.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Duis ullamcorper velit id enim rutrum, vel venenatis lacus laoreet. Sed id bibendum ligula, sed congue erat. Maecenas rhoncus posuere lorem ac consectetur. Duis accumsan, urna id pharetra tincidunt, libero nibh tincidunt enim, vestibulum suscipit turpis neque nec ante." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/5", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-5.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Suspendisse potenti. Curabitur et neque ac ante dapibus mollis tempor eget ex. Vivamus porttitor faucibus dui. Nulla eleifend hendrerit cursus. Sed elit nulla, pulvinar vitae diam eget, consectetur efficitur orci. Vivamus vel pharetra sapien. Suspendisse tortor tortor, iaculis at ullamcorper sit amet, vestibulum vel arcu. Aenean sed eleifend sapien. Praesent at varius metus." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/6", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-6.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent laoreet nisl eget neque blandit lobortis. Sed sagittis risus id vestibulum finibus. Cras vestibulum sem et massa hendrerit maximus. Vestibulum suscipit tristique iaculis. Nam vitae risus non eros auctor tincidunt quis vel nulla. Sed volutpat, libero ac blandit vehicula, est sem gravida lectus, sed imperdiet sapien risus ut neque." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/7", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-7.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Aenean id congue orci. Aliquam gravida nulla nec sollicitudin consectetur. Donec iaculis ipsum in purus tincidunt sagittis quis vehicula sapien. Vestibulum quis consectetur nibh. Pellentesque vehicula ligula sit amet commodo malesuada. Proin eget dolor sodales, egestas sapien sed, consectetur ante. Vivamus imperdiet porttitor condimentum. Aliquam sit amet tellus quis mauris dapibus convallis eu in nulla. Aliquam erat volutpat." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/8", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-8.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tempus viverra lectus sit amet lobortis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque faucibus consectetur mauris eget lobortis. Maecenas efficitur efficitur mauris ac vehicula. Sed ut lectus laoreet, semper nisi vel, maximus massa. Duis at lorem vitae sem auctor condimentum a at neque. Phasellus vel scelerisque dui. Morbi varius nibh eu finibus rutrum." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/people/1", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/people-500x500-1.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Pellentesque aliquam maximus libero a tincidunt. Nunc rhoncus tellus ac congue commodo. Aenean malesuada ante sit amet erat efficitur vehicula ac id ipsum. Suspendisse sed purus vel nisl rhoncus feugiat et ut ante. Mauris vehicula ligula sed nisl vulputate, nec ullamcorper quam vehicula. Etiam eu turpis eget sem luctus rutrum at porta nulla. Ut posuere lorem et nisi faucibus molestie." ),
-	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "http://lorempixel.com/500/500/nature/10", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
+	      react.createElement( 'p', null, " ", react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-500x500-10.jpg", width: "1500", height: "1500", className: "lazy lazy-fadeIn demo-lazy" }) ),
 	      react.createElement( 'p', null, "Duis ullamcorper velit id enim rutrum, vel venenatis lacus laoreet. Sed id bibendum ligula, sed congue erat. Maecenas rhoncus posuere lorem ac consectetur. Duis accumsan, urna id pharetra tincidunt, libero nibh tincidunt enim, vestibulum suscipit turpis neque nec ante." ),
 	      react.createElement( 'p', null, react.createElement( 'b', null, "Using as background image:" ) ),
-	      react.createElement( 'div', { 'data-background': "http://lorempixel.com/500/500/people/10", className: "lazy lazy-fadeIn demo-lazy" }),
+	      react.createElement( 'div', { 'data-background': "https://cdn.framework7.io/placeholder/people-500x500-10.jpg", className: "lazy lazy-fadeIn demo-lazy" }),
 	      react.createElement( 'p', null, "Suspendisse potenti. Curabitur et neque ac ante dapibus mollis tempor eget ex. Vivamus porttitor faucibus dui. Nulla eleifend hendrerit cursus. Sed elit nulla, pulvinar vitae diam eget, consectetur efficitur orci. Vivamus vel pharetra sapien. Suspendisse tortor tortor, iaculis at ullamcorper sit amet, vestibulum vel arcu. Aenean sed eleifend sapien. Praesent at varius metus." )
 	    )
 	  )
@@ -53046,15 +53058,15 @@
 	    react.createElement( List, { mediaList: true },
 	      react.createElement( ListItem, {
 	        link: "#", title: "Yellow Submarine", after: "$15", subtitle: "Beatles", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/160/160/people/1", width: "80" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-160x160-1.jpg", width: "80" })
 	      ),
 	      react.createElement( ListItem, {
 	        link: "#", title: "Don't Stop Me Now", after: "$22", subtitle: "Queen", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/160/160/people/2", width: "80" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-160x160-2.jpg", width: "80" })
 	      ),
 	      react.createElement( ListItem, {
 	        link: "#", title: "Billie Jean", after: "$16", subtitle: "Michael Jackson", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/160/160/people/3", width: "80" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-160x160-3.jpg", width: "80" })
 	      )
 	    ),
 	    react.createElement( BlockTitle, null, "Mail App" ),
@@ -53072,30 +53084,30 @@
 	    react.createElement( List, { mediaList: true },
 	      react.createElement( ListItem, {
 	        title: "Yellow Submarine", subtitle: "Beatles" },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/1", width: "44" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-1.jpg", width: "44" })
 	      ),
 	      react.createElement( ListItem, {
 	        link: "#", title: "Don't Stop Me Now", subtitle: "Queen" },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/2", width: "44" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-2.jpg", width: "44" })
 	      ),
 	      react.createElement( ListItem, {
 	        title: "Billie Jean", subtitle: "Michael Jackson" },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/3", width: "44" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg", width: "44" })
 	      )
 	    ),
 	    react.createElement( BlockTitle, null, "Inset" ),
 	    react.createElement( List, { mediaList: true, inset: true },
 	      react.createElement( ListItem, {
 	        link: "#", title: "Yellow Submarine", subtitle: "Beatles" },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/4", width: "44" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-4.jpg", width: "44" })
 	      ),
 	      react.createElement( ListItem, {
 	        link: "#", title: "Don't Stop Me Now", subtitle: "Queen" },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/5", width: "44" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-5.jpg", width: "44" })
 	      ),
 	      react.createElement( ListItem, {
 	        link: "#", title: "Billie Jean", subtitle: "Michael Jackson" },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/88/88/fashion/6", width: "44" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/fashion-88x88-6.jpg", width: "44" })
 	      )
 	    ),
 	    react.createElement( BlockTitle, null, "Custom Table-like Layout" ),
@@ -53634,13 +53646,13 @@
 	          name: 'Kate',
 	          type: 'received',
 	          text: 'Hi, I am good!',
-	          avatar: 'http://lorempixel.com/100/100/people/9',
+	          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
 	        },
 	        {
 	          name: 'Blue Ninja',
 	          type: 'received',
 	          text: 'Hi there, I am also fine, thanks! And how are you?',
-	          avatar: 'http://lorempixel.com/100/100/people/7',
+	          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
 	        },
 	        {
 	          type: 'sent',
@@ -53652,46 +53664,46 @@
 	        },
 	        {
 	          type: 'sent',
-	          image: 'http://lorempixel.com/200/260/cats/4/',
+	          image: 'https://cdn.framework7.io/placeholder/cats-200x260-4.jpg/',
 
 	        },
 	        {
 	          name: 'Kate',
 	          type: 'received',
 	          text: 'Nice!',
-	          avatar: 'http://lorempixel.com/100/100/people/9',
+	          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
 	        },
 	        {
 	          name: 'Kate',
 	          type: 'received',
 	          text: 'Like it very much!',
-	          avatar: 'http://lorempixel.com/100/100/people/9',
+	          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
 	        },
 	        {
 	          name: 'Blue Ninja',
 	          type: 'received',
 	          text: 'Awesome!',
-	          avatar: 'http://lorempixel.com/100/100/people/7',
+	          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
 	        } ],
 	      images: [
-	        'http://lorempixel.com/300/300/cats/1/',
-	        'http://lorempixel.com/200/300/cats/2/',
-	        'http://lorempixel.com/400/300/cats/3/',
-	        'http://lorempixel.com/300/150/cats/4/',
-	        'http://lorempixel.com/150/300/cats/5/',
-	        'http://lorempixel.com/300/300/cats/6/',
-	        'http://lorempixel.com/300/300/cats/7/',
-	        'http://lorempixel.com/200/300/cats/8/',
-	        'http://lorempixel.com/400/300/cats/9/',
-	        'http://lorempixel.com/300/150/cats/10/' ],
+	        'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-400x300-3.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-300x150-4.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-150x300-5.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-300x300-6.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-300x300-7.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-200x300-8.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-400x300-9.jpg/',
+	        'https://cdn.framework7.io/placeholder/cats-300x150-10.jpg/' ],
 	      people: [
 	        {
 	          name: 'Kate Johnson',
-	          avatar: 'http://lorempixel.com/100/100/people/9',
+	          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
 	        },
 	        {
 	          name: 'Blue Ninja',
-	          avatar: 'http://lorempixel.com/100/100/people/7',
+	          avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
 	        } ],
 	      answers: [
 	        'Yes!',
@@ -54718,17 +54730,17 @@
 	        {
 	          title: 'Yellow Submarine',
 	          author: 'Beatles',
-	          cover: 'http://lorempixel.com/88/88/abstract/1',
+	          cover: 'https://cdn.framework7.io/placeholder/abstract-88x88-1.jpg',
 	        },
 	        {
 	          title: 'Don\'t Stop Me Now',
 	          author: 'Queen',
-	          cover: 'http://lorempixel.com/88/88/abstract/2',
+	          cover: 'https://cdn.framework7.io/placeholder/abstract-88x88-2.jpg',
 	        },
 	        {
 	          title: 'Billie Jean',
 	          author: 'Michael Jackson',
-	          cover: 'http://lorempixel.com/88/88/abstract/3',
+	          cover: 'https://cdn.framework7.io/placeholder/abstract-88x88-3.jpg',
 	        } ],
 	      songs: ['Yellow Submarine', 'Don\'t Stop Me Now', 'Billie Jean', 'Californication'],
 	      authors: ['Beatles', 'Queen', 'Michael Jackson', 'Red Hot Chili Peppers'],
@@ -54763,7 +54775,7 @@
 	      var items = ref.items;
 	      var songs = ref.songs;
 	      var authors = ref.authors;
-	      var picURL = "http://lorempixel.com/88/88/abstract/" + (Math.round(Math.random() * 10));
+	      var picURL = "https://cdn.framework7.io/placeholder/abstract-88x88-" + (Math.round(Math.random() * 10)) + ".jpg";
 	      var song = songs[Math.floor(Math.random() * songs.length)];
 	      var author = authors[Math.floor(Math.random() * authors.length)];
 	      items.push({
@@ -54866,14 +54878,14 @@
 	        react.createElement( List, { simpleList: true },
 	          react.createElement( ListItem, null,
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:money_dollar_round", md: "material:brightness_low" })
+	              react.createElement( Icon, { ios: "f7:money_dollar_round", md: "material:attach_money" })
 	            ),
 	            react.createElement( ListItemCell, { className: "flex-shrink-3" },
 	              react.createElement( Range$2, {
 	                min: 0, max: 500, step: 1, value: [this.state.priceMin, this.state.priceMax], label: true, dual: true, color: "green", onRangeChange: this.onPriceChange.bind(this) })
 	            ),
 	            react.createElement( ListItemCell, { className: "width-auto flex-shrink-0" },
-	              react.createElement( Icon, { ios: "f7:money_dollar_round_fill", md: "material:brightness_high" })
+	              react.createElement( Icon, { ios: "f7:money_dollar_round_fill", md: "material:monetization_on" })
 	            )
 	          )
 	        ),
@@ -55311,15 +55323,15 @@
 	    react.createElement( List, { mediaList: true, sortable: true },
 	      react.createElement( ListItem, {
 	        title: "Yellow Submarine", after: "$15", subtitle: "Beatles", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/160/160/people/1", width: "80" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-160x160-1.jpg", width: "80" })
 	      ),
 	      react.createElement( ListItem, {
 	        title: "Don't Stop Me Now", after: "$22", subtitle: "Queen", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/160/160/people/2", width: "80" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-160x160-2.jpg", width: "80" })
 	      ),
 	      react.createElement( ListItem, {
 	        title: "Billie Jean", after: "$16", subtitle: "Michael Jackson", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus." },
-	        react.createElement( 'img', { slot: "media", src: "http://lorempixel.com/160/160/people/3", width: "80" })
+	        react.createElement( 'img', { slot: "media", src: "https://cdn.framework7.io/placeholder/people-160x160-3.jpg", width: "80" })
 	      )
 	    )
 	  )
@@ -55953,15 +55965,15 @@
 	    react.createElement( Swiper$2, { className: "demo-swiper demo-swiper-cube", params: {
 	      effect: 'cube',
 	    } },
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/1/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/2/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/3/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/4/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/5/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/6/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/7/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/8/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/9/)'} })
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-9.jpg/)'} })
 	    )
 	  )
 	); }
@@ -55975,15 +55987,15 @@
 	      centeredSlides: true,
 	      slidesPerView: 'auto',
 	    } },
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/1/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/2/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/3/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/4/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/5/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/6/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/7/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/8/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/9/)'} })
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-7.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-8.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-9.jpg/)'} })
 	    )
 	  )
 	); }
@@ -55995,15 +56007,15 @@
 	    react.createElement( Swiper$2, { className: "demo-swiper demo-swiper-cube", params: {
 	      effect: 'flip',
 	    } },
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/1/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/2/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/3/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/4/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/5/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/6/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/7/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/8/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/people/9/)'} })
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-1.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-2.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-3.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-4.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-5.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-6.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-7.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-8.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-800x800-9.jpg/)'} })
 	    )
 	  )
 	); }
@@ -56015,10 +56027,10 @@
 	    react.createElement( Swiper$2, { className: "demo-swiper demo-swiper-fade", pagination: true, params: {
 	      effect: 'fade',
 	    } },
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/people/1/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/people/2/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/people/3/)'} }),
-	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/people/4/)'} })
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-1024x1024-1.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-1024x1024-2.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-1024x1024-3.jpg/)'} }),
+	      react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/people-1024x1024-4.jpg/)'} })
 	    )
 	  )
 
@@ -56058,32 +56070,32 @@
 	        react.createElement( Navbar$2, { title: "Two Way Control Gallery", backLink: "Back" }),
 	        react.createElement( Swiper$2, {
 	          className: "demo-swiper-gallery-top", navigation: true, colorTheme: "white", init: false },
-	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/1/)'} }),
-	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/2/)'} }),
-	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/3/)'} }),
-	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/4/)'} }),
-	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/5/)'} }),
-	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/6/)'} })
+	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg/)'} }),
+	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg/)'} }),
+	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg/)'} }),
+	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg/)'} }),
+	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg/)'} }),
+	          react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg/)'} })
 	        ),
 	        react.createElement( Swiper$2, {
 	          className: "demo-swiper-gallery-thumbs", init: false },
 	          react.createElement( SwiperSlide, null,
-	            react.createElement( 'div', { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/1/)'}, className: "swiper-slide-pic" })
+	            react.createElement( 'div', { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-1.jpg/)'}, className: "swiper-slide-pic" })
 	          ),
 	          react.createElement( SwiperSlide, null,
-	            react.createElement( 'div', { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/2/)'}, className: "swiper-slide-pic" })
+	            react.createElement( 'div', { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-2.jpg/)'}, className: "swiper-slide-pic" })
 	          ),
 	          react.createElement( SwiperSlide, null,
-	            react.createElement( 'div', { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/3/)'}, className: "swiper-slide-pic" })
+	            react.createElement( 'div', { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-3.jpg/)'}, className: "swiper-slide-pic" })
 	          ),
 	          react.createElement( SwiperSlide, null,
-	            react.createElement( 'div', { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/4/)'}, className: "swiper-slide-pic" })
+	            react.createElement( 'div', { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-4.jpg/)'}, className: "swiper-slide-pic" })
 	          ),
 	          react.createElement( SwiperSlide, null,
-	            react.createElement( 'div', { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/5/)'}, className: "swiper-slide-pic" })
+	            react.createElement( 'div', { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-5.jpg/)'}, className: "swiper-slide-pic" })
 	          ),
 	          react.createElement( SwiperSlide, null,
-	            react.createElement( 'div', { style: {backgroundImage: 'url(http://lorempixel.com/800/800/nature/6/)'}, className: "swiper-slide-pic" })
+	            react.createElement( 'div', { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nature-800x800-6.jpg/)'}, className: "swiper-slide-pic" })
 	          )
 	        )
 	      )
@@ -56133,12 +56145,12 @@
 	            clickable: true,
 	          }
 	        } },
-	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/nightlife/1/)'} }),
-	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/nightlife/2/)'} }),
-	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/nightlife/3/)'} }),
-	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/nightlife/4/)'} }),
-	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/nightlife/5/)'} }),
-	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(http://lorempixel.com/1024/1024/nightlife/6/)'} })
+	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-1.jpg/)'} }),
+	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg/)'} }),
+	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-3.jpg/)'} }),
+	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-4.jpg/)'} }),
+	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-5.jpg/)'} }),
+	        react.createElement( SwiperSlide, { style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-6.jpg/)'} })
 	      )
 	    )
 	  )
@@ -56155,7 +56167,7 @@
 	        speed: 600,
 	      } },
 	      react.createElement( 'div', {
-	        slot: "before-wrapper", 'data-swiper-parallax': "-23%", style: {backgroundImage: 'url(http://lorempixel.com/900/600/nightlife/2/)'}, className: "swiper-parallax-bg" }),
+	        slot: "before-wrapper", 'data-swiper-parallax': "-23%", style: {backgroundImage: 'url(https://cdn.framework7.io/placeholder/nightlife-1024x1024-2.jpg/)'}, className: "swiper-parallax-bg" }),
 	      react.createElement( SwiperSlide, null,
 	        react.createElement( 'div', { 'data-swiper-parallax': "-300", className: "swiper-slide-title" }, "Slide 1"),
 	        react.createElement( 'div', { 'data-swiper-parallax': "-200", className: "swiper-slide-subtitle" }, "Subtitle"),
@@ -56191,27 +56203,27 @@
 	        lazy: true,
 	      } },
 	      react.createElement( SwiperSlide, null,
-	        react.createElement( 'img', { 'data-src': "http://lorempixel.com/1600/1200/nature/1/", className: "swiper-lazy" }),
+	        react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-1024x1024-1.jpg/", className: "swiper-lazy" }),
 	        react.createElement( 'div', { className: "preloader swiper-lazy-preloader" })
 	      ),
 	      react.createElement( SwiperSlide, null,
-	        react.createElement( 'img', { 'data-src': "http://lorempixel.com/1600/1200/nature/2/", className: "swiper-lazy" }),
+	        react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-1024x1024-2.jpg/", className: "swiper-lazy" }),
 	        react.createElement( 'div', { className: "preloader swiper-lazy-preloader" })
 	      ),
 	      react.createElement( SwiperSlide, null,
-	        react.createElement( 'img', { 'data-src': "http://lorempixel.com/1600/1200/nature/3/", className: "swiper-lazy" }),
+	        react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-1024x1024-3.jpg/", className: "swiper-lazy" }),
 	        react.createElement( 'div', { className: "preloader swiper-lazy-preloader" })
 	      ),
 	      react.createElement( SwiperSlide, null,
-	        react.createElement( 'img', { 'data-src': "http://lorempixel.com/1600/1200/nature/4/", className: "swiper-lazy" }),
+	        react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-1024x1024-4.jpg/", className: "swiper-lazy" }),
 	        react.createElement( 'div', { className: "preloader swiper-lazy-preloader" })
 	      ),
 	      react.createElement( SwiperSlide, null,
-	        react.createElement( 'img', { 'data-src': "http://lorempixel.com/1600/1200/nature/5/", className: "swiper-lazy" }),
+	        react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-1024x1024-5.jpg/", className: "swiper-lazy" }),
 	        react.createElement( 'div', { className: "preloader swiper-lazy-preloader" })
 	      ),
 	      react.createElement( SwiperSlide, null,
-	        react.createElement( 'img', { 'data-src': "http://lorempixel.com/1600/1200/nature/6/", className: "swiper-lazy" }),
+	        react.createElement( 'img', { 'data-src': "https://cdn.framework7.io/placeholder/nature-1024x1024-6.jpg/", className: "swiper-lazy" }),
 	        react.createElement( 'div', { className: "preloader swiper-lazy-preloader" })
 	      )
 	    )
@@ -56280,22 +56292,22 @@
 	        }
 	      } },
 	      react.createElement( SwiperSlide, { zoom: true },
-	        react.createElement( 'img', { src: "http://lorempixel.com/800/800/nature/1/" })
+	        react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/nature-800x800-1.jpg/" })
 	      ),
 	      react.createElement( SwiperSlide, { zoom: true },
-	        react.createElement( 'img', { src: "http://lorempixel.com/800/800/nature/2/" })
+	        react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/nature-800x800-2.jpg/" })
 	      ),
 	      react.createElement( SwiperSlide, { zoom: true },
-	        react.createElement( 'img', { src: "http://lorempixel.com/800/800/nature/3/" })
+	        react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/nature-800x800-3.jpg/" })
 	      ),
 	      react.createElement( SwiperSlide, { zoom: true },
-	        react.createElement( 'img', { src: "http://lorempixel.com/800/800/nature/4/" })
+	        react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/nature-800x800-4.jpg/" })
 	      ),
 	      react.createElement( SwiperSlide, { zoom: true },
-	        react.createElement( 'img', { src: "http://lorempixel.com/800/800/nature/5/" })
+	        react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/nature-800x800-5.jpg/" })
 	      ),
 	      react.createElement( SwiperSlide, { zoom: true },
-	        react.createElement( 'img', { src: "http://lorempixel.com/800/800/nature/6/" })
+	        react.createElement( 'img', { src: "https://cdn.framework7.io/placeholder/nature-800x800-6.jpg/" })
 	      )
 	    )
 	  )

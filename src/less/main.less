@@ -13,8 +13,12 @@ body {
   position: relative;
   line-height: 1.75;
   background: #fff;
-  min-width: 800px;
+  // min-width: 800px;
   -webkit-font-smoothing: antialiased;
+  @media (max-width: 600px) {
+    font-size: 14px;
+    line-height: 1.5;
+  }
 }
 .break-word {
   word-break: break-word;
@@ -225,7 +229,6 @@ main {
   padding: 0 10px;
   display: inline-block;
   border-radius: 11px;
-  transition: 200ms;
   font-weight: bold;
   &:hover {
     background: @lightBrownColor;

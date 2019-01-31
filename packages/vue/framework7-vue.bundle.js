@@ -1,5 +1,5 @@
 /**
- * Framework7 Vue 4.0.0-beta.32
+ * Framework7 Vue 4.0.0-beta.34
  * Build full featured iOS & Android apps using Framework7 & Vue
  * http://framework7.io/vue/
  *
@@ -1910,7 +1910,7 @@
       'props.expandableOpened': function watchOpened(expandableOpened) {
         var self = this;
 
-        if (opened) {
+        if (expandableOpened) {
           self.open();
         } else {
           self.close();
@@ -2019,23 +2019,23 @@
       },
 
       onBeforeOpen: function onBeforeOpen(e) {
-        this.dispatchEvent('cardBeforeOpen card:beforeopen', e.target, e.detail.prevent);
+        this.dispatchEvent('cardBeforeOpen card:beforeopen', e, e.detail.prevent);
       },
 
       onOpen: function onOpen(e) {
-        this.dispatchEvent('cardOpen card:open', e.target);
+        this.dispatchEvent('cardOpen card:open', e);
       },
 
       onOpened: function onOpened(e) {
-        this.dispatchEvent('cardOpened card:opened', e.target);
+        this.dispatchEvent('cardOpened card:opened', e);
       },
 
       onClose: function onClose(e) {
-        this.dispatchEvent('cardClose card:close', e.target);
+        this.dispatchEvent('cardClose card:close', e);
       },
 
       onClosed: function onClosed(e) {
-        this.dispatchEvent('cardClosed card:closed', e.target);
+        this.dispatchEvent('cardClosed card:closed', e);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -6072,7 +6072,7 @@
     },
 
     created: function created() {
-      Utils.bindMethods(this, ['onClick']);
+      Utils.bindMethods(this, ['onClick', 'onOpened', 'onClosed']);
     },
 
     mounted: function mounted() {
@@ -6080,6 +6080,8 @@
       var el = self.$refs.el;
       if (!el) { return; }
       el.addEventListener('click', self.onClick);
+      el.addEventListener('menu:opened', self.onOpened);
+      el.addEventListener('menu:closed', self.onClosed);
       var ref = self.props;
       var routeProps = ref.routeProps;
       if (routeProps) { el.f7RouteProps = routeProps; }
@@ -6099,6 +6101,8 @@
       var el = self.$refs.el;
       if (!el) { return; }
       el.removeEventListener('click', self.onClick);
+      el.removeEventListener('menu:opened', self.onOpened);
+      el.removeEventListener('menu:closed', self.onClosed);
       delete el.f7RouteProps;
     },
 
@@ -6123,8 +6127,16 @@
 
     },
     methods: {
-      onClick: function onClick(event) {
-        this.dispatchEvent('click', event);
+      onClick: function onClick(e) {
+        this.dispatchEvent('click', e);
+      },
+
+      onOpened: function onOpened(e) {
+        this.dispatchEvent('menuOpened menu:opened', e);
+      },
+
+      onClosed: function onClosed(e) {
+        this.dispatchEvent('menuClosed menu:closed', e);
       },
 
       dispatchEvent: function dispatchEvent(events) {
@@ -11459,7 +11471,7 @@
   };
 
   /**
-   * Framework7 Vue 4.0.0-beta.32
+   * Framework7 Vue 4.0.0-beta.34
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
