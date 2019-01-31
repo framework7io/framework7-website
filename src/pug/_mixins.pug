@@ -96,6 +96,11 @@ mixin vueLinkRouterProps
     td
     td Load new page and remove all previous pages from history and DOM
   tr
+    td reload-detail
+    td boolean
+    td
+    td Reload Detail page in Master Detail view
+  tr
     td animate
     td boolean
     td
@@ -115,6 +120,11 @@ mixin vueLinkRouterProps
     td object
     td
     td Object with additional props that will be passed to target route component
+  tr
+    td prevent-router
+    td boolean
+    td false
+    td If set, then it won't be processed by Framework7 router
 
 mixin vueLinkActionsProps
   tr
@@ -212,6 +222,21 @@ mixin vueLinkActionsProps
     td string<br>boolean
     td
     td CSS selector of the Expandable Searchbar to clear on click. Or boolean property to clear the first found Searchbar
+  tr
+    td card-open
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to open on click. Or boolean to open first found expandable card
+  tr
+    td card-close
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to close on click. Or boolean property to close currently opened expandable card
+  tr
+    td menu-close
+    td boolean
+    td
+    td Closes Menu dropdown on click
 
 mixin reactLinkIconProps
   tr
@@ -307,6 +332,11 @@ mixin reactLinkRouterProps
     td
     td Load new page and remove all previous pages from history and DOM
   tr
+    td reloadDetail
+    td boolean
+    td
+    td Reload Detail page in Master Detail view
+  tr
     td animate
     td boolean
     td
@@ -326,6 +356,11 @@ mixin reactLinkRouterProps
     td object
     td
     td Object with additional props that will be passed to target route component
+  tr
+    td preventRouter
+    td boolean
+    td false
+    td If set, then it won't be processed by Framework7 router
 
 mixin reactLinkActionsProps
   tr
@@ -423,5 +458,20 @@ mixin reactLinkActionsProps
     td string<br>boolean
     td
     td CSS selector of the Expandable Searchbar to clear on click. Or boolean property to clear the first found Searchbar
+  tr
+    td cardOpen
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to open on click. Or boolean to open first found expandable card
+  tr
+    td cardClose
+    td string<br>boolean
+    td
+    td CSS selector of the expandable card to close on click. Or boolean property to close currently opened expandable card
+  tr
+    td menuClose
+    td boolean
+    td
+    td Closes Menu dropdown on click
 mixin cssVars(component, info, title)
   | !{cssVars(component, info, title)}

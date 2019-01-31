@@ -79,10 +79,6 @@
   background: url(../img/f7-icon.png) no-repeat center;
   background-size: cover;
 }
-.icon-vi {
-  background: url(../img/vi-icon.png) no-repeat center;
-  background-size: cover;
-}
 
 .ios .demo-list-icon, .ios .icon-f7, .ios .icon-vi {
   width: 28px;
@@ -610,4 +606,7 @@ code {
   .demo-expandable-cards .card:nth-child(n + 2) {
     margin-left: 0;
   }
+}
+.view-master-detail .navbar-master-detail .link.back {
+  display: none;
 }

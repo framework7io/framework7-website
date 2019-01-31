@@ -10563,6 +10563,9 @@
   var Framework7 = /*@__PURE__*/(function (Framework7Class$$1) {
     function Framework7(params) {
       Framework7Class$$1.call(this, params);
+      if (Framework7.instance) {
+        throw new Error('Framework7 is already initialized and can\'t be initialized more than once');
+      }
 
       var passedParams = Utils.extend({}, params);
 
@@ -12169,7 +12172,6 @@
    * Default configs.
    */
   var DEFAULT_DELIMITER = '/';
-  var DEFAULT_DELIMITERS = './';
 
   /**
    * The main path matching regexp utility.
@@ -12201,7 +12203,7 @@
     var index = 0;
     var path = '';
     var defaultDelimiter = (options && options.delimiter) || DEFAULT_DELIMITER;
-    var delimiters = (options && options.delimiters) || DEFAULT_DELIMITERS;
+    var whitelist = (options && options.whitelist) || undefined;
     var pathEscaped = false;
     var res;
 
@@ -12220,7 +12222,6 @@
       }
 
       var prev = '';
-      var next = str[index];
       var name = res[2];
       var capture = res[3];
       var group = res[4];
@@ -12228,9 +12229,11 @@
 
       if (!pathEscaped && path.length) {
         var k = path.length - 1;
+        var c = path[k];
+        var matches = whitelist ? whitelist.indexOf(c) > -1 : true;
 
-        if (delimiters.indexOf(path[k]) > -1) {
-          prev = path[k];
+        if (matches) {
+          prev = c;
           path = path.slice(0, k);
         }
       }
@@ -12242,11 +12245,10 @@
         pathEscaped = false;
       }
 
-      var partial = prev !== '' && next !== undefined && next !== prev;
       var repeat = modifier === '+' || modifier === '*';
       var optional = modifier === '?' || modifier === '*';
-      var delimiter = prev || defaultDelimiter;
       var pattern = capture || group;
+      var delimiter = prev || defaultDelimiter;
 
       tokens.push({
         name: name || key++,
@@ -12254,8 +12256,9 @@
         delimiter: delimiter,
         optional: optional,
         repeat: repeat,
-        partial: partial,
-        pattern: pattern ? escapeGroup(pattern) : '[^' + escapeString(delimiter) + ']+?'
+        pattern: pattern
+          ? escapeGroup(pattern)
+          : '[^' + escapeString(delimiter === defaultDelimiter ? delimiter : (delimiter + defaultDelimiter)) + ']+?'
       });
     }
 
@@ -12342,12 +12345,7 @@
           continue
         }
 
-        if (token.optional) {
-          // Prepend partial segment prefixes.
-          if (token.partial) { path += token.prefix; }
-
-          continue
-        }
+        if (token.optional) { continue }
 
         throw new TypeError('Expected "' + token.name + '" to be ' + (token.repeat ? 'an array' : 'a string'))
       }
@@ -12407,7 +12405,6 @@
           delimiter: null,
           optional: false,
           repeat: false,
-          partial: false,
           pattern: null
         });
       }
@@ -12460,11 +12457,9 @@
     var strict = options.strict;
     var start = options.start !== false;
     var end = options.end !== false;
-    var delimiter = escapeString(options.delimiter || DEFAULT_DELIMITER);
-    var delimiters = options.delimiters || DEFAULT_DELIMITERS;
+    var delimiter = options.delimiter || DEFAULT_DELIMITER;
     var endsWith = [].concat(options.endsWith || []).map(escapeString).concat('$').join('|');
     var route = start ? '^' : '';
-    var isEndDelimited = tokens.length === 0;
 
     // Iterate over the tokens and create our regexp string.
     for (var i = 0; i < tokens.length; i++) {
@@ -12472,7 +12467,6 @@
 
       if (typeof token === 'string') {
         route += escapeString(token);
-        isEndDelimited = i === tokens.length - 1 && delimiters.indexOf(token[token.length - 1]) > -1;
       } else {
         var capture = token.repeat
           ? '(?:' + token.pattern + ')(?:' + escapeString(token.delimiter) + '(?:' + token.pattern + '))*'
@@ -12481,8 +12475,8 @@
         if (keys) { keys.push(token); }
 
         if (token.optional) {
-          if (token.partial) {
-            route += escapeString(token.prefix) + '(' + capture + ')?';
+          if (!token.prefix) {
+            route += '(' + capture + ')?';
           } else {
             route += '(?:' + escapeString(token.prefix) + '(' + capture + '))?';
           }
@@ -12493,12 +12487,17 @@
     }
 
     if (end) {
-      if (!strict) { route += '(?:' + delimiter + ')?'; }
+      if (!strict) { route += '(?:' + escapeString(delimiter) + ')?'; }
 
       route += endsWith === '$' ? '$' : '(?=' + endsWith + ')';
     } else {
-      if (!strict) { route += '(?:' + delimiter + '(?=' + endsWith + '))?'; }
-      if (!isEndDelimited) { route += '(?=' + delimiter + '|' + endsWith + ')'; }
+      var endToken = tokens[tokens.length - 1];
+      var isEndDelimited = typeof endToken === 'string'
+        ? endToken[endToken.length - 1] === delimiter
+        : endToken === undefined;
+
+      if (!strict) { route += '(?:' + escapeString(delimiter) + '(?=' + endsWith + '))?'; }
+      if (!isEndDelimited) { route += '(?=' + escapeString(delimiter) + '|' + endsWith + ')'; }
     }
 
     return new RegExp(route, flags(options))
@@ -12759,7 +12758,7 @@
                 });
               } else {
                 if (els.indexOf(el) < 0) { els.push(el); }
-                el.overflow = 'visible';
+                el.overflow = 'hidden';
                 el.transform = function (progress) { return ("translateY(calc(" + (-progress) + " * var(--f7-navbar-large-title-height)))"); };
                 $navEl.find('.title-large-text, .title-large-inner').each(function (subIndex, subNavEl) {
                   els.push({
@@ -12793,11 +12792,12 @@
             }
           }
           if ($navEl.hasClass('title-large')) { return; }
+          var isSliding = $navEl.hasClass('sliding') || $currentNavbarInner.hasClass('sliding');
           if (els.indexOf(el) < 0) { els.push(el); }
-          if (!isSubnavbar) {
+          if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
           }
-          if ($navEl.hasClass('sliding') >= 0 || $currentNavbarInner.hasClass('sliding')) {
+          if (isSliding) {
             var transformTarget = el;
             if (isLeft && activeNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
               var textEl = { el: activeNavBackIconText[0] };
@@ -12866,11 +12866,12 @@
             }
           }
           if ($navEl.hasClass('title-large')) { return; }
+          var isSliding = $navEl.hasClass('sliding') || $previousNavbarInner.hasClass('sliding');
           if (els.indexOf(el) < 0) { els.push(el); }
-          if (!isSubnavbar) {
+          if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (Math.pow( progress, 3 )); };
           }
-          if ($navEl.hasClass('sliding') >= 0 || $previousNavbarInner.hasClass('sliding')) {
+          if (isSliding) {
             var transformTarget = el;
             if (isLeft && previousNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
               var textEl = { el: activeNavBackIconText[0] };
@@ -12922,6 +12923,7 @@
       var swipeBackEnabled = params[((app.theme) + "SwipeBack")];
       if (!allowViewTouchMove || !swipeBackEnabled || isTouched || (app.swipeout && app.swipeout.el) || !router.allowPageChange) { return; }
       if ($(e.target).closest('.range-slider, .calendar-months').length > 0) { return; }
+      if ($(e.target).closest('.page-master, .page-master-detail').length > 0 && params.masterDetailBreakpoint > 0 && app.width >= params.masterDetailBreakpoint) { return; }
       isMoved = false;
       isTouched = true;
       isScrolling = undefined;
@@ -13347,8 +13349,14 @@
       reloadPrevious: false,
       reloadAll: false,
       clearPreviousHistory: false,
+      reloadDetail: router.params.reloadDetail,
       on: {},
     }, forwardOptions);
+
+    var masterDetailEnabled = router.params.masterDetailBreakpoint > 0;
+    var isMaster = masterDetailEnabled && options.route && options.route.route && options.route.route.master === true;
+    var masterPageEl;
+    var otherDetailPageEl;
 
     var currentRouteIsModal = router.currentRoute.modal;
     var modalType;
@@ -13445,27 +13453,60 @@
       return router;
     }
 
+    // Find Detail' master page
+    var isDetail;
+    var reloadDetail;
+    if (masterDetailEnabled && !options.reloadAll) {
+      for (var i = 0; i < $pagesInView.length; i += 1) {
+        if (!masterPageEl
+          && $pagesInView[i].classList.contains('page-master')
+        ) {
+          masterPageEl = $pagesInView[i];
+          continue; // eslint-disable-line
+        }
+      }
+      isDetail = !isMaster && masterPageEl;
+
+      if (isDetail) {
+        // Find Other Detail
+        if (masterPageEl) {
+          for (var i$1 = 0; i$1 < $pagesInView.length; i$1 += 1) {
+            if ($pagesInView[i$1].classList.contains('page-master-detail')
+            ) {
+              otherDetailPageEl = $pagesInView[i$1];
+              continue; // eslint-disable-line
+            }
+          }
+        }
+      }
+      reloadDetail = isDetail && options.reloadDetail && app.width >= router.params.masterDetailBreakpoint && masterPageEl;
+    }
+
     // New Page
     var newPagePosition = 'next';
-    if (options.reloadCurrent || options.reloadAll) {
+    if (options.reloadCurrent || options.reloadAll || reloadDetail) {
       newPagePosition = 'current';
     } else if (options.reloadPrevious) {
       newPagePosition = 'previous';
     }
     $newPage
-      .addClass(("page-" + newPagePosition))
+      .addClass(("page-" + newPagePosition + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '')))
       .removeClass('stacked')
       .trigger('page:unstack')
       .trigger('page:position', { position: newPagePosition });
+    if (isMaster || isDetail) {
+      $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
+    }
+
 
     if (dynamicNavbar && $newNavbarInner.length) {
       $newNavbarInner
-        .addClass(("navbar-" + newPagePosition))
+        .addClass(("navbar-" + newPagePosition + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '')))
         .removeClass('stacked');
     }
 
     // Find Old Page
-    if (options.reloadCurrent) {
+    if (options.reloadCurrent || reloadDetail) {
       $oldPage = $pagesInView.eq($pagesInView.length - 1);
       if (separateNavbar) {
         // $oldNavbarInner = $navbarsInView.eq($pagesInView.length - 1);
@@ -13484,20 +13525,29 @@
       }
     } else {
       if ($pagesInView.length > 1) {
-        var i = 0;
-        for (i = 0; i < $pagesInView.length - 1; i += 1) {
-          var oldNavbarInnerEl = app.navbar.getElByPage($pagesInView.eq(i));
-          if (router.params.stackPages) {
-            $pagesInView.eq(i).addClass('stacked');
-            $pagesInView.eq(i).trigger('page:stack');
+        var i$2 = 0;
+        for (i$2 = 0; i$2 < $pagesInView.length - 1; i$2 += 1) {
+          if (masterPageEl
+            && $pagesInView[i$2] === masterPageEl
+          ) {
+            $pagesInView.eq(i$2).addClass('page-master-stacked');
+            $pagesInView.eq(i$2).trigger('page:masterstack');
             if (separateNavbar) {
-              // $navbarsInView.eq(i).addClass('stacked');
+              $(app.navbar.getElByPage(masterPageEl)).addClass('navbar-master-stacked');
+            }
+            continue; // eslint-disable-line
+          }
+          var oldNavbarInnerEl = app.navbar.getElByPage($pagesInView.eq(i$2));
+          if (router.params.stackPages) {
+            $pagesInView.eq(i$2).addClass('stacked');
+            $pagesInView.eq(i$2).trigger('page:stack');
+            if (separateNavbar) {
               $(oldNavbarInnerEl).addClass('stacked');
             }
           } else {
             // Page remove event
-            router.pageCallback('beforeRemove', $pagesInView[i], $navbarsInView && $navbarsInView[i], 'previous', undefined, options);
-            router.removePage($pagesInView[i]);
+            router.pageCallback('beforeRemove', $pagesInView[i$2], $navbarsInView && $navbarsInView[i$2], 'previous', undefined, options);
+            router.removePage($pagesInView[i$2]);
             if (separateNavbar && oldNavbarInnerEl) {
               router.removeNavbar(oldNavbarInnerEl);
             }
@@ -13513,14 +13563,23 @@
           .filter(function (index, navbarInner) { return navbarInner !== $newNavbarInner[0]; });
       }
     }
+
     if (dynamicNavbar && !separateNavbar) {
       $oldNavbarInner = $oldPage.children('.navbar').children('.navbar-inner');
+    }
+    if (isDetail && !options.reloadAll) {
+      if ($oldPage.length > 1 || reloadDetail) {
+        $oldPage = $oldPage.filter(function (pageIndex, pageEl) { return !pageEl.classList.contains('page-master'); });
+      }
+      if ($oldNavbarInner && ($oldNavbarInner.length > 1 || reloadDetail)) {
+        $oldNavbarInner = $oldNavbarInner.filter(function (navbarIndex, navbarEl) { return !navbarEl.classList.contains('navbar-master'); });
+      }
     }
 
     // Push State
     if (router.params.pushState && (options.pushState || options.replaceState) && !options.reloadPrevious) {
       var pushStateRoot = router.params.pushStateRoot || '';
-      History[options.reloadCurrent || options.reloadAll || options.replaceState ? 'replace' : 'push'](
+      History[options.reloadCurrent || (reloadDetail && otherDetailPageEl) || options.reloadAll || options.replaceState ? 'replace' : 'push'](
         view.id,
         {
           url: options.route.url,
@@ -13546,7 +13605,7 @@
     var url = options.route.url;
 
     if (options.history) {
-      if ((options.reloadCurrent && router.history.length) > 0 || options.replaceState) {
+      if (((options.reloadCurrent || (reloadDetail && otherDetailPageEl)) && router.history.length) > 0 || options.replaceState) {
         router.history[router.history.length - (options.reloadPrevious ? 2 : 1)] = url;
       } else if (options.reloadPrevious) {
         router.history[router.history.length - 2] = url;
@@ -13610,7 +13669,7 @@
     }
 
     // Remove old page
-    if (options.reloadCurrent && $oldPage.length > 0) {
+    if ((options.reloadCurrent || reloadDetail) && $oldPage.length > 0) {
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
         $oldPage.trigger('page:stack');
@@ -13672,11 +13731,20 @@
     // Page init and before init events
     router.pageCallback('init', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
 
-    if (options.reloadCurrent || options.reloadAll) {
+    if (options.reloadCurrent || options.reloadAll || reloadDetail) {
       router.allowPageChange = true;
       router.pageCallback('beforeIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
       router.pageCallback('afterIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
       if (options.reloadCurrent && options.clearPreviousHistory) { router.clearPreviousHistory(); }
+      if (reloadDetail) {
+        masterPageEl.classList.add('page-previous');
+        masterPageEl.classList.remove('page-current');
+        $(masterPageEl).trigger('page:position', { position: 'previous' });
+        if (masterPageEl.f7Page && masterPageEl.f7Page.navbarEl) {
+          masterPageEl.f7Page.navbarEl.classList.add('navbar-previous');
+          masterPageEl.f7Page.navbarEl.classList.remove('navbar-current');
+        }
+      }
       return router;
     }
     if (options.reloadPrevious) {
@@ -13692,18 +13760,24 @@
     function afterAnimation() {
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden');
-      $oldPage.removeClass(pageClasses).addClass('page-previous').attr('aria-hidden', 'true');
+      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      $oldPage.removeClass(pageClasses).addClass('page-previous').trigger('page:position', { position: 'previous' });
+      if (!$oldPage.hasClass('page-master')) {
+        $oldPage.attr('aria-hidden', 'true');
+      }
       if (dynamicNavbar) {
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
-        $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-previous').attr('aria-hidden', 'true');
+        $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-previous');
+        if (!$oldNavbarInner.hasClass('navbar-master')) {
+          $oldNavbarInner.attr('aria-hidden', 'true');
+        }
       }
       // After animation event
       router.allowPageChange = true;
       router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
       router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
 
-      var keepOldPage = app.theme === 'ios' ? (router.params.preloadPreviousPage || router.params.iosSwipeBack) : router.params.preloadPreviousPage;
+      var keepOldPage = (router.params.preloadPreviousPage || (app.theme === 'ios' ? router.params.iosSwipeBack : router.params.mdSwipeBack)) && !isMaster;
       if (!keepOldPage) {
         if ($newPage.hasClass('smart-select-page') || $newPage.hasClass('photo-browser-page') || $newPage.hasClass('autocomplete-page')) {
           keepOldPage = true;
@@ -13735,14 +13809,14 @@
     function setPositionClasses() {
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $oldPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden');
-      $newPage.removeClass(pageClasses).addClass('page-next').removeAttr('aria-hidden');
+      $oldPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      $newPage.removeClass(pageClasses).addClass('page-next').removeAttr('aria-hidden').trigger('page:position', { position: 'next' });
       if (dynamicNavbar) {
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-next').removeAttr('aria-hidden');
       }
     }
-    if (options.animate) {
+    if (options.animate && !(isMaster && app.width >= router.params.masterDetailBreakpoint)) {
       var delay = router.app.theme === 'md' ? router.params.mdPageLoadDelay : router.params.iosPageLoadDelay;
       if (delay) {
         setTimeout(function () {
@@ -14008,6 +14082,38 @@
     }
     function reject() {
       router.allowPageChange = true;
+    }
+
+    if (router.params.masterDetailBreakpoint > 0 && route.route.masterRoute) {
+      // load detail route
+      var preloadMaster = true;
+      if (router.currentRoute && router.currentRoute.route) {
+        if (router.currentRoute.route.master && (router.currentRoute.route === route.route.masterRoute || router.currentRoute.route.path === route.route.masterRoute.path)) {
+          preloadMaster = false;
+        }
+        if (router.currentRoute.route.masterRoute && ((router.currentRoute.route.masterRoute === route.route.masterRoute) || (router.currentRoute.route.masterRoute.path === route.route.masterRoute.path))) {
+          preloadMaster = false;
+        }
+      }
+      if (preloadMaster) {
+        router.navigate(route.route.masterRoute.path, {
+          animate: false,
+          reloadAll: navigateOptions.reloadAll,
+          reloadCurrent: navigateOptions.reloadCurrent,
+          reloadPrevious: navigateOptions.reloadPrevious,
+          once: {
+            pageAfterIn: function pageAfterIn() {
+              router.navigate(navigateParams, Utils.extend({}, navigateOptions, {
+                animate: false,
+                reloadAll: false,
+                reloadCurrent: false,
+                reloadPrevious: false,
+              }));
+            },
+          },
+        });
+        return router;
+      }
     }
 
     processRouteQueue.call(
@@ -14478,11 +14584,16 @@
       pushState: true,
     }, backwardOptions);
 
+    var masterDetailEnabled = router.params.masterDetailBreakpoint > 0;
+    var isMaster = masterDetailEnabled && options.route && options.route.route && options.route.route.master === true;
+    var masterPageEl;
+
     var dynamicNavbar = router.dynamicNavbar;
     var separateNavbar = router.separateNavbar;
 
     var $newPage = $el;
     var $oldPage = router.$el.children('.page-current');
+    var currentIsMaster = masterDetailEnabled && $oldPage.hasClass('page-master');
 
     if ($newPage.length) {
       // Remove theme elements
@@ -14526,17 +14637,43 @@
       };
     }
 
+    // Pages In View
+    var isDetail;
+    if (masterDetailEnabled) {
+      var $pagesInView = router.$el
+        .children('.page:not(.stacked)')
+        .filter(function (index, pageInView) { return pageInView !== $newPage[0]; });
+
+      // Find Detail' master page
+      for (var i = 0; i < $pagesInView.length; i += 1) {
+        if (!masterPageEl
+          && $pagesInView[i].classList.contains('page-master')
+        ) {
+          masterPageEl = $pagesInView[i];
+          continue; // eslint-disable-line
+        }
+      }
+
+      isDetail = !isMaster
+        && masterPageEl
+        && (router.history.indexOf(options.route.url) > router.history.indexOf(masterPageEl.f7Page.route.url));
+    }
+
+
     // New Page
     $newPage
-      .addClass('page-previous')
+      .addClass(("page-previous" + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '')))
       .removeClass('stacked')
       .removeAttr('aria-hidden')
       .trigger('page:unstack')
       .trigger('page:position', { position: 'previous' });
+    if (isMaster || isDetail) {
+      $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
+    }
 
     if (dynamicNavbar && $newNavbarInner.length > 0) {
       $newNavbarInner
-        .addClass('navbar-previous')
+        .addClass(("navbar-previous" + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '')))
         .removeClass('stacked')
         .removeAttr('aria-hidden');
     }
@@ -14648,10 +14785,19 @@
           preload: true,
         }));
       }
+      if (isMaster) {
+        $newPage
+          .removeClass('page-master-stacked')
+          .trigger('page:masterunstack');
+        if (separateNavbar) {
+          $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
+        }
+      }
       // Page init and before init events
       router.pageCallback('init', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
-      if ($newPage.prevAll('.page-previous:not(.stacked)').length > 0) {
-        $newPage.prevAll('.page-previous:not(.stacked)').each(function (index, pageToRemove) {
+      var $previousPages = $newPage.prevAll('.page-previous:not(.stacked):not(.page-master)');
+      if ($previousPages.length > 0) {
+        $previousPages.each(function (index, pageToRemove) {
           var $pageToRemove = $(pageToRemove);
           var $navbarToRemove;
           if (separateNavbar) {
@@ -14734,8 +14880,8 @@
       // Set classes
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden');
-      $oldPage.removeClass(pageClasses).addClass('page-next').attr('aria-hidden', 'true');
+      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      $oldPage.removeClass(pageClasses).addClass('page-next').attr('aria-hidden', 'true').trigger('page:position', { position: 'next' });
       if (dynamicNavbar) {
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-next').attr('aria-hidden', 'true');
@@ -14764,8 +14910,8 @@
       router.emit('routeChanged', router.currentRoute, router.previousRoute, router);
 
       // Preload previous page
-      var preloadPreviousPage = app.theme === 'ios' ? (router.params.preloadPreviousPage || router.params.iosSwipeBack) : router.params.preloadPreviousPage;
-      if (preloadPreviousPage && router.history[router.history.length - 2]) {
+      var preloadPreviousPage = router.params.preloadPreviousPage || (app.theme.ios ? router.params.iosSwipeBack : router.params.mdSwipeBack);
+      if (preloadPreviousPage && router.history[router.history.length - 2] && !isMaster) {
         router.back(router.history[router.history.length - 2], { preload: true });
       }
       if (router.params.pushState) {
@@ -14776,15 +14922,15 @@
     function setPositionClasses() {
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $oldPage.removeClass(pageClasses).addClass('page-current');
-      $newPage.removeClass(pageClasses).addClass('page-previous').removeAttr('aria-hidden');
+      $oldPage.removeClass(pageClasses).addClass('page-current').trigger('page:position', { position: 'current' });
+      $newPage.removeClass(pageClasses).addClass('page-previous').removeAttr('aria-hidden').trigger('page:position', { position: 'previous' });
       if (dynamicNavbar) {
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current');
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-previous').removeAttr('aria-hidden');
       }
     }
 
-    if (options.animate) {
+    if (options.animate && !(currentIsMaster && app.width >= router.params.masterDetailBreakpoint)) {
       setPositionClasses();
       router.animate($oldPage, $newPage, $oldNavbarInner, $newNavbarInner, 'backward', function () {
         afterAnimation();
@@ -14954,20 +15100,48 @@
           },
         };
       }
-      if (!previousRoute || !modalToClose) {
-        return router;
+      if (!navigateUrl || navigateUrl.replace(/[# ]/g, '').trim().length === 0) {
+        if (!previousRoute || !modalToClose) {
+          return router;
+        }
       }
-      if (router.params.pushState && navigateOptions.pushState !== false) {
-        History.back();
+      var forceOtherUrl = navigateOptions.force && previousRoute && navigateUrl;
+      if (previousRoute && modalToClose) {
+        if (router.params.pushState && navigateOptions.pushState !== false) {
+          History.back();
+        }
+        router.currentRoute = previousRoute;
+        router.history.pop();
+        router.saveHistory();
+        router.modalRemove(modalToClose);
+        if (forceOtherUrl) {
+          router.navigate(navigateUrl, { reloadCurrent: true });
+        }
+      } else if (modalToClose) {
+        router.modalRemove(modalToClose);
+        if (navigateUrl) {
+          router.navigate(navigateUrl, { reloadCurrent: true });
+        }
       }
-      router.currentRoute = previousRoute;
-      router.history.pop();
-      router.saveHistory();
-      router.modalRemove(modalToClose);
       return router;
     }
-    var $previousPage = router.$el.children('.page-current').prevAll('.page-previous').eq(0);
-    if (!navigateOptions.force && $previousPage.length > 0) {
+    var $previousPage = router.$el.children('.page-current').prevAll('.page-previous:not(.page-master)').eq(0);
+
+    var skipMaster;
+    if (router.params.masterDetailBreakpoint > 0) {
+      var $previousMaster = router.$el.children('.page-current').prevAll('.page-master').eq(0);
+      if ($previousMaster.length) {
+        var expectedPreviousPageUrl = router.history[router.history.length - 2];
+        var expectedPreviousPageRoute = router.findMatchingRoute(expectedPreviousPageUrl);
+        if (expectedPreviousPageRoute && expectedPreviousPageRoute.route === $previousMaster[0].f7Page.route.route) {
+          $previousPage = $previousMaster;
+          if (!navigateOptions.preload) {
+            skipMaster = app.width >= router.params.masterDetailBreakpoint;
+          }
+        }
+      }
+    }
+    if (!navigateOptions.force && $previousPage.length && !skipMaster) {
       if (router.params.pushState
         && $previousPage[0].f7Page
         && router.history[router.history.length - 2] !== $previousPage[0].f7Page.route.url
@@ -14978,8 +15152,8 @@
         );
         return router;
       }
-
       var previousPageRoute = $previousPage[0].f7Page.route;
+
       processRouteQueue.call(
         router,
         previousPageRoute,
@@ -15004,6 +15178,15 @@
     }
     if (!navigateUrl && router.history.length > 1) {
       navigateUrl = router.history[router.history.length - 2];
+    }
+    if (skipMaster && !navigateOptions.force && router.history[router.history.length - 3]) {
+      return router.back(router.history[router.history.length - 3], Utils.extend({}, navigateOptions || {}, {
+        force: true,
+        animate: false,
+      }));
+    }
+    if (skipMaster && !navigateOptions.force) {
+      return router;
     }
 
     // Find route to load
@@ -15129,11 +15312,12 @@
     var app = router.app;
     var separateNavbar = router.separateNavbar;
 
-    var $currentPageEl = $(router.currentPageEl);
-
     var $pagesToRemove = router.$el
       .children('.page')
-      .filter(function (index, pageInView) { return pageInView !== $currentPageEl[0]; });
+      .filter(function (index, pageInView) {
+        if (router.currentRoute && (router.currentRoute.modal || router.currentRoute.panel)) { return true; }
+        return pageInView !== router.currentPageEl;
+      });
 
     $pagesToRemove.each(function (index, pageEl) {
       var $oldPageEl = $(pageEl);
@@ -15287,15 +15471,17 @@
           if ($navEl.hasClass('title') && toLarge) { return; }
           newNavEls.push(animatableNavEl($navEl, newNavbarInner));
         });
-        oldNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
-          var $navEl = $(navEl);
-          if ($navEl.hasClass('left') && toLarge && !fromLarge && direction === 'forward' && separateNavbar) { return; }
-          if ($navEl.hasClass('left') && toLarge && direction === 'backward' && separateNavbar) { return; }
-          if ($navEl.hasClass('title') && fromLarge) {
-            return;
-          }
-          oldNavEls.push(animatableNavEl($navEl, oldNavbarInner));
-        });
+        if (!(oldNavbarInner.hasClass('navbar-master') && router.params.masterDetailBreakpoint > 0 && router.app.width >= router.params.masterDetailBreakpoint)) {
+          oldNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
+            var $navEl = $(navEl);
+            if ($navEl.hasClass('left') && toLarge && !fromLarge && direction === 'forward' && separateNavbar) { return; }
+            if ($navEl.hasClass('left') && toLarge && direction === 'backward' && separateNavbar) { return; }
+            if ($navEl.hasClass('title') && fromLarge) {
+              return;
+            }
+            oldNavEls.push(animatableNavEl($navEl, oldNavbarInner));
+          });
+        }
         [oldNavEls, newNavEls].forEach(function (navEls) {
           navEls.forEach(function (navEl) {
             var n = navEl;
@@ -15325,7 +15511,7 @@
       var dynamicNavbar = router.dynamicNavbar;
       var ios = router.app.theme === 'ios';
       // Router Animation class
-      var routerTransitionClass = "router-transition-" + direction + " router-transition-css-" + direction;
+      var routerTransitionClass = "router-transition-" + direction + " router-transition";
 
       var newNavEls;
       var oldNavEls;
@@ -15534,9 +15720,9 @@
     };
 
     Router.prototype.flattenRoutes = function flattenRoutes (routes) {
-      var this$1 = this;
       if ( routes === void 0 ) routes = this.routes;
 
+      var router = this;
       var flattenedRoutes = [];
       routes.forEach(function (route) {
         var hasTabRoutes = false;
@@ -15552,21 +15738,30 @@
             return tRoute;
           });
           hasTabRoutes = true;
-          flattenedRoutes = flattenedRoutes.concat(this$1.flattenRoutes(mergedPathsRoutes));
+          flattenedRoutes = flattenedRoutes.concat(router.flattenRoutes(mergedPathsRoutes));
+        }
+        if ('detailRoutes' in route) {
+          var mergedPathsRoutes$1 = route.detailRoutes.map(function (detailRoute) {
+            var dRoute = Utils.extend({}, detailRoute);
+            dRoute.masterRoute = route;
+            dRoute.masterRoutePath = route.path;
+            return dRoute;
+          });
+          flattenedRoutes = flattenedRoutes.concat(route, router.flattenRoutes(mergedPathsRoutes$1));
         }
         if ('routes' in route) {
-          var mergedPathsRoutes$1 = route.routes.map(function (childRoute) {
+          var mergedPathsRoutes$2 = route.routes.map(function (childRoute) {
             var cRoute = Utils.extend({}, childRoute);
             cRoute.path = (((route.path) + "/" + (cRoute.path))).replace('///', '/').replace('//', '/');
             return cRoute;
           });
           if (hasTabRoutes) {
-            flattenedRoutes = flattenedRoutes.concat(this$1.flattenRoutes(mergedPathsRoutes$1));
+            flattenedRoutes = flattenedRoutes.concat(router.flattenRoutes(mergedPathsRoutes$2));
           } else {
-            flattenedRoutes = flattenedRoutes.concat(route, this$1.flattenRoutes(mergedPathsRoutes$1));
+            flattenedRoutes = flattenedRoutes.concat(route, router.flattenRoutes(mergedPathsRoutes$2));
           }
         }
-        if (!('routes' in route) && !('tabs' in route && route.tabs)) {
+        if (!('routes' in route) && !('tabs' in route && route.tabs) && !('detailRoutes' in route)) {
           flattenedRoutes.push(route);
         }
       });
@@ -15997,8 +16192,8 @@
       if ( route === void 0 ) route = {};
 
       var router = this;
-      var $pageEl = $(pageEl);
-      var $navbarEl = $(navbarEl);
+      var $pageEl = $(pageEl).eq(0);
+      var $navbarEl = $(navbarEl).eq(0);
       var currentPage = $pageEl[0].f7Page || {};
       var direction;
       var pageFrom;
@@ -16045,8 +16240,14 @@
       var router = this;
       var $pageEl = $(pageEl);
       if (!$pageEl.length) { return; }
+      var $navbarEl = $(navbarEl);
       var route = options.route;
-      var restoreScrollTopOnBack = router.params.restoreScrollTopOnBack;
+      var restoreScrollTopOnBack = router.params.restoreScrollTopOnBack
+        && !(
+          router.params.masterDetailBreakpoint > 0
+          && $pageEl.hasClass('page-master')
+          && router.app.width >= router.params.masterDetailBreakpoint
+        );
       var keepAlive = $pageEl[0].f7Page && $pageEl[0].f7Page.route && $pageEl[0].f7Page.route.route && $pageEl[0].f7Page.route.route.keepAlive;
 
       if (callback === 'beforeRemove' && keepAlive) {
@@ -16060,7 +16261,7 @@
       if (callback === 'beforeRemove' && $pageEl[0].f7Page) {
         page = Utils.extend($pageEl[0].f7Page, { from: from, to: to, position: from });
       } else {
-        page = router.getPageData(pageEl, navbarEl, from, to, route, pageFromEl);
+        page = router.getPageData($pageEl[0], $navbarEl[0], from, to, route, pageFromEl);
       }
       page.swipeBack = !!options.swipeBack;
 
@@ -16380,6 +16581,13 @@
               }
             }
           }
+          if (router.currentRoute && router.currentRoute.route && router.currentRoute.route.master && router.params.masterDetailBreakpoint > 0) {
+            $pageEl.addClass('page-master');
+            $pageEl.trigger('page:role', { role: 'master' });
+            if ($navbarInnerEl && $navbarInnerEl.length) {
+              $navbarInnerEl.addClass('navbar-master');
+            }
+          }
           var initOptions = {
             route: router.currentRoute,
           };
@@ -16599,6 +16807,8 @@
       view.$el.trigger('view:beforedestroy', view);
       view.emit('local::beforeDestroy viewBeforeDestroy', view);
 
+      app.off('resize', view.checkmasterDetailBreakpoint);
+
       if (view.main) {
         app.views.main = null;
         delete app.views.main;
@@ -16627,9 +16837,39 @@
       view = null;
     };
 
+    View.prototype.checkmasterDetailBreakpoint = function checkmasterDetailBreakpoint () {
+      var view = this;
+      var app = view.app;
+      var wasMasterDetail = view.$el.hasClass('view-master-detail');
+      if (app.width >= view.params.masterDetailBreakpoint) {
+        view.$el.addClass('view-master-detail');
+        if (!wasMasterDetail) {
+          view.emit('local::masterDetailBreakpoint viewMasterDetailBreakpoint');
+          view.$el.trigger('view:masterDetailBreakpoint', view);
+        }
+      } else {
+        view.$el.removeClass('view-master-detail');
+        if (wasMasterDetail) {
+          view.emit('local::masterDetailBreakpoint viewMasterDetailBreakpoint');
+          view.$el.trigger('view:masterDetailBreakpoint', view);
+        }
+      }
+    };
+
+    View.prototype.initMasterDetail = function initMasterDetail () {
+      var view = this;
+      var app = view.app;
+      view.checkmasterDetailBreakpoint = view.checkmasterDetailBreakpoint.bind(view);
+      view.checkmasterDetailBreakpoint();
+      app.on('resize', view.checkmasterDetailBreakpoint);
+    };
+
     View.prototype.init = function init () {
       var view = this;
       if (view.params.router) {
+        if (view.params.masterDetailBreakpoint > 0) {
+          view.initMasterDetail();
+        }
         view.router.init();
         view.$el.trigger('view:init', view);
         view.emit('local::init viewInit', view);
@@ -18151,11 +18391,11 @@
             if (SW.registrations.indexOf(reg) >= 0) {
               SW.registrations.splice(SW.registrations.indexOf(reg), 1);
             }
-            app.emit('serviceWorkerUnregisterSuccess', true);
+            app.emit('serviceWorkerUnregisterSuccess', reg);
             resolve();
           })
           .catch(function (error) {
-            app.emit('serviceWorkerUnregisterError', error);
+            app.emit('serviceWorkerUnregisterError', reg, error);
             reject(error);
           });
       }); }));
@@ -18448,6 +18688,8 @@
         preloadPreviousPage: true,
         allowDuplicateUrls: false,
         reloadPages: false,
+        reloadDetail: false,
+        masterDetailBreakpoint: 0,
         removeElements: true,
         removeElementsWithTimeout: false,
         removeElementsTimeout: 0,
@@ -18876,22 +19118,26 @@
         if (collapseProgress === 0 && navbarCollapsed) {
           app.navbar.expandLargeTitle($navbarInnerEl[0]);
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          $navbarInnerEl[0].style.overflow = '';
           if (app.theme === 'md') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else if (collapseProgress === 1 && !navbarCollapsed) {
           app.navbar.collapseLargeTitle($navbarInnerEl[0]);
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          $navbarInnerEl[0].style.overflow = '';
           if (app.theme === 'md') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else if ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed)) {
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          $navbarInnerEl[0].style.overflow = '';
           if (app.theme === 'md') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else {
           $navbarInnerEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
+          $navbarInnerEl[0].style.overflow = 'visible';
           if (app.theme === 'md') {
             $navbarEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
           }
@@ -18979,6 +19225,11 @@
         app.on('touchstart:passive', handeTouchStart);
         app.on('touchend:passive', handleTouchEnd);
       }
+      if (needCollapse) {
+        $pageEl.find('.page-content').each(function (pageContentIndex, pageContentEl) {
+          if (pageContentEl.scrollTop > 0) { handleScroll.call(pageContentEl); }
+        });
+      }
       $pageEl[0].f7DetachNavbarScrollHandlers = function f7DetachNavbarScrollHandlers() {
         delete $pageEl[0].f7DetachNavbarScrollHandlers;
         $pageEl.off('scroll', '.page-content', handleScroll, true);
@@ -19020,7 +19271,7 @@
       },
     },
     on: {
-      'panelBreakpoint resize': function onResize() {
+      'panelBreakpoint resize viewMasterDetailBreakpoint': function onResize() {
         var app = this;
         $('.navbar').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
@@ -24342,7 +24593,7 @@
       var $panelParentEl = $el.parent();
       var wasInDom = $el.parents(document).length > 0;
 
-      if (!$panelParentEl.is(app.root)) {
+      if (!$panelParentEl.is(app.root) || $el.prevAll('.views, .view').length) {
         var $insertBeforeEl = app.root.children('.panel, .views, .view').eq(0);
         var $insertAfterEl = app.root.children('.statusbar').eq(0);
 
@@ -24354,7 +24605,19 @@
           app.root.prepend($el);
         }
 
-        if ($backdropEl && $backdropEl.length && !$backdropEl.parent().is(app.root) && $backdropEl.nextAll('.panel').length === 0) {
+        if ($backdropEl
+          && $backdropEl.length
+          && (
+            (
+              !$backdropEl.parent().is(app.root)
+              && $backdropEl.nextAll('.panel').length === 0
+            )
+            || (
+              $backdropEl.parent().is(app.root)
+              && $backdropEl.nextAll('.panel').length === 0
+            )
+          )
+        ) {
           $backdropEl.insertBefore($el);
         }
 
@@ -25604,7 +25867,7 @@
         var $inputEl = $(this);
         var tag = $inputEl[0].nodeName.toLowerCase();
         app.input.blur($inputEl);
-        if ($inputEl.dataset().validate || $inputEl.attr('validate') !== null) {
+        if ($inputEl.dataset().validate || $inputEl.attr('validate') !== null || $inputEl.attr('data-validate-on-blur') !== null) {
           app.input.validate($inputEl);
         }
         // Resize textarea
@@ -30911,24 +31174,33 @@
 
         if (!isMoved) {
           $el.removeClass('ptr-transitioning');
-          var targetIsEl;
           var targetIsScrollable;
           scrollHeight = $el[0].scrollHeight;
           offsetHeight = $el[0].offsetHeight;
           if (ptr.bottom) {
             maxScrollTop = scrollHeight - offsetHeight;
           }
-          $(e.target).parents().each(function (index, targetEl) {
-            if (targetEl === el) {
-              targetIsEl = true;
-            }
-            if (targetIsEl) { return; }
-            if (targetEl.scrollHeight > targetEl.offsetHeight) {
-              targetIsScrollable = true;
-            }
-          });
-
-          if (targetIsScrollable || scrollTop > scrollHeight) {
+          if (scrollTop > scrollHeight) {
+            isTouched = false;
+            return;
+          }
+          var $ptrWatchScrollable = $(e.target).closest('.ptr-watch-scroll');
+          if ($ptrWatchScrollable.length) {
+            $ptrWatchScrollable.each(function (ptrScrollableIndex, ptrScrollableEl) {
+              if (ptrScrollableEl === el) { return; }
+              if (
+                (ptrScrollableEl.scrollHeight > ptrScrollableEl.offsetHeight)
+                && $(ptrScrollableEl).css('overflow') === 'auto'
+                && (
+                  (!ptr.bottom && ptrScrollableEl.scrollTop > 0)
+                  || (ptr.bottom && ptrScrollableEl.scrollTop < ptrScrollableEl.scrollHeight - ptrScrollableEl.offsetHeight)
+                )
+              ) {
+                targetIsScrollable = true;
+              }
+            });
+          }
+          if (targetIsScrollable) {
             isTouched = false;
             return;
           }
@@ -41181,7 +41453,7 @@
     Autocomplete.prototype.renderDropdown = function renderDropdown () {
       var ac = this;
       if (ac.params.renderDropdown) { return ac.params.renderDropdown.call(ac, ac.items); }
-      var dropdownHtml = ("\n      <div class=\"autocomplete-dropdown\">\n        <div class=\"autocomplete-dropdown-inner\">\n          <div class=\"list " + (!ac.params.expandInput ? 'no-ios-edge' : '') + "\">\n            <ul></ul>\n          </div>\n        </div>\n        " + (ac.params.preloader ? ac.renderPreloader() : '') + "\n      </div>\n    ").trim();
+      var dropdownHtml = ("\n      <div class=\"autocomplete-dropdown\">\n        <div class=\"autocomplete-dropdown-inner\">\n          <div class=\"list " + (!ac.params.expandInput ? 'no-safe-areas' : '') + "\">\n            <ul></ul>\n          </div>\n        </div>\n        " + (ac.params.preloader ? ac.renderPreloader() : '') + "\n      </div>\n    ").trim();
       return dropdownHtml;
     };
 
@@ -42227,29 +42499,62 @@
   };
 
   var Menu = {
+    open: function open(el) {
+      if ( el === void 0 ) el = '.menu-item-dropdown';
+
+      var app = this;
+      if (!el) { return; }
+      var $el = $(el).closest('.menu-item-dropdown');
+      if (!$el.length) { return; }
+      $el.eq(0).addClass('menu-item-dropdown-opened').trigger('menu:opened');
+      app.emit('menuOpened', $el.eq(0)[0]);
+    },
+    close: function close(el) {
+      if ( el === void 0 ) el = '.menu-item-dropdown-opened';
+
+      var app = this;
+      if (!el) { return; }
+      var $el = $(el).closest('.menu-item-dropdown-opened');
+      if (!$el.length) { return; }
+      $el.eq(0).removeClass('menu-item-dropdown-opened').trigger('menu:closed');
+      app.emit('menuClosed', $el.eq(0)[0]);
+    },
+  };
+
+  var Menu$1 = {
     name: 'menu',
+    create: function create() {
+      var app = this;
+      app.menu = {
+        open: Menu.open.bind(app),
+        close: Menu.close.bind(app),
+      };
+    },
     on: {
       click: function click(e) {
+        var app = this;
         var openedMenus = $('.menu-item-dropdown-opened');
         if (!openedMenus.length) { return; }
         openedMenus.each(function (index, el) {
           if (!$(e.target).closest('.menu-item-dropdown-opened').length) {
-            $(el).removeClass('menu-item-dropdown-opened');
+            app.menu.close(el);
           }
         });
       },
     },
     clicks: {
       '.menu-item-dropdown': function onClick($clickedEl, dataset, e) {
+        var app = this;
         if ($clickedEl.hasClass('menu-item-dropdown-opened')) {
           if ($(e.target).closest('.menu-dropdown').length) { return; }
-          $clickedEl.removeClass('menu-item-dropdown-opened');
+          app.menu.close($clickedEl);
         } else {
-          $clickedEl.addClass('menu-item-dropdown-opened');
+          app.menu.open($clickedEl);
         }
       },
       '.menu-close': function onClick() {
-        $('.menu-item-dropdown-opened').removeClass('menu-item-dropdown-opened');
+        var app = this;
+        app.menu.close();
       },
     },
   };
@@ -42513,7 +42818,7 @@
   };
 
   /**
-   * Framework7 4.0.0-beta.25
+   * Framework7 4.0.0-beta.32
    * Full featured mobile HTML framework for building iOS & Android apps
    * http://framework7.io/
    *
@@ -42521,7 +42826,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 18, 2019
+   * Released on: January 31, 2019
    */
 
   // Install Core Modules & Components
@@ -42591,7 +42896,7 @@
     Tooltip$1,
     Gauge$1,
     Skeleton,
-    Menu,
+    Menu$1,
     Vi,
     Elevation,
     Typography
@@ -42746,6 +43051,10 @@
       reloadCurrent: Boolean,
       reloadAll: Boolean,
       reloadPrevious: Boolean,
+      reloadDetail: {
+        type: Boolean,
+        default: undefined,
+      },
       routeTabId: String,
       view: String,
       routeProps: Object,
@@ -42756,6 +43065,7 @@
       var reloadCurrent = props.reloadCurrent;
       var reloadPrevious = props.reloadPrevious;
       var reloadAll = props.reloadAll;
+      var reloadDetail = props.reloadDetail;
       var animate = props.animate;
       var ignoreCache = props.ignoreCache;
       var routeTabId = props.routeTabId;
@@ -42766,11 +43076,17 @@
         dataAnimate = animate.toString();
       }
 
+      var dataReloadDetail;
+      if ('reloadDetail' in props && typeof reloadDetail !== 'undefined') {
+        dataReloadDetail = reloadDetail.toString();
+      }
+
       return {
         'data-force': force || undefined,
         'data-reload-current': reloadCurrent || undefined,
         'data-reload-all': reloadAll || undefined,
         'data-reload-previous': reloadPrevious || undefined,
+        'data-reload-detail': dataReloadDetail,
         'data-animate': dataAnimate,
         'data-ignore-cache': ignoreCache || undefined,
         'data-route-tab-id': routeTabId || undefined,
@@ -43526,11 +43842,13 @@
       });
       if (routes && routes.length && !f7Params.routes) { f7Params.routes = routes; }
 
-      f7.instance = new f7.Framework7(f7Params);
-      if (f7.instance.initialized) {
+      var instance = new f7.Framework7(f7Params);
+      if (instance.initialized) {
+        f7.instance = instance;
         eventsEmitter.emit('ready', f7.instance);
       } else {
-        f7.instance.on('init', function () {
+        instance.on('init', function () {
+          f7.instance = instance;
           eventsEmitter.emit('ready', f7.instance);
         });
       }
@@ -50481,8 +50799,10 @@
         return {
           hasSubnavbar: false,
           hasNavbarLarge: false,
-          routerClass: '',
-          routerForceUnstack: false
+          routerPositionClass: '',
+          routerForceUnstack: false,
+          routerPageRole: null,
+          routerPageMasterStack: false
         };
       })();
 
@@ -50571,14 +50891,17 @@
 
       var forceSubnavbar = typeof subnavbar === 'undefined' && typeof withSubnavbar === 'undefined' ? hasSubnavbar || this.state.hasSubnavbar : false;
       var forceNavbarLarge = typeof navbarLarge === 'undefined' && typeof withNavbarLarge === 'undefined' ? hasNavbarLarge || this.state.hasNavbarLarge : false;
-      var classes = Utils$1.classNames(className, 'page', this.state.routerClass, {
+      var classes = Utils$1.classNames(className, 'page', this.state.routerPositionClass, {
         stacked: stacked && !this.state.routerForceUnstack,
         tabs: tabs,
         'page-with-subnavbar': subnavbar || withSubnavbar || forceSubnavbar,
         'page-with-navbar-large': navbarLarge || withNavbarLarge || forceNavbarLarge,
         'no-navbar': noNavbar,
         'no-toolbar': noToolbar,
-        'no-swipeback': noSwipeback
+        'no-swipeback': noSwipeback,
+        'page-master': this.state.routerPageRole === 'master',
+        'page-master-detail': this.state.routerPageRole === 'detail',
+        'page-master-stacked': this.state.routerPageMasterStack === true
       }, Mixins.colorClasses(props));
 
       if (!needsPageContent) {
@@ -50623,7 +50946,7 @@
     },
 
     created: function created() {
-      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition']);
+      Utils$1.bindMethods(this, ['onPtrPullStart', 'onPtrPullMove', 'onPtrPullEnd', 'onPtrRefresh', 'onPtrDone', 'onInfinite', 'onPageMounted', 'onPageInit', 'onPageReinit', 'onPageBeforeIn', 'onPageBeforeOut', 'onPageAfterOut', 'onPageAfterIn', 'onPageBeforeRemove', 'onPageStack', 'onPageUnstack', 'onPagePosition', 'onPageRole', 'onPageMasterStack', 'onPageMasterUnstack']);
     },
 
     mounted: function mounted() {
@@ -50656,6 +50979,9 @@
       el.addEventListener('page:stack', self.onPageStack);
       el.addEventListener('page:unstack', self.onPageUnstack);
       el.addEventListener('page:position', self.onPagePosition);
+      el.addEventListener('page:role', self.onPageRole);
+      el.addEventListener('page:masterstack', self.onPageMasterStack);
+      el.addEventListener('page:masterunstack', self.onPageMasterUnstack);
     },
 
     beforeDestroy: function beforeDestroy() {
@@ -50678,6 +51004,9 @@
       el.removeEventListener('page:stack', self.onPageStack);
       el.removeEventListener('page:unstack', self.onPageUnstack);
       el.removeEventListener('page:position', self.onPagePosition);
+      el.removeEventListener('page:role', self.onPageRole);
+      el.removeEventListener('page:masterstack', self.onPageMasterStack);
+      el.removeEventListener('page:masterunstack', self.onPageMasterUnstack);
     },
 
     methods: {
@@ -50726,7 +51055,25 @@
       onPagePosition: function onPagePosition(event) {
         var position = event.detail.position;
         this.setState({
-          routerClass: ("page-" + position)
+          routerPositionClass: ("page-" + position)
+        });
+      },
+
+      onPageRole: function onPageRole(event) {
+        this.setState({
+          routerPageRole: event.detail.role
+        });
+      },
+
+      onPageMasterStack: function onPageMasterStack() {
+        this.setState({
+          routerPageMasterStack: true
+        });
+      },
+
+      onPageMasterUnstack: function onPageMasterUnstack() {
+        this.setState({
+          routerPageMasterStack: false
         });
       },
 
@@ -50767,13 +51114,13 @@
 
         if (page.from === 'next') {
           this.setState({
-            routerClass: 'page-next'
+            routerPositionClass: 'page-next'
           });
         }
 
         if (page.from === 'previous') {
           this.setState({
-            routerClass: 'page-previous'
+            routerPositionClass: 'page-previous'
           });
         }
 
@@ -50790,13 +51137,13 @@
 
         if (page.to === 'next') {
           this.setState({
-            routerClass: 'page-next'
+            routerPositionClass: 'page-next'
           });
         }
 
         if (page.to === 'previous') {
           this.setState({
-            routerClass: 'page-previous'
+            routerPositionClass: 'page-previous'
           });
         }
 
@@ -50806,7 +51153,7 @@
       onPageAfterIn: function onPageAfterIn(event) {
         var page = event.detail;
         this.setState({
-          routerClass: 'page-current'
+          routerPositionClass: 'page-current'
         });
         this.dispatchEvent('page:afterin pageAfterIn', event, page);
       },
@@ -52143,7 +52490,7 @@
       id: [String, Number],
       raised: Boolean,
       raisedIos: Boolean,
-      raisedMD: Boolean,
+      raisedMd: Boolean,
       round: Boolean,
       roundIos: Boolean,
       roundMd: Boolean,
@@ -53506,6 +53853,8 @@
       preloadPreviousPage: Boolean,
       allowDuplicateUrls: Boolean,
       reloadPages: Boolean,
+      reloadDetail: Boolean,
+      masterDetailBreakpoint: Number,
       removeElements: Boolean,
       removeElementsWithTimeout: Boolean,
       removeElementsTimeout: Number,
@@ -54069,7 +54418,7 @@
   };
 
   /**
-   * Framework7 Vue 4.0.0-beta.25
+   * Framework7 Vue 4.0.0-beta.32
    * Build full featured iOS & Android apps using Framework7 & Vue
    * http://framework7.io/vue/
    *
@@ -54077,7 +54426,7 @@
    *
    * Released under the MIT License
    *
-   * Released on: January 18, 2019
+   * Released on: January 31, 2019
    */
 
   //
@@ -54175,10 +54524,12 @@
   }
 
   /* script */
-              var __vue_script__ = script;
-              
+  var __vue_script__ = script;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script.__file = "home.vue";
+
   /* template */
-  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}})],1)],1)};
+  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","sliding":false}},[_c('f7-nav-left',[_c('f7-link',{attrs:{"panel-open":"left","icon-ios":"f7:menu","icon-md":"material:menu"}})],1),_vm._v(" "),_c('f7-nav-title',{attrs:{"sliding":""}},[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-components","icon-ios":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-nav-title-large',[_vm._v("Framework7 Vue")]),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-components",attrs:{"search-container":".components-list","search-in":"a","expandable":""}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"About Framework7","link":"/about/"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-found"},[_vm._v("Components")]),_vm._v(" "),_c('f7-list',{staticClass:"components-list searchbar-found"},[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/autocomplete/","title":"Autocomplete"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/calendar/","title":"Calendar / Date Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards-expandable/","title":"Cards Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/content-block/","title":"Content Block"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/dialog/","title":"Dialog"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/elevation/","title":"Elevation"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab/","title":"FAB"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/fab-morph/","title":"FAB Morph"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/form-storage/","title":"Form Storage"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/gauge/","title":"Gauge"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/grid/","title":"Grid / Layout Grid"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/icons/","title":"Icons"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/infinite-scroll/","title":"Infinite Scroll"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","title":"Inputs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/lazy-load/","title":"Lazy Load"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","title":"List View"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list-index/","title":"List Index"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/login-screen/","title":"Login Screen"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/menu/","title":"Menu"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/messages/","title":"Messages"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/navbar/","title":"Navbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/notifications/","title":"Notifications"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","title":"Panel / Side Panels"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/picker/","title":"Picker"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/photo-browser/","title":"Photo Browser"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popup/","title":"Popup"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/popover/","title":"Popover"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/preloader/","title":"Preloader"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/progressbar/","title":"Progress Bar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/pull-to-refresh/","title":"Pull To Refresh"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/radio/","title":"Radio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/range/","title":"Range Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar/","title":"Searchbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/searchbar-expandable/","title":"Searchbar Expandable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sheet-modal/","title":"Sheet Modal"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/skeleton/","title":"Skeleton (Ghost) Elements"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/smart-select/","title":"Smart Select"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/sortable/","title":"Sortable List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/statusbar/","title":"Statusbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/stepper/","title":"Stepper"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/subnavbar/","title":"Subnavbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swipeout/","title":"Swipeout (Swipe To Delete)"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/swiper/","title":"Swiper Slider"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","title":"Tabs"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline/","title":"Timeline"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toast/","title":"Toast"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toggle/","title":"Toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/toolbar-tabbar/","title":"Toolbar & Tabbar"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tooltip/","title":"Tooltip"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/virtual-list/","title":"Virtual List"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Themes")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"iOS Theme","external":"","link":"./index.html?theme=ios"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Material (MD) Theme","external":"","link":"./index.html?theme=md"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Color Themes","link":"/color-themes/"}})],1),_vm._v(" "),_c('f7-block-title',{staticClass:"searchbar-hide-on-search"},[_vm._v("Page Loaders & Router")]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-hide-on-search"},[_c('f7-list-item',{attrs:{"title":"Routable Modals","link":"/routable-modals/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Default Route (404)","link":"/load-something-that-doesnt-exist/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Master-Detail (Split View)","link":"/master-detail/"}})],1)],1)};
   var __vue_staticRenderFns__ = [];
 
     /* style */
@@ -54220,8 +54571,10 @@
   };
 
   /* script */
-              var __vue_script__$1 = script$1;
-              
+  var __vue_script__$1 = script$1;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1.__file = "panel-left.vue";
+
   /* template */
   var __vue_render__$1 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-block-title',[_vm._v("Left Panel")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("This is a left side panel. You can close it by clicking outsite or on this link: "),_c('f7-link',{attrs:{"panel-close":""}},[_vm._v("close me")]),_vm._v(". You can put here anything, even another isolated view like in  "),_c('f7-link',{attrs:{"panel-open":"right"}},[_vm._v("Right Panel")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Main View Navigation")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/accordion/","title":"Accordion","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/action-sheet/","title":"Action Sheet","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/badge/","title":"Badge","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/buttons/","title":"Buttons","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/cards/","title":"Cards","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/checkbox/","title":"Checkbox","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/chips/","title":"Chips/Tags","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/contacts-list/","title":"Contacts List","panel-close":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/data-table/","title":"Data Table","panel-close":""}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)};
   var __vue_staticRenderFns__$1 = [];
@@ -54266,8 +54619,10 @@
   };
 
   /* script */
-              var __vue_script__$2 = script$2;
-              
+  var __vue_script__$2 = script$2;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$2.__file = "panel-right.vue";
+
   /* template */
   var __vue_render__$2 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Right Panel"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Left Panel")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("This is a right side panel. You can close it by clicking outsite or on this link: "),_c('f7-link',{attrs:{"panel-close":""}},[_vm._v("close me")]),_vm._v(". You can put here anything, even another isolated view.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Panel Navigation")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/panel-right-1/","title":"Right panel page 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel-right-2/","title":"Right panel page 2"}})],1)],1)};
   var __vue_staticRenderFns__$2 = [];
@@ -54309,8 +54664,10 @@
   };
 
   /* script */
-              var __vue_script__$3 = script$3;
-              
+  var __vue_script__$3 = script$3;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$3.__file = "about.vue";
+
   /* template */
   var __vue_render__$3 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"About","title-large":"About","back-link":"Framework7"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Welcome to Framework7")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")])])],1)};
   var __vue_staticRenderFns__$3 = [];
@@ -54357,8 +54714,10 @@
   };
 
   /* script */
-              var __vue_script__$4 = script$4;
-              
+  var __vue_script__$4 = script$4;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$4.__file = "accordion.vue";
+
   /* template */
   var __vue_render__$4 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Accordion","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("List View Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset Accordion")]),_vm._v(" "),_c('f7-list',{attrs:{"accordion-list":"","inset":""}},[_c('f7-list-item',{attrs:{"accordion-item":"","title":"Lorem Ipsum"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Nested List"}},[_c('f7-accordion-content',[_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 4"}})],1)],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"accordion-item":"","title":"Integer semper"}},[_c('f7-accordion-content',[_c('f7-block',[_c('p',[_vm._v("\n            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.\n          ")])])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Collapsible")]),_vm._v(" "),_c('f7-block',{attrs:{"inner":"","accordion-list":""}},_vm._l((3),function(n){return _c('f7-accordion-item',{key:n},[_c('f7-accordion-toggle',[_c('b',[_vm._v("Item "+_vm._s(n))])]),_vm._v(" "),_c('f7-accordion-content',[_vm._v("Content "+_vm._s(n))])],1)}),1)],1)};
   var __vue_staticRenderFns__$4 = [];
@@ -54451,8 +54810,10 @@
   };
 
   /* script */
-              var __vue_script__$5 = script$5;
-              
+  var __vue_script__$5 = script$5;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$5.__file = "action-sheet.vue";
+
   /* template */
   var __vue_render__$5 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',{staticClass:"row"},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){_vm.$refs.actionsOneGroup.open();}}},[_vm._v("One group")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","actions-open":"#actions-two-groups"}},[_vm._v("Two groups")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.actionGridOpened = true;}}},[_vm._v("Action Grid")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Action Sheet To Popover")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Action Sheet can be automatically converted to Popover (for tablets). This button will open Popover on tablets and Action Sheet on phones: "),_c('f7-button',{staticClass:"button-to-popover",staticStyle:{"display":"inline-block"},on:{"click":_vm.openActionsPopover}},[_vm._v("Actions")])],1)]),_vm._v(" "),_c('f7-actions',{ref:"actionsOneGroup"},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"id":"actions-two-groups"}},[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("Do something")]),_vm._v(" "),_c('f7-actions-button',{attrs:{"bold":""}},[_vm._v("Button 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Button 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1),_vm._v(" "),_c('f7-actions',{attrs:{"grid":true,"opened":_vm.actionGridOpened},on:{"actions:closed":function($event){_vm.actionGridOpened = false;}}},[_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/1","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 1")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/2","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 2")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/people/3","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 3")])])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/4","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 4")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/5","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 5")])]),_vm._v(" "),_c('f7-actions-button',[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/96/96/fashion/6","width":"48"},slot:"media"}),_vm._v(" "),_c('span',[_vm._v("Button 6")])])],1)],1)],1)};
   var __vue_staticRenderFns__$5 = [];
@@ -54872,8 +55233,10 @@
   };
 
   /* script */
-              var __vue_script__$6 = script$6;
-              
+  var __vue_script__$6 = script$6;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$6.__file = "autocomplete.vue";
+
   /* template */
   var __vue_render__$6 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Autocomplete","back-link":"Back"}},[_c('div',{staticClass:"subnavbar"},[_c('form',{staticClass:"searchbar",attrs:{"id":"searchbar-autocomplete"}},[_c('div',{staticClass:"searchbar-inner"},[_c('div',{staticClass:"searchbar-input-wrap"},[_c('input',{attrs:{"type":"search","placeholder":"Search"}}),_vm._v(" "),_c('i',{staticClass:"searchbar-icon"}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})]),_vm._v(" "),_c('span',{staticClass:"searchbar-disable-button"},[_vm._v("Cancel")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Dropdown Autocomplete")]),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("Dropdown autocomplete is good to use as a quick and simple solution to provide more options in addition to free-type value.")])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Simple Dropdown Autocomplete")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input inline-label"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Input Expand")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input inline-label"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown-expand"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With All Values")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown-all"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Placeholder")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown-placeholder"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Typeahead")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Fruit")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Fruit","id":"autocomplete-dropdown-typeahead"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Ajax-Data")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Language")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Language","id":"autocomplete-dropdown-ajax"}})])])])])]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('div',{staticClass:"block-header"},[_vm._v("Dropdown With Ajax-Data + Typeahead")]),_vm._v(" "),_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Language")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Language","id":"autocomplete-dropdown-ajax-typeahead"}})])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Standalone Autocomplete")]),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("Standalone autocomplete provides better mobile UX by opening it in a new page or popup. Good to use when you need to get strict values without allowing free-type values.")])]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('div',{staticClass:"block-header"},[_vm._v("Simple Standalone Autocomplete")]),_vm._v(" "),_c('ul',[_c('li',[_c('a',{staticClass:"item-link item-content autocomplete-opener",attrs:{"href":"#","id":"autocomplete-standalone"}},[_c('input',{attrs:{"type":"hidden"}}),_vm._v(" "),_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Favorite Fruite")]),_vm._v(" "),_c('div',{staticClass:"item-after"})])])])])]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('div',{staticClass:"block-header"},[_vm._v("Popup Autocomplete")]),_vm._v(" "),_c('ul',[_c('li',[_c('a',{staticClass:"item-link item-content autocomplete-opener",attrs:{"href":"#","id":"autocomplete-standalone-popup"}},[_c('input',{attrs:{"type":"hidden"}}),_vm._v(" "),_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Favorite Fruite")]),_vm._v(" "),_c('div',{staticClass:"item-after"})])])])])]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('div',{staticClass:"block-header"},[_vm._v("Multiple Values")]),_vm._v(" "),_c('ul',[_c('li',[_c('a',{staticClass:"item-link item-content autocomplete-opener",attrs:{"href":"#","id":"autocomplete-standalone-multiple"}},[_c('input',{attrs:{"type":"hidden"}}),_vm._v(" "),_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Favorite Fruite")]),_vm._v(" "),_c('div',{staticClass:"item-after"})])])])])]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('div',{staticClass:"block-header"},[_vm._v("With Ajax-Data")]),_vm._v(" "),_c('ul',[_c('li',[_c('a',{staticClass:"item-link item-content autocomplete-opener",attrs:{"href":"#","id":"autocomplete-standalone-ajax"}},[_c('input',{attrs:{"type":"hidden"}}),_vm._v(" "),_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Language")]),_vm._v(" "),_c('div',{staticClass:"item-after"})])])])])])],1)};
   var __vue_staticRenderFns__$6 = [];
@@ -54920,8 +55283,10 @@
   };
 
   /* script */
-              var __vue_script__$7 = script$7;
-              
+  var __vue_script__$7 = script$7;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$7.__file = "badge.vue";
+
   /* template */
   var __vue_render__$7 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"sliding":"","back-link":"Back","title":"Badge"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-only":""}},[_c('f7-icon',{attrs:{"ios":"f7:person_round_fill","md":"material:person"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("5")])],1)],1)],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_c('f7-icon',{attrs:{"ios":"f7:email_fill","md":"material:email"}},[_c('f7-badge',{attrs:{"color":"green"}},[_vm._v("5")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Inbox")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_c('f7-icon',{attrs:{"ios":"f7:calendar_fill","md":"material:today"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("7")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Calendar")])],1),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_c('f7-icon',{attrs:{"ios":"f7:cloud_upload_fill","md":"material:file_upload"}},[_c('f7-badge',{attrs:{"color":"red"}},[_vm._v("1")])],1),_vm._v(" "),_c('span',{staticClass:"tabbar-label"},[_vm._v("Upload")])],1)],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Foo Bar","badge":"0"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ivan Petrov","badge":"CEO","badge-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5","badge-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","badge":"NEW","badge-color":"orange"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1)],1)};
   var __vue_staticRenderFns__$7 = [];
@@ -54969,8 +55334,10 @@
   };
 
   /* script */
-              var __vue_script__$8 = script$8;
-              
+  var __vue_script__$8 = script$8;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$8.__file = "buttons.vue";
+
   /* template */
   var __vue_render__$8 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Buttons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Usual Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"outline":"","round":""}},[_vm._v("Round")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":""}},[_vm._v("Outline")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","round":""}},[_vm._v("Round")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","fill":"","round":""}},[_vm._v("Fill")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"raised":"","outline":"","round":""}},[_vm._v("Outline")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Segmented")]),_vm._v(" "),_c('f7-block',[_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","tag":"p"}},[_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":""}},[_vm._v("Button")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","active":""}},[_vm._v("Active")])],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":"","round":"","tag":"p"}},[_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":""}},[_vm._v("Outline")]),_vm._v(" "),_c('f7-button',{attrs:{"round":"","outline":"","active":""}},[_vm._v("Active")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Large Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":""}},[_vm._v("Raised")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","raised":"","fill":""}},[_vm._v("Raised Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Small Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":""}},[_vm._v("Fill")])],1)],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","round":""}},[_vm._v("Button")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","outline":"","round":""}},[_vm._v("Outline")])],1),_vm._v(" "),_c('f7-col',{attrs:{"tag":"span"}},[_c('f7-button',{attrs:{"large":"","small":"","fill":"","round":""}},[_vm._v("Fill")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Fill Buttons")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"red"}},[_vm._v("Red")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"green"}},[_vm._v("Green")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"fill":"","color":"blue"}},[_vm._v("Blue")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("List-Block Buttons")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"List Button 1"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 2"}}),_vm._v(" "),_c('f7-list-button',{attrs:{"title":"List Button 3"}})],1),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-button',{attrs:{"title":"Large Red Button","color":"red"}})],1)],1)};
   var __vue_staticRenderFns__$8 = [];
@@ -55084,8 +55451,10 @@
   };
 
   /* script */
-              var __vue_script__$9 = script$9;
-              
+  var __vue_script__$9 = script$9;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$9.__file = "calendar.vue";
+
   /* template */
   var __vue_render__$9 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block"},[_c('p',[_vm._v("Calendar is a touch optimized component that provides an easy way to handle dates.")]),_vm._v(" "),_c('p',[_vm._v("Calendar could be used as inline component or as overlay. Overlay Calendar will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Default setup")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date","readonly":"readonly","id":"demo-calendar-default"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Custom date format")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-date-format"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Multiple Values")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select multiple dates","readonly":"readonly","id":"demo-calendar-multiple"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Range Picker")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date range","readonly":"readonly","id":"demo-calendar-range"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Open in Modal")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Select date","readonly":"readonly","id":"demo-calendar-modal"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Calendar Page")]),_vm._v(" "),_c('div',{staticClass:"list"},[_c('ul',[_c('li',[_c('a',{staticClass:"item-content item-link",attrs:{"href":"/calendar-page/"}},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title"},[_vm._v("Open Calendar Page")])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Inline with custom toolbar")]),_vm._v(" "),_c('div',{staticClass:"block block-strong no-padding"},[_c('div',{attrs:{"id":"demo-calendar-inline-container"}})]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Jalali Calendar")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your birth date in Jalali","readonly":"readonly","id":"demo-jcalendar-default"}})])])])])])])])],1)};
   var __vue_staticRenderFns__$9 = [];
@@ -55210,7 +55579,7 @@
             init: function init(calendar) {
               $('.navbar-calendar-title').text(((monthNames[calendar.currentMonth]) + ", " + (calendar.currentYear)));
               app.navbar.size(page.navbarEl);
-              calendar.$el.addClass('no-ios-right-edge');
+              calendar.$el.addClass('no-safe-area-right');
               self.renderEvents(calendar);
             },
             monthYearChangeStart: function monthYearChangeStart(calendar) {
@@ -55231,10 +55600,12 @@
   };
 
   /* script */
-              var __vue_script__$a = script$a;
-              
+  var __vue_script__$a = script$a;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$a.__file = "calendar-page.vue";
+
   /* template */
-  var __vue_render__$a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"back-link":"Back","no-shadow":""}},[_c('f7-nav-title',{staticClass:"navbar-calendar-title"})],1),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block block-strong no-padding no-margin no-hairline-top",attrs:{"id":"calendar"}}),_vm._v(" "),_c('f7-list',{staticClass:"no-margin no-hairlines no-ios-left-edge",attrs:{"id":"calendar-events"}},[_vm._l((_vm.eventItems),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"after":item.time}},[_c('div',{staticClass:"event-color",style:({'background-color': item.color}),attrs:{"slot":"root-start"},slot:"root-start"})])}),_vm._v(" "),(_vm.eventItems.length === 0)?_c('f7-list-item',[_c('span',{staticClass:"text-color-gray",attrs:{"slot":"title"},slot:"title"},[_vm._v("No events for this day")])]):_vm._e()],2)],1)],1)};
+  var __vue_render__$a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"back-link":"Back","no-shadow":""}},[_c('f7-nav-title',{staticClass:"navbar-calendar-title"})],1),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block block-strong no-padding no-margin no-hairline-top",attrs:{"id":"calendar"}}),_vm._v(" "),_c('f7-list',{staticClass:"no-margin no-hairlines no-safe-area-left",attrs:{"id":"calendar-events"}},[_vm._l((_vm.eventItems),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"after":item.time}},[_c('div',{staticClass:"event-color",style:({'background-color': item.color}),attrs:{"slot":"root-start"},slot:"root-start"})])}),_vm._v(" "),(_vm.eventItems.length === 0)?_c('f7-list-item',[_c('span',{staticClass:"text-color-gray",attrs:{"slot":"title"},slot:"title"},[_vm._v("No events for this day")])]):_vm._e()],2)],1)],1)};
   var __vue_staticRenderFns__$a = [];
 
     /* style */
@@ -55281,8 +55652,10 @@
   };
 
   /* script */
-              var __vue_script__$b = script$b;
-              
+  var __vue_script__$b = script$b;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$b.__file = "cards.vue";
+
   /* template */
   var __vue_render__$b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Cards","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Cards are a great way to contain and organize your information, especially when combined with List Views. Cards can contain unique related data, like for example photos, text or links about a particular subject. Cards are typically an entry point to more complex and detailed information.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple Cards")]),_vm._v(" "),_c('f7-card',{attrs:{"content":"This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."}}),_vm._v(" "),_c('f7-card',{attrs:{"title":"Card header","content":"Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.","footer":"Card footer"}}),_vm._v(" "),_c('f7-card',{attrs:{"content":"Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Cards")]),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","content":"This is a simple card with plain text, but cards can also contain their own header, footer, list view, image, or any other element."}}),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","title":"Card header","content":"Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.","footer":"Card footer"}}),_vm._v(" "),_c('f7-card',{attrs:{"outline":"","content":"Another card. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse feugiat sem est, non tincidunt ligula volutpat sit amet. Mauris aliquet magna justo. "}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Styled Cards")]),_vm._v(" "),_c('f7-card',{staticClass:"demo-card-header-pic"},[_c('f7-card-header',{staticClass:"no-border",staticStyle:{"background-image":"url(http://lorempixel.com/1000/600/nature/3/)"},attrs:{"valign":"bottom"}},[_vm._v("Journey To Mountains")]),_vm._v(" "),_c('f7-card-content',[_c('p',{staticClass:"date"},[_vm._v("Posted on January 21, 2015")]),_vm._v(" "),_c('p',[_vm._v("Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...")])]),_vm._v(" "),_c('f7-card-footer',[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Read more")])],1)],1),_vm._v(" "),_c('f7-card',{staticClass:"demo-card-header-pic"},[_c('f7-card-header',{staticClass:"no-border",staticStyle:{"background-image":"url(http://lorempixel.com/1000/600/people/6/)"},attrs:{"valign":"bottom"}},[_vm._v("Journey To Mountains")]),_vm._v(" "),_c('f7-card-content',[_c('p',{staticClass:"date"},[_vm._v("Posted on January 21, 2015")]),_vm._v(" "),_c('p',[_vm._v("Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies efficitur vitae non felis. Phasellus quis nibh hendrerit...")])]),_vm._v(" "),_c('f7-card-footer',[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Read more")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Facebook Cards")]),_vm._v(" "),_c('f7-card',{staticClass:"demo-facebook-card"},[_c('f7-card-header',{staticClass:"no-border"},[_c('div',{staticClass:"demo-facebook-avatar"},[_c('img',{attrs:{"src":"http://lorempixel.com/68/68/people/1/","width":"34","height":"34"}})]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-name"},[_vm._v("John Doe")]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-date"},[_vm._v("Monday at 3:47 PM")])]),_vm._v(" "),_c('f7-card-content',{attrs:{"padding":false}},[_c('img',{attrs:{"src":"http://lorempixel.com/1000/700/nature/8/","width":"100%"}})]),_vm._v(" "),_c('f7-card-footer',{staticClass:"no-border"},[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Comment")]),_vm._v(" "),_c('f7-link',[_vm._v("Share")])],1)],1),_vm._v(" "),_c('f7-card',{staticClass:"demo-facebook-card"},[_c('f7-card-header',{staticClass:"no-border"},[_c('div',{staticClass:"demo-facebook-avatar"},[_c('img',{attrs:{"src":"http://lorempixel.com/68/68/people/1/","width":"34","height":"34"}})]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-name"},[_vm._v("John Doe")]),_vm._v(" "),_c('div',{staticClass:"demo-facebook-date"},[_vm._v("Monday at 2:15 PM")])]),_vm._v(" "),_c('f7-card-content',[_c('p',[_vm._v("What a nice photo i took yesterday!")]),_c('img',{attrs:{"src":"http://lorempixel.com/1000/700/nature/8/","width":"100%"}}),_vm._v(" "),_c('p',{staticClass:"likes"},[_vm._v("Likes: 112    Comments: 43")])]),_vm._v(" "),_c('f7-card-footer',{staticClass:"no-border"},[_c('f7-link',[_vm._v("Like")]),_vm._v(" "),_c('f7-link',[_vm._v("Comment")]),_vm._v(" "),_c('f7-link',[_vm._v("Share")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Cards With List View")]),_vm._v(" "),_c('f7-card',[_c('f7-card-content',{attrs:{"padding":false}},[_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 3")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 4")]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#"}},[_vm._v("Link 5")])],1)],1)],1),_vm._v(" "),_c('f7-card',{attrs:{"title":"New Reelases"}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('f7-list',{attrs:{"medial-list":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/4","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/5","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/6","width":"44"},slot:"media"})])],1)],1),_vm._v(" "),_c('f7-card-footer',[_c('span',[_vm._v("January 20, 2015")]),_vm._v(" "),_c('span',[_vm._v("5 comments")])])],1)],1)};
   var __vue_staticRenderFns__$b = [];
@@ -55328,10 +55701,12 @@
   };
 
   /* script */
-              var __vue_script__$c = script$c;
-              
+  var __vue_script__$c = script$c;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$c.__file = "cards-expandable.vue";
+
   /* template */
-  var __vue_render__$c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Cards Expandable","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to usual "),_c('a',{attrs:{"href":"/cards/"}},[_vm._v("Cards")]),_vm._v(" there are also Expandable Cards that allow to store more information and illustrations about particular subject")])]),_vm._v(" "),_c('div',{staticClass:"demo-expandable-cards"},[_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{staticClass:"bg-color-red",style:({height: '300px'})},[_c('f7-card-header',{staticClass:"display-block",attrs:{"text-color":"white"}},[_vm._v("\n            Framework7\n            "),_c('br'),_vm._v(" "),_c('small',{style:({opacity: 0.7})},[_vm._v("Build Mobile Apps")])]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":"","color":"red"}},[_vm._v("Close")])],1)])])],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{staticClass:"bg-color-yellow",style:({height: '300px'})},[_c('f7-card-header',{staticClass:"display-block",attrs:{"text-color":"black"}},[_vm._v("\n            Framework7\n            "),_c('br'),_vm._v(" "),_c('small',{style:({opacity: 0.7})},[_vm._v("Build Mobile Apps")])]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"black","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":"","color":"yellow","text-color":"black"}},[_vm._v("Close")])],1)])])],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{style:({background: 'url(./img/beach.jpg) no-repeat center bottom', 'background-size': 'cover', height: '240px'})}),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}}),_vm._v(" "),_c('f7-card-header',{style:({height: '60px'}),attrs:{"text-color":"black"}},[_vm._v("Beach, Goa")]),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero.")]),_vm._v(" "),_c('p',[_vm._v("Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":""}},[_vm._v("Close")])],1)])],1)],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{style:({background: 'url(./img/monkey.jpg) no-repeat center top', 'background-size': 'cover', height: '400px'})},[_c('f7-card-header',{attrs:{"text-color":"white"}},[_vm._v("Monkeys")]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero.")]),_vm._v(" "),_c('p',[_vm._v("Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":""}},[_vm._v("Close")])],1)])])],1)],1)],1)};
+  var __vue_render__$c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Cards Expandable","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to usual "),_c('a',{attrs:{"href":"/cards/"}},[_vm._v("Cards")]),_vm._v(" there are also Expandable Cards that allow to store more information and illustrations about particular subject.")])]),_vm._v(" "),_c('div',{staticClass:"demo-expandable-cards"},[_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{staticClass:"bg-color-red",style:({height: '300px'})},[_c('f7-card-header',{staticClass:"display-block",attrs:{"text-color":"white"}},[_vm._v("\n            Framework7\n            "),_c('br'),_vm._v(" "),_c('small',{style:({opacity: 0.7})},[_vm._v("Build Mobile Apps")])]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":"","color":"red"}},[_vm._v("Close")])],1)])])],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{staticClass:"bg-color-yellow",style:({height: '300px'})},[_c('f7-card-header',{staticClass:"display-block",attrs:{"text-color":"black"}},[_vm._v("\n            Framework7\n            "),_c('br'),_vm._v(" "),_c('small',{style:({opacity: 0.7})},[_vm._v("Build Mobile Apps")])]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"black","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps tool to show working app prototype as soon as possible in case you need to. Framework7 is created by Vladimir Kharlampidi (iDangero.us).")]),_vm._v(" "),_c('p',[_vm._v("The main approach of the Framework7 is to give you an opportunity to create iOS and Android (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to bring the best experience and simplicity.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":"","color":"yellow","text-color":"black"}},[_vm._v("Close")])],1)])])],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{style:({background: 'url(./img/beach.jpg) no-repeat center bottom', 'background-size': 'cover', height: '240px'})}),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}}),_vm._v(" "),_c('f7-card-header',{style:({height: '60px'}),attrs:{"text-color":"black"}},[_vm._v("Beach, Goa")]),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero.")]),_vm._v(" "),_c('p',[_vm._v("Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":""}},[_vm._v("Close")])],1)])],1)],1),_vm._v(" "),_c('f7-card',{attrs:{"expandable":""}},[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{style:({background: 'url(./img/monkey.jpg) no-repeat center top', 'background-size': 'cover', height: '400px'})},[_c('f7-card-header',{attrs:{"text-color":"white"}},[_vm._v("Monkeys")]),_vm._v(" "),_c('f7-link',{staticClass:"card-opened-fade-in",style:({position: 'absolute', right: '15px', top: '15px'}),attrs:{"card-close":"","color":"white","icon-f7":"close_round_fill"}})],1),_vm._v(" "),_c('div',{staticClass:"card-content-padding"},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam cursus rhoncus cursus. Etiam lorem est, consectetur vitae tempor a, volutpat eget purus. Duis urna lectus, vehicula at quam id, sodales dapibus turpis. Suspendisse potenti. Proin condimentum luctus nulla, et rhoncus ante rutrum eu. Maecenas ut tincidunt diam. Vestibulum lacinia dui ligula, sit amet pulvinar nisl blandit luctus. Vestibulum aliquam ligula nulla, tincidunt rhoncus tellus interdum at. Phasellus mollis ipsum at mollis tristique. Maecenas sit amet tempus justo. Duis dolor elit, mollis quis viverra quis, vehicula eu ante. Integer a molestie risus. Vestibulum eu sollicitudin massa, sit amet dictum sem. Aliquam nisi tellus, maximus eget placerat in, porta vel lorem. Aenean tempus sodales nisl in cursus. Curabitur tincidunt turpis in nisl ornare euismod eget at libero.")]),_vm._v(" "),_c('p',[_vm._v("Suspendisse ligula eros, congue in nulla pellentesque, imperdiet blandit sapien. Morbi nisi sem, efficitur a rutrum porttitor, feugiat vel enim. Fusce eget vehicula odio, et luctus neque. Donec mattis a nulla laoreet commodo. Integer eget hendrerit augue, vel porta libero. Morbi imperdiet, eros at ultricies rutrum, eros urna auctor enim, eget laoreet massa diam vitae lorem. Proin eget urna ultrices, semper ligula aliquam, dignissim eros. Donec vitae augue eu sapien tristique elementum a nec nulla. Aliquam erat volutpat. Curabitur condimentum, metus blandit lobortis fringilla, enim mauris venenatis neque, et venenatis lorem urna ut justo. Maecenas neque enim, congue ac tempor quis, tincidunt ut mi. Donec venenatis ante non consequat molestie. Quisque ut rhoncus ligula. Vestibulum sodales maximus justo sit amet ornare. Nullam pulvinar eleifend nisi sit amet molestie.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","round":"","large":"","card-close":""}},[_vm._v("Close")])],1)])])],1)],1)],1)};
   var __vue_staticRenderFns__$c = [];
 
     /* style */
@@ -55374,8 +55749,10 @@
   };
 
   /* script */
-              var __vue_script__$d = script$d;
-              
+  var __vue_script__$d = script$d;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$d.__file = "checkbox.vue";
+
   /* template */
   var __vue_render__$d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Checkbox","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-checkbox',{attrs:{"name":"checkbox-1"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-checkbox',{attrs:{"name":"checkbox-2","checked":""}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Checkbox Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"checkbox":"","title":"Books","name":"demo-checkbox","checked":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Movies","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Food","name":"demo-checkbox"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","title":"Drinks","name":"demo-checkbox"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"checkbox":"","checked":"","name":"demo-media-checkbox","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"checkbox":"","name":"demo-media-checkbox","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)};
   var __vue_staticRenderFns__$d = [];
@@ -55429,8 +55806,10 @@
   };
 
   /* script */
-              var __vue_script__$e = script$e;
-              
+  var __vue_script__$e = script$e;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$e.__file = "chips.vue";
+
   /* template */
   var __vue_render__$e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Chips","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Chips With Text")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Outline Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"outline":"","text":"Example Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Another Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"One More Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Fourth Chip"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Last One"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Add Contact","media-bg-color":"blue"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:add_round","md":"material:add_circle"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"London","media-bg-color":"green"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:compass","md":"material:location_on"},slot:"media"})],1),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe","media-bg-color":"red"}},[_c('f7-icon',{attrs:{"slot":"media","ios":"f7:person","md":"material:person"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Contact Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Jane Doe"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/100/100/people/9/"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"John Doe"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/100/100/people/3/"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/100/100/people/7/"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media-bg-color":"yellow","media-text-color":"black","media":"C"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Kate","media-bg-color":"red","media":"K"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Deletable Chips / Tags")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Example Chip","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Chris","media":"C","media-bg-color":"orange","text-color":"black","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jane Doe","deleteable":""},on:{"click":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/100/100/people/9/"},slot:"media"})]),_vm._v(" "),_c('f7-chip',{attrs:{"text":"One More Chip","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Jennifer","media-bg-color":"pink","media":"J","deleteable":""},on:{"click":_vm.deleteChip}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Adam Smith","deleteable":""},on:{"click":_vm.deleteChip}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/100/100/people/7/"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Chips")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-chip',{attrs:{"text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"text":"Pink Chip","color":"pink"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Red Chip","color":"red"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Green Chip","color":"green"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Blue Chip","color":"blue"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Orange Chip","color":"orange"}}),_vm._v(" "),_c('f7-chip',{attrs:{"outline":"","text":"Pink Chip","color":"pink"}})],1)],1)};
   var __vue_staticRenderFns__$e = [];
@@ -55473,8 +55852,10 @@
   };
 
   /* script */
-              var __vue_script__$f = script$f;
-              
+  var __vue_script__$f = script$f;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$f.__file = "contacts-list.vue";
+
   /* template */
   var __vue_render__$f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Contacts List","back-link":"Back"}}),_vm._v(" "),_c('f7-list',{attrs:{"contacts-list":""}},[_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"A","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aaron "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Abbie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adam"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adele"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Agatha"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Agnes"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Albert"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Alexander"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"B","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bailey"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Barclay"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bartolo"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bellamy"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Belle"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Benjamin"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"C","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Caiden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Calvin"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Candy"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Carl"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cherilyn"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chester"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chloe"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"V","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Vladimir"}})],1)],1)],1)};
   var __vue_staticRenderFns__$f = [];
@@ -55518,8 +55899,10 @@
   };
 
   /* script */
-              var __vue_script__$g = script$g;
-              
+  var __vue_script__$g = script$g;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$g.__file = "content-block.vue";
+
   /* template */
   var __vue_render__$g = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Content Block","back-link":"Back"}}),_vm._v(" "),_c('p',[_vm._v("This paragraph is outside of content block. Not cool, but useful for any custom elements with custom styling.")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Here comes another text block with additional \"block-strong\" class. Praesent nec imperdiet diam. Maecenas vel lectus porttitor, consectetur magna nec, viverra sem. Aliquam sed risus dolor. Morbi tincidunt ut libero id sodales. Integer blandit varius nisi quis consectetur. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Block title")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Another ultra long content block title")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":"","inset":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet Inset")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":"","tablet-inset":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With Header & Footer")]),_vm._v(" "),_c('f7-block',[_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1),_vm._v(" "),_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")])],1),_vm._v(" "),_c('f7-block-header',[_vm._v("Block Header")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Here comes paragraph within content block. Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Block Footer")]),_vm._v(" "),_c('f7-block-title',{attrs:{"large":""}},[_vm._v("Block Title Large")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])]),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Block Title Medium")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Donec et nulla auctor massa pharetra adipiscing ut sit amet sem. Suspendisse molestie velit vitae mattis tincidunt. Ut sit amet quam mollis, vulputate turpis vel, sagittis felis. ")])])],1)};
   var __vue_staticRenderFns__$g = [];
@@ -55562,8 +55945,10 @@
   };
 
   /* script */
-              var __vue_script__$h = script$h;
-              
+  var __vue_script__$h = script$h;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$h.__file = "data-table.vue";
+
   /* template */
   var __vue_render__$h = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Data Table","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Plain table")]),_vm._v(" "),_c('div',{staticClass:"data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Within card")]),_vm._v(" "),_c('div',{staticClass:"card data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Selectable rows")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})]),_vm._v(" "),_c('span',[_vm._v("In Stock")])])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet-only columns")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_c('p',[_vm._v("\"Comments\" column will be visible only on large screen devices (tablets)")])]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With inputs")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_vm._v("Such tables are widely used in admin interfaces for filtering or search data")]),_vm._v(" "),_c('div',{staticClass:"card data-table"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("ID")]),_vm._v(" "),_c('div',{staticClass:"input",staticStyle:{"width":"50px"}},[_c('input',{attrs:{"type":"number","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Name")]),_vm._v(" "),_c('div',{staticClass:"input"},[_c('input',{attrs:{"type":"text","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Email")]),_vm._v(" "),_c('div',{staticClass:"input"},[_c('input',{attrs:{"type":"email","placeholder":"Filter"}})])]),_vm._v(" "),_c('th',{staticClass:"input-cell"},[_c('span',{staticClass:"table-head-label"},[_vm._v("Gender")]),_vm._v(" "),_c('div',{staticClass:"input input-dropdown"},[_c('select',[_c('option',{attrs:{"value":"All"}},[_vm._v("All")]),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])])])])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',[_vm._v("1")]),_vm._v(" "),_c('td',[_vm._v("John Doe")]),_vm._v(" "),_c('td',[_vm._v("john@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Male")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("2")]),_vm._v(" "),_c('td',[_vm._v("Jane Doe")]),_vm._v(" "),_c('td',[_vm._v("jane@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Female")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("3")]),_vm._v(" "),_c('td',[_vm._v("Vladimir Kharlampidi")]),_vm._v(" "),_c('td',[_vm._v("vladimir@google.com")]),_vm._v(" "),_c('td',[_vm._v("Male")])]),_vm._v(" "),_c('tr',[_c('td',[_vm._v("4")]),_vm._v(" "),_c('td',[_vm._v("Jennifer Doe")]),_vm._v(" "),_c('td',[_vm._v("jennifer@doe.com")]),_vm._v(" "),_c('td',[_vm._v("Female")])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Within card with title and actions")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Sortable columns")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell sortable-cell sortable-cell-active"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell sortable-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("With title and different actions on select")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"data-table-header-selected"},[_c('div',{staticClass:"data-table-title-selected"},[_c('span',{staticClass:"data-table-selected-count"}),_vm._v(" items selected")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)])]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1)])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")])])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Alternate header with actions")]),_vm._v(" "),_c('div',{staticClass:"data-table data-table-init card"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-links"},[_c('a',{staticClass:"button"},[_vm._v("Add")]),_c('a',{staticClass:"button"},[_vm._v("Remove")])]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")]),_vm._v(" "),_c('th',{staticClass:"tablet-only"},[_c('f7-icon',{attrs:{"ios":"f7:message_fill","md":"material:message"}}),_vm._v(" Comments")],1),_vm._v(" "),_c('th')])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("I like frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("But like ice cream more")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Super tasty")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"checkbox-cell"},[_c('label',{staticClass:"checkbox"},[_c('input',{attrs:{"type":"checkbox"}}),_vm._v(" "),_c('i',{staticClass:"icon-checkbox"})])]),_vm._v(" "),_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")]),_vm._v(" "),_c('td',{staticClass:"tablet-only"},[_vm._v("Don't like it")]),_vm._v(" "),_c('td',{staticClass:"actions-cell"},[_c('f7-link',{attrs:{"icon-ios":"f7:compose","icon-md":"material:edit"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:trash","icon-md":"material:delete"}})],1)])])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Collapsible")]),_vm._v(" "),_c('div',{staticClass:"block-header"},[_c('p',[_vm._v("The following table will be collapsed to kind of List View on small screens:")])]),_vm._v(" "),_c('div',{staticClass:"card data-table data-table-collapsible data-table-init"},[_c('div',{staticClass:"card-header"},[_c('div',{staticClass:"data-table-title"},[_vm._v("Nutrition")]),_vm._v(" "),_c('div',{staticClass:"data-table-actions"},[_c('f7-link',{attrs:{"icon-ios":"f7:sort","icon-md":"material:sort"}}),_vm._v(" "),_c('f7-link',{attrs:{"icon-ios":"f7:more_vertical_round","icon-md":"material:more_vert"}})],1)]),_vm._v(" "),_c('div',{staticClass:"card-content"},[_c('table',[_c('thead',[_c('tr',[_c('th',{staticClass:"label-cell"},[_vm._v("Desert (100g serving)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Calories")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Fat (g)")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Carbs")]),_vm._v(" "),_c('th',{staticClass:"numeric-cell"},[_vm._v("Protein (g)")])])]),_vm._v(" "),_c('tbody',[_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Frozen yogurt")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("159")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Ice cream sandwich")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("237")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("9.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("37")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.4")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Eclair")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("262")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("16.0")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("24")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("6.0")])]),_vm._v(" "),_c('tr',[_c('td',{staticClass:"label-cell"},[_vm._v("Cupcake")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("305")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("3.7")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("67")]),_vm._v(" "),_c('td',{staticClass:"numeric-cell"},[_vm._v("4.3")])])])])])])],1)};
   var __vue_staticRenderFns__$h = [];
@@ -55700,8 +56085,10 @@
   };
 
   /* script */
-              var __vue_script__$i = script$i;
-              
+  var __vue_script__$i = script$i;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$i.__file = "dialog.vue";
+
   /* template */
   var __vue_render__$i = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Dialog","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("There are 1:1 replacements of native Alert, Prompt and Confirm modals. They support callbacks, have very easy api and can be combined with each other. Check these examples:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openAlert}},[_vm._v("Alert")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openConfirm}},[_vm._v("Confirm")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPrompt}},[_vm._v("Prompt")])],1),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openLogin}},[_vm._v("Login")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPassword}},[_vm._v("Password")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical Buttons")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.openVerticalButtons}},[_vm._v("Vertical Buttons")])],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Dialog")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openPreloader}},[_vm._v("Preloader")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openCustomPreloader}},[_vm._v("Custom Text")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Progress Dialog")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openInfiniteProgress}},[_vm._v("Infinite")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.openDeterminedProgress}},[_vm._v("Determined")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Dialogs Stack")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This feature doesn't allow to open multiple dialogs at the same time, and will automatically open next dialog when you close the current one. Such behavior is similar to browser native dialogs: ")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.openAlerts}},[_vm._v("Open Multiple Alerts")])],1)])],1)};
   var __vue_staticRenderFns__$i = [];
@@ -55745,8 +56132,10 @@
   };
 
   /* script */
-              var __vue_script__$j = script$j;
-              
+  var __vue_script__$j = script$j;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$j.__file = "elevation.vue";
+
   /* template */
   var __vue_render__$j = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Elevation","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Shadows provide important visual cues about objects' depth and directional movement. They are the only visual cue indicating the amount of separation between surfaces. An object’s elevation determines the appearance of its shadow. The elevation values are mapped out in a \"z-space\" and range from 1 to 24.")]),_vm._v(" "),_c('p',[_vm._v("Elevation can be added to any element by adding "),_c('code',[_vm._v("elevation-0")]),_vm._v(", "),_c('code',[_vm._v("elevation-1")]),_vm._v(", ..., "),_c('code',[_vm._v("elevation-24")]),_vm._v(" classes.")]),_vm._v(" "),_c('p',[_vm._v("To add different elevation only on hover (desktop), you can use "),_c('code',[_vm._v("elevation-hover-0")]),_vm._v(", "),_c('code',[_vm._v("elevation-hover-1")]),_vm._v(", ..., "),_c('code',[_vm._v("elevation-hover-24")]),_vm._v(" classes.")]),_vm._v(" "),_c('p',[_vm._v("To specify elevation only when item pressed, you can use "),_c('code',[_vm._v("elevation-pressed-0")]),_vm._v(", "),_c('code',[_vm._v("elevation-pressed-1")]),_vm._v(", ..., "),_c('code',[_vm._v("elevation-pressed-24")]),_vm._v(" classes.")])]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-1"},[_vm._v("1")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-2"},[_vm._v("2")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-3"},[_vm._v("3")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-4"},[_vm._v("4")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-5"},[_vm._v("5")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-6"},[_vm._v("6")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-7"},[_vm._v("7")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-8"},[_vm._v("8")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-9"},[_vm._v("9")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-10"},[_vm._v("10")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-11"},[_vm._v("11")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-12"},[_vm._v("12")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-13"},[_vm._v("13")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-14"},[_vm._v("14")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-15"},[_vm._v("15")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-16"},[_vm._v("16")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-17"},[_vm._v("17")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-18"},[_vm._v("18")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-19"},[_vm._v("19")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-20"},[_vm._v("20")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-21"},[_vm._v("21")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-22"},[_vm._v("22")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-23"},[_vm._v("23")])]),_vm._v(" "),_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-24"},[_vm._v("24")])])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('div',{staticClass:"elevation-demo elevation-6 elevation-hover-24 elevation-pressed-12 elevation-transition"},[_vm._v("6 + hover-24 + pressed-12")])])],1)],1)],1)};
   var __vue_staticRenderFns__$j = [];
@@ -55785,8 +56174,10 @@
   };
 
   /* script */
-              var __vue_script__$k = script$k;
-              
+  var __vue_script__$k = script$k;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$k.__file = "fab.vue";
+
   /* template */
   var __vue_render__$k = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button","back-link":"Back"}}),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"right-top"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"left"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"right-bottom"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"top"}},[_c('f7-fab-button',{attrs:{"label":"Action 1"}},[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',{attrs:{"label":"Action 2"}},[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',{attrs:{"label":"Third Action"}},[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"left-bottom"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"top"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"left-top"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"bottom"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"center-center"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}}),_vm._v(" "),_c('f7-icon',{attrs:{"ios":"f7:close","md":"material:close"}}),_vm._v(" "),_c('f7-fab-buttons',{attrs:{"position":"center"}},[_c('f7-fab-button',[_vm._v("1")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("2")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("3")]),_vm._v(" "),_c('f7-fab-button',[_vm._v("4")])],1)],1),_vm._v(" "),_c('f7-fab',{attrs:{"slot":"fixed","position":"center-bottom","text":"Create"},slot:"fixed"},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)};
   var __vue_staticRenderFns__$k = [];
@@ -55825,8 +56216,10 @@
   };
 
   /* script */
-              var __vue_script__$l = script$l;
-              
+  var __vue_script__$l = script$l;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$l.__file = "fab-morph.vue";
+
   /* template */
   var __vue_render__$l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Floating Action Button Morph","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{staticClass:"fab-morph-target",attrs:{"tabbar":"","labels":"","bottom":""}},[_c('f7-link',{attrs:{"tab-link":"","tab-link-active":"","icon-ios":"f7:email_fill","icon-md":"material:email","text":"Inbox"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:calendar_fill","icon-md":"material:today","text":"Calendar"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","icon-ios":"f7:cloud_upload_fill","icon-md":"material:file_upload","text":"Upload"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"right-bottom","morph-to":".toolbar.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"left-bottom","morph-to":".demo-fab-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('f7-fab',{attrs:{"position":"center-bottom","morph-to":".demo-fab-fullscreen-sheet.fab-morph-target"}},[_c('f7-icon',{attrs:{"ios":"f7:add","md":"material:add"}})],1),_vm._v(" "),_c('div',{staticClass:"list links-list demo-fab-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])]),_vm._v(" "),_c('div',{staticClass:"demo-fab-fullscreen-sheet fab-morph-target",attrs:{"slot":"fixed"},slot:"fixed"},[_c('f7-block-title',[_vm._v("Choose Something")]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 1")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 2")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 3")])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"fab-close",attrs:{"href":"#"}},[_vm._v("Link 4")])])])])],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia, quo rem beatae, delectus eligendi est saepe molestias perferendis suscipit, commodi labore ipsa non quasi eum magnam neque ducimus! Quasi, numquam.")]),_vm._v(" "),_c('p',[_vm._v("Maiores culpa, itaque! Eaque natus ab cum ipsam numquam blanditiis a, quia, molestiae aut laudantium recusandae ipsa. Ad iste ex asperiores ipsa, mollitia perferendis consectetur quam eaque, voluptate laboriosam unde.")]),_vm._v(" "),_c('p',[_vm._v("Sed odit quis aperiam temporibus vitae necessitatibus, laboriosam, exercitationem dolores odio sapiente provident. Accusantium id, itaque aliquam libero ipsum eos fugiat distinctio laboriosam exercitationem sequi facere quas quidem magnam reprehenderit.")]),_vm._v(" "),_c('p',[_vm._v("Pariatur corporis illo, amet doloremque. Ab veritatis sunt nisi consectetur error modi, nam illo et nostrum quia aliquam ipsam vitae facere voluptates atque similique odit mollitia, rerum placeat nobis est.")]),_vm._v(" "),_c('p',[_vm._v("Et impedit soluta minus a autem adipisci cupiditate eius dignissimos nihil officia dolore voluptatibus aperiam reprehenderit esse facilis labore qui, officiis consectetur. Ipsa obcaecati aspernatur odio assumenda veniam, ipsum alias.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa ipsa debitis sed nihil eaque dolore cum iste quibusdam, accusamus doloribus, tempora quia quos voluptatibus corporis officia at quas dolorem earum!")]),_vm._v(" "),_c('p',[_vm._v("Quod soluta eos inventore magnam suscipit enim at hic in maiores temporibus pariatur tempora minima blanditiis vero autem est perspiciatis totam dolorum, itaque repellat? Nobis necessitatibus aut odit aliquam adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Tenetur delectus perspiciatis ex numquam, unde corrupti velit! Quam aperiam, animi fuga veritatis consectetur, voluptatibus atque consequuntur dignissimos itaque, sint impedit cum cumque at. Adipisci sint, iusto blanditiis ullam? Vel?")]),_vm._v(" "),_c('p',[_vm._v("Dignissimos velit officia quibusdam! Eveniet beatae, aut, omnis temporibus consequatur expedita eaque aliquid quos accusamus fugiat id iusto autem obcaecati repellat fugit cupiditate suscipit natus quas doloribus? Temporibus necessitatibus, libero.")]),_vm._v(" "),_c('p',[_vm._v("Architecto quisquam ipsa fugit facere, repudiandae asperiores vitae obcaecati possimus, labore excepturi reprehenderit consectetur perferendis, ullam quidem hic, repellat fugiat eaque fuga. Consectetur in eveniet, deleniti recusandae omnis eum quas?")]),_vm._v(" "),_c('p',[_vm._v("Quos nulla consequatur quo, officia quaerat. Nulla voluptatum, assumenda quibusdam, placeat cum aut illo deleniti dolores commodi odio ipsam, recusandae est pariatur veniam repudiandae blanditiis. Voluptas unde deleniti quisquam, nobis?")]),_vm._v(" "),_c('p',[_vm._v("Atque qui quaerat quasi officia molestiae, molestias totam incidunt reprehenderit laboriosam facilis veritatis, non iusto! Dolore ipsam obcaecati voluptates minima maxime minus qui mollitia facere. Nostrum esse recusandae voluptatibus eligendi.")])])],1)};
   var __vue_staticRenderFns__$l = [];
@@ -55867,8 +56260,10 @@
   };
 
   /* script */
-              var __vue_script__$m = script$m;
-              
+  var __vue_script__$m = script$m;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$m.__file = "form-storage.vue";
+
   /* template */
   var __vue_render__$m = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Form Storage","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('p',[_vm._v("With forms storage it is easy to store and parse form data, especially on Ajax loaded pages. All you need to make it work is to add \"form-store-data\" class to your <form> and Framework7 will store form data with every input change. And the most awesome part is that when you load this page again Framework7 will parse this data and fill all form fields automatically!")]),_vm._v(" "),_c('p',[_vm._v("Just try to fill the form below and then go to any other page, or even you may close this site, and when you return here form fields will have kept your data.")])]),_vm._v(" "),_c('form',{staticClass:"list form-store-data",attrs:{"id":"demo-form"}},[_c('ul',[_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Name")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"name","type":"text","placeholder":"Your name"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Password")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"password","type":"password","placeholder":"Your password"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("E-mail")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"email","type":"email","placeholder":"Your e-mail"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("URL")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"url","type":"url","placeholder":"URL"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Phone")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"phone","type":"tel","placeholder":"Your phone number"}}),_vm._v(" "),_c('span',{staticClass:"input-clear-button"})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Gender")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('select',{attrs:{"name":"gender","placeholder":"Please choose..."}},[_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])])])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Birthday")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"birthday","type":"date","value":"2014-04-30","placeholder":"Please choose..."}})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Date time")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"name":"date","type":"datetime-local","placeholder":"Please choose..."}})])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("Range")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('div',{staticClass:"range-slider range-slider-init",attrs:{"data-label":"true"}},[_c('input',{attrs:{"name":"range","type":"range","value":"50","min":"0","max":"100","step":"1"}})])])])]),_vm._v(" "),_c('li',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-title item-label"},[_vm._v("About you")]),_vm._v(" "),_c('div',{staticClass:"item-input-wrap"},[_c('textarea',{staticClass:"resizable",attrs:{"name":"bio","placeholder":"Bio"}})])])])])])],1)};
   var __vue_staticRenderFns__$m = [];
@@ -55920,8 +56315,10 @@
   };
 
   /* script */
-              var __vue_script__$n = script$n;
-              
+  var __vue_script__$n = script$n;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$n.__file = "gauge.vue";
+
   /* template */
   var __vue_render__$n = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Gauge","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with Gauge component. It produces nice looking fully responsive SVG gauges.")])]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-gauge',{attrs:{"type":"circle","value":_vm.gaugeValue,"size":250,"borderColor":"#2196f3","borderWidth":10,"valueText":((_vm.gaugeValue * 100) + "%"),"valueFontSize":41,"valueTextColor":"#2196f3","labelText":"amount of something"}}),_vm._v(" "),_c('f7-segmented',{attrs:{"tag":"p","raised":""}},[_c('f7-button',{attrs:{"active":_vm.gaugeValue === 0},on:{"click":function () { return _vm.gaugeValue = 0; }}},[_vm._v("0%")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.gaugeValue === 0.25},on:{"click":function () { return _vm.gaugeValue = 0.25; }}},[_vm._v("25%")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.gaugeValue === 0.5},on:{"click":function () { return _vm.gaugeValue = 0.5; }}},[_vm._v("50%")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.gaugeValue === 0.75},on:{"click":function () { return _vm.gaugeValue = 0.75; }}},[_vm._v("75%")]),_vm._v(" "),_c('f7-button',{attrs:{"active":_vm.gaugeValue === 1},on:{"click":function () { return _vm.gaugeValue = 1; }}},[_vm._v("100%")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Circle Gauges")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"circle","value":0.44,"valueText":"44%","valueTextColor":"#ff9800","borderColor":"#ff9800"}})],1),_vm._v(" "),_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"circle","value":0.12,"valueText":"$120","valueTextColor":"#4caf50","borderColor":"#4caf50","labelText":"of $1000 budget","labelTextColor":"#f44336","labelFontWeight":700}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Semicircle Gauges")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"semicircle","value":0.3,"valueText":"30%","valueTextColor":"#f44336","borderColor":"#f44336"}})],1),_vm._v(" "),_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"semicircle","value":0.5,"valueText":"30kg","valueTextColor":"#e91e63","borderColor":"#e91e63","labelText":"of 60kg total","labelTextColor":"#333"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Customization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"circle","value":0.35,"valueText":"35%","valueTextColor":"#4caf50","valueFontSize":51,"valueFontWeight":700,"borderWidth":20,"borderColor":"#4caf50","borderBgColor":"#ffeb3b","bgColor":"#ffeb3b"}})],1),_vm._v(" "),_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"circle","value":0.67,"valueText":"$670","valueTextColor":"#000","borderColor":"#ff9800","labelText":"of $1000 spent","labelTextColor":"#4caf50","labelFontWeight":800,"labelFontSize":12,"borderWidth":30}})],1)],1),_vm._v(" "),_c('br'),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"semicircle","value":0.5,"valueText":"50%","valueTextColor":"#ffeb3b","valueFontSize":41,"valueFontWeight":700,"borderWidth":10,"borderColor":"#ffeb3b","borderBgColor":"transparent"}})],1),_vm._v(" "),_c('f7-col',{staticClass:"text-align-center"},[_c('f7-gauge',{attrs:{"type":"semicircle","value":0.77,"borderColor":"#ff9800","labelText":"$770 spent so far","labelTextColor":"#ff9800","labelFontWeight":800,"labelFontSize":12,"borderWidth":10}})],1)],1)],1)],1)};
   var __vue_staticRenderFns__$n = [];
@@ -55965,8 +56362,10 @@
   };
 
   /* script */
-              var __vue_script__$o = script$o;
-              
+  var __vue_script__$o = script$o;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$o.__file = "grid.vue";
+
   /* template */
   var __vue_render__$o = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticClass:"grid-demo"},[_c('f7-navbar',{attrs:{"title":"Grid / Layout","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Columns within a row are automatically set to have equal width. Otherwise you can define your column with pourcentage of screen you want.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Columns with gap")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_vm._v("50% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("50% (.col)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_vm._v("33% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("33% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("33% (.col)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"33"}},[_vm._v("33% (.col-33)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"66"}},[_vm._v("66% (.col-66)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50"}},[_vm._v("50% (.col-50)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"75"}},[_vm._v("75% (.col-75)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"80"}},[_vm._v("80% (.col-80)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"20"}},[_vm._v("20% (.col-20)")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("No gap between columns")]),_vm._v(" "),_c('f7-block',[_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',[_vm._v("50% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("50% (.col)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("25% (.col)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',[_vm._v("33% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("33% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("33% (.col)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("20% (.col)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',{attrs:{"width":"33"}},[_vm._v("33% (.col-33)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"66"}},[_vm._v("66% (.col-66)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50"}},[_vm._v("50% (.col-50)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',{attrs:{"width":"75"}},[_vm._v("75% (.col-75)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"25"}},[_vm._v("25% (.col-25)")])],1),_vm._v(" "),_c('f7-row',{attrs:{"no-gap":""}},[_c('f7-col',{attrs:{"width":"80"}},[_vm._v("80% (.col-80)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"20"}},[_vm._v("20% (.col-20)")])],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Nested")]),_vm._v(" "),_c('f7-block',[_c('f7-row',[_c('f7-col',[_vm._v("50% (.col)\n        "),_c('f7-row',[_c('f7-col',[_vm._v("50% (.col)")]),_vm._v(" "),_c('f7-col',[_vm._v("50% (.col)")])],1)],1),_vm._v(" "),_c('f7-col',[_vm._v("50% (.col)\n        "),_c('f7-row',[_c('f7-col',{attrs:{"width":"33"}},[_vm._v("33% (.col-33)")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"66"}},[_vm._v("66% (.col-66)")])],1)],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Responsive Grid")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Grid cells have different size on Phone/Tablet")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"100","tablet-width":"50"}},[_vm._v(".col-100.tablet-50")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"100","tablet-width":"50"}},[_vm._v(".col-100.tablet-50")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"50","tablet-width":"25"}},[_vm._v(".col-50.tablet-25")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"25"}},[_vm._v(".col-50.tablet-25")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"25"}},[_vm._v(".col-50.tablet-25")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"25"}},[_vm._v(".col-50.tablet-25")])],1),_vm._v(" "),_c('f7-row',[_c('f7-col',{attrs:{"width":"100","tablet-width":"40"}},[_vm._v(".col-100.tablet-40")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"60"}},[_vm._v(".col-50.tablet-60")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"50","tablet-width":"66"}},[_vm._v(".col-50.tablet-66")]),_vm._v(" "),_c('f7-col',{attrs:{"width":"100","tablet-width":"33"}},[_vm._v(".col-100.tablet-33")])],1)],1)],1)};
   var __vue_staticRenderFns__$o = [];
@@ -56023,8 +56422,10 @@
   };
 
   /* script */
-              var __vue_script__$p = script$p;
-              
+  var __vue_script__$p = script$p;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$p.__file = "icons.vue";
+
   /* template */
   var __vue_render__$p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Icons","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with the premium and free "),_c('a',{staticClass:"external",attrs:{"href":"https://github.com/nolimits4web/Framework7-Icons","target":"_blank"}},[_vm._v("Framework7 Icons")]),_vm._v(" iOS-icons font developed specially to be used with iOS theme of Framework7. As for Material theme we recommend to use great-designed "),_c('a',{staticClass:"external",attrs:{"href":"https://material.io/icons/","target":"_blank"}},[_vm._v("Material Icons")]),_vm._v(" font. Both of these fonts use a typographic feature called "),_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("ligatures")]),_vm._v(". It’s easy to incorporate icons into your app. Here’s a small example:")]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"f7-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"f7-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('code',[_vm._v("<i class=\"material-icons\">home</i>")]),_vm._v(" - "),_c('i',{staticClass:"material-icons"},[_vm._v("home")])]),_vm._v(" "),_c('p',[_c('a',{staticClass:"external",attrs:{"href":"http://alistapart.com/article/the-era-of-symbol-fonts","target":"_blank"}},[_vm._v("Ligatures")]),_vm._v(" allow rendering of an icon glyph simply by using its textual name. The replacement is done automatically by the web browser and provides more readable code than the equivalent numeric character reference.")])]),_vm._v(" "),_c('f7-block-header',[_c('f7-segmented',[_c('f7-button',{attrs:{"outline":"","tab-link":"#tab-f7","tab-link-active":""}},[_vm._v("F7 Icons")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":"","tab-link":"#tab-md"}},[_vm._v("Material Icons")])],1)],1),_vm._v(" "),_c('f7-block',{staticClass:"tabs",attrs:{"strong":""}},[_c('f7-tab',{attrs:{"id":"tab-f7","tab-active":""}},[_c('f7-row',_vm._l((_vm.f7Icons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"f7-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1),_vm._v(" "),_c('f7-tab',{attrs:{"id":"tab-md"}},[_c('f7-row',_vm._l((_vm.mdIcons),function(icon){return _c('f7-col',{key:icon,staticClass:"demo-icon",attrs:{"width":"33","tablet-width":"15"}},[_c('div',{staticClass:"demo-icon-icon"},[_c('i',{staticClass:"material-icons"},[_vm._v(_vm._s(icon))])]),_vm._v(" "),_c('div',{staticClass:"demo-icon-name"},[_vm._v(_vm._s(icon))])])}),1)],1)],1)],1)};
   var __vue_staticRenderFns__$p = [];
@@ -56096,8 +56497,10 @@
   };
 
   /* script */
-              var __vue_script__$q = script$q;
-              
+  var __vue_script__$q = script$q;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$q.__file = "infinite-scroll.vue";
+
   /* template */
   var __vue_render__$q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"infinite":"","infinite-distance":50,"infinite-preloader":_vm.showPreloader},on:{"infinite":_vm.loadMore}},[_c('f7-navbar',{attrs:{"title":"Infinite Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Scroll bottom")]),_vm._v(" "),_c('f7-list',_vm._l((_vm.items),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":("Item " + item)}})}),1)],1)};
   var __vue_staticRenderFns__$q = [];
@@ -56143,8 +56546,10 @@
   };
 
   /* script */
-              var __vue_script__$r = script$r;
-              
+  var __vue_script__$r = script$r;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$r.__file = "inputs.vue";
+
   /* template */
   var __vue_render__$r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Form Inputs","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Inline Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"inline-labels":"","no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Full Layout / Stacked Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Gender","type":"select","defaultValue":"Male","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('option',{attrs:{"value":"Male"}},[_vm._v("Male")]),_vm._v(" "),_c('option',{attrs:{"value":"Female"}},[_vm._v("Female")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Birthday","type":"date","defaultValue":"2014-04-30","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Date time","type":"datetime-local","placeholder":"Please choose..."}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Range","input":false}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('f7-range',{attrs:{"slot":"input","value":50,"min":0,"max":100,"step":1},slot:"input"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Textarea","type":"textarea","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Floating Labels")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","floating-label":"","type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","floating-label":"","type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","floating-label":"","type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","floating-label":"","type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Phone","floating-label":"","type":"tel","placeholder":"Your phone number","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Resizable","floating-label":"","type":"textarea","resizable":"","placeholder":"Bio"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Validation + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","info":"Default validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Fruit","type":"text","placeholder":"Type 'apple' or 'banana'","required":"","validate":"","pattern":"apple|banana","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"}),_vm._v(" "),_c('span',{attrs:{"slot":"info"},slot:"info"},[_vm._v("Pattern validation ("),_c('b',[_vm._v("apple|banana")]),_vm._v(")")])],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","info":"Default e-mail validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"Your URL","info":"Default URL validation","required":"","validate":"","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Number","type":"text","placeholder":"Enter number","info":"With custom error message","error-message":"Only numbers please!","required":"","validate":"","pattern":"[0-9]*","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Icon + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}},[_c('f7-icon',{attrs:{"slot":"media","icon":"demo-list-icon"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Label + Input")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"label":"Name","type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"E-mail","type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"URL","type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inputs + Additional Info")]),_vm._v(" "),_c('f7-list',{attrs:{"no-hairlines-md":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","info":"Full name please","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","info":"8 characters minimum","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","info":"Your work e-mail address","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","info":"Your website URL","clear-button":""}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Inputs Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"inset":""}},[_c('f7-list-input',{attrs:{"type":"text","placeholder":"Your name","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"password","placeholder":"Your password","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"email","placeholder":"Your e-mail","clear-button":""}}),_vm._v(" "),_c('f7-list-input',{attrs:{"type":"url","placeholder":"URL","clear-button":""}})],1)],1)};
   var __vue_staticRenderFns__$r = [];
@@ -56185,8 +56590,10 @@
   };
 
   /* script */
-              var __vue_script__$s = script$s;
-              
+  var __vue_script__$s = script$s;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$s.__file = "lazy-load.vue";
+
   /* template */
   var __vue_render__$s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Lazy Load Images","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lazy Load delays loading of images on page while they are outside of viewport until user scrolls to them.")]),_vm._v(" "),_c('p',[_vm._v("It will make the page load faster, improve scrolling performance and also save traffic.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/1","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tempus viverra lectus sit amet lobortis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque faucibus consectetur mauris eget lobortis. Maecenas efficitur efficitur mauris ac vehicula. Sed ut lectus laoreet, semper nisi vel, maximus massa. Duis at lorem vitae sem auctor condimentum a at neque. Phasellus vel scelerisque dui. Morbi varius nibh eu finibus rutrum.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/2","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Aenean id congue orci. Aliquam gravida nulla nec sollicitudin consectetur. Donec iaculis ipsum in purus tincidunt sagittis quis vehicula sapien. Vestibulum quis consectetur nibh. Pellentesque vehicula ligula sit amet commodo malesuada. Proin eget dolor sodales, egestas sapien sed, consectetur ante. Vivamus imperdiet porttitor condimentum. Aliquam sit amet tellus quis mauris dapibus convallis eu in nulla. Aliquam erat volutpat.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/3","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Pellentesque aliquam maximus libero a tincidunt. Nunc rhoncus tellus ac congue commodo. Aenean malesuada ante sit amet erat efficitur vehicula ac id ipsum. Suspendisse sed purus vel nisl rhoncus feugiat et ut ante. Mauris vehicula ligula sed nisl vulputate, nec ullamcorper quam vehicula. Etiam eu turpis eget sem luctus rutrum at porta nulla. Ut posuere lorem et nisi faucibus molestie.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/4","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Duis ullamcorper velit id enim rutrum, vel venenatis lacus laoreet. Sed id bibendum ligula, sed congue erat. Maecenas rhoncus posuere lorem ac consectetur. Duis accumsan, urna id pharetra tincidunt, libero nibh tincidunt enim, vestibulum suscipit turpis neque nec ante.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/5","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Suspendisse potenti. Curabitur et neque ac ante dapibus mollis tempor eget ex. Vivamus porttitor faucibus dui. Nulla eleifend hendrerit cursus. Sed elit nulla, pulvinar vitae diam eget, consectetur efficitur orci. Vivamus vel pharetra sapien. Suspendisse tortor tortor, iaculis at ullamcorper sit amet, vestibulum vel arcu. Aenean sed eleifend sapien. Praesent at varius metus.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/6","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent laoreet nisl eget neque blandit lobortis. Sed sagittis risus id vestibulum finibus. Cras vestibulum sem et massa hendrerit maximus. Vestibulum suscipit tristique iaculis. Nam vitae risus non eros auctor tincidunt quis vel nulla. Sed volutpat, libero ac blandit vehicula, est sem gravida lectus, sed imperdiet sapien risus ut neque.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/7","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Aenean id congue orci. Aliquam gravida nulla nec sollicitudin consectetur. Donec iaculis ipsum in purus tincidunt sagittis quis vehicula sapien. Vestibulum quis consectetur nibh. Pellentesque vehicula ligula sit amet commodo malesuada. Proin eget dolor sodales, egestas sapien sed, consectetur ante. Vivamus imperdiet porttitor condimentum. Aliquam sit amet tellus quis mauris dapibus convallis eu in nulla. Aliquam erat volutpat.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/8","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi tempus viverra lectus sit amet lobortis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Quisque faucibus consectetur mauris eget lobortis. Maecenas efficitur efficitur mauris ac vehicula. Sed ut lectus laoreet, semper nisi vel, maximus massa. Duis at lorem vitae sem auctor condimentum a at neque. Phasellus vel scelerisque dui. Morbi varius nibh eu finibus rutrum.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/people/1","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Pellentesque aliquam maximus libero a tincidunt. Nunc rhoncus tellus ac congue commodo. Aenean malesuada ante sit amet erat efficitur vehicula ac id ipsum. Suspendisse sed purus vel nisl rhoncus feugiat et ut ante. Mauris vehicula ligula sed nisl vulputate, nec ullamcorper quam vehicula. Etiam eu turpis eget sem luctus rutrum at porta nulla. Ut posuere lorem et nisi faucibus molestie.")]),_vm._v(" "),_c('p',[_c('img',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-src":"http://lorempixel.com/500/500/nature/10","width":"1500","height":"1500"}})]),_vm._v(" "),_c('p',[_vm._v("Duis ullamcorper velit id enim rutrum, vel venenatis lacus laoreet. Sed id bibendum ligula, sed congue erat. Maecenas rhoncus posuere lorem ac consectetur. Duis accumsan, urna id pharetra tincidunt, libero nibh tincidunt enim, vestibulum suscipit turpis neque nec ante.")]),_vm._v(" "),_c('p',[_c('b',[_vm._v("Using as background image:")])]),_vm._v(" "),_c('div',{staticClass:"lazy lazy-fadeIn demo-lazy",attrs:{"data-background":"http://lorempixel.com/500/500/people/10"}}),_vm._v(" "),_c('p',[_vm._v("Suspendisse potenti. Curabitur et neque ac ante dapibus mollis tempor eget ex. Vivamus porttitor faucibus dui. Nulla eleifend hendrerit cursus. Sed elit nulla, pulvinar vitae diam eget, consectetur efficitur orci. Vivamus vel pharetra sapien. Suspendisse tortor tortor, iaculis at ullamcorper sit amet, vestibulum vel arcu. Aenean sed eleifend sapien. Praesent at varius metus.")])])],1)};
   var __vue_staticRenderFns__$s = [];
@@ -56236,8 +56643,10 @@
   };
 
   /* script */
-              var __vue_script__$t = script$t;
-              
+  var __vue_script__$t = script$t;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$t.__file = "list.vue";
+
   /* template */
   var __vue_render__$t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"List View","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 allows you to be flexible with list views (table views). You can make them as navigation menus, you can use there icons, inputs, and any elements inside of the list, and even make them nested:")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple List")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',{attrs:{"title":"Item 1"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 2"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Item 3"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Simple Links List")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Link 1","link":"#"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Link 2","link":"#"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Link 3","link":"#"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Data list, with icons")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"John Doe","badge":"5"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jenna Smith"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe","after":"Cleaner"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Jenna Smith"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links, Header, Footer")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","header":"Name","title":"John Doe","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Phone","title":"+7 90 111-22-3344","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Email","title":"john@doe","footer":"Home","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","header":"Email","title":"john@framework7","footer":"Work","after":"Edit"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Links, no icons")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"divider":"","title":"Divider Here"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Jenna Smith"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Grouped with sticky titles")]),_vm._v(" "),_c('f7-list',[_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"A","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aaron "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Abbie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adam"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"B","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bailey"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Barclay"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bartolo"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"C","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Caiden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Calvin"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Candy"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mixed and nested")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"No icons here"}}),_vm._v(" "),_c('li',[_c('ul',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"No icons here"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1)],1)]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mixed, inset")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"With toggle"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-toggle',{attrs:{"slot":"after"},slot:"after"})],1),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("Here comes some useful information about list above")])])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Tablet inset")]),_vm._v(" "),_c('f7-list',{attrs:{"tablet-inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Ivan Petrov","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Two icons here"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Ultra long text goes here, no, it is really really long"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("This list block will look like \"inset\" only on tablets (iPad)")])])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Media Lists")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Media Lists are almost the same as Data Lists, but with a more flexible layout for visualization of more complex data, like products, services, userc, etc.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Songs")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Yellow Submarine","after":"$15","subtitle":"Beatles","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/160/160/people/1","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","after":"$22","subtitle":"Queen","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/160/160/people/2","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Billie Jean","after":"$16","subtitle":"Michael Jackson","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/160/160/people/3","width":"80"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Mail App")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Something more simple")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/1","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/2","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/3","width":"44"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Inset")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":"","inset":""}},[_c('f7-list-item',{attrs:{"link":"#","title":"Yellow Submarine","subtitle":"Beatles"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/4","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Don't Stop Me Now","subtitle":"Queen"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/5","width":"44"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"#","title":"Billie Jean","subtitle":"Michael Jackson"}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/88/88/fashion/6","width":"44"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom Table-like Layout")]),_vm._v(" "),_c('f7-list',[_c('li',[_c('a',{staticClass:"item-link item-content",attrs:{"href":"#"}},[_c('div',{staticClass:"item-inner item-cell"},[_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-2")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-3")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-2")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 3-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-2\n              ")]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-3\n              ")])])])])])]),_vm._v(" "),_c('li',[_c('a',{staticClass:"item-link item-content",attrs:{"href":"#"}},[_c('div',{staticClass:"item-inner item-cell"},[_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-2")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 1-3")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_vm._v("Cell 2-2")])]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_c('div',{staticClass:"item-cell"},[_vm._v("Cell 3-1")]),_vm._v(" "),_c('div',{staticClass:"item-cell"},[_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-2\n              ")]),_vm._v(" "),_c('div',{staticClass:"item-row"},[_vm._v("\n                Cell 3-3\n              ")])])])])])])])],1)};
   var __vue_staticRenderFns__$t = [];
@@ -56281,8 +56690,10 @@
   };
 
   /* script */
-              var __vue_script__$u = script$u;
-              
+  var __vue_script__$u = script$u;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$u.__file = "list-index.vue";
+
   /* template */
   var __vue_render__$u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"List Index","back-link":"Back"}}),_vm._v(" "),_c('f7-list-index',{attrs:{"indexes":"auto","list-el":".list.contacts-list","scroll-list":true,"label":true},on:{"listindex:select":_vm.onIndexSelect}}),_vm._v(" "),_c('f7-list',{attrs:{"contacts-list":""}},[_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"A","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aaron"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Adam"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Aiden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Albert"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Alex"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Alexander"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Alfie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Archie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Arthur"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Austin"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"B","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Benjamin"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Blake"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Bobby"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"C","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Caleb"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Callum"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cameron"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Charles"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Charlie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Connor"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"D","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Daniel"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"David"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dexter"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dylan"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"E","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Edward"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Elijah"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Elliot"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Elliott"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ethan"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Evan"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"F","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Felix"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Finlay"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Finley"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Frankie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Freddie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Frederick"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"G","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Gabriel"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"George"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"H","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Harley"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Harrison"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Harry"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Harvey"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Henry"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hugo"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"I","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ibrahim"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Isaac"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"J","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jack"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jacob"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jake"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"James"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jamie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jayden"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jenson"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Joseph"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Joshua"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jude"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"K","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kai"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kian"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"L","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Leo"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Leon"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lewis"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Liam"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Logan"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Louie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Louis"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Luca"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lucas"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Luke"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"M","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mason"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Matthew"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Max"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Michael"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mohammad"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mohammed"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Muhammad"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"N","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Nathan"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Noah"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"O","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oliver"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ollie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oscar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Owen"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"R","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Reuben"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Riley"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Robert"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ronnie"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Rory"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ryan"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"S","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Samuel"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Sebastian"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Seth"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Sonny"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Stanley"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"T","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Teddy"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Theo"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Theodore"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Thomas"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Toby"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Tommy"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Tyler"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"W","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"William"}})],1),_vm._v(" "),_c('f7-list-group',[_c('f7-list-item',{attrs:{"title":"Z","group-title":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Zachary"}})],1)],1)],1)};
   var __vue_staticRenderFns__$u = [];
@@ -56349,8 +56760,10 @@
   };
 
   /* script */
-              var __vue_script__$v = script$v;
-              
+  var __vue_script__$v = script$v;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$v.__file = "login-screen.vue";
+
   /* template */
   var __vue_render__$v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Login Screen","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with ready to use Login Screen layout. It could be used inside of page or inside of popup (Embedded) or as a standalone overlay:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/login-screen-page/","title":"As Separate Page"}})],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","large":"","fill":"","login-screen-open":".demo-login-screen"}},[_vm._v("As Overlay")])],1),_vm._v(" "),_c('f7-block',[_c('f7-button',{attrs:{"raised":"","large":"","fill":""},on:{"click":function($event){_vm.loginScreenOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('f7-login-screen',{staticClass:"demo-login-screen",attrs:{"opened":_vm.loginScreenOpened},on:{"loginscreen:closed":function($event){_vm.loginScreenOpened = false;}}},[_c('f7-page',{attrs:{"login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-input',{attrs:{"label":"Username","type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)],1)],1)};
   var __vue_staticRenderFns__$v = [];
@@ -56411,8 +56824,10 @@
   };
 
   /* script */
-              var __vue_script__$w = script$w;
-              
+  var __vue_script__$w = script$w;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$w.__file = "login-screen-page.vue";
+
   /* template */
   var __vue_render__$w = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"no-toolbar":"","no-navbar":"","no-swipeback":"","login-screen":""}},[_c('f7-login-screen-title',[_vm._v("Framework7")]),_vm._v(" "),_c('f7-list',{attrs:{"form":""}},[_c('f7-list-input',{attrs:{"label":"Username","type":"text","placeholder":"Your username","value":_vm.username},on:{"input":function($event){_vm.username = $event.target.value;}}}),_vm._v(" "),_c('f7-list-input',{attrs:{"label":"Password","type":"password","placeholder":"Your password","value":_vm.password},on:{"input":function($event){_vm.password = $event.target.value;}}})],1),_vm._v(" "),_c('f7-list',[_c('f7-list-button',{on:{"click":_vm.signIn}},[_vm._v("Sign In")]),_vm._v(" "),_c('f7-block-footer',[_vm._v("Some text about login information."),_c('br'),_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")])],1)],1)};
   var __vue_staticRenderFns__$w = [];
@@ -56512,8 +56927,10 @@
   };
 
   /* script */
-              var __vue_script__$x = script$x;
-              
+  var __vue_script__$x = script$x;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$x.__file = "menu.vue";
+
   /* template */
   var __vue_render__$x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:afterin":_vm.onPageAfterIn}},[_c('f7-navbar',{attrs:{"title":"Menu","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Menu component is designed to be used as overlay control. It can be very helpful when you need controls on top of the map, images, some text/code editor, etc.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Links")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",attrs:{"strong":""}},[_c('f7-menu',[_c('f7-menu-item',{attrs:{"href":"#","text":"Item 1"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","text":"Item 2"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"edit"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"share"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Dropdowns")]),_vm._v(" "),_c('f7-block',{staticClass:"no-padding-horizontal",staticStyle:{"z-index":"2000"},attrs:{"strong":""}},[_c('p',{staticClass:"padding-horizontal"},[_vm._v("Dropdown can be position on left, center or right of the menu item. It also can be scrollable.")]),_vm._v(" "),_c('f7-menu',[_c('f7-menu-item',{attrs:{"text":"Left","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"left":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"text":"Center","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"center":"","content-height":"200px"}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 7"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 8"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 9"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 10"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"text":"Right","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"right":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 1"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 2"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 3"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 4"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"divider":""}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 5"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Menu Item 6"}})],1)],1),_vm._v(" "),_c('f7-menu-item',{staticStyle:{"margin-left":"auto"},attrs:{"icon-f7":"share","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"right":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#"}},[_c('span',[_vm._v("Share on Facebook")]),_vm._v(" "),_c('f7-icon',{staticClass:"margin-left",attrs:{"f7":"logo_facebook"}})],1),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#"}},[_c('span',[_vm._v("Share on Twitter")]),_vm._v(" "),_c('f7-icon',{staticClass:"margin-left",attrs:{"f7":"logo_twitter"}})],1)],1)],1),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"edit"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On Top Of Map")]),_vm._v(" "),_c('f7-card',[_c('f7-card-content',{attrs:{"padding":false}},[_c('div',{ref:"map",staticStyle:{"height":"240px"}}),_vm._v(" "),_c('f7-menu',{staticStyle:{"position":"absolute","left":"0px","top":"6px"}},[_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"zoom_in"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"href":"#","icon-f7":"zoom_out"}}),_vm._v(" "),_c('f7-menu-item',{attrs:{"icon-f7":"layers_fill","dropdown":""}},[_c('f7-menu-dropdown',{attrs:{"left":""}},[_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Terrain"}}),_vm._v(" "),_c('f7-menu-dropdown-item',{attrs:{"href":"#","text":"Satellite"}})],1)],1)],1)],1)],1)],1)};
   var __vue_staticRenderFns__$x = [];
@@ -56532,7 +56949,7 @@
     
 
     
-    var Menu$1 = normalizeComponent(
+    var Menu$2 = normalizeComponent(
       { render: __vue_render__$x, staticRenderFns: __vue_staticRenderFns__$x },
       __vue_inject_styles__$x,
       __vue_script__$x,
@@ -56766,8 +57183,10 @@
   };
 
   /* script */
-              var __vue_script__$y = script$y;
-              
+  var __vue_script__$y = script$y;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$y.__file = "messages.vue";
+
   /* template */
   var __vue_render__$y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Messsages","back-link":"Back"}}),_vm._v(" "),_c('f7-messagebar',{ref:"messagebar",attrs:{"placeholder":_vm.placeholder,"attachments-visible":_vm.attachmentsVisible,"sheet-visible":_vm.sheetVisible,"value":_vm.messageText},on:{"input":function($event){_vm.messageText = $event.target.value;}}},[_c('f7-link',{attrs:{"slot":"inner-start","icon-ios":"f7:camera_fill","icon-md":"material:camera_alt"},on:{"click":function($event){_vm.sheetVisible = !_vm.sheetVisible;}},slot:"inner-start"}),_vm._v(" "),_c('f7-link',{attrs:{"slot":"inner-end","icon-ios":"f7:arrow_up_round_fill","icon-md":"material:send"},on:{"click":_vm.sendMessage},slot:"inner-end"}),_vm._v(" "),_c('f7-messagebar-attachments',_vm._l((_vm.attachments),function(image,index){return _c('f7-messagebar-attachment',{key:index,attrs:{"image":image},on:{"attachment:delete":function($event){_vm.deleteAttachment(image);}}})}),1),_vm._v(" "),_c('f7-messagebar-sheet',_vm._l((_vm.images),function(image,index){return _c('f7-messagebar-sheet-image',{key:index,attrs:{"image":image,"checked":_vm.attachments.indexOf(image) >= 0},on:{"change":_vm.handleAttachment}})}),1)],1),_vm._v(" "),_c('f7-messages',{ref:"messages"},[_c('f7-messages-title',[_c('b',[_vm._v("Sunday, Feb 9,")]),_vm._v(" 12:58")]),_vm._v(" "),_vm._l((_vm.messagesData),function(message,index){return _c('f7-message',{key:index,attrs:{"type":message.type,"image":message.image,"name":message.name,"avatar":message.avatar,"first":_vm.isFirstMessage(message, index),"last":_vm.isLastMessage(message, index),"tail":_vm.isTailMessage(message, index)}},[(message.text)?_c('span',{attrs:{"slot":"text"},domProps:{"innerHTML":_vm._s(message.text)},slot:"text"}):_vm._e()])}),_vm._v(" "),(_vm.typingMessage)?_c('f7-message',{attrs:{"type":"received","typing":true,"first":true,"last":true,"tail":true,"header":((_vm.typingMessage.name) + " is typing"),"avatar":_vm.typingMessage.avatar}}):_vm._e()],2)],1)};
   var __vue_staticRenderFns__$y = [];
@@ -56812,8 +57231,10 @@
   };
 
   /* script */
-              var __vue_script__$z = script$z;
-              
+  var __vue_script__$z = script$z;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$z.__file = "navbar.vue";
+
   /* template */
   var __vue_render__$z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Navbar","subtitle":"Subtitle","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',[_vm._v("Right")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Navbar is a fixed (with Fixed and Through layout types) area at the top of a screen that contains Page title and navigation elements.")]),_vm._v(" "),_c('p',[_vm._v("Navbar has 3 main parts: Left, Title and Right. Each part may contain any HTML content.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/navbar-hide-scroll/","title":"Hide Navbar On Scroll"}})],1)],1)};
   var __vue_staticRenderFns__$z = [];
@@ -56854,8 +57275,10 @@
   };
 
   /* script */
-              var __vue_script__$A = script$A;
-              
+  var __vue_script__$A = script$A;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$A.__file = "navbar-hide-scroll.vue";
+
   /* template */
   var __vue_render__$A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-navbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Navbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Navbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)};
   var __vue_staticRenderFns__$A = [];
@@ -56979,8 +57402,10 @@
   };
 
   /* script */
-              var __vue_script__$B = script$B;
-              
+  var __vue_script__$B = script$B;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$B.__file = "notifications.vue";
+
   /* template */
   var __vue_render__$B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Notifications","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with simple Notifications component that allows you to show some useful messages to user and request basic actions.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationFull}},[_vm._v("Full layout notification")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationWithButton}},[_vm._v("With close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationCloseOnClick}},[_vm._v("Click to close")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showNotificationCallbackOnClose}},[_vm._v("Callback on close")])],1)])],1)};
   var __vue_staticRenderFns__$B = [];
@@ -57023,8 +57448,10 @@
   };
 
   /* script */
-              var __vue_script__$C = script$C;
-              
+  var __vue_script__$C = script$C;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$C.__file = "panel.vue";
+
   /* template */
   var __vue_render__$C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Panel / Side panels","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Framework7 comes with 2 panels (on left and on right), both are optional. They have two different layouts/effects - "),_c('b',[_vm._v("cover")]),_vm._v(" above the content (like left panel here) and "),_c('b',[_vm._v("reveal")]),_vm._v(" (like right panel). You can put absolutely anything inside: data lists, forms, custom content, and even other isolated app view (like in right panel now) with its own dynamic navbar. Checkout panels:")])]),_vm._v(" "),_c('f7-block',{staticClass:"row"},[_c('f7-col',[_c('f7-button',{attrs:{"raised":"","fill":"","panel-open":"left"}},[_vm._v("Open left panel")])],1),_vm._v(" "),_c('f7-col',[_c('f7-button',{attrs:{"raised":"","fill":"","panel-open":"right"}},[_vm._v("Open right panel")])],1)],1)],1)};
   var __vue_staticRenderFns__$C = [];
@@ -57088,8 +57515,10 @@
   };
 
   /* script */
-              var __vue_script__$D = script$D;
-              
+  var __vue_script__$D = script$D;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$D.__file = "photo-browser.vue";
+
   /* template */
   var __vue_render__$D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Photo Browser","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser is a standalone and highly configurable component that allows to open window with photo viewer and navigation elements with the following features:")]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("Swiper between photos")]),_vm._v(" "),_c('li',[_vm._v("Multi-gestures support for zooming")]),_vm._v(" "),_c('li',[_vm._v("Toggle zoom by double tap on photo")]),_vm._v(" "),_c('li',[_vm._v("Single click on photo to toggle Exposition mode")])])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser could be opened in a three ways - as a Standalone component (Popup modification), in Popup, and as separate Page:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standalone",attrs:{"photos":_vm.photos}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.standalone.open();}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popup",attrs:{"photos":_vm.photos,"type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.popup.open();}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"page",attrs:{"photos":_vm.photos,"type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.page.open();}}},[_vm._v("Page")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Photo Browser suppots 2 default themes - default Light (like in previous examples) and Dark theme. Here is a Dark theme examples:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',[_c('f7-photo-browser',{ref:"standaloneDark",attrs:{"photos":_vm.photos,"theme":"dark"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.standaloneDark.open();}}},[_vm._v("Standalone")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"popupDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"popup"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.popupDark.open();}}},[_vm._v("Popup")])],1),_vm._v(" "),_c('f7-col',[_c('f7-photo-browser',{ref:"pageDark",attrs:{"photos":_vm.photos,"theme":"dark","type":"page","back-link-text":"Back"}}),_vm._v(" "),_c('f7-button',{attrs:{"raised-md":"","outline-ios":""},on:{"click":function($event){_vm.$refs.pageDark.open();}}},[_vm._v("Page")])],1)],1)],1)],1)};
   var __vue_staticRenderFns__$D = [];
@@ -57308,8 +57737,10 @@
   };
 
   /* script */
-              var __vue_script__$E = script$E;
-              
+  var __vue_script__$E = script$E;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$E.__file = "picker.vue";
+
   /* template */
   var __vue_render__$E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Picker","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"page-content"},[_c('div',{staticClass:"block"},[_c('p',[_vm._v("Picker is a powerful component that allows you to create custom overlay pickers which looks like native picker.")]),_vm._v(" "),_c('p',[_vm._v("Picker could be used as inline component or as overlay. Overlay Picker will be automatically converted to Popover on tablets (iPad).")])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Picker with single value")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your iOS device","readonly":"readonly","id":"demo-picker-device"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("2 values and 3d-rotate effect")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Describe yourself","readonly":"readonly","id":"demo-picker-describe"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Dependent values")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Your car","readonly":"readonly","id":"demo-picker-dependent"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Custom toolbar")]),_vm._v(" "),_c('div',{staticClass:"list no-hairlines-md"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Describe yourself","readonly":"readonly","id":"demo-picker-custom-toolbar"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block-title"},[_vm._v("Inline Picker / Date-time")]),_vm._v(" "),_c('div',{staticClass:"list no-margin"},[_c('ul',[_c('li',[_c('div',{staticClass:"item-content item-input"},[_c('div',{staticClass:"item-inner"},[_c('div',{staticClass:"item-input-wrap"},[_c('input',{attrs:{"type":"text","placeholder":"Date Time","readonly":"readonly","id":"demo-picker-date"}})])])])])])]),_vm._v(" "),_c('div',{staticClass:"block block-strong no-padding no-margin margin-bottom"},[_c('div',{attrs:{"id":"demo-picker-date-container"}})])])],1)};
   var __vue_staticRenderFns__$E = [];
@@ -57377,8 +57808,10 @@
   };
 
   /* script */
-              var __vue_script__$F = script$F;
-              
+  var __vue_script__$F = script$F;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$F.__file = "popup.vue";
+
   /* template */
   var __vue_render__$F = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Popup","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Popup is a modal window with any HTML content that pops up over App's main content. Popup as all other overlays is part of so called \"Temporary Views\".")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":"","popup-open":".demo-popup"}},[_vm._v("Open Popup")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.popupOpened = true;}}},[_vm._v("Open Via Prop Change")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.createPopup}},[_vm._v("Create Dynamic Popup")])],1)]),_vm._v(" "),_c('f7-popup',{staticClass:"demo-popup",attrs:{"opened":_vm.popupOpened},on:{"popup:closed":function($event){_vm.popupOpened = false;}}},[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popup Title"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Here comes popup. You can put here anything, even independent view with its own navigation. Also not, that by default popup looks a bit different on iPhone/iPod and iPad, on iPhone it is fullscreen.")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse faucibus mauris leo, eu bibendum neque congue non. Ut leo mauris, eleifend eu commodo a, egestas ac urna. Maecenas in lacus faucibus, viverra ipsum pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris sollicitudin, venenatis nisi sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor nibh, suscipit in consequat vel, feugiat sed quam. Nam risus libero, auctor vel tristique ac, malesuada ut ante. Sed molestie, est in eleifend sagittis, leo tortor ullamcorper erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor sem, suscipit in iaculis id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc eros, convallis blandit dui sit amet, gravida adipiscing libero.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$F = [];
@@ -57425,8 +57858,10 @@
   };
 
   /* script */
-              var __vue_script__$G = script$G;
-              
+  var __vue_script__$G = script$G;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$G.__file = "popover.vue";
+
   /* template */
   var __vue_render__$G = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Popover","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Dummy Link")]),_vm._v(" "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("Open Popover")])],1),_vm._v(" "),_c('f7-block',[_c('p',[_c('f7-button',{attrs:{"fill":"","popover-open":".popover-menu"}},[_vm._v("Open popover on me")])],1),_vm._v(" "),_c('p',[_vm._v("Mauris fermentum neque et luctus venenatis. Vivamus a sem rhoncus, ornare tellus eu, euismod mauris. In porta turpis at semper convallis. Duis adipiscing leo eu nulla lacinia, quis rhoncus metus condimentum. Etiam nec malesuada nibh. Maecenas quis lacinia nisl, vel posuere dolor. Vestibulum condimentum, nisl ac vulputate egestas, neque enim dignissim elit, rhoncus volutpat magna enim a est. Aenean sit amet ligula neque. Cras suscipit rutrum enim. Nam a odio facilisis, elementum tellus non, "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("popover")]),_vm._v(" tortor. Pellentesque felis eros, dictum vitae lacinia quis, lobortis vitae ipsum. Cras vehicula bibendum lorem quis imperdiet.")],1),_vm._v(" "),_c('p',[_vm._v("In hac habitasse platea dictumst. Etiam varius, ante vel ornare facilisis, velit massa rutrum dolor, ac porta magna magna lacinia nunc. Curabitur "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("popover!")]),_vm._v(" cursus laoreet. Aenean vel tempus augue. Pellentesque in imperdiet nibh. Mauris rhoncus nulla id sem suscipit volutpat. Pellentesque ac arcu in nisi viverra pulvinar. Nullam nulla orci, bibendum sed ligula non, ullamcorper iaculis mi. In hac habitasse platea dictumst. Praesent varius at nisl eu luctus. Cras aliquet porta est. Quisque elementum quis dui et consectetur. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed sed laoreet purus. Pellentesque eget ante ante.")],1),_vm._v(" "),_c('p',[_vm._v("Duis et ultricies nibh. Sed facilisis turpis urna, ac imperdiet erat venenatis eu. Proin sit amet faucibus tortor, et varius sem. Etiam vitae lacinia neque. Aliquam nisi purus, interdum in arcu sed, ultrices rutrum arcu. Nulla mi turpis, consectetur vel enim quis, facilisis viverra dui. Aliquam quis convallis tortor, quis semper ligula. Morbi ullamcorper "),_c('f7-link',{attrs:{"popover-open":".popover-menu"}},[_vm._v("one more popover")]),_vm._v(" massa at accumsan. Etiam purus odio, posuere in ligula vitae, viverra ultricies justo. Vestibulum nec interdum nisi. Aenean ac consectetur velit, non malesuada magna. Sed pharetra vehicula augue, vel venenatis lectus gravida eget. Curabitur lacus tellus, venenatis eu arcu in, interdum auctor nunc. Nunc non metus neque. Suspendisse viverra lectus sed risus aliquet, vel accumsan dolor feugiat.")],1)]),_vm._v(" "),_c('f7-popover',{staticClass:"popover-menu"},[_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/dialog/","popover-close":"","title":"Dialog"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs/","popover-close":"","title":"Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/panel/","popover-close":"","title":"Side Panels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/list/","popover-close":"","title":"List View"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/inputs/","popover-close":"","title":"Form Inputs"}})],1)],1)],1)};
   var __vue_staticRenderFns__$G = [];
@@ -57493,8 +57928,10 @@
   };
 
   /* script */
-              var __vue_script__$H = script$H;
-              
+  var __vue_script__$H = script$H;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$H.__file = "preloader.vue";
+
   /* template */
   var __vue_render__$H = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Preloader","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("How about an activity indicator? Framework 7 has a nice one. The F7 Preloader is made with SVG and animated with CSS so it can be easily resized.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('f7-block',{staticClass:"row demo-preloaders align-items-stretch text-align-center"},[_c('f7-col',[_c('f7-preloader')],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"color":"white"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"size":42}})],1),_vm._v(" "),_c('f7-col',{staticStyle:{"background":"#000"}},[_c('f7-preloader',{attrs:{"size":42,"color":"white"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Color Preloaders")]),_vm._v(" "),_c('f7-block',{staticClass:"row text-align-center"},[_c('f7-col',[_c('f7-preloader',{attrs:{"color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"orange"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-preloader',{attrs:{"color":"blue"}})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Multi-color (MD-theme only)")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center"},[_c('f7-preloader',{attrs:{"color":"multi"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Preloader Modals")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("With "),_c('b',[_vm._v("app.preloader.show()")]),_vm._v(" you can show small overlay with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openIndicator}},[_vm._v("Open Small Indicator")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader()")]),_vm._v(" you can show dialog modal with preloader indicator.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openDialog}},[_vm._v("Open Dialog Preloader")])]),_vm._v(" "),_c('p',[_vm._v("With "),_c('b',[_vm._v("app.dialog.preloader('My text...')")]),_vm._v(" you can show dialog preloader modal with custom title.")]),_vm._v(" "),_c('p',[_c('a',{staticClass:"button button-fill",on:{"click":_vm.openCustomDialog}},[_vm._v("Open Dialog Preloader")])])])],1)};
   var __vue_staticRenderFns__$H = [];
@@ -57588,8 +58025,10 @@
   };
 
   /* script */
-              var __vue_script__$I = script$I;
-              
+  var __vue_script__$I = script$I;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$I.__file = "progressbar.vue";
+
   /* template */
   var __vue_render__$I = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Bar","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to "),_c('a',{attrs:{"href":"/preloader/"}},[_vm._v("Preloader")]),_vm._v(", Framework7 also comes with fancy animated determinate and infinite/indeterminate progress bars to indicate some activity.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Determinate Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is determinate it indicates how long an operation will take when the percentage complete is detectable.")]),_vm._v(" "),_c('p',[_vm._v("Inline determinate progress bar:")]),_vm._v(" "),_c('div',[_c('p',[_c('f7-progressbar',{attrs:{"progress":10,"id":"demo-inline-progressbar"}})],1),_vm._v(" "),_c('f7-segmented',{attrs:{"raised":""}},[_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(10);}}},[_vm._v("10%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(30);}}},[_vm._v("30%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(50);}}},[_vm._v("50%")]),_vm._v(" "),_c('f7-button',{on:{"click":function($event){_vm.setInlineProgress(100);}}},[_vm._v("100%")])],1)],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Inline determinate load & hide:")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-determinate-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showDeterminate(true);}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with determinate progress bar on top of the app:")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showDeterminate(false);}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Infinite Progress Bar")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("When progress bar is infinite/indeterminate it requests that the user wait while something finishes when it’s not necessary to indicate how long it will take.")]),_vm._v(" "),_c('p',[_vm._v("Inline infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":""}})],1),_vm._v(" "),_c('p',[_vm._v("Multi-color infinite progress bar")]),_vm._v(" "),_c('p',[_c('f7-progressbar',{attrs:{"infinite":"","color":"multi"}})],1),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite progress bar on top of the app")]),_vm._v(" "),_c('p',{attrs:{"id":"demo-infinite-container"}}),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showInfinite(false);}}},[_vm._v("Start Loading")])],1)]),_vm._v(" "),_c('div',[_c('p',[_vm._v("Overlay with infinite multi-color progress bar on top of the app")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":function($event){_vm.showInfinite(true);}}},[_vm._v("Start Loading")])],1)])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('div',{staticClass:"list simple-list"},[_c('ul',[_c('li',[_c('f7-progressbar',{attrs:{"color":"blue","progress":10}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"red","progress":20}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"pink","progress":30}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"green","progress":80}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"yellow","progress":90}})],1),_vm._v(" "),_c('li',[_c('f7-progressbar',{attrs:{"color":"orange","progress":100}})],1)])])],1)};
   var __vue_staticRenderFns__$I = [];
@@ -57673,8 +58112,10 @@
   };
 
   /* script */
-              var __vue_script__$J = script$J;
-              
+  var __vue_script__$J = script$J;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$J.__file = "pull-to-refresh.vue";
+
   /* template */
   var __vue_render__$J = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"ptr":""},on:{"ptr:refresh":_vm.loadMore}},[_c('f7-navbar',{attrs:{"title":"Pull To Refresh","back-link":"Back"}}),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_vm._l((_vm.items),function(item,index){return _c('f7-list-item',{key:index,attrs:{"title":item.title,"subtitle":item.author}},[_c('img',{attrs:{"slot":"media","src":item.cover,"width":"44"},slot:"media"})])}),_vm._v(" "),_c('f7-block-footer',[_c('p',[_vm._v("Just pull page down to let the magic happen."),_c('br'),_vm._v("Note that pull-to-refresh feature is optimised for touch and native scrolling so it may not work on desktop browser.")])])],2)],1)};
   var __vue_staticRenderFns__$J = [];
@@ -57719,8 +58160,10 @@
   };
 
   /* script */
-              var __vue_script__$K = script$K;
-              
+  var __vue_script__$K = script$K;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$K.__file = "radio.vue";
+
   /* template */
   var __vue_render__$K = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Radio","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Inline")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem "),_c('f7-radio',{attrs:{"name":"demo-radio-inline"}}),_vm._v(" ipsum dolor sit amet, consectetur adipisicing elit. Alias beatae illo nihil aut eius commodi sint eveniet aliquid eligendi "),_c('f7-radio',{attrs:{"name":"demo-radio-inline","checked":""}}),_vm._v(" ad delectus impedit tempore nemo, enim vel praesentium consequatur nulla mollitia!")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Radio Group")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"radio":"","checked":"","title":"Books","name":"demo-radio","checked":""}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Movies","name":"demo-radio"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Food","name":"demo-radio"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","title":"Drinks","name":"demo-radio"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Media Lists")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"radio":"","checked":"","name":"demo-media-radio","value":"1","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"2","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"3","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}}),_vm._v(" "),_c('f7-list-item',{attrs:{"radio":"","name":"demo-media-radio","value":"4","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}})],1)],1)};
   var __vue_staticRenderFns__$K = [];
@@ -57779,8 +58222,10 @@
   };
 
   /* script */
-              var __vue_script__$L = script$L;
-              
+  var __vue_script__$L = script$L;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$L.__file = "range.vue";
+
   /* template */
   var __vue_render__$L = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Range Slider","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Volume")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:volume_mute_fill","md":"material:volume_mute"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":100,"step":1,"value":10}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:volume_fill","md":"material:volume_up"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Brightness")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle","md":"material:brightness_low"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":100,"step":1,"value":50,"label":true,"color":"orange"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:circle_half","md":"material:brightness_high"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',{staticClass:"display-flex justify-content-space-between"},[_vm._v("Price Filter "),_c('span',[_vm._v("$"+_vm._s(_vm.priceMin)+" - $"+_vm._s(_vm.priceMax))])]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:money_dollar_round","md":"material:brightness_low"}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"flex-shrink-3"},[_c('f7-range',{attrs:{"min":0,"max":500,"step":1,"value":[_vm.priceMin, _vm.priceMax],"label":true,"dual":true,"color":"green"},on:{"range:change":_vm.onPriceChange}})],1),_vm._v(" "),_c('f7-list-item-cell',{staticClass:"width-auto flex-shrink-0"},[_c('f7-icon',{attrs:{"ios":"f7:money_dollar_round_fill","md":"material:brightness_high"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With Scale")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('f7-range',{attrs:{"min":0,"max":100,"label":true,"step":5,"value":25,"scale":true,"scale-steps":5,"scale-sub-steps":4}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical")]),_vm._v(" "),_c('f7-block',{staticClass:"display-flex justify-content-center",attrs:{"strong":""}},[_c('f7-range',{staticClass:"margin-right",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":25}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":50}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":75}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-left",staticStyle:{"height":"160px"},attrs:{"dual":true,"vertical":true,"min":0,"max":100,"label":true,"step":1,"value":[25, 75]}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical Reversed")]),_vm._v(" "),_c('f7-block',{staticClass:"display-flex justify-content-center",attrs:{"strong":""}},[_c('f7-range',{staticClass:"margin-right",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":25}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":50}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-horizontal",staticStyle:{"height":"160px"},attrs:{"color":"red","vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":75}}),_vm._v(" "),_c('f7-range',{staticClass:"margin-left",staticStyle:{"height":"160px"},attrs:{"color":"red","dual":true,"vertical":true,"vertical-reversed":true,"min":0,"max":100,"label":true,"step":1,"value":[25, 75]}})],1)],1)};
   var __vue_staticRenderFns__$L = [];
@@ -57824,8 +58269,10 @@
   };
 
   /* script */
-              var __vue_script__$M = script$M;
-              
+  var __vue_script__$M = script$M;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$M.__file = "searchbar.vue";
+
   /* template */
   var __vue_render__$M = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back","title":"Searchbar"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".search-list","search-in":".item-title"}})],1)],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"search-list searchbar-found"},[_c('f7-list-item',{attrs:{"title":"Acura"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Audi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"BMW"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cadillac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chevrolet "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chrysler "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dodge "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ferrari "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ford "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"GMC "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Honda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hummer"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hyundai"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Infiniti "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Isuzu "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jaguar "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jeep "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kia"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lamborghini "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Land Rover"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lexus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lincoln "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lotus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mazda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercedes-Benz"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercury "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mitsubishi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Nissan "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oldsmobile "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Peugeot "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Pontiac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Porsche"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Regal"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saab "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saturn "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Subaru "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Suzuki "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Toyota"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volkswagen"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volvo"}})],1)],1)};
   var __vue_staticRenderFns__$M = [];
@@ -57871,8 +58318,10 @@
   };
 
   /* script */
-              var __vue_script__$N = script$N;
-              
+  var __vue_script__$N = script$N;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$N.__file = "searchbar-expandable.vue";
+
   /* template */
   var __vue_render__$N = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back","title":"Searchbar"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"searchbar-enable",attrs:{"data-searchbar":".searchbar-demo","icon-ios":"f7:search","icon-md":"material:search"}})],1),_vm._v(" "),_c('f7-searchbar',{staticClass:"searchbar-demo",attrs:{"expandable":"","search-container":".search-list","search-in":".item-title"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"search-list searchbar-found"},[_c('f7-list-item',{attrs:{"title":"Acura"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Audi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"BMW"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Cadillac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chevrolet "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Chrysler "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Dodge "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ferrari "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Ford "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"GMC "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Honda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hummer"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Hyundai"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Infiniti "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Isuzu "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jaguar "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jeep "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kia"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lamborghini "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Land Rover"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lexus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lincoln "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Lotus "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mazda"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercedes-Benz"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mercury "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mitsubishi"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Nissan "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Oldsmobile "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Peugeot "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Pontiac "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Porsche"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Regal"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saab "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Saturn "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Subaru "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Suzuki "}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Toyota"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volkswagen"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Volvo"}})],1)],1)};
   var __vue_staticRenderFns__$N = [];
@@ -57950,8 +58399,10 @@
   };
 
   /* script */
-              var __vue_script__$O = script$O;
-              
+  var __vue_script__$O = script$O;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$O.__file = "sheet-modal.vue";
+
   /* template */
   var __vue_render__$O = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Sheet Modal","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Sheet Modals slide up from the bottom of the screen to reveal more content. Such modals allow to create custom overlays with custom content.")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","sheet-open":".demo-sheet"}},[_vm._v("Open Sheet")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.createSheet}},[_vm._v("Create Dynamic Sheet")])],1),_vm._v(" "),_c('p',[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":function($event){_vm.sheetOpened = true;}}},[_vm._v("Open Via Prop Change")])],1)],1),_vm._v(" "),_c('f7-sheet',{staticClass:"demo-sheet",attrs:{"opened":_vm.sheetOpened},on:{"sheet:closed":function($event){_vm.sheetOpened = false;}}},[_c('f7-toolbar',[_c('div',{staticClass:"left"}),_vm._v(" "),_c('div',{staticClass:"right"},[_c('f7-link',{attrs:{"sheet-close":""}},[_vm._v("Close")])],1)]),_vm._v(" "),_c('f7-page-content',[_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae ducimus dolorum ipsa aliquid accusamus perferendis laboriosam delectus numquam minima animi, libero illo in tempora harum sequi corporis alias ex adipisci.")]),_vm._v(" "),_c('p',[_vm._v("Sunt magni enim saepe quasi aspernatur delectus consectetur fugiat necessitatibus qui sed, similique quis facere tempora, laudantium quae expedita ea, aperiam dolores. Aut deserunt soluta alias magnam. Consequatur, nisi, enim.")]),_vm._v(" "),_c('p',[_vm._v("Eaque maiores ducimus, impedit unde culpa qui, explicabo accusamus, non vero corporis voluptatibus similique odit ab. Quaerat quasi consectetur quidem libero? Repudiandae adipisci vel voluptatum, autem libero minus dignissimos repellat.")]),_vm._v(" "),_c('p',[_vm._v("Iusto, est corrupti! Totam minus voluptas natus esse possimus nobis, delectus veniam expedita sapiente ut cum reprehenderit aliquid odio amet praesentium vero temporibus obcaecati beatae aspernatur incidunt, perferendis voluptates doloribus?")]),_vm._v(" "),_c('p',[_vm._v("Illum id laborum tempore, doloribus culpa labore ex iusto odit. Quibusdam consequuntur totam nam obcaecati, enim cumque nobis, accusamus, quos voluptates, voluptatibus sapiente repellendus nesciunt praesentium velit ipsa illo iusto.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$O = [];
@@ -58016,8 +58467,10 @@
   };
 
   /* script */
-              var __vue_script__$P = script$P;
-              
+  var __vue_script__$P = script$P;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$P.__file = "skeleton.vue";
+
   /* template */
   var __vue_render__$P = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Skeleton Layouts","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Skeleton (or Ghost) elements designed to improve perceived performance and make app feels faster.")]),_vm._v(" "),_c('p',[_vm._v("Framework7 comes with two types of such elements: Skeleton Block and Skeleton Text. Skeleton block is a gray box that can be used as placeholder for any element. Skeleton text uses special built-in skeleton font to render each character of such text as gray rectangle. Skeleton text allows to make such elements responsive and feel more natural.")]),_vm._v(" "),_c('p',[_vm._v("It can be used in any places and with any elements.")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Skeleton List")]),_vm._v(" "),_c('f7-list',{staticClass:"skeleton-text",attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"Title","subtitle":"Subtitle","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Title","subtitle":"Subtitle","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Skeleton Card")]),_vm._v(" "),_c('f7-card',{staticClass:"skeleton-text",attrs:{"title":"Card Header","content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit.","footer":"Card Footer"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Loading Effects")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("It supports few loading effects:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('fade');}}},[_vm._v("Fade")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('blink');}}},[_vm._v("Blink")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":"","small":"","round":""},on:{"click":function($event){_vm.load('pulse');}}},[_vm._v("Pulse")])],1)],1),_vm._v(" "),(_vm.loading)?_c('f7-list',{attrs:{"media-list":""}},_vm._l((3),function(n){return (_vm.loading)?_c('f7-list-item',{key:n,class:("skeleton-text skeleton-effect-" + _vm.effect),attrs:{"title":"Full Name","subtitle":"Position","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('f7-skeleton-block',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media"},slot:"media"})],1):_vm._e()}),1):_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"title":"John Doe","subtitle":"CEO","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis et massa ac interdum. Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/1"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Jane Doe","subtitle":"Marketing","text":"Cras consequat felis at consequat hendrerit. Aliquam vestibulum vitae lorem ac iaculis. Praesent nec pharetra massa, at blandit lectus. Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/2"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Kate Johnson","subtitle":"Admin","text":"Sed tincidunt, lectus eu convallis elementum, nibh nisi aliquet urna, nec imperdiet felis sapien at enim."}},[_c('img',{staticStyle:{"width":"40px","height":"40px","border-radius":"50%"},attrs:{"slot":"media","src":"https://placeimg.com/80/80/people/3"},slot:"media"})])],1)],1)};
   var __vue_staticRenderFns__$P = [];
@@ -58060,8 +58513,10 @@
   };
 
   /* script */
-              var __vue_script__$Q = script$Q;
-              
+  var __vue_script__$Q = script$Q;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$Q.__file = "smart-select.vue";
+
   /* template */
   var __vue_render__$Q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Smart Select","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_vm._v("\n    Framework7 allows you to easily convert your usual form selects to dynamic pages with radios:\n  ")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Fruit","smart-select":""}},[_c('select',{attrs:{"name":"fruits"}},[_c('option',{attrs:{"value":"apple","selected":""}},[_vm._v("Apple")]),_vm._v(" "),_c('option',{attrs:{"value":"pineapple"}},[_vm._v("Pineapple")]),_vm._v(" "),_c('option',{attrs:{"value":"pear"}},[_vm._v("Pear")]),_vm._v(" "),_c('option',{attrs:{"value":"orange"}},[_vm._v("Orange")]),_vm._v(" "),_c('option',{attrs:{"value":"melon"}},[_vm._v("Melon")]),_vm._v(" "),_c('option',{attrs:{"value":"peach"}},[_vm._v("Peach")]),_vm._v(" "),_c('option',{attrs:{"value":"banana"}},[_vm._v("Banana")])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Car","smart-select":"","smart-select-params":{openIn: 'popup', searchbar: true, searchbarPlaceholder: 'Search car'}}},[_c('select',{attrs:{"name":"car","multiple":""}},[_c('optgroup',{attrs:{"label":"Japanese"}},[_c('option',{attrs:{"value":"honda","selected":""}},[_vm._v("Honda")]),_vm._v(" "),_c('option',{attrs:{"value":"lexus"}},[_vm._v("Lexus")]),_vm._v(" "),_c('option',{attrs:{"value":"mazda"}},[_vm._v("Mazda")]),_vm._v(" "),_c('option',{attrs:{"value":"nissan"}},[_vm._v("Nissan")]),_vm._v(" "),_c('option',{attrs:{"value":"toyota"}},[_vm._v("Toyota")])]),_vm._v(" "),_c('optgroup',{attrs:{"label":"German"}},[_c('option',{attrs:{"value":"audi","selected":""}},[_vm._v("Audi")]),_vm._v(" "),_c('option',{attrs:{"value":"bmw"}},[_vm._v("BMW")]),_vm._v(" "),_c('option',{attrs:{"value":"mercedes"}},[_vm._v("Mercedes")]),_vm._v(" "),_c('option',{attrs:{"value":"vw"}},[_vm._v("Volkswagen")]),_vm._v(" "),_c('option',{attrs:{"value":"volvo"}},[_vm._v("Volvo")])]),_vm._v(" "),_c('optgroup',{attrs:{"label":"American"}},[_c('option',{attrs:{"value":"cadillac"}},[_vm._v("Cadillac")]),_vm._v(" "),_c('option',{attrs:{"value":"chrysler"}},[_vm._v("Chrysler")]),_vm._v(" "),_c('option',{attrs:{"value":"dodge"}},[_vm._v("Dodge")]),_vm._v(" "),_c('option',{attrs:{"value":"ford","selected":""}},[_vm._v("Ford")])])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Mac or Windows","smart-select":"","smart-select-params":{openIn: 'sheet'}}},[_c('select',{attrs:{"name":"mac-windows"}},[_c('option',{attrs:{"value":"mac","selected":""}},[_vm._v("Mac")]),_vm._v(" "),_c('option',{attrs:{"value":"windows"}},[_vm._v("Windows")])])]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Super Hero","smart-select":"","smart-select-params":{openIn: 'popover'}}},[_c('select',{attrs:{"name":"superhero","multiple":""}},[_c('option',{attrs:{"value":"Batman","selected":""}},[_vm._v("Batman")]),_vm._v(" "),_c('option',{attrs:{"value":"Superman"}},[_vm._v("Superman")]),_vm._v(" "),_c('option',{attrs:{"value":"Hulk"}},[_vm._v("Hulk")]),_vm._v(" "),_c('option',{attrs:{"value":"Spiderman"}},[_vm._v("Spiderman")]),_vm._v(" "),_c('option',{attrs:{"value":"Ironman"}},[_vm._v("Ironman")]),_vm._v(" "),_c('option',{attrs:{"value":"Thor"}},[_vm._v("Thor")]),_vm._v(" "),_c('option',{attrs:{"value":"Wonder Woman"}},[_vm._v("Wonder Woman")])])])],1)],1)};
   var __vue_staticRenderFns__$Q = [];
@@ -58107,8 +58562,10 @@
   };
 
   /* script */
-              var __vue_script__$R = script$R;
-              
+  var __vue_script__$R = script$R;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$R.__file = "sortable.vue";
+
   /* template */
   var __vue_render__$R = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Sortable List","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"sortable-toggle":".sortable"}},[_vm._v("Toggle")])],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Just click \"Toggle\" button on navigation bar to enable/disable sorting")])]),_vm._v(" "),_c('f7-list',{attrs:{"sortable":""}},[_c('f7-list-item',{attrs:{"title":"1 Jenna Smith","after":"CEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"2 John Doe","after":"Director"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"3 John Doe","after":"Developer"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"4 Aaron Darling","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"5 Calvin Johnson","after":"Accounter"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"6 John Smith","after":"SEO"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"7 Chloe","after":"Manager"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-list',{attrs:{"media-list":"","sortable":""}},[_c('f7-list-item',{attrs:{"title":"Yellow Submarine","after":"$15","subtitle":"Beatles","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/160/160/people/1","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Don't Stop Me Now","after":"$22","subtitle":"Queen","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/160/160/people/2","width":"80"},slot:"media"})]),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Billie Jean","after":"$16","subtitle":"Michael Jackson","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('img',{attrs:{"slot":"media","src":"http://lorempixel.com/160/160/people/3","width":"80"},slot:"media"})])],1)],1)};
   var __vue_staticRenderFns__$R = [];
@@ -58159,8 +58616,10 @@
   };
 
   /* script */
-              var __vue_script__$S = script$S;
-              
+  var __vue_script__$S = script$S;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$S.__file = "statusbar.vue";
+
   /* template */
   var __vue_render__$S = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Statusbar Overlay","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 automatically detects if your app in full screen mode, and automatically shows statusbar overlay if app is in full screen mode (or hides statusbar if app is not in full screen mode). Its visibility can be forced using app parameters or using API:")]),_vm._v(" "),_c('f7-row',{attrs:{"tag":"p"}},[_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.showStatusbar}},[_vm._v("Show Statusbar")]),_vm._v(" "),_c('f7-button',{staticClass:"col",attrs:{"fill":""},on:{"click":_vm.hideStatusbar}},[_vm._v("Hide Statusbar")])],1)],1)],1)};
   var __vue_staticRenderFns__$S = [];
@@ -58233,8 +58692,10 @@
   };
 
   /* script */
-              var __vue_script__$T = script$T;
-              
+  var __vue_script__$T = script$T;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$T.__file = "stepper.vue";
+
   /* template */
   var __vue_render__$T = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Stepper","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Shape and size")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper')],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Raised")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","fill":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Small Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","small":"","round":"","fill":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":""}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","fill":""}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Large Round Fill")]),_vm._v(" "),_c('f7-stepper',{attrs:{"raised":"","large":"","round":"","fill":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Colors")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"red"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"green"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","color":"blue"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","round":"","color":"pink"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"yellow"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"orange"}})],1)],1),_vm._v(" "),_c('f7-row',{staticClass:"margin-top"},[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","color":"gray"}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","small":"","round":"","color":"black"}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Without input element")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"input":false}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"input":false,"round":""}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Min, max, step")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":100,"min":0,"max":1000,"step":100}})],1),_vm._v(" "),_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","input":false,"value":5,"min":0,"max":10,"step":0.5}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Autorepeat (Tap & hold)")]),_vm._v(" "),_c('f7-block-header',[_vm._v("Pressing and holding one of its buttons increments or decrements the stepper’s value repeatedly. With dynamic autorepeat, the rate of change depends on how long the user continues pressing the control.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Default")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true}})],1),_vm._v(" "),_c('f7-col',[_c('small',{staticClass:"display-block"},[_vm._v("Dynamic")]),_vm._v(" "),_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":100,"step":1,"autorepeat":true,"autorepeat-dynamic":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Wraps")]),_vm._v(" "),_c('f7-block-header',[_vm._v("In wraps mode incrementing beyond maximum value sets value to minimum value, likewise, decrementing below minimum value sets value to maximum value")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":10,"step":1,"autorepeat":true,"wraps":true}})],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value element")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":("Apples " + _vm.applesCount)}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setApples},slot:"after"})],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":("Oranges " + _vm.orangesCount)}},[_c('f7-stepper',{attrs:{"slot":"after","buttons-only":true,"small":"","raised":""},on:{"stepper:change":_vm.setOranges},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Custom value format")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"header":"Meeting starts in","title":_vm.meetingTimeComputed}},[_c('f7-stepper',{attrs:{"slot":"after","min":15,"max":240,"step":15,"value":_vm.meetingTime,"buttons-only":true,"small":"","fill":"","raised":""},on:{"stepper:change":_vm.setMeetingTime},slot:"after"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Manual input")]),_vm._v(" "),_c('f7-block-header',[_vm._v("It is possible to enter value manually from keyboard or mobile keypad. When click on input field, stepper enter into manual input mode, which allow type value from keyboar and check fractional part with defined accurancy. Click outside or enter Return key, ending manual mode.")]),_vm._v(" "),_c('f7-block',{staticClass:"text-align-center",attrs:{"strong":""}},[_c('f7-row',[_c('f7-col',[_c('f7-stepper',{attrs:{"fill":"","value":0,"min":0,"max":1000,"step":1,"autorepeat":true,"wraps":true,"manual-input-mode":true,"decimal-point":2}})],1)],1)],1)],1)};
   var __vue_staticRenderFns__$T = [];
@@ -58273,8 +58734,10 @@
   };
 
   /* script */
-              var __vue_script__$U = script$U;
-              
+  var __vue_script__$U = script$U;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$U.__file = "subnavbar.vue";
+
   /* template */
   var __vue_render__$U = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Subnavbar","back-link":"Back"}},[_c('f7-subnavbar',[_c('f7-segmented',[_c('f7-button',{attrs:{"outline":"","active":""}},[_vm._v("Link 1")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Link 2")]),_vm._v(" "),_c('f7-button',{attrs:{"outline":""}},[_vm._v("Link 3")])],1)],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Subnavbar is useful when you need to put any additional elements into Navbar, like Tab Links or Search Bar. It also remains visible when Navbar hidden.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/subnavbar-title/","title":"Subnavbar Title"}})],1)],1)};
   var __vue_staticRenderFns__$U = [];
@@ -58313,8 +58776,10 @@
   };
 
   /* script */
-              var __vue_script__$V = script$V;
-              
+  var __vue_script__$V = script$V;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$V.__file = "subnavbar-title.vue";
+
   /* template */
   var __vue_render__$V = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"title":"Page Title"}})],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("It also possible to use Subnavbar to display page title and keep navbar only for actions.")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde, consequatur quia amet voluptate vero quasi, veniam, quisquam dolorum magni sint enim, harum expedita excepturi quas iure magnam minus voluptatem quaerat!")]),_vm._v(" "),_c('p',[_vm._v("Dolore laboriosam error magnam velit expedita recusandae, dolor asperiores unde, sint, veritatis illum ipsum? Nulla ratione nobis, ullam debitis. Inventore sapiente rem dolore eum ipsa totam perspiciatis cupiditate, amet maiores!")]),_vm._v(" "),_c('p',[_vm._v("Ratione quod minus ipsum maxime cum voluptate molestiae adipisci placeat ut illo, alias nobis perferendis magni odio sunt, porro, totam praesentium possimus! Autem inventore ut provident animi quae, impedit id!")]),_vm._v(" "),_c('p',[_vm._v("Aperiam ea ab harum. Quis dolorem cupiditate, incidunt mollitia ducimus voluptatem commodi! Odio quasi amet hic nesciunt, quibusdam, est vero repellat sapiente perferendis, optio laboriosam in culpa veniam alias ad.")]),_vm._v(" "),_c('p',[_vm._v("A fuga corporis harum velit maiores, quaerat accusantium cum aspernatur consequuntur dolor vel fugit omnis est dolorum delectus debitis aperiam distinctio eveniet vero nihil voluptatum culpa. Accusamus aliquid facere tenetur?")])])],1)};
   var __vue_staticRenderFns__$V = [];
@@ -58354,8 +58819,10 @@
   };
 
   /* script */
-              var __vue_script__$W = script$W;
-              
+  var __vue_script__$W = script$W;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$W.__file = "swiper.vue";
+
   /* template */
   var __vue_render__$W = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Slider","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"block"},[_c('p',[_vm._v("\n      Framework7 comes with powerful and most modern touch slider ever -\n      "),_c('a',{staticClass:"external",attrs:{"href":"http://idangero.us/swiper","target":"_blank"}},[_vm._v("Swiper Slider")]),_vm._v("\n      with super flexible configuration and lot, lot of features. Just check the following demos:\n    ")])]),_vm._v(" "),_c('div',{staticClass:"list links-list"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"swiper-horizontal/"}},[_vm._v("Swiper Horizontal")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-vertical/"}},[_vm._v("Swiper Vertical")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-space-between/"}},[_vm._v("Space Between Slides")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-multiple/"}},[_vm._v("Multiple Per Page")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-nested/"}},[_vm._v("Nested Swipers")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-loop/"}},[_vm._v("Infinite Loop Mode")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-cube/"}},[_vm._v("3D Cube Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-coverflow/"}},[_vm._v("3D Coverflow Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-3d-flip/"}},[_vm._v("3D Flip Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-fade/"}},[_vm._v("Fade Effect")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-scrollbar/"}},[_vm._v("With Scrollbar")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-gallery/"}},[_vm._v("Thumbs Gallery")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-custom-controls/"}},[_vm._v("Custom Controls")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-parallax/"}},[_vm._v("Parallax")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-lazy/"}},[_vm._v("Lazy Loading")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-progress/"}},[_vm._v("Progress Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-pagination-fraction/"}},[_vm._v("Fraction Pagination")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"swiper-zoom/"}},[_vm._v("Zoom")])])])])],1)};
   var __vue_staticRenderFns__$W = [];
@@ -58395,8 +58862,10 @@
   };
 
   /* script */
-              var __vue_script__$X = script$X;
-              
+  var __vue_script__$X = script$X;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$X.__file = "swiper-horizontal.vue";
+
   /* template */
   var __vue_render__$X = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Swiper Horizontal","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$X = [];
@@ -58436,8 +58905,10 @@
   };
 
   /* script */
-              var __vue_script__$Y = script$Y;
-              
+  var __vue_script__$Y = script$Y;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$Y.__file = "swiper-vertical.vue";
+
   /* template */
   var __vue_render__$Y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Swiper","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-direction":"vertical","data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$Y = [];
@@ -58477,8 +58948,10 @@
   };
 
   /* script */
-              var __vue_script__$Z = script$Z;
-              
+  var __vue_script__$Z = script$Z;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$Z.__file = "swiper-space-between.vue";
+
   /* template */
   var __vue_render__$Z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Space Between Slides","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"hideOnClick\": true}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$Z = [];
@@ -58519,8 +58992,10 @@
   };
 
   /* script */
-              var __vue_script__$_ = script$_;
-              
+  var __vue_script__$_ = script$_;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$_.__file = "swiper-multiple.vue";
+
   /* template */
   var __vue_render__$_ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Multiple Swipers","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("1 Slide Per View, 50px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("2 Slides Per View, 20px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"20","data-slides-per-view":"2"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("3 Slides Per View, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"3"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Slides Per View + Centered")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple demo-swiper-multiple-auto",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Vertical, 10px Between")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"10","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Slow speed")]),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-multiple",attrs:{"data-speed":"900","data-pagination":"{\"el\": \".swiper-pagination\"}","data-space-between":"50"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$_ = [];
@@ -58560,8 +59035,10 @@
   };
 
   /* script */
-              var __vue_script__$10 = script$10;
-              
+  var __vue_script__$10 = script$10;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$10.__file = "swiper-nested.vue";
+
   /* template */
   var __vue_render__$10 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Nested Swipers","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-h\"}"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-h"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination-v\"}","data-direction":"vertical"}},[_c('div',{staticClass:"swiper-pagination swiper-pagination-v"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Vertical Slide 3")])])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Horizontal Slide 4")])])])],1)};
   var __vue_staticRenderFns__$10 = [];
@@ -58601,8 +59078,10 @@
   };
 
   /* script */
-              var __vue_script__$11 = script$11;
-              
+  var __vue_script__$11 = script$11;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$11.__file = "swiper-loop.vue";
+
   /* template */
   var __vue_render__$11 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Infinite Loop Mode","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-loop":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$11 = [];
@@ -58642,8 +59121,10 @@
   };
 
   /* script */
-              var __vue_script__$12 = script$12;
-              
+  var __vue_script__$12 = script$12;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$12.__file = "swiper-3d-cube.vue";
+
   /* template */
   var __vue_render__$12 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Cube","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"cube"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/1/)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/2/)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/3/)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/4/)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/5/)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/6/)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/7/)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/8/)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/9/)"}},[_vm._v("Slide 9")])])])],1)};
   var __vue_staticRenderFns__$12 = [];
@@ -58683,8 +59164,10 @@
   };
 
   /* script */
-              var __vue_script__$13 = script$13;
-              
+  var __vue_script__$13 = script$13;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$13.__file = "swiper-3d-coverflow.vue";
+
   /* template */
   var __vue_render__$13 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Coverflow Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-coverflow",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"coverflow","data-slides-per-view":"auto","data-centered-slides":"true"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/1/)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/2/)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/3/)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/4/)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/5/)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/6/)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/7/)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/8/)"}},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/9/)"}},[_vm._v("Slide 9")])])])],1)};
   var __vue_staticRenderFns__$13 = [];
@@ -58724,8 +59207,10 @@
   };
 
   /* script */
-              var __vue_script__$14 = script$14;
-              
+  var __vue_script__$14 = script$14;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$14.__file = "swiper-3d-flip.vue";
+
   /* template */
   var __vue_render__$14 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"3D Flip Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-cube",attrs:{"data-effect":"flip"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/1/)"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/2/)"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/3/)"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/4/)"}},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/5/)"}},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/6/)"}},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/7/)"}},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/people/8/)"}},[_vm._v("Slide 8")])])])],1)};
   var __vue_staticRenderFns__$14 = [];
@@ -58765,8 +59250,10 @@
   };
 
   /* script */
-              var __vue_script__$15 = script$15;
-              
+  var __vue_script__$15 = script$15;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$15.__file = "swiper-fade.vue";
+
   /* template */
   var __vue_render__$15 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Fade Effect","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper demo-swiper-fade",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-effect":"fade"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/people/1/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/people/2/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/people/3/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/people/4/)"}})])])],1)};
   var __vue_staticRenderFns__$15 = [];
@@ -58806,8 +59293,10 @@
   };
 
   /* script */
-              var __vue_script__$16 = script$16;
-              
+  var __vue_script__$16 = script$16;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$16.__file = "swiper-scrollbar.vue";
+
   /* template */
   var __vue_render__$16 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Scrollbar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-scrollbar":"{\"el\": \".swiper-scrollbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-scrollbar"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$16 = [];
@@ -58877,8 +59366,10 @@
   };
 
   /* script */
-              var __vue_script__$17 = script$17;
-              
+  var __vue_script__$17 = script$17;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$17.__file = "swiper-gallery.vue";
+
   /* template */
   var __vue_render__$17 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{staticStyle:{"background":"#000"},on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Thumbs Gallery","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-top"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/1/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/2/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/3/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/4/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/5/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/6/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"})]),_vm._v(" "),_c('div',{staticClass:"swiper-container demo-swiper-gallery-thumbs"},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/1/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/2/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/3/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/4/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/5/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-pic",staticStyle:{"background-image":"url(http://lorempixel.com/800/800/nature/6/)"}})])])])],1)};
   var __vue_staticRenderFns__$17 = [];
@@ -58918,8 +59409,10 @@
   };
 
   /* script */
-              var __vue_script__$18 = script$18;
-              
+  var __vue_script__$18 = script$18;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$18.__file = "swiper-custom-controls.vue";
+
   /* template */
   var __vue_render__$18 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Custom Controls","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"demo-swiper-custom"},[_c('div',{staticClass:"swiper-container swiper-init",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"clickable\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-space-between":"0"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/nightlife/1/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/nightlife/2/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/nightlife/3/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/nightlife/4/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/nightlife/5/)"}}),_vm._v(" "),_c('div',{staticClass:"swiper-slide",staticStyle:{"background-image":"url(http://lorempixel.com/1024/1024/nightlife/6/)"}})]),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])])],1)};
   var __vue_staticRenderFns__$18 = [];
@@ -58959,8 +59452,10 @@
   };
 
   /* script */
-              var __vue_script__$19 = script$19;
-              
+  var __vue_script__$19 = script$19;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$19.__file = "swiper-parallax.vue";
+
   /* template */
   var __vue_render__$19 = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Parallax","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-parallax",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-parallax":"true","data-speed":"600"}},[_c('div',{staticClass:"swiper-parallax-bg",staticStyle:{"background-image":"url(http://lorempixel.com/900/600/nightlife/2/)"},attrs:{"data-swiper-parallax":"-23%"}}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev color-white"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-slide-title",attrs:{"data-swiper-parallax":"-300"}},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-subtitle",attrs:{"data-swiper-parallax":"-200"}},[_vm._v("Subtitle")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide-text",attrs:{"data-swiper-parallax":"-100"}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam dictum mattis velit, sit amet faucibus felis iaculis nec. Nulla laoreet justo vitae porttitor porttitor. Suspendisse in sem justo. Integer laoreet magna nec elit suscipit, ac laoreet nibh euismod. Aliquam hendrerit lorem at elit facilisis rutrum. Ut at ullamcorper velit. Nulla ligula nisi, imperdiet ut lacinia nec, tincidunt ut libero. Aenean feugiat non eros quis feugiat.")])])])])])],1)};
   var __vue_staticRenderFns__$19 = [];
@@ -59000,8 +59495,10 @@
   };
 
   /* script */
-              var __vue_script__$1a = script$1a;
-              
+  var __vue_script__$1a = script$1a;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1a.__file = "swiper-lazy.vue";
+
   /* template */
   var __vue_render__$1a = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Slider Lazy Loading","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper-lazy",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}","data-lazy":"{\"enabled\": true}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"http://lorempixel.com/1600/1200/nature/1/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"http://lorempixel.com/1600/1200/nature/2/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"http://lorempixel.com/1600/1200/nature/3/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"http://lorempixel.com/1600/1200/nature/4/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"http://lorempixel.com/1600/1200/nature/5/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('img',{staticClass:"swiper-lazy",attrs:{"data-src":"http://lorempixel.com/1600/1200/nature/6/"}}),_vm._v(" "),_c('div',{staticClass:"preloader swiper-lazy-preloader"})])]),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"})])],1)};
   var __vue_staticRenderFns__$1a = [];
@@ -59041,8 +59538,10 @@
   };
 
   /* script */
-              var __vue_script__$1b = script$1b;
-              
+  var __vue_script__$1b = script$1b;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1b.__file = "swiper-pagination-progress.vue";
+
   /* template */
   var __vue_render__$1b = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Progress Pagination","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"progressbar\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$1b = [];
@@ -59082,8 +59581,10 @@
   };
 
   /* script */
-              var __vue_script__$1c = script$1c;
-              
+  var __vue_script__$1c = script$1c;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1c.__file = "swiper-pagination-fraction.vue";
+
   /* template */
   var __vue_render__$1c = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Pagination Fraction","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\", \"type\": \"fraction\"}"}},[_c('div',{staticClass:"swiper-pagination"}),_vm._v(" "),_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 1")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 2")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 3")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 4")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 5")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 6")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 7")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 8")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 9")]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_vm._v("Slide 10")])])])],1)};
   var __vue_staticRenderFns__$1c = [];
@@ -59123,8 +59624,10 @@
   };
 
   /* script */
-              var __vue_script__$1d = script$1d;
-              
+  var __vue_script__$1d = script$1d;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1d.__file = "swiper-zoom.vue";
+
   /* template */
   var __vue_render__$1d = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Zoom","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"swiper-container swiper-init demo-swiper",attrs:{"data-pagination":"{\"el\": \".swiper-pagination\"}","data-zoom":"{\"enabled\": true}","data-navigation":"{\"nextEl\": \".swiper-button-next\", \"prevEl\": \".swiper-button-prev\"}"}},[_c('div',{staticClass:"swiper-wrapper"},[_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"http://lorempixel.com/800/800/nature/1/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"http://lorempixel.com/800/800/nature/2/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"http://lorempixel.com/800/800/nature/3/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"http://lorempixel.com/800/800/nature/4/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"http://lorempixel.com/800/800/nature/5/"}})])]),_vm._v(" "),_c('div',{staticClass:"swiper-slide"},[_c('div',{staticClass:"swiper-zoom-container"},[_c('img',{attrs:{"src":"http://lorempixel.com/800/800/nature/6/"}})])])]),_vm._v(" "),_c('div',{staticClass:"swiper-button-next"}),_vm._v(" "),_c('div',{staticClass:"swiper-button-prev"}),_vm._v(" "),_c('div',{staticClass:"swiper-pagination"})])],1)};
   var __vue_staticRenderFns__$1d = [];
@@ -59220,8 +59723,10 @@
   };
 
   /* script */
-              var __vue_script__$1e = script$1e;
-              
+  var __vue_script__$1e = script$1e;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1e.__file = "swipeout.vue";
+
   /* template */
   var __vue_render__$1e = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:init":_vm.onPageInit}},[_c('f7-navbar',{attrs:{"title":"Swipeout","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("\n      Swipe out actions on list elements is one of the most awesome F7 features. It allows you to call hidden menu for each list element where you can put default ready-to use delete button or any other buttons for some required actions.\n    ")])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete with confirm modal")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe to delete without confirm")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Swipe for actions")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"You can't delete me"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With callback on remove")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me please"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe left on me too"},on:{"swipeout:deleted":_vm.onDeleted}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{attrs:{"delete":""}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"I am not removable"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"})],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("With actions on left side (swipe to right)")]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me please"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Swipe right on me too"}},[_c('f7-icon',{attrs:{"slot":"media","icon":"icon-f7"},slot:"media"}),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1)],1)],1),_vm._v(" "),_c('f7-block-title',[_vm._v("On both sides with overswipes")]),_vm._v(" "),_c('f7-list',{attrs:{"media-list":""}},[_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"17:14","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"17:11","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"Facebook","after":"16:48","subtitle":"New messages from John Doe","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1),_vm._v(" "),_c('f7-list-item',{attrs:{"swipeout":"","title":"John Doe (via Twitter)","after":"15:32","subtitle":"John Doe (@_johndoe) mentioned you on Twitter!","text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."}},[_c('f7-swipeout-actions',{attrs:{"left":""}},[_c('f7-swipeout-button',{attrs:{"overswipe":"","color":"green"},on:{"click":_vm.reply}},[_vm._v("Reply")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"blue"},on:{"click":_vm.forward}},[_vm._v("Forward")])],1),_vm._v(" "),_c('f7-swipeout-actions',{attrs:{"right":""}},[_c('f7-swipeout-button',{on:{"click":_vm.more}},[_vm._v("More")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"color":"orange"},on:{"click":_vm.mark}},[_vm._v("Mark")]),_vm._v(" "),_c('f7-swipeout-button',{attrs:{"delete":"","overswipe":"","confirm-text":"Are you sure you want to delete this item?"}},[_vm._v("Delete")])],1)],1)],1)],1)};
   var __vue_staticRenderFns__$1e = [];
@@ -59263,8 +59768,10 @@
   };
 
   /* script */
-              var __vue_script__$1f = script$1f;
-              
+  var __vue_script__$1f = script$1f;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1f.__file = "tabs.vue";
+
   /* template */
   var __vue_render__$1f = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/tabs-static/","title":"Static Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-animated/","title":"Animated Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-swipeable/","title":"Swipeable Tabs"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/tabs-routable/","title":"Routable Tabs"}})],1)],1)};
   var __vue_staticRenderFns__$1f = [];
@@ -59303,8 +59810,10 @@
   };
 
   /* script */
-              var __vue_script__$1g = script$1g;
-              
+  var __vue_script__$1g = script$1g;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1g.__file = "tabs-static.vue";
+
   /* template */
   var __vue_render__$1g = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Static Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1g = [];
@@ -59343,8 +59852,10 @@
   };
 
   /* script */
-              var __vue_script__$1h = script$1h;
-              
+  var __vue_script__$1h = script$1h;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1h.__file = "tabs-animated.vue";
+
   /* template */
   var __vue_render__$1h = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Animated Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"animated":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1h = [];
@@ -59383,8 +59894,10 @@
   };
 
   /* script */
-              var __vue_script__$1i = script$1i;
-              
+  var __vue_script__$1i = script$1i;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1i.__file = "tabs-swipeable.vue";
+
   /* template */
   var __vue_render__$1i = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Swipeable Tabs","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"swipeable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1i = [];
@@ -59423,8 +59936,10 @@
   };
 
   /* script */
-              var __vue_script__$1j = script$1j;
-              
+  var __vue_script__$1j = script$1j;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1j.__file = "tabs-routable.vue";
+
   /* template */
   var __vue_render__$1j = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabs Routable","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":"","tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"","href":"./","route-tab-id":"tab1"}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab2/","route-tab-id":"tab2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"","href":"tab3/","route-tab-id":"tab3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',{attrs:{"routable":""}},[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab1"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab2"}}),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab3"}})],1)],1)};
   var __vue_staticRenderFns__$1j = [];
@@ -59588,8 +60103,10 @@
   };
 
   /* script */
-              var __vue_script__$1k = script$1k;
-              
+  var __vue_script__$1k = script$1k;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1k.__file = "toast.vue";
+
   /* template */
   var __vue_render__$1k = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:beforeremove":_vm.onPageBeforeRemove,"page:beforeout":_vm.onPageBeforeOut}},[_c('f7-navbar',{attrs:{"title":"Toast","back-link":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toasts provide brief feedback about an operation through a message on the screen.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastBottom}},[_vm._v("Toast on Bottom")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastTop}},[_vm._v("Toast on Top")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastCenter}},[_vm._v("Toast on Center")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastIcon}},[_vm._v("Toast with icon")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastLargeMessage}},[_vm._v("Toast with large message")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithButton}},[_vm._v("Toast with close button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCustomButton}},[_vm._v("Toast with custom button")])],1),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.showToastWithCallback}},[_vm._v("Toast with callback on close")])],1)])],1)};
   var __vue_staticRenderFns__$1k = [];
@@ -59633,8 +60150,10 @@
   };
 
   /* script */
-              var __vue_script__$1l = script$1l;
-              
+  var __vue_script__$1l = script$1l;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1l.__file = "toggle.vue";
+
   /* template */
   var __vue_render__$1l = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toggle","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Super Heroes")]),_vm._v(" "),_c('f7-list',{attrs:{"simple-list":""}},[_c('f7-list-item',[_c('span',[_vm._v("Batman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Aquaman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"blue"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Superman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"red"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Hulk")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"green"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Spiderman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Ironman (Disabled)")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","disabled":""}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Thor")]),_vm._v(" "),_c('f7-toggle',{attrs:{"checked":"","color":"orange"}})],1),_vm._v(" "),_c('f7-list-item',[_c('span',[_vm._v("Wonder Woman")]),_vm._v(" "),_c('f7-toggle',{attrs:{"color":"pink"}})],1)],1)],1)};
   var __vue_staticRenderFns__$1l = [];
@@ -59683,8 +60202,10 @@
   };
 
   /* script */
-              var __vue_script__$1m = script$1m;
-              
+  var __vue_script__$1m = script$1m;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1m.__file = "toolbar-tabbar.vue";
+
   /* template */
   var __vue_render__$1m = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Toolbar & Tabbar","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"./tabbar/","title":"Tabbar"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-labels/","title":"Tabbar With Labels"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./tabbar-scrollable/","title":"Tabbar Scrollable"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"./toolbar-hide-scroll/","title":"Hide Toolbar On Scroll"}})],1),_vm._v(" "),_c('f7-block-title',[_vm._v("Toolbar Position")]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Toolbar supports both top and bottom positions. Click the following button to change its position.")]),_vm._v(" "),_c('p',[_c('f7-button',{attrs:{"fill":""},on:{"click":_vm.toggleToolbarPosition}},[_vm._v("Toggle Toolbar Position")])],1)])],1)};
   var __vue_staticRenderFns__$1m = [];
@@ -59733,8 +60254,10 @@
   };
 
   /* script */
-              var __vue_script__$1n = script$1n;
-              
+  var __vue_script__$1n = script$1n;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1n.__file = "tabbar.vue";
+
   /* template */
   var __vue_render__$1n = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":""}},[_vm._v("Tab 1")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2"}},[_vm._v("Tab 2")]),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3"}},[_vm._v("Tab 3")])],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1n = [];
@@ -59783,8 +60306,10 @@
   };
 
   /* script */
-              var __vue_script__$1o = script$1o;
-              
+  var __vue_script__$1o = script$1o;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1o.__file = "tabbar-labels.vue";
+
   /* template */
   var __vue_render__$1o = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Labels","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","labels":""}},[_c('f7-link',{attrs:{"tab-link":"#tab-1","tab-link-active":"","text":"Tab 1","icon-ios":"f7:email_fill","icon-md":"material:email"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-2","text":"Tab 2","icon-ios":"f7:calendar_fill","icon-md":"material:today"}}),_vm._v(" "),_c('f7-link',{attrs:{"tab-link":"#tab-3","text":"Tab 3","icon-ios":"f7:cloud_upload_fill","icon-md":"material:file_upload"}})],1),_vm._v(" "),_c('f7-tabs',[_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-1","tab-active":""}},[_c('f7-block',[_c('p',[_vm._v("Tab 1 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-2"}},[_c('f7-block',[_c('p',[_vm._v("Tab 2 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1),_vm._v(" "),_c('f7-tab',{staticClass:"page-content",attrs:{"id":"tab-3"}},[_c('f7-block',[_c('p',[_vm._v("Tab 3 content")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam enim quia molestiae facilis laudantium voluptates obcaecati officia cum, sit libero commodi. Ratione illo suscipit temporibus sequi iure ad laboriosam accusamus?")]),_vm._v(" "),_c('p',[_vm._v("Saepe explicabo voluptas ducimus provident, doloremque quo totam molestias! Suscipit blanditiis eaque exercitationem praesentium reprehenderit, fuga accusamus possimus sed, sint facilis ratione quod, qui dignissimos voluptas! Aliquam rerum consequuntur deleniti.")]),_vm._v(" "),_c('p',[_vm._v("Totam reprehenderit amet commodi ipsum nam provident doloremque possimus odio itaque, est animi culpa modi consequatur reiciendis corporis libero laudantium sed eveniet unde delectus a maiores nihil dolores? Natus, perferendis.")]),_vm._v(" "),_c('p',[_vm._v("Atque quis totam repellendus omnis alias magnam corrupti, possimus aspernatur perspiciatis quae provident consequatur minima doloremque blanditiis nihil maxime ducimus earum autem. Magni animi blanditiis similique iusto, repellat sed quisquam!")]),_vm._v(" "),_c('p',[_vm._v("Suscipit, facere quasi atque totam. Repudiandae facilis at optio atque, rem nam, natus ratione cum enim voluptatem suscipit veniam! Repellat, est debitis. Modi nam mollitia explicabo, unde aliquid impedit! Adipisci!")]),_vm._v(" "),_c('p',[_vm._v("Deserunt adipisci tempora asperiores, quo, nisi ex delectus vitae consectetur iste fugiat iusto dolorem autem. Itaque, ipsa voluptas, a assumenda rem, dolorum porro accusantium, officiis veniam nostrum cum cumque impedit.")]),_vm._v(" "),_c('p',[_vm._v("Laborum illum ipsa voluptatibus possimus nesciunt ex consequatur rem, natus ad praesentium rerum libero consectetur temporibus cupiditate atque aspernatur, eaque provident eligendi quaerat ea soluta doloremque. Iure fugit, minima facere.")])])],1)],1)],1)};
   var __vue_staticRenderFns__$1o = [];
@@ -59834,8 +60359,10 @@
   };
 
   /* script */
-              var __vue_script__$1p = script$1p;
-              
+  var __vue_script__$1p = script$1p;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1p.__file = "tabbar-scrollable.vue";
+
   /* template */
   var __vue_render__$1p = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"page-content":false}},[_c('f7-navbar',{attrs:{"title":"Tabbar Scrollable","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"icon-md":"material:compare_arrows","icon-ios":"f7:reload"},on:{"click":_vm.toggleToolbarPosition}})],1)],1),_vm._v(" "),_c('f7-toolbar',{attrs:{"position":_vm.toolbarPosition,"tabbar":"","scrollable":""}},_vm._l((_vm.tabs),function(tab,index){return _c('f7-link',{key:tab,attrs:{"tab-link":("#tab-" + tab),"tab-link-active":index === 0}},[_vm._v("Tab "+_vm._s(tab))])}),1),_vm._v(" "),_c('f7-tabs',_vm._l((_vm.tabs),function(tab,index){return _c('f7-tab',{key:tab,staticClass:"page-content",attrs:{"id":("tab-" + tab),"tab-active":index === 0}},[_c('f7-block',[_c('p',[_c('b',[_vm._v("Tab "+_vm._s(tab)+" content")])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corrupti, quos asperiores unde aspernatur illum odio, eveniet. Fugiat magnam perspiciatis ex dignissimos, rerum modi ea nesciunt praesentium iusto optio rem?")]),_vm._v(" "),_c('p',[_vm._v("Illo debitis et recusandae, ipsum nisi nostrum vero delectus quasi. Quasi, consequatur! Corrupti, explicabo maxime incidunt fugit sint dicta saepe officiis sed expedita, minima porro! Ipsa dolores quia, delectus labore!")]),_vm._v(" "),_c('p',[_vm._v("At similique minima placeat magni molestias sunt deleniti repudiandae voluptatibus magnam quam esse reprehenderit dolor enim qui sed alias, laboriosam quaerat laborum iure repellat praesentium pariatur dolorum possimus veniam! Consectetur.")]),_vm._v(" "),_c('p',[_vm._v("Sunt, sed, magnam! Qui, suscipit. Beatae cum ullam necessitatibus eligendi, culpa rem excepturi consequatur quidem totam eum voluptates nihil, enim pariatur incidunt corporis sed facere magni earum tenetur rerum ea.")]),_vm._v(" "),_c('p',[_vm._v("Veniam nulla quis molestias voluptatem inventore consectetur iusto voluptatibus perferendis quisquam, cupiditate voluptates, tenetur vero magnam nisi animi praesentium atque adipisci optio quod aliquid vel delectus ad? Dicta deleniti, recusandae.")])])],1)}),1)],1)};
   var __vue_staticRenderFns__$1p = [];
@@ -59874,8 +60401,10 @@
   };
 
   /* script */
-              var __vue_script__$1q = script$1q;
-              
+  var __vue_script__$1q = script$1q;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1q.__file = "toolbar-hide-scroll.vue";
+
   /* template */
   var __vue_render__$1q = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{attrs:{"hide-toolbar-on-scroll":""}},[_c('f7-navbar',{attrs:{"title":"Hide Toolbar On Scroll","back-link":"Back"}}),_vm._v(" "),_c('f7-toolbar',{attrs:{"bottom":""}},[_c('f7-link',[_vm._v("Left Link")]),_vm._v(" "),_c('f7-link',[_vm._v("Right Link")])],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Toolbar will be hidden if you scroll bottom")])]),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos maxime incidunt id ab culpa ipsa omnis eos, vel excepturi officiis neque illum perferendis dolorum magnam rerum natus dolore nulla ex.")]),_vm._v(" "),_c('p',[_vm._v("Eum dolore, amet enim quaerat omnis. Modi minus voluptatum quam veritatis assumenda, eligendi minima dolore in autem delectus sequi accusantium? Cupiditate praesentium autem eius, esse ratione consequuntur dolor minus error.")]),_vm._v(" "),_c('p',[_vm._v("Repellendus ipsa sint quisquam delectus dolore quidem odio, praesentium, sequi temporibus amet architecto? Commodi molestiae, in repellat fugit! Laudantium, fuga quia officiis error. Provident inventore iusto quas iure, expedita optio.")]),_vm._v(" "),_c('p',[_vm._v("Eligendi recusandae eos sed alias delectus reprehenderit quaerat modi dolor commodi beatae temporibus nisi ullam ut, quae, animi esse in officia nesciunt sequi amet repellendus? Maiores quos provident nisi expedita.")]),_vm._v(" "),_c('p',[_vm._v("Dolorem aspernatur repudiandae aperiam autem excepturi inventore explicabo molestiae atque, architecto consequatur ab quia quaerat deleniti quis ipsum alias itaque veritatis maiores consectetur minima facilis amet. Maiores impedit ipsum sint.")]),_vm._v(" "),_c('p',[_vm._v("Consequuntur minus fugit vitae magnam illo quibusdam. Minima rerum, magnam nostrum id error temporibus odio molestias tempore vero, voluptas quam iusto. In laboriosam blanditiis, ratione consequuntur similique, quos repellendus ex!")]),_vm._v(" "),_c('p',[_vm._v("Error suscipit odio modi blanditiis voluptatibus tempore minima ipsam accusantium id! Minus, ea totam veniam dolorem aspernatur repudiandae quae similique odio dolor, voluptate quis aut tenetur porro culpa odit aliquid.")]),_vm._v(" "),_c('p',[_vm._v("Aperiam velit sed sit quaerat, expedita tempore aspernatur iusto nobis ipsam error ut sapiente delectus in minima recusandae dolore alias, cumque labore. Doloribus veritatis magni nisi odio voluptatum perferendis placeat!")]),_vm._v(" "),_c('p',[_vm._v("Eaque laboriosam iusto corporis iure nemo ab deleniti ut facere laborum, blanditiis neque nihil dignissimos fuga praesentium illo facilis eos beatae accusamus cumque molestiae asperiores cupiditate? Provident laborum officiis suscipit!")]),_vm._v(" "),_c('p',[_vm._v("Exercitationem odio nulla rerum soluta aspernatur fugit, illo iusto ullam similique. Recusandae consectetur rem, odio autem voluptate similique atque, alias possimus quis vitae in, officiis labore deserunt aspernatur rerum sunt?")])])],1)};
   var __vue_staticRenderFns__$1q = [];
@@ -59940,8 +60469,10 @@
   };
 
   /* script */
-              var __vue_script__$1r = script$1r;
-              
+  var __vue_script__$1r = script$1r;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1r.__file = "tooltip.vue";
+
   /* template */
   var __vue_render__$1r = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',{on:{"page:init":_vm.onPageInit,"page:beforeremove":_vm.onPageBeforeRemove}},[_c('f7-navbar',{attrs:{"title":"Action Sheet","back-link":"Back"}},[_c('f7-nav-right',[_c('f7-link',{staticClass:"navbar-tooltip"},[_c('f7-icon',{attrs:{"ios":"f7:info_round_fill","md":"material:info_outline"}})],1)],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Tooltips display informative text when users hover over, or tap an target element.")]),_vm._v(" "),_c('p',[_vm._v("Tooltip can be positioned around any element with any HTML content inside.")])]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia augue urna, in tincidunt augue hendrerit ut. In nulla massa, facilisis non consectetur a, tempus semper ex. Proin eget volutpat nisl. Integer lacinia maximus nunc molestie viverra. "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" Etiam ullamcorper ultricies ipsum, ut congue tortor rutrum at. Vestibulum rutrum risus a orci dictum, in placerat leo finibus. Sed a congue enim, ut dictum felis. Aliquam erat volutpat. Etiam id nisi in magna egestas malesuada. Sed vitae orci sollicitudin, accumsan nisi a, bibendum felis. Maecenas risus libero, gravida ut tincidunt auctor, "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" aliquam non lectus. Nam laoreet turpis erat, eget bibendum leo suscipit nec.")],1),_vm._v(" "),_c('p',[_vm._v("Vestibulum "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" gravida dui magna, eget pulvinar ligula molestie hendrerit. Mauris vitae facilisis justo. Nam velit mi, pharetra sit amet luctus quis, consectetur a tellus. Maecenas ac magna sit amet eros aliquam rhoncus. Ut dapibus vehicula lectus, ac blandit felis ultricies at. In sollicitudin, lorem eget volutpat viverra, magna "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" felis tempus nisl, porta consectetur nunc neque eget risus. Phasellus vestibulum leo at ante ornare, vel congue justo tincidunt.")],1),_vm._v(" "),_c('p',[_vm._v("Praesent tempus enim id lectus porta, at rutrum purus imperdiet. Donec eget sem vulputate, scelerisque diam nec, consequat turpis. Ut vel convallis felis. Integer "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" neque ex, sollicitudin vitae magna eget, ultrices volutpat dui. Sed placerat odio hendrerit consequat lobortis. Fusce pulvinar facilisis rhoncus. Sed erat ipsum, consequat molestie suscipit vitae, malesuada a "),_c('f7-icon',{staticClass:"icon-tooltip",attrs:{"ios":"f7:info_round_fill","md":"material:info","size":20}}),_vm._v(" massa.")],1)]),_vm._v(" "),_c('f7-block-title',[_vm._v("Auto Initialization")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("For simple cases when you don't need a lot of control over the Tooltip, it can be set on buttons and links automatically with "),_c('code',[_vm._v("tooltip")]),_vm._v(" prop: "),_c('f7-button',{staticStyle:{"display":"inline-block"},attrs:{"round":"","outline":"","small":"","tooltip":"Button tooltip text"}},[_vm._v("Button with Tooltip")])],1)])],1)};
   var __vue_staticRenderFns__$1r = [];
@@ -59980,8 +60511,10 @@
   };
 
   /* script */
-              var __vue_script__$1s = script$1s;
-              
+  var __vue_script__$1s = script$1s;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1s.__file = "timeline.vue";
+
   /* template */
   var __vue_render__$1s = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"link":"/timeline-vertical/","title":"Vertical Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal/","title":"Horizontal Timeline"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"link":"/timeline-horizontal-calendar/","title":"Calendar Timeline"}})],1)],1)};
   var __vue_staticRenderFns__$1s = [];
@@ -60022,10 +60555,12 @@
   };
 
   /* script */
-              var __vue_script__$1t = script$1t;
-              
+  var __vue_script__$1t = script$1t;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1t.__file = "timeline-vertical.vue";
+
   /* template */
-  var __vue_render__$1t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Tablet Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline tablet-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Forced Sides")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Rich Content")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content card no-ios-edges"},[_c('div',{staticClass:"card-header"},[_vm._v("Card Header")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content list links-list inset no-ios-edges"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inside Content Block")]),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])])])],1)};
+  var __vue_render__$1t = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Vertical Timeline","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',[_vm._v("Default")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Only Tablet Side By Side")]),_vm._v(" "),_c('div',{staticClass:"timeline tablet-sides"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Forced Sides")]),_vm._v(" "),_c('div',{staticClass:"timeline timeline-sides"},[_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-right"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Just plain text")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item timeline-item-left"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Rich Content")]),_vm._v(" "),_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:07")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Item Title")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Item Subtitle")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card Header")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text")])])]),_vm._v(" "),_c('f7-block-title',[_vm._v("Inside Content Block")]),_vm._v(" "),_c('div',{staticClass:"block block-strong"},[_c('div',{staticClass:"timeline"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Some text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Another text goes here")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor fugiat ipsam hic porro enim, accusamus perferendis, quas commodi alias quaerat eius nemo deleniti. Odio quasi quos quis iure, aperiam pariatur?")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-divider"}),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_vm._v("One more text here")])])])])])],1)};
   var __vue_staticRenderFns__$1t = [];
 
     /* style */
@@ -60064,10 +60599,12 @@
   };
 
   /* script */
-              var __vue_script__$1u = script$1u;
-              
+  var __vue_script__$1u = script$1u;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1u.__file = "timeline-horizontal.vue";
+
   /* template */
-  var __vue_render__$1u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-20"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:45")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something else")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text goes here")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"card no-ios-edges"},[_c('div',{staticClass:"card-header"},[_vm._v("Card")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])]),_vm._v(" "),_c('div',{staticClass:"card no-ios-edges"},[_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Another Card Content")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"list links-list inset no-ios-edges"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])])])])],1)};
+  var __vue_render__$1u = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-20"},[_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:56")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-title"},[_vm._v("Title 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-subtitle"},[_vm._v("Subtitle 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Lorem ipsum dolor sit amet, consectetur adipisicing elit")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:45")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Do something else")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_vm._v("Plain text goes here")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-header"},[_vm._v("Card")]),_vm._v(" "),_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Card Content")]),_vm._v(" "),_c('div',{staticClass:"card-footer"},[_vm._v("Card Footer")])]),_vm._v(" "),_c('div',{staticClass:"card no-safe-areas"},[_c('div',{staticClass:"card-content card-content-padding"},[_vm._v("Another Card Content")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"list links-list inset no-safe-areas"},[_c('ul',[_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 1")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 2")])]),_vm._v(" "),_c('li',[_c('a',{attrs:{"href":"#"}},[_vm._v("Item 3")])])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26 "),_c('small',[_vm._v("DEC")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:33")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:55")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item-inner"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:54")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 6")])])])])])],1)};
   var __vue_staticRenderFns__$1u = [];
 
     /* style */
@@ -60106,8 +60643,10 @@
   };
 
   /* script */
-              var __vue_script__$1v = script$1v;
-              
+  var __vue_script__$1v = script$1v;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1v.__file = "timeline-horizontal-calendar.vue";
+
   /* template */
   var __vue_render__$1v = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"no-shadow":"","title":"Horizontal Timeline Calendar","back-link":"Back"}}),_vm._v(" "),_c('div',{staticClass:"timeline timeline-horizontal col-33 tablet-15"},[_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2016")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("December")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-year"},[_c('div',{staticClass:"timeline-year-title"},[_c('span',[_vm._v("2017")])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("January")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("21:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("29")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("30")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("31")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])]),_vm._v(" "),_c('div',{staticClass:"timeline-month"},[_c('div',{staticClass:"timeline-month-title"},[_c('span',[_vm._v("February")])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("5")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("6")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("7")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("8")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("9")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("10")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("8:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("11")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("12")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("13")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("14")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("15")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("16")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("17")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("10:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("23:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("18")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("19")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("16:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("12:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("1:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("9:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 5")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("20")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("19:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("14:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("17:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("21")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("4:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("11:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("22")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("22:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("6:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 4")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("23")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("0:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("24")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("7:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("25")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("5:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("26")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("13:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("18:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("27")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("2:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("20:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 2")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-time"},[_vm._v("3:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 3")])])]),_vm._v(" "),_c('div',{staticClass:"timeline-item"},[_c('div',{staticClass:"timeline-item-date"},[_vm._v("28")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-content"},[_c('div',{staticClass:"timeline-item-time"},[_vm._v("15:00")]),_vm._v(" "),_c('div',{staticClass:"timeline-item-text"},[_vm._v("Task 1")])])])])])])],1)};
   var __vue_staticRenderFns__$1v = [];
@@ -60173,8 +60712,10 @@
   };
 
   /* script */
-              var __vue_script__$1w = script$1w;
-              
+  var __vue_script__$1w = script$1w;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1w.__file = "virtual-list.vue";
+
   /* template */
   var __vue_render__$1w = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Virtual List","back-link":"Back"}},[_c('f7-subnavbar',{attrs:{"inner":false}},[_c('f7-searchbar',{attrs:{"search-container":".virtual-list","search-item":"li","search-in":".item-title"}})],1)],1),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("Virtual List allows to render lists with huge amount of elements without loss of performance. And it is fully compatible with all Framework7 list components such as Search Bar, Infinite Scroll, Pull To Refresh, Swipeouts (swipe-to-delete) and Sortable.")]),_vm._v(" "),_c('p',[_vm._v("Here is the example of virtual list with 10 000 items:")])]),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-not-found"},[_c('f7-list-item',{attrs:{"title":"Nothing found"}})],1),_vm._v(" "),_c('f7-list',{staticClass:"searchbar-found",attrs:{"medial-list":"","virtual-list":"","virtual-list-params":{ items: _vm.items, searchAll: _vm.searchAll, renderExternal: _vm.renderExternal, height: _vm.$theme.ios ? 63 : 73}}},[_c('ul',_vm._l((_vm.vlData.items),function(item,index){return _c('f7-list-item',{key:index,style:(("top: " + (_vm.vlData.topPosition) + "px")),attrs:{"media-item":"","link":"#","title":item.title,"subtitle":item.subtitle,"virtual-list-index":_vm.items.indexOf(item)}})}),1)])],1)};
   var __vue_staticRenderFns__$1w = [];
@@ -60325,8 +60866,10 @@
     };
 
   /* script */
-              var __vue_script__$1x = script$1x;
-              
+  var __vue_script__$1x = script$1x;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1x.__file = "color-themes.vue";
+
   /* template */
   var __vue_render__$1x = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"large":"","title":"Color Themes","back-link":"Back"}}),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Layout Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with 2 main layout themes: Light (default) and Dark:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"bg-color-white demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){_vm.setLayoutTheme('light');}}},[(_vm.theme === 'light')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"bg-color-black demo-theme-picker",attrs:{"width":"50"},on:{"click":function($event){_vm.setLayoutTheme('dark');}}},[(_vm.theme === 'dark')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Navigation Bars Style")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Switch navigation bars to filled style:")]),_vm._v(" "),_c('f7-row',[_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-empty",attrs:{"width":"50"},on:{"click":function($event){_vm.setBarsStyle('empty');}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'empty')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1),_vm._v(" "),_c('f7-col',{staticClass:"demo-bars-picker demo-bars-picker-fill",attrs:{"width":"50"},on:{"click":function($event){_vm.setBarsStyle('fill');}}},[_c('div',{staticClass:"demo-navbar"}),_vm._v(" "),(_vm.barsStyle === 'fill')?_c('f7-checkbox',{attrs:{"checked":"","disabled":""}}):_vm._e()],1)],1)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Default Color Themes")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Framework7 comes with "+_vm._s(_vm.colors.length)+" color themes set.")]),_vm._v(" "),_c('f7-row',[_vm._l((_vm.colors),function(color,index){return _c('f7-col',{key:index,attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}},[_c('f7-button',{staticClass:"demo-color-picker-button",attrs:{"fill":"","round":"","small":"","color":color},on:{"click":function($event){_vm.setColorTheme(color);}}},[_vm._v(_vm._s(color))])],1)}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}}),_vm._v(" "),_c('f7-col',{attrs:{"width":"33","tabletWidth":"25","desktopWidth":"20"}})],2)],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Custom Color Theme")]),_vm._v(" "),_c('f7-list',[_c('f7-list-input',{attrs:{"type":"text","label":"HEX Color","value":_vm.customColor,"placeholder":"e.g. #ff0000"},on:{"input":_vm.setCustomColor}},[_c('div',{staticStyle:{"width":"28px","height":"28px","border-radius":"4px","background":"var(--f7-theme-color)"},attrs:{"slot":"media"},slot:"media"})])],1),_vm._v(" "),_c('f7-block-title',{attrs:{"medium":""}},[_vm._v("Generated CSS Variables")]),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[(_vm.customProperties)?[_c('p',[_vm._v("Add this code block to your custom stylesheet:")]),_vm._v(" "),_c('pre',{staticStyle:{"overflow":"auto","-webkit-overflow-scrolling":"touch","margin":"0","font-size":"12px"}},[_vm._v(_vm._s(_vm.customProperties))])]:_c('p',[_vm._v("Change navigation bars styles or specify custom color to see custom CSS variables here")])],2)],1)};
   var __vue_staticRenderFns__$1x = [];
@@ -60365,8 +60908,10 @@
   };
 
   /* script */
-              var __vue_script__$1y = script$1y;
-              
+  var __vue_script__$1y = script$1y;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1y.__file = "routable-modals.vue";
+
   /* template */
   var __vue_render__$1y = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Modals","backLink":"Back"}}),_vm._v(" "),_c('f7-block',[_c('p',[_vm._v("In addition to pages, Framework7 router allows to load modal components:")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"title":"Popup","link":"popup/"}}),_vm._v(" "),_c('f7-list-item',{attrs:{"title":"Action Sheet","link":"actions/"}})],1)],1)};
   var __vue_staticRenderFns__$1y = [];
@@ -60404,8 +60949,10 @@
   };
 
   /* script */
-              var __vue_script__$1z = script$1z;
-              
+  var __vue_script__$1z = script$1z;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1z.__file = "routable-popup.vue";
+
   /* template */
   var __vue_render__$1z = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-popup',[_c('f7-page',[_c('f7-navbar',{attrs:{"title":"Routable Popup"}},[_c('f7-nav-right',[_c('f7-link',{attrs:{"popup-close":""}},[_vm._v("Close")])],1)],1),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("This Popup was loaded using route link as standalone component")]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit f7amet, consectetur adipiscing elit. Suspendisse faucibus mauris f7leo, eu bibendum neque congue non. Ut leo f7mauris, eleifend eu commodo f7a, egestas ac urna. Maecenas in lacus f7faucibus, viverra ipsum f7pulvinar, molestie arcu. Etiam lacinia venenatis dignissim. Suspendisse non nisl semper tellus malesuada suscipit eu et eros. Nulla eu enim quis quam elementum vulputate. Mauris ornare consequat nunc viverra pellentesque. Aenean semper eu massa sit amet aliquam. Integer et neque sed libero mollis elementum at vitae ligula. Vestibulum pharetra sed libero sed porttitor. Suspendisse a faucibus lectus.")]),_vm._v(" "),_c('p',[_vm._v("Duis ut mauris f7sollicitudin, venenatis nisi f7sed, luctus ligula. Phasellus blandit nisl ut lorem semper pharetra. Nullam tortor f7nibh, suscipit in consequat f7vel, feugiat sed quam. Nam risus f7libero, auctor vel tristique f7ac, malesuada ut ante. Sed f7molestie, est in eleifend f7sagittis, leo tortor ullamcorper f7erat, at vulputate eros sapien nec libero. Mauris dapibus laoreet nibh quis bibendum. Fusce dolor f7sem, suscipit in iaculis f7id, pharetra at urna. Pellentesque tempor congue massa quis faucibus. Vestibulum nunc f7eros, convallis blandit dui sit f7amet, gravida adipiscing libero.")])])],1)],1)};
   var __vue_staticRenderFns__$1z = [];
@@ -60443,8 +60990,10 @@
   };
 
   /* script */
-              var __vue_script__$1A = script$1A;
-              
+  var __vue_script__$1A = script$1A;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1A.__file = "routable-actions.vue";
+
   /* template */
   var __vue_render__$1A = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-actions',[_c('f7-actions-group',[_c('f7-actions-label',[_vm._v("This Action Sheet was loaded as standalone component")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 1")]),_vm._v(" "),_c('f7-actions-button',[_vm._v("Action 2")])],1),_vm._v(" "),_c('f7-actions-group',[_c('f7-actions-button',{attrs:{"color":"red"}},[_vm._v("Cancel")])],1)],1)};
   var __vue_staticRenderFns__$1A = [];
@@ -60475,19 +61024,24 @@
     );
 
   //
+
   var script$1B = {
     components: {
       f7Page: f7Page,
       f7Navbar: f7Navbar,
       f7Block: f7Block,
+      f7List: f7List,
+      f7ListItem: f7ListItem,
     },
   };
 
   /* script */
-              var __vue_script__$1B = script$1B;
-              
+  var __vue_script__$1B = script$1B;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1B.__file = "master-detail-master.vue";
+
   /* template */
-  var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
+  var __vue_render__$1B = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Master Detail","back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Master-Detail pattern oftenly used on wide enough screens and tablets, and consists of two views. Master - is an area in the UI where you have a list of something. Detail - is the area that shows the relevant information of a selection in the master.")]),_vm._v(" "),_c('p',[_vm._v("To see Master Detail view make sure the window width is larger than 800px.")]),_vm._v(" "),_c('p',[_vm._v("When collapsed (on narrow screen) navigation between such pages will behave as usual routing.")]),_vm._v(" "),_c('p',[_vm._v("Navigation to/from Master-Detail view happens without transition.")])]),_vm._v(" "),_c('f7-list',[_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/1/"}},[_vm._v("Detail Page 1")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/2/"}},[_vm._v("Detail Page 2")]),_vm._v(" "),_c('f7-list-item',{attrs:{"reload-detail":true,"link":"/master-detail/3/"}},[_vm._v("Detail Page 3")])],1)],1)};
   var __vue_staticRenderFns__$1B = [];
 
     /* style */
@@ -60504,13 +61058,100 @@
     
 
     
-    var NotFound = normalizeComponent(
+    var MasterDetailMaster = normalizeComponent(
       { render: __vue_render__$1B, staticRenderFns: __vue_staticRenderFns__$1B },
       __vue_inject_styles__$1B,
       __vue_script__$1B,
       __vue_scope_id__$1B,
       __vue_is_functional_template__$1B,
       __vue_module_identifier__$1B,
+      undefined,
+      undefined
+    );
+
+  //
+
+  var script$1C = {
+    components: {
+      f7Page: f7Page,
+      f7Navbar: f7Navbar,
+      f7Block: f7Block,
+    },
+  };
+
+  /* script */
+  var __vue_script__$1C = script$1C;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1C.__file = "master-detail-detail.vue";
+
+  /* template */
+  var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":("Detail Page " + (_vm.$f7route.params.id)),"back-link":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_c('b',[_vm._v("Detail Page "+_vm._s(_vm.$f7route.params.id))])]),_vm._v(" "),_c('p',[_vm._v("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque congue turpis et risus fringilla condimentum. Aliquam vestibulum est tempor, sagittis massa nec, dictum massa. Phasellus non viverra dui, eget aliquam sem. Donec eleifend dolor id arcu ultrices, vel ultrices dolor fringilla. Phasellus feugiat consectetur libero, eget luctus felis rhoncus at. Duis scelerisque ligula sit amet purus congue pulvinar. Proin a risus id nibh fermentum auctor. Vestibulum at sem a risus mollis iaculis. In vestibulum malesuada arcu id consectetur.")])])],1)};
+  var __vue_staticRenderFns__$1C = [];
+
+    /* style */
+    var __vue_inject_styles__$1C = undefined;
+    /* scoped */
+    var __vue_scope_id__$1C = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1C = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1C = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var MasterDetailDetail = normalizeComponent(
+      { render: __vue_render__$1C, staticRenderFns: __vue_staticRenderFns__$1C },
+      __vue_inject_styles__$1C,
+      __vue_script__$1C,
+      __vue_scope_id__$1C,
+      __vue_is_functional_template__$1C,
+      __vue_module_identifier__$1C,
+      undefined,
+      undefined
+    );
+
+  //
+  var script$1D = {
+    components: {
+      f7Page: f7Page,
+      f7Navbar: f7Navbar,
+      f7Block: f7Block,
+    },
+  };
+
+  /* script */
+  var __vue_script__$1D = script$1D;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1D.__file = "404.vue";
+
+  /* template */
+  var __vue_render__$1D = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-page',[_c('f7-navbar',{attrs:{"title":"Not found","backLink":"Back"}}),_vm._v(" "),_c('f7-block',{attrs:{"strong":""}},[_c('p',[_vm._v("Sorry")]),_vm._v(" "),_c('p',[_vm._v("Requested content not found.")])])],1)};
+  var __vue_staticRenderFns__$1D = [];
+
+    /* style */
+    var __vue_inject_styles__$1D = undefined;
+    /* scoped */
+    var __vue_scope_id__$1D = undefined;
+    /* module identifier */
+    var __vue_module_identifier__$1D = undefined;
+    /* functional template */
+    var __vue_is_functional_template__$1D = false;
+    /* style inject */
+    
+    /* style inject SSR */
+    
+
+    
+    var NotFound = normalizeComponent(
+      { render: __vue_render__$1D, staticRenderFns: __vue_staticRenderFns__$1D },
+      __vue_inject_styles__$1D,
+      __vue_script__$1D,
+      __vue_scope_id__$1D,
+      __vue_is_functional_template__$1D,
+      __vue_module_identifier__$1D,
       undefined,
       undefined
     );
@@ -60666,7 +61307,7 @@
     },
     {
       path: '/menu/',
-      component: Menu$1,
+      component: Menu$2,
     },
     {
       path: '/messages/',
@@ -60959,6 +61600,17 @@
           },
         } ],
     },
+    {
+      path: '/master-detail/',
+      component: MasterDetailMaster,
+      master: true,
+      detailRoutes: [
+        {
+          path: '/master-detail/:id/',
+          component: MasterDetailDetail,
+        } ]
+    },
+
     // Default route (404 page). MUST BE THE LAST
     {
       path: '(.*)',
@@ -60967,7 +61619,7 @@
 
   //
 
-  var script$1C = {
+  var script$1E = {
     components: {
       f7App: f7App,
       f7Panel: f7Panel,
@@ -60992,20 +61644,22 @@
   };
 
   /* script */
-              var __vue_script__$1C = script$1C;
-              
+  var __vue_script__$1E = script$1E;
+  // For security concerns, we use only base name in production mode. See https://github.com/vuejs/rollup-plugin-vue/issues/258
+  script$1E.__file = "app.vue";
+
   /* template */
-  var __vue_render__$1C = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-statusbar'),_vm._v(" "),_c('f7-panel',{attrs:{"left":"","cover":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"ios-edges",attrs:{"url":"/","main":true}})],1)};
-  var __vue_staticRenderFns__$1C = [];
+  var __vue_render__$1E = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('f7-app',{attrs:{"params":_vm.f7Params}},[_c('f7-statusbar'),_vm._v(" "),_c('f7-panel',{attrs:{"left":"","cover":""}},[_c('f7-view',{attrs:{"url":"/panel-left/","links-view":".view-main"}})],1),_vm._v(" "),_c('f7-panel',{attrs:{"right":"","reveal":""}},[_c('f7-view',{attrs:{"url":"/panel-right/"}})],1),_vm._v(" "),_c('f7-view',{staticClass:"safe-areas",attrs:{"url":"/","main":true,"master-detail-breakpoint":800}})],1)};
+  var __vue_staticRenderFns__$1E = [];
 
     /* style */
-    var __vue_inject_styles__$1C = undefined;
+    var __vue_inject_styles__$1E = undefined;
     /* scoped */
-    var __vue_scope_id__$1C = undefined;
+    var __vue_scope_id__$1E = undefined;
     /* module identifier */
-    var __vue_module_identifier__$1C = undefined;
+    var __vue_module_identifier__$1E = undefined;
     /* functional template */
-    var __vue_is_functional_template__$1C = false;
+    var __vue_is_functional_template__$1E = false;
     /* style inject */
     
     /* style inject SSR */
@@ -61013,12 +61667,12 @@
 
     
     var App = normalizeComponent(
-      { render: __vue_render__$1C, staticRenderFns: __vue_staticRenderFns__$1C },
-      __vue_inject_styles__$1C,
-      __vue_script__$1C,
-      __vue_scope_id__$1C,
-      __vue_is_functional_template__$1C,
-      __vue_module_identifier__$1C,
+      { render: __vue_render__$1E, staticRenderFns: __vue_staticRenderFns__$1E },
+      __vue_inject_styles__$1E,
+      __vue_script__$1E,
+      __vue_scope_id__$1E,
+      __vue_is_functional_template__$1E,
+      __vue_module_identifier__$1E,
       undefined,
       undefined
     );

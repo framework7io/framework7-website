@@ -50,12 +50,12 @@ gulp.task('connect', () => {
   return connect.server({
     root: ['./'],
     livereload: true,
-    port: '3000',
+    port: '3001',
   });
 });
 
 gulp.task('open', () => {
-  return gulp.src('./index.html').pipe(open({ uri: 'http://localhost:3000/index.html' }));
+  return gulp.src('./index.html').pipe(open({ uri: 'http://localhost:3001/index.html' }));
 });
 
 gulp.task('server', gulp.parallel(['watch', 'connect', 'open']));

@@ -21,9 +21,6 @@ block content
     ul
       li <code><b>f7-list-input</b></code> - list item input element
       li <code><b>f7-input</b></code> - input element
-      li <code><b>f7-label</b></code> - input label element
-    .important-note
-      p Since Framework7 3.5.0 it is highly recommended that you only use <code><b>f7-list-input</b></code> component. It combines f7-list-item, f7-label and f7-input components in one component and provides much better and more correct input's state handling.
 
     h2 Input Properties
     table.params-table
@@ -60,7 +57,7 @@ block content
           td floating-label
           td boolean
           td false
-          td Enables floating label (affects MD theme only)
+          td Enables floating label
         tr
           td input
           td boolean
@@ -94,6 +91,11 @@ block content
           td boolean
           td false
           td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use <code>error-message</code> together with <code>error-message-force</code> props.
+        tr
+          td validate-on-blur
+          td boolean
+          td false
+          td When enabled then input will be validated on blur only.
         tr
           td error-message
           td string
@@ -231,24 +233,17 @@ block content
           td false
           td Same as previous
         tr
-          th(colspan="4") &lt;f7-label&gt; properties
-        tr
-          td floating
+          td wrap
           td boolean
-          td false
-          td Enables floating label (affects MD theme only)
-        tr
-          td inline
-          td boolean
-          td false
-          td Makes label inline
+          td true
+          td When enabled it will be wrapped in #[code &lt;li&gt;] element
         tr
           th(colspan="4") &lt;f7-input&gt; properties
         tr
           td wrap
           td boolean
           td true
-          td Defines should the input be wraped with "item-input-wrap" element or not. Must be disabled when using outside of List View
+          td Defines should the input be wraped with #[code &lt;div class="input"&gt;] element or not.
         tr
           td type
           td string
@@ -277,6 +272,11 @@ block content
           td boolean
           td false
           td When enabled then input value will be validated on change based on passed "pattern" or based on input type. If you use custom validation and need more control on where to show/hide error message, then it is better to disable validation and use <code>error-message</code> together with <code>error-message-force</code> props.
+        tr
+          td validate-on-blur
+          td boolean
+          td false
+          td When enabled then input will be validated on blur only.
         tr
           td error-message
           td string
@@ -457,7 +457,7 @@ block content
           td Fired when input value becomes not empty
 
     h2 Input Slots
-    p Input Vue component (<code>&lt;f7-list-input&gt;</code>) has additional slots for custom elements:
+    p <code>&lt;f7-list-input&gt;</code> has additional slots for custom elements:
     ul
       li <code><b>default</b></code> - in case of <code>type="select"</code> or <code>type="textarea"</code> - element will be placed inside of <code>select</code> or <code>textarea</code> tags.
       li <code><b>info</b></code> - element will be inserted into container with info message
@@ -701,7 +701,7 @@ block content
               </f7-list-input>
             </f7-list>
 
-            <f7-block-title>Floating Labels (MD-theme only)</f7-block-title>
+            <f7-block-title>Floating Labels</f7-block-title>
             <f7-list no-hairlines-md>
               <f7-list-input
                 label="Name"

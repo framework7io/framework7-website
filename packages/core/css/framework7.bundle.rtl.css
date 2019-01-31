@@ -1,5 +1,5 @@
 /**
- * Framework7 4.0.0-beta.25
+ * Framework7 4.0.0-beta.32
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: January 18, 2019
+ * Released on: January 31, 2019
  */
 
 /*====================
@@ -33,6 +33,8 @@
   }
   :root .ios-left-edge,
   :root .ios-edges,
+  :root .safe-area-left,
+  :root .safe-areas,
   :root .popup,
   :root .sheet-modal,
   :root .panel-left {
@@ -41,17 +43,23 @@
   }
   :root .ios-right-edge,
   :root .ios-edges,
+  :root .safe-area-right,
+  :root .safe-areas,
   :root .popup,
   :root .sheet-modal,
-  :root .panel-left {
+  :root .panel-right {
     --f7-safe-area-right: env(safe-area-inset-right);
     --f7-safe-area-outer-right: env(safe-area-inset-right);
   }
+  :root .no-safe-areas,
+  :root .no-safe-area-left,
   :root .no-ios-edges,
   :root .no-ios-left-edge {
     --f7-safe-area-left: 0px;
     --f7-safe-area-outer-left: 0px;
   }
+  :root .no-safe-areas,
+  :root .no-safe-area-right,
   :root .no-ios-edges,
   :root .no-ios-right-edge {
     --f7-safe-area-right: 0px;
@@ -744,6 +752,11 @@ html.device-full-viewport body {
   box-sizing: border-box;
 }
 /* === Pages === */
+:root {
+  --f7-page-master-width: 320px;
+  --f7-page-master-border-color: rgba(0, 0, 0, 0.1);
+  --f7-page-master-border-width: 1px;
+}
 .ios {
   --f7-page-bg-color: #efeff4;
   --f7-page-transition-duration: 400ms;
@@ -756,6 +769,7 @@ html.device-full-viewport body {
 }
 .theme-dark {
   --f7-page-bg-color: #171717;
+  --f7-page-master-border-color: rgba(255, 255, 255, 0.1);
 }
 .pages {
   position: relative;
@@ -843,14 +857,14 @@ html.device-full-viewport body {
 .ios .page-current .page-shadow-effect {
   opacity: 1;
 }
-.ios .router-transition-css-forward .page-next,
-.ios .router-transition-css-forward .page-current {
+.ios .router-transition-forward .page-next,
+.ios .router-transition-forward .page-current {
   will-change: transform;
 }
-.ios .router-transition-css-forward .page-next {
+.ios .router-transition-forward .page-next {
   animation: ios-page-next-to-current var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .page-next:before {
+.ios .router-transition-forward .page-next:before {
   position: absolute;
   top: 0;
   width: 16px;
@@ -862,10 +876,10 @@ html.device-full-viewport body {
   background: linear-gradient(to left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0.01) 50%, rgba(0, 0, 0, 0.2) 100%);
   animation: ios-page-element-fade-in var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .page-current {
+.ios .router-transition-forward .page-current {
   animation: ios-page-current-to-previous var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .page-current:after {
+.ios .router-transition-forward .page-current:after {
   position: absolute;
   left: 0;
   top: 0;
@@ -877,14 +891,14 @@ html.device-full-viewport body {
   z-index: 10000;
   animation: ios-page-element-fade-in var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .page-previous,
-.ios .router-transition-css-backward .page-current {
+.ios .router-transition-backward .page-previous,
+.ios .router-transition-backward .page-current {
   will-change: transform;
 }
-.ios .router-transition-css-backward .page-previous {
+.ios .router-transition-backward .page-previous {
   animation: ios-page-previous-to-current var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .page-previous:after {
+.ios .router-transition-backward .page-previous:after {
   position: absolute;
   left: 0;
   top: 0;
@@ -896,10 +910,10 @@ html.device-full-viewport body {
   z-index: 10000;
   animation: ios-page-element-fade-out var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .page-current {
+.ios .router-transition-backward .page-current {
   animation: ios-page-current-to-next var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .page-current:before {
+.ios .router-transition-backward .page-current:before {
   position: absolute;
   top: 0;
   width: 16px;
@@ -977,18 +991,18 @@ html.device-full-viewport body {
 .md .page-next.page-next-on-right {
   transform: translate3d(-100%, 0, 0);
 }
-.md .router-transition-css-forward .page-next {
+.md .router-transition-forward .page-next {
   will-change: transform, opacity;
   animation: md-page-next-to-current var(--f7-page-transition-duration) forwards;
 }
-.md .router-transition-css-forward .page-current {
+.md .router-transition-forward .page-current {
   animation: none;
 }
-.md .router-transition-css-backward .page-current {
+.md .router-transition-backward .page-current {
   will-change: transform, opacity;
   animation: md-page-current-to-next var(--f7-page-transition-duration) forwards;
 }
-.md .router-transition-css-backward .page-previous {
+.md .router-transition-backward .page-previous {
   animation: none;
 }
 @keyframes md-page-next-to-current {
@@ -1010,6 +1024,40 @@ html.device-full-viewport body {
     transform: translate3d(0, 56px, 0);
     opacity: 0;
   }
+}
+.view:not(.view-master-detail) .page-master-stacked {
+  display: none;
+}
+.view:not(.view-master-detail) .navbar-master-stacked {
+  display: none;
+}
+.view-master-detail .page-master,
+.view-master-detail .navbar-master {
+  width: var(--f7-page-master-width);
+  left: auto;
+  right: 0;
+  --f7-safe-area-left: 0px;
+  --f7-safe-area-outer-left: 0px;
+  border-left: var(--f7-page-master-border-width) solid var(--f7-page-master-border-color);
+}
+.view-master-detail .page-master-detail,
+.view-master-detail .navbar-master-detail {
+  width: calc(100% - var(--f7-page-master-width));
+  --f7-safe-area-right: 0px;
+  --f7-safe-area-outer-right: 0px;
+  right: var(--f7-page-master-width);
+}
+.view-master-detail .page-master {
+  z-index: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.view-master-detail .page-master:before,
+.view-master-detail .page-master:after {
+  display: none;
+}
+.view-master-detail.router-transition .page-master {
+  animation: none;
 }
 /* === Link === */
 :root {
@@ -1403,35 +1451,47 @@ html.device-full-viewport body {
   text-align: left;
   margin-left: 10px;
 }
-.ios .navbar-previous {
+.ios .view-master-detail .navbar-previous:not(.navbar-master),
+.ios .view:not(.view-master-detail) .navbar-previous {
   pointer-events: none;
 }
-.ios .navbar-previous .title-large {
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .title-large,
+.ios .view:not(.view-master-detail) .navbar-previous .title-large {
   transform: translateY(-100%);
   opacity: 0;
   transition: 0ms;
 }
-.ios .navbar-previous .title-large .title-large-text {
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .title-large .title-large-text,
+.ios .view:not(.view-master-detail) .navbar-previous .title-large .title-large-text {
   transform: scale(0.5);
   transition: 0ms;
 }
-.ios .navbar-previous .title-large .title-large-inner {
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .title-large .title-large-inner,
+.ios .view:not(.view-master-detail) .navbar-previous .title-large .title-large-inner {
   transform: translateX(-100%);
   opacity: 0;
   transition: 0ms;
 }
-.ios .navbar-previous .left,
-.ios .navbar-previous .right,
-.ios .navbar-previous > .title,
-.ios .navbar-previous .subnavbar,
-.ios .navbar-previous .fading {
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .left,
+.ios .view:not(.view-master-detail) .navbar-previous .left,
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .right,
+.ios .view:not(.view-master-detail) .navbar-previous .right,
+.ios .view-master-detail .navbar-previous:not(.navbar-master) > .title,
+.ios .view:not(.view-master-detail) .navbar-previous > .title,
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .subnavbar,
+.ios .view:not(.view-master-detail) .navbar-previous .subnavbar,
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .fading,
+.ios .view:not(.view-master-detail) .navbar-previous .fading {
   opacity: 0;
 }
-.ios .navbar-previous .sliding {
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .sliding,
+.ios .view:not(.view-master-detail) .navbar-previous .sliding {
   opacity: 0;
 }
-.ios .navbar-previous .subnavbar.sliding,
-.ios .navbar-previous.sliding .subnavbar {
+.ios .view-master-detail .navbar-previous:not(.navbar-master) .subnavbar.sliding,
+.ios .view:not(.view-master-detail) .navbar-previous .subnavbar.sliding,
+.ios .view-master-detail .navbar-previous:not(.navbar-master).sliding .subnavbar,
+.ios .view:not(.view-master-detail) .navbar-previous.sliding .subnavbar {
   opacity: 1;
   transform: translate3d(-100%, 0, 0);
 }
@@ -1480,178 +1540,197 @@ html.device-full-viewport body {
 .ios .router-dynamic-navbar-inside .navbar-previous .title-large-inner {
   transform: translate3d(0, calc(var(--f7-navbar-large-collapse-progress) * var(--f7-navbar-large-title-height)), 0);
 }
-.ios .router-transition-css-forward .navbar,
-.ios .router-transition-css-backward .navbar {
+.ios .router-transition .navbar {
   transition-duration: var(--f7-page-transition-duration);
 }
-.ios .router-transition-css-forward .title-large,
-.ios .router-transition-css-backward .title-large {
+.ios .router-transition .title-large {
   transition: 0ms;
 }
-.ios .router-transition-css-forward .navbar-current .left,
-.ios .router-transition-css-backward .navbar-current .left,
-.ios .router-transition-css-forward .navbar-current > .title,
-.ios .router-transition-css-backward .navbar-current > .title,
-.ios .router-transition-css-forward .navbar-current .right,
-.ios .router-transition-css-backward .navbar-current .right,
-.ios .router-transition-css-forward .navbar-current .subnavbar,
-.ios .router-transition-css-backward .navbar-current .subnavbar {
+.ios .router-transition .navbar-current .left,
+.ios .router-transition .navbar-current > .title,
+.ios .router-transition .navbar-current .right,
+.ios .router-transition .navbar-current .subnavbar {
   animation: ios-navbar-element-fade-out var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .navbar-current .sliding,
-.ios .router-transition-css-backward .navbar-current .sliding,
-.ios .router-transition-css-forward .navbar-current .left.sliding .icon + span,
-.ios .router-transition-css-backward .navbar-current .left.sliding .icon + span,
-.ios .router-transition-css-forward .navbar-current.sliding .left,
-.ios .router-transition-css-backward .navbar-current.sliding .left,
-.ios .router-transition-css-forward .navbar-current.sliding .left .icon + span,
-.ios .router-transition-css-backward .navbar-current.sliding .left .icon + span,
-.ios .router-transition-css-forward .navbar-current.sliding > .title,
-.ios .router-transition-css-backward .navbar-current.sliding > .title,
-.ios .router-transition-css-forward .navbar-current.sliding .right,
-.ios .router-transition-css-backward .navbar-current.sliding .right {
+.ios .router-transition .navbar-current .sliding,
+.ios .router-transition .navbar-current .left.sliding .icon + span,
+.ios .router-transition .navbar-current.sliding .left,
+.ios .router-transition .navbar-current.sliding .left .icon + span,
+.ios .router-transition .navbar-current.sliding > .title,
+.ios .router-transition .navbar-current.sliding .right {
   transition-duration: var(--f7-page-transition-duration);
   opacity: 0 !important;
   animation: none;
 }
-.ios .router-transition-css-forward .navbar-current.sliding .subnavbar,
-.ios .router-transition-css-backward .navbar-current.sliding .subnavbar,
-.ios .router-transition-css-forward .navbar-current .sliding.subnavbar,
-.ios .router-transition-css-backward .navbar-current .sliding.subnavbar {
+.ios .router-transition .navbar-current.sliding .subnavbar,
+.ios .router-transition .navbar-current .sliding.subnavbar {
   transition-duration: var(--f7-page-transition-duration);
   animation: none;
   opacity: 1;
 }
-.ios .router-transition-css-forward .navbar-next .left,
-.ios .router-transition-css-backward .navbar-previous .left,
-.ios .router-transition-css-forward .navbar-next > .title,
-.ios .router-transition-css-backward .navbar-previous > .title,
-.ios .router-transition-css-forward .navbar-next .right,
-.ios .router-transition-css-backward .navbar-previous .right,
-.ios .router-transition-css-forward .navbar-next .subnavbar,
-.ios .router-transition-css-backward .navbar-previous .subnavbar {
+.ios .router-transition-forward .navbar-next .left,
+.ios .router-transition-backward .navbar-previous .left,
+.ios .router-transition-forward .navbar-next > .title,
+.ios .router-transition-backward .navbar-previous > .title,
+.ios .router-transition-forward .navbar-next .right,
+.ios .router-transition-backward .navbar-previous .right,
+.ios .router-transition-forward .navbar-next .subnavbar,
+.ios .router-transition-backward .navbar-previous .subnavbar {
   animation: ios-navbar-element-fade-in var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .navbar-next .sliding,
-.ios .router-transition-css-backward .navbar-previous .sliding,
-.ios .router-transition-css-forward .navbar-next .left.sliding .icon + span,
-.ios .router-transition-css-backward .navbar-previous .left.sliding .icon + span,
-.ios .router-transition-css-forward .navbar-next.sliding .left,
-.ios .router-transition-css-backward .navbar-previous.sliding .left,
-.ios .router-transition-css-forward .navbar-next.sliding .left .icon + span,
-.ios .router-transition-css-backward .navbar-previous.sliding .left .icon + span,
-.ios .router-transition-css-forward .navbar-next.sliding > .title,
-.ios .router-transition-css-backward .navbar-previous.sliding > .title,
-.ios .router-transition-css-forward .navbar-next.sliding .right,
-.ios .router-transition-css-backward .navbar-previous.sliding .right,
-.ios .router-transition-css-forward .navbar-next.sliding .subnavbar,
-.ios .router-transition-css-backward .navbar-previous.sliding .subnavbar {
+.ios .router-transition-forward .navbar-next .sliding,
+.ios .router-transition-backward .navbar-previous .sliding,
+.ios .router-transition-forward .navbar-next .left.sliding .icon + span,
+.ios .router-transition-backward .navbar-previous .left.sliding .icon + span,
+.ios .router-transition-forward .navbar-next.sliding .left,
+.ios .router-transition-backward .navbar-previous.sliding .left,
+.ios .router-transition-forward .navbar-next.sliding .left .icon + span,
+.ios .router-transition-backward .navbar-previous.sliding .left .icon + span,
+.ios .router-transition-forward .navbar-next.sliding > .title,
+.ios .router-transition-backward .navbar-previous.sliding > .title,
+.ios .router-transition-forward .navbar-next.sliding .right,
+.ios .router-transition-backward .navbar-previous.sliding .right,
+.ios .router-transition-forward .navbar-next.sliding .subnavbar,
+.ios .router-transition-backward .navbar-previous.sliding .subnavbar {
   transition-duration: var(--f7-page-transition-duration);
   animation: none;
   transform: translate3d(0, 0, 0) !important;
   opacity: 1 !important;
 }
-.ios .router-transition-css-forward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large {
+.ios .router-transition-forward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large {
   overflow: visible;
 }
-.ios .router-transition-css-forward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-text {
+.ios .router-transition-forward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-text {
   animation: ios-navbar-title-large-text-slide-up var(--f7-page-transition-duration) forwards, ios-navbar-title-large-text-fade-out var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large {
+.ios .router-transition-forward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large {
   animation: ios-navbar-title-large-slide-up var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large .title-large-text {
+.ios .router-transition-forward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large .title-large-text {
   animation: ios-navbar-title-large-text-fade-out var(--f7-page-transition-duration) forwards, ios-navbar-title-large-text-scale-out var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .navbar-current.router-navbar-transition-from-large .title-large-inner {
+.ios .router-transition-forward .navbar-current.router-navbar-transition-from-large .title-large-inner {
   animation: ios-navbar-title-large-inner-current-to-previous var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward:not(.router-dynamic-navbar-inside) .navbar-next.router-navbar-transition-from-large .left .back span {
+.ios .router-transition-forward:not(.router-dynamic-navbar-inside) .navbar-next.router-navbar-transition-from-large .left .back span {
   animation: ios-navbar-back-text-next-to-current var(--f7-page-transition-duration) forwards;
   transition: none;
   transform-origin: right center;
 }
-.ios .router-transition-css-forward .navbar-next.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large {
+.ios .router-transition-forward .navbar-next.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large {
   overflow: visible;
 }
-.ios .router-transition-css-forward .navbar-next.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-text,
-.ios .router-transition-css-forward .navbar-next.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-inner {
+.ios .router-transition-forward .navbar-next.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-text,
+.ios .router-transition-forward .navbar-next.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-inner {
   animation: ios-navbar-title-large-text-slide-left var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .navbar-next.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large {
+.ios .router-transition-forward .navbar-next.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large {
   animation: ios-navbar-title-large-slide-down var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .navbar-next.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large .title-large-text,
-.ios .router-transition-css-forward .navbar-next.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large .title-large-inner {
+.ios .router-transition-forward .navbar-next.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large .title-large-text,
+.ios .router-transition-forward .navbar-next.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large .title-large-inner {
   animation: ios-navbar-title-large-text-slide-left-top var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-forward .navbar-next.navbar-inner-large:not(.navbar-inner-large-collapsed) > .title,
-.ios .router-transition-css-forward .navbar-current.navbar-inner-large:not(.navbar-inner-large-collapsed) > .title {
+.ios .router-transition-forward .navbar-next.navbar-inner-large:not(.navbar-inner-large-collapsed) > .title,
+.ios .router-transition-forward .navbar-current.navbar-inner-large:not(.navbar-inner-large-collapsed) > .title {
   animation: none;
   opacity: 0 !important;
   transition-duration: 0;
 }
-.ios .router-transition-css-forward.router-dynamic-navbar-inside .navbar-next .title-large,
-.ios .router-transition-css-forward.router-dynamic-navbar-inside .navbar-current .title-large,
-.ios .router-transition-css-forward.router-dynamic-navbar-inside .navbar-next .title-large-text,
-.ios .router-transition-css-forward.router-dynamic-navbar-inside .navbar-current .title-large-text,
-.ios .router-transition-css-forward.router-dynamic-navbar-inside .navbar-next .title-large-inner,
-.ios .router-transition-css-forward.router-dynamic-navbar-inside .navbar-current .title-large-inner {
+.ios .router-transition-forward.router-dynamic-navbar-inside .navbar-next .title-large,
+.ios .router-transition-forward.router-dynamic-navbar-inside .navbar-current .title-large,
+.ios .router-transition-forward.router-dynamic-navbar-inside .navbar-next .title-large-text,
+.ios .router-transition-forward.router-dynamic-navbar-inside .navbar-current .title-large-text,
+.ios .router-transition-forward.router-dynamic-navbar-inside .navbar-next .title-large-inner,
+.ios .router-transition-forward.router-dynamic-navbar-inside .navbar-current .title-large-inner {
   animation: none !important;
 }
-.ios .router-transition-css-backward:not(.router-dynamic-navbar-inside) .navbar-current.router-navbar-transition-to-large .left .back span {
+.ios .router-transition-backward:not(.router-dynamic-navbar-inside) .navbar-current.router-navbar-transition-to-large .left .back span {
   animation: ios-navbar-back-text-current-to-previous var(--f7-page-transition-duration) forwards;
   transition: none;
   transform-origin: right center;
 }
-.ios .router-transition-css-backward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large {
+.ios .router-transition-backward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large {
   overflow: visible;
   transform: translateX(100%);
 }
-.ios .router-transition-css-backward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-text,
-.ios .router-transition-css-backward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-inner {
+.ios .router-transition-backward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-text,
+.ios .router-transition-backward .navbar-current.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-inner {
   animation: ios-navbar-title-large-text-slide-right var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large {
+.ios .router-transition-backward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large {
   animation: ios-navbar-title-large-slide-up var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large .title-large-text,
-.ios .router-transition-css-backward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large .title-large-inner {
+.ios .router-transition-backward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large .title-large-text,
+.ios .router-transition-backward .navbar-current.router-navbar-transition-from-large:not(.router-navbar-transition-to-large) .title-large .title-large-inner {
   animation: ios-navbar-title-large-text-slide-right-bottom var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .navbar-current.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large {
+.ios .router-transition-backward .navbar-current.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large {
   opacity: 0;
 }
-.ios .router-transition-css-backward .navbar-previous.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large {
+.ios .router-transition-backward .navbar-previous.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large {
   overflow: visible;
   opacity: 1;
   transform: translateY(0);
 }
-.ios .router-transition-css-backward .navbar-previous.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-text {
+.ios .router-transition-backward .navbar-previous.router-navbar-transition-from-large.router-navbar-transition-to-large .title-large .title-large-text {
   animation: ios-navbar-title-large-text-slide-down var(--f7-page-transition-duration) forwards, ios-navbar-title-large-text-fade-in var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .navbar-previous.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large {
+.ios .router-transition-backward .navbar-previous.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large {
   opacity: 1;
   animation: ios-navbar-title-large-slide-down var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .navbar-previous.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large .title-large-text {
+.ios .router-transition-backward .navbar-previous.router-navbar-transition-to-large:not(.router-navbar-transition-from-large) .title-large .title-large-text {
   animation: ios-navbar-title-large-text-scale-in var(--f7-page-transition-duration) forwards, ios-navbar-title-large-text-fade-in var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .navbar-previous.router-navbar-transition-to-large .title-large-inner {
+.ios .router-transition-backward .navbar-previous.router-navbar-transition-to-large .title-large-inner {
   animation: ios-navbar-title-large-inner-previous-to-current var(--f7-page-transition-duration) forwards;
 }
-.ios .router-transition-css-backward .navbar-current.navbar-inner-large:not(.navbar-inner-large-collapsed) > .title,
-.ios .router-transition-css-backward .navbar-previous.navbar-inner-large:not(.navbar-inner-large-collapsed) > .title {
+.ios .router-transition-backward .navbar-current.navbar-inner-large:not(.navbar-inner-large-collapsed) > .title,
+.ios .router-transition-backward .navbar-previous.navbar-inner-large:not(.navbar-inner-large-collapsed) > .title {
   animation: none;
   opacity: 0 !important;
   transition-duration: 0;
 }
-.ios .router-transition-css-backward.router-dynamic-navbar-inside .navbar-previous .title-large,
-.ios .router-transition-css-backward.router-dynamic-navbar-inside .navbar-current .title-large,
-.ios .router-transition-css-backward.router-dynamic-navbar-inside .navbar-previous .title-large-text,
-.ios .router-transition-css-backward.router-dynamic-navbar-inside .navbar-current .title-large-text,
-.ios .router-transition-css-backward.router-dynamic-navbar-inside .navbar-previous .title-large-inner,
-.ios .router-transition-css-backward.router-dynamic-navbar-inside .navbar-current .title-large-inner {
+.ios .router-transition-backward.router-dynamic-navbar-inside .navbar-previous .title-large,
+.ios .router-transition-backward.router-dynamic-navbar-inside .navbar-current .title-large,
+.ios .router-transition-backward.router-dynamic-navbar-inside .navbar-previous .title-large-text,
+.ios .router-transition-backward.router-dynamic-navbar-inside .navbar-current .title-large-text,
+.ios .router-transition-backward.router-dynamic-navbar-inside .navbar-previous .title-large-inner,
+.ios .router-transition-backward.router-dynamic-navbar-inside .navbar-current .title-large-inner {
+  animation: none !important;
+}
+.view-master-detail .navbar-master.navbar-previous {
+  pointer-events: auto;
+}
+.view-master-detail .navbar-master.navbar-previous .left,
+.view-master-detail .navbar-master.navbar-previous:not(.navbar-inner-large) .title,
+.view-master-detail .navbar-master.navbar-previous .right,
+.view-master-detail .navbar-master.navbar-previous .subnavbar {
+  opacity: 1;
+}
+.ios .view-master-detail.router-transition .navbar-master .left,
+.ios .view-master-detail.router-transition .navbar-master .left .icon + span,
+.ios .view-master-detail.router-transition .navbar-master:not(.navbar-inner-large) .title,
+.ios .view-master-detail.router-transition .navbar-master .right,
+.ios .view-master-detail.router-transition .navbar-master .subnavbar,
+.ios .view-master-detail.router-transition .navbar-master .sliding,
+.ios .view-master-detail.router-transition .navbar-master .fading {
+  opacity: 1 !important;
+  transition-duration: 0ms;
+  transform: none !important;
+  animation: none !important;
+}
+.ios .view-master-detail.router-transition .navbar-master.navbar-inner-large .title {
+  opacity: calc(-1 + 2 * var(--f7-navbar-large-collapse-progress)) !important;
+  transition-duration: 0ms;
+  transform: none !important;
+  animation: none !important;
+}
+.ios .view-master-detail.router-transition .navbar-master.navbar-inner-large .title-large,
+.ios .view-master-detail.router-transition .navbar-master.navbar-inner-large .title-large-text,
+.ios .view-master-detail.router-transition .navbar-master.navbar-inner-large .title-large-inner {
+  transition-duration: 0ms;
   animation: none !important;
 }
 @keyframes ios-navbar-element-fade-in {
@@ -2681,12 +2760,13 @@ html.device-full-viewport body {
 }
 /* === Content Block === */
 :root {
+  --f7-block-font-size: inherit;
   --f7-block-strong-bg-color: #fff;
   --f7-block-title-font-size: inherit;
   --f7-block-header-margin: 10px;
   --f7-block-footer-margin: 10px;
-  --f7-block-header-font-size: inherit;
-  --f7-block-footer-font-size: inherit;
+  --f7-block-header-font-size: 14px;
+  --f7-block-footer-font-size: 14px;
   --f7-block-title-white-space: nowrap;
   --f7-block-title-medium-text-color: #000;
   --f7-block-title-medium-text-transform: none;
@@ -2771,6 +2851,7 @@ html.device-full-viewport body {
   padding-bottom: 0;
   padding-left: calc(var(--f7-block-padding-horizontal) + var(--f7-safe-area-left));
   padding-right: calc(var(--f7-block-padding-horizontal) + var(--f7-safe-area-right));
+  font-size: var(--f7-block-font-size);
 }
 .block.no-hairlines:before,
 .block.no-hairlines ul:before,
@@ -3889,7 +3970,7 @@ li.list-group-title,
 }
 .ios {
   --f7-button-height: 29px;
-  --f7-button-padding: 10px;
+  --f7-button-padding-horizontal: 10px;
   --f7-button-border-radius: 5px;
   --f7-button-font-weight: 400;
   --f7-button-letter-spacing: 0;
@@ -3909,7 +3990,7 @@ li.list-group-title,
 }
 .md {
   --f7-button-height: 36px;
-  --f7-button-padding: 8px;
+  --f7-button-padding-horizontal: 8px;
   --f7-button-border-radius: 4px;
   --f7-button-font-weight: 500;
   --f7-button-letter-spacing: 0.03em;
@@ -3960,7 +4041,7 @@ button {
   color: var(--f7-button-text-color, var(--f7-theme-color));
   height: var(--f7-button-height);
   line-height: calc(var(--f7-button-height) - var(--f7-button-border-width, 0) * 2);
-  padding: 0 var(--f7-button-padding);
+  padding: var(--f7-button-padding-vertical, 0) var(--f7-button-padding-horizontal);
   border-radius: var(--f7-button-border-radius);
   min-width: var(--f7-button-min-width);
   font-weight: var(--f7-button-font-weight);
@@ -5608,7 +5689,7 @@ html.with-modal-popup .framework7-root > .panel .page-content {
 }
 .ios .toast-button {
   margin-right: 15px;
-  margin-left: calc(-1 * var(--f7-button-padding));
+  margin-left: calc(-1 * var(--f7-button-padding-horizontal));
 }
 .md .toast {
   transition-duration: 200ms;
@@ -7878,7 +7959,7 @@ html.with-panel-right-cover .panel-right {
   .card-expandable:not(.card-tablet-fullscreen).card-opening {
     border-radius: var(--f7-card-expandable-tablet-border-radius);
   }
-  .card-expandable:not(.card-tablet-fullscreen) .card-content {
+  .card-expandable:not(.card-tablet-fullscreen):not(.card-expandable-animate-width) .card-content {
     width: var(--f7-card-expandable-tablet-width);
   }
   .card-expandable:not(.card-tablet-fullscreen) .card-expandable-size {
@@ -8600,7 +8681,7 @@ textarea {
 }
 .ios .input-clear-button:after {
   content: 'delete_round_ios';
-  font-size: 10px;
+  font-size: calc(var(--f7-input-clear-button-size) / (14 / 10));
   line-height: 1.4;
 }
 .ios .input-clear-button:before {
@@ -8703,7 +8784,7 @@ textarea {
   color: var(--f7-input-invalid-text-color, var(--f7-input-text-color));
 }
 .md .input-clear-button:after {
-  font-size: 20px;
+  font-size: calc(var(--f7-input-clear-button-size) / (24 / 20));
   content: 'delete_round_md';
   line-height: 1.2;
 }
@@ -14737,15 +14818,15 @@ button.swiper-pagination-bullet {
   background: var(--f7-menu-bg-color);
   color: var(--f7-menu-text-color);
   border-radius: var(--f7-menu-item-border-radius);
-  margin-left: var(--f7-menu-item-spacing);
   position: relative;
   box-sizing: border-box;
   font-size: var(--f7-menu-font-size);
   font-weight: var(--f7-menu-font-weight);
   cursor: pointer;
+  margin-right: var(--f7-menu-item-spacing);
 }
 .menu-item:first-child {
-  margin-left: 0;
+  margin-right: 0;
 }
 .menu-item.active-state:not(.menu-item-dropdown-opened) {
   background-color: rgba(0, 0, 0, 0.7);

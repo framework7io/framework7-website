@@ -1,5 +1,5 @@
 /**
- * Framework7 4.0.0-beta.25
+ * Framework7 4.0.0-beta.32
  * Full featured mobile HTML framework for building iOS & Android apps
  * http://framework7.io/
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: January 18, 2019
+ * Released on: January 31, 2019
  */
 
 (function (global, factory) {
@@ -3409,6 +3409,9 @@
   var Framework7 = /*@__PURE__*/(function (Framework7Class$$1) {
     function Framework7(params) {
       Framework7Class$$1.call(this, params);
+      if (Framework7.instance) {
+        throw new Error('Framework7 is already initialized and can\'t be initialized more than once');
+      }
 
       var passedParams = Utils.extend({}, params);
 
@@ -5015,7 +5018,6 @@
    * Default configs.
    */
   var DEFAULT_DELIMITER = '/';
-  var DEFAULT_DELIMITERS = './';
 
   /**
    * The main path matching regexp utility.
@@ -5047,7 +5049,7 @@
     var index = 0;
     var path = '';
     var defaultDelimiter = (options && options.delimiter) || DEFAULT_DELIMITER;
-    var delimiters = (options && options.delimiters) || DEFAULT_DELIMITERS;
+    var whitelist = (options && options.whitelist) || undefined;
     var pathEscaped = false;
     var res;
 
@@ -5066,7 +5068,6 @@
       }
 
       var prev = '';
-      var next = str[index];
       var name = res[2];
       var capture = res[3];
       var group = res[4];
@@ -5074,9 +5075,11 @@
 
       if (!pathEscaped && path.length) {
         var k = path.length - 1;
+        var c = path[k];
+        var matches = whitelist ? whitelist.indexOf(c) > -1 : true;
 
-        if (delimiters.indexOf(path[k]) > -1) {
-          prev = path[k];
+        if (matches) {
+          prev = c;
           path = path.slice(0, k);
         }
       }
@@ -5088,11 +5091,10 @@
         pathEscaped = false;
       }
 
-      var partial = prev !== '' && next !== undefined && next !== prev;
       var repeat = modifier === '+' || modifier === '*';
       var optional = modifier === '?' || modifier === '*';
-      var delimiter = prev || defaultDelimiter;
       var pattern = capture || group;
+      var delimiter = prev || defaultDelimiter;
 
       tokens.push({
         name: name || key++,
@@ -5100,8 +5102,9 @@
         delimiter: delimiter,
         optional: optional,
         repeat: repeat,
-        partial: partial,
-        pattern: pattern ? escapeGroup(pattern) : '[^' + escapeString(delimiter) + ']+?'
+        pattern: pattern
+          ? escapeGroup(pattern)
+          : '[^' + escapeString(delimiter === defaultDelimiter ? delimiter : (delimiter + defaultDelimiter)) + ']+?'
       });
     }
 
@@ -5188,12 +5191,7 @@
           continue
         }
 
-        if (token.optional) {
-          // Prepend partial segment prefixes.
-          if (token.partial) { path += token.prefix; }
-
-          continue
-        }
+        if (token.optional) { continue }
 
         throw new TypeError('Expected "' + token.name + '" to be ' + (token.repeat ? 'an array' : 'a string'))
       }
@@ -5253,7 +5251,6 @@
           delimiter: null,
           optional: false,
           repeat: false,
-          partial: false,
           pattern: null
         });
       }
@@ -5306,11 +5303,9 @@
     var strict = options.strict;
     var start = options.start !== false;
     var end = options.end !== false;
-    var delimiter = escapeString(options.delimiter || DEFAULT_DELIMITER);
-    var delimiters = options.delimiters || DEFAULT_DELIMITERS;
+    var delimiter = options.delimiter || DEFAULT_DELIMITER;
     var endsWith = [].concat(options.endsWith || []).map(escapeString).concat('$').join('|');
     var route = start ? '^' : '';
-    var isEndDelimited = tokens.length === 0;
 
     // Iterate over the tokens and create our regexp string.
     for (var i = 0; i < tokens.length; i++) {
@@ -5318,7 +5313,6 @@
 
       if (typeof token === 'string') {
         route += escapeString(token);
-        isEndDelimited = i === tokens.length - 1 && delimiters.indexOf(token[token.length - 1]) > -1;
       } else {
         var capture = token.repeat
           ? '(?:' + token.pattern + ')(?:' + escapeString(token.delimiter) + '(?:' + token.pattern + '))*'
@@ -5327,8 +5321,8 @@
         if (keys) { keys.push(token); }
 
         if (token.optional) {
-          if (token.partial) {
-            route += escapeString(token.prefix) + '(' + capture + ')?';
+          if (!token.prefix) {
+            route += '(' + capture + ')?';
           } else {
             route += '(?:' + escapeString(token.prefix) + '(' + capture + '))?';
           }
@@ -5339,12 +5333,17 @@
     }
 
     if (end) {
-      if (!strict) { route += '(?:' + delimiter + ')?'; }
+      if (!strict) { route += '(?:' + escapeString(delimiter) + ')?'; }
 
       route += endsWith === '$' ? '$' : '(?=' + endsWith + ')';
     } else {
-      if (!strict) { route += '(?:' + delimiter + '(?=' + endsWith + '))?'; }
-      if (!isEndDelimited) { route += '(?=' + delimiter + '|' + endsWith + ')'; }
+      var endToken = tokens[tokens.length - 1];
+      var isEndDelimited = typeof endToken === 'string'
+        ? endToken[endToken.length - 1] === delimiter
+        : endToken === undefined;
+
+      if (!strict) { route += '(?:' + escapeString(delimiter) + '(?=' + endsWith + '))?'; }
+      if (!isEndDelimited) { route += '(?=' + escapeString(delimiter) + '|' + endsWith + ')'; }
     }
 
     return new RegExp(route, flags(options))
@@ -5605,7 +5604,7 @@
                 });
               } else {
                 if (els.indexOf(el) < 0) { els.push(el); }
-                el.overflow = 'visible';
+                el.overflow = 'hidden';
                 el.transform = function (progress) { return ("translateY(calc(" + (-progress) + " * var(--f7-navbar-large-title-height)))"); };
                 $navEl.find('.title-large-text, .title-large-inner').each(function (subIndex, subNavEl) {
                   els.push({
@@ -5639,11 +5638,12 @@
             }
           }
           if ($navEl.hasClass('title-large')) { return; }
+          var isSliding = $navEl.hasClass('sliding') || $currentNavbarInner.hasClass('sliding');
           if (els.indexOf(el) < 0) { els.push(el); }
-          if (!isSubnavbar) {
+          if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (1 - (Math.pow( progress, 0.33 ))); };
           }
-          if ($navEl.hasClass('sliding') >= 0 || $currentNavbarInner.hasClass('sliding')) {
+          if (isSliding) {
             var transformTarget = el;
             if (isLeft && activeNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
               var textEl = { el: activeNavBackIconText[0] };
@@ -5712,11 +5712,12 @@
             }
           }
           if ($navEl.hasClass('title-large')) { return; }
+          var isSliding = $navEl.hasClass('sliding') || $previousNavbarInner.hasClass('sliding');
           if (els.indexOf(el) < 0) { els.push(el); }
-          if (!isSubnavbar) {
+          if (!isSubnavbar || (isSubnavbar && !isSliding)) {
             el.opacity = function (progress) { return (Math.pow( progress, 3 )); };
           }
-          if ($navEl.hasClass('sliding') >= 0 || $previousNavbarInner.hasClass('sliding')) {
+          if (isSliding) {
             var transformTarget = el;
             if (isLeft && previousNavBackIconText.length && params.iosAnimateNavbarBackIcon) {
               var textEl = { el: activeNavBackIconText[0] };
@@ -5768,6 +5769,7 @@
       var swipeBackEnabled = params[((app.theme) + "SwipeBack")];
       if (!allowViewTouchMove || !swipeBackEnabled || isTouched || (app.swipeout && app.swipeout.el) || !router.allowPageChange) { return; }
       if ($(e.target).closest('.range-slider, .calendar-months').length > 0) { return; }
+      if ($(e.target).closest('.page-master, .page-master-detail').length > 0 && params.masterDetailBreakpoint > 0 && app.width >= params.masterDetailBreakpoint) { return; }
       isMoved = false;
       isTouched = true;
       isScrolling = undefined;
@@ -6193,8 +6195,14 @@
       reloadPrevious: false,
       reloadAll: false,
       clearPreviousHistory: false,
+      reloadDetail: router.params.reloadDetail,
       on: {},
     }, forwardOptions);
+
+    var masterDetailEnabled = router.params.masterDetailBreakpoint > 0;
+    var isMaster = masterDetailEnabled && options.route && options.route.route && options.route.route.master === true;
+    var masterPageEl;
+    var otherDetailPageEl;
 
     var currentRouteIsModal = router.currentRoute.modal;
     var modalType;
@@ -6291,27 +6299,60 @@
       return router;
     }
 
+    // Find Detail' master page
+    var isDetail;
+    var reloadDetail;
+    if (masterDetailEnabled && !options.reloadAll) {
+      for (var i = 0; i < $pagesInView.length; i += 1) {
+        if (!masterPageEl
+          && $pagesInView[i].classList.contains('page-master')
+        ) {
+          masterPageEl = $pagesInView[i];
+          continue; // eslint-disable-line
+        }
+      }
+      isDetail = !isMaster && masterPageEl;
+
+      if (isDetail) {
+        // Find Other Detail
+        if (masterPageEl) {
+          for (var i$1 = 0; i$1 < $pagesInView.length; i$1 += 1) {
+            if ($pagesInView[i$1].classList.contains('page-master-detail')
+            ) {
+              otherDetailPageEl = $pagesInView[i$1];
+              continue; // eslint-disable-line
+            }
+          }
+        }
+      }
+      reloadDetail = isDetail && options.reloadDetail && app.width >= router.params.masterDetailBreakpoint && masterPageEl;
+    }
+
     // New Page
     var newPagePosition = 'next';
-    if (options.reloadCurrent || options.reloadAll) {
+    if (options.reloadCurrent || options.reloadAll || reloadDetail) {
       newPagePosition = 'current';
     } else if (options.reloadPrevious) {
       newPagePosition = 'previous';
     }
     $newPage
-      .addClass(("page-" + newPagePosition))
+      .addClass(("page-" + newPagePosition + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '')))
       .removeClass('stacked')
       .trigger('page:unstack')
       .trigger('page:position', { position: newPagePosition });
+    if (isMaster || isDetail) {
+      $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
+    }
+
 
     if (dynamicNavbar && $newNavbarInner.length) {
       $newNavbarInner
-        .addClass(("navbar-" + newPagePosition))
+        .addClass(("navbar-" + newPagePosition + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '')))
         .removeClass('stacked');
     }
 
     // Find Old Page
-    if (options.reloadCurrent) {
+    if (options.reloadCurrent || reloadDetail) {
       $oldPage = $pagesInView.eq($pagesInView.length - 1);
       if (separateNavbar) {
         // $oldNavbarInner = $navbarsInView.eq($pagesInView.length - 1);
@@ -6330,20 +6371,29 @@
       }
     } else {
       if ($pagesInView.length > 1) {
-        var i = 0;
-        for (i = 0; i < $pagesInView.length - 1; i += 1) {
-          var oldNavbarInnerEl = app.navbar.getElByPage($pagesInView.eq(i));
-          if (router.params.stackPages) {
-            $pagesInView.eq(i).addClass('stacked');
-            $pagesInView.eq(i).trigger('page:stack');
+        var i$2 = 0;
+        for (i$2 = 0; i$2 < $pagesInView.length - 1; i$2 += 1) {
+          if (masterPageEl
+            && $pagesInView[i$2] === masterPageEl
+          ) {
+            $pagesInView.eq(i$2).addClass('page-master-stacked');
+            $pagesInView.eq(i$2).trigger('page:masterstack');
             if (separateNavbar) {
-              // $navbarsInView.eq(i).addClass('stacked');
+              $(app.navbar.getElByPage(masterPageEl)).addClass('navbar-master-stacked');
+            }
+            continue; // eslint-disable-line
+          }
+          var oldNavbarInnerEl = app.navbar.getElByPage($pagesInView.eq(i$2));
+          if (router.params.stackPages) {
+            $pagesInView.eq(i$2).addClass('stacked');
+            $pagesInView.eq(i$2).trigger('page:stack');
+            if (separateNavbar) {
               $(oldNavbarInnerEl).addClass('stacked');
             }
           } else {
             // Page remove event
-            router.pageCallback('beforeRemove', $pagesInView[i], $navbarsInView && $navbarsInView[i], 'previous', undefined, options);
-            router.removePage($pagesInView[i]);
+            router.pageCallback('beforeRemove', $pagesInView[i$2], $navbarsInView && $navbarsInView[i$2], 'previous', undefined, options);
+            router.removePage($pagesInView[i$2]);
             if (separateNavbar && oldNavbarInnerEl) {
               router.removeNavbar(oldNavbarInnerEl);
             }
@@ -6359,14 +6409,23 @@
           .filter(function (index, navbarInner) { return navbarInner !== $newNavbarInner[0]; });
       }
     }
+
     if (dynamicNavbar && !separateNavbar) {
       $oldNavbarInner = $oldPage.children('.navbar').children('.navbar-inner');
+    }
+    if (isDetail && !options.reloadAll) {
+      if ($oldPage.length > 1 || reloadDetail) {
+        $oldPage = $oldPage.filter(function (pageIndex, pageEl) { return !pageEl.classList.contains('page-master'); });
+      }
+      if ($oldNavbarInner && ($oldNavbarInner.length > 1 || reloadDetail)) {
+        $oldNavbarInner = $oldNavbarInner.filter(function (navbarIndex, navbarEl) { return !navbarEl.classList.contains('navbar-master'); });
+      }
     }
 
     // Push State
     if (router.params.pushState && (options.pushState || options.replaceState) && !options.reloadPrevious) {
       var pushStateRoot = router.params.pushStateRoot || '';
-      History[options.reloadCurrent || options.reloadAll || options.replaceState ? 'replace' : 'push'](
+      History[options.reloadCurrent || (reloadDetail && otherDetailPageEl) || options.reloadAll || options.replaceState ? 'replace' : 'push'](
         view.id,
         {
           url: options.route.url,
@@ -6392,7 +6451,7 @@
     var url = options.route.url;
 
     if (options.history) {
-      if ((options.reloadCurrent && router.history.length) > 0 || options.replaceState) {
+      if (((options.reloadCurrent || (reloadDetail && otherDetailPageEl)) && router.history.length) > 0 || options.replaceState) {
         router.history[router.history.length - (options.reloadPrevious ? 2 : 1)] = url;
       } else if (options.reloadPrevious) {
         router.history[router.history.length - 2] = url;
@@ -6456,7 +6515,7 @@
     }
 
     // Remove old page
-    if (options.reloadCurrent && $oldPage.length > 0) {
+    if ((options.reloadCurrent || reloadDetail) && $oldPage.length > 0) {
       if (router.params.stackPages && router.initialPages.indexOf($oldPage[0]) >= 0) {
         $oldPage.addClass('stacked');
         $oldPage.trigger('page:stack');
@@ -6518,11 +6577,20 @@
     // Page init and before init events
     router.pageCallback('init', $newPage, $newNavbarInner, newPagePosition, reload ? newPagePosition : 'current', options, $oldPage);
 
-    if (options.reloadCurrent || options.reloadAll) {
+    if (options.reloadCurrent || options.reloadAll || reloadDetail) {
       router.allowPageChange = true;
       router.pageCallback('beforeIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
       router.pageCallback('afterIn', $newPage, $newNavbarInner, newPagePosition, 'current', options);
       if (options.reloadCurrent && options.clearPreviousHistory) { router.clearPreviousHistory(); }
+      if (reloadDetail) {
+        masterPageEl.classList.add('page-previous');
+        masterPageEl.classList.remove('page-current');
+        $(masterPageEl).trigger('page:position', { position: 'previous' });
+        if (masterPageEl.f7Page && masterPageEl.f7Page.navbarEl) {
+          masterPageEl.f7Page.navbarEl.classList.add('navbar-previous');
+          masterPageEl.f7Page.navbarEl.classList.remove('navbar-current');
+        }
+      }
       return router;
     }
     if (options.reloadPrevious) {
@@ -6538,18 +6606,24 @@
     function afterAnimation() {
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden');
-      $oldPage.removeClass(pageClasses).addClass('page-previous').attr('aria-hidden', 'true');
+      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      $oldPage.removeClass(pageClasses).addClass('page-previous').trigger('page:position', { position: 'previous' });
+      if (!$oldPage.hasClass('page-master')) {
+        $oldPage.attr('aria-hidden', 'true');
+      }
       if (dynamicNavbar) {
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
-        $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-previous').attr('aria-hidden', 'true');
+        $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-previous');
+        if (!$oldNavbarInner.hasClass('navbar-master')) {
+          $oldNavbarInner.attr('aria-hidden', 'true');
+        }
       }
       // After animation event
       router.allowPageChange = true;
       router.pageCallback('afterIn', $newPage, $newNavbarInner, 'next', 'current', options);
       router.pageCallback('afterOut', $oldPage, $oldNavbarInner, 'current', 'previous', options);
 
-      var keepOldPage = app.theme === 'ios' ? (router.params.preloadPreviousPage || router.params.iosSwipeBack) : router.params.preloadPreviousPage;
+      var keepOldPage = (router.params.preloadPreviousPage || (app.theme === 'ios' ? router.params.iosSwipeBack : router.params.mdSwipeBack)) && !isMaster;
       if (!keepOldPage) {
         if ($newPage.hasClass('smart-select-page') || $newPage.hasClass('photo-browser-page') || $newPage.hasClass('autocomplete-page')) {
           keepOldPage = true;
@@ -6581,14 +6655,14 @@
     function setPositionClasses() {
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $oldPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden');
-      $newPage.removeClass(pageClasses).addClass('page-next').removeAttr('aria-hidden');
+      $oldPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      $newPage.removeClass(pageClasses).addClass('page-next').removeAttr('aria-hidden').trigger('page:position', { position: 'next' });
       if (dynamicNavbar) {
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-next').removeAttr('aria-hidden');
       }
     }
-    if (options.animate) {
+    if (options.animate && !(isMaster && app.width >= router.params.masterDetailBreakpoint)) {
       var delay = router.app.theme === 'md' ? router.params.mdPageLoadDelay : router.params.iosPageLoadDelay;
       if (delay) {
         setTimeout(function () {
@@ -6854,6 +6928,38 @@
     }
     function reject() {
       router.allowPageChange = true;
+    }
+
+    if (router.params.masterDetailBreakpoint > 0 && route.route.masterRoute) {
+      // load detail route
+      var preloadMaster = true;
+      if (router.currentRoute && router.currentRoute.route) {
+        if (router.currentRoute.route.master && (router.currentRoute.route === route.route.masterRoute || router.currentRoute.route.path === route.route.masterRoute.path)) {
+          preloadMaster = false;
+        }
+        if (router.currentRoute.route.masterRoute && ((router.currentRoute.route.masterRoute === route.route.masterRoute) || (router.currentRoute.route.masterRoute.path === route.route.masterRoute.path))) {
+          preloadMaster = false;
+        }
+      }
+      if (preloadMaster) {
+        router.navigate(route.route.masterRoute.path, {
+          animate: false,
+          reloadAll: navigateOptions.reloadAll,
+          reloadCurrent: navigateOptions.reloadCurrent,
+          reloadPrevious: navigateOptions.reloadPrevious,
+          once: {
+            pageAfterIn: function pageAfterIn() {
+              router.navigate(navigateParams, Utils.extend({}, navigateOptions, {
+                animate: false,
+                reloadAll: false,
+                reloadCurrent: false,
+                reloadPrevious: false,
+              }));
+            },
+          },
+        });
+        return router;
+      }
     }
 
     processRouteQueue.call(
@@ -7324,11 +7430,16 @@
       pushState: true,
     }, backwardOptions);
 
+    var masterDetailEnabled = router.params.masterDetailBreakpoint > 0;
+    var isMaster = masterDetailEnabled && options.route && options.route.route && options.route.route.master === true;
+    var masterPageEl;
+
     var dynamicNavbar = router.dynamicNavbar;
     var separateNavbar = router.separateNavbar;
 
     var $newPage = $el;
     var $oldPage = router.$el.children('.page-current');
+    var currentIsMaster = masterDetailEnabled && $oldPage.hasClass('page-master');
 
     if ($newPage.length) {
       // Remove theme elements
@@ -7372,17 +7483,43 @@
       };
     }
 
+    // Pages In View
+    var isDetail;
+    if (masterDetailEnabled) {
+      var $pagesInView = router.$el
+        .children('.page:not(.stacked)')
+        .filter(function (index, pageInView) { return pageInView !== $newPage[0]; });
+
+      // Find Detail' master page
+      for (var i = 0; i < $pagesInView.length; i += 1) {
+        if (!masterPageEl
+          && $pagesInView[i].classList.contains('page-master')
+        ) {
+          masterPageEl = $pagesInView[i];
+          continue; // eslint-disable-line
+        }
+      }
+
+      isDetail = !isMaster
+        && masterPageEl
+        && (router.history.indexOf(options.route.url) > router.history.indexOf(masterPageEl.f7Page.route.url));
+    }
+
+
     // New Page
     $newPage
-      .addClass('page-previous')
+      .addClass(("page-previous" + (isMaster ? ' page-master' : '') + (isDetail ? ' page-master-detail' : '')))
       .removeClass('stacked')
       .removeAttr('aria-hidden')
       .trigger('page:unstack')
       .trigger('page:position', { position: 'previous' });
+    if (isMaster || isDetail) {
+      $newPage.trigger('page:role', { role: isMaster ? 'master' : 'detail' });
+    }
 
     if (dynamicNavbar && $newNavbarInner.length > 0) {
       $newNavbarInner
-        .addClass('navbar-previous')
+        .addClass(("navbar-previous" + (isMaster ? ' navbar-master' : '') + (isDetail ? ' navbar-master-detail' : '')))
         .removeClass('stacked')
         .removeAttr('aria-hidden');
     }
@@ -7494,10 +7631,19 @@
           preload: true,
         }));
       }
+      if (isMaster) {
+        $newPage
+          .removeClass('page-master-stacked')
+          .trigger('page:masterunstack');
+        if (separateNavbar) {
+          $(app.navbar.getElByPage($newPage)).removeClass('navbar-master-stacked');
+        }
+      }
       // Page init and before init events
       router.pageCallback('init', $newPage, $newNavbarInner, 'previous', 'current', options, $oldPage);
-      if ($newPage.prevAll('.page-previous:not(.stacked)').length > 0) {
-        $newPage.prevAll('.page-previous:not(.stacked)').each(function (index, pageToRemove) {
+      var $previousPages = $newPage.prevAll('.page-previous:not(.stacked):not(.page-master)');
+      if ($previousPages.length > 0) {
+        $previousPages.each(function (index, pageToRemove) {
           var $pageToRemove = $(pageToRemove);
           var $navbarToRemove;
           if (separateNavbar) {
@@ -7580,8 +7726,8 @@
       // Set classes
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden');
-      $oldPage.removeClass(pageClasses).addClass('page-next').attr('aria-hidden', 'true');
+      $newPage.removeClass(pageClasses).addClass('page-current').removeAttr('aria-hidden').trigger('page:position', { position: 'current' });
+      $oldPage.removeClass(pageClasses).addClass('page-next').attr('aria-hidden', 'true').trigger('page:position', { position: 'next' });
       if (dynamicNavbar) {
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-current').removeAttr('aria-hidden');
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-next').attr('aria-hidden', 'true');
@@ -7610,8 +7756,8 @@
       router.emit('routeChanged', router.currentRoute, router.previousRoute, router);
 
       // Preload previous page
-      var preloadPreviousPage = app.theme === 'ios' ? (router.params.preloadPreviousPage || router.params.iosSwipeBack) : router.params.preloadPreviousPage;
-      if (preloadPreviousPage && router.history[router.history.length - 2]) {
+      var preloadPreviousPage = router.params.preloadPreviousPage || (app.theme.ios ? router.params.iosSwipeBack : router.params.mdSwipeBack);
+      if (preloadPreviousPage && router.history[router.history.length - 2] && !isMaster) {
         router.back(router.history[router.history.length - 2], { preload: true });
       }
       if (router.params.pushState) {
@@ -7622,15 +7768,15 @@
     function setPositionClasses() {
       var pageClasses = 'page-previous page-current page-next';
       var navbarClasses = 'navbar-previous navbar-current navbar-next';
-      $oldPage.removeClass(pageClasses).addClass('page-current');
-      $newPage.removeClass(pageClasses).addClass('page-previous').removeAttr('aria-hidden');
+      $oldPage.removeClass(pageClasses).addClass('page-current').trigger('page:position', { position: 'current' });
+      $newPage.removeClass(pageClasses).addClass('page-previous').removeAttr('aria-hidden').trigger('page:position', { position: 'previous' });
       if (dynamicNavbar) {
         $oldNavbarInner.removeClass(navbarClasses).addClass('navbar-current');
         $newNavbarInner.removeClass(navbarClasses).addClass('navbar-previous').removeAttr('aria-hidden');
       }
     }
 
-    if (options.animate) {
+    if (options.animate && !(currentIsMaster && app.width >= router.params.masterDetailBreakpoint)) {
       setPositionClasses();
       router.animate($oldPage, $newPage, $oldNavbarInner, $newNavbarInner, 'backward', function () {
         afterAnimation();
@@ -7800,20 +7946,48 @@
           },
         };
       }
-      if (!previousRoute || !modalToClose) {
-        return router;
+      if (!navigateUrl || navigateUrl.replace(/[# ]/g, '').trim().length === 0) {
+        if (!previousRoute || !modalToClose) {
+          return router;
+        }
       }
-      if (router.params.pushState && navigateOptions.pushState !== false) {
-        History.back();
+      var forceOtherUrl = navigateOptions.force && previousRoute && navigateUrl;
+      if (previousRoute && modalToClose) {
+        if (router.params.pushState && navigateOptions.pushState !== false) {
+          History.back();
+        }
+        router.currentRoute = previousRoute;
+        router.history.pop();
+        router.saveHistory();
+        router.modalRemove(modalToClose);
+        if (forceOtherUrl) {
+          router.navigate(navigateUrl, { reloadCurrent: true });
+        }
+      } else if (modalToClose) {
+        router.modalRemove(modalToClose);
+        if (navigateUrl) {
+          router.navigate(navigateUrl, { reloadCurrent: true });
+        }
       }
-      router.currentRoute = previousRoute;
-      router.history.pop();
-      router.saveHistory();
-      router.modalRemove(modalToClose);
       return router;
     }
-    var $previousPage = router.$el.children('.page-current').prevAll('.page-previous').eq(0);
-    if (!navigateOptions.force && $previousPage.length > 0) {
+    var $previousPage = router.$el.children('.page-current').prevAll('.page-previous:not(.page-master)').eq(0);
+
+    var skipMaster;
+    if (router.params.masterDetailBreakpoint > 0) {
+      var $previousMaster = router.$el.children('.page-current').prevAll('.page-master').eq(0);
+      if ($previousMaster.length) {
+        var expectedPreviousPageUrl = router.history[router.history.length - 2];
+        var expectedPreviousPageRoute = router.findMatchingRoute(expectedPreviousPageUrl);
+        if (expectedPreviousPageRoute && expectedPreviousPageRoute.route === $previousMaster[0].f7Page.route.route) {
+          $previousPage = $previousMaster;
+          if (!navigateOptions.preload) {
+            skipMaster = app.width >= router.params.masterDetailBreakpoint;
+          }
+        }
+      }
+    }
+    if (!navigateOptions.force && $previousPage.length && !skipMaster) {
       if (router.params.pushState
         && $previousPage[0].f7Page
         && router.history[router.history.length - 2] !== $previousPage[0].f7Page.route.url
@@ -7824,8 +7998,8 @@
         );
         return router;
       }
-
       var previousPageRoute = $previousPage[0].f7Page.route;
+
       processRouteQueue.call(
         router,
         previousPageRoute,
@@ -7850,6 +8024,15 @@
     }
     if (!navigateUrl && router.history.length > 1) {
       navigateUrl = router.history[router.history.length - 2];
+    }
+    if (skipMaster && !navigateOptions.force && router.history[router.history.length - 3]) {
+      return router.back(router.history[router.history.length - 3], Utils.extend({}, navigateOptions || {}, {
+        force: true,
+        animate: false,
+      }));
+    }
+    if (skipMaster && !navigateOptions.force) {
+      return router;
     }
 
     // Find route to load
@@ -7975,11 +8158,12 @@
     var app = router.app;
     var separateNavbar = router.separateNavbar;
 
-    var $currentPageEl = $(router.currentPageEl);
-
     var $pagesToRemove = router.$el
       .children('.page')
-      .filter(function (index, pageInView) { return pageInView !== $currentPageEl[0]; });
+      .filter(function (index, pageInView) {
+        if (router.currentRoute && (router.currentRoute.modal || router.currentRoute.panel)) { return true; }
+        return pageInView !== router.currentPageEl;
+      });
 
     $pagesToRemove.each(function (index, pageEl) {
       var $oldPageEl = $(pageEl);
@@ -8133,15 +8317,17 @@
           if ($navEl.hasClass('title') && toLarge) { return; }
           newNavEls.push(animatableNavEl($navEl, newNavbarInner));
         });
-        oldNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
-          var $navEl = $(navEl);
-          if ($navEl.hasClass('left') && toLarge && !fromLarge && direction === 'forward' && separateNavbar) { return; }
-          if ($navEl.hasClass('left') && toLarge && direction === 'backward' && separateNavbar) { return; }
-          if ($navEl.hasClass('title') && fromLarge) {
-            return;
-          }
-          oldNavEls.push(animatableNavEl($navEl, oldNavbarInner));
-        });
+        if (!(oldNavbarInner.hasClass('navbar-master') && router.params.masterDetailBreakpoint > 0 && router.app.width >= router.params.masterDetailBreakpoint)) {
+          oldNavbarInner.children('.left, .right, .title, .subnavbar').each(function (index, navEl) {
+            var $navEl = $(navEl);
+            if ($navEl.hasClass('left') && toLarge && !fromLarge && direction === 'forward' && separateNavbar) { return; }
+            if ($navEl.hasClass('left') && toLarge && direction === 'backward' && separateNavbar) { return; }
+            if ($navEl.hasClass('title') && fromLarge) {
+              return;
+            }
+            oldNavEls.push(animatableNavEl($navEl, oldNavbarInner));
+          });
+        }
         [oldNavEls, newNavEls].forEach(function (navEls) {
           navEls.forEach(function (navEl) {
             var n = navEl;
@@ -8171,7 +8357,7 @@
       var dynamicNavbar = router.dynamicNavbar;
       var ios = router.app.theme === 'ios';
       // Router Animation class
-      var routerTransitionClass = "router-transition-" + direction + " router-transition-css-" + direction;
+      var routerTransitionClass = "router-transition-" + direction + " router-transition";
 
       var newNavEls;
       var oldNavEls;
@@ -8380,9 +8566,9 @@
     };
 
     Router.prototype.flattenRoutes = function flattenRoutes (routes) {
-      var this$1 = this;
       if ( routes === void 0 ) routes = this.routes;
 
+      var router = this;
       var flattenedRoutes = [];
       routes.forEach(function (route) {
         var hasTabRoutes = false;
@@ -8398,21 +8584,30 @@
             return tRoute;
           });
           hasTabRoutes = true;
-          flattenedRoutes = flattenedRoutes.concat(this$1.flattenRoutes(mergedPathsRoutes));
+          flattenedRoutes = flattenedRoutes.concat(router.flattenRoutes(mergedPathsRoutes));
+        }
+        if ('detailRoutes' in route) {
+          var mergedPathsRoutes$1 = route.detailRoutes.map(function (detailRoute) {
+            var dRoute = Utils.extend({}, detailRoute);
+            dRoute.masterRoute = route;
+            dRoute.masterRoutePath = route.path;
+            return dRoute;
+          });
+          flattenedRoutes = flattenedRoutes.concat(route, router.flattenRoutes(mergedPathsRoutes$1));
         }
         if ('routes' in route) {
-          var mergedPathsRoutes$1 = route.routes.map(function (childRoute) {
+          var mergedPathsRoutes$2 = route.routes.map(function (childRoute) {
             var cRoute = Utils.extend({}, childRoute);
             cRoute.path = (((route.path) + "/" + (cRoute.path))).replace('///', '/').replace('//', '/');
             return cRoute;
           });
           if (hasTabRoutes) {
-            flattenedRoutes = flattenedRoutes.concat(this$1.flattenRoutes(mergedPathsRoutes$1));
+            flattenedRoutes = flattenedRoutes.concat(router.flattenRoutes(mergedPathsRoutes$2));
           } else {
-            flattenedRoutes = flattenedRoutes.concat(route, this$1.flattenRoutes(mergedPathsRoutes$1));
+            flattenedRoutes = flattenedRoutes.concat(route, router.flattenRoutes(mergedPathsRoutes$2));
           }
         }
-        if (!('routes' in route) && !('tabs' in route && route.tabs)) {
+        if (!('routes' in route) && !('tabs' in route && route.tabs) && !('detailRoutes' in route)) {
           flattenedRoutes.push(route);
         }
       });
@@ -8843,8 +9038,8 @@
       if ( route === void 0 ) route = {};
 
       var router = this;
-      var $pageEl = $(pageEl);
-      var $navbarEl = $(navbarEl);
+      var $pageEl = $(pageEl).eq(0);
+      var $navbarEl = $(navbarEl).eq(0);
       var currentPage = $pageEl[0].f7Page || {};
       var direction;
       var pageFrom;
@@ -8891,8 +9086,14 @@
       var router = this;
       var $pageEl = $(pageEl);
       if (!$pageEl.length) { return; }
+      var $navbarEl = $(navbarEl);
       var route = options.route;
-      var restoreScrollTopOnBack = router.params.restoreScrollTopOnBack;
+      var restoreScrollTopOnBack = router.params.restoreScrollTopOnBack
+        && !(
+          router.params.masterDetailBreakpoint > 0
+          && $pageEl.hasClass('page-master')
+          && router.app.width >= router.params.masterDetailBreakpoint
+        );
       var keepAlive = $pageEl[0].f7Page && $pageEl[0].f7Page.route && $pageEl[0].f7Page.route.route && $pageEl[0].f7Page.route.route.keepAlive;
 
       if (callback === 'beforeRemove' && keepAlive) {
@@ -8906,7 +9107,7 @@
       if (callback === 'beforeRemove' && $pageEl[0].f7Page) {
         page = Utils.extend($pageEl[0].f7Page, { from: from, to: to, position: from });
       } else {
-        page = router.getPageData(pageEl, navbarEl, from, to, route, pageFromEl);
+        page = router.getPageData($pageEl[0], $navbarEl[0], from, to, route, pageFromEl);
       }
       page.swipeBack = !!options.swipeBack;
 
@@ -9226,6 +9427,13 @@
               }
             }
           }
+          if (router.currentRoute && router.currentRoute.route && router.currentRoute.route.master && router.params.masterDetailBreakpoint > 0) {
+            $pageEl.addClass('page-master');
+            $pageEl.trigger('page:role', { role: 'master' });
+            if ($navbarInnerEl && $navbarInnerEl.length) {
+              $navbarInnerEl.addClass('navbar-master');
+            }
+          }
           var initOptions = {
             route: router.currentRoute,
           };
@@ -9445,6 +9653,8 @@
       view.$el.trigger('view:beforedestroy', view);
       view.emit('local::beforeDestroy viewBeforeDestroy', view);
 
+      app.off('resize', view.checkmasterDetailBreakpoint);
+
       if (view.main) {
         app.views.main = null;
         delete app.views.main;
@@ -9473,9 +9683,39 @@
       view = null;
     };
 
+    View.prototype.checkmasterDetailBreakpoint = function checkmasterDetailBreakpoint () {
+      var view = this;
+      var app = view.app;
+      var wasMasterDetail = view.$el.hasClass('view-master-detail');
+      if (app.width >= view.params.masterDetailBreakpoint) {
+        view.$el.addClass('view-master-detail');
+        if (!wasMasterDetail) {
+          view.emit('local::masterDetailBreakpoint viewMasterDetailBreakpoint');
+          view.$el.trigger('view:masterDetailBreakpoint', view);
+        }
+      } else {
+        view.$el.removeClass('view-master-detail');
+        if (wasMasterDetail) {
+          view.emit('local::masterDetailBreakpoint viewMasterDetailBreakpoint');
+          view.$el.trigger('view:masterDetailBreakpoint', view);
+        }
+      }
+    };
+
+    View.prototype.initMasterDetail = function initMasterDetail () {
+      var view = this;
+      var app = view.app;
+      view.checkmasterDetailBreakpoint = view.checkmasterDetailBreakpoint.bind(view);
+      view.checkmasterDetailBreakpoint();
+      app.on('resize', view.checkmasterDetailBreakpoint);
+    };
+
     View.prototype.init = function init () {
       var view = this;
       if (view.params.router) {
+        if (view.params.masterDetailBreakpoint > 0) {
+          view.initMasterDetail();
+        }
         view.router.init();
         view.$el.trigger('view:init', view);
         view.emit('local::init viewInit', view);
@@ -10997,11 +11237,11 @@
             if (SW.registrations.indexOf(reg) >= 0) {
               SW.registrations.splice(SW.registrations.indexOf(reg), 1);
             }
-            app.emit('serviceWorkerUnregisterSuccess', true);
+            app.emit('serviceWorkerUnregisterSuccess', reg);
             resolve();
           })
           .catch(function (error) {
-            app.emit('serviceWorkerUnregisterError', error);
+            app.emit('serviceWorkerUnregisterError', reg, error);
             reject(error);
           });
       }); }));
@@ -11294,6 +11534,8 @@
         preloadPreviousPage: true,
         allowDuplicateUrls: false,
         reloadPages: false,
+        reloadDetail: false,
+        masterDetailBreakpoint: 0,
         removeElements: true,
         removeElementsWithTimeout: false,
         removeElementsTimeout: 0,
@@ -11722,22 +11964,26 @@
         if (collapseProgress === 0 && navbarCollapsed) {
           app.navbar.expandLargeTitle($navbarInnerEl[0]);
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          $navbarInnerEl[0].style.overflow = '';
           if (app.theme === 'md') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else if (collapseProgress === 1 && !navbarCollapsed) {
           app.navbar.collapseLargeTitle($navbarInnerEl[0]);
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          $navbarInnerEl[0].style.overflow = '';
           if (app.theme === 'md') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else if ((collapseProgress === 1 && navbarCollapsed) || (collapseProgress === 0 && !navbarCollapsed)) {
           $navbarInnerEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
+          $navbarInnerEl[0].style.overflow = '';
           if (app.theme === 'md') {
             $navbarEl[0].style.removeProperty('--f7-navbar-large-collapse-progress');
           }
         } else {
           $navbarInnerEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
+          $navbarInnerEl[0].style.overflow = 'visible';
           if (app.theme === 'md') {
             $navbarEl[0].style.setProperty('--f7-navbar-large-collapse-progress', collapseProgress);
           }
@@ -11825,6 +12071,11 @@
         app.on('touchstart:passive', handeTouchStart);
         app.on('touchend:passive', handleTouchEnd);
       }
+      if (needCollapse) {
+        $pageEl.find('.page-content').each(function (pageContentIndex, pageContentEl) {
+          if (pageContentEl.scrollTop > 0) { handleScroll.call(pageContentEl); }
+        });
+      }
       $pageEl[0].f7DetachNavbarScrollHandlers = function f7DetachNavbarScrollHandlers() {
         delete $pageEl[0].f7DetachNavbarScrollHandlers;
         $pageEl.off('scroll', '.page-content', handleScroll, true);
@@ -11866,7 +12117,7 @@
       },
     },
     on: {
-      'panelBreakpoint resize': function onResize() {
+      'panelBreakpoint resize viewMasterDetailBreakpoint': function onResize() {
         var app = this;
         $('.navbar').each(function (index, navbarEl) {
           app.navbar.size(navbarEl);
@@ -17188,7 +17439,7 @@
       var $panelParentEl = $el.parent();
       var wasInDom = $el.parents(document).length > 0;
 
-      if (!$panelParentEl.is(app.root)) {
+      if (!$panelParentEl.is(app.root) || $el.prevAll('.views, .view').length) {
         var $insertBeforeEl = app.root.children('.panel, .views, .view').eq(0);
         var $insertAfterEl = app.root.children('.statusbar').eq(0);
 
@@ -17200,7 +17451,19 @@
           app.root.prepend($el);
         }
 
-        if ($backdropEl && $backdropEl.length && !$backdropEl.parent().is(app.root) && $backdropEl.nextAll('.panel').length === 0) {
+        if ($backdropEl
+          && $backdropEl.length
+          && (
+            (
+              !$backdropEl.parent().is(app.root)
+              && $backdropEl.nextAll('.panel').length === 0
+            )
+            || (
+              $backdropEl.parent().is(app.root)
+              && $backdropEl.nextAll('.panel').length === 0
+            )
+          )
+        ) {
           $backdropEl.insertBefore($el);
         }
 
@@ -18450,7 +18713,7 @@
         var $inputEl = $(this);
         var tag = $inputEl[0].nodeName.toLowerCase();
         app.input.blur($inputEl);
-        if ($inputEl.dataset().validate || $inputEl.attr('validate') !== null) {
+        if ($inputEl.dataset().validate || $inputEl.attr('validate') !== null || $inputEl.attr('data-validate-on-blur') !== null) {
           app.input.validate($inputEl);
         }
         // Resize textarea
@@ -23757,24 +24020,33 @@
 
         if (!isMoved) {
           $el.removeClass('ptr-transitioning');
-          var targetIsEl;
           var targetIsScrollable;
           scrollHeight = $el[0].scrollHeight;
           offsetHeight = $el[0].offsetHeight;
           if (ptr.bottom) {
             maxScrollTop = scrollHeight - offsetHeight;
           }
-          $(e.target).parents().each(function (index, targetEl) {
-            if (targetEl === el) {
-              targetIsEl = true;
-            }
-            if (targetIsEl) { return; }
-            if (targetEl.scrollHeight > targetEl.offsetHeight) {
-              targetIsScrollable = true;
-            }
-          });
-
-          if (targetIsScrollable || scrollTop > scrollHeight) {
+          if (scrollTop > scrollHeight) {
+            isTouched = false;
+            return;
+          }
+          var $ptrWatchScrollable = $(e.target).closest('.ptr-watch-scroll');
+          if ($ptrWatchScrollable.length) {
+            $ptrWatchScrollable.each(function (ptrScrollableIndex, ptrScrollableEl) {
+              if (ptrScrollableEl === el) { return; }
+              if (
+                (ptrScrollableEl.scrollHeight > ptrScrollableEl.offsetHeight)
+                && $(ptrScrollableEl).css('overflow') === 'auto'
+                && (
+                  (!ptr.bottom && ptrScrollableEl.scrollTop > 0)
+                  || (ptr.bottom && ptrScrollableEl.scrollTop < ptrScrollableEl.scrollHeight - ptrScrollableEl.offsetHeight)
+                )
+              ) {
+                targetIsScrollable = true;
+              }
+            });
+          }
+          if (targetIsScrollable) {
             isTouched = false;
             return;
           }
@@ -34033,7 +34305,7 @@
     Autocomplete.prototype.renderDropdown = function renderDropdown () {
       var ac = this;
       if (ac.params.renderDropdown) { return ac.params.renderDropdown.call(ac, ac.items); }
-      var dropdownHtml = ("\n      <div class=\"autocomplete-dropdown\">\n        <div class=\"autocomplete-dropdown-inner\">\n          <div class=\"list " + (!ac.params.expandInput ? 'no-ios-edge' : '') + "\">\n            <ul></ul>\n          </div>\n        </div>\n        " + (ac.params.preloader ? ac.renderPreloader() : '') + "\n      </div>\n    ").trim();
+      var dropdownHtml = ("\n      <div class=\"autocomplete-dropdown\">\n        <div class=\"autocomplete-dropdown-inner\">\n          <div class=\"list " + (!ac.params.expandInput ? 'no-safe-areas' : '') + "\">\n            <ul></ul>\n          </div>\n        </div>\n        " + (ac.params.preloader ? ac.renderPreloader() : '') + "\n      </div>\n    ").trim();
       return dropdownHtml;
     };
 
@@ -35079,29 +35351,62 @@
   };
 
   var Menu = {
+    open: function open(el) {
+      if ( el === void 0 ) el = '.menu-item-dropdown';
+
+      var app = this;
+      if (!el) { return; }
+      var $el = $(el).closest('.menu-item-dropdown');
+      if (!$el.length) { return; }
+      $el.eq(0).addClass('menu-item-dropdown-opened').trigger('menu:opened');
+      app.emit('menuOpened', $el.eq(0)[0]);
+    },
+    close: function close(el) {
+      if ( el === void 0 ) el = '.menu-item-dropdown-opened';
+
+      var app = this;
+      if (!el) { return; }
+      var $el = $(el).closest('.menu-item-dropdown-opened');
+      if (!$el.length) { return; }
+      $el.eq(0).removeClass('menu-item-dropdown-opened').trigger('menu:closed');
+      app.emit('menuClosed', $el.eq(0)[0]);
+    },
+  };
+
+  var Menu$1 = {
     name: 'menu',
+    create: function create() {
+      var app = this;
+      app.menu = {
+        open: Menu.open.bind(app),
+        close: Menu.close.bind(app),
+      };
+    },
     on: {
       click: function click(e) {
+        var app = this;
         var openedMenus = $('.menu-item-dropdown-opened');
         if (!openedMenus.length) { return; }
         openedMenus.each(function (index, el) {
           if (!$(e.target).closest('.menu-item-dropdown-opened').length) {
-            $(el).removeClass('menu-item-dropdown-opened');
+            app.menu.close(el);
           }
         });
       },
     },
     clicks: {
       '.menu-item-dropdown': function onClick($clickedEl, dataset, e) {
+        var app = this;
         if ($clickedEl.hasClass('menu-item-dropdown-opened')) {
           if ($(e.target).closest('.menu-dropdown').length) { return; }
-          $clickedEl.removeClass('menu-item-dropdown-opened');
+          app.menu.close($clickedEl);
         } else {
-          $clickedEl.addClass('menu-item-dropdown-opened');
+          app.menu.open($clickedEl);
         }
       },
       '.menu-close': function onClick() {
-        $('.menu-item-dropdown-opened').removeClass('menu-item-dropdown-opened');
+        var app = this;
+        app.menu.close();
       },
     },
   };
@@ -35441,7 +35746,7 @@
     Tooltip$1,
     Gauge$1,
     Skeleton,
-    Menu,
+    Menu$1,
     Vi,
     Elevation,
     Typography

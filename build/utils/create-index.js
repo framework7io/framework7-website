@@ -12,89 +12,82 @@ module.exports = (content = '') => {
   }
 
   const headings = [];
-  let re;
-  re = / h([1-5])\([^\(]*\) ([^\n]*)/g;
-  content = content.replace(re, ((string, level, text, index) => {
-    if (level === '1' || level === '4' || level === '5') return string;
-    text = replaceText(text);
-    const id = makeId(text);
-    let lineIndex;
-    content.split(/\n/g).forEach((line, lIndex) => {
-      if (`${line}\n`.indexOf(`${string}\n`) >= 0) {
-        lineIndex = lIndex;
+
+  function findHeadings(replace) {
+    let re;
+    re = / h([1-5])\([^\(]*\) ([^\n]*)/g;
+    content = content.replace(re, ((string, level, text, index) => {
+      if (level === '1' || level === '4' || level === '5') return string;
+      text = replaceText(text);
+      const id = makeId(text);
+      if (!replace) {
+        headings.push({
+          level,
+          text,
+          index,
+          id,
+        });
+        return string;
       }
-    });
-    headings.push({
-      level,
-      text,
-      index: lineIndex,
-      id,
-    });
-    return ` h${level}#${id}${string.substring(3)}`;
-  }));
+      return ` h${level}#${id}${string.substring(3)}`;
+    }));
 
-  re = / h([1-5]) ([^\n]*)/g;
-  content = content.replace(re, ((string, level, text, index) => {
-    if (level === '1' || level === '4' || level === '5') return string;
-    text = replaceText(text);
-    const id = makeId(text);
-    let lineIndex;
-    content.split(/\n/g).forEach((line, lIndex) => {
-      if (`${line}\n`.indexOf(`${string}\n`) >= 0) {
-        lineIndex = lIndex;
+    re = / h([1-5]) ([^\n]*)/g;
+    content = content.replace(re, ((string, level, text, index) => {
+      if (level === '1' || level === '4' || level === '5') return string;
+      text = replaceText(text);
+      const id = makeId(text);
+      if (!replace) {
+        headings.push({
+          level,
+          text,
+          index,
+          id,
+        });
+        return string;
       }
-    });
-    headings.push({
-      level,
-      text,
-      index: lineIndex,
-      id,
-    });
-    return ` h${level}#${id}${string.substring(3)}`;
-  }));
+      return ` h${level}#${id}${string.substring(3)}`;
+    }));
 
-  re = / \+cssVars\('([a-z\-0-9]*)'\)/g;
-  content = content.replace(re, ((string, module, index) => {
-    if (componentsWithCssVars.indexOf(module) < 0) {
+    re = / \+cssVars\('([a-z\-0-9]*)'\)/g;
+    content = content.replace(re, ((string, module, index) => {
+      if (componentsWithCssVars.indexOf(module) < 0) {
+        return string;
+      }
+      const id = makeId('CSS Variables');
+      if (!replace) {
+        headings.push({
+          level: '2',
+          text: 'CSS Variables',
+          index,
+          id,
+        });
+      }
+
       return string;
-    }
-    const id = makeId('CSS Variables');
+    }));
 
-    let lineIndex;
-    content.split(/\n/g).forEach((line, lIndex) => {
-      if (line.indexOf(string) >= 0) lineIndex = lIndex;
-    });
+    re = / \+cssVars\('([a-z\-0-9]*)', false, '([a-zA-Z 0-9]*)'\)/g;
+    content = content.replace(re, ((string, module, title, index) => {
+      if (componentsWithCssVars.indexOf(module) < 0) {
+        return string;
+      }
+      const id = makeId(title);
+      if (!replace) {
+        headings.push({
+          level: '2',
+          text: title,
+          index,
+          id,
+        });
+      }
 
-    headings.push({
-      level: '2',
-      text: 'CSS Variables',
-      index: lineIndex,
-      id,
-    });
-
-    return string;
-  }));
-
-  re = / \+cssVars\('([a-z\-0-9]*)', false, '([a-zA-Z 0-9]*)'\)/g;
-  content = content.replace(re, ((string, module, title, index) => {
-    if (componentsWithCssVars.indexOf(module) < 0) {
       return string;
-    }
-    const id = makeId(title);
+    }));
+  }
 
-    let lineIndex;
-    content.split(/\n/g).forEach((line, lIndex) => {
-      if (line.indexOf(string) >= 0) lineIndex = lIndex;
-    });
-
-    headings.push({
-      level: '2',
-      text: title,
-      index: lineIndex,
-      id,
-    });
-    return string;
-  }));
+  findHeadings();
+  findHeadings(true);
 
   headings.sort((a, b) => {
     return a.index > b.index ? 1 : -1;

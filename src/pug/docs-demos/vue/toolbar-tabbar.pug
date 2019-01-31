@@ -20,7 +20,7 @@ block content
   template#toolbar.
     <f7-page>
       <f7-navbar title="Toolbar" back-link="Back"></f7-navbar>
-      <f7-toolbar :bottom="isBottom">
+      <f7-toolbar :position="isBottom ? 'bottom' : 'top'">
         <f7-link>Left Link</f7-link>
         <f7-link>Right Link</f7-link>
       </f7-toolbar>
@@ -41,10 +41,10 @@ block content
     <f7-page :page-content="false">
       <f7-navbar title="Tabbar" back-link="Back">
         <f7-nav-right>
-          <f7-link icon-f7="reload" icon-material="compare_arrows" @click="isBottom != isBottom"></f7-link>
+          <f7-link icon-ios="f7:reload" icon-md="material:compare_arrows" @click="isBottom = !isBottom"></f7-link>
         </f7-nav-right>
       </f7-navbar>
-      <f7-toolbar tabbar :bottom="isBottom">
+      <f7-toolbar tabbar :position="isBottom ? 'bottom' : 'top'">
         <f7-link tab-link="#tab-1" tab-link-active>Tab 1</f7-link>
         <f7-link tab-link="#tab-2">Tab 2</f7-link>
         <f7-link tab-link="#tab-3">Tab 3</f7-link>
@@ -94,10 +94,10 @@ block content
     <f7-page :page-content="false">
       <f7-navbar title="Tabbar Labels" back-link="Back">
         <f7-nav-right>
-          <f7-link icon-f7="reload" icon-material="compare_arrows" @click="isBottom != isBottom"></f7-link>
+          <f7-link icon-ios="f7:reload" icon-md="material:compare_arrows" @click="isBottom = !isBottom"></f7-link>
         </f7-nav-right>
       </f7-navbar>
-      <f7-toolbar tabbar labels :bottom="isBottom">
+      <f7-toolbar tabbar labels :position="isBottom ? 'bottom' : 'top'">
         <f7-link tab-link="#tab-1" tab-link-active text="Tab 1" icon-ios="f7:email_fill" icon-md="material:email"></f7-link>
         <f7-link tab-link="#tab-2" text="Tab 2" icon-ios="f7:today_fill" icon-md="material:today"></f7-link>
         <f7-link tab-link="#tab-3" text="Tab 3" icon-ios="f7:cloud_fill" icon-md="material:file_upload"></f7-link>
@@ -147,10 +147,10 @@ block content
     <f7-page :page-content="false">
       <f7-navbar title="Tabbar Scrollable" back-link="Back">
         <f7-nav-right>
-          <f7-link icon-f7="reload" icon-material="compare_arrows" @click="isBottom != isBottom"></f7-link>
+          <f7-link icon-ios="f7:reload" icon-md="material:compare_arrows" @click="isBottom = !isBottom"></f7-link>
         </f7-nav-right>
       </f7-navbar>
-      <f7-toolbar tabbar scrollable :bottom="isBottom">
+      <f7-toolbar tabbar scrollable :position="isBottom ? 'bottom' : 'top'">
         <f7-link
           v-for="(tab, index) in tabs"
           :key="tab"

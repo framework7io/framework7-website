@@ -14,7 +14,7 @@ block content
           <Page>
             <Navbar title="Toolbar" backLink="Back"></Navbar>
 
-            <Toolbar bottom={this.state.isBottom}>
+            <Toolbar position={this.state.isBottom ? 'bottom' : 'top'}>
               <Link>Left Link</Link>
               <Link>Right Link</Link>
             </Toolbar>
@@ -47,11 +47,11 @@ block content
           <Page pageContent={false}>
             <Navbar title="Tabbar" backLink="Back">
               <NavRight>
-                <Link iconF7="reload" iconMaterial="compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                <Link iconIos="f7:reload" iconMd="material:compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
               </NavRight>
             </Navbar>
 
-            <Toolbar tabbar bottom={this.state.isBottom}>
+            <Toolbar tabbar position={this.state.isBottom ? 'bottom' : 'top'}>
               <Link tabLink="#tab-1" tabLinkActive>Tab 1</Link>
               <Link tabLink="#tab-2">Tab 2</Link>
               <Link tabLink="#tab-3">Tab 3</Link>
@@ -111,11 +111,11 @@ block content
           <Page pageContent={false}>
             <Navbar title="Tabbar Labels" backLink="Back">
               <NavRight>
-                <Link iconF7="reload" iconMaterial="compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                <Link iconIos="f7:reload" iconMd="material:compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
               </NavRight>
             </Navbar>
 
-            <Toolbar tabbar labels bottom={this.state.isBottom}>
+            <Toolbar tabbar labels position={this.state.isBottom ? 'bottom' : 'top'}>
               <Link tabLink="#tab-1" tabLinkActive text="Tab 1" iconIos="f7:email_fill" iconMd="material:email"></Link>
               <Link tabLink="#tab-2" text="Tab 2" iconIos="f7:today_fill" iconMd="material:today"></Link>
               <Link tabLink="#tab-3" text="Tab 3" iconIos="f7:cloud_fill" iconMd="material:file_upload"></Link>
@@ -176,11 +176,11 @@ block content
           <Page pageContent={false}>
             <Navbar title="Tabbar Scrollable" backLink="Back">
               <NavRight>
-                <Link iconF7="reload" iconMaterial="compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
+                <Link iconIos="f7:reload" iconMd="material:compare_arrows" onClick={() => this.setState({isBottom: !this.state.isBottom})}></Link>
               </NavRight>
             </Navbar>
 
-            <Toolbar tabbar scrollable bottom={this.state.isBottom}>
+            <Toolbar tabbar scrollable position={this.state.isBottom ? 'bottom' : 'top'}>
               {tabs.map((tab, index) => (
                 <Link
                   key={tab}

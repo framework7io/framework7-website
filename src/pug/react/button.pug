@@ -37,12 +37,32 @@ block content
           td raised
           td boolean
           td false
-          td Makes segmented raised. Affects MD theme only
+          td Makes segmented raised
+        tr
+          td raisedIos
+          td boolean
+          td false
+          td Makes segmented raised only in iOS theme
+        tr
+          td raisedMd
+          td boolean
+          td false
+          td Makes segmented raised only in MD theme
         tr
           td round
           td boolean
           td false
           td Makes segmented round
+        tr
+          td roundIos
+          td boolean
+          td false
+          td Makes segmented round only in iOS theme
+        tr
+          td roundMd
+          td boolean
+          td false
+          td Makes segmented round only in MD theme
         tr
           td tag
           td string
@@ -144,12 +164,32 @@ block content
           td raised
           td boolean
           td false
-          td Makes button raised. Affects MD theme only
+          td Makes button raised
+        tr
+          td raisedIos
+          td boolean
+          td false
+          td Makes button raised only in iOS theme
+        tr
+          td raisedMd
+          td boolean
+          td false
+          td Makes button raised only in MD theme
         tr
           td outline
           td boolean
           td false
-          td Makes button outline. Affects MD theme only
+          td Makes button outline
+        tr
+          td outlineIos
+          td boolean
+          td false
+          td Makes button outline only in iOS theme
+        tr
+          td outlineMd
+          td boolean
+          td false
+          td Makes button outline only in MD theme
         tr
           th(colspan="4") &lt;Button&gt; icon related properties
         +reactLinkIconProps
@@ -206,7 +246,7 @@ block content
               </Row>
             </Block>
 
-            <BlockTitle>Outline Buttons (MD-theme only)</BlockTitle>
+            <BlockTitle>Outline Buttons</BlockTitle>
             <Block>
               <Row>
                 <Col>
@@ -221,7 +261,7 @@ block content
               </Row>
             </Block>
 
-            <BlockTitle>Raised Buttons (MD-theme only)</BlockTitle>
+            <BlockTitle>Raised Buttons</BlockTitle>
             <Block>
               <Row tag="p">
                 <Col tag="span">
@@ -271,7 +311,7 @@ block content
               </Segmented>
             </Block>
 
-            <BlockTitle>Big Buttons</BlockTitle>
+            <BlockTitle>Large Buttons</BlockTitle>
             <Block>
               <Row tag="p">
                 <Col tag="span">
