@@ -1,0 +1,212 @@
+extends ../_docs-template
+
+block vars
+  - var activeLink = 'vue';
+  - var title = 'Menu Vue Component | Framework7 Vue Documentation';
+
+block content
+  include ../_docs-demo-device
+
+  .docs-nav
+    include ../_docs-menu-vue
+  .docs-content
+    +improveDocsLink
+    h1 Menu Vue Component
+    ul.docs-index
+    p Menu component not so often seen in mobile apps. But it is proven to be extremely helpful when you need controls on top of the map, images, some text/code editor, etc.
+    p Menu Vue component represents <a href="../docs/menu.html">Menu</a> component.
+    h2 Menu Components
+    p There are following components included:
+    ul
+      li <code><b>f7-menu</b></code>
+      li <code><b>f7-menu-item</b></code>
+      li <code><b>f7-menu-dropdown</b></code>
+      li <code><b>f7-menu-dropdown-item</b></code>
+    h2 Menu Properties
+    table.params-table
+      thead
+        tr
+          th Prop
+          th Type
+          th Default
+          th Description
+      tbody
+        tr
+          th(colspan="4") &lt;f7-menu-item&gt; properties
+        tr
+          td text
+          td string
+          td
+          td Menu item text
+        tr
+          td icon-only
+          td boolean
+          td
+          td Enable if menu item contains only icon
+        tr
+          td dropdown
+          td boolean
+          td
+          td Enable if menu item contains menu dropdown
+        tr
+          td link
+          td boolean
+          td
+          td Enable if to render menu item as link (#[code &lt;a&gt;]) element if you don't need to specific #[code href]
+        tr
+          th(colspan="4") &lt;f7-menu-item&gt; icon related properties
+        +vueLinkIconProps
+        tr
+          th(colspan="4") &lt;f7-menu-item&gt; navigation/router related properties
+        +vueLinkRouterProps
+        tr
+          th(colspan="4") &lt;f7-menu-item&gt; action related properties
+        +vueLinkActionsProps
+
+        tr
+          th(colspan="4") &lt;f7-menu-dropdown&gt; properties
+        tr
+          td content-height
+          td string
+          td
+          td CSS value of dropdown #[code height] property. Specify only to limit dropdown height if there are a lot of items
+        tr
+          td position
+          td string
+          td
+          td Dropdown position, can be #[code left], #[code center] or #[code right]
+        tr
+          td left
+          td boolean
+          td
+          td Same as #[position="left"]
+        tr
+          td center
+          td boolean
+          td
+          td Same as #[position="center"]
+        tr
+          td right
+          td boolean
+          td
+          td Same as #[position="right"]
+        tr
+          th(colspan="4") &lt;f7-menu-dropdown-item&gt; properties
+        tr
+          td text
+          td string
+          td
+          td Menu dropdown item text
+        tr
+          td divider
+          td boolean
+          td
+          td Render this item as divider (text will ignored in this case)
+        tr
+          td link
+          td boolean
+          td
+          td Enable if to render menu item as link (#[code &lt;a&gt;]) element if you don't need to specific #[code href]
+        tr
+          th(colspan="4") &lt;f7-menu-dropdown-item&gt; navigation/router related properties
+        +vueLinkRouterProps
+        tr
+          th(colspan="4") &lt;f7-menu-dropdown-item&gt; action related properties
+        +vueLinkActionsProps
+
+
+    h2 Menu Events
+    table.events-table
+      thead
+        tr
+          th Event
+          th Description
+      tbody
+        tr
+          th(colspan="2") &lt;f7-menu-item&gt; events
+        tr
+          td click
+          td Event will be triggered on menu item click
+        tr
+          td menu:opened
+          td Event will be triggered right after menu dropdown will be opened
+        tr
+          td menu:closed
+          td Event will be triggered right after menu dropdown will be closed
+        tr
+          th(colspan="2") &lt;f7-menu-dropdown-item&gt; events
+        tr
+          td click
+          td Event will be triggered on menu dropdown item click
+
+    .with-device
+      h2(data-device-preview="../docs-demos/vue/menu.html") Examples
+
+      h4 Plain Links
+      :code(lang="html")
+        <f7-menu>
+          <f7-menu-item href="#" text="Item 1"></f7-menu-item>
+          <f7-menu-item href="#" text="Item 2"></f7-menu-item>
+          <f7-menu-item href="#" icon-f7="edit"></f7-menu-item>
+          <f7-menu-item href="#" icon-f7="share"></f7-menu-item>
+        </f7-menu>
+
+      h4 Dropdowns
+      :code(lang="html")
+        <f7-menu>
+          <f7-menu-item text="Left" dropdown>
+            <f7-menu-dropdown left>
+              <f7-menu-dropdown-item href="#" text="Menu Item 1"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 2"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 3"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 4"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item divider></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 5"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 6"></f7-menu-dropdown-item>
+            </f7-menu-dropdown>
+          </f7-menu-item>
+
+          <f7-menu-item text="Center" dropdown>
+            <f7-menu-dropdown center content-height="200px">
+              <f7-menu-dropdown-item href="#" text="Menu Item 1"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 2"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 3"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 4"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item divider></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 5"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 6"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 7"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item divider></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 8"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 9"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 10"></f7-menu-dropdown-item>
+            </f7-menu-dropdown>
+          </f7-menu-item>
+
+          <f7-menu-item text="Right" dropdown>
+            <f7-menu-dropdown right>
+              <f7-menu-dropdown-item href="#" text="Menu Item 1"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 2"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 3"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 4"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item divider></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 5"></f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#" text="Menu Item 6"></f7-menu-dropdown-item>
+            </f7-menu-dropdown>
+          </f7-menu-item>
+
+          <f7-menu-item style="margin-left: auto" icon-f7="share" dropdown>
+            <f7-menu-dropdown right>
+              <f7-menu-dropdown-item href="#">
+                <span>Share on Facebook</span>
+                <f7-icon class="margin-left" f7="logo_facebook"></f7-icon>
+              </f7-menu-dropdown-item>
+              <f7-menu-dropdown-item href="#">
+                <span>Share on Twitter</span>
+                <f7-icon class="margin-left" f7="logo_twitter"></f7-icon>
+              </f7-menu-dropdown-item>
+            </f7-menu-dropdown>
+          </f7-menu-item>
+
+          <f7-menu-item href="#" icon-f7="edit"></f7-menu-item>
+        </f7-menu>
