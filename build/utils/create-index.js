@@ -1,4 +1,7 @@
+const fs = require('fs');
+const path = require('path');
 const makeId = require('./make-id');
+const componentsWithCssVars = require('./components-with-css-vars');
 
 module.exports = (content = '') => {
   if (content.indexOf('ul.docs-index') < 0) {
@@ -52,6 +55,9 @@ module.exports = (content = '') => {
 
   re = / \+cssVars\('([a-z\-0-9]*)'\)/g;
   content = content.replace(re, ((string, module, index) => {
+    if (componentsWithCssVars.indexOf(module) < 0) {
+      return string;
+    }
     const id = makeId('CSS Variables');
 
     let lineIndex;
@@ -65,11 +71,15 @@ module.exports = (content = '') => {
       index: lineIndex,
       id,
     });
+
     return string;
   }));
 
   re = / \+cssVars\('([a-z\-0-9]*)', false, '([a-zA-Z 0-9]*)'\)/g;
   content = content.replace(re, ((string, module, title, index) => {
+    if (componentsWithCssVars.indexOf(module) < 0) {
+      return string;
+    }
     const id = makeId(title);
 
     let lineIndex;

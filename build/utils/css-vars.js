@@ -3,12 +3,11 @@ const less = require('less');
 
 const codeFilter = require('./code-filter');
 const makeId = require('./make-id');
+const componentsWithCssVars = require('./components-with-css-vars');
 
 module.exports = (component, info = true, title = 'CSS Variables') => {
-  const file = `./packages/core/components/${component}/${component}-vars.less`;
-  if (!fs.existsSync(file)) return '';
+  if (componentsWithCssVars.indexOf(component) < 0) return '';
   const content = fs.readFileSync(`./packages/core/components/${component}/${component}-vars.less`, 'utf8');
-  if (!content || !content.trim().length) return '';
   let css;
   less.render(content, (err, output) => {
     css = output.css;

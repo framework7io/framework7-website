@@ -3,6 +3,7 @@ node_modules/
 *.log
 *.DS_Store
 contribute/index.html
+cli/*.html
 docs/*.html
 docs-demos/*.html
 docs-demos/core/*.html
