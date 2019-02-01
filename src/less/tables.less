@@ -230,8 +230,14 @@ table.double-events-table {
         width: auto;
       }
     }
-    td:not(:first-child) {
-      margin-left: 20px;
+    td:not(:last-child) {
+      margin-right: 20px;
+    }
+    tr.subparam-row {
+      padding-left: 1em;
+    }
+    tr.subparam-row td:first-child {
+      padding-left: 0;
     }
     tbody {
       th[colspan] {
@@ -241,15 +247,15 @@ table.double-events-table {
       tr + tr {
         border-top: 1px solid #eaeaea;
       }
-      td ~ td {
-        margin-left: 10px;
-      }
+      // td ~ td {
+      //   margin-left: 10px;
+      // }
       td:last-child {
         width: 100% !important;
         margin-top: 10px;
         margin-left: 0;
         font-size: 14px;
-        color: #666;
+        color: #333;
       }
     }
   }

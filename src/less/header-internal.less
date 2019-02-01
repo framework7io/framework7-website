@@ -331,20 +331,39 @@
   .internal-header {
     padding-top: 15px;
     padding-bottom: 15px;
-    .logo, .logo-holder {
+    .logo-holder {
+      margin-right: 15px;
+    }
+    .logo-holder {
       width: 40px;
       height: 40px;
     }
     .logo {
-      border-width: 1px;
+      border-width: 2px;
+      width: 55px;
+      height: 55px;
+      margin-left: -10px;
+      margin-top: -5px;
     }
     .title img {
       width: 150px;
     }
   }
 }
-
-@media (max-width: 700px) {
+@media (max-width: 700px) and (min-width: 601px) {
+  .internal-header {
+    ul.nav {
+      flex-wrap: wrap;
+      li + li {
+        margin-left: 0;
+      }
+      li {
+        margin-right: 5px;
+      }
+    }
+  }
+}
+@media (max-width: 600px) {
   .internal-header {
     .center {
       flex-direction: column;
