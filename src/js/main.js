@@ -1,12 +1,14 @@
 import $ from 'dom7';
 import initDocsSearch from './init-docs-search';
 import initDocsDevice from './init-docs-device';
+import initDocsNav from './init-docs-nav';
 
 initDocsSearch();
 initDocsDevice();
+initDocsNav();
 
 // Home device theme switch
-$('.theme-switch a').click(function onClick(e) {
+$('.home-header .theme-switch a').click(function onClick(e) {
   if ($(this).hasClass('active')) {
     return;
   }
@@ -17,6 +19,11 @@ $('.theme-switch a').click(function onClick(e) {
   $('header .phone').toggleClass('phone-android');
   $('header .phone .fullscreen').attr('href', url);
 });
+$('.home-header .mobile-preview').click((e) => {
+  e.preventDefault();
+  $('.home-header').toggleClass('mobile-preview-enabled');
+});
+
 
 // Docs clickable titles
 $('.docs-content').find('h2, h3').on('click', function onClick() {
@@ -24,27 +31,6 @@ $('.docs-content').find('h2, h3').on('click', function onClick() {
   if (!$h.attr('id')) return;
   document.location.hash = $h.attr('id');
 });
-
-// Docs nav
-if ($('.docs-nav').length > 0) {
-  let loc = document.location.href;
-  if (loc.indexOf('?') >= 0) loc = loc.split('?')[0];
-  if (loc.indexOf('#') >= 0) loc = loc.split('#')[0];
-  if (loc.indexOf('/') >= 0) {
-    loc = loc.split('/');
-    loc = loc[loc.length - 1];
-  }
-
-  $('.docs-nav a').each(function forEach() {
-    const link = $(this).attr('href');
-    if (loc === link && link !== '#') {
-      $(this).addClass('active').parent('li').addClass('active');
-    }
-  });
-  $('.docs-nav-toggle').click(() => {
-    $('.docs-nav').toggleClass('docs-nav-visible');
-  });
-}
 
 // Showcase
 $('.showcase-apps .app-icon').on('click', function onClick() {
