@@ -19,8 +19,8 @@ block content
     p To add transition between elevation changes (when <code>elevation-$n</code>, <code>elevation-hover-$n</code> and <code>elevation-pressed-$n</code> used together) we can add <code>elevation-transition</code> class to element, it will set 200ms transition duration. To use different duration we can use one of <code>elevation-transition-100</code>, <code>elevation-transition-200</code>, ..., <code>elevation-transition-500</code> classes.
 
     +cssVars('elevation')
-
-    .with-device(data-device-preview="../docs-demos/core/elevation.html")
+    .with-device
+      h2(data-device-preview="../docs-demos/core/elevation.html") Example
       :code(lang="html")
             <div class="row">
               <div class="col">

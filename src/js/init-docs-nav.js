@@ -6,6 +6,7 @@ function handleNavToggleScroll() {
 
   const pos = Math.max(headerHeight - st, 0);
   $('.docs-nav-toggle').transform(`translateY(${pos}px)`);
+  $('.docs-nav-toggle').css({ opacity: 1 });
 }
 export default function initDocsNav() {
   if ($('.docs-nav').length > 0) {

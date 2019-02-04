@@ -46,7 +46,8 @@ html
             include _github-buttons
             include _patreon
         .phone
-          iframe(src="kitchen-sink/core/?theme=ios", frameborder="0", scrolling="no")
+          .iframe-wrapper
+            iframe(src="kitchen-sink/core/?theme=ios", frameborder="0", scrolling="no")
           .theme-switch
             a(href="kitchen-sink/core/?theme=ios", target="_blank").active
               .theme-icon

@@ -14,6 +14,7 @@ const inlineSvg = require('./utils/inline-svg');
 const cssVars = require('./utils/css-vars');
 const codeFilter = require('./utils/code-filter');
 const createIndex = require('./utils/create-index');
+const createMobilePreviewLinks = require('./utils/create-mobile-preview-links');
 
 if (!pug.filter && !pug.filters.code) {
   pug.filters = {
@@ -31,12 +32,14 @@ function buildPages(cb, { src = ['**/*.pug', '!**/_*.pug', '!_*.pug'], dest = '.
 
   gulp.src(src, { cwd: 'src/pug' })
     .pipe(gulpData((file) => { return { srcFileUrl: getSrcFileUrl(file) }; }))
-    .pipe(through2.obj((file, _, cb) => {
+    .pipe(through2.obj((file, _, cbInternal) => {
       if (file.isBuffer()) {
-        const content = createIndex(file.contents.toString(), file.path);
+        let content = file.contents.toString();
+        content = createIndex(content, file.path);
+        content = createMobilePreviewLinks(content, file.path);
         file.contents = Buffer.from(content);
       }
-      cb(null, file);
+      cbInternal(null, file);
     }))
     .pipe(gulpPug({
       pug,

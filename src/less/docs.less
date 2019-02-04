@@ -8,7 +8,9 @@ body.body-docs {
     display: flex;
   }
 }
-
+.docs-mobile-preview-links {
+  display: none;
+}
 .docs-content {
   font-family: -apple-system, system-ui, Helvetica Neue, Helvetica, Arial, sans-serif;
   flex-shrink: 10;
@@ -416,13 +418,14 @@ ul.method-parameters {
   }
 }
 .docs-nav-toggle {
+  opacity: 0;
   position: absolute;
   top: 0;
   left: 100%;
   background: @redColor;
   cursor: pointer;
-  width: 36px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
   z-index: 100;
 
   span {
@@ -432,7 +435,7 @@ ul.method-parameters {
     background: #fff;
     position: relative;
     border-radius: 4px;
-    top: 6px;
+    top: 12px;
     left: 20%;
     transition: 300ms;
     + span {
@@ -447,10 +450,10 @@ ul.method-parameters {
   }
   .docs-nav-visible & {
     span:first-child {
-      transform: translate(4px, -1px) rotate(45deg);
+      transform: translate(15%, -2px) rotate(45deg);
     }
     span:last-child {
-      transform: translate(4px, 0px) rotate(-45deg);
+      transform: translate(15%, 1px) rotate(-45deg);
     }
     span:nth-child(2) {
       opacity: 0;
@@ -518,11 +521,68 @@ ul.method-parameters {
   }
 }
 @media (max-width: 600px) {
+  .docs-demo-device:not(.docs-inline-device),
+  .docs-demo-device:not(.docs-inline-device).visible {
+    display: none;
+  }
+  .docs-content .with-device {
+    padding-right: 0;
+  }
   .method-wrap {
     padding: 10px;
   }
   .improve-docs-link {
     float: none;
     margin-bottom: 5px;
+  }
+  .docs-mobile-preview-links {
+    display: flex;
+    align-items: center;
+    .mobile-preview-ios {
+      &:before {
+        content:'';
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background: url(../i/logo-apple.png) no-repeat center;
+        background-size: contain;
+        position: relative;
+        top: -1px;
+        margin-right: 5px;
+      }
+      &:after {
+        content: 'Preview';
+        line-height: 1;
+      }
+    }
+    .mobile-preview-md {
+      &:before {
+        content:'';
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background: url(../i/logo-android.png) no-repeat center;
+        background-size: contain;
+        position: relative;
+        top: -1px;
+        margin-right: 5px;
+      }
+      &:after {
+        content: 'Preview';
+        line-height: 1;
+      }
+    }
+    a {
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      align-content: center;
+      background: @redColor;
+      margin-right: 10px;
+      padding: 6px 10px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
   }
 }

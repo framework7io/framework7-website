@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const makeId = require('./make-id');
 const componentsWithCssVars = require('./components-with-css-vars');
 
