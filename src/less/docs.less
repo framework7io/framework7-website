@@ -42,35 +42,32 @@ body.body-docs {
     width: 16px;
     height: 16px;
     content: '';
+    font-family: 'Framework7 Icons';
     display: inline-block;
-    vertical-align: middle;
     margin-right: 6px;
     position: relative;
+    vertical-align: middle;
+    font-weight: normal !important;
+    font-size: 16px;
+    line-height: 16px;
   }
 }
 .ios-only:before {
-  background: url(../i/logo-apple-black.png) no-repeat center;
-  background-size: 100% auto;
-  top: -2px;
+  content: 'logo_ios';
 }
 .md-only:before {
-  background: url(../i/logo-android-black.png) no-repeat center;
-  background-size: 100% auto;
-  top: -1px;
+  content: 'logo_android';
 }
-span.ios-only, span.md-only, b.md-only, b.ios-only {
+span.ios-only,
+span.md-only,
+b.md-only,
+b.ios-only {
   display: inline-block;
   font-size: 12px;
   font-weight: 500;
   padding: 3px 6px;
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 3px;
-  &:before {
-    width: 12px;
-    height: 12px;
-    margin-right: 4px;
-    top: -1px;
-  }
 }
 .docs-demo-device {
   position: absolute;
@@ -475,11 +472,12 @@ ul.method-parameters {
       opacity: 1;
     }
     &:before {
-      content: '';
+      content: 'logo_github';
+      font-family: 'Framework7 Icons';
+      font-size: 20px;
+      line-height: 20px;
       width: 20px;
       height: 20px;
-      background: url(../i/gh-logo.svg) no-repeat center;
-      background-size: 18px auto;
       display: inline-block;
       vertical-align: top;
       margin-right: 3px;
@@ -534,21 +532,38 @@ ul.method-parameters {
   .improve-docs-link {
     float: none;
     margin-bottom: 5px;
+    display: inline-block;
   }
   .docs-mobile-preview-links {
     display: flex;
     align-items: center;
+    a {
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      align-content: center;
+      background: @redColor;
+      margin-right: 10px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .mobile-preview-ios,
+    .mobile-preview-md {
+      &:before {
+        font-family: 'Framework7 Icons';
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        position: relative;
+        margin-right: 5px;
+        line-height: 20px;
+      }
+    }
     .mobile-preview-ios {
       &:before {
-        content:'';
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        background: url(../i/logo-apple.png) no-repeat center;
-        background-size: contain;
-        position: relative;
-        top: -1px;
-        margin-right: 5px;
+        content:'logo_ios';
       }
       &:after {
         content: 'Preview';
@@ -557,32 +572,13 @@ ul.method-parameters {
     }
     .mobile-preview-md {
       &:before {
-        content:'';
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        background: url(../i/logo-android.png) no-repeat center;
-        background-size: contain;
-        position: relative;
-        top: -1px;
-        margin-right: 5px;
+        content:'logo_android';
       }
       &:after {
         content: 'Preview';
         line-height: 1;
       }
     }
-    a {
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      align-content: center;
-      background: @redColor;
-      margin-right: 10px;
-      padding: 6px 10px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: 500;
-    }
+
   }
 }

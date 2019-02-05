@@ -129,7 +129,52 @@
     }
   }
 }
-
+.home-sponsors {
+  h3 {
+    color: #000;
+  }
+  .home-sponsors-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    a {
+      width: 120px;
+      height: 120px;
+      font-size: 0;
+      line-height: 100px;
+      text-align: center;
+    }
+    img {
+      width: auto;
+      max-width: 90%;
+      max-height: 90%;
+      vertical-align: middle;
+    }
+  }
+  .home-sponsors-button {
+    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    background: @redColor;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    border-radius: 40px;
+    color: @yellowColor;
+    transition: 200ms;
+    &:hover {
+      background: lighten(@redColor, 5%);
+    }
+    i {
+      margin-left: 5px;
+      position: relative;
+      top: -3px;
+    }
+  }
+}
 @media (max-width: 800px) {
   .home-block {
     .logos {

@@ -3,29 +3,18 @@ html
   head
     meta(charset="utf-8")
     title Framework7 - Full Featured Mobile HTML Framework For Building iOS & Android Apps
-    meta(property="og:image", content=cdn + "/i/f7-banner.jpg")
+    meta(property="og:image", content=cdn + "/i/share-banner.jpg")
     meta(name="viewport" content="width=device-width, viewport-fit=cover")
     meta(name="twitter:card", content="summary")
     meta(name="twitter:site", content="@framework7io")
     meta(name="twitter:creator", content="@framework7io")
     meta(name="twitter:title", content="Framework7")
-    meta(name="twitter:description", content="A free and open source mobile HTML framework to develop hybrid mobile apps or web apps with iOS & Android native look and feel")
-    meta(name="twitter:image", content="https://avatars0.githubusercontent.com/u/31954178?s=200&v=4")
+    meta(name="twitter:description", content="Full featured HTML framework for building iOS & Android apps")
+    meta(name="twitter:image", content=cdn + "/i/logo.svg")
     link(rel="stylesheet", href=cdn + "/css/main.css")
     link(rel="shortcut icon" href="/i/favicon.png")
   body
-    | <!-- BuySellAds Ad Code -->
-    script.
-      (function(){
-        var bsa = document.createElement('script');
-           bsa.type = 'text/javascript';
-           bsa.async = true;
-           bsa.src = '//s3.buysellads.com/ac/bsa.js';
-        (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(bsa);
-      })();
-    | <!-- End BuySellAds Ad Code -->
     header.home-header
-
       .center
         .content
           .logo-title
@@ -51,14 +40,12 @@ html
           .theme-switch
             a(href="kitchen-sink/core/?theme=ios", target="_blank").active
               .theme-icon
-                .logo-apple
-                span iOS
+                i.f7-icons logo_ios
               .fullscreen
                 i.f7-icons enter
             a(href="kitchen-sink/core/?theme=md", target="_blank")
               .theme-icon
-                .logo-android
-                span MD
+                i.f7-icons logo_android
               .fullscreen
                 i.f7-icons enter
         .mobile-preview
@@ -154,19 +141,44 @@ html
           a(href="/docs/") Framework7 Core
           a(href="/vue/") Framework7 Vue
           a(href="/react/") Framework7 React
-    footer
+    .home-block.home-sponsors
       .center
-        include _footer
-    script.
-    script(src=cdn + "/js/main.js")
-    script.
-      var _merchantSettings=_merchantSettings || [];_merchantSettings.push(['AT', '1l3voeJ']);(function(){var autolink=document.createElement('script');autolink.type='text/javascript';autolink.async=true; autolink.src= ('https:' == document.location.protocol) ? 'https://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js' : 'http://autolinkmaker.itunes.apple.com/js/itunes_autolinkmaker.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(autolink, s);})();
-    script.
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        h2 Support Framework7
+        .text
+          p Framework7 is an MIT-licensed open source project with its ongoing development made possible entirely by the support of #[a(href="/sponsors/") sponsors] and  #[a(href="https://github.com/framework7io/framework7/blob/master/BACKERS.md" target="_blank") these awesome backers].
+          p
+            a(href="https://www.patreon.com/vladimirkharlampidi", target="_blank").home-sponsors-button Support Framework7 #[i.f7-icons thumbs_up]
+        - var sponsors = getYamlData('sponsors/sponsors.yml');
+        if (sponsors.diamond)
+          h3 Diamond Sponsors
+          .home-sponsors-list
+            each sponsor in sponsors.diamond
+              a(href=sponsor.link, target="_blank")
+                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+        if (sponsors.platinum)
+          h3 Platinum Sponsors
+          .home-sponsors-list
+            each sponsor in sponsors.platinum
+              a(href=sponsor.link, target="_blank")
+                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+        if (sponsors.gold)
+          h3 Gold Sponsors
+          .home-sponsors-list
+            each sponsor in sponsors.gold
+              a(href=sponsor.link, target="_blank")
+                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+        if (sponsors.silver)
+          h3 Silver Sponsors
+          .home-sponsors-list
+            each sponsor in sponsors.silver
+              a(href=sponsor.link, target="_blank")
+                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
+        if (sponsors.topSupporter)
+          h3 Top Supporters
+          .home-sponsors-list
+            each sponsor in sponsors.topSupporter
+              a(href=sponsor.link, target="_blank")
+                img(src=sponsor.imageUrl.replace('#{cdn}', cdn), alt=sponsor.title, title=sponsor.title)
 
-      ga('create', 'UA-74282934-1', 'auto');
-      ga('send', 'pageview');
-
+    include _footer
+    include _footer-scripts

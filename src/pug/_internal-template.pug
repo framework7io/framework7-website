@@ -5,13 +5,13 @@ html
   head
     meta(charset="utf-8")
     title=title
-    meta(property="og:image", content="http://framework7.io/i/f7-banner.jpg")
+    meta(property="og:image", content=cdn + "/i/share-banner.jpg")
     meta(name="viewport", content="width=device-width, viewport-fit=cover")
     meta(name="twitter:card", content="summary")
     meta(name="twitter:site", content="@framework7io")
     meta(name="twitter:creator", content="@framework7io")
     meta(name="twitter:title", content=title)
-    meta(name="twitter:image", content="https://avatars0.githubusercontent.com/u/31954178?s=200&v=4")
+    meta(name="twitter:image", content=cdn + "/i/logo.svg")
     link(rel="stylesheet", href=cdn + "/css/main.css")
     link(rel="shortcut icon" href="/i/favicon.png")
   body
@@ -19,9 +19,6 @@ html
     main
       .center
         block content
-    footer
-      .center
-        include _footer
-    block footer
+    include _footer
     include _footer-scripts
     block scripts

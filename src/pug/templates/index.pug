@@ -2,12 +2,40 @@ extends ../_internal-template
 
 block vars
   - var activeLink = 'templates';
-  - var title = 'Ready To Use Framework7 App Templates';
+  - var title = 'Ready To Use Framework7 Templates & Tools';
 
 block content
   - var templates = getYamlData('templates/templates.yml');
-
-  h1.text-align-center Official Framework7 Templates
+  h1.text-align-center Framework7 Tools & Templates
+  h2.text-align-center Framework7 Tools
+  .apps.templates
+    .app
+      a.app-icon(href="/cli/")
+        .img(style="background-color: #ee350f; color: #fff") Framework7 CLI
+      .app-info
+        .app-title Framework7 CLI
+        .app-buttons
+          a(href="/cli/") Documentation
+        .app-description Official Framework7 CLI is the most recommended way to start app development
+    .app
+      a.app-icon(href="https://wappler.io", target="_blank")
+        .img(style="background-color: #fff;")
+          img(src=cdn + '/i/sponsors/wappler.png')
+      .app-info
+        .app-title Wappler
+        .app-buttons
+          a(href="https://wappler.io", target="_blank") Learn More
+        .app-description Visual Web App Creator, offers full visual Framework7 builder
+    .app
+      a.app-icon(href="https://www.thoriumbuilder.com/", target="_blank")
+        .img(style="background-color: #fff;")
+          img(src=cdn + '/i/templates/thorium.png')
+      .app-info
+        .app-title Thorium Builder
+        .app-buttons
+          a(href="https://www.thoriumbuilder.com/", target="_blank") Learn More
+        .app-description Native macOs app - full visual Framework7 app builder
+  h2.text-align-center Official Framework7 Templates
   .apps.templates
     each app in templates.official
       .app

@@ -138,6 +138,12 @@
       right: 100%;
       top: 70px;
       white-space: nowrap;
+      i {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+        display: block;
+      }
       a {
         text-align: center;
         background: @darkBrownColor;
@@ -171,7 +177,8 @@
           }
         }
       }
-      .theme-icon, .fullscreen {
+      .theme-icon,
+      .fullscreen {
         transition: 100ms;
       }
       .fullscreen {
@@ -187,31 +194,9 @@
         display: flex;
         align-content: center;
         align-items: center;
-        justify-content: center;
-        i {
-          width: 30px;
-          height: 30px;
-          font-size: 30px;
-          display: block;
-          margin-left: auto;
-          margin-right: auto;
-        }
-      }
-      .logo-apple, .logo-android {
-        width: 20px;
-        height: 20px;
-        margin-left: auto;
-        margin-right: auto;
-        background-size: 100% 100%;
-        background-position: center;
-        background-repeat: no-repeat;
-        margin-bottom: 3px;
-      }
-      .logo-apple {
-        background-image: url(../i/logo-apple.png);
-      }
-      .logo-android {
-        background-image: url(../i/logo-android.png);
+        justify-content: flex-end;
+        padding-right: 5px;
+        box-sizing: border-box;
       }
     }
   }

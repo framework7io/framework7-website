@@ -119,6 +119,9 @@ main {
   .col-50 {
     width: 50%;
   }
+  .col-33 {
+    width: 100% / 3;
+  }
 }
 
 // Github buttons
@@ -223,6 +226,16 @@ main {
     font-size: 11px;
     margin-top: 10px;
   }
+  @media (max-width: 600px) {
+    .f7-demo-icon-cell {
+      width: 100% / 3;
+    }
+  }
+  @media (max-width: 400px) {
+    .f7-demo-icon-cell {
+      width: 100% / 2;
+    }
+  }
 }
 
 .patreon-button {
@@ -269,6 +282,26 @@ main {
     vertical-align: middle;
     line-height: 1;
     margin-left: 5px;
+  }
+}
+@media (max-width: 800px) {
+  .contribute-cols h2 {
+    text-align: center;
+  }
+}
+@media (min-width: 801px) {
+  .contribute-cols {
+    display: flex;
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .contribute-col {
+    width: 50%;
+    box-sizing: border-box;
+    &:first-child {
+      margin-right: 40px;
+    }
   }
 }
 
