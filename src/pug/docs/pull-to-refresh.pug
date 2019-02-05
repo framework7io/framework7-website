@@ -29,6 +29,11 @@ block content
           <div class="list">
             ...
           </div>
+
+          <!-- nested scrollable element -->
+          <div class="my-scolling-content ptr-watch-scrollable">
+            ...
+          </div>
         </div>
       </div>
     p Where:
@@ -36,6 +41,7 @@ block content
         li <code><b>ptr-content</b></code> class. This is required to enable pull to refresh
         li <code><b>div class="ptr-preloader"</b></code> hidden layer with pull to refresh visual elements: preloader and arrow
         li <code>data-ptr-distance="55"</code> additional attribute that allows to set custom pull to refresh trigger distance. By default (if not specified) it is 44px
+        li <code>ptr-watch-scrollable</code> - additional class that must be added on nested scrollable elements to prevent pull to refresh on such elements scrolling
     h2 Pull To Refresh From Bottom
     p It is also possible to make it work like pull from bottom. In this case we need to move #[code ptr-preloader] element to the bottom of page content and add additional #[code ptr-bottom] class to pull to refresh content:
     :code(lang="html")
