@@ -1,4 +1,4 @@
-const jsdom = require('jsdom').jsdom;
+const { JSDOM } = require('jsdom');
 const jQuery = require('jquery');
 const fs = require('fs');
 
@@ -45,8 +45,8 @@ function parseFolder(folder, docs) {
   files.forEach((file) => {
     if (file.indexOf('.') === 0) return;
     const content = fs.readFileSync(`./${folder}/${file}`, 'utf8');
-    const document = jsdom(content, {});
-    const window = document.defaultView;
+    const dom = new JSDOM(content, {});
+    const window = dom.window;
     const $ = jQuery(window);
     const $docsContent = $('.docs-content');
     $docsContent.find('pre code.html, pre code.css').parent('pre').remove();
