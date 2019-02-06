@@ -19,7 +19,7 @@ $('.home-header .theme-switch a').click(function onClick(e) {
   $('header .phone').toggleClass('phone-android');
   $('header .phone .fullscreen').attr('href', url);
 });
-$('.home-header .mobile-preview').click((e) => {
+$('.home-header .mobile-preview-button').click((e) => {
   e.preventDefault();
   $('.home-header').toggleClass('mobile-preview-enabled');
 });

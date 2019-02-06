@@ -7,7 +7,7 @@
   color:#fff;
   z-index: 1;
   background-image: linear-gradient(to bottom, @pinkColor, @redColor 30%);
-  .mobile-preview {
+  .mobile-preview-button {
     display: none;
   }
   > .center {
@@ -34,7 +34,7 @@
     svg {
       width: 600px;
       height: auto;
-      max-width: 100%;
+      max-width: 90%;
     }
   }
   .slogan {
@@ -320,7 +320,7 @@
         }
       }
     }
-    .mobile-preview {
+    .mobile-preview-button {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -332,16 +332,21 @@
       width: 40px;
       color: @yellowColor;
       cursor: pointer;
+      i:first-child {
+        position: absolute;
+        font-size: 24px;
+        right: 30px;
+      }
       i {
         font-size: 32px;
       }
     }
     .content,
     .phone,
-    .mobile-preview,
-    .mobile-preview i,
+    .mobile-preview-button,
+    .mobile-preview-button i,
     .theme-switch {
-      transition: 400ms;
+      transition: 600ms;
       transition-property: transform, box-shadow, opacity;
     }
   }
@@ -356,10 +361,10 @@
     .theme-switch {
       opacity: 1;
     }
-    .mobile-preview {
+    .mobile-preview-button {
       transform: ~"translateX(calc(-100vw + 40px))";
-      i {
-        transform: rotate(180deg);
+      i:first-child {
+        transform: translateX(40px) rotate(180deg);
       }
     }
   }
