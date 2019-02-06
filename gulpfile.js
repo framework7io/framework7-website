@@ -13,7 +13,7 @@
   var yaml = require('js-yaml');
   var path = require('path');
   var iconsManifest = require('./src/manifest-icons.json');
-  var useCDN = true;
+  var useCDN = false;
   var cdnPath = '//cdn.framework7.io';
   var pkg = require('./package.json');
   const highlight = require('./src/highlight');

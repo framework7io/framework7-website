@@ -16,11 +16,6 @@ gulp tasks list
 - `gulp less`: build less files to css
 - `gulp build`: build both pug and less files
 
-By default all static resources refer to CDN host. To use local resources (for dev purpose only), you can call same gulp tasks with ` -local` argument
-- `gulp pug -local`: build pug files to html and use local resources instead of CDN
-- `gulp build -local`: build pug and less files use local resources instead of CDN
-- `gulp server -local`: run website on local server and use local resoureses with next builds
-
 ## Contributing
 
 All HTML and CSS changes should be commited to `src/` files only!
