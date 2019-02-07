@@ -6,7 +6,7 @@ const searchData = [];
 
 let currentData = [];
 try {
-  currentData = require('./search-index.json') || [];
+  currentData = require('../search-index.json') || [];
 } catch (e) {
   // no index
 }
